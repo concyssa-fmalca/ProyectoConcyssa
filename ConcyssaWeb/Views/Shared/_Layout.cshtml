@@ -1,0 +1,793 @@
+﻿@using Microsoft.AspNetCore.Http
+@using Karambolo.AspNetCore.Bundling.ViewHelpers
+@addTagHelper *, Karambolo.AspNetCore.Bundling
+@inject IHttpContextAccessor Accessor
+@{
+    Layout = null;
+}
+@using DTO;
+
+<!DOCTYPE html>
+<html>
+
+
+<!-- Mirrored from alliance-html.themerex.net/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 28 May 2016 15:17:35 GMT -->
+<head>
+    <!-- -------------- Meta and Title -------------- -->
+    <meta charset="utf-8">
+    <title>Addon Requerimientos</title>
+    
+
+    <link rel='stylesheet' type='text/css' href='~/assets/js/plugins/fullcalendar/fullcalendar.min.css'>
+    <link rel='stylesheet' type='text/css' href='~/assets/js/plugins/select2/css/core.css'>
+    <link rel='stylesheet' type='text/css' href='~/assets/js/plugins/magnific/magnific-popup.css'>
+    <link rel='stylesheet' type='text/css' href='~/assets/js/plugins/c3charts/c3.min.css'>
+    <link rel='stylesheet' type='text/css' href='~/assets/skin/default_skin/css/theme.css'>
+    <link rel='stylesheet' type='text/css' href='~/assets/allcp/forms/css/forms.css'>
+    <link rel='stylesheet' type='text/css' href='~/assets/bootstrap-treeview.css'>
+    <link rel='stylesheet' type='text/css' href='~/assets/sweetalert2.css'>
+    <link rel='stylesheet' type='text/css' href='~/css/jquery.autocomplete.css'>
+
+
+    <meta name="description" content="Addon Requerimientos">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @*<link rel="shortcut icon" href="~/assets/img/logo_contable.png">*@
+
+    <!-- -------------- Fonts -------------- -->
+    <link rel='stylesheet' type='text/css' href='~/css/Font-OpenSans.css'>
+    <link rel='stylesheet' type='text/css' href='~/css/Font-Lato.css'>
+   
+    <link href="~/assets/sweetalert2.css" rel="stylesheet" />
+    <link href="~/assets/miestilos.css" rel="stylesheet" />
+
+    <link href="~/assets/alertify.css" rel="stylesheet" />
+    <link href="~/assets/alertify.min.css" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.11.3/b-2.0.1/r-2.2.9/datatables.min.css" />
+
+    <style>
+        body {
+            overflow-y: scroll;
+        }
+
+        #tbodyDetalle > tr > td {
+            padding: 0px 0px;
+            margin: 0px;
+            text-align: center;
+        }
+
+        input[readonly]:focus {
+            background-color: #f7e7b1;
+        }
+
+        #loader {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            z-index: 1;
+            width: 150px;
+            height: 150px;
+            margin: -75px 0 0 -75px;
+            border: 16px solid #fff;
+            border-radius: 50%;
+            border-top: 16px solid #67d3e0;
+            width: 120px;
+            height: 120px;
+            -webkit-animation: spin 2s linear infinite;
+            animation: spin 2s linear infinite;
+        }
+
+        input[type=number]::-webkit-inner-spin-button {
+            display: none;
+        }
+
+        input[type=date]::-webkit-inner-spin-button {
+            display: none;
+        }
+
+        input[type=date]::-webkit-clear-button {
+            display: none; /* Hide the button */
+        }
+
+        .navbar .nav > li > a.dropdown-toggle {
+            margin-left: 10px !important;
+        }
+
+        #cboCambioEmpresa {
+            color: #7f828f;
+        }
+    </style>
+
+
+</head>
+
+<body class="dashboard-page" style="background-color:#2d4b67;">
+    @if (string.IsNullOrEmpty(@Accessor.HttpContext.Session.GetString("Sociedad")))
+     {
+            @*Accessor.HttpContext.Session.Clear();*@
+            @*Accessor.HttpContext.Response.Redirect("/");*@
+
+            <h1>
+                @Accessor.HttpContext.Session.GetString("Sociedad"))
+
+            </h1>
+    }
+    else
+    {
+
+        <!-- -------------- Body Wrap  -------------- -->
+        <div id="loader"></div>
+        <div id="main" style="display:none;">
+
+
+            <!-- -------------- Header  -------------- -->
+            <header class="navbar navbar-fixed-top bg-dark">
+
+                    
+            
+
+                <div class="navbar-logo-wrapper">
+                    <a class="navbar-logo-text" href="/Home/About">
+                        <b>ADDON REQUERIMIENTOS</b>
+                    </a>
+                    <span id="sidebar_left_toggle" class="ad ad-lines"></span>
+                </div>
+
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown dropdown-fuse">
+                        <a href="#" class="dropdown-toggle fw600" data-toggle="dropdown">
+
+                            <span class="hidden-xs"><name>MINERA TITAN</name> </span>
+
+                            <span class="fa fa-caret-down hidden-xs mr15"></span>
+                        </a>
+                        <ul class="dropdown-menu list-group keep-dropdown fw600" role="menu" style="background-color:#5a1c1c;">
+                            @*<li class="list-group-item">
+                        <div class="col-md-12">
+                            <div class="col-md-8 text-right">
+                                <span class="label label-warning label-lg">123456789</span>
+                            </div>
+                        </div>
+                    </li>*@
+                            <li class="dropdown-footer text-center">
+                                <a href="/Home/CerrarSesion" class="btn btn-primary btn-sm btn-bordered">
+                                    <span class="fa fa-power-off pr5"></span> Logout
+                                </a>
+                            </li>
+
+                        </ul>
+                    </li>
+                </ul>
+
+            </header>
+            <!-- -------------- /Header  -------------- -->
+            <!-- -------------- Sidebar  -------------- -->
+            <aside id="sidebar_left" class="nano nano-light affix">
+                <!-- -------------- Sidebar Left Wrapper  -------------- -->
+                <div class="sidebar-left-content nano-content">
+                    <!-- -------------- Sidebar Header -------------- -->
+                    <header class="sidebar-header">
+
+                        <!-- -------------- Sidebar - Author -------------- -->
+                        <div class="sidebar-widget author-widget">
+                            <div class="media">
+                                <a class="media-left" href="#">
+                                    @*<img src="~/assets/img/avatars/profile_avatar.jpg" class="img-responsive">*@
+                                    <i class="fa fa-user" style="font-size:64px;top:20px;color:#EEB52D"></i>
+                                </a>
+
+                                <div class="media-body">
+                                    <div class="media-links">
+
+                                        <a href="/Home/CerrarSesion">Logout</a>
+                                        @*<img src="~/assets/img/avatars/TITAN.png" class="img-responsive" width="50px">*@
+                                    </div>
+                                    <div class="media-author">
+                                        @Accessor.HttpContext.Session.GetString("NombUsuario").ToString()
+                                    </div>
+                                </div>
+                                <label>Conectado</label>
+                            </div>
+                        </div>
+
+                        <ul class="nav">
+                            <li>
+                                <div style="height:40px; line-height:40px; text-align:center" class="form-group-sm">
+                                    <div class="col-sm-12">
+                                        <select id="cboCambioEmpresa" class="input-sm" style="margin: 0px 0px 0px 0px; width: 220px;" disabled>
+                                            <option>@Accessor.HttpContext.Session.GetString("NombreSociedad").ToString()</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                        <!-- -------------- Sidebar - Author Menu  -------------- -->
+
+                    </header>
+
+
+                    <!-- -------------- /Sidebar Header -------------- -->
+                    <!-- -------------- Sidebar Menu  -------------- -->
+                    <ul id="ulMenuPr" class="nav sidebar-menu">
+
+                       
+
+                    </ul>
+                    <!-- -------------- /Sidebar Menu  -------------- -->
+
+                    <span id="siteseal" style="display:none;">
+                        <script async type="text/javascript" src="https://seal.godaddy.com/getSeal?sealID=xGNO1l7MY6oRHvGkpgcKNum9oGnYzGHPWLXoK8aMeRHrhIQJFh4eZ6J3Im92"></script>
+                    </span>
+                </div>
+                <!-- -------------- /Sidebar Left Wrapper  -------------- -->
+
+            </aside>
+            <!-- -------------- /Sidebar -------------- -->
+            <!-- -------------- Main Wrapper -------------- -->
+            <section id="content_wrapper">
+                <!-- -------------- Topbar Menu Wrapper -------------- -->
+           
+                <section id="content" class="table-layout animated fadeIn">
+                    @RenderBody()
+                   
+                </section>
+                <!-- -------------- Page Footer -------------- -->
+                <!-- -------------- /Page Footer -------------- -->
+            </section>
+            <!-- -------------- /Main Wrapper -------------- -->
+            <!-- -------------- Sidebar Right -------------- -->
+            <!-- -------------- /Sidebar Right -------------- -->
+
+
+        </div>
+        <div>
+
+            @*<input type="hidden" id="empresaActual" value="@(Session["Empresa"].ToString())" />
+                <input type="hidden" id="hdfAnioP" value="@(Session["Periodo"])" />
+                <input type="hidden" id="hdfMesP" value="@(Session["Mes"])" />
+                <input type="hidden" id="hdfRuc" value="@(Session["Ruc"])" />
+                <input type="hidden" id="BDEmpresaActual" value="@(Session["nombreBaseDatos"].ToString())" />
+                <input type="hidden" id="rucEmpresa" value="@(Session["Ruc"].ToString())" />*@
+        </div>
+
+       
+        <script src="~/js/plugins/jquery-1.11.2.min.js"></script>
+        <script src="~/assets/sweetalert2.js"></script>
+        <script src="~/assets/alertify.js"></script>
+        <script src="~/assets/alertify.min.js"></script>
+        <script>
+             servidor(false);
+             document.addEventListener("DOMContentLoaded", function (event) {
+                setTimeout(showPage, 1000);
+            });
+            function showPage() {
+                document.getElementById("loader") != null ? document.getElementById("loader").style.display = "none" : "";
+                document.getElementById("main").style.display = "block";
+            }
+
+         
+            function servidor(t) {
+                var xhr = new XMLHttpRequest();
+                var pth = window.location.pathname
+                var url;
+                if (t) {
+                    (pth.indexOf("Home") > -1 ? url = "CambiarPeriodo/?an=" + cboAnioP.value + "&ms=" + cboMesP.value + "&BDEmpresaActual=" + document.getElementById("BDEmpresaActual").value : url = "../Home/CambiarPeriodo/?an=" + cboAnioP.value + "&ms=" + cboMesP.value + "&BDEmpresaActual=" + document.getElementById("BDEmpresaActual").value);
+                } else {
+                    (pth.indexOf("Home") > -1 ? url = "obtenerMenu" : url = "../../Home/obtenerMenu");
+                }
+
+                xhr.open("get", url);
+                xhr.send();
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        if (xhr.responseText != "") {
+                            if (xhr.responseText != "periodo") {
+                                crearMenu1(xhr.responseText.split("¬"));
+                            }
+                            else{
+                                window.location.reload();
+                            }                        
+                        }
+                    }
+                }
+                //crearComboPeriodo();
+            }
+
+            function crearMenu1(lst) {
+                var nrgs = lst.length, rg, cn = "<li class='sidebar-label pt15'>Menu</li>", c = 0;
+                var cont = 0;
+                for (var i = 0; i < nrgs; i += 1) {
+                    rg = lst[i].split("¦");
+                    if (rg[0] == rg[1]) {
+                        c != 0 ? op = "" : "";
+                        cn += "<li><a class='accordion-toggle1' href='#'>";
+                        switch (cont) {
+                            case 0: cn += "<span class='fa fa-list-alt'>"; break;
+                            case 1: cn += "<span class='fa fa-briefcase'>"; break;
+                            case 2: cn += "<span class='fa fa-files-o'>"; break;
+                            case 3: cn += "<span class='fa fa-file-text-o'>"; break;
+                            case 4: cn += "<span class='fa fa-clipboard'>"; break;
+                            case 5: cn += "<span class='fa fa-check-square-o'>"; break;
+                            case 6: cn += "<span class='fa fa-pencil-square'>"; break;
+                            case 7: cn += "<span class='fa fa-superscript'>"; break;
+                            case 8: cn += "<span class='fa fa-cogs'>"; break;
+                            case 9: cn += "<span class='fa fa-key'>"; break;
+                            case 10: cn += "<span class='fa fa-question-circle'>"; break;
+                            default: cn += "<span class='fa fa-dashboard'>";
+                        }
+                        cont++;
+                        cn += "</span><span class='sidebar-title'>";
+                        cn += rg[2];
+                        cn += "</span><span class='caret'></span></a>";
+                        cn += crearSubMenu1(lst, rg[1]);
+                        cn += "</li>";
+                        c++;
+                    }
+                }
+                cn += "";
+
+                document.getElementById("ulMenuPr").innerHTML = cn;
+                configurarTogle();
+            }
+
+            function crearSubMenu1(lst, d) {
+                var nrgs = lst.length, rg, cn = "<ul class='nav sub-nav'>", cnn = "";
+                for (var i = 0; i < nrgs; i += 1) {
+                    rg = lst[i].split("¦");
+                    if (d == rg[0] && d != rg[1]) {
+
+                        cn += "<li>";
+                        cnn = crearSubMenu1(lst, rg[1])
+                        if (cnn != "</li>") {
+                            cn += "<a class='accordion-toggle1' href='#'><span class='fa fa-share-square-o'></span><span class='sidebar-title'>";
+                            cn += rg[2];
+                            cn += "</span><span class='caret'></a>";
+
+                        } else {
+                            cn += "<a href='/";
+                            cn += rg[3];
+                            cn += "/";
+                            cn += rg[4];
+                            cn += "?l=";
+                            cn += rg[5] == "TRUE" || rg[5] == "ACTIVO" ? "1" : "0";
+                            cn += "'>";
+                            cn += rg[2];
+                            cn += "</a>";
+                        }
+                        cn += cnn;
+                        cn += "</li>";
+                    }
+                }
+                cn += "</ul>";
+                cn == "<ul class='nav sub-nav'></ul>" ? cn = "</li>" : "";
+                return cn;
+            }
+
+            function configurarTogle() {
+                $('.sidebar-menu li a.accordion-toggle1').on('click', function (e) {
+                    e.preventDefault();
+
+                    // If selected menu item is minified and is a submenu (has sub-nav parent) - return
+                    if ($('body').hasClass('sb-l-m') && !$(this).parents('ul.sub-nav').length) { return; }
+
+                    // If selected menu item is a dropdown - open it
+                    if (!$(this).parents('ul.sub-nav').length) {
+
+                        // If sidebar horizontal - return
+                        if ($(window).width() > 900) {
+                            if ($('body.sb-top').length) { return; }
+                        }
+
+                        $('a.accordion-toggle1.menu-open').next('ul').slideUp('fast', 'swing', function () {
+                            $(this).attr('style', '').prev().removeClass('menu-open');
+                        });
+                    }
+                        // If selected menu item is a dropdown inside of a dropdown -
+                        // close menu items which are not children of the main top level menu
+                    else {
+                        var activeMenu = $(this).next('ul.sub-nav');
+                        var siblingMenu = $(this).parent().siblings('li').children('a.accordion-toggle1.menu-open').next('ul.sub-nav');
+
+                        activeMenu.slideUp('fast', 'swing', function () {
+                            $(this).attr('style', '').prev().removeClass('menu-open');
+                        });
+                        siblingMenu.slideUp('fast', 'swing', function () {
+                            $(this).attr('style', '').prev().removeClass('menu-open');
+                        });
+                    }
+
+                    // Expand target menu item, add ".open-menu" class
+                    // and remove unneeded inline jQuery animation styles
+                    if (!$(this).hasClass('menu-open')) {
+                        $(this).next('ul').slideToggle('fast', 'swing', function () {
+                            $(this).attr('style', '').prev().toggleClass('menu-open');
+                        });
+                    }
+
+                });
+
+            }
+
+
+             /*
+            setTimeout(showPage, 1000);
+            document.addEventListener("DOMContentLoaded", function (event) {
+            });
+
+            function showPage() {
+                document.getElementById("loader") != null ? document.getElementById("loader").style.display = "none" : "";
+                document.getElementById("main").style.display = "block";
+                CrearMenu();
+                //configurarTogle();
+            }
+
+        
+
+            function CrearMenu() {
+
+                
+
+                $.post("/Acceso/ObtenerAccesos", function (data, status) {
+
+                    let PermitirSerguridad = 0;
+                    let PermitirSeguridadUsuarios = 0;
+                    let PermitirSeguridadPerfiles = 0;
+                    let PermitirSeguridadAccesos = 0;
+
+                    let PermitirDatosMaestro = 0;
+                    let PermitirDatosMaestroSociedades = 0;
+                    let PermitirDatosMaestroAlmacenes = 0;
+                    let PermitirDatosMaestroCentroCosto = 0;
+                    let PermitirDatosMaestroSucursales = 0;
+                    let PermitirDatosMaestroDepartamentos = 0;
+                    let PermitirDatosMaestroMonedas = 0;
+                    let PermitirDatosMaestroLineaNegocio = 0;
+                    let PermitirDatosMaestroUnidadMedida = 0;
+                    let PermitirDatosMaestroIndicadorImpuestos = 0;
+                    let PermitirDatosMaestroProyectos = 0;
+                    let PermitirDatosMaestroSeries = 0;
+                    let PermitirDatosMaestroCondicionPago = 0;
+
+                    let PermitirSociosNegocio = 0;
+                    let PermitirSociosNegocioClientes = 0;
+                    let PermitirSociosNegocioProveedores = 0;
+                    let PermitirSociosNegocioEmpleados = 0;
+
+                    let PermitirRequerimientoCompra = 0;
+                    let PermitirRequerimientoCompraNuevaSolicitud = 0;
+                    let PermitirRequerimientoCompraVisuRQAutorizacion = 0;
+                    let PermitirRequerimientoCompraVisuRQAtencion = 0;
+
+                    let PermitirVisualizacionTraslados = 0;
+                    let PermitirVisualizacionTrasladosVisuTrasPen = 0;
+
+                    let PermitirReportes = 0;
+                    let PermitirReportesHistorico = 0;
+                    let PermitirReportesEstadoRequerimientos = 0;
+
+                    let accesos = JSON.parse(data);
+                    for (var i = 0; i < accesos.length; i++) {
+                        if (accesos[i].Menu == "SEGURIDAD") { PermitirSerguridad = 1; }
+                        if (accesos[i].Menu == "USUARIOS") { PermitirSeguridadUsuarios = 1; }
+                        if (accesos[i].Menu == "PERFILES") { PermitirSeguridadPerfiles = 1; }
+                        if (accesos[i].Menu == "ACCESOS") { PermitirSeguridadAccesos = 1; }
+
+                        if (accesos[i].Menu == "DATOS MAESTROS") { PermitirDatosMaestro = 1; }
+                        if (accesos[i].Menu == "SOCIEDADES") { PermitirDatosMaestroSociedades = 1; }
+                        if (accesos[i].Menu == "ALMACENES") { PermitirDatosMaestroAlmacenes = 1; }
+                        if (accesos[i].Menu == "CENTRO DE COSTO") { PermitirDatosMaestroCentroCosto = 1; }
+                        if (accesos[i].Menu == "SUCURSALES") { PermitirDatosMaestroSucursales = 1; }
+                        if (accesos[i].Menu == "DEPARTAMENTOS") { PermitirDatosMaestroDepartamentos = 1; }
+                        if (accesos[i].Menu == "MONEDAS") { PermitirDatosMaestroMonedas = 1; }
+                        if (accesos[i].Menu == "LINEA DE NEGOCIO") { PermitirDatosMaestroLineaNegocio = 1; }
+                        if (accesos[i].Menu == "UNIDAD DE MEDIDA") { PermitirDatosMaestroUnidadMedida = 1; }
+                        if (accesos[i].Menu == "INDICADOR DE IMPUESTOS") { PermitirDatosMaestroIndicadorImpuestos = 1; }
+                        if (accesos[i].Menu == "PROYECTOS") { PermitirDatosMaestroProyectos = 1; }
+                        if (accesos[i].Menu == "SERIES") { PermitirDatosMaestroSeries = 1; }
+                        if (accesos[i].Menu == "CONDICION DE PAGO") { PermitirDatosMaestroCondicionPago = 1; }
+
+                        if (accesos[i].Menu == "SOCIOS DE NEGOCIO") { PermitirSociosNegocio = 1; }
+                        if (accesos[i].Menu == "CLIENTES") { PermitirSociosNegocioClientes = 1; }
+                        if (accesos[i].Menu == "PROVEEDORES") { PermitirSociosNegocioProveedores = 1; }
+                        if (accesos[i].Menu == "EMPLEADOS") { PermitirSociosNegocioEmpleados = 1; }
+
+                        if (accesos[i].Menu == "REQUERIMIENTOS DE COMPRA (RQ)") { PermitirRequerimientoCompra = 1; }
+                        if (accesos[i].Menu == "NUEVA SOLICITUD RQ") { PermitirRequerimientoCompraNuevaSolicitud = 1; }
+                        if (accesos[i].Menu == "VISUALIZACION DE RQ PARA AUTORIZACION") { PermitirRequerimientoCompraVisuRQAutorizacion = 1; }
+                        if (accesos[i].Menu == "VISUALIZACION DE RQ PARA ATENCION") { PermitirRequerimientoCompraVisuRQAtencion = 1; }
+
+                        if (accesos[i].Menu == "TRASLADOS") { PermitirVisualizacionTraslados = 1; }
+                        if (accesos[i].Menu == "VISUALIZACION DE TRASLADOS PENDIENTES") { PermitirVisualizacionTrasladosVisuTrasPen = 1; }
+
+                        if (accesos[i].Menu == "REPORTES") { PermitirReportes = 1; }
+                        if (accesos[i].Menu == "HISTORICO DE ARTICULO") { PermitirReportesHistorico = 1; }
+                        if (accesos[i].Menu == "ESTADO DE REQUERIMIENTOS") { PermitirReportesEstadoRequerimientos = 1; }
+                    }
+
+                    let menu = '';
+                    menu += `<li class='sidebar-label pt15'>Menu</li>`;
+                            if (PermitirSerguridad == 1) {
+                                menu += `<li>
+                            <a class='accordion-toggle1' href='#'>
+                                <span class='fa fa-shield'></span>
+                                <span class='sidebar-title'>SEGURIDAD</span>
+                                <span class='caret'></span>
+                            </a>
+                            <ul class='nav sub-nav'>`;
+                                if (PermitirSeguridadUsuarios ==1) {
+                    menu += ` <li>
+                                    <a href="/Usuario/Listado">USUARIOS</a>
+                              </li>`;
+                                }
+                                if (PermitirSeguridadPerfiles == 1) {
+                    menu += ` <li>
+                                    <a href="/Perfil/Listado">PERFILES</a>
+                              </li>`;
+                                }
+                                if (PermitirSeguridadAccesos == 1) {
+                    menu += ` <li>
+                                    <a href="/Acceso/Listado">ACCESOS</a>
+                              </li>`;
+                                }
+                    menu += `</ul>
+                        </li>`;
+
+                            }
+                    if (PermitirDatosMaestro == 1) {
+                        menu += `<li>
+                        
+                                <li>
+                                    <a class="accordion-toggle1" href="#">
+                                        <span class="fa fa-share-square-o"></span>
+                                        <span class="sidebar-title">DATOS MAESTROS</span>
+                                        <span class="caret"></span>
+                                    </a>
+                                    <ul class="nav sub-nav">`;
+                        if (PermitirDatosMaestroSociedades == 1) {
+                            menu += `     <li>
+                                            <a href="/Sociedad/Listado">SOCIEDADES</a>
+                                        </li>`;
+                        }
+                        if (PermitirDatosMaestroAlmacenes == 1) {
+                            menu += `       <li>
+                                            <a href="/Almacen/Listado">ALMACENES</a>
+                                        </li>`;
+                        }
+                        if (PermitirDatosMaestroCentroCosto == 1) {
+                            menu += `       <li>
+                                            <a href="/CentroCosto/Listado">CENTRO DE COSTO</a>
+                                        </li>`;
+                        }
+                        if (PermitirDatosMaestroSucursales == 1) {
+                            menu += `        <li>
+                                            <a href="/Sucursal/Listado">SUCURSALES</a>
+                                        </li>`;
+                        }
+                        if (PermitirDatosMaestroDepartamentos == 1) {
+                            menu += `        <li>
+                                            <a href="/Departamento/Listado">DEPARTAMENTOS</a>
+                                        </li>`;
+                        }
+                        if (PermitirDatosMaestroMonedas == 1) {
+                            menu += `        <li>
+                                            <a href="/Moneda/Listado">MONEDAS</a>
+                                        </li>`;
+                        }
+                        if (PermitirDatosMaestroLineaNegocio == 1) {
+                            menu += `        <li>
+                                            <a href="/LineaNegocio/Listado">LINEA DE NEGOCIO</a>
+                                        </li>`;
+                        }
+                        if (PermitirDatosMaestroUnidadMedida == 1) {
+                            menu += `        <li>
+                                            <a href="/UnidadMedida/Listado">UNIDAD DE MEDIDA</a>
+                                        </li>`;
+                        }
+                        if (PermitirDatosMaestroIndicadorImpuestos == 1) {
+                            menu += `        <li>
+                                            <a href="/IndicadorImpuesto/Listado">INDICADOR DE IMPUESTOS</a>
+                                        </li>`;
+                        }
+                        if (PermitirDatosMaestroProyectos == 1) {
+                            menu += `        <li>
+                                            <a href="/Proyecto/Listado">PROYECTOS</a>
+                                        </li>`;
+                        } if (PermitirDatosMaestroSeries == 1) {
+                            menu += `        <li>
+                                            <a href="/Serie/Listado">SERIES</a>
+                                        </li>`;
+                        }
+                        if (PermitirDatosMaestroCondicionPago == 1) {
+                            menu += `        <li>
+                                            <a href="/CondicionPago/Listado">CONDICION DE PAGO</a>
+                                        </li>`;
+                        }
+                        menu += `    </ul>
+                                </li>`;
+                    }
+                    if (PermitirSociosNegocio == 1) {
+                        menu += `<li>
+                                    <a class="accordion-toggle1" href="#">
+                                        <span class="fa fa-users"></span>
+                                        <span class="sidebar-title">SOCIOS DE NEGOCIO</span>
+                                        <span class="caret"></span>
+                                    </a>
+                                    <ul class="nav sub-nav">`;
+                        if (PermitirSociosNegocioClientes == 1) {
+                            menu += `       <li>
+                                            <a href="/Cliente/Listado">CLIENTES</a>
+                                        </li>`;
+                        }
+                        if (PermitirSociosNegocioProveedores == 1) {
+                            menu += `       <li>
+                                            <a href="/Proveedor/Listado">PROVEEDORES</a>
+                                        </li>`;
+                        }
+                        if (PermitirSociosNegocioEmpleados == 1) {
+                            menu += `        <li>
+                                            <a href="/Empleado/Listado">EMPLEADOS</a>
+                                        </li>`;
+                        }
+                        menu += `    </ul>
+                                </li>
+                        </li>`;
+                    }
+                    if (PermitirRequerimientoCompra == 1) {
+                        menu += `<li>
+                            <a class='accordion-toggle1' href='#'>
+                                <span class='fa fa-inbox'></span>
+                                <span class='sidebar-title'>REQUERIMIENTOS DE COMPRA (RQ)</span>
+                                <span class='caret'></span>
+                            </a>
+                            <ul class='nav sub-nav'>`;
+                        if (PermitirRequerimientoCompraNuevaSolicitud == 1) {
+                            menu += `<li>
+                                    <a href="/Usuario/Listado">NUEVA SOLICITUD RQ</a>
+                                </li>`;
+                        }
+                        if (PermitirRequerimientoCompraVisuRQAutorizacion == 1) {
+                            menu += `<li>
+                                    <a href="/Usuario/Listado">VISUALIZACION DE RQ PARA AUTORIZACION</a>
+                                </li>`;
+                        }
+                        if (PermitirRequerimientoCompraVisuRQAtencion == 1) {
+                            menu += `<li>
+                                    <a class="accordion-toggle1" href="#">
+                                        <span class="fa fa-share-square-o"></span>
+                                        <span class="sidebar-title">VISUALIZACION DE RQ PARA ATENCION</span>
+                                        <span class="caret"></span>
+                                    </a>
+                                    <ul class="nav sub-nav">
+                                        <li>
+                                            <a href="/SociosNegocio/Cliente">DESPACHOS</a>
+                                        </li>
+                                        <li>
+                                            <a href="/SociosNegocio/Proveedor">COMPRA LOCAL</a>
+                                        </li>
+                                        <li>
+                                            <a href="/SociosNegocio/Proveedor">COMPRA LIMA</a>
+                                        </li>
+                                    </ul>
+                                </li>`;
+                        }
+                        menu +=`</ul>
+                        </li>`;
+                    }
+                    if (PermitirVisualizacionTraslados == 1) {
+                        menu += `<li>
+                            <a class='accordion-toggle1' href='#'>
+                                <span class='fa fa-share'></span>
+                                <span class='sidebar-title'>TRASLADOS</span>
+                                <span class='caret'></span>
+                            </a>
+                            <ul class='nav sub-nav'>`;
+                        if (PermitirVisualizacionTrasladosVisuTrasPen == 1) {
+                            menu += `<li>
+                                    <a href="/Usuario/Listado">VISUALIZACION DE TRASLADOS PENDIENTES</a>
+                                </li>`;
+                        }
+                        menu += `</ul>
+                        </li>`;
+                    }
+                    if (PermitirReportes == 1) {
+                        menu += `<li>
+                            <a class='accordion-toggle1' href='#'>
+                                <span class='fa fa-file-text-o'></span>
+                                <span class='sidebar-title'>REPORTES</span>
+                                <span class='caret'></span>
+                            </a>
+                            <ul class='nav sub-nav'>`;
+                        if (PermitirReportesHistorico == 1) {
+                            menu += `<li>
+                                    <a href="/Usuario/Listado">HISTORICO DE ARTICULO</a>
+                                </li>`;
+                        }
+                        if (PermitirReportesEstadoRequerimientos == 1) {
+                            menu += `<li>
+                                    <a href="/Usuario/Listado">ESTADO DE LOS REQUERIMIENTOS</a>
+                                </li>`;
+                        }
+                        menu += `</ul>
+                        </li>`;
+                    }
+                    $("#ulMenuPr").html(menu);
+                    configurarTogle();
+
+                });
+
+
+            }
+
+
+            function configurarTogle() {
+                $('.sidebar-menu li a.accordion-toggle1').on('click', function (e) {
+                    e.preventDefault();
+
+                    // If selected menu item is minified and is a submenu (has sub-nav parent) - return
+                    if ($('body').hasClass('sb-l-m') && !$(this).parents('ul.sub-nav').length) { return; }
+
+                    // If selected menu item is a dropdown - open it
+                    if (!$(this).parents('ul.sub-nav').length) {
+
+                        // If sidebar horizontal - return
+                        if ($(window).width() > 900) {
+                            if ($('body.sb-top').length) { return; }
+                        }
+
+                        $('a.accordion-toggle1.menu-open').next('ul').slideUp('fast', 'swing', function () {
+                            $(this).attr('style', '').prev().removeClass('menu-open');
+                        });
+                    }
+                    // If selected menu item is a dropdown inside of a dropdown -
+                    // close menu items which are not children of the main top level menu
+                    else {
+                        var activeMenu = $(this).next('ul.sub-nav');
+                        var siblingMenu = $(this).parent().siblings('li').children('a.accordion-toggle1.menu-open').next('ul.sub-nav');
+
+                        activeMenu.slideUp('fast', 'swing', function () {
+                            $(this).attr('style', '').prev().removeClass('menu-open');
+                        });
+                        siblingMenu.slideUp('fast', 'swing', function () {
+                            $(this).attr('style', '').prev().removeClass('menu-open');
+                        });
+                    }
+
+                    // Expand target menu item, add ".open-menu" class
+                    // and remove unneeded inline jQuery animation styles
+                    if (!$(this).hasClass('menu-open')) {
+                        $(this).next('ul').slideToggle('fast', 'swing', function () {
+                            $(this).attr('style', '').prev().toggleClass('menu-open');
+                        });
+                    }
+
+                });
+
+            }
+            */
+        </script>
+        
+        @*@Scripts.Render("~/bundles/jquery")*@
+
+        <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.11.3/b-2.0.1/r-2.2.9/datatables.min.js"></script>
+
+        <script src="~/assets/js/plugins/highcharts/highcharts.js"></script>
+         <script src="~/assets/js/plugins/c3charts/d3.min.js"></script>
+         <script src="~/assets/js/plugins/c3charts/c3.min.js"></script>
+         <script src="~/assets/js/plugins/circles/circles.js"></script>
+         <script src="~/assets/js/plugins/magnific/jquery.magnific-popup.js"></script>
+         <script src="~/assets/js/utility/utility.js"></script>
+         <script src="~/assets/js/demo/demo.js"></script>
+         <script src="~/assets/js/main.js"></script>
+         @*<script src="~/assets/js/pages/dashboard1.js"></script>*@
+         <script src="~/assets/sweetalert2.js"></script>
+         <script src="~/assets/bootstrap-treeview.js"></script>
+         @*<script src="~/js/jquery/jquery_ui/jquery_ui.min.js"></script>*@
+         <script src="~/assets/js/plugins/select2/select2.min.js"></script>
+
+    }
+</body>
+
+
+<!-- Mirrored from alliance-html.themerex.net/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 28 May 2016 15:17:35 GMT -->
+</html>
