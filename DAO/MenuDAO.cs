@@ -9,6 +9,74 @@ namespace DAO
     public class MenuDAO
     {
 
+		
+		public List<beCampoString3> obtenerMenuPerfil(int IdPerfil, ref string mensaje_error)
+		{
+			List<beCampoString3> listaAcceso = null;
+			using (SqlConnection cn = new Conexion().conectar())
+			{
+				try
+				{
+					cn.Open();
+					SqlDataAdapter da = new SqlDataAdapter("SMC_AccesoXPerfil", cn);
+					da.SelectCommand.CommandType = CommandType.StoredProcedure;
+					da.SelectCommand.Parameters.AddWithValue("@IdPerfil", IdPerfil);
+					SqlDataReader dr = da.SelectCommand.ExecuteReader();
+					if (dr != null)
+					{
+						listaAcceso = new List<beCampoString3>();
+						while (dr.Read())
+						{
+							beCampoString3 oSeg_Rol = new beCampoString3();
+							oSeg_Rol.Campo1 = dr["IdPerfil"].ToString();
+							oSeg_Rol.Campo2 = dr["idMenu"].ToString();
+							oSeg_Rol.Campo3 = dr["Acceso"].ToString();
+							listaAcceso.Add(oSeg_Rol);
+						}
+					}
+				}
+				catch (Exception ex)
+				{
+					mensaje_error = ex.Message.ToString();
+				}
+			}
+			return listaAcceso;
+		}
+
+
+		public List<MenuDTO> ObtenerMenus()
+		{
+			List<MenuDTO> lstMenuDTO = new List<MenuDTO>();
+			using (SqlConnection cn = new Conexion().conectar())
+			{
+				try
+				{
+					cn.Open();
+					SqlDataAdapter da = new SqlDataAdapter("SMC_ListarMenus", cn);
+					da.SelectCommand.CommandType = CommandType.StoredProcedure;
+					SqlDataReader drd = da.SelectCommand.ExecuteReader();
+					while (drd.Read())
+					{
+						MenuDTO oMenuDTO = new MenuDTO();
+						oMenuDTO.idMenu = int.Parse(drd["IdMenu"].ToString());
+						oMenuDTO.Menu = int.Parse(drd["Menu"].ToString());
+						oMenuDTO.Estado = bool.Parse(drd["Estado"].ToString());
+						oMenuDTO.Orden = int.Parse(drd["Orden"].ToString());
+						//oMenuDTO.Posicion = int.Parse(drd["Orden"].ToString());
+						lstMenuDTO.Add(oMenuDTO);
+					}
+					drd.Close();
+
+
+				}
+				catch (Exception ex)
+				{
+				}
+			}
+			return lstMenuDTO;
+		}
+	
+
 		public List<MenuDTO> ListarTodo()
 		{
 			List<MenuDTO> lstMenuDTO = new List<MenuDTO>();
@@ -288,7 +356,7 @@ namespace DAO
 			return lstMenuDTO;
 		}
 
-		public Seg_RolMenuVistaDTO ListarMenurol(UsuarioDTO ousuarioDTO )
+		public Seg_RolMenuVistaDTO ListarMenurol(int IdUsuario,int IdPerfil,ref string mensaje_error)
 		{
 			Seg_RolMenuVistaDTO oSeg_RolMenuVistaDTO = new Seg_RolMenuVistaDTO();
 			List<beCampoString> listaRol = new List<beCampoString>();
@@ -300,17 +368,15 @@ namespace DAO
 					cn.Open();
 					SqlDataAdapter da = new SqlDataAdapter("SP_Seg_MenuRolListas", cn);
 					da.SelectCommand.CommandType = CommandType.StoredProcedure;
-					da.SelectCommand.Parameters.AddWithValue("@idUsuario", ousuarioDTO.IdUsuario);
-					da.SelectCommand.Parameters.AddWithValue("@idRol", ousuarioDTO.IdPerfil);
-					da.SelectCommand.Parameters.AddWithValue("@Origen", 'C');
+					da.SelectCommand.Parameters.AddWithValue("@idUsuario", IdUsuario);
 					SqlDataReader dr = da.SelectCommand.ExecuteReader();
 					if (dr != null)
 					{
 						while (dr.Read())
 						{
 							beCampoString oSeg_Rol = new beCampoString();
-							oSeg_Rol.Campo1 = dr["idRol"].ToString();
-							oSeg_Rol.Campo2 = dr["Descripcion"].ToString();
+							oSeg_Rol.Campo1 = dr["IdPerfil"].ToString();
+							oSeg_Rol.Campo2 = dr["Perfil"].ToString();
 							listaRol.Add(oSeg_Rol);
 						}
 						oSeg_RolMenuVistaDTO.listaRol = listaRol;
@@ -319,7 +385,7 @@ namespace DAO
 							while (dr.Read())
 							{
 								MenuDTO oMenuDTO = new MenuDTO();
-								oMenuDTO.idMenu = Convert.ToInt32(dr["idMenu"].ToString());
+								oMenuDTO.idMenu = Convert.ToInt32(dr["IdMenu"].ToString());
 								oMenuDTO.Descripcion = dr["Descripcion"].ToString();
 								oMenuDTO.Controller = dr["Controller"].ToString();
 								oMenuDTO.Action = dr["Action"].ToString();
@@ -335,14 +401,15 @@ namespace DAO
 						}
 					}
 				}
-				catch (Exception)
+				catch (Exception ex)
 				{
+					mensaje_error = ex.Message.ToString();
 				}
 			}
 			return oSeg_RolMenuVistaDTO;
 		}
 
-		public bool GrabarAccesos( string lista, int idUsuario)
+		public bool GrabarAccesos( string lista, int idUsuario,ref string mensaje_error)
 		{
 			bool exito = false;
 			using (SqlConnection cn = new Conexion().conectar())
@@ -350,7 +417,7 @@ namespace DAO
 				try
 				{
 					cn.Open();
-					SqlDataAdapter da = new SqlDataAdapter("SP_Seg_AccesosInsertUpdate", cn);
+					SqlDataAdapter da = new SqlDataAdapter("SMC_AccesosInsertUpdate", cn);
 					da.SelectCommand.CommandType = CommandType.StoredProcedure;
 					da.SelectCommand.Parameters.AddWithValue("@Lista", lista);
 					da.SelectCommand.Parameters.AddWithValue("@idUsuario", idUsuario);
@@ -360,8 +427,9 @@ namespace DAO
 						exito = true;
 					}
 				}
-				catch (Exception)
+				catch (Exception ex)
 				{
+					mensaje_error=ex.Message.ToString();	
 				}
 			}
 			return exito;

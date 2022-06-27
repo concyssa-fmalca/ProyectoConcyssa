@@ -20,10 +20,11 @@ function ConsultaServidor(url) {
         let total_usuarios = usuarios.length;
 
         for (var i = 0; i < usuarios.length; i++) {
-
+            console.log('ddddddddddddddddddd');
+            console.log(usuarios[i]);
             tr += '<tr>' +
                 '<td>' + (i + 1) + '</td>' +
-                '<td>' + usuarios[i].NombreUsuario.toUpperCase() + '</td>' +
+                '<td>' + usuarios[i].Nombre.toUpperCase() + '</td>' +
                 '<td>' + usuarios[i].Usuario.toUpperCase() + '</td>' +
                 '<td>' + usuarios[i].NombrePerfil.toUpperCase() + '</td>' +
                 '<td>' + usuarios[i].NombreSociedad.toUpperCase() + '</td>' +
@@ -119,7 +120,7 @@ function GuardarUsuario() {
 
     $.post('UpdateInsertUsuario', {
         'IdUsuario': varIdUsuario,
-        'NombreUsuario': varNombre,
+        'Nombre': varNombre,
         'Usuario': varUsuario,
         'Password': varContraseña,
         'IdPerfil': varPerfil,
@@ -157,7 +158,7 @@ function ObtenerDatosxID(varIdUsuario) {
             let usuarios = JSON.parse(data);
             //console.log(usuarios);
             $("#txtId").val(usuarios[0].IdUsuario);
-            $("#txtNombre").val(usuarios[0].NombreUsuario);
+            $("#txtNombre").val(usuarios[0].Nombre);
             $("#txtUsuario").val(usuarios[0].Usuario);
             $("#txtContraseña").val(usuarios[0].Password);
             if (usuarios[0].Estado) {

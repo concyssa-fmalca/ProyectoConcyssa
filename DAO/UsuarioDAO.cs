@@ -138,9 +138,9 @@ namespace DAO
                     while (drd.Read())
                     {
                         UsuarioDTO oUsuarioDTO = new UsuarioDTO();
-                        oUsuarioDTO.IdUsuario = int.Parse(drd["Id"].ToString());
+                        oUsuarioDTO.IdUsuario = int.Parse(drd["IdUsuario"].ToString());
                         oUsuarioDTO.Usuario = drd["Usuario"].ToString();
-                        oUsuarioDTO.Password = drd["Contraseña"].ToString();
+                        oUsuarioDTO.Password = drd["Password"].ToString();
                         oUsuarioDTO.Nombre = drd["Nombre"].ToString();
                         oUsuarioDTO.IdPerfil = int.Parse(drd["IdPerfil"].ToString());
                         oUsuarioDTO.NombrePerfil = drd["NombrePerfil"].ToString();

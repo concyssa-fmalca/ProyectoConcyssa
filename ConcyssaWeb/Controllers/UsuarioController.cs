@@ -34,17 +34,26 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerPerfiles()
         {
-            string mensaje_error = "";
-            PerfilDAO oPerfilDAO = new PerfilDAO();
-            List<PerfilDTO> lstPerfilDTO = oPerfilDAO.ObtenerPerfiles(ref mensaje_error);
-            if (lstPerfilDTO.Count > 0)
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            if (String.IsNullOrEmpty(IdSociedad.ToString()))
             {
-                return JsonConvert.SerializeObject(lstPerfilDTO);
+                string mensaje_error = "";
+                PerfilDAO oPerfilDAO = new PerfilDAO();
+                List<PerfilDTO> lstPerfilDTO = oPerfilDAO.ObtenerPerfiles(IdSociedad,ref mensaje_error);
+                if (lstPerfilDTO.Count > 0)
+                {
+                    return JsonConvert.SerializeObject(lstPerfilDTO);
+                }
+                else
+                {
+                    return mensaje_error;
+                }
             }
             else
             {
-                return mensaje_error;
+                return "No cuenta con una Sociedad";
             }
+            
 
         }
 

@@ -12,21 +12,24 @@ namespace DAO
 {
     public class PerfilDAO
     {
-        public List<PerfilDTO> ObtenerPerfiles(ref string mensaje_error)
+        public List<PerfilDTO> ObtenerPerfiles(int IdSociedad,ref string mensaje_error)
         {
-            List<PerfilDTO> lstPerfilDTO = new List<PerfilDTO>();
+      
+            List <PerfilDTO> lstPerfilDTO = new List<PerfilDTO>();
             using (SqlConnection cn = new Conexion().conectar())
             {
                 try
                 {
                     cn.Open();
-                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarPerfiles", cn);
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarPerfilesxSociedad", cn);
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
                     SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    
                     while (drd.Read())
                     {
                         PerfilDTO oPerfilDTO = new PerfilDTO();
-                        oPerfilDTO.IdPerfil = int.Parse(drd["Id"].ToString());
+                        oPerfilDTO.IdPerfil = int.Parse(drd["IdPerfil"].ToString());
                         oPerfilDTO.Perfil = drd["Perfil"].ToString();
                         oPerfilDTO.Estado = bool.Parse(drd["Estado"].ToString());
                         lstPerfilDTO.Add(oPerfilDTO);
@@ -58,7 +61,7 @@ namespace DAO
                         cn.Open();
                         SqlDataAdapter da = new SqlDataAdapter("SMC_UpdateInsertPerfiles", cn);
                         da.SelectCommand.CommandType = CommandType.StoredProcedure;
-                        da.SelectCommand.Parameters.AddWithValue("@idPerfil", oPerfilDTO.IdPerfil);
+                        da.SelectCommand.Parameters.AddWithValue("@IdPerfil", oPerfilDTO.IdPerfil);
                         da.SelectCommand.Parameters.AddWithValue("@Perfil", oPerfilDTO.Perfil);
                         da.SelectCommand.Parameters.AddWithValue("@Estado", oPerfilDTO.Estado);
                         int rpta = da.SelectCommand.ExecuteNonQuery();
@@ -89,7 +92,7 @@ namespace DAO
                     while (drd.Read())
                     {
                         PerfilDTO oPerfilDTO = new PerfilDTO();
-                        oPerfilDTO.IdPerfil = int.Parse(drd["Id"].ToString());
+                        oPerfilDTO.IdPerfil = int.Parse(drd["IdPerfil"].ToString());
                         oPerfilDTO.Perfil = drd["Perfil"].ToString();
                         oPerfilDTO.Estado = bool.Parse(drd["Estado"].ToString());
                         lstPerfilDTO.Add(oPerfilDTO);
