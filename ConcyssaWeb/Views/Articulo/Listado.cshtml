@@ -1,0 +1,146 @@
+﻿@{
+    ViewBag.Title = "Listado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    table th {
+        color: white;
+        border-color: #bcecf1;
+        background-color: #2d4b67;
+    }
+</style>
+
+<div class="container-fluid" style="height:93%;">
+    <div class="panel">
+        <div class="container-fluid">
+            <div class="topbar-left col-xs-6">
+                <h3>Articulo</h3>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="col-xs-6">
+                <div class="topbar-left col-xs-6">
+                    <h4 style="font-size:1.2em;">Total de Registros: <span id="spnTotalRegistros"></span></h4>
+                </div>
+            </div>
+            <div class="col-xs-6 right">
+                <button class="btn btn-sm  btn-primary pull-right plu" data-target="modal1" onclick="ModalNuevo()" style="margin-left:10px;">Nuevo</button>
+                @*<button class="btn btn-sm  btn-success pull-right plu" id="btnPdf" style="margin-left:10px;">Descargar PDF</button>
+                    <button class="btn btn-sm btn-info pull-right plu" id="btnExcel" style="margin-left:10px;">Descargar Excel</button>*@
+            </div>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="container-fluid">
+
+            <table id="table_id" class="table" style="width:100%;">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Codigo</th>
+                        <th>Desripcion1</th>
+                        <th>Descripcion2</th>
+                        <th>Activo Fijo</th>
+                        <th>Codigo UBSO</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody_Articulos"></tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <!-- Modal -->
+     <div id="modal-form" class="popup-lg allcp-form mfp-with-anim mfp-hide">
+        <div class="panel">
+            <div class="panel-heading">
+                <h5 id='lblTituloModal'></h5>
+            </div>
+            <div class="panel-body ">
+                <div class='col s12 m12 '>
+                    <div class='container-fluid'>
+                   
+                    
+                        <div class="row">
+                            <div class='form-group-sm'>
+                                <label for="txtEmail" class="control-label col-sm-2 left-align">Codigo</label>
+                                <div class="col-sm-4">
+                                    <input id="txtCodigo" type="text" class="form-control input-sm" tabindex="15">
+                                </div>
+                            </div>
+                            <div class='form-group-sm'>
+                                <label for="txtWeb" class="control-label col-sm-2 left-align">Descripcion1</label>
+                                <div class="col-sm-4">
+                                    <input id="txtDescripcion1" type="text" class="form-control input-sm" tabindex="16">
+                                </div>
+                            </div>
+                            
+                        </div>
+                       
+                       
+                        <div class="row">
+
+                            <div class='form-group-sm'>
+                                <label for="txtFax" class="control-label col-sm-2 left-align">Descripcion2</label>
+                                <div class="col-sm-4">
+                                    <input id="txtDescripcion2" type="text" class="form-control input-sm" tabindex="17">
+                                </div>
+                            </div>
+
+                             <div class='form-group-sm'>
+                                <label for="cboCondicionPago" class="control-label col-sm-2 left-align">Unidad Medida</label>
+                                <div class="col-sm-4">
+                                    <select id="cboIdUnidadMedida" class="form-control input-sm" tabindex="13"></select>
+                                </div>
+                            </div>
+                       
+                        </div>
+                        <div  class="row">
+
+                            <div class='form-group-sm'>
+                                <label for="cboCondicionPago" class="control-label col-sm-2 left-align">Codigo UBSO</label>
+                                <div class="col-sm-4">
+                                    <select id="cboIdCodigoUbso" class="form-control input-sm" tabindex="13"></select>
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <div class="checkbox-custom col-xs-3">
+                                    <input type="checkbox" id="chkActivoFijo" />
+                                    <label for="chkActivoFijo">Activo Fijo</label>
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <div class="checkbox-custom col-xs-3">
+                                    <input type="checkbox" id="chkActivoCatalogo" />
+                                    <label for="chkActivoCatalogo">Activo Catalogo</label>
+                                </div>
+                            </div>
+                        </div>
+                   
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-footer text-right">
+            <div class="row">
+                <button type="button" id="btnGrabar" onclick="GuardarCliente()" class="btn btn-primary pull-right plu">Grabar</button>
+                <button type="button" id="btnCancelar" class="btn btn-danger pull-right" style="background-color:orange;" onclick="closePopup();">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+   
+
+
+</div>
+
+
+<script src="~/Scripts/Articulo/Listado.js"></script>
+<script src="~/Scripts/General.js"></script>
+<script src="~/js/pdf/jspdf.min.js"></script>
+<script src="~/js/pdf/faker.min.js"></script>
+<script src="~/js/pdf/jspdf.plugin.autotable.src.js"></script>

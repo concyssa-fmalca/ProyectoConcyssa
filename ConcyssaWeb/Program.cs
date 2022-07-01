@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
 builder.Services.AddHttpContextAccessor();
-
+builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 builder.Services.Configure<KestrelServerOptions>(options =>
 {
     options.AllowSynchronousIO=true;

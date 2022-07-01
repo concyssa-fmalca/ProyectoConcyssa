@@ -30,7 +30,8 @@ namespace ConcyssaWeb.Controllers
 
         public int UpdateInsertPerfil(PerfilDTO perfilDTO)
         {
-
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            perfilDTO.IdSociedad = IdSociedad;
             PerfilDAO oPerfilDAO = new PerfilDAO();
             int resultado = oPerfilDAO.UpdateInsertPerfil(perfilDTO);
             if (resultado != 0)

@@ -63,6 +63,7 @@ namespace DAO
                         da.SelectCommand.CommandType = CommandType.StoredProcedure;
                         da.SelectCommand.Parameters.AddWithValue("@IdPerfil", oPerfilDTO.IdPerfil);
                         da.SelectCommand.Parameters.AddWithValue("@Perfil", oPerfilDTO.Perfil);
+                        da.SelectCommand.Parameters.AddWithValue("@IdSociedad", oPerfilDTO.IdSociedad);
                         da.SelectCommand.Parameters.AddWithValue("@Estado", oPerfilDTO.Estado);
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
