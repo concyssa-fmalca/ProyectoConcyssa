@@ -3,7 +3,33 @@
 window.onload = function () {
     var url = "ObtenerArticulosxSociedad";
     ConsultaServidor(url);
+    listarUnidadMedida()
 };
+
+function listarUnidadMedida() {
+    $.ajax({
+        url: "../UnidadMedida/ObtenerUnidadMedidasxEstado",
+        type: "GET",
+        contentType: "application/json",
+        dataType: "json",
+        data: {
+            'estado': 1
+        },
+        cache: false,
+        contentType: false,
+        success: function (datos) {
+            $("#cboIdUnidadMedida").html('');
+            let options = `<option value="0">Seleccione</option>`;
+            if (datos.length > 0) {
+                for (var i = 0; i < datos.length; i++) {
+                    options += `<option value="` + datos[i].IdUnidadMedida +`">` + datos[i].Descripcion +`</option>`;
+                }
+                $("#cboIdUnidadMedida").html(options);
+            }
+        }
+    });
+}
+
 
 
 function ConsultaServidor(url) {
@@ -57,12 +83,11 @@ function ModalNuevo() {
 
 function GuardarArticulo() {
 
-    let varIdUsuario = $("#txtCodigo").val();
-    let varNombre = $("#txtDescripcion1").val();
-    let varUsuario = $("#txtUsuario").val();
-    let varContraseña = $("#txtDescripcion2").val();
-    let varPerfil = $("#cboIdUnidadMedida").val();
-    let varSociedad = $("#cboIdCodigoUbso").val();
+    let varIdArticulo = $("#txtIdArticulo").val();
+    let varDescripcion1 = $("#txtDescripcion1").val();
+    let varDescripcion2 = $("#txtDescripcion2").val();
+    let varIdUnidadMedida = $("#cboIdUnidadMedida").val();
+    let IdCodigoUbso = $("#cboIdCodigoUbso").val();
     let varEstadoActivoFijo = false;
     let varEstadoActivoCatalogo = false;
 
@@ -74,13 +99,13 @@ function GuardarArticulo() {
     }
 
     $.post('UpdateInsertUsuario', {
-        'IdUsuario': varIdUsuario,
-        'Nombre': varNombre,
-        'Usuario': varUsuario,
-        'Password': varContraseña,
-        'IdPerfil': varPerfil,
-        'IdSociedad': varSociedad,
-        'Estado': varEstado
+        'IdArticulo': varIdArticulo,
+        'Descripcion1': varDescripcion1,
+        'Descripcion2': varDescripcion2,
+        'IdUnidadMedida': varIdUnidadMedida,
+        'IdCodigoUbso': IdCodigoUbso,
+        'ActivoFijo': varEstadoActivoFijo,
+        'ActivoCatalogo': varEstadoActivoCatalogo
     }, function (data, status) {
 
         if (data == 1) {

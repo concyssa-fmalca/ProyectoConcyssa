@@ -1,0 +1,103 @@
+﻿@{
+    ViewBag.Title = "Listado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" style="height:93%;">
+    <div class="panel">
+        <div class="container-fluid">
+            <div class="topbar-left col-xs-6">
+                <h3>Codigo Ubso</h3>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="col-xs-6">
+                <div class="topbar-left col-xs-6">
+                    <h4 style="font-size:1.2em;">Total de Registros: <span id="spnTotalRegistros"></span></h4>
+                </div>
+            </div>
+            <div class="col-xs-6 right">
+                <button class="btn btn-sm btn-primary pull-right plu" data-target="modal1" onclick="ModalNuevo()" style="margin-left:10px;">Nuevo</button>
+                @*<button class="btn btn-sm  btn-success pull-right plu" id="btnPdf" style="margin-left:10px;">Descargar PDF</button>
+                    <button class="btn btn-sm btn-info pull-right plu" id="btnExcel" style="margin-left:10px;">Descargar Excel</button>*@
+            </div>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="container-fluid">
+            <table id="dt_codigoubso" class="table" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Codigo</th>
+                        <th>Descripcion</th>
+                        <th>Mas</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody_codigoUbso"></tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div id="modal-form" class="popup-sm allcp-form mfp-with-anim mfp-hide">
+        <div class="panel">
+            <div class="panel-heading">
+                <h5 id='lblTituloModal'></h5>
+            </div>
+            <div class="panel-body ">
+                <div class='col s12 m12 '>
+                    <div class='container-fluid'>
+                        <input id='txtId' name="txtId" type='hidden' class="form-control input-sm">
+                        <div class='form-horizontal'>
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='txtCodigo' class="control-label col-sm-4 left-align">Codigo</label>
+                                    <div class="col-sm-8">
+                                        <input id='txtCodigo' name="txtCodigo" type='text' class="form-control input-sm" tabindex="1">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='txtDescripcion' class="control-label col-sm-4 left-align">Descripcion</label>
+                                    <div class="col-sm-8">
+                                        <input id='txtDescripcion' name="txtDescripcion" type='text' class="form-control input-sm" tabindex="2">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class='form-group-sm col-sm-4'></div>
+                                <div class='form-group-sm'>
+                                    <div class="checkbox-custom col-xs-6">
+                                        <input type="checkbox" id="chkActivo" />
+                                        <label for="chkActivo">Activo</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer text-right">
+                <div class="row">
+                    <button type="button" id="btnGrabar" onclick="GuardarLineaNegocio()" class="btn btn-primary pull-right plu">Grabar</button>
+                    <button type="button" id="btnCancelar" class="btn btn-danger pull-right" style="background-color:orange;" onclick="closePopup();">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+<script src="~/lib/jquery/jquery-3.6.0.min.js"></script>
+<script src="~/Scripts/CodigoUbso/Listado.js"></script>
+<script src="~/Scripts/General.js"></script>
+<script src="~/js/pdf/jspdf.min.js"></script>
+<script src="~/js/pdf/faker.min.js"></script>
+<script src="~/js/pdf/jspdf.plugin.autotable.src.js"></script>
