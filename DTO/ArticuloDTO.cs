@@ -18,5 +18,6 @@ namespace DTO
         public int IdCodigoUbso { get; set; }
         public int IdSociedad { get; set; }
         public bool Estado { get; set; }
+        public bool Eliminado { get; set; }
     }
 }

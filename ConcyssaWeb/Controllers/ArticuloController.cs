@@ -26,6 +26,22 @@ namespace ConcyssaWeb.Controllers
             {
                 return mensaje_error;
             }
+        }
+
+        public string ObtenerDatosxID(int IdArticulo)
+        {
+            string mensaje_error = "";
+            ArticuloDAO oArticuloDAO = new ArticuloDAO();
+            List<ArticuloDTO> lstArticuloDTO = oArticuloDAO.ObtenerDatosxID(IdArticulo, ref mensaje_error);
+
+            if (lstArticuloDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstArticuloDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
 
         }
 
@@ -35,10 +51,11 @@ namespace ConcyssaWeb.Controllers
             string mensaje_error = "";
             ArticuloDAO oArticuloDAO = new ArticuloDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            oArticuloDTO.IdSociedad = IdSociedad;
             bool respuesta = oArticuloDAO.UpdateInsertArticulo(oArticuloDTO, ref mensaje_error);
             if (respuesta)
             {
-                return "Se guardo Correctamente el articulo";
+                return "1";
             }
             else
             {

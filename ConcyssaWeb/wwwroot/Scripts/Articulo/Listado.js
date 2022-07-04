@@ -69,23 +69,23 @@ function ConsultaServidor(url) {
 
         let articulos = JSON.parse(data);
         let total_articulos = articulos.length;
-
-        for (var i = 0; i < usuarios.length; i++) {
-            console.log('ddddddddddddddddddd');
-            console.log(usuarios[i]);
+       
+        for (var i = 0; i < articulos.length; i++) {
+    
             tr += '<tr>' +
                 '<td>' + (i + 1) + '</td>' +
-                '<td>' + articulos[i].Nombre.toUpperCase() + '</td>' +
-                '<td>' + articulos[i].Usuario.toUpperCase() + '</td>' +
-                '<td>' + articulos[i].NombrePerfil.toUpperCase() + '</td>' +
-                '<td>' + articulos[i].NombreSociedad.toUpperCase() + '</td>' +
-                '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + usuarios[i].IdUsuario + ')"></button>' +
-                '<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + usuarios[i].IdUsuario + ')"></button></td >' +
+                '<td>' + articulos[i].Codigo.toUpperCase() + '</td>' +
+                '<td>' + articulos[i].Descripcion1.toUpperCase() + '</td>' +
+                '<td>' + articulos[i].Descripcion2.toUpperCase() + '</td>' +
+                '<td>' + articulos[i].ActivoFijo + '</td>' +
+                '<td>' + articulos[i].IdCodigoUbso + '</td>' +
+                '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + articulos[i].IdArticulo + ')"></button>' +
+                '<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + articulos[i].IdArticulo + ')"></button></td >' +
                 '</tr>';
         }
         
         $("#tbody_Articulos").html(tr);
-        $("#tbody_Articulos").html(total_articulos);
+        $("#spnTotalRegistros").html(total_articulos);
 
         table = $("#table_id").DataTable(lenguaje);
 
@@ -109,6 +109,7 @@ function ModalNuevo() {
 function GuardarArticulo() {
 
     let varIdArticulo = $("#txtIdArticulo").val();
+    let varCodigo = $("#txtCodigo").val();
     let varDescripcion1 = $("#txtDescripcion1").val();
     let varDescripcion2 = $("#txtDescripcion2").val();
     let varIdUnidadMedida = $("#cboIdUnidadMedida").val();
@@ -123,8 +124,9 @@ function GuardarArticulo() {
         varEstadoActivoCatalogo = true;
     }
 
-    $.post('UpdateInsertUsuario', {
+    $.post('UpdateInsertArticulo', {
         'IdArticulo': varIdArticulo,
+        'Codigo': varCodigo,
         'Descripcion1': varDescripcion1,
         'Descripcion2': varDescripcion2,
         'IdUnidadMedida': varIdUnidadMedida,
@@ -146,59 +148,38 @@ function GuardarArticulo() {
     });
 }
 
-function ObtenerDatosxID(varIdUsuario) {
+function ObtenerDatosxID(varIdArticulo) {
     $("#lblTituloModal").html("Editar Usuario");
     AbrirModal("modal-form");
 
     //console.log(varIdUsuario);
 
     $.post('ObtenerDatosxID', {
-        'IdUsuario': varIdUsuario,
+        'IdArticulo': varIdArticulo,
     }, function (data, status) {
 
         if (data == "Error") {
             swal("Error!", "Ocurrio un error")
             limpiarDatos();
         } else {
-            let usuarios = JSON.parse(data);
+            let articulos = JSON.parse(data);
             //console.log(usuarios);
-            $("#txtId").val(usuarios[0].IdUsuario);
-            $("#txtNombre").val(usuarios[0].Nombre);
-            $("#txtUsuario").val(usuarios[0].Usuario);
-            $("#txtContraseña").val(usuarios[0].Password);
-            if (usuarios[0].Estado) {
-                $("#chkActivo").prop('checked', true);
+            $("#txtId").val(articulos[0].IdArticulo);
+            $("#txtCodigo").val(articulos[0].Codigo);
+            $("#txtDescripcion1").val(articulos[0].Descripcion1);
+            $("#txtDescripcion2").val(articulos[0].Descripcion2);
+            $("#cboIdUnidadMedida").val(articulos[0].IdUnidadMedida);
+            $("#cboIdCodigoUbso").val(articulos[0].IdCodigoUbso);
+   
+            if (articulos[0].ActivoFijo) {
+                $("#chkActivoFijo").prop('checked', true);
             }
 
-            $.post("ObtenerSociedades", function (data, status) {
-                let contenido;
-                let sociedades = JSON.parse(data);
-                for (var i = 0; i < sociedades.length; i++) {
-                    if (sociedades[i].IdSociedad == usuarios[0].IdSociedad) {
-                        contenido += "<option selected value='" + sociedades[i].IdSociedad + "'>" + sociedades[i].NombreSociedad + "</option>";
-                    } else {
-                        contenido += "<option value='" + sociedades[i].IdSociedad + "'>" + sociedades[i].NombreSociedad + "</option>";
-                    }
-                }
-                let cbo = document.getElementById("cboSociedad");
-                if (cbo != null) cbo.innerHTML = contenido;
-            });
+            if (articulos[0].ActivoCatalogo) {
+                $("#chkActivoCatalogo").prop('checked', true);
+            }
 
-            $.post("ObtenerPerfiles", function (data, status) {
-                let contenido;
-                let perfiles = JSON.parse(data);
-                //console.log(perfiles);
-                for (var i = 0; i < perfiles.length; i++) {
-                    if (perfiles[i].IdPerfil == usuarios[0].IdPerfil) {
-                        contenido += "<option selected value='" + perfiles[i].IdPerfil + "'>" + perfiles[i].Perfil + "</option>";
-                    } else {
-                        contenido += "<option value='" + perfiles[i].IdPerfil + "'>" + perfiles[i].Perfil + "</option>";
-                    }
-                }
-                let cbo = document.getElementById("cboPerfil");
-                if (cbo != null) cbo.innerHTML = contenido;
-            });
-
+            
 
         }
 
