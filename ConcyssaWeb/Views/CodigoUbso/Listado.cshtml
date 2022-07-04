@@ -3,6 +3,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+
+
 <div class="container-fluid" style="height:93%;">
     <div class="panel">
         <div class="container-fluid">
@@ -85,7 +87,7 @@
             </div>
             <div class="panel-footer text-right">
                 <div class="row">
-                    <button type="button" id="btnGrabar" onclick="GuardarLineaNegocio()" class="btn btn-primary pull-right plu">Grabar</button>
+                    <button type="button" id="btnGrabar" onclick="GuardarCodigoUbso()" class="btn btn-primary pull-right plu">Grabar</button>
                     <button type="button" id="btnCancelar" class="btn btn-danger pull-right" style="background-color:orange;" onclick="closePopup();">Cancelar</button>
                 </div>
             </div>
@@ -95,7 +97,8 @@
 
 
 </div>
-<script src="~/lib/jquery/jquery-3.6.0.min.js"></script>
+@*<script src="~/lib/jquery/jquery-3.6.0.min.js"></script>*@
+@*<script src="~/lib/DataTable/datatables.bundle.js"></script>*@
 <script src="~/Scripts/CodigoUbso/Listado.js"></script>
 <script src="~/Scripts/General.js"></script>
 <script src="~/js/pdf/jspdf.min.js"></script>

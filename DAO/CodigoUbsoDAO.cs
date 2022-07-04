@@ -64,6 +64,7 @@ namespace DAO
                         da.SelectCommand.CommandType = CommandType.StoredProcedure;
                         da.SelectCommand.Parameters.AddWithValue("@IdCodigoUbso", oCodigoUbsoDTO.IdCodigoUbso);
                         da.SelectCommand.Parameters.AddWithValue("@Codigo", oCodigoUbsoDTO.Codigo);
+                        da.SelectCommand.Parameters.AddWithValue("@IdSociedad", oCodigoUbsoDTO.IdSociedad);
                         da.SelectCommand.Parameters.AddWithValue("@Descripcion", oCodigoUbsoDTO.Descripcion);
                         da.SelectCommand.Parameters.AddWithValue("@Estado", oCodigoUbsoDTO.Estado);
                         int rpta = da.SelectCommand.ExecuteNonQuery();
