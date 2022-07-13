@@ -1,0 +1,173 @@
+﻿using DTO;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Transactions;
+
+namespace DAO
+{
+    public class ObraDAO
+    {
+        public List<ObraDTO> ObtenerObra(int IdSociedad, ref string mensaje_error, int Estado = 3)
+        {
+            List<ObraDTO> lstObraDTO = new List<ObraDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarObra", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
+                    da.SelectCommand.Parameters.AddWithValue("@Estado", Estado);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        ObraDTO oObraDTO = new ObraDTO();
+                        oObraDTO.IdObra = int.Parse(drd["IdObra"].ToString());
+                        oObraDTO.IdBase = int.Parse(drd["IdBase"].ToString());
+                        oObraDTO.IdTipoObra = int.Parse(drd["IdTipoObra"].ToString());
+                        oObraDTO.IdDivision = int.Parse(drd["IdDivision"].ToString());
+                        oObraDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
+                        oObraDTO.Codigo = (drd["Codigo"].ToString());
+                        oObraDTO.Descripcion =(drd["Descripcion"].ToString());
+                        oObraDTO.DescripcionCorta = (drd["DescripcionCorta"].ToString());
+                        oObraDTO.ContratoMantenimiento = bool.Parse(drd["ContratoMantenimiento"].ToString());
+                        oObraDTO.VisibleInternet = bool.Parse(drd["VisibleInternet"].ToString());
+                        oObraDTO.Estado = bool.Parse(drd["Estado"].ToString());
+                        oObraDTO.Eliminado = bool.Parse(drd["Eliminado"].ToString());
+                        oObraDTO.DescripcionBase = (drd["DescripcionBase"].ToString());
+                        lstObraDTO.Add(oObraDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstObraDTO;
+        }
+
+        public int UpdateInsertObra(ObraDTO oObraDTO, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_UpdateInsertObra", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdObra", oObraDTO.IdObra);
+                        da.SelectCommand.Parameters.AddWithValue("@IdBase", oObraDTO.IdBase);
+                        da.SelectCommand.Parameters.AddWithValue("@IdTipoObra", oObraDTO.IdTipoObra);
+                        da.SelectCommand.Parameters.AddWithValue("@IdDivision", oObraDTO.IdDivision);
+                        da.SelectCommand.Parameters.AddWithValue("@IdSociedad", oObraDTO.IdSociedad);
+                        da.SelectCommand.Parameters.AddWithValue("@Codigo", oObraDTO.Codigo);
+                        da.SelectCommand.Parameters.AddWithValue("@Descripcion", oObraDTO.Descripcion);
+                        da.SelectCommand.Parameters.AddWithValue("@DescripcionCorta", oObraDTO.DescripcionCorta);
+                        da.SelectCommand.Parameters.AddWithValue("@ContratoMantenimiento", oObraDTO.ContratoMantenimiento);
+                        da.SelectCommand.Parameters.AddWithValue("@VisibleInternet", oObraDTO.VisibleInternet);
+                        da.SelectCommand.Parameters.AddWithValue("@Estado", oObraDTO.Estado);
+                        da.SelectCommand.Parameters.AddWithValue("@Eliminado", oObraDTO.Eliminado);
+                        int rpta = da.SelectCommand.ExecuteNonQuery();
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+                }
+            }
+        }
+
+        public List<ObraDTO> ObtenerDatosxID(int IdObra, ref string mensaje_error)
+        {
+            List<ObraDTO> lstObraDTO = new List<ObraDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarObraxID", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdObra", IdObra);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        ObraDTO oObraDTO = new ObraDTO();
+                        oObraDTO.IdObra = int.Parse(drd["IdObra"].ToString());
+                        oObraDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());;
+                        oObraDTO.IdBase = int.Parse(drd["IdBase"].ToString());
+                        oObraDTO.IdTipoObra = int.Parse(drd["IdTipoObra"].ToString());
+                        oObraDTO.IdDivision = int.Parse(drd["IdDivision"].ToString());
+                        oObraDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
+                        oObraDTO.Codigo = (drd["Codigo"].ToString());
+                        oObraDTO.Descripcion = (drd["Descripcion"].ToString());
+                        oObraDTO.DescripcionCorta = (drd["DescripcionCorta"].ToString());
+                        oObraDTO.ContratoMantenimiento = bool.Parse(drd["ContratoMantenimiento"].ToString());
+                        oObraDTO.VisibleInternet = bool.Parse(drd["VisibleInternet"].ToString());
+                        oObraDTO.Estado = bool.Parse(drd["Estado"].ToString());
+                        oObraDTO.Eliminado = bool.Parse(drd["Eliminado"].ToString());
+                        //oObraDTO.DescripcionBase = (drd["DescripcionBase"].ToString());
+
+
+                        lstObraDTO.Add(oObraDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstObraDTO;
+        }
+
+
+        public int Delete(int IdObra, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_EliminaObra", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdObra", IdObra);
+                        int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return -1;
+                    }
+                }
+            }
+        }
+    }
+}

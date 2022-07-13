@@ -7,7 +7,7 @@
     <div class="panel">
         <div class="container-fluid">
             <div class="topbar-left col-xs-6">
-                <h3>Bases</h3>
+                <h3>Vehiculo</h3>
             </div>
         </div>
         <div class="container-fluid">
@@ -29,12 +29,17 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Codigo</th>
-                        <th>Descripcion</th>
+                        <th>Placa</th>
+                        <th>Marca</th>
+                        <th>Certificado Inscripcion</th>
+                        <th>Base</th>
+                        <th>ApellidoChofer</th>
+                        <th>Condicion</th>
+
                         <th>Mas</th>
                     </tr>
                 </thead>
-                <tbody id="tbody_base"></tbody>
+                <tbody id="tbody_Vehiculo"></tbody>
             </table>
         </div>
     </div>
@@ -51,20 +56,63 @@
                     <div class='container-fluid'>
                         <input id='txtId' name="txtId" type='hidden' class="form-control input-sm">
                         <div class='form-horizontal'>
+
                             <div class="row">
                                 <div class='form-group-sm'>
-                                    <label for='txtCodigo' class="control-label col-sm-4 left-align">Codigo</label>
+                                    <label for='txtPlaca' class="control-label col-sm-4 left-align">Placa</label>
                                     <div class="col-sm-8">
-                                        <input id='txtCodigo' name="txtCodigo" type='text' class="form-control input-sm" tabindex="1">
+                                        <input id='txtPlaca' name="txtPlaca" type='text' class="form-control input-sm" tabindex="1">
+                                    </div>
+                                </div>
+                            </div>
+
+                             <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='txtCertfificadoInscripcion' class="control-label col-sm-4 left-align">CErtificado Ins.</label>
+                                    <div class="col-sm-8">
+                                        <input id='txtCertfificadoInscripcion' name="txtCertfificadoInscripcion" type='text' class="form-control input-sm" tabindex="1">
                                     </div>
                                 </div>
                             </div>
 
                             <div class="row">
                                 <div class='form-group-sm'>
-                                    <label for='txtDescripcion' class="control-label col-sm-4 left-align">Descripcion</label>
+                                    <label for='txtPlaca' class="control-label col-sm-4 left-align">Marca</label>
                                     <div class="col-sm-8">
-                                        <input id='txtDescripcion' name="txtDescripcion" type='text' class="form-control input-sm" tabindex="2">
+                                        <select class="form-control" id="cboIdMarca"> Seleccione Marca</select>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='cboIdBase' class="control-label col-sm-4 left-align">Base</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control" id="cboIdBase"> Seleccione Base</select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='cboCondicion' class="control-label col-sm-4 left-align">Condicion</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control" id="cboCondicion"> 
+                                            <option value="0">Selecione Condicion</option>      
+                                            <option value="PROPIO">Propio</option>      
+                                            <option value="ALQUILADO">ALQUILADO</option>      
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='cboIdChofer' class="control-label col-sm-4 left-align">Chofer</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control" id="cboIdChofer"> Seleccione Chofer</select>
                                     </div>
                                 </div>
                             </div>
@@ -78,6 +126,7 @@
                                     </div>
                                 </div>
                             </div>
+
                         </div>
 
                     </div>
@@ -85,7 +134,7 @@
             </div>
             <div class="panel-footer text-right">
                 <div class="row">
-                    <button type="button" id="btnGrabar" onclick="GuardarBase()" class="btn btn-primary pull-right plu">Grabar</button>
+                    <button type="button" id="btnGrabar" onclick="GuardarVehiculo()" class="btn btn-primary pull-right plu">Grabar</button>
                     <button type="button" id="btnCancelar" class="btn btn-danger pull-right" style="background-color:orange;" onclick="closePopup();">Cancelar</button>
                 </div>
             </div>
@@ -97,7 +146,7 @@
 </div>
 
 
-<script src="~/Scripts/Base/Listado.js"></script>
+<script src="~/Scripts/Vehiculo/Listado.js"></script>
 <script src="~/Scripts/General.js"></script>
 <script src="~/js/pdf/jspdf.min.js"></script>
 <script src="~/js/pdf/faker.min.js"></script>

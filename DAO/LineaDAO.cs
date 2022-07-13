@@ -10,31 +10,30 @@ using System.Transactions;
 
 namespace DAO
 {
-    public class BaseDAO
+    public class LineaDAO
     {
-
-        public List<BaseDTO> ObtenerBase(int IdSociedad, ref string mensaje_error, int Estado = 3)
+        public List<LineaDTO> ObtenerLinea(int IdSociedad, ref string mensaje_error, int Estado = 3)
         {
-            List<BaseDTO> lstBaseDTO = new List<BaseDTO>();
+            List<LineaDTO> lstLineaDTO = new List<LineaDTO>();
             using (SqlConnection cn = new Conexion().conectar())
             {
                 try
                 {
                     cn.Open();
-                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarBase", cn);
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarLinea", cn);
                     da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
                     da.SelectCommand.Parameters.AddWithValue("@Estado", Estado);
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
                     SqlDataReader drd = da.SelectCommand.ExecuteReader();
                     while (drd.Read())
                     {
-                        BaseDTO oBaseDTO = new BaseDTO();
-                        oBaseDTO.IdBase = int.Parse(drd["IdBase"].ToString());
-                        oBaseDTO.Codigo = drd["Codigo"].ToString();
-                        oBaseDTO.Descripcion = drd["Descripcion"].ToString();
-                        oBaseDTO.Estado = bool.Parse(drd["Estado"].ToString());
-                        oBaseDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
-                        lstBaseDTO.Add(oBaseDTO);
+                        LineaDTO oLineaDTO = new LineaDTO();
+                        oLineaDTO.IdLinea = int.Parse(drd["IdLinea"].ToString());
+                        oLineaDTO.Codigo = drd["Codigo"].ToString();
+                        oLineaDTO.Descripcion = drd["Descripcion"].ToString();
+                        oLineaDTO.Estado = bool.Parse(drd["Estado"].ToString());
+                        oLineaDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
+                        lstLineaDTO.Add(oLineaDTO);
                     }
                     drd.Close();
 
@@ -45,10 +44,10 @@ namespace DAO
                     mensaje_error = ex.Message.ToString();
                 }
             }
-            return lstBaseDTO;
+            return lstLineaDTO;
         }
 
-        public int UpdateInsertBase(BaseDTO oBaseDTO, ref string mensaje_error)
+        public int UpdateInsertLinea(LineaDTO oLineaDTO, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
@@ -61,13 +60,13 @@ namespace DAO
                     try
                     {
                         cn.Open();
-                        SqlDataAdapter da = new SqlDataAdapter("SMC_UpdateInsertBase", cn);
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_UpdateInsertLinea", cn);
                         da.SelectCommand.CommandType = CommandType.StoredProcedure;
-                        da.SelectCommand.Parameters.AddWithValue("@IdBase", oBaseDTO.IdBase);
-                        da.SelectCommand.Parameters.AddWithValue("@Codigo", oBaseDTO.Codigo);
-                        da.SelectCommand.Parameters.AddWithValue("@Descripcion", oBaseDTO.Descripcion);
-                        da.SelectCommand.Parameters.AddWithValue("@IdSociedad", oBaseDTO.IdSociedad);
-                        da.SelectCommand.Parameters.AddWithValue("@Estado", oBaseDTO.Estado);
+                        da.SelectCommand.Parameters.AddWithValue("@IdLinea", oLineaDTO.IdLinea);
+                        da.SelectCommand.Parameters.AddWithValue("@Codigo", oLineaDTO.Codigo);
+                        da.SelectCommand.Parameters.AddWithValue("@Descripcion", oLineaDTO.Descripcion);
+                        da.SelectCommand.Parameters.AddWithValue("@IdSociedad", oLineaDTO.IdSociedad);
+                        da.SelectCommand.Parameters.AddWithValue("@Estado", oLineaDTO.Estado);
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
                         return rpta;
@@ -81,27 +80,27 @@ namespace DAO
             }
         }
 
-        public List<BaseDTO> ObtenerDatosxID(int IdBase, ref string mensaje_error)
+        public List<LineaDTO> ObtenerDatosxID(int IdLinea, ref string mensaje_error)
         {
-            List<BaseDTO> lstBaseDTO = new List<BaseDTO>();
+            List<LineaDTO> lstLineaDTO = new List<LineaDTO>();
             using (SqlConnection cn = new Conexion().conectar())
             {
                 try
                 {
                     cn.Open();
-                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarBasexID", cn);
-                    da.SelectCommand.Parameters.AddWithValue("@IdBase", IdBase);
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarLineaxID", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdLinea", IdLinea);
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
                     SqlDataReader drd = da.SelectCommand.ExecuteReader();
                     while (drd.Read())
                     {
-                        BaseDTO oBaseDTO = new BaseDTO();
-                        oBaseDTO.IdBase = int.Parse(drd["IdBase"].ToString());
-                        oBaseDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
-                        oBaseDTO.Codigo = drd["Codigo"].ToString();
-                        oBaseDTO.Descripcion = drd["Descripcion"].ToString();
-                        oBaseDTO.Estado = bool.Parse(drd["Estado"].ToString());
-                        lstBaseDTO.Add(oBaseDTO);
+                        LineaDTO oLineaDTO = new LineaDTO();
+                        oLineaDTO.IdLinea = int.Parse(drd["IdLinea"].ToString());
+                        oLineaDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
+                        oLineaDTO.Codigo = drd["Codigo"].ToString();
+                        oLineaDTO.Descripcion = drd["Descripcion"].ToString();
+                        oLineaDTO.Estado = bool.Parse(drd["Estado"].ToString());
+                        lstLineaDTO.Add(oLineaDTO);
                     }
                     drd.Close();
 
@@ -112,11 +111,11 @@ namespace DAO
                     mensaje_error = ex.Message.ToString();
                 }
             }
-            return lstBaseDTO;
+            return lstLineaDTO;
         }
 
 
-        public int Delete(int IdBase, ref string mensaje_error)
+        public int Delete(int IdLinea, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
@@ -129,9 +128,9 @@ namespace DAO
                     try
                     {
                         cn.Open();
-                        SqlDataAdapter da = new SqlDataAdapter("SMC_EliminaBase", cn);
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_EliminaLinea", cn);
                         da.SelectCommand.CommandType = CommandType.StoredProcedure;
-                        da.SelectCommand.Parameters.AddWithValue("@IdBase", IdBase);
+                        da.SelectCommand.Parameters.AddWithValue("@IdLinea", IdLinea);
                         int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
                         transactionScope.Complete();
                         return rpta;

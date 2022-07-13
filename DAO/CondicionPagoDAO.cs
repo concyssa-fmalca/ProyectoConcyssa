@@ -1,40 +1,33 @@
 ﻿using DTO;
-using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Transactions;
 
 namespace DAO
 {
-    public class BaseDAO
+    public class CondicionPagoDAO
     {
-
-        public List<BaseDTO> ObtenerBase(int IdSociedad, ref string mensaje_error, int Estado = 3)
+        public List<CondicionPagoDTO> ObtenerCondicionPagos(string IdSociedad)
         {
-            List<BaseDTO> lstBaseDTO = new List<BaseDTO>();
+            List<CondicionPagoDTO> lstCondicionPagoDTO = new List<CondicionPagoDTO>();
             using (SqlConnection cn = new Conexion().conectar())
             {
                 try
                 {
                     cn.Open();
-                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarBase", cn);
-                    da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
-                    da.SelectCommand.Parameters.AddWithValue("@Estado", Estado);
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarCondicionPagos", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSociedad", int.Parse(IdSociedad));
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
                     SqlDataReader drd = da.SelectCommand.ExecuteReader();
                     while (drd.Read())
                     {
-                        BaseDTO oBaseDTO = new BaseDTO();
-                        oBaseDTO.IdBase = int.Parse(drd["IdBase"].ToString());
-                        oBaseDTO.Codigo = drd["Codigo"].ToString();
-                        oBaseDTO.Descripcion = drd["Descripcion"].ToString();
-                        oBaseDTO.Estado = bool.Parse(drd["Estado"].ToString());
-                        oBaseDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
-                        lstBaseDTO.Add(oBaseDTO);
+                        CondicionPagoDTO oCondicionPagoDTO = new CondicionPagoDTO();
+                        oCondicionPagoDTO.IdCondicionPago = int.Parse(drd["Id"].ToString());
+                        oCondicionPagoDTO.Codigo = drd["Codigo"].ToString();
+                        oCondicionPagoDTO.Descripcion = drd["Descripcion"].ToString();
+                        oCondicionPagoDTO.Dias = int.Parse(drd["Dias"].ToString());
+                        oCondicionPagoDTO.Estado = bool.Parse(drd["Estado"].ToString());
+                        lstCondicionPagoDTO.Add(oCondicionPagoDTO);
                     }
                     drd.Close();
 
@@ -42,13 +35,12 @@ namespace DAO
                 }
                 catch (Exception ex)
                 {
-                    mensaje_error = ex.Message.ToString();
                 }
             }
-            return lstBaseDTO;
+            return lstCondicionPagoDTO;
         }
 
-        public int UpdateInsertBase(BaseDTO oBaseDTO, ref string mensaje_error)
+        public int UpdateInsertCondicionPago(CondicionPagoDTO oCondicionPagoDTO, string IdSociedad)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
@@ -61,47 +53,47 @@ namespace DAO
                     try
                     {
                         cn.Open();
-                        SqlDataAdapter da = new SqlDataAdapter("SMC_UpdateInsertBase", cn);
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_UpdateInsertCondicionPagos", cn);
                         da.SelectCommand.CommandType = CommandType.StoredProcedure;
-                        da.SelectCommand.Parameters.AddWithValue("@IdBase", oBaseDTO.IdBase);
-                        da.SelectCommand.Parameters.AddWithValue("@Codigo", oBaseDTO.Codigo);
-                        da.SelectCommand.Parameters.AddWithValue("@Descripcion", oBaseDTO.Descripcion);
-                        da.SelectCommand.Parameters.AddWithValue("@IdSociedad", oBaseDTO.IdSociedad);
-                        da.SelectCommand.Parameters.AddWithValue("@Estado", oBaseDTO.Estado);
+                        da.SelectCommand.Parameters.AddWithValue("@IdCondicionPago", oCondicionPagoDTO.IdCondicionPago);
+                        da.SelectCommand.Parameters.AddWithValue("@Codigo", oCondicionPagoDTO.Codigo);
+                        da.SelectCommand.Parameters.AddWithValue("@Descripcion", oCondicionPagoDTO.Descripcion);
+                        da.SelectCommand.Parameters.AddWithValue("@Dias", oCondicionPagoDTO.Dias);
+                        da.SelectCommand.Parameters.AddWithValue("@Estado", oCondicionPagoDTO.Estado);
+                        da.SelectCommand.Parameters.AddWithValue("@IdSociedad", int.Parse(IdSociedad));
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
                         return rpta;
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
-                        mensaje_error = ex.Message.ToString();
                         return 0;
                     }
                 }
             }
         }
 
-        public List<BaseDTO> ObtenerDatosxID(int IdBase, ref string mensaje_error)
+        public List<CondicionPagoDTO> ObtenerDatosxID(int IdCondicionPago)
         {
-            List<BaseDTO> lstBaseDTO = new List<BaseDTO>();
+            List<CondicionPagoDTO> lstCondicionPagoDTO = new List<CondicionPagoDTO>();
             using (SqlConnection cn = new Conexion().conectar())
             {
                 try
                 {
                     cn.Open();
-                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarBasexID", cn);
-                    da.SelectCommand.Parameters.AddWithValue("@IdBase", IdBase);
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarCondicionPagosxID", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdCondicionPago", IdCondicionPago);
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
                     SqlDataReader drd = da.SelectCommand.ExecuteReader();
                     while (drd.Read())
                     {
-                        BaseDTO oBaseDTO = new BaseDTO();
-                        oBaseDTO.IdBase = int.Parse(drd["IdBase"].ToString());
-                        oBaseDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
-                        oBaseDTO.Codigo = drd["Codigo"].ToString();
-                        oBaseDTO.Descripcion = drd["Descripcion"].ToString();
-                        oBaseDTO.Estado = bool.Parse(drd["Estado"].ToString());
-                        lstBaseDTO.Add(oBaseDTO);
+                        CondicionPagoDTO oCondicionPagoDTO = new CondicionPagoDTO();
+                        oCondicionPagoDTO.IdCondicionPago = int.Parse(drd["Id"].ToString());
+                        oCondicionPagoDTO.Codigo = drd["Codigo"].ToString();
+                        oCondicionPagoDTO.Descripcion = drd["Descripcion"].ToString();
+                        oCondicionPagoDTO.Dias = int.Parse(drd["Dias"].ToString());
+                        oCondicionPagoDTO.Estado = bool.Parse(drd["Estado"].ToString());
+                        lstCondicionPagoDTO.Add(oCondicionPagoDTO);
                     }
                     drd.Close();
 
@@ -109,14 +101,13 @@ namespace DAO
                 }
                 catch (Exception ex)
                 {
-                    mensaje_error = ex.Message.ToString();
                 }
             }
-            return lstBaseDTO;
+            return lstCondicionPagoDTO;
         }
 
 
-        public int Delete(int IdBase, ref string mensaje_error)
+        public int Delete(int IdCondicionPago)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
@@ -129,16 +120,15 @@ namespace DAO
                     try
                     {
                         cn.Open();
-                        SqlDataAdapter da = new SqlDataAdapter("SMC_EliminaBase", cn);
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_EliminarCondicionPago", cn);
                         da.SelectCommand.CommandType = CommandType.StoredProcedure;
-                        da.SelectCommand.Parameters.AddWithValue("@IdBase", IdBase);
+                        da.SelectCommand.Parameters.AddWithValue("@IdCondicionPago", IdCondicionPago);
                         int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
                         transactionScope.Complete();
                         return rpta;
                     }
                     catch (Exception ex)
                     {
-                        mensaje_error = ex.Message.ToString();
                         return -1;
                     }
                 }

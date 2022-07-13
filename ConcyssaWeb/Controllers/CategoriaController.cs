@@ -5,22 +5,22 @@ using Newtonsoft.Json;
 
 namespace ConcyssaWeb.Controllers
 {
-    public class BaseController : Controller
+    public class CategoriaController : Controller
     {
         public IActionResult Listado()
         {
             return View();
         }
 
-        public string ObtenerBase(int estado = 3)
+        public string ObtenerCategoria(int estado = 3)
         {
             string mensaje_error = "";
-            BaseDAO oBaseDAO = new BaseDAO();
+            CategoriaDAO oCategoriaDAO = new CategoriaDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<BaseDTO> lstBaseDTO = oBaseDAO.ObtenerBase(IdSociedad, ref mensaje_error, estado);
-            if (lstBaseDTO.Count > 0)
+            List<CategoriaDTO> lstCategoriaDTO = oCategoriaDAO.ObtenerCategoria(IdSociedad, ref mensaje_error, estado);
+            if (lstCategoriaDTO.Count > 0)
             {
-                return JsonConvert.SerializeObject(lstBaseDTO);
+                return JsonConvert.SerializeObject(lstCategoriaDTO);
             }
             else
             {
@@ -29,11 +29,11 @@ namespace ConcyssaWeb.Controllers
         }
 
 
-        public string ObtenerDatosxID(int IdBase)
+        public string ObtenerDatosxID(int IdCategoria)
         {
             string mensaje_error = "";
-            BaseDAO oBaseDAO = new BaseDAO();
-            List<BaseDTO> lstCodigoUbsoDTO = oBaseDAO.ObtenerDatosxID(IdBase, ref mensaje_error);
+            CategoriaDAO oCategoriaDAO = new CategoriaDAO();
+            List<CategoriaDTO> lstCodigoUbsoDTO = oCategoriaDAO.ObtenerDatosxID(IdCategoria, ref mensaje_error);
 
             if (lstCodigoUbsoDTO.Count > 0)
             {
@@ -43,19 +43,18 @@ namespace ConcyssaWeb.Controllers
             {
                 return mensaje_error;
             }
-
         }
 
 
 
-        public string UpdateInsertBase(BaseDTO oBaseDTO)
+        public string UpdateInsertCategoria(CategoriaDTO oCategoriaDTO)
         {
 
             string mensaje_error = "";
-            BaseDAO oBaseDAO = new BaseDAO();
+            CategoriaDAO oCategoriaDAO = new CategoriaDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            oBaseDTO.IdSociedad = IdSociedad;
-            int respuesta = oBaseDAO.UpdateInsertBase(oBaseDTO, ref mensaje_error);
+            oCategoriaDTO.IdSociedad = IdSociedad;
+            int respuesta = oCategoriaDAO.UpdateInsertCategoria(oCategoriaDTO, ref mensaje_error);
 
             if (mensaje_error.Length > 0)
             {
@@ -72,14 +71,13 @@ namespace ConcyssaWeb.Controllers
                     return "error";
                 }
             }
-
         }
 
-        public int EliminarBase(int IdBase)
+        public int EliminarCategoria(int IdCategoria)
         {
             string mensaje_error = "";
-            BaseDAO oBaseDAO = new BaseDAO();
-            int resultado = oBaseDAO.Delete(IdBase, ref mensaje_error);
+            CategoriaDAO oCategoriaDAO = new CategoriaDAO();
+            int resultado = oCategoriaDAO.Delete(IdCategoria, ref mensaje_error);
             if (resultado == 0)
             {
                 resultado = 1;

@@ -2,7 +2,7 @@
 
 
 window.onload = function () {
-    var url = "ObtenerBase";
+    var url = "ObtenerCargo";
     ConsultaServidor(url);
 };
 
@@ -29,8 +29,8 @@ function ConsultaServidor(url) {
                 '<td>' + (i + 1) + '</td>' +
                 '<td>' + base[i].Codigo.toUpperCase() + '</td>' +
                 '<td>' + base[i].Descripcion.toUpperCase() + '</td>' +
-                '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + base[i].IdBase + ')"></button>' +
-                '<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + base[i].IdBase + ')"></button></td >' +
+                '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + base[i].IdCargo + ')"></button>' +
+                '<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + base[i].IdCargo + ')"></button></td >' +
                 '</tr>';
         }
 
@@ -47,15 +47,15 @@ function ConsultaServidor(url) {
 
 
 function ModalNuevo() {
-    $("#lblTituloModal").html("Nueva Base");
+    $("#lblTituloModal").html("Nueva Cargo");
     AbrirModal("modal-form");
 }
 
 
 
 
-function GuardarBase() {
-    let varIdBase = $("#txtId").val();
+function GuardarCargo() {
+    let varIdCargo = $("#txtId").val();
     let varCodigo = $("#txtCodigo").val();
     let varDescripcion = $("#txtDescripcion").val();
     let varEstado = false;
@@ -64,8 +64,8 @@ function GuardarBase() {
         varEstado = true;
     }
 
-    $.post('UpdateInsertBase', {
-        'IdBase': varIdBase,
+    $.post('UpdateInsertCargo', {
+        'IdCargo': varIdCargo,
         'Codigo': varCodigo,
         'Descripcion': varDescripcion,
         'Estado': varEstado
@@ -74,7 +74,7 @@ function GuardarBase() {
         if (data == 1) {
             swal("Exito!", "Proceso Realizado Correctamente", "success")
             table.destroy();
-            ConsultaServidor("ObtenerBase");
+            ConsultaServidor("ObtenerCargo");
             limpiarDatos();
 
         } else {
@@ -85,14 +85,14 @@ function GuardarBase() {
     });
 }
 
-function ObtenerDatosxID(varIdBase) {
-    $("#lblTituloModal").html("Editar Base");
+function ObtenerDatosxID(varIdCargo) {
+    $("#lblTituloModal").html("Editar Cargo");
     AbrirModal("modal-form");
 
     //console.log(varIdUsuario);
 
     $.post('ObtenerDatosxID', {
-        'IdBase': varIdBase,
+        'IdCargo': varIdCargo,
     }, function (data, status) {
 
         if (data == "Error") {
@@ -101,7 +101,7 @@ function ObtenerDatosxID(varIdBase) {
         } else {
             let base = JSON.parse(data);
             //console.log(usuarios);
-            $("#txtId").val(base[0].IdBase);
+            $("#txtId").val(base[0].IdCargo);
             $("#txtCodigo").val(base[0].Codigo);
             $("#txtDescripcion").val(base[0].Descripcion);
             if (base[0].Estado) {
@@ -114,19 +114,19 @@ function ObtenerDatosxID(varIdBase) {
 
 }
 
-function eliminar(varIdBase) {
+function eliminar(varIdLineaNegocio) {
 
 
-    alertify.confirm('Confirmar', '¿Desea eliminar esta base?', function () {
-        $.post("EliminarBase", { 'IdBase': varIdBase }, function (data) {
+    alertify.confirm('Confirmar', '¿Desea eliminar esta cargo?', function () {
+        $.post("EliminarCargo", { 'IdCargo': varIdLineaNegocio }, function (data) {
 
             if (data == 0) {
                 swal("Error!", "Ocurrio un Error")
                 limpiarDatos();
             } else {
-                swal("Exito!", "Base Eliminada", "success")
+                swal("Exito!", "Cargo Eliminado", "success")
                 table.destroy();
-                ConsultaServidor("ObtenerBase");
+                ConsultaServidor("ObtenerCargo");
                 limpiarDatos();
             }
 

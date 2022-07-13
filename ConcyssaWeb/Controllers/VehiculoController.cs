@@ -5,22 +5,23 @@ using Newtonsoft.Json;
 
 namespace ConcyssaWeb.Controllers
 {
-    public class BaseController : Controller
+    public class VehiculoController : Controller
     {
-        public IActionResult Listado()
+        // GET: VehiculoController
+        public ActionResult Listado()
         {
             return View();
         }
 
-        public string ObtenerBase(int estado = 3)
+        public string ObtenerVehiculo(int estado = 3)
         {
             string mensaje_error = "";
-            BaseDAO oBaseDAO = new BaseDAO();
+            VehiculoDAO oVehiculoDAO = new VehiculoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<BaseDTO> lstBaseDTO = oBaseDAO.ObtenerBase(IdSociedad, ref mensaje_error, estado);
-            if (lstBaseDTO.Count > 0)
+            List<VehiculoDTO> lstVehiculoDTO = oVehiculoDAO.ObtenerVehiculo(IdSociedad, ref mensaje_error, estado);
+            if (lstVehiculoDTO.Count > 0)
             {
-                return JsonConvert.SerializeObject(lstBaseDTO);
+                return JsonConvert.SerializeObject(lstVehiculoDTO);
             }
             else
             {
@@ -29,11 +30,11 @@ namespace ConcyssaWeb.Controllers
         }
 
 
-        public string ObtenerDatosxID(int IdBase)
+        public string ObtenerDatosxID(int IdVehiculo)
         {
             string mensaje_error = "";
-            BaseDAO oBaseDAO = new BaseDAO();
-            List<BaseDTO> lstCodigoUbsoDTO = oBaseDAO.ObtenerDatosxID(IdBase, ref mensaje_error);
+            VehiculoDAO oVehiculoDAO = new VehiculoDAO();
+            List<VehiculoDTO> lstCodigoUbsoDTO = oVehiculoDAO.ObtenerDatosxID(IdVehiculo, ref mensaje_error);
 
             if (lstCodigoUbsoDTO.Count > 0)
             {
@@ -43,19 +44,18 @@ namespace ConcyssaWeb.Controllers
             {
                 return mensaje_error;
             }
-
         }
 
 
 
-        public string UpdateInsertBase(BaseDTO oBaseDTO)
+        public string UpdateInsertVehiculo(VehiculoDTO oVehiculoDTO)
         {
 
             string mensaje_error = "";
-            BaseDAO oBaseDAO = new BaseDAO();
+            VehiculoDAO oVehiculoDAO = new VehiculoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            oBaseDTO.IdSociedad = IdSociedad;
-            int respuesta = oBaseDAO.UpdateInsertBase(oBaseDTO, ref mensaje_error);
+            oVehiculoDTO.IdSociedad = IdSociedad;
+            int respuesta = oVehiculoDAO.UpdateInsertVehiculo(oVehiculoDTO, ref mensaje_error);
 
             if (mensaje_error.Length > 0)
             {
@@ -72,14 +72,13 @@ namespace ConcyssaWeb.Controllers
                     return "error";
                 }
             }
-
         }
 
-        public int EliminarBase(int IdBase)
+        public int EliminarVehiculo(int IdVehiculo)
         {
             string mensaje_error = "";
-            BaseDAO oBaseDAO = new BaseDAO();
-            int resultado = oBaseDAO.Delete(IdBase, ref mensaje_error);
+            VehiculoDAO oVehiculoDAO = new VehiculoDAO();
+            int resultado = oVehiculoDAO.Delete(IdVehiculo, ref mensaje_error);
             if (resultado == 0)
             {
                 resultado = 1;
@@ -87,5 +86,6 @@ namespace ConcyssaWeb.Controllers
 
             return resultado;
         }
+
     }
 }

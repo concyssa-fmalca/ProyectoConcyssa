@@ -2,7 +2,7 @@
 
 
 window.onload = function () {
-    var url = "ObtenerBase";
+    var url = "ObtenerRubroProveedor";
     ConsultaServidor(url);
 };
 
@@ -19,23 +19,23 @@ function ConsultaServidor(url) {
 
         let tr = '';
 
-        let base = JSON.parse(data);
-        let total_base = base.length;
+        let rubroproveedor = JSON.parse(data);
+        let total_rubroproveedor = rubroproveedor.length;
 
-        for (var i = 0; i < base.length; i++) {
+        for (var i = 0; i < rubroproveedor.length; i++) {
 
 
             tr += '<tr>' +
                 '<td>' + (i + 1) + '</td>' +
-                '<td>' + base[i].Codigo.toUpperCase() + '</td>' +
-                '<td>' + base[i].Descripcion.toUpperCase() + '</td>' +
-                '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + base[i].IdBase + ')"></button>' +
-                '<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + base[i].IdBase + ')"></button></td >' +
+                '<td>' + rubroproveedor[i].Codigo.toUpperCase() + '</td>' +
+                '<td>' + rubroproveedor[i].Descripcion.toUpperCase() + '</td>' +
+                '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + rubroproveedor[i].IdRubroProveedor + ')"></button>' +
+                '<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + rubroproveedor[i].IdRubroProveedor + ')"></button></td >' +
                 '</tr>';
         }
 
-        $("#tbody_base").html(tr);
-        $("#spnTotalRegistros").html(total_base);
+        $("#tbody_rubroproveedor").html(tr);
+        $("#spnTotalRegistros").html(total_rubroproveedor);
 
         table = $("#table_id").DataTable(lenguaje);
 
@@ -47,15 +47,15 @@ function ConsultaServidor(url) {
 
 
 function ModalNuevo() {
-    $("#lblTituloModal").html("Nueva Base");
+    $("#lblTituloModal").html("Nueva Linea de Negocio");
     AbrirModal("modal-form");
 }
 
 
 
 
-function GuardarBase() {
-    let varIdBase = $("#txtId").val();
+function GuardarRubroProveedor() {
+    let varIdRubroProveedor = $("#txtId").val();
     let varCodigo = $("#txtCodigo").val();
     let varDescripcion = $("#txtDescripcion").val();
     let varEstado = false;
@@ -64,8 +64,8 @@ function GuardarBase() {
         varEstado = true;
     }
 
-    $.post('UpdateInsertBase', {
-        'IdBase': varIdBase,
+    $.post('UpdateInsertRubroProveedor', {
+        'IdRubroProveedor': varIdRubroProveedor,
         'Codigo': varCodigo,
         'Descripcion': varDescripcion,
         'Estado': varEstado
@@ -74,7 +74,7 @@ function GuardarBase() {
         if (data == 1) {
             swal("Exito!", "Proceso Realizado Correctamente", "success")
             table.destroy();
-            ConsultaServidor("ObtenerBase");
+            ConsultaServidor("ObtenerRubroProveedor");
             limpiarDatos();
 
         } else {
@@ -85,26 +85,26 @@ function GuardarBase() {
     });
 }
 
-function ObtenerDatosxID(varIdBase) {
-    $("#lblTituloModal").html("Editar Base");
+function ObtenerDatosxID(varIdRubroProveedor) {
+    $("#lblTituloModal").html("Editar Linea de Negocio");
     AbrirModal("modal-form");
 
     //console.log(varIdUsuario);
 
     $.post('ObtenerDatosxID', {
-        'IdBase': varIdBase,
+        'IdRubroProveedor': varIdRubroProveedor,
     }, function (data, status) {
 
         if (data == "Error") {
             swal("Error!", "Ocurrio un error")
             limpiarDatos();
         } else {
-            let base = JSON.parse(data);
+            let rubroproveedor = JSON.parse(data);
             //console.log(usuarios);
-            $("#txtId").val(base[0].IdBase);
-            $("#txtCodigo").val(base[0].Codigo);
-            $("#txtDescripcion").val(base[0].Descripcion);
-            if (base[0].Estado) {
+            $("#txtId").val(rubroproveedor[0].IdRubroProveedor);
+            $("#txtCodigo").val(rubroproveedor[0].Codigo);
+            $("#txtDescripcion").val(rubroproveedor[0].Descripcion);
+            if (rubroproveedor[0].Estado) {
                 $("#chkActivo").prop('checked', true);
             }
 
@@ -114,19 +114,19 @@ function ObtenerDatosxID(varIdBase) {
 
 }
 
-function eliminar(varIdBase) {
+function eliminar(varIdLineaNegocio) {
 
 
-    alertify.confirm('Confirmar', '¿Desea eliminar esta base?', function () {
-        $.post("EliminarBase", { 'IdBase': varIdBase }, function (data) {
+    alertify.confirm('Confirmar', '¿Desea eliminar esta linea de negocio?', function () {
+        $.post("EliminarLineaNegocio", { 'IdLineaNegocio': varIdLineaNegocio }, function (data) {
 
             if (data == 0) {
                 swal("Error!", "Ocurrio un Error")
                 limpiarDatos();
             } else {
-                swal("Exito!", "Base Eliminada", "success")
+                swal("Exito!", "Linea de Negocio Eliminada", "success")
                 table.destroy();
-                ConsultaServidor("ObtenerBase");
+                ConsultaServidor("ObtenerRubroProveedor");
                 limpiarDatos();
             }
 

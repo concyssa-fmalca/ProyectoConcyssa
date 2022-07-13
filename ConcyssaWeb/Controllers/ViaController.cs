@@ -5,22 +5,22 @@ using Newtonsoft.Json;
 
 namespace ConcyssaWeb.Controllers
 {
-    public class BaseController : Controller
+    public class ViaController : Controller
     {
         public IActionResult Listado()
         {
             return View();
         }
 
-        public string ObtenerBase(int estado = 3)
+        public string ObtenerVia(int estado = 3)
         {
             string mensaje_error = "";
-            BaseDAO oBaseDAO = new BaseDAO();
+            ViaDAO oViaDAO = new ViaDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<BaseDTO> lstBaseDTO = oBaseDAO.ObtenerBase(IdSociedad, ref mensaje_error, estado);
-            if (lstBaseDTO.Count > 0)
+            List<ViaDTO> lstViaDTO = oViaDAO.ObtenerVia(IdSociedad, ref mensaje_error, estado);
+            if (lstViaDTO.Count > 0)
             {
-                return JsonConvert.SerializeObject(lstBaseDTO);
+                return JsonConvert.SerializeObject(lstViaDTO);
             }
             else
             {
@@ -29,11 +29,11 @@ namespace ConcyssaWeb.Controllers
         }
 
 
-        public string ObtenerDatosxID(int IdBase)
+        public string ObtenerDatosxID(int IdVia)
         {
             string mensaje_error = "";
-            BaseDAO oBaseDAO = new BaseDAO();
-            List<BaseDTO> lstCodigoUbsoDTO = oBaseDAO.ObtenerDatosxID(IdBase, ref mensaje_error);
+            ViaDAO oViaDAO = new ViaDAO();
+            List<ViaDTO> lstCodigoUbsoDTO = oViaDAO.ObtenerDatosxID(IdVia, ref mensaje_error);
 
             if (lstCodigoUbsoDTO.Count > 0)
             {
@@ -48,14 +48,14 @@ namespace ConcyssaWeb.Controllers
 
 
 
-        public string UpdateInsertBase(BaseDTO oBaseDTO)
+        public string UpdateInsertVia(ViaDTO oViaDTO)
         {
 
             string mensaje_error = "";
-            BaseDAO oBaseDAO = new BaseDAO();
+            ViaDAO oViaDAO = new ViaDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            oBaseDTO.IdSociedad = IdSociedad;
-            int respuesta = oBaseDAO.UpdateInsertBase(oBaseDTO, ref mensaje_error);
+            oViaDTO.IdSociedad = IdSociedad;
+            int respuesta = oViaDAO.UpdateInsertVia(oViaDTO, ref mensaje_error);
 
             if (mensaje_error.Length > 0)
             {
@@ -75,11 +75,11 @@ namespace ConcyssaWeb.Controllers
 
         }
 
-        public int EliminarBase(int IdBase)
+        public int EliminarVia(int IdVia)
         {
             string mensaje_error = "";
-            BaseDAO oBaseDAO = new BaseDAO();
-            int resultado = oBaseDAO.Delete(IdBase, ref mensaje_error);
+            ViaDAO oViaDAO = new ViaDAO();
+            int resultado = oViaDAO.Delete(IdVia, ref mensaje_error);
             if (resultado == 0)
             {
                 resultado = 1;

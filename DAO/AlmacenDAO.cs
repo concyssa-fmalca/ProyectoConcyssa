@@ -1,40 +1,37 @@
-﻿using DTO;
-using System;
-using System.Collections.Generic;
+﻿
+
+using DTO;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Transactions;
 
 namespace DAO
 {
-    public class BaseDAO
+    public class AlmacenDAO
     {
-
-        public List<BaseDTO> ObtenerBase(int IdSociedad, ref string mensaje_error, int Estado = 3)
+        public List<AlmacenDTO> ObtenerAlmacen(int IdSociedad, ref string mensaje_error, int Estado = 3)
         {
-            List<BaseDTO> lstBaseDTO = new List<BaseDTO>();
+            List<AlmacenDTO> lstAlmacenDTO = new List<AlmacenDTO>();
             using (SqlConnection cn = new Conexion().conectar())
             {
                 try
                 {
                     cn.Open();
-                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarBase", cn);
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarAlmacen", cn);
                     da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
                     da.SelectCommand.Parameters.AddWithValue("@Estado", Estado);
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
                     SqlDataReader drd = da.SelectCommand.ExecuteReader();
                     while (drd.Read())
                     {
-                        BaseDTO oBaseDTO = new BaseDTO();
-                        oBaseDTO.IdBase = int.Parse(drd["IdBase"].ToString());
-                        oBaseDTO.Codigo = drd["Codigo"].ToString();
-                        oBaseDTO.Descripcion = drd["Descripcion"].ToString();
-                        oBaseDTO.Estado = bool.Parse(drd["Estado"].ToString());
-                        oBaseDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
-                        lstBaseDTO.Add(oBaseDTO);
+                        AlmacenDTO oAlmacenDTO = new AlmacenDTO();
+                        oAlmacenDTO.IdAlmacen = int.Parse(drd["IdAlmacen"].ToString());
+                        oAlmacenDTO.IdBase = int.Parse(drd["IdBase"].ToString());
+                        oAlmacenDTO.Codigo = drd["Codigo"].ToString();
+                        oAlmacenDTO.Descripcion = drd["Descripcion"].ToString();
+                        oAlmacenDTO.Estado = bool.Parse(drd["Estado"].ToString());
+                        oAlmacenDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
+                        lstAlmacenDTO.Add(oAlmacenDTO);
                     }
                     drd.Close();
 
@@ -45,10 +42,10 @@ namespace DAO
                     mensaje_error = ex.Message.ToString();
                 }
             }
-            return lstBaseDTO;
+            return lstAlmacenDTO;
         }
 
-        public int UpdateInsertBase(BaseDTO oBaseDTO, ref string mensaje_error)
+        public int UpdateInsertAlmacen(AlmacenDTO oAlmacenDTO, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
@@ -61,13 +58,14 @@ namespace DAO
                     try
                     {
                         cn.Open();
-                        SqlDataAdapter da = new SqlDataAdapter("SMC_UpdateInsertBase", cn);
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_UpdateInsertAlmacen", cn);
                         da.SelectCommand.CommandType = CommandType.StoredProcedure;
-                        da.SelectCommand.Parameters.AddWithValue("@IdBase", oBaseDTO.IdBase);
-                        da.SelectCommand.Parameters.AddWithValue("@Codigo", oBaseDTO.Codigo);
-                        da.SelectCommand.Parameters.AddWithValue("@Descripcion", oBaseDTO.Descripcion);
-                        da.SelectCommand.Parameters.AddWithValue("@IdSociedad", oBaseDTO.IdSociedad);
-                        da.SelectCommand.Parameters.AddWithValue("@Estado", oBaseDTO.Estado);
+                        da.SelectCommand.Parameters.AddWithValue("@IdAlmacen", oAlmacenDTO.IdAlmacen);
+                        da.SelectCommand.Parameters.AddWithValue("@IdBase", oAlmacenDTO.IdBase);
+                        da.SelectCommand.Parameters.AddWithValue("@Codigo", oAlmacenDTO.Codigo);
+                        da.SelectCommand.Parameters.AddWithValue("@Descripcion", oAlmacenDTO.Descripcion);
+                        da.SelectCommand.Parameters.AddWithValue("@IdSociedad", oAlmacenDTO.IdSociedad);
+                        da.SelectCommand.Parameters.AddWithValue("@Estado", oAlmacenDTO.Estado);
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
                         return rpta;
@@ -81,27 +79,28 @@ namespace DAO
             }
         }
 
-        public List<BaseDTO> ObtenerDatosxID(int IdBase, ref string mensaje_error)
+        public List<AlmacenDTO> ObtenerDatosxID(int IdAlmacen, ref string mensaje_error)
         {
-            List<BaseDTO> lstBaseDTO = new List<BaseDTO>();
+            List<AlmacenDTO> lstAlmacenDTO = new List<AlmacenDTO>();
             using (SqlConnection cn = new Conexion().conectar())
             {
                 try
                 {
                     cn.Open();
-                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarBasexID", cn);
-                    da.SelectCommand.Parameters.AddWithValue("@IdBase", IdBase);
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarAlmacenxID", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdAlmacen", IdAlmacen);
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
                     SqlDataReader drd = da.SelectCommand.ExecuteReader();
                     while (drd.Read())
                     {
-                        BaseDTO oBaseDTO = new BaseDTO();
-                        oBaseDTO.IdBase = int.Parse(drd["IdBase"].ToString());
-                        oBaseDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
-                        oBaseDTO.Codigo = drd["Codigo"].ToString();
-                        oBaseDTO.Descripcion = drd["Descripcion"].ToString();
-                        oBaseDTO.Estado = bool.Parse(drd["Estado"].ToString());
-                        lstBaseDTO.Add(oBaseDTO);
+                        AlmacenDTO oAlmacenDTO = new AlmacenDTO();
+                        oAlmacenDTO.IdAlmacen = int.Parse(drd["IdAlmacen"].ToString());
+                        oAlmacenDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
+                        oAlmacenDTO.IdBase = int.Parse(drd["IdBase"].ToString());
+                        oAlmacenDTO.Codigo = drd["Codigo"].ToString();
+                        oAlmacenDTO.Descripcion = drd["Descripcion"].ToString();
+                        oAlmacenDTO.Estado = bool.Parse(drd["Estado"].ToString());
+                        lstAlmacenDTO.Add(oAlmacenDTO);
                     }
                     drd.Close();
 
@@ -112,11 +111,11 @@ namespace DAO
                     mensaje_error = ex.Message.ToString();
                 }
             }
-            return lstBaseDTO;
+            return lstAlmacenDTO;
         }
 
 
-        public int Delete(int IdBase, ref string mensaje_error)
+        public int Delete(int IdAlmacen, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
@@ -129,9 +128,9 @@ namespace DAO
                     try
                     {
                         cn.Open();
-                        SqlDataAdapter da = new SqlDataAdapter("SMC_EliminaBase", cn);
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_EliminaAlmacen", cn);
                         da.SelectCommand.CommandType = CommandType.StoredProcedure;
-                        da.SelectCommand.Parameters.AddWithValue("@IdBase", IdBase);
+                        da.SelectCommand.Parameters.AddWithValue("@IdAlmacen", IdAlmacen);
                         int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
                         transactionScope.Complete();
                         return rpta;
@@ -144,5 +143,6 @@ namespace DAO
                 }
             }
         }
+
     }
 }

@@ -2,7 +2,7 @@
 
 
 window.onload = function () {
-    var url = "ObtenerBase";
+    var url = "ObtenerCategoria";
     ConsultaServidor(url);
 };
 
@@ -19,23 +19,23 @@ function ConsultaServidor(url) {
 
         let tr = '';
 
-        let base = JSON.parse(data);
-        let total_base = base.length;
+        let categoria = JSON.parse(data);
+        let total_categoria = categoria.length;
 
-        for (var i = 0; i < base.length; i++) {
+        for (var i = 0; i < categoria.length; i++) {
 
-
+           
             tr += '<tr>' +
                 '<td>' + (i + 1) + '</td>' +
-                '<td>' + base[i].Codigo.toUpperCase() + '</td>' +
-                '<td>' + base[i].Descripcion.toUpperCase() + '</td>' +
-                '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + base[i].IdBase + ')"></button>' +
-                '<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + base[i].IdBase + ')"></button></td >' +
+                '<td>' + categoria[i].Codigo.toUpperCase() + '</td>' +
+                '<td>' + categoria[i].Descripcion.toUpperCase() + '</td>' +
+                '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + categoria[i].IdCategoria + ')"></button>' +
+                '<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + categoria[i].IdCategoria + ')"></button></td >' +
                 '</tr>';
         }
 
-        $("#tbody_base").html(tr);
-        $("#spnTotalRegistros").html(total_base);
+        $("#tbody_categoria").html(tr);
+        $("#spnTotalRegistros").html(total_categoria);
 
         table = $("#table_id").DataTable(lenguaje);
 
@@ -47,15 +47,15 @@ function ConsultaServidor(url) {
 
 
 function ModalNuevo() {
-    $("#lblTituloModal").html("Nueva Base");
+    $("#lblTituloModal").html("Nueva Categoria");
     AbrirModal("modal-form");
 }
 
 
 
 
-function GuardarBase() {
-    let varIdBase = $("#txtId").val();
+function GuardarCategoria() {
+    let varIdCategoria = $("#txtId").val();
     let varCodigo = $("#txtCodigo").val();
     let varDescripcion = $("#txtDescripcion").val();
     let varEstado = false;
@@ -64,8 +64,8 @@ function GuardarBase() {
         varEstado = true;
     }
 
-    $.post('UpdateInsertBase', {
-        'IdBase': varIdBase,
+    $.post('UpdateInsertCategoria', {
+        'IdCategoria': varIdCategoria,
         'Codigo': varCodigo,
         'Descripcion': varDescripcion,
         'Estado': varEstado
@@ -74,7 +74,7 @@ function GuardarBase() {
         if (data == 1) {
             swal("Exito!", "Proceso Realizado Correctamente", "success")
             table.destroy();
-            ConsultaServidor("ObtenerBase");
+            ConsultaServidor("ObtenerCategoria");
             limpiarDatos();
 
         } else {
@@ -85,26 +85,26 @@ function GuardarBase() {
     });
 }
 
-function ObtenerDatosxID(varIdBase) {
-    $("#lblTituloModal").html("Editar Base");
+function ObtenerDatosxID(varIdCategoria) {
+    $("#lblTituloModal").html("Editar Categoria");
     AbrirModal("modal-form");
 
     //console.log(varIdUsuario);
 
     $.post('ObtenerDatosxID', {
-        'IdBase': varIdBase,
+        'IdCategoria': varIdCategoria,
     }, function (data, status) {
 
         if (data == "Error") {
             swal("Error!", "Ocurrio un error")
             limpiarDatos();
         } else {
-            let base = JSON.parse(data);
+            let categoria = JSON.parse(data);
             //console.log(usuarios);
-            $("#txtId").val(base[0].IdBase);
-            $("#txtCodigo").val(base[0].Codigo);
-            $("#txtDescripcion").val(base[0].Descripcion);
-            if (base[0].Estado) {
+            $("#txtId").val(categoria[0].IdCategoria);
+            $("#txtCodigo").val(categoria[0].Codigo);
+            $("#txtDescripcion").val(categoria[0].Descripcion);
+            if (categoria[0].Estado) {
                 $("#chkActivo").prop('checked', true);
             }
 
@@ -114,19 +114,19 @@ function ObtenerDatosxID(varIdBase) {
 
 }
 
-function eliminar(varIdBase) {
+function eliminar(varIdCategoria) {
 
 
-    alertify.confirm('Confirmar', '¿Desea eliminar esta base?', function () {
-        $.post("EliminarBase", { 'IdBase': varIdBase }, function (data) {
+    alertify.confirm('Confirmar', '¿Desea eliminar esta Categoria?', function () {
+        $.post("EliminarCategoria", { 'IdCategoria': varIdCategoria }, function (data) {
 
             if (data == 0) {
                 swal("Error!", "Ocurrio un Error")
                 limpiarDatos();
             } else {
-                swal("Exito!", "Base Eliminada", "success")
+                swal("Exito!", "Categoria Eliminada", "success")
                 table.destroy();
-                ConsultaServidor("ObtenerBase");
+                ConsultaServidor("ObtenerCategoria");
                 limpiarDatos();
             }
 

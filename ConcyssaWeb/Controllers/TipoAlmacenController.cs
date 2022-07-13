@@ -5,22 +5,21 @@ using Newtonsoft.Json;
 
 namespace ConcyssaWeb.Controllers
 {
-    public class BaseController : Controller
+    public class TipoAlmacenController : Controller
     {
         public IActionResult Listado()
         {
             return View();
         }
-
-        public string ObtenerBase(int estado = 3)
+        public string ObtenerTipoAlmacen(int estado = 3)
         {
             string mensaje_error = "";
-            BaseDAO oBaseDAO = new BaseDAO();
+            TipoAlmacenDAO oTipoAlmacenDAO = new TipoAlmacenDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<BaseDTO> lstBaseDTO = oBaseDAO.ObtenerBase(IdSociedad, ref mensaje_error, estado);
-            if (lstBaseDTO.Count > 0)
+            List<TipoAlmacenDTO> lstTipoAlmacenDTO = oTipoAlmacenDAO.ObtenerTipoAlmacen(IdSociedad, ref mensaje_error, estado);
+            if (lstTipoAlmacenDTO.Count > 0)
             {
-                return JsonConvert.SerializeObject(lstBaseDTO);
+                return JsonConvert.SerializeObject(lstTipoAlmacenDTO);
             }
             else
             {
@@ -29,11 +28,11 @@ namespace ConcyssaWeb.Controllers
         }
 
 
-        public string ObtenerDatosxID(int IdBase)
+        public string ObtenerDatosxID(int IdTipoAlmacen)
         {
             string mensaje_error = "";
-            BaseDAO oBaseDAO = new BaseDAO();
-            List<BaseDTO> lstCodigoUbsoDTO = oBaseDAO.ObtenerDatosxID(IdBase, ref mensaje_error);
+            TipoAlmacenDAO oTipoAlmacenDAO = new TipoAlmacenDAO();
+            List<TipoAlmacenDTO> lstCodigoUbsoDTO = oTipoAlmacenDAO.ObtenerDatosxID(IdTipoAlmacen, ref mensaje_error);
 
             if (lstCodigoUbsoDTO.Count > 0)
             {
@@ -43,19 +42,18 @@ namespace ConcyssaWeb.Controllers
             {
                 return mensaje_error;
             }
-
         }
 
 
 
-        public string UpdateInsertBase(BaseDTO oBaseDTO)
+        public string UpdateInsertTipoAlmacen(TipoAlmacenDTO oTipoAlmacenDTO)
         {
 
             string mensaje_error = "";
-            BaseDAO oBaseDAO = new BaseDAO();
+            TipoAlmacenDAO oTipoAlmacenDAO = new TipoAlmacenDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            oBaseDTO.IdSociedad = IdSociedad;
-            int respuesta = oBaseDAO.UpdateInsertBase(oBaseDTO, ref mensaje_error);
+            oTipoAlmacenDTO.IdSociedad = IdSociedad;
+            int respuesta = oTipoAlmacenDAO.UpdateInsertTipoAlmacen(oTipoAlmacenDTO, ref mensaje_error);
 
             if (mensaje_error.Length > 0)
             {
@@ -72,20 +70,6 @@ namespace ConcyssaWeb.Controllers
                     return "error";
                 }
             }
-
-        }
-
-        public int EliminarBase(int IdBase)
-        {
-            string mensaje_error = "";
-            BaseDAO oBaseDAO = new BaseDAO();
-            int resultado = oBaseDAO.Delete(IdBase, ref mensaje_error);
-            if (resultado == 0)
-            {
-                resultado = 1;
-            }
-
-            return resultado;
         }
     }
 }

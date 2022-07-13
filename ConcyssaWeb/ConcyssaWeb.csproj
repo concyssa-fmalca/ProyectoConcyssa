@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Views\Cargo\Listado.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Karambolo.AspNetCore.Bundling.NUglify" Version="3.5.1" />
     <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.9" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.6" />
@@ -19,9 +23,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Cargo\" />
-    <Folder Include="Views\Categoria\" />
-    <Folder Include="Views\Rubro\" />
+    <UpToDateCheckInput Remove="Views\Cargo\Listado.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Cargo\Listado.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Cargo\Listado.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Views\NewFolder\" />
   </ItemGroup>
 
 </Project>

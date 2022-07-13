@@ -5,22 +5,22 @@ using Newtonsoft.Json;
 
 namespace ConcyssaWeb.Controllers
 {
-    public class BaseController : Controller
+    public class MarcaController : Controller
     {
         public IActionResult Listado()
         {
             return View();
         }
 
-        public string ObtenerBase(int estado = 3)
+        public string ObtenerMarca(int estado = 3)
         {
             string mensaje_error = "";
-            BaseDAO oBaseDAO = new BaseDAO();
+            MarcaDAO oMarcaDAO = new MarcaDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<BaseDTO> lstBaseDTO = oBaseDAO.ObtenerBase(IdSociedad, ref mensaje_error, estado);
-            if (lstBaseDTO.Count > 0)
+            List<MarcaDTO> lstMarcaDTO = oMarcaDAO.ObtenerMarca(IdSociedad, ref mensaje_error, estado);
+            if (lstMarcaDTO.Count > 0)
             {
-                return JsonConvert.SerializeObject(lstBaseDTO);
+                return JsonConvert.SerializeObject(lstMarcaDTO);
             }
             else
             {
@@ -29,11 +29,11 @@ namespace ConcyssaWeb.Controllers
         }
 
 
-        public string ObtenerDatosxID(int IdBase)
+        public string ObtenerDatosxID(int IdMarca)
         {
             string mensaje_error = "";
-            BaseDAO oBaseDAO = new BaseDAO();
-            List<BaseDTO> lstCodigoUbsoDTO = oBaseDAO.ObtenerDatosxID(IdBase, ref mensaje_error);
+            MarcaDAO oMarcaDAO = new MarcaDAO();
+            List<MarcaDTO> lstCodigoUbsoDTO = oMarcaDAO.ObtenerDatosxID(IdMarca, ref mensaje_error);
 
             if (lstCodigoUbsoDTO.Count > 0)
             {
@@ -43,19 +43,18 @@ namespace ConcyssaWeb.Controllers
             {
                 return mensaje_error;
             }
-
         }
 
 
 
-        public string UpdateInsertBase(BaseDTO oBaseDTO)
+        public string UpdateInsertMarca(MarcaDTO oMarcaDTO)
         {
 
             string mensaje_error = "";
-            BaseDAO oBaseDAO = new BaseDAO();
+            MarcaDAO oMarcaDAO = new MarcaDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            oBaseDTO.IdSociedad = IdSociedad;
-            int respuesta = oBaseDAO.UpdateInsertBase(oBaseDTO, ref mensaje_error);
+            oMarcaDTO.IdSociedad = IdSociedad;
+            int respuesta = oMarcaDAO.UpdateInsertMarca(oMarcaDTO, ref mensaje_error);
 
             if (mensaje_error.Length > 0)
             {
@@ -72,20 +71,6 @@ namespace ConcyssaWeb.Controllers
                     return "error";
                 }
             }
-
-        }
-
-        public int EliminarBase(int IdBase)
-        {
-            string mensaje_error = "";
-            BaseDAO oBaseDAO = new BaseDAO();
-            int resultado = oBaseDAO.Delete(IdBase, ref mensaje_error);
-            if (resultado == 0)
-            {
-                resultado = 1;
-            }
-
-            return resultado;
         }
     }
 }
