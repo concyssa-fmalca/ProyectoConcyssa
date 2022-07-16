@@ -35,7 +35,7 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerPerfiles()
         {
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            if (String.IsNullOrEmpty(IdSociedad.ToString()))
+            if (!String.IsNullOrEmpty(IdSociedad.ToString()))
             {
                 string mensaje_error = "";
                 PerfilDAO oPerfilDAO = new PerfilDAO();

@@ -47,7 +47,7 @@ function ConsultaServidor(url) {
 
 
 function ModalNuevo() {
-    $("#lblTituloModal").html("Nueva Linea de Negocio");
+    $("#lblTituloModal").html("Nueva Division");
     AbrirModal("modal-form");
 }
 
@@ -86,7 +86,7 @@ function GuardarDivision() {
 }
 
 function ObtenerDatosxID(varIdDivision) {
-    $("#lblTituloModal").html("Editar Linea de Negocio");
+    $("#lblTituloModal").html("Editar Division");
     AbrirModal("modal-form");
 
     //console.log(varIdUsuario);
@@ -117,14 +117,14 @@ function ObtenerDatosxID(varIdDivision) {
 function eliminar(varIdLineaNegocio) {
 
 
-    alertify.confirm('Confirmar', '¿Desea eliminar esta linea de negocio?', function () {
+    alertify.confirm('Confirmar', '¿Desea eliminar esta Division?', function () {
         $.post("EliminarLineaNegocio", { 'IdLineaNegocio': varIdLineaNegocio }, function (data) {
 
             if (data == 0) {
                 swal("Error!", "Ocurrio un Error")
                 limpiarDatos();
             } else {
-                swal("Exito!", "Linea de Negocio Eliminada", "success")
+                swal("Exito!", "Division Eliminada", "success")
                 table.destroy();
                 ConsultaServidor("ObtenerDivision");
                 limpiarDatos();

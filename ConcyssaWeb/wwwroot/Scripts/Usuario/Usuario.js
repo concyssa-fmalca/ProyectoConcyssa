@@ -55,6 +55,7 @@ function CargarPerfiles() {
     $.post("ObtenerPerfiles", function (data, status) {
 
         let perfiles = JSON.parse(data);
+        console.log(perfiles);
         llenarComboPerfil(perfiles, "cboPerfil", "Seleccione")
 
     });

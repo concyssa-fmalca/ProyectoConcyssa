@@ -5,6 +5,7 @@ window.onload = function () {
     ConsultaServidor(url);
     listarUnidadMedida();
     listarCodigoUbso();
+    listarGrupoArticulo();
 };
 
 function listarUnidadMedida() {
@@ -55,6 +56,29 @@ function listarCodigoUbso() {
     });
 }
 
+function listarGrupoArticulo() {
+    $.ajax({
+        url: "../GrupoArticulo/ObtenerGrupoArticulo",
+        type: "GET",
+        contentType: "application/json",
+        dataType: "json",
+        data: {
+            'estado': 1
+        },
+        cache: false,
+        contentType: false,
+        success: function (datos) {
+            $("#cboIdGrupoArticulo").html('');
+            let options = `<option value="0">Seleccione</option>`;
+            if (datos.length > 0) {
+                for (var i = 0; i < datos.length; i++) {
+                    options += `<option value="` + datos[i].IdGrupoArticulo + `">` + datos[i].Descripcion + `</option>`;
+                }
+                $("#cboIdGrupoArticulo").html(options);
+            }
+        }
+    });
+}
 
 
 function ConsultaServidor(url) {

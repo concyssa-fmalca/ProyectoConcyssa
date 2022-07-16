@@ -1,0 +1,986 @@
+﻿@{
+    ViewBag.Title = "Listado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" style="height:93%;">
+    <div class="panel">
+        <div class="container-fluid">
+            <div class="topbar-left col-xs-6">
+                <h3>Grupo de Articulo</h3>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="col-xs-6">
+                <div class="topbar-left col-xs-6">
+                    <h4 style="font-size:1.2em;">Total de Registros: <span id="spnTotalRegistros"></span></h4>
+                </div>
+            </div>
+            <div class="col-xs-6 right">
+                <button class="btn btn-sm btn-primary pull-right plu" data-target="modal1" onclick="ModalNuevo()" style="margin-left:10px;">Nuevo</button>
+                @*<button class="btn btn-sm  btn-success pull-right plu" id="btnPdf" style="margin-left:10px;">Descargar PDF</button>
+                    <button class="btn btn-sm btn-info pull-right plu" id="btnExcel" style="margin-left:10px;">Descargar Excel</button>*@
+            </div>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="container-fluid">
+            <table id="table_id" class="table" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Codigo</th>
+                        <th>Descripcion</th>
+                        <th>Mas</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody_grupoarticulo"></tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div id="modal-form" class="popup-sm allcp-form mfp-with-anim mfp-hide">
+        <div class="panel">
+            <div class="panel-heading">
+                <h5 id='lblTituloModal'></h5>
+            </div>
+            <div class="panel-body ">
+                <div class='col s12 m12 '>
+                    <div class='container-fluid'>
+                        <input id='txtId' name="txtId" type='hidden' class="form-control input-sm">
+                        <div class='form-horizontal'>
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='txtCodigo' class="control-label col-sm-4 left-align">Codigo</label>
+                                    <div class="col-sm-8">
+                                        <input id='txtCodigo' name="txtCodigo" type='text' class="form-control input-sm" tabindex="1">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='txtDescripcion' class="control-label col-sm-4 left-align">Descripcion</label>
+                                    <div class="col-sm-8">
+                                        <input id='txtDescripcion' name="txtDescripcion" type='text' class="form-control input-sm" tabindex="2">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class='form-group-sm col-sm-4'></div>
+                                <div class='form-group-sm'>
+                                    <div class="checkbox-custom col-xs-6">
+                                        <input type="checkbox" id="chkActivo" />
+                                        <label for="chkActivo">Activo</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer text-right">
+                <div class="row">
+                    <button type="button" id="btnGrabar" onclick="GuardarGrupoArticulo()" class="btn btn-primary pull-right plu">Grabar</button>
+                    <button type="button" id="btnCancelar" class="btn btn-danger pull-right" style="background-color:orange;" onclick="closePopup();">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*MODAL CUENTAS*@
+
+     <div id="modal_cuentas" class="popup-sm allcp-form mfp-hide" >
+        <div class="panel">
+            <div class="panel-heading">
+                <h5 id='lblTituloModal'></h5>
+            </div>
+            <div class="panel-body ">
+                    <div id="cuentas_readonly">
+                        <div class="row">
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Gasto</label>
+                                <div class="col-sm-2">
+                                    <input type="hidden" id="idGrupoArticuloCuenta" value="" />
+                                    <div class="input-group">
+                                        <input id="txtCtaGasto" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">CtaIngresos</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaIngresos" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Credito Compras</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control  input-sm" style="margin-top:10px">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Existencia</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaExistencias" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">CtaCostoBienes</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaCostoBienes" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Credito Compras</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaCreditoCompras" type="text" class="form-control input-sm" tabindex="0" style="margin-top:10px">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Dotacion</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaDotacion" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Desviacion</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaDesviacion" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Credito Ventas</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaCreditoVentas" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Diferencia Precios</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaDiferenciaPrecios" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Ajuste Stock Negativo</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaAjusteStockNegativo" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Stock Transito</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaStockTransito" type="text" class="form-control input-sm" tabindex="0" style="margin-top:10px">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Reduccion</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaReduccion" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Aumento</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaAumento" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Compensacion Gasto</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaCompensacionGasto" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Devolucion Ventas</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaDevolucionxVentas" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Ingresos Extranjeros</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaIngresosExtranjeros" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Contrapartida Revalorizacion</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaContrapartidaRevalorizacionInventario" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Devolucion Ventas</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaDevolucionxVentas" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Ingresos Extranjeros</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaIngresosExtranjeros" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Revalorizacion Stock</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaRevalorizacionStock" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Costo Extranjeros</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaCostosExtranjeros" type="text" style="margin-top:10px" class="form-control input-sm" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Compras</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaCompras" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Desviacion</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaDesviacion" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Compras Devolucion</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaComprasDevolucion" type="text" class="form-control input-sm" tabindex="0" style="margin-top:10px">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.CostoMercancias Compradas</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaCostosMercanciasCompradas" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Stock Trabajo en Curso</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaStockTrabajoEnCurso" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Diferencia Tipo Cambio</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaDiferenciaTipoCambio" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Compensacion Mercaderias</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaCompensacionMercancias" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Reduccion Libro Mayor</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaReduccionLibroMayor" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            
+
+                           
+                        </div>
+
+                        <div class="row">
+                            
+
+                            
+                        </div>
+
+                        <div class="row">
+                            
+
+                            
+                        </div>
+
+
+
+                    </div>
+
+
+                </div>
+            <div class="panel-footer text-right">
+                <div class="row">
+                    <button type="button" id="btnGrabar" onclick="GuardarGrupoArticulo()" class="btn btn-primary pull-right plu">Grabar</button>
+                    <button type="button" id="btnCancelar" class="btn btn-danger pull-right" style="background-color:orange;" onclick="closePopup();">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+@*
+    <div class="modal fade mfp-with-anim" id="modal_cuentas" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Cuentas del Grupo Articulo  <span id="name_grupoarticulo"></span></h5>
+                </div>
+                <div class="modal-body ">
+                    <div id="cuentas_readonly">
+                        <div class="row">
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Gasto</label>
+                                <div class="col-sm-2">
+                                    <input type="hidden" id="idGrupoArticuloCuenta" value="" />
+                                    <div class="input-group">
+                                        <input id="txtCtaGasto" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">CtaIngresos</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaIngresos" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Credito Compras</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control  input-sm" style="margin-top:10px">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Existencia</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaExistencias" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">CtaCostoBienes</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaCostoBienes" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Credito Compras</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaCreditoCompras" type="text" class="form-control input-sm" tabindex="0" style="margin-top:10px">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Dotacion</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaDotacion" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Desviacion</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaDesviacion" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Credito Ventas</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaCreditoVentas" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Diferencia Precios</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaDiferenciaPrecios" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Ajuste Stock Negativo</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaAjusteStockNegativo" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Stock Transito</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaStockTransito" type="text" class="form-control input-sm" tabindex="0" style="margin-top:10px">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Reduccion</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaReduccion" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Aumento</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaAumento" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Compensacion Gasto</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaCompensacionGasto" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Devolucion Ventas</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaDevolucionxVentas" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Ingresos Extranjeros</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaIngresosExtranjeros" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Contrapartida Revalorizacion</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaContrapartidaRevalorizacionInventario" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Devolucion Ventas</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaDevolucionxVentas" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Ingresos Extranjeros</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaIngresosExtranjeros" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Revalorizacion Stock</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaRevalorizacionStock" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Costo Extranjeros</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaCostosExtranjeros" type="text" style="margin-top:10px" class="form-control input-sm" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Compras</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaCompras" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Desviacion</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaDesviacion" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Compras Devolucion</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaComprasDevolucion" type="text" class="form-control input-sm" tabindex="0" style="margin-top:10px">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.CostoMercancias Compradas</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaCostosMercanciasCompradas" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Stock Trabajo en Curso</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaStockTrabajoEnCurso" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Diferencia Tipo Cambio</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaDiferenciaTipoCambio" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Compensacion Mercaderias</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaCompensacionMercancias" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label class="control-label col-sm-2 left-align">Cta.Reduccion Libro Mayor</label>
+                                <div class="col-sm-2">
+                                    <div class="input-group">
+                                        <input id="txtCtaReduccionLibroMayor" type="text" class="form-control input-sm" style="margin-top:10px" tabindex="0">
+                                        <span class="input-group-btn">
+                                             
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            
+
+                           
+                        </div>
+
+                        <div class="row">
+                            
+
+                            
+                        </div>
+
+                        <div class="row">
+                            
+
+                            
+                        </div>
+
+
+
+                    </div>
+
+
+                </div>
+                <div class="panel-footer text-right">
+                    <div class="row">
+                        <button type="submit" class="btn btn-primary pull-right" id="btnguardargrupoarticulo" onclick="GuardarCuentaxIdGrupoArticulo()">Grabar</button>
+                        <button type="button" class="btn btn-success pull-right" id="btnvolverprincipal" onclick="Volver_principal()">Volver</button>
+                        <button type="submit" class="btn btn-danger pull-right" style="background-color:orange;" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-danger pull-right" style="background-color:blue;" onclick="definir_sincuenta()" id="define_sincuenta">Definir sin Cuenta</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div> *@
+    @*END MODAL CUENTAS*@
+</div>
+
+
+<script src="~/Scripts/GrupoArticulo/Listado.js"></script>
+<script src="~/Scripts/General.js"></script>
+<script src="~/js/pdf/jspdf.min.js"></script>
+<script src="~/js/pdf/faker.min.js"></script>
+<script src="~/js/pdf/jspdf.plugin.autotable.src.js"></script>
+
+
