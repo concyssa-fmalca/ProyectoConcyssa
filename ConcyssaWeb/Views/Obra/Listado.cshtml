@@ -163,6 +163,49 @@
         </div>
     </div>
 
+    <!-- Modal Catalogo Producto -->
+    <div id="modal-catalogoproducto" class="popup-sm allcp-form mfp-with-anim mfp-hide">
+        <div class="panel">
+            <div class="panel-heading">
+                <h5 id='lblTituloModal'></h5>
+            </div>
+            <div class="panel-body ">
+                <div class='col s12 m12 '>
+                    <div class='container-fluid'>
+                        <input id='txtId' name="txtId" type='hidden' class="form-control input-sm">
+                        <div class='form-horizontal'>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <table class="table table-responsive" id="table_catalogoobra">
+                                        <thead>
+                                            <tr>
+                                                <td>#</td>
+                                                <td>Descripcion del Articulo</td>
+                                                <td>Materiales</td>
+                                                <td>Auxiliares</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbody_catalogo"></tbody>
+                                       
+                                    </table>
+                                </div>
+                            </div>
+
+                        
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer text-right">
+                <div class="row">
+                    <button type="button" id="btnGrabar" onclick="GuardarObra()" class="btn btn-primary pull-right plu">Grabar</button>
+                    <button type="button" id="btnCancelar" class="btn btn-danger pull-right" style="background-color:orange;" onclick="closePopup();">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 </div>

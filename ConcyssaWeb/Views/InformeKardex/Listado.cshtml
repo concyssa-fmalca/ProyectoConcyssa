@@ -1,0 +1,157 @@
+﻿@{
+    ViewBag.Title = "Listado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" style="height:93%;">
+    <div class="panel">
+        <div class="container-fluid">
+            <div class="topbar-left col-xs-6">
+                <h3>Kardex</h3>
+            </div>
+        </div>
+        <div class="container-fluid ">
+            <div class="col-xs-12">
+                <div class="topbar-left col-xs-12">
+                    <h4 style="font-size:1.2em;">Total de Registros: <span id="spnTotalRegistros"></span></h4>
+                </div>
+            </div>
+        @*    <div class="col-xs-6 right">
+           
+            </div>
+*@
+            <div class="row">
+                 <div class="col-sm-1"></div>
+                <div class='form-group-sm'>
+                    <label for="txtDescripcionItem" class="control-label col-sm-2 left-right">Producto</label>
+                    <div class="col-sm-3">
+                         <select id="IdArticulo" class="form-control input-sm" tabindex="0" ></select>
+                        
+                    </div>
+                </div>
+                <div class="col-sm-1"></div>
+                <div class='form-group-sm'>
+                    <label for="txtPrecioUnitarioItem" class="control-label col-sm-1 left-right">Almacen</label>
+                    <div class="col-sm-3">
+                           <select id="IdAlmacen" class="form-control input-sm" tabindex="0" ></select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                 <div class="col-sm-1"></div>
+                <div class='form-group-sm'>
+                    <label for="txtDescripcionItem" class="control-label col-sm-2 left-right">Fecha Inicio:</label>
+                    <div class="col-sm-3">
+                        <input id="FechaInicio" type="date" class="form-control input-sm" >
+                    </div>
+                </div>
+                <div class="col-sm-1"></div>
+                <div class='form-group-sm'>
+                    <label for="txtPrecioUnitarioItem" class="control-label col-sm-1 left-right">Fecha Termino:</label>
+                    <div class="col-sm-3">
+                        <input id="FechaTermino" type="date" class="form-control input-sm">
+                    </div>
+                </div>
+            </div>
+            <div class="row text-center">
+                <div class="col-sm-12">
+                    <button class="btn btn-info" onclick="BuscarKardex()">Buscar</button>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+    <div class="panel">
+        <div class="container-fluid">
+            <table id="table_id" class="table text-center table-resposive" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Articulo</th>
+                        <th>Fecha y Hora de Transaccion</th>
+                        <th>Tipo Transaccion</th>
+                        <th>Numero</th>
+                        <th>Doc.Asociado</th>
+                        <th>Fecha Emision</th>
+                        <th>Unidad Medida</th>
+                        <th>Entrada</th>
+                        <th>Salida</th>
+                        <th>Saldo</th>
+                        <th>Precio In/Out</th>
+                        <th>Costo Promedio</th>
+                        <th>Valorizado</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody_division"></tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div id="modal-form" class="popup-sm allcp-form mfp-with-anim mfp-hide">
+        <div class="panel">
+            <div class="panel-heading">
+                <h5 id='lblTituloModal'></h5>
+            </div>
+            <div class="panel-body ">
+                <div class='col s12 m12 '>
+                    <div class='container-fluid'>
+                        <input id='txtId' name="txtId" type='hidden' class="form-control input-sm">
+                        <div class='form-horizontal'>
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='txtCodigo' class="control-label col-sm-4 left-align">Codigo</label>
+                                    <div class="col-sm-8">
+                                        <input id='txtCodigo' name="txtCodigo" type='text' class="form-control input-sm" tabindex="1">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='txtDescripcion' class="control-label col-sm-4 left-align">Descripcion</label>
+                                    <div class="col-sm-8">
+                                        <input id='txtDescripcion' name="txtDescripcion" type='text' class="form-control input-sm" tabindex="2">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class='form-group-sm col-sm-4'></div>
+                                <div class='form-group-sm'>
+                                    <div class="checkbox-custom col-xs-6">
+                                        <input type="checkbox" id="chkActivo" />
+                                        <label for="chkActivo">Activo</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer text-right">
+                <div class="row">
+                    <button type="button" id="btnGrabar" onclick="GuardarDivision()" class="btn btn-primary pull-right plu">Grabar</button>
+                    <button type="button" id="btnCancelar" class="btn btn-danger pull-right" style="background-color:orange;" onclick="closePopup();">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+
+<script src="~/Scripts/InformeKardex/Listado.js"></script>
+<script src="~/Scripts/General.js"></script>
+<script src="~/js/pdf/jspdf.min.js"></script>
+<script src="~/js/pdf/faker.min.js"></script>
+<script src="~/js/pdf/jspdf.plugin.autotable.src.js"></script>
+
+

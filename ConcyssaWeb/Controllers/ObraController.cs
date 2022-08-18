@@ -84,5 +84,24 @@ namespace ConcyssaWeb.Controllers
 
             return resultado;
         }
+
+
+        public string CargarCatalogoxIdObra(int IdObra)
+        {
+            string mensaje_error = "";
+            ObraDAO oObraDAO = new ObraDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            List<ObraCatalogoDTO> lstObraDTO = oObraDAO.ListarArticulosxIdSociedadObra(IdSociedad, IdObra, ref mensaje_error);
+            if (lstObraDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstObraDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+
+
+        }
     }
 }

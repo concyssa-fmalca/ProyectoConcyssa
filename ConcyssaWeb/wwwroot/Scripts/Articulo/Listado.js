@@ -1,12 +1,25 @@
 ﻿let table = '';
 
+
+
 window.onload = function () {
     var url = "ObtenerArticulosxSociedad";
     ConsultaServidor(url);
     listarUnidadMedida();
     listarCodigoUbso();
     listarGrupoArticulo();
+    CargarGrupoUnidadMedida();
 };
+
+function CargarGrupoUnidadMedida() {
+
+    $.ajaxSetup({ async: false });
+    $.post("/GrupoUnidadMedida/ObtenerGrupoUnidadMedida", { 'estado': 1 }, function (data, status) {
+        let grupounidad = JSON.parse(data);
+        console.log(grupounidad);
+        llenarComboGrupoUnidadMedida(grupounidad, "IdGrupoUnidadMedida", "Seleccione")
+    });
+}
 
 function listarUnidadMedida() {
     $.ajax({
@@ -121,8 +134,52 @@ function ConsultaServidor(url) {
 function ModalNuevo() {
     $("#lblTituloModal").html("Nuevo Articulo");
     AbrirModal("modal-form");
-    CargarPerfiles();
-    CargarSociedades();
+    //CargarPerfiles();
+    //CargarSociedades();
+    //CargarGrupoUnidadMedida();
+
+}
+
+
+
+function llenarComboGrupoUnidadMedida(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdGrupoUnidadMedida + "'>" + lista[i].Descripcion + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+}
+
+
+function CargarDefinicionxGrupo() {
+    let IdGrupoUnidadMedida = $("#IdGrupoUnidadMedida").val();
+    $.ajaxSetup({ async: false });
+    $.post("/GrupoUnidadMedida/ObtenerDefinicionUnidadMedidaxGrupo", { 'IdGrupoUnidadMedida': IdGrupoUnidadMedida }, function (data, status) {
+        let definicion = JSON.parse(data);
+        llenarComboDefinicionGrupoUnidadItem(definicion, "IdUnidadMedidaInv", "Seleccione")
+    });
+}
+
+function llenarComboDefinicionGrupoUnidadItem(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdDefinicionGrupo + "'>" + lista[i].DescUnidadMedidaAlt + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
 }
 
 
@@ -132,7 +189,7 @@ function ModalNuevo() {
 
 function GuardarArticulo() {
 
-    let varIdArticulo = $("#txtIdArticulo").val();
+    let varIdArticulo = $("#txtId").val();
     let varCodigo = $("#txtCodigo").val();
     let varDescripcion1 = $("#txtDescripcion1").val();
     let varDescripcion2 = $("#txtDescripcion2").val();
@@ -141,12 +198,35 @@ function GuardarArticulo() {
     let varEstadoActivoFijo = false;
     let varEstadoActivoCatalogo = false;
 
+
+    let varEstadoInvetario = false;
+    let varVenta = false;
+    let varCompra = false;
+
     if ($('#chkActivoFijo')[0].checked) {
         varEstadoActivoFijo = true;
     }
     if ($('#chkActivoCatalogo')[0].checked) {
         varEstadoActivoCatalogo = true;
     }
+
+    if ($('#chkArticulo')[0].checked) {
+        varEstadoInvetario = true;
+    }
+    if ($('#chkArticuloVenta')[0].checked) {
+        varVenta = true;
+    }
+    if ($('#chkArticuloCompra')[0].checked) {
+        varCompra = true;
+    }
+
+    varEstado = false;
+    if ($('input:radio[name=inlineRadioOptions]:checked').val()==1) {
+        varEstado = true;
+    }
+
+    let IdGrupoUnidadMedida = $("#IdGrupoUnidadMedida").val();
+    let IdUnidadMedidaInv = $("#IdUnidadMedidaInv").val();
 
     $.post('UpdateInsertArticulo', {
         'IdArticulo': varIdArticulo,
@@ -156,24 +236,33 @@ function GuardarArticulo() {
         'IdUnidadMedida': varIdUnidadMedida,
         'IdCodigoUbso': IdCodigoUbso,
         'ActivoFijo': varEstadoActivoFijo,
-        'ActivoCatalogo': varEstadoActivoCatalogo
+        'ActivoCatalogo': varEstadoActivoCatalogo,
+        'Inventario': varEstadoInvetario,
+        'Venta': varVenta,
+        'Compra': varCompra,
+        'Estado': varEstado,
+        'IdGrupoUnidadMedida': IdGrupoUnidadMedida,
+        'IdUnidadMedidaInv': IdUnidadMedidaInv
+
     }, function (data, status) {
 
         if (data == 1) {
             swal("Exito!", "Proceso Realizado Correctamente", "success")
             table.destroy();
-            ConsultaServidor("ObtenerUsuarios");
+            ConsultaServidor("ObtenerArticulosxSociedad");
             limpiarDatos();
         } else {
             swal("Error!", "Ocurrio un Error")
             limpiarDatos();
+            ConsultaServidor("ObtenerArticulosxSociedad");
         }
 
     });
 }
 
 function ObtenerDatosxID(varIdArticulo) {
-    $("#lblTituloModal").html("Editar Usuario");
+    limpiarDatos();
+    $("#lblTituloModal").html("Editar Articulo");
     AbrirModal("modal-form");
 
     //console.log(varIdUsuario);
@@ -188,6 +277,7 @@ function ObtenerDatosxID(varIdArticulo) {
         } else {
             let articulos = JSON.parse(data);
             //console.log(usuarios);
+       
             $("#txtId").val(articulos[0].IdArticulo);
             $("#txtCodigo").val(articulos[0].Codigo);
             $("#txtDescripcion1").val(articulos[0].Descripcion1);
@@ -203,6 +293,17 @@ function ObtenerDatosxID(varIdArticulo) {
                 $("#chkActivoCatalogo").prop('checked', true);
             }
 
+            if (articulos[0].Inventario) {
+                $("#chkArticulo").prop('checked', true);
+            }
+            if (articulos[0].Compra) {
+                $("#chkArticuloCompra").prop('checked', true);
+            }
+            if (articulos[0].Venta) {
+                $("#chkArticuloVenta").prop('checked', true);
+            }
+
+
             
 
         }
@@ -211,19 +312,19 @@ function ObtenerDatosxID(varIdArticulo) {
 
 }
 
-function eliminar(varIdUsuario) {
+function eliminar(varIdArticulo) {
 
 
-    alertify.confirm('Confirmar', '¿Desea eliminar este usuario?', function () {
-        $.post("EliminarUsuario", { 'IdUsuario': varIdUsuario }, function (data) {
+    alertify.confirm('Confirmar', '¿Desea eliminar este articulo?', function () {
+        $.post("EliminarArticulo", { 'IdArticulo': varIdArticulo }, function (data) {
 
             if (data == 0) {
                 swal("Error!", "Ocurrio un Error")
                 limpiarDatos();
             } else {
-                swal("Exito!", "Usuario Eliminado", "success")
+                swal("Exito!", "Articulo Eliminado", "success")
                 table.destroy();
-                ConsultaServidor("ObtenerUsuarios");
+                ConsultaServidor("ObtenerArticulosxSociedad");
                 limpiarDatos();
             }
 
@@ -236,10 +337,15 @@ function eliminar(varIdUsuario) {
 
 function limpiarDatos() {
     $("#txtId").val("");
-    $("#txtNombre").val("");
-    $("#txtUsuario").val("");
-    $("#txtContraseña").val("");
+    $("#txtCodigo").val("");
+    $("#txtDescripcion1").val("");
+    $("#txtDescripcion2").val("");
     $("#chkActivo").prop('checked', false);
+    $("#chkArticulo").prop('checked', false);
+    $("#chkArticuloCompra").prop('checked', false);
+    $("#chkArticuloVenta").prop('checked', false);
+    $("#chkActivoFijo").prop('checked', false);
+    $("#chkActivoCatalogo").prop('checked', false);
 }
 
 

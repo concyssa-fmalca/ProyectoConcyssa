@@ -251,13 +251,13 @@
 
                                                     <div class='form-group-sm col-sm-3'>
                                                         <label class="radio-inline mr10">
-                                                            <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">Activo
+                                                            <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="1">Activo
                                                         </label>
                                                     </div>
 
                                                     <div class='form-group-sm  col-sm-3'>
                                                         <label class="radio-inline mr10">
-                                                            <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">Inactico
+                                                            <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="0">Inactico
                                                         </label>
                                                     </div>
 
@@ -333,17 +333,23 @@
                                             <div class="col-lg-6 pl20 pr40">
                                                 <div class="row">
                                                     <div class='form-group-sm'>
-                                                        <label for='txtDescripcion' class="control-label col-sm-7 left-align">Unidad Medida Inventario </label>
+                                                        <label for='txtDescripcion' cl class="control-label col-sm-7 left-align">GRupo Unidad Medida Base</label>
                                                         <div class="col-sm-5">
-                                                            <input id='txtUnidadInventario' type='text' class="form-control input-sm" tabindex="1">
+                                                            <select class="form-control" id="IdGrupoUnidadMedida" onchange="CargarDefinicionxGrupo()">
+                                                                <option value="0">Seleccione</option>
+                                                            </select>
+                                                            @*<input id='txtUnidadInventario' type='text' class="form-control input-sm" tabindex="1">*@
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class='form-group-sm'>
-                                                        <label for='txtDescripcion' class="control-label col-sm-7 left-align">Peso </label>
+                                                        <label for='IdUnidadMedidaInv' class="control-label col-sm-7 left-align">Unidad Medida </label>
                                                         <div class="col-sm-5">
-                                                            <input id='txtPeso' type='text' class="form-control input-sm" tabindex="1">
+                                                            <select class="form-control"  id='IdUnidadMedidaInv' class="form-control input-sm" >
+                                                                <option value="0">Seleccione</option>
+                                                            </select>
+                                                            
                                                         </div>
                                                     </div>
                                                 </div>

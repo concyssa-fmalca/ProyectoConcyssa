@@ -1,5 +1,5 @@
 ﻿let table = '';
-
+let table2 = $("#table_catalogoobra").DataTable(lenguaje);;
 
 window.onload = function () {
     var url = "ObtenerObra";
@@ -100,16 +100,18 @@ function ConsultaServidor(url) {
         let total_obra = obra.length;
 
         for (var i = 0; i < obra.length; i++) {
-
-
             tr += '<tr>' +
                 '<td>' + (i + 1) + '</td>' +
                 '<td>' + obra[i].Codigo.toUpperCase() + '</td>' +
                 '<td>' + obra[i].Descripcion.toUpperCase() + '</td>' +
                 '<td>' + obra[i].DescripcionCorta.toUpperCase() + '</td>' +
                 '<td>' + obra[i].DescripcionBase.toUpperCase() + '</td>' +
-                '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + obra[i].IdObra + ')"></button>' +
-                '<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + obra[i].IdObra + ')"></button></td >' +
+                '<td>'+
+                    '<button class="btn btn-primary fa fa-pencil btn-xs" onclick = "ObtenerDatosxID(' + obra[i].IdObra + ')" ></button > ' +
+                    '<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + obra[i].IdObra + ')"></button>' +
+                    '<button class="btn btn-danger btn-xs" onclick="uicatalogoproducto(' + obra[i].IdObra + ')">C</button>' +
+                    //'<button class="btn btn-danger btn-xs" onclick="descargarcatatalogo(' + obra[i].IdObra + ')">D</button>' + 
+                '</td >' +
                 '</tr>';
         }
 
@@ -123,13 +125,61 @@ function ConsultaServidor(url) {
 }
 
 
+function uicatalogoproducto(IdObra) {
+    AbrirModal("modal-catalogoproducto");
+    CargarCatalogoProductoxIdObra(IdObra);
+    table2.destroy();
+    table2 = $("#table_catalogoobra").DataTable(lenguaje);
+}
+
+function CargarCatalogoProductoxIdObra(IdObra) {
+    $.ajax({
+        url: "../Obra/CargarCatalogoxIdObra",
+        type: "GET",
+        contentType: "application/json",
+        dataType: "json",
+        data: {
+            'IdObra': IdObra
+        },
+        cache: false,
+        contentType: false,
+        success: function (datos) {
+
+            let tr = '';
+            for (var i = 0; i < datos.length; i++) {
+                tr += `<tr>
+                    <td>`+ (i + 1) + `</td>
+                    <td>`+ datos[i].DescripcionArticulo + `</td>`;
+                if (datos[i].IdTipoProducto==0) {
+                    tr += `<td>` + ` <input type="radio" name="tipoproducto` + datos[i].IdArticulo +`" value="1">` + `</td>
+                    <td>` + ` <input type="radio" name="tipoproducto` + datos[i].IdArticulo + `" value="2">` + `</td>`;
+                }
+
+                if (datos[i].IdTipoProducto == 1) {
+                    tr += `<td>` + ` <input type="radio" name="tipoproducto` + datos[i].IdArticulo + `" value="1" checked>` + `</td>
+                    <td>`+ ` <input type="radio" name="tipoproducto` + datos[i].IdArticulo + `" value="2">` + `</td>`;
+                }
+
+                if (datos[i].IdTipoProducto == 2) {
+                    tr += `<td>` + ` <input type="radio" name="tipoproducto` + datos[i].IdArticulo + `" value="1">` + `</td>
+                    <td>`+ ` <input type="radio" name="tipoproducto` + datos[i].IdArticulo + `" value="2" checked>` + `</td>`;
+                }
+                
+                tr+=`</tr>`;
+            }
+
+            $("#tbody_catalogo").html(tr);
+        }
+    });
+}
+
 
 
 function ModalNuevo() {
     $("#lblTituloModal").html("Nueva Obra");
     AbrirModal("modal-form");
 }
-Obra
+
 
 
 

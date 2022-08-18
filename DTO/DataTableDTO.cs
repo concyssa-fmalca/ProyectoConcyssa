@@ -8,7 +8,9 @@ namespace DTO
 {
     public class DataTableDTO
     {
+#pragma warning disable CS8618 // El elemento campo "aaData" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declarar el elemento campo como que admite un valor NULL.
         public string aaData;
+#pragma warning restore CS8618 // El elemento campo "aaData" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declarar el elemento campo como que admite un valor NULL.
         public int sEcho;
         public int iTotalRecords;
         public int iTotalDisplayRecords;

@@ -17,7 +17,8 @@
     <meta charset="utf-8">
     <title>Addon Requerimientos</title>
     
-
+    
+    <link rel='stylesheet' type='text/css' href="~/assets/fonts/icomoon/icomoon.css" rel="stylesheet"/>
     <link rel='stylesheet' type='text/css' href='~/assets/js/plugins/fullcalendar/fullcalendar.min.css'>
     <link rel='stylesheet' type='text/css' href='~/assets/js/plugins/select2/css/core.css'>
     <link rel='stylesheet' type='text/css' href='~/assets/js/plugins/magnific/magnific-popup.css'>
@@ -25,8 +26,8 @@
     <link rel='stylesheet' type='text/css' href='~/assets/skin/default_skin/css/theme.css'>
     <link rel='stylesheet' type='text/css' href='~/assets/allcp/forms/css/forms.css'>
     <link rel='stylesheet' type='text/css' href='~/assets/bootstrap-treeview.css'>
-    <link rel='stylesheet' type='text/css' href='~/assets/sweetalert2.css'>
-    <link rel='stylesheet' type='text/css' href='~/css/jquery.autocomplete.css'>
+    <link rel='stylesheet' type='text/css' href='~/assets/sweetalert.css' rel='stylesheet'/>
+    <link rel='stylesheet' type='text/css' href='~/css/jquery.autocomplete.css' rel='stylesheet'/>
 
 
     <meta name="description" content="Addon Requerimientos">
@@ -36,12 +37,11 @@
     <!-- -------------- Fonts -------------- -->
     <link rel='stylesheet' type='text/css' href='~/css/Font-OpenSans.css'>
     <link rel='stylesheet' type='text/css' href='~/css/Font-Lato.css'>
-   
-    <link href="~/assets/sweetalert2.css" rel="stylesheet" />
-    <link href="~/assets/miestilos.css" rel="stylesheet" />
+    <link rel='stylesheet' type='text/css' href='~/css/font-awesome.css'>
 
-    <link href="~/assets/alertify.css" rel="stylesheet" />
-    <link href="~/assets/alertify.min.css" rel="stylesheet" />
+    <link rel='stylesheet' type='text/css' href="~/assets/miestilos.css" rel="stylesheet" />
+    <link rel='stylesheet' type='text/css' href="~/assets/alertify.css" rel="stylesheet" />
+    <link rel='stylesheet' type='text/css' href="~/assets/alertify.min.css" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.11.3/b-2.0.1/r-2.2.9/datatables.min.css" />
 
@@ -102,6 +102,7 @@
 </head>
 
 <body class="dashboard-page" style="background-color:#2d4b67;">
+
     @if (string.IsNullOrEmpty(@Accessor.HttpContext.Session.GetString("Sociedad")))
      {
             @*Accessor.HttpContext.Session.Clear();*@
@@ -143,13 +144,6 @@
                             <span class="fa fa-caret-down hidden-xs mr15"></span>
                         </a>
                         <ul class="dropdown-menu list-group keep-dropdown fw600" role="menu" style="background-color:#5a1c1c;">
-                            @*<li class="list-group-item">
-                        <div class="col-md-12">
-                            <div class="col-md-8 text-right">
-                                <span class="label label-warning label-lg">123456789</span>
-                            </div>
-                        </div>
-                    </li>*@
                             <li class="dropdown-footer text-center">
                                 <a href="/Home/CerrarSesion" class="btn btn-primary btn-sm btn-bordered">
                                     <span class="fa fa-power-off pr5"></span> Logout
@@ -159,16 +153,15 @@
                         </ul>
                     </li>
                 </ul>
-
             </header>
             <!-- -------------- /Header  -------------- -->
+
             <!-- -------------- Sidebar  -------------- -->
             <aside id="sidebar_left" class="nano nano-light affix">
                 <!-- -------------- Sidebar Left Wrapper  -------------- -->
                 <div class="sidebar-left-content nano-content">
                     <!-- -------------- Sidebar Header -------------- -->
                     <header class="sidebar-header">
-
                         <!-- -------------- Sidebar - Author -------------- -->
                         <div class="sidebar-widget author-widget">
                             <div class="media">
@@ -251,16 +244,17 @@
                 <input type="hidden" id="rucEmpresa" value="@(Session["Ruc"].ToString())" />*@
         </div>
 
-       
         <script src="~/js/plugins/jquery-1.11.2.min.js"></script>
-        <script src="~/assets/sweetalert2.js"></script>
+        <script src="~/assets/sweetalert2.all.min.js"></script>
         <script src="~/assets/alertify.js"></script>
         <script src="~/assets/alertify.min.js"></script>
+
         <script>
              servidor(false);
              document.addEventListener("DOMContentLoaded", function (event) {
                 setTimeout(showPage, 1000);
             });
+
             function showPage() {
                 document.getElementById("loader") != null ? document.getElementById("loader").style.display = "none" : "";
                 document.getElementById("main").style.display = "block";
@@ -769,21 +763,21 @@
         
         @*@Scripts.Render("~/bundles/jquery")*@
 
-        <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.11.3/b-2.0.1/r-2.2.9/datatables.min.js"></script>
-
+        <script src="~/js/plugins/jquery-1.11.2.min.js"></script>
+        <script type="text/javascript" src="~/assets/datatables.min.js"></script>
+        <script src="~/assets/js/jquery/jquery_ui/jquery-ui.min.js"></script>
         <script src="~/assets/js/plugins/highcharts/highcharts.js"></script>
-         <script src="~/assets/js/plugins/c3charts/d3.min.js"></script>
-         <script src="~/assets/js/plugins/c3charts/c3.min.js"></script>
-         <script src="~/assets/js/plugins/circles/circles.js"></script>
-         <script src="~/assets/js/plugins/magnific/jquery.magnific-popup.js"></script>
-         <script src="~/assets/js/utility/utility.js"></script>
-         <script src="~/assets/js/demo/demo.js"></script>
-         <script src="~/assets/js/main.js"></script>
-         @*<script src="~/assets/js/pages/dashboard1.js"></script>*@
-         <script src="~/assets/sweetalert2.js"></script>
-         <script src="~/assets/bootstrap-treeview.js"></script>
-         @*<script src="~/js/jquery/jquery_ui/jquery_ui.min.js"></script>*@
-         <script src="~/assets/js/plugins/select2/select2.min.js"></script>
+        <script src="~/assets/js/plugins/c3charts/d3.min.js"></script>
+        <script src="~/assets/js/plugins/c3charts/c3.min.js"></script>
+        <script src="~/assets/js/plugins/circles/circles.js"></script>
+        <script src="~/assets/js/plugins/magnific/jquery.magnific-popup.js"></script>
+        <script src="~/assets/js/utility/utility.js"></script>
+        <script src="~/assets/js/demo/demo.js"></script>
+        <script src="~/assets/js/main.js"></script>
+        <script src="~/assets/js/pages/dashboard1.js"></script>
+        <script src="~/assets/sweetalert.min.js"></script>
+        <script src="~/assets/bootstrap-treeview.js"></script>
+        <script src="~/assets/js/plugins/select2/select2.min.js"></script>
 
     }
 </body>

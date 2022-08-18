@@ -1,0 +1,282 @@
+﻿let table = '';
+
+
+window.onload = function () {
+
+    console.log('ddddddddddddddddddddd');
+    CargarArticulos();
+    CargarAlmacen();
+};
+
+
+function CargarAlmacen() {
+    $.ajaxSetup({ async: false });
+    $.post("/Almacen/ObtenerAlmacen", function (data, status) {
+        let almacen = JSON.parse(data);
+        llenarComboAlmacen(almacen, "IdAlmacen", "Seleccione")
+    });
+}
+
+function CargarArticulos() {
+    $.ajaxSetup({ async: false });
+    $.post("/Articulo/ObtenerArticulosxSociedad", {estado:1}, function (data, status) {
+        let articulo = JSON.parse(data);
+        llenarComboArticulo(articulo, "IdArticulo", "Seleccione")
+    });
+}
+
+function llenarComboArticulo(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdArticulo + "'>" + lista[i].Descripcion1.toUpperCase() + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+}
+
+
+
+function llenarComboAlmacen(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdAlmacen + "'>" + lista[i].Descripcion.toUpperCase() + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+}
+
+
+function BuscarKardex() {
+    let IdArticulo= $("#IdArticulo").val();
+    let IdAlmacen=$("#IdAlmacen").val();
+    let FechaInicio= $("#FechaInicio").val();
+    let FechaTermino = $("#FechaTermino").val();
+    if (FechaInicio =='') {
+        FechaInicio='2022-01-01'
+    }
+
+    if (FechaTermino == '') {
+        FechaTermino = '2050-01-01'
+    }
+   
+    ListarDatatableKardex('ListarKardex',IdArticulo,IdAlmacen,FechaInicio, FechaTermino)
+}
+
+
+function ListarDatatableKardex(url,IdArticulo, IdAlmacen, FechaInicio, FechaTermino) {
+    $.post(url, { 'IdArticulo': IdArticulo, 'IdAlmacen': IdAlmacen, 'FechaInicio': FechaInicio, 'FechaTermino': FechaTermino }, function (data, status) {
+        //console.log(data);
+        if (data == "error") {
+            table = $("#table_id").DataTable(lenguaje);
+            return;
+        }
+
+        let tr = '';
+
+        let division = JSON.parse(data);
+        let total_division = division.length;
+        let entrada = 0;
+        let salida = 0;
+        for (var i = 0; i < division.length; i++) {
+            entrada = 0;
+            salida = 0;
+            if (division[i].CantidadBase >= 0) {
+                entrada = division[i].CantidadBase;
+            } else {
+                salida = division[i].CantidadBase;
+            }
+
+            tr += '<tr>' +
+                '<td>' + (i + 1) + '</td>' +
+                '<td>' + division[i].DescArticulo.toUpperCase() + '</td>' +
+                '<td>' + division[i].FechaRegistro.split('T')[0] + '</td>' +
+                '<td>' + division[i].TipoTransaccion.toUpperCase() + '</td>' +
+                '<td>' + division[i].DescSerie.toUpperCase() + `-` + division[i].Correlativo+ '</td>' +
+                '<td>' +'-'+ '</td>' +
+                '<td>' + division[i].FechaDocumento.split('T')[0] + '</td>' +
+                '<td>' + division[i].DescUnidadMedidaBase + '</td>' +
+                '<td>' + entrada + '</td>' +
+                '<td>' + salida + '</td>' +
+                '<td>' + division[i].Saldo + '</td>' +
+                '<td>' + division[i].PrecioRegistro + '</td>' +
+                '<td>' + division[i].PrecioPromedio + '</td>'+
+                '<td>'+ Math.abs(division[i].PrecioPromedio * division[i].CantidadBase) + '</td>'+
+            '</tr>';
+        }
+
+        $("#tbody_division").html(tr);
+        $("#spnTotalRegistros").html(total_division);
+
+        table = $("#table_id").DataTable(lenguaje);
+
+    });
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function ConsultaServidor(url) {
+
+    $.post(url, function (data, status) {
+
+        //console.log(data);
+        if (data == "error") {
+            table = $("#table_id").DataTable(lenguaje);
+            return;
+        }
+
+        let tr = '';
+
+        let division = JSON.parse(data);
+        let total_division = division.length;
+
+        for (var i = 0; i < division.length; i++) {
+
+
+            tr += '<tr>' +
+                '<td>' + (i + 1) + '</td>' +
+                '<td>' + division[i].Codigo.toUpperCase() + '</td>' +
+                '<td>' + division[i].Descripcion.toUpperCase() + '</td>' +
+                '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + division[i].IdDivision + ')"></button>' +
+                '<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + division[i].IdDivision + ')"></button></td >' +
+                '</tr>';
+        }
+
+        $("#tbody_division").html(tr);
+        $("#spnTotalRegistros").html(total_division);
+
+        table = $("#table_id").DataTable(lenguaje);
+
+    });
+
+}
+
+
+
+
+function ModalNuevo() {
+    $("#lblTituloModal").html("Nueva Division");
+    AbrirModal("modal-form");
+}
+
+
+
+
+function GuardarDivision() {
+    let varIdDivision = $("#txtId").val();
+    let varCodigo = $("#txtCodigo").val();
+    let varDescripcion = $("#txtDescripcion").val();
+    let varEstado = false;
+
+    if ($('#chkActivo')[0].checked) {
+        varEstado = true;
+    }
+
+    $.post('UpdateInsertDivision', {
+        'IdDivision': varIdDivision,
+        'Codigo': varCodigo,
+        'Descripcion': varDescripcion,
+        'Estado': varEstado
+    }, function (data, status) {
+
+        if (data == 1) {
+            swal("Exito!", "Proceso Realizado Correctamente", "success")
+            table.destroy();
+            ConsultaServidor("ObtenerDivision");
+            limpiarDatos();
+
+        } else {
+            swal("Error!", "Ocurrio un Error")
+            limpiarDatos();
+        }
+
+    });
+}
+
+function ObtenerDatosxID(varIdDivision) {
+    $("#lblTituloModal").html("Editar Division");
+    AbrirModal("modal-form");
+
+    //console.log(varIdUsuario);
+
+    $.post('ObtenerDatosxID', {
+        'IdDivision': varIdDivision,
+    }, function (data, status) {
+
+        if (data == "Error") {
+            swal("Error!", "Ocurrio un error")
+            limpiarDatos();
+        } else {
+            let division = JSON.parse(data);
+            //console.log(usuarios);
+            $("#txtId").val(division[0].IdDivision);
+            $("#txtCodigo").val(division[0].Codigo);
+            $("#txtDescripcion").val(division[0].Descripcion);
+            if (division[0].Estado) {
+                $("#chkActivo").prop('checked', true);
+            }
+
+        }
+
+    });
+
+}
+
+function eliminar(varIdLineaNegocio) {
+
+
+    alertify.confirm('Confirmar', '¿Desea eliminar esta Division?', function () {
+        $.post("EliminarLineaNegocio", { 'IdLineaNegocio': varIdLineaNegocio }, function (data) {
+
+            if (data == 0) {
+                swal("Error!", "Ocurrio un Error")
+                limpiarDatos();
+            } else {
+                swal("Exito!", "Division Eliminada", "success")
+                table.destroy();
+                ConsultaServidor("ObtenerDivision");
+                limpiarDatos();
+            }
+
+        });
+
+    }, function () { });
+
+}
+
+
+function limpiarDatos() {
+    $("#txtId").val("");
+    $("#txtCodigo").val("");
+    $("#txtDescripcion").val("");
+    $("#chkActivo").prop('checked', false);
+}
+
+
+

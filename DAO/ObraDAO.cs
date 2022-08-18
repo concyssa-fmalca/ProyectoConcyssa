@@ -12,6 +12,41 @@ namespace DAO
 {
     public class ObraDAO
     {
+        public List<ObraCatalogoDTO> ListarArticulosxIdSociedadObra(int IdSociedad,int IdObra, ref string mensaje_error)
+        {
+            List<ObraCatalogoDTO> lstObraCatalogoDTO = new List<ObraCatalogoDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarArticulosxIdSociedadObra", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
+                    da.SelectCommand.Parameters.AddWithValue("@IdObra", IdObra);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        ObraCatalogoDTO oObraCatalogoDTO = new ObraCatalogoDTO();
+                        oObraCatalogoDTO.IdObraCatalogo = int.Parse(drd["IdObraCatalogo"].ToString());
+                        oObraCatalogoDTO.IdArticulo = int.Parse(drd["IdArticulo"].ToString());
+                        oObraCatalogoDTO.DescripcionArticulo = (drd["DescripcionArticulo"].ToString());
+                        oObraCatalogoDTO.IdTipoProducto = int.Parse(drd["IdTipoProducto"].ToString());
+                        oObraCatalogoDTO.IdObra = int.Parse(drd["IdObra"].ToString());
+                        lstObraCatalogoDTO.Add(oObraCatalogoDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstObraCatalogoDTO;
+        }
+
         public List<ObraDTO> ObtenerObra(int IdSociedad, ref string mensaje_error, int Estado = 3)
         {
             List<ObraDTO> lstObraDTO = new List<ObraDTO>();
