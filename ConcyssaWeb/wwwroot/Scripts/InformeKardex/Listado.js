@@ -112,7 +112,7 @@ function ListarDatatableKardex(url,IdArticulo, IdAlmacen, FechaInicio, FechaTerm
                 '<td>' + division[i].Saldo + '</td>' +
                 '<td>' + division[i].PrecioRegistro + '</td>' +
                 '<td>' + division[i].PrecioPromedio + '</td>'+
-                '<td>'+ Math.abs(division[i].PrecioPromedio * division[i].CantidadBase) + '</td>'+
+                '<td>' + Math.abs(division[i].PrecioPromedio * division[i].Saldo) + '</td>'+
             '</tr>';
         }
 

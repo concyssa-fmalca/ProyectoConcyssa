@@ -7,7 +7,7 @@
     <div class="panel">
         <div class="container-fluid">
             <div class="topbar-left col-xs-6">
-                <h3>Almacen</h3>
+                <h3>Cuadrilla</h3>
             </div>
         </div>
         <div class="container-fluid">
@@ -19,7 +19,7 @@
             <div class="col-xs-6 right">
                 <button class="btn btn-sm btn-primary pull-right plu" data-target="modal1" onclick="ModalNuevo()" style="margin-left:10px;">Nuevo</button>
                 @*<button class="btn btn-sm  btn-success pull-right plu" id="btnPdf" style="margin-left:10px;">Descargar PDF</button>
-                    <button class="btn btn-sm btn-info pull-right plu" id="btnExcel" style="margin-left:10px;">Descargar Excel</button>*@
+                <button class="btn btn-sm btn-info pull-right plu" id="btnExcel" style="margin-left:10px;">Descargar Excel</button>*@
             </div>
         </div>
     </div>
@@ -34,7 +34,7 @@
                         <th>Mas</th>
                     </tr>
                 </thead>
-                <tbody id="tbody_almacen"></tbody>
+                <tbody id="tbody_cuadrilla"></tbody>
             </table>
         </div>
     </div>
@@ -54,11 +54,34 @@
 
                             <div class="row">
                                 <div class='form-group-sm'>
-                                   <label for='IdBase' class="control-label col-sm-4 left-align">Obra</label>
+                                    <label for='IdObra' class="control-label col-sm-4 left-align">Obra</label>
                                     <div class="col-sm-8">
-                                        <select id="IdObra" class="form-control">
-                                            <option value="0">Seleccione Obra</option>
+                                        <select id="IdObra" name="IdObra" class="form-control input-sm">
+                                            <option value="0"> SELECCIONE OBRA </option>
                                         </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='IdGrupo' class="control-label col-sm-4 left-align">Grupo</label>
+                                    <div class="col-sm-8">
+                                        <select id="IdGrupo" name="IdGrupo" class="form-control input-sm" onchange="listarSubGrupoxIdGrupo()">
+                                            <option value="0"> SELECCIONE GRUPO </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='IdSubGrupo' class="control-label col-sm-4 left-align">SubGrupo</label>
+                                    <div class="col-sm-8">
+                                        <select id="IdSubGrupo" name="IdSubGrupo" class="form-control input-sm">
+                                            <option value="0"> SELECCIONE SUB GRUPO </option>
+                                        </select>
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -82,6 +105,39 @@
                             </div>
 
                             <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='IdCapataz' class="control-label col-sm-4 left-align">Responsable de Cuadrilla (Capataz)</label>
+                                    <div class="col-sm-8">
+                                        <select id="IdCapataz" name="IdCapataz" class="form-control input-sm">
+                                            <option value="0"> SELECCIONE CAPATAZ </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='IdSupervisor' class="control-label col-sm-4 left-align">Responsable de Actividad (Ingeniero o Supervisor)</label>
+                                    <div class="col-sm-8">
+                                        <select id="IdSupervisor" name="IdSupervisor" class="form-control input-sm">
+                                            <option value="0"> SELECCIONE SUPERVISOR </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='IdSupervisor' class="control-label col-sm-4 left-align">AREA</label>
+                                    <div class="col-sm-8">
+                                        <select id="IdArea" name="IdArea" class="form-control input-sm">
+                                            <option value="0"> SELECCIONE AREA </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
                                 <div class='form-group-sm col-sm-4'></div>
                                 <div class='form-group-sm'>
                                     <div class="checkbox-custom col-xs-6">
@@ -97,7 +153,7 @@
             </div>
             <div class="panel-footer text-right">
                 <div class="row">
-                    <button type="button" id="btnGrabar" onclick="GuardarAlmacen()" class="btn btn-primary pull-right plu">Grabar</button>
+                    <button type="button" id="btnGrabar" onclick="GuardarCuadrilla()" class="btn btn-primary pull-right plu">Grabar</button>
                     <button type="button" id="btnCancelar" class="btn btn-danger pull-right" style="background-color:orange;" onclick="closePopup();">Cancelar</button>
                 </div>
             </div>
@@ -109,7 +165,7 @@
 </div>
 
 
-<script src="~/Scripts/Almacen/Listado.js"></script>
+<script src="~/Scripts/Cuadrilla/Listado.js"></script>
 <script src="~/Scripts/General.js"></script>
 <script src="~/js/pdf/jspdf.min.js"></script>
 <script src="~/js/pdf/faker.min.js"></script>

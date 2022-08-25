@@ -28,11 +28,14 @@ namespace DTO
         public bool Inventario { get; set; }
         public bool Compra { get; set; }
         public bool Venta { get; set; }
-#pragma warning disable CS8618 // El elemento propiedad "UnidadMedida" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declarar el elemento propiedad como que admite un valor NULL.
+
         public string UnidadMedida { get; set; }
-#pragma warning restore CS8618 // El elemento propiedad "UnidadMedida" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declarar el elemento propiedad como que admite un valor NULL.
+
         public decimal Stock { get; set; }
         public int IdGrupoUnidadMedida { get; set; }
         public int IdUnidadMedidaInv { get; set; }
+
+        //Opcional
+        public decimal PrecioPromedio { get; set; }
     }
 }

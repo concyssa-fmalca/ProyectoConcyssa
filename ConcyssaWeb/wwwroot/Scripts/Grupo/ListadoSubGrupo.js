@@ -2,17 +2,15 @@
 
 
 window.onload = function () {
-    var url = "ObtenerAlmacen";
+    var url = "ObtenerSubGrupo";
     ConsultaServidor(url);
-
-    listarObra();
+    listargrupos();
 };
 
 
-
-function listarObra(){
+function listargrupos() {
     $.ajax({
-        url: "../Obra/ObtenerObra",
+        url: "ObtenerGrupo",
         type: "GET",
         contentType: "application/json",
         dataType: "json",
@@ -22,14 +20,14 @@ function listarObra(){
         cache: false,
         contentType: false,
         success: function (datos) {
-            $("#IdObra").html('');
+            $("#IdGrupo").html('');
             let options = `<option value="0">Seleccione</option>`;
             if (datos.length > 0) {
 
                 for (var i = 0; i < datos.length; i++) {
-                    options += `<option value="` + datos[i].IdObra + `">` + datos[i].Descripcion + `</option>`;
+                    options += `<option value="` + datos[i].IdGrupo + `">` + datos[i].Descripcion + `</option>`;
                 }
-                $("#IdObra").html(options);
+                $("#IdGrupo").html(options);
             }
         }
     });
@@ -47,23 +45,23 @@ function ConsultaServidor(url) {
 
         let tr = '';
 
-        let almacen = JSON.parse(data);
-        let total_almacen = almacen.length;
+        let grupo = JSON.parse(data);
+        let total_grupo = grupo.length;
 
-        for (var i = 0; i < almacen.length; i++) {
-
-
+        for (var i = 0; i < grupo.length; i++) {
             tr += '<tr>' +
                 '<td>' + (i + 1) + '</td>' +
-                '<td>' + almacen[i].Codigo.toUpperCase() + '</td>' +
-                '<td>' + almacen[i].Descripcion.toUpperCase() + '</td>' +
-                '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + almacen[i].IdAlmacen + ')"></button>' +
-                '<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + almacen[i].IdAlmacen + ')"></button></td >' +
+                '<td>' + grupo[i].DescGrupo.toUpperCase() + '</td>' +
+                '<td>' + grupo[i].Codigo.toUpperCase() + '</td>' +
+                '<td>' + grupo[i].Descripcion.toUpperCase() + '</td>' +
+                '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + grupo[i].IdSubGrupo + ')"></button>' +
+                '<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + grupo[i].IdSubGrupo + ')"></button>' +
+                '</td > ' +
                 '</tr>';
         }
 
-        $("#tbody_almacen").html(tr);
-        $("#spnTotalRegistros").html(total_almacen);
+        $("#tbody_grupo").html(tr);
+        $("#spnTotalRegistros").html(total_grupo);
 
         table = $("#table_id").DataTable(lenguaje);
 
@@ -75,16 +73,17 @@ function ConsultaServidor(url) {
 
 
 function ModalNuevo() {
-    $("#lblTituloModal").html("Nuevo Almacen");
+    $("#chkActivo").prop('checked', true);
+    $("#lblTituloModal").html("Nueva SubGrupo");
     AbrirModal("modal-form");
 }
 
 
 
 
-function GuardarAlmacen() {
-    let varIdAlmacen = $("#txtId").val();
-    let IdObra=$("#IdObra").val();
+function GuardarSubGrupo() {
+    let varIdSubGrupo = $("#txtId").val();
+    let varIdGrupo = $("#IdGrupo").val();
     let varCodigo = $("#txtCodigo").val();
     let varDescripcion = $("#txtDescripcion").val();
     let varEstado = false;
@@ -93,9 +92,9 @@ function GuardarAlmacen() {
         varEstado = true;
     }
 
-    $.post('UpdateInsertAlmacen', {
-        'IdAlmacen': varIdAlmacen,
-        'IdObra': IdObra,
+    $.post('UpdateInsertSubGrupo', {
+        'IdSubGrupo': varIdSubGrupo,
+        'IdGrupo': varIdGrupo,
         'Codigo': varCodigo,
         'Descripcion': varDescripcion,
         'Estado': varEstado
@@ -104,7 +103,7 @@ function GuardarAlmacen() {
         if (data == 1) {
             swal("Exito!", "Proceso Realizado Correctamente", "success")
             table.destroy();
-            ConsultaServidor("ObtenerAlmacen");
+            ConsultaServidor("ObtenerSubGrupo");
             limpiarDatos();
 
         } else {
@@ -115,27 +114,27 @@ function GuardarAlmacen() {
     });
 }
 
-function ObtenerDatosxID(varIdAlmacen) {
-    $("#lblTituloModal").html("Editar Almacen");
+function ObtenerDatosxID(varIdSubGrupo) {
+    $("#lblTituloModal").html("Editar SubGrupo");
     AbrirModal("modal-form");
 
     //console.log(varIdUsuario);
 
-    $.post('ObtenerDatosxID', {
-        'IdAlmacen': varIdAlmacen,
+    $.post('ObtenerDatosxIdSubGrupo', {
+        'IdSubGrupo': varIdSubGrupo,
     }, function (data, status) {
 
         if (data == "Error") {
             swal("Error!", "Ocurrio un error")
             limpiarDatos();
         } else {
-            let almacen = JSON.parse(data);
-            //console.log(usuarios);
-            $("#txtId").val(almacen[0].IdAlmacen);
-            $("#IdObra").val(almacen[0].IdObra);
-            $("#txtCodigo").val(almacen[0].Codigo);
-            $("#txtDescripcion").val(almacen[0].Descripcion);
-            if (almacen[0].Estado) {
+            let grupo = JSON.parse(data);
+            console.log(grupo);
+            $("#txtId").val(grupo[0].IdSubGrupo);
+            $("#IdGrupo").val(grupo[0].IdGrupo);
+            $("#txtCodigo").val(grupo[0].Codigo);
+            $("#txtDescripcion").val(grupo[0].Descripcion);
+            if (grupo[0].Estado) {
                 $("#chkActivo").prop('checked', true);
             }
 
@@ -145,19 +144,19 @@ function ObtenerDatosxID(varIdAlmacen) {
 
 }
 
-function eliminar(varIdAlmacen) {
+function eliminar(varIdSubGrupo) {
 
 
-    alertify.confirm('Confirmar', '¿Desea eliminar este Almacen?', function () {
-        $.post("EliminarAlmacen", { 'IdAlmacen': varIdAlmacen }, function (data) {
+    alertify.confirm('Confirmar', '¿Desea eliminar esta SubGrupo?', function () {
+        $.post("EliminarSubGrupo", { 'IdSubGrupo': varIdSubGrupo }, function (data) {
 
             if (data == 0) {
                 swal("Error!", "Ocurrio un Error")
                 limpiarDatos();
             } else {
-                swal("Exito!", "Almacen Eliminada", "success")
+                swal("Exito!", "SubGrupo Eliminada", "success")
                 table.destroy();
-                ConsultaServidor("ObtenerAlmacen");
+                ConsultaServidor("ObtenerSubGrupo");
                 limpiarDatos();
             }
 
@@ -172,7 +171,7 @@ function limpiarDatos() {
     $("#txtId").val("");
     $("#txtCodigo").val("");
     $("#txtDescripcion").val("");
-    $("#chkActivo").prop('checked', false);
+    $("#chkActivo").prop('checked', true);
 }
 
 

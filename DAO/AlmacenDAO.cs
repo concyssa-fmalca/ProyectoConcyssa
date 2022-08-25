@@ -24,9 +24,10 @@ namespace DAO
                     SqlDataReader drd = da.SelectCommand.ExecuteReader();
                     while (drd.Read())
                     {
+                        int dd=( String.IsNullOrEmpty(drd["IdObra"].ToString())) ? 1 : 2;
                         AlmacenDTO oAlmacenDTO = new AlmacenDTO();
                         oAlmacenDTO.IdAlmacen = int.Parse(drd["IdAlmacen"].ToString());
-                        oAlmacenDTO.IdBase = int.Parse(drd["IdBase"].ToString());
+                        oAlmacenDTO.IdObra = Convert.ToInt32( (String.IsNullOrEmpty(drd["IdObra"].ToString()))? "0" : drd["IdObra"].ToString());
                         oAlmacenDTO.Codigo = drd["Codigo"].ToString();
                         oAlmacenDTO.Descripcion = drd["Descripcion"].ToString();
                         oAlmacenDTO.Estado = bool.Parse(drd["Estado"].ToString());
@@ -61,7 +62,7 @@ namespace DAO
                         SqlDataAdapter da = new SqlDataAdapter("SMC_UpdateInsertAlmacen", cn);
                         da.SelectCommand.CommandType = CommandType.StoredProcedure;
                         da.SelectCommand.Parameters.AddWithValue("@IdAlmacen", oAlmacenDTO.IdAlmacen);
-                        da.SelectCommand.Parameters.AddWithValue("@IdBase", oAlmacenDTO.IdBase);
+                        da.SelectCommand.Parameters.AddWithValue("@IdObra", oAlmacenDTO.IdObra);
                         da.SelectCommand.Parameters.AddWithValue("@Codigo", oAlmacenDTO.Codigo);
                         da.SelectCommand.Parameters.AddWithValue("@Descripcion", oAlmacenDTO.Descripcion);
                         da.SelectCommand.Parameters.AddWithValue("@IdSociedad", oAlmacenDTO.IdSociedad);
@@ -96,7 +97,7 @@ namespace DAO
                         AlmacenDTO oAlmacenDTO = new AlmacenDTO();
                         oAlmacenDTO.IdAlmacen = int.Parse(drd["IdAlmacen"].ToString());
                         oAlmacenDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
-                        oAlmacenDTO.IdBase = int.Parse(drd["IdBase"].ToString());
+                        oAlmacenDTO.IdObra = Convert.ToInt32((String.IsNullOrEmpty(drd["IdObra"].ToString())) ? "0" : drd["IdObra"].ToString());
                         oAlmacenDTO.Codigo = drd["Codigo"].ToString();
                         oAlmacenDTO.Descripcion = drd["Descripcion"].ToString();
                         oAlmacenDTO.Estado = bool.Parse(drd["Estado"].ToString());
@@ -114,6 +115,41 @@ namespace DAO
             return lstAlmacenDTO;
         }
 
+        
+        public List<AlmacenDTO> ObtenerAlmacenxIdObra(int IdObra, ref string mensaje_error)
+        {
+            List<AlmacenDTO> lstAlmacenDTO = new List<AlmacenDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarAlmacenxIdObra", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdObra", IdObra);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        AlmacenDTO oAlmacenDTO = new AlmacenDTO();
+                        oAlmacenDTO.IdAlmacen = int.Parse(drd["IdAlmacen"].ToString());
+                        oAlmacenDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
+                        oAlmacenDTO.IdObra = Convert.ToInt32((String.IsNullOrEmpty(drd["IdObra"].ToString())) ? "0" : drd["IdObra"].ToString());
+                        oAlmacenDTO.Codigo = drd["Codigo"].ToString();
+                        oAlmacenDTO.Descripcion = drd["Descripcion"].ToString();
+                        oAlmacenDTO.Estado = bool.Parse(drd["Estado"].ToString());
+                        lstAlmacenDTO.Add(oAlmacenDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstAlmacenDTO;
+        }
 
         public int Delete(int IdAlmacen, ref string mensaje_error)
         {

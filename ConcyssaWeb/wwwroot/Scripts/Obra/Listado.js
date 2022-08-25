@@ -1,5 +1,5 @@
 ﻿let table = '';
-let table2 = $("#table_catalogoobra").DataTable(lenguaje);;
+//let table2 = $("#table_catalogoobra").DataTable(lenguaje);;
 
 window.onload = function () {
     var url = "ObtenerObra";
@@ -145,24 +145,25 @@ function CargarCatalogoProductoxIdObra(IdObra) {
         contentType: false,
         success: function (datos) {
 
+            $("#txtIdObraCatalogoProducto").val(IdObra);
             let tr = '';
             for (var i = 0; i < datos.length; i++) {
                 tr += `<tr>
                     <td>`+ (i + 1) + `</td>
                     <td>`+ datos[i].DescripcionArticulo + `</td>`;
                 if (datos[i].IdTipoProducto==0) {
-                    tr += `<td>` + ` <input type="radio" name="tipoproducto` + datos[i].IdArticulo +`" value="1">` + `</td>
-                    <td>` + ` <input type="radio" name="tipoproducto` + datos[i].IdArticulo + `" value="2">` + `</td>`;
+                    tr += `<td>` + ` <input type="radio" name="tipoproducto` + datos[i].IdArticulo + `" value="1" idProducto="` + datos[i].IdArticulo +`">` + `</td>
+                    <td>` + ` <input type="radio" name="tipoproducto` + datos[i].IdArticulo + `" value="2" idProducto="` + datos[i].IdArticulo +`">` + `</td>`;
                 }
 
                 if (datos[i].IdTipoProducto == 1) {
-                    tr += `<td>` + ` <input type="radio" name="tipoproducto` + datos[i].IdArticulo + `" value="1" checked>` + `</td>
-                    <td>`+ ` <input type="radio" name="tipoproducto` + datos[i].IdArticulo + `" value="2">` + `</td>`;
+                    tr += `<td>` + ` <input type="radio" name="tipoproducto` + datos[i].IdArticulo + `" value="1" idProducto="` + datos[i].IdArticulo +`" checked>` + `</td>
+                    <td>`+ ` <input type="radio" name="tipoproducto` + datos[i].IdArticulo + `" value="2" idProducto="` + datos[i].IdArticulo +`">` + `</td>`;
                 }
 
                 if (datos[i].IdTipoProducto == 2) {
-                    tr += `<td>` + ` <input type="radio" name="tipoproducto` + datos[i].IdArticulo + `" value="1">` + `</td>
-                    <td>`+ ` <input type="radio" name="tipoproducto` + datos[i].IdArticulo + `" value="2" checked>` + `</td>`;
+                    tr += `<td>` + ` <input type="radio" name="tipoproducto` + datos[i].IdArticulo + `" value="1" idProducto="` + datos[i].IdArticulo +`">` + `</td>
+                    <td>`+ ` <input type="radio" name="tipoproducto` + datos[i].IdArticulo + `" value="2" checked idProducto="` + datos[i].IdArticulo +`">` + `</td>`;
                 }
                 
                 tr+=`</tr>`;
@@ -234,6 +235,38 @@ function GuardarObra() {
 
     });
 }
+
+function GuardarObraCatalogo() {
+    let detalles = [];
+    let IdObra=$("#txtIdObraCatalogoProducto").val();
+    $('input:radio:checked').each(function (val,obj) { // find unique names
+        detalles.push({
+            'IdArticulo': parseInt(obj.attributes['idproducto'].value) ,
+            'IdTipoProducto': parseInt(obj.value),
+            'IdObra': parseInt(IdObra)
+
+        });
+    });
+    $.post('UpdateInsertObraCatalogoProducto', {
+        'detalles': detalles
+    }, function (data, status) {
+        if (data == 1) {
+            swal("Exito!", "Proceso Realizado Correctamente", "success")
+            table.destroy();
+            ConsultaServidor("ObtenerObra");
+            limpiarDatos();
+
+        } else {
+            swal("Error!", "Ocurrio un Error")
+            limpiarDatos();
+        }
+
+    });
+}
+
+
+
+
 
 function ObtenerDatosxID(varIdObra) {
     $("#lblTituloModal").html("Editar Obra");

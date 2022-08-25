@@ -85,5 +85,21 @@ namespace ConcyssaWeb.Controllers
 
             return resultado;
         }
+
+        public string ObtenerAlmacenxIdObra(int IdObra)
+        {
+            string mensaje_error = "";
+            AlmacenDAO oAlmacenDAO = new AlmacenDAO();
+            List<AlmacenDTO> lstAlmacenDTO = oAlmacenDAO.ObtenerAlmacenxIdObra(IdObra, ref mensaje_error);
+
+            if (lstAlmacenDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstAlmacenDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
     }
 }

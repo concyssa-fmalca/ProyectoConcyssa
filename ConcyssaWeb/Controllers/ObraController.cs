@@ -44,8 +44,6 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
-
-
         public string UpdateInsertObra(ObraDTO oObraDTO)
         {
 
@@ -70,6 +68,29 @@ namespace ConcyssaWeb.Controllers
                     return "error";
                 }
             }
+        }
+
+        public string UpdateInsertObraCatalogoProducto(List<ObraCatalogoDTO> detalles)
+        {
+            string mensaje_error = "";
+            ObraDAO oObraDAO = new ObraDAO();
+            for (int i = 0; i < detalles.Count(); i++)
+            {
+                int respuesta = oObraDAO.UpdateInsertObraCatalogoProducto(detalles[i], ref mensaje_error);
+            }
+
+            if (mensaje_error.Length>0)
+            {
+
+                return mensaje_error;
+            }
+            else
+            {
+                return "1";
+            }
+        
+
+
         }
 
         public int EliminarObra(int IdObra)
@@ -100,8 +121,22 @@ namespace ConcyssaWeb.Controllers
             {
                 return mensaje_error;
             }
+        }
 
-
+        public string ObtenerObraxIdBase(int IdBase)
+        {
+            string mensaje_error = "";
+            ObraDAO oObraDAO = new ObraDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            List<ObraDTO> lstObraDTO = oObraDAO.ObtenerObraxIdBase(IdBase, ref mensaje_error);
+            if (lstObraDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstObraDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
         }
     }
 }
