@@ -4,7 +4,34 @@
 window.onload = function () {
     var url = "ObtenerGrupo";
     ConsultaServidor(url);
+    listarObras();
 };
+
+
+function listarObras() {
+    $.ajax({
+        url: "/Obra/ObtenerObra",
+        type: "GET",
+        contentType: "application/json",
+        dataType: "json",
+        data: {
+            'estado': 1
+        },
+        cache: false,
+        contentType: false,
+        success: function (datos) {
+            $("#IdObra").html('');
+            let options = `<option value="0">Seleccione</option>`;
+            if (datos.length > 0) {
+
+                for (var i = 0; i < datos.length; i++) {
+                    options += `<option value="` + datos[i].IdObra + `">` + datos[i].Descripcion + `</option>`;
+                }
+                $("#IdObra").html(options);
+            }
+        }
+    });
+}
 
 
 function ConsultaServidor(url) {
@@ -58,6 +85,7 @@ function GuardarGrupo() {
     let varIdGrupo = $("#txtId").val();
     let varCodigo = $("#txtCodigo").val();
     let varDescripcion = $("#txtDescripcion").val();
+    let IdObra = $("#IdObra").val();
     let varEstado = false;
 
     if ($('#chkActivo')[0].checked) {
@@ -68,7 +96,8 @@ function GuardarGrupo() {
         'IdGrupo': varIdGrupo,
         'Codigo': varCodigo,
         'Descripcion': varDescripcion,
-        'Estado': varEstado
+        'Estado': varEstado,
+        'IdObra': IdObra
     }, function (data, status) {
 
         if (data == 1) {
@@ -104,6 +133,7 @@ function ObtenerDatosxID(varIdGrupo) {
             $("#txtId").val(grupo[0].IdGrupo);
             $("#txtCodigo").val(grupo[0].Codigo);
             $("#txtDescripcion").val(grupo[0].Descripcion);
+            $("#IdObra").val(grupo[0].IdObra);
             if (grupo[0].Estado) {
                 $("#chkActivo").prop('checked', true);
             }
@@ -141,6 +171,7 @@ function limpiarDatos() {
     $("#txtId").val("");
     $("#txtCodigo").val("");
     $("#txtDescripcion").val("");
+    $("#IdObra").val("");
     $("#chkActivo").prop('checked', true);
 }
 

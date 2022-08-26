@@ -170,6 +170,7 @@ function CargarCatalogoProductoxIdObra(IdObra) {
             }
 
             $("#tbody_catalogo").html(tr);
+            table2 = $("#table_catalogoobra").DataTable(lenguaje);
         }
     });
 }
@@ -193,7 +194,7 @@ function GuardarObra() {
     let IdTipoObra = $("#IdTipoObra").val();
     let IdDivision = $("#IdDivision").val();
 
-  
+    let Direccion = $("#txtDireccion").val();
     let VisibleInternet = false;
     if ($('#chkIntranet')[0].checked) {
         VisibleInternet = true;
@@ -219,7 +220,8 @@ function GuardarObra() {
         'IdDivision': IdDivision,
         'VisibleInternet': VisibleInternet,
         'ContratoMantenimiento': ContratoMantenimiento,        
-        'Estado': Estado
+        'Estado': Estado,
+        'Direccion': Direccion
     }, function (data, status) {
 
         if (data == 1) {
@@ -289,6 +291,7 @@ function ObtenerDatosxID(varIdObra) {
             $("#txtCodigo").val(obra[0].Codigo);
             $("#txtDescripcion").val(obra[0].Descripcion);
             $("#txtDescripcionCorta").val(obra[0].DescripcionCorta);
+            $("#txtDireccion").val(obra[0].Direccion);
             $("#IdTipoObra").val(obra[0].IdTipoObra);
             $("#IdDivision").val(obra[0].IdDivision);
             if (obra[0].VisibleInternet) {

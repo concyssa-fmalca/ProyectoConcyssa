@@ -5891,7 +5891,7 @@ td.legendColorBox {
     position: relative;
     background: #FFF;
     width: auto;
-    max-width: 600px;
+    max-width: 690px;
     height: 70%;
     margin: 20px auto;
 }
@@ -11834,7 +11834,7 @@ th {
     .table > tbody > tr > td,
     .table > tfoot > tr > td {
         font: 600 12px 'Open Sans';
-        padding: 9px;
+        padding: 1px;
         line-height: 1.49;
         vertical-align: middle;
         border-top: 1px solid #e5eaee;

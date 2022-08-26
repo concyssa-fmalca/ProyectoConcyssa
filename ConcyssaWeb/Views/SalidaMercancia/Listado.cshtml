@@ -91,12 +91,14 @@
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>Fecha Documento</th>
                         <th>Tipo Documento</th>
-                        <th>Serie</th>
-                        <th>Numero</th>
-                        <th>Neto</th>
+                        <th>Serie y Numero</th>
                         <th>Total</th>
-                        <th>Estado</th>
+                        <th>Cuadrilla</th>
+                        <th>Almacen</th>
+
+                        <th style="display:none">Estado</th>
                         <th>Mas</th>
                     </tr>
                 </thead>
@@ -117,7 +119,7 @@
                 <div class='col s12 m12 '>
                     <div class='container-fluid row'>
                        
-                        <div class='form-horizontal col-10 col-sm-10'>
+                        <div class='form-horizontal col-9 col-sm-9'>
                             <div class="form-group-sm" style="display:none;">
                                 <input placeholder='' id='txtId' type='text' style="display:none;">
                                 @*<input placeholder='' id='txtEstado' type='text' style="display:none;">*@
@@ -310,11 +312,11 @@
                                                 @*<th style="display:none">Fecha Necesaria</th>
                                                 <th style="display:none">Moneda</th>
                                                 <th style="display:none">Tipo Cambio</th>*@
-                                                <th>Cantidad</th>
+                                                <th style="width:140px;display:block">Cantidad</th>
                                                 <th>Precio Unitario</th>
                                                 @*<th style="display:none">Indicador de Impuestos</th>*@
                                                 <th>Total</th>
-                                                <th>Almacen</th>
+                                                <th style="display:none">Almacen</th>
                                                 @*<th style="display:none">Proveedor</th>
                                                 <th style="display:none">Numero de Fabricacion</th>
                                                 <th style="display:none">Numero de Serie</th>
@@ -437,7 +439,7 @@
 
                         </div>
 
-                        <div class='form-horizontal col-2 col-sm-2' >
+                        <div class='form-horizontal col-3 col-sm-3' >
                             
                             <div class="row"  id="global" style="font-size:10px">
                                 <div class='container-fluid' id="mensajes">
@@ -469,9 +471,9 @@
 
             <div class="row">
                 <div class="col-sm-6" style="color: red;font-weight: bold">
-                    <p style="margin: 0px 0px 0px 0px">TOTAL DE ITEMS: </p>
-                    <p style="margin: 0px 0px 0px 0px">USUARIO:</p>
-                    <p style="margin: 0px 0px 0px 0px">FECHA DE  CREACION:</p>
+                    <p style="margin: 0px 0px 0px 0px">TOTAL DE ITEMS:  <span id="total_items"></span> </p>
+                    <p style="margin: 0px 0px 0px 0px">USUARIO: <span id="NombUsuario"></span> </p>
+                    <p style="margin: 0px 0px 0px 0px">FECHA DE  CREACION: <span id="CreatedAt"></span> </p>
                 </div>
 
                 <div class="col-sm-6">

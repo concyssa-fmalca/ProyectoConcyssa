@@ -120,7 +120,7 @@ function ObtenerDatosxID(varIdCuadrilla) {
             //console.log(usuarios);
             $("#txtId").val(cuadrilla[0].IdCuadrilla);
             $("#IdObra").val(cuadrilla[0].IdObra);
-            $("#IdGrupo").val(cuadrilla[0].IdGrupo);
+            $("#IdGrupo").val(cuadrilla[0].IdGrupo).change();
             $("#IdSubGrupo").val(cuadrilla[0].IdSubGrupo);
             $("#txtCodigo").val(cuadrilla[0].Codigo);
             $("#txtDescripcion").val(cuadrilla[0].Descripcion);
@@ -204,6 +204,7 @@ function listarSubGrupoxIdGrupo() {
         },
         cache: false,
         contentType: false,
+        async: false,
         success: function (datos) {
             $("#IdSubGrupo").html('');
             let options = `<option value="0">Seleccione</option>`;

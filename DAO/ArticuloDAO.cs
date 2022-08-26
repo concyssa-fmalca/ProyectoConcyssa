@@ -174,6 +174,8 @@ namespace DAO
                         oArticuloDTO.Inventario = Convert.ToBoolean(drd["Inventario"].ToString());
                         oArticuloDTO.Compra = Convert.ToBoolean(drd["Compra"].ToString());
                         oArticuloDTO.Venta = Convert.ToBoolean(drd["Venta"].ToString());
+                        oArticuloDTO.NombUnidadMedida = (drd["NombUnidadMedida"].ToString());
+                        
 
                         lstArticuloDTO.Add(oArticuloDTO);
                     }

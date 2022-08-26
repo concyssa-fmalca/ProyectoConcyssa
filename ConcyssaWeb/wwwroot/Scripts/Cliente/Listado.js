@@ -41,8 +41,14 @@ function ConsultaServidor(url) {
 
 }
 
+function pad(str, max) { str = str.toString(); return str.length < max ? pad("0" + str, max) : str; }
 
 function ModalNuevo() {
+    $("#chkActivo").prop('checked', true);
+    var f = new Date();
+    fecha = f.getFullYear() + '-' + pad(f.getMonth(), 2) + '-' + f.getDate();
+    $("#txtFechaIngreso").val(fecha)
+
     $("#lblTituloModal").html("Nuevo Cliente");
     AbrirModal("modal-form");
     CargarTipoPersona();
@@ -520,5 +526,8 @@ function limpiarDatos() {
     //$("#cboPais").val("");
     $("#cboCondicionPago").val("");
 
-    $("#chkActivo").prop('checked', false);
+    $("#chkActivo").prop('checked', true);
+    var f = new Date();
+    fecha = f.getFullYear() + '-' + pad(f.getMonth(), 2) + '-' + f.getDate();
+    $("#txtFechaIngreso").val(fecha)
 }

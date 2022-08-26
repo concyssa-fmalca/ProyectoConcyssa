@@ -15,7 +15,9 @@ namespace ConcyssaWeb.Controllers
         {
             string mensaje_error = "";
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             oMovimientoDTO.IdSociedad = IdSociedad;
+            oMovimientoDTO.IdUsuario = IdUsuario;
             MovimientoDAO oMovimimientoDAO = new MovimientoDAO();
             int respuesta = oMovimimientoDAO.InsertUpdateMovimiento(oMovimientoDTO, ref mensaje_error);
             if (mensaje_error.Length > 0)

@@ -41,6 +41,10 @@ function ConsultaServidor(url) {
 
 
 function ModalNuevo() {
+    $("#chkActivo").prop('checked', true);
+    var f = new Date();
+    fecha = f.getFullYear() + '-' + pad(f.getMonth(),2) +  '-' + f.getDate();
+    $("#txtFechaIngreso").val(fecha)
     $("#lblTituloModal").html("Nuevo Empleado");
     AbrirModal("modal-form");
     CargarTipoPersona();
@@ -50,6 +54,10 @@ function ModalNuevo() {
     CargarDepartamentos();
     $("#cboPais").val(193);
 }
+
+
+function pad(str, max) { str = str.toString(); return str.length < max ? pad("0" + str, max) : str; }
+
 
 
 function GuardarEmpleado() {
@@ -508,4 +516,7 @@ function limpiarDatos() {
     $("#cboCondicionPago").val("");
 
     $("#chkActivo").prop('checked', false);
+    var f = new Date();
+    fecha = f.getFullYear() + '-' + pad(f.getMonth(), 2) + '-' + f.getDate();
+    $("#txtFechaIngreso").val(fecha)
 }

@@ -1,0 +1,129 @@
+﻿@{
+    ViewBag.Title = "Listado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .tl:hover {
+        color: black;
+        font-weight: bold;
+        cursor: pointer;
+    }
+</style>
+
+<div class="container-fluid" style="height:93%;">
+    <div class="panel">
+        <div class="container-fluid">
+            <div class="topbar-left col-xs-6">
+                <h3>Configuracion de Decimales</h3>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="col-xs-6">
+            </div>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="container-fluid">
+            <div class="col-md-10">
+                <div class="row">
+                    <div class="form-group-sm col-md-12">
+                        <label for="txtUsuario" class="control-label col-md-1 left-align">Configuracion de Decimales</label>
+                        @*<div class="col-md-3">
+                        <select id="cboPerfil" class="form-control" onchange="BuscarAccesos()"></select>
+                        </div>*@
+                        @*<div class="col-md-3" style="display:none">
+                        <input type="text" id="txtID" class="form-control ">
+                        </div>*@
+                        <div class="col-md-2">
+                            <button type="button" id="btnAplicar" onclick="GuardarConfiguracionDecimales()" class="btn btn-primary pull-right plu">Aplicar</button>
+                        </div>
+                        @*<div class="col-md-3">
+                        <button type="submit" id="btnSinAcceso" class="btn btn-primary pull-right plu" onclick="seleccionar();">Deseleccionar</button>
+                        </div>
+                        <div class="col-md-3">
+                        <button type="submit" id="btnAccesoTotal" class="btn btn-primary pull-right plu" onclick="seleccionar(1);">Seleccionar Todo</button>
+                        </div>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel">
+        <div class='col s12 m12 '>
+            <div class='container-fluid'>
+                <input id='txtId' name="txtId" type='hidden' class="form-control input-sm">
+                <div class='form-horizontal'>
+                    <div class="row">
+                        <div class='form-group-sm'>
+                            <label for='txtImportes' class="control-label col-sm-4 left-align">Importes</label>
+                            <div class="col-sm-5">
+                                <input id='txtImportes' name="txtImportes" type='text' class="form-control input-sm" tabindex="1">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class='form-group-sm'>
+                            <label for='txtPrecios' class="control-label col-sm-4 left-align">Precios</label>
+                            <div class="col-sm-5">
+                                <input id='txtPrecios' name="txtPrecios" type='text' class="form-control input-sm" tabindex="2">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class='form-group-sm'>
+                            <label for='txtCantidades' class="control-label col-sm-4 left-align">Cantidades</label>
+                            <div class="col-sm-5">
+                                <input id='txtCantidades' name="txtCantidades" type='text' class="form-control input-sm" tabindex="3">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class='form-group-sm'>
+                            <label for='txtPorcentajes' class="control-label col-sm-4 left-align">Porcentajes</label>
+                            <div class="col-sm-5">
+                                <input id='txtPorcentajes' name="txtPorcentajes" type='text' class="form-control input-sm" tabindex="4">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="display:none">
+                        <div class='form-group-sm'>
+                            <label for='txtUnidades' class="control-label col-sm-4 left-align">Unidades</label>
+                            <div class="col-sm-5">
+                                <input id='txtUnidades' name="txtUnidades" type='text' class="form-control input-sm" tabindex="5">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="display:none">
+                        <div class='form-group-sm'>
+                            <label for='txtDecimales' class="control-label col-sm-4 left-align">Decimales</label>
+                            <div class="col-sm-5">
+                                <input id='txtDecimales' name="txtDecimales" type='text' class="form-control input-sm" tabindex="6">
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<script src="~/Scripts/ConfiguracionDecimales/Listado.js"></script>
+<script src="~/Scripts/General.js"></script>
+<script src="~/js/pdf/jspdf.min.js"></script>
+<script src="~/js/pdf/faker.min.js"></script>
+<script src="~/js/pdf/jspdf.plugin.autotable.src.js"></script>
+
+
+

@@ -101,7 +101,23 @@ namespace ConcyssaWeb.Controllers
             {
                 return mensaje_error;
             }
+        }
 
+        public string ObtenerBasesxIdUsuario()
+        {
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            string mensaje_error = "";
+            UsuarioDAO oUsuarioDAO = new UsuarioDAO();
+            List<UsuarioDTO> lstUsuarioDTO = oUsuarioDAO.ObtenerBasesxIdUsuario(IdUsuario, ref mensaje_error);
+
+            if (lstUsuarioDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstUsuarioDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
         }
 
         public int EliminarUsuario(int IdUsuario)

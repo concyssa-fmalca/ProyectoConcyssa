@@ -1,4 +1,51 @@
-﻿let table = '';
+﻿function ObtenerConfiguracionDecimales() {
+    $.post("/ConfiguracionDecimales/ObtenerConfiguracionDecimales", function (data, status) {
+
+        let datos = JSON.parse(data);
+        DecimalesCantidades = datos[0].Cantidades;
+        DecimalesImportes = datos[0].Importes;
+        DecimalesPrecios = datos[0].Precios;
+        DecimalesPorcentajes = datos[0].Porcentajes;
+    });
+}
+
+function ListarBasesxUsuario() {
+    $.post("/Usuario/ObtenerBasesxIdUsuario", function (data, status) {
+        let datos = JSON.parse(data);
+        $("#IdBase").val(datos[0].IdBase).change();
+        if (datos.length == 1) {
+            console.log(datos);
+            if (datos[0].IdPerfil != 1) {
+                $("#IdBase").prop("disabled", false);
+                $("#IdBase").val(datos[0].IdBase).change();
+                $("#IdBase").prop("disabled", true);
+            }
+        }
+    });
+}
+
+
+
+function formatNumber(num) {
+    if (!num || num == 'NaN') return '-';
+    if (num == 'Infinity') return '&#x221e;';
+    num = num.toString().replace(/\$|\,/g, '');
+    if (isNaN(num))
+        num = "0";
+    sign = (num == (num = Math.abs(num)));
+    num = Math.floor(num * 100 + 0.50000000001);
+    cents = num % 100;
+    num = Math.floor(num / 100).toString();
+    if (cents < 10)
+        cents = "0" + cents;
+    for (var i = 0; i < Math.floor((num.length - (1 + i)) / 3); i++)
+        num = num.substring(0, num.length - (4 * i + 3)) + ',' + num.substring(num.length - (4 * i + 3));
+    return (((sign) ? '' : '-') + num + '.' + cents);
+}
+
+
+
+let table = '';
 let tableItems = '';
 let tableProyecto = '';
 let tableCentroCosto = '';
@@ -185,6 +232,7 @@ function llenarComboCentroCosto(lista, idCombo, primerItem) {
 
 
 window.onload = function () {
+    ObtenerConfiguracionDecimales();
     var url = "../Movimientos/ObtenerMovimientosIngresos";
    
     ObtenerConfiguracionDecimales();
@@ -238,13 +286,14 @@ function ConsultaServidor(url) {
 
             tr += '<tr>' +
                 '<td>' + (i + 1) + '</td>' +
+                '<td>' + movimientos[i].FechaDocumento.split('T')[0] + '</td>' +
                 '<td>' + movimientos[i].NombTipoDocumentoOperacion.toUpperCase() + '</td>' +
-                '<td>' + movimientos[i].NombSerie.toUpperCase() + '</td>' +
-                '<td>' + movimientos[i].Correlativo + '</td>' +
-                '<td>' + movimientos[i].SubTotal + '</td>' +
-                '<td>' + movimientos[i].Total+ '</td>' +
-                '<td>' + movimientos[i].Estado + '</td>' +
-    
+                '<td>' + movimientos[i].NombSerie.toUpperCase() + '-' + movimientos[i].Correlativo + '</td>' +
+                '<td>' + formatNumber( movimientos[i].Total) + '</td>' +
+                '<td>' + movimientos[i].DescCuadrilla + '</td>' +
+
+                '<td>' + movimientos[i].NombObra + '</td>' +
+                '<td>' + movimientos[i].NombAlmacen + '</td>' +
                 '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + movimientos[i].IdMovimiento + ')"></button>' +
                 //'<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + solicitudes[i].IdSolicitudRQ + ')"></button></td >' +
                 '</tr>';
@@ -261,7 +310,7 @@ function ConsultaServidor(url) {
 
 
 function ModalNuevo() {
-
+    
     $("#lblTituloModal").html("Nuevo Ingreso");
     CargarCentroCosto();
     listarEmpleados();
@@ -287,15 +336,22 @@ function ModalNuevo() {
     $("#cboImpuesto").val(2).change();
     $("#cboSerie").val(1).change();
 
-    $("#cboMoneda").val("USD");
+    $("#cboMoneda").val(1);
     $("#cboPrioridad").val(2);
     $("#cboClaseArticulo").prop("disabled", false);
+    $("#total_items").html("");
+    $("#NombUsuario").html("");
+    $("#CreatedAt").html("");
+    $("#SerieNumeroRef").val("");
+    $("#IdBase").val(0).change();
     AbrirModal("modal-form");
+    ListarBasesxUsuario();
     //setearValor_ComboRenderizado("cboCodigoArticulo");
 }
 
 
 function OpenModalItem() {
+
     //Cuando se abre agregar Item
     let ClaseArticulo = $("#cboClaseArticulo").val();
     let Moneda = $("#cboMoneda").val();
@@ -436,6 +492,11 @@ function AgregarLinea() {
     let ValidartProducto = $("#cboMedidaItem").val();
     let ValidarCantidad = $("#txtCantidadItem").val();
     console.log(ValidarCantidad);
+    if (CodigoItem.length==0) {
+        swal("Informacion!", "Debe Especificar Un Producto!");
+        return;
+    }
+
     if (ValidarCantidad == "" || ValidarCantidad == null || ValidarCantidad == "0") {
         swal("Informacion!", "Debe Especificar Cantidad!");
         return;
@@ -489,7 +550,7 @@ function AgregarLinea() {
     //<select class="form-control select2" id="cboCodigoArticulo" name="cboCodigoArticulo[]">
     //    <option value="0">Seleccione</option>
     //</select>
-    tr += `<tr>
+    tr += `<tr id="tritem` + contador +`">
             <td><input input style="display:none;" class="form-control" type="text" value="0" id="txtIdSolicitudRQDetalle" name="txtIdSolicitudRQDetalle[]"/></td>
             <td input style="display:none;">
             <input  class="form-control" type="text" id="txtIdArticulo`+ contador + `" name="txtIdArticulo[]" />
@@ -526,7 +587,7 @@ function AgregarLinea() {
     tr += `</select>
             </td>
             <td><input class="form-control changeTotal" type="number" style="width:100px" name="txtItemTotal[]" id="txtItemTotal`+ contador + `" onchange="CalcularTotales()"></td>
-            <td>
+            <td style="display:none">
             <select class="form-control" style="width:100px" id="cboAlmacen`+ contador + `" name="cboAlmacen[]">`;
     tr += `  <option value="0">Seleccione</option>`;
     for (var i = 0; i < Almacen.length; i++) {
@@ -556,8 +617,8 @@ function AgregarLinea() {
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td ><input class="form-control" type="text" value="" id="txtReferencia`+ contador + `" name="txtReferencia[]"></td>
-            <td><button class="btn btn-xs btn-danger borrar">-</button></td>
-          <tr>`;
+            <td><button class="btn btn-xs btn-danger borrar" onclick="borrartditem(`+contador+`)">-</button></td>
+          </tr>`;
 
     $("#tabla").find('tbody').append(tr);
 
@@ -582,7 +643,7 @@ function AgregarLinea() {
     $("#txtCodigoArticulo" + contador).val(CodigoItem);
     $("#txtDescripcionArticulo" + contador).val(DescripcionItem);
     $("#cboUnidadMedida" + contador).val(MedidaItem);
-    $("#txtCantidadNecesaria" + contador).val(CantidadItem).change();
+    $("#txtCantidadNecesaria" + contador).val(formatNumber(parseFloat( CantidadItem).toFixed(DecimalesCantidades))).change();
     $("#txtPrecioInfo" + contador).val(PrecioUnitarioItem).change();
     $("#cboProyecto" + contador).val(ProyectoItem);
     $("#cboAlmacen" + contador).val(AlmacenItem);
@@ -598,6 +659,10 @@ function AgregarLinea() {
 //function LimpiarDatosModalItems() {
 
 //}
+
+function borrartditem(contador) {
+    $("#tritem"+contador).remove()
+}
 
 
 function CargarSeries() {
@@ -634,13 +699,30 @@ function CargarGrupoUnidadMedida() {
     });
 }
 
+
+function validadJson(json) {
+    try {
+        object = JSON.parse(json);
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
+
 function CargarDefinicionxGrupo() {
     console.log('CargarDefinicionxGrupo');
     let IdGrupoUnidadMedida = $("#cboGrupoUnidadMedida").val();
     $.ajaxSetup({ async: false });
     $.post("/GrupoUnidadMedida/ObtenerDefinicionUnidadMedidaxGrupo", { 'IdGrupoUnidadMedida': IdGrupoUnidadMedida }, function (data, status) {
-        let definicion = JSON.parse(data);
-        llenarComboDefinicionGrupoUnidadItem(definicion, "cboMedidaItem", "Seleccione")
+        if (validadJson(data)) {
+            let definicion = JSON.parse(data);
+            llenarComboDefinicionGrupoUnidadItem(definicion, "cboMedidaItem", "Seleccione")
+        } else {
+            $("#cboMedidaItem").html('<option value="0">SELECCIONE</option>')
+        }
+        
+        
     });
 }
 
@@ -887,6 +969,7 @@ function llenarComboMoneda(lista, idCombo, primerItem) {
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
+    $("#cboMoneda").val(1);
 }
 
 function llenarComboAlmacen(lista, idCombo, primerItem) {
@@ -1317,9 +1400,9 @@ function ObtenerDatosxID(IdMovimiento) {
             $("#cboSerie").val(movimiento.IdSerie);
             $("#cboMoneda").val(movimiento.IdMoneda);
             $("#TipoCambio").val(movimiento.TipoCambio);
-            $("#txtTotalAntesDescuento").val(movimiento.SubTotal)
-            $("#txtImpuesto").val(movimiento.Impuesto)
-            $("#txtTotal").val(movimiento.Total)
+            $("#txtTotalAntesDescuento").val(formatNumber( movimiento.SubTotal.toFixed(DecimalesPrecios)))
+            $("#txtImpuesto").val(formatNumber(movimiento.Impuesto.toFixed(DecimalesPrecios)))
+            $("#txtTotal").val(formatNumber(movimiento.Total.toFixed(DecimalesPrecios)))
             $("#IdCuadrilla").val(movimiento.IdCuadrilla)
             $("#IdResponsable").val(movimiento.IdResponsable)
             $("#cboCentroCosto").val(movimiento.IdCentroCosto)
@@ -1330,10 +1413,15 @@ function ObtenerDatosxID(IdMovimiento) {
             $("#IdBase").val(movimiento.IdBase).change();
             $("#IdObra").val(movimiento.IdObra).change();
             $("#cboAlmacen").val(movimiento.IdAlmacen);
+         
+            $("#CreatedAt").html(movimiento.CreatedAt.replace("T", " "));
+            $("#NombUsuario").html(movimiento.NombUsuario);
+            
             //agrega detalle
             let tr = '';
 
             let Detalle = movimiento.detalles;
+            $("#total_items").html(Detalle.length)
             console.log(Detalle);
             console.log("Detalle");
             for (var i = 0; i < Detalle.length; i++) {
@@ -1374,7 +1462,7 @@ function CalcularTotalDetalle(contador) {
         impuesto = (subtotal * varPorcentaje);
         varTotal = subtotal + impuesto;
     }
-    $("#txtItemTotal" + contador).val(varTotal.toFixed(2)).change();
+    $("#txtItemTotal" + contador).val(formatNumber(varTotal.toFixed(2))).change();
 
 
 }
@@ -1413,9 +1501,9 @@ function CalcularTotales() {
 
     impuesto = total - subtotal;
 
-    $("#txtTotalAntesDescuento").val(subtotal.toFixed(2));
-    $("#txtImpuesto").val(impuesto.toFixed(2));
-    $("#txtTotal").val(total.toFixed(2));
+    $("#txtTotalAntesDescuento").val(formatNumber(subtotal.toFixed(2)));
+    $("#txtImpuesto").val(formatNumber(impuesto.toFixed(2)));
+    $("#txtTotal").val(formatNumber(total.toFixed(2)));
 
 }
 
@@ -1462,15 +1550,15 @@ function AgregarLineaDetalle(contador, detalle) {
         tr += `</select>
         </td>
         <td>
-            <input class="form-control" type="number" name="txtCantidadNecesaria[]" value="`+ detalle.Cantidad + `" id="txtCantidadNecesaria` + contador + `" onkeyup="CalcularTotalDetalle(` + contador + `)">
+            <input class="form-control" type="text" name="txtCantidadNecesaria[]" value="`+ formatNumber( detalle.Cantidad.toFixed(DecimalesCantidades) )+ `" id="txtCantidadNecesaria` + contador + `" onkeyup="CalcularTotalDetalle(` + contador + `)">
         </td>
         <td>
-            <input class="form-control" type="number" name="txtPrecioInfo[]" value="`+ detalle.PrecioUnidadTotal + `" id="txtPrecioInfo` + contador + `" onkeyup="CalcularTotalDetalle(` + contador + `)" disabled>
+            <input class="form-control" type="text" name="txtPrecioInfo[]" value="`+ formatNumber( detalle.PrecioUnidadTotal.toFixed(DecimalesPrecios)) + `" id="txtPrecioInfo` + contador + `" onkeyup="CalcularTotalDetalle(` + contador + `)" disabled>
         </td>
         <td>
-            <input class="form-control changeTotal" type="number" style="width:100px" value="`+ detalle.Total + `" name="txtItemTotal[]" id="txtItemTotal` + contador + `" onchange="CalcularTotales()" disabled>
+            <input class="form-control changeTotal" type="text" style="width:100px" value="`+ formatNumber( detalle.Total.toFixed(DecimalesPrecios)) + `" name="txtItemTotal[]" id="txtItemTotal` + contador + `" onchange="CalcularTotales()" disabled>
         </td>
-        <td>
+        <td  style="display:none">
             <select class="form-control" style="width:100px" id="cboAlmacen`+ contador + `" name="cboAlmacen[]" disabled>`;
             tr += `  <option value="0">Seleccione</option>`;
             for (var i = 0; i < Almacen.length; i++) {
@@ -1754,7 +1842,7 @@ function SeleccionarItemListado() {
             tableItems.destroy();
         } else {
             let datos = JSON.parse(data);
-            console.log(datos);
+            $("#cboGrupoUnidadMedida").val(0).change();
 
             $("#txtCodigoItem").val(datos[0].Codigo);
             $("#txtIdItem").val(datos[0].IdArticulo);

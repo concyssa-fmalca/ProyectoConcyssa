@@ -91,12 +91,15 @@
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>Fecha Documento</th>
                         <th>Tipo Documento</th>
-                        <th>Serie</th>
-                        <th>Numero</th>
-                        <th>Neto</th>
+                        <th>Serie y Numero</th>
                         <th>Total</th>
-                        <th>Estado</th>
+                        <th>Cuadrilla</th>
+                        <th>Obra</th>
+                        <th>Almacen</th>
+                        
+                        <th style="display:none">Estado</th>
                         <th>Mas</th>
                     </tr>
                 </thead>
@@ -117,7 +120,7 @@
                 <div class='col s12 m12 '>
                     <div class='container-fluid row'>
                        
-                        <div class='form-horizontal col-10 col-sm-10'>
+                        <div class='form-horizontal col-9 col-sm-9'>
                             <div class="form-group-sm" style="display:none;">
                                 <input placeholder='' id='txtId' type='text' style="display:none;">
                                 @*<input placeholder='' id='txtEstado' type='text' style="display:none;">*@
@@ -195,7 +198,7 @@
                                     @*<label for="cboMoneda" class="control-label col-sm-2 left-align">Tipo de Cambio</label>*@
                                     <label for="cboMoneda" class="control-label col-sm-2 left-align">Moneda</label>
                                     <div class="col-sm-4">
-                                        <select id="cboMoneda" type="text" class="form-control input-sm" tabindex="3" onchange="ValidarMonedaBase()"></select>
+                                        <select id="cboMoneda" type="text" class="form-control input-sm" tabindex="3" onchange="ValidarMonedaBase()" disabled></select>
                                     </div>
                                 </div>
 
@@ -239,15 +242,15 @@
 
                             <div class="row">
                                 <div class='form-group-sm'>
-                                    <label for="IdCuadrilla" class="control-label col-sm-2 left-align">Cuadrilla</label>
-                                    <div class="col-sm-2">
+                                    <label for="IdCuadrilla" class="control-label col-sm-1 left-align">Cuadrilla</label>
+                                    <div class="col-sm-4">
                                         <select id="IdCuadrilla" type="text" class="form-control input-sm" tabindex="3">
                                             <option value="0">SELECCIONE CUADRILLAS </option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class='form-group-sm'>
-                                    <label for="IdResponsable" class="control-label col-sm-2 left-align">Responsable</label>
+                                    <label for="IdResponsable" style="text-align: right;" class="control-label col-sm-1 right-align">Responsable</label>
                                     <div class="col-sm-2">
                                         <select id="IdResponsable" type="text" class="form-control input-sm" tabindex="3">
                                             <option value="0">SELECCIONE Responsable </option>
@@ -255,7 +258,7 @@
                                     </div>
                                 </div>
                                 <div class='form-group-sm'>
-                                    <label for="cboCentroCosto" class="control-label col-sm-2 left-align">Centro de Costo</label>
+                                    <label for="cboCentroCosto" style="text-align: right;" class="control-label col-sm-2 right-align">Centro de Costo</label>
                                     <div class="col-sm-2">
                                         <select id="cboCentroCosto" class="form-control input-sm" tabindex="0"></select>
                                     </div>
@@ -313,22 +316,22 @@
                                     </div>
                                 </div>
                                 <div class="table-responsive">
-                                    <table class="table" id="tabla">
+                                    <table class="table" id="tabla" style="width:100%">
                                         <thead>
                                             <tr>
-                                                <th><button style="display:none" class="btn btn-xs btn-info" onclick="AgregarLinea()" type="button">+</button></th>
+                                                <th style="width:5px;display:block"><button style="display:none" class="btn btn-xs btn-info" onclick="AgregarLinea()" type="button">+</button></th>
                                                 @*<th style="display:none">Numero de Articulo</th>*@
                                                 <th>Descripcion de Articulo</th>
-                                                <th>Unidad de Medida</th>
+                                                <th>Unid. Medida</th>
                                                 @*<th>Prioridad de Item</th>*@
                                                 @*<th style="display:none">Fecha Necesaria</th>
                                                 <th style="display:none">Moneda</th>
                                                 <th style="display:none">Tipo Cambio</th>*@
-                                                <th>Cantidad</th>
+                                                <th style="width:140px;display:block">Cantidad</th>
                                                 <th>Precio Unitario</th>
                                                 @*<th style="display:none">Indicador de Impuestos</th>*@
                                                 <th>Total</th>
-                                                <th>Almacen</th>
+                                                <th style="display:none">Almacen</th>
                                                 @*<th style="display:none">Proveedor</th>
                                                 <th style="display:none">Numero de Fabricacion</th>
                                                 <th style="display:none">Numero de Serie</th>
@@ -402,18 +405,12 @@
                                     </div>
                                 </div>
 
-                                <div class='form-group-sm'>
-                                    <label for="txtComentarios" class="control-label col-sm-2 left-align">Comentarios</label>
-                                    <div class="col-sm-4">
-                                        @*<input id="txtComentarios" type="date" class="form-control input-sm" tabindex="14">*@
-                                        <textarea class="form-control" id="txtComentarios" name="txtComentarios" rows="5" cols="30" tabindex="14"></textarea>
-                                    </div>
-                                </div>
+                                
 
-                                <div class='form-group-sm'>
+                                <div class='form-group-sm' style="display:none">
                                     <label for="txtTotalAntesDescuento" class="control-label col-sm-2 left-align">Sub Total</label>
                                     <div class="col-sm-4">
-                                        <input id="txtTotalAntesDescuento" type="number" class="form-control input-sm" tabindex="12" disabled>
+                                        <input id="txtTotalAntesDescuento" type="text" class="form-control input-sm" tabindex="12" disabled>
                                     </div>
                                 </div>
                             </div>
@@ -424,10 +421,10 @@
                                     </div>
                                 </div>
 
-                                <div class='form-group-sm'>
+                                <div class='form-group-sm' style="display:none">
                                     <label for="txtImpuesto" class="control-label col-sm-2 left-align">Impuesto</label>
                                     <div class="col-sm-4">
-                                        <input id="txtImpuesto" type="number" class="form-control input-sm" tabindex="15" disabled>
+                                        <input id="txtImpuesto" type="text" class="form-control input-sm" tabindex="15" disabled>
                                     </div>
                                 </div>
                             </div>
@@ -443,7 +440,17 @@
                                 <div class='form-group-sm'>
                                     <label for="txtTotal" class="control-label col-sm-2 left-align">Total</label>
                                     <div class="col-sm-4">
-                                        <input id="txtTotal" type="number" class="form-control input-sm" tabindex="16" disabled>
+                                        <input id="txtTotal" type="text" class="form-control input-sm" tabindex="16" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for="txtComentarios" class="control-label col-sm-2 left-align">Comentarios</label>
+                                    <div class="col-sm-10">
+                                        @*<input id="txtComentarios" type="date" class="form-control input-sm" tabindex="14">*@
+                                        <textarea class="form-control" id="txtComentarios" name="txtComentarios" rows="25" cols="30" tabindex="14"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -451,7 +458,7 @@
 
                         </div>
 
-                        <div class='form-horizontal col-2 col-sm-2' >
+                        <div class='form-horizontal col-3 col-sm-3' >
                             
                             <div class="row"  id="global" style="font-size:10px">
                                 <div class='container-fluid' id="mensajes">
@@ -483,11 +490,29 @@
                 </div>
             </div>
         </div>
-        <div class="panel-footer text-right">
+        <div class="panel-footer">
             <div class="row">
+                <div class="col-sm-6" style="color: red;font-weight: bold">
+                    <p style="margin: 0px 0px 0px 0px">TOTAL DE ITEMS:  <span id="total_items"></span> </p>
+                    <p style="margin: 0px 0px 0px 0px">USUARIO: <span id="NombUsuario"></span> </p>
+                    <p style="margin: 0px 0px 0px 0px">FECHA DE  CREACION: <span id="CreatedAt"></span> </p>
+                </div>
+
+                <div class="col-sm-6">
+                    <div class='form-group-sm'>
+                        <button type="button" id="btnGrabar" onclick="GuardarSolicitud()" class="btn btn-primary pull-right plu">Grabar</button>
+                        <button type="button" id="btnCancelar" onclick="CerrarModal()" class="btn btn-danger pull-right" style="background-color:orange;">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            @*<div class="row">
                 <button type="button" id="btnGrabar" onclick="GuardarSolicitud()" class="btn btn-primary pull-right plu">Grabar</button>
                 <button type="button" id="btnCancelar" onclick="CerrarModal()" class="btn btn-danger pull-right" style="background-color:orange;">Cancelar</button>
-            </div>
+            </div>*@
         </div>
     </div>
 
@@ -498,7 +523,7 @@
     <!-- Modal -->
     <div class="modal fade" data-backdrop="static"
          data-keyboard="false" id="ModalItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered allcp-form" style="margin-top:120px" role="document">
+        <div class="modal-dialog modal-dialog-centered" style="margin-top:120px" role="document">
             <div class="modal-content">
 
 
@@ -672,7 +697,7 @@
     <!-- Modal Listado Productos-->
     <div class="modal fade" data-backdrop="static"
          data-keyboard="false" id="ModalListadoItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered allcp-form" style="margin-top:120px" role="document">
+        <div class="modal-dialog modal-dialog-centered allcp-form modal-lg" style="margin-top:120px" role="document">
             <div class="modal-content">
 
 

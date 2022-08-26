@@ -48,6 +48,10 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@IdTipoDocumentoRef", oMovimientoDTO.IdTipoDocumentoRef);
                         da.SelectCommand.Parameters.AddWithValue("@NumSerieTipoDocumentoRef", oMovimientoDTO.NumSerieTipoDocumentoRef);
                         da.SelectCommand.Parameters.AddWithValue("@EntregadoA", oMovimientoDTO.EntregadoA);
+                        da.SelectCommand.Parameters.AddWithValue("@IdUsuario", oMovimientoDTO.IdUsuario);
+                        da.SelectCommand.Parameters.AddWithValue("@IdCentroCosto", oMovimientoDTO.IdCentroCosto);
+
+
 
                         int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
                         transactionScope.Complete();
@@ -155,6 +159,11 @@ namespace DAO
                         oMovimientoDTO.NombTipoDocumentoOperacion = (drd["NombTipoDocumentoOperacion"].ToString());
                         oMovimientoDTO.NombSerie = (drd["NombSerie"].ToString());
                         oMovimientoDTO.Estado = Convert.ToBoolean(drd["Estado"].ToString());
+                        oMovimientoDTO.DescCuadrilla = (drd["DescCuadrilla"].ToString());
+                        oMovimientoDTO.NombAlmacen = (drd["NombAlmacen"].ToString());
+                        oMovimientoDTO.NombObra = (drd["NombObra"].ToString());
+
+                        
                         lstMovimientoDTO.Add(oMovimientoDTO);
                     }
                     drd.Close();
@@ -169,6 +178,67 @@ namespace DAO
             return lstMovimientoDTO;
         }
         #endregion
+
+
+        
+        public List<MovimientoDTO> ObtenerMovimientosSalida(int IdSociedad, ref string mensaje_error, int Estado = 3)
+        {
+            List<MovimientoDTO> lstMovimientoDTO = new List<MovimientoDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerMovimientosSalidas", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
+                    da.SelectCommand.Parameters.AddWithValue("@Estado", Estado);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        MovimientoDTO oMovimientoDTO = new MovimientoDTO();
+                        oMovimientoDTO.IdMovimiento = Convert.ToInt32(drd["IdMovimiento"].ToString());
+                        oMovimientoDTO.IdTipoDocumento = Convert.ToInt32(drd["IdTipoDocumento"].ToString());
+                        oMovimientoDTO.ObjType = (drd["ObjType"].ToString());
+                        oMovimientoDTO.IdMoneda = Convert.ToInt32(drd["IdMoneda"].ToString());
+                        oMovimientoDTO.CodMoneda = (drd["CodMoneda"].ToString());
+                        oMovimientoDTO.TipoCambio = Convert.ToDecimal(drd["TipoCambio"].ToString());
+                        oMovimientoDTO.IdCliente = Convert.ToInt32(drd["IdCliente"].ToString());
+                        oMovimientoDTO.FechaContabilizacion = Convert.ToDateTime(drd["FechaContabilizacion"].ToString());
+                        oMovimientoDTO.FechaDocumento = Convert.ToDateTime(drd["FechaDocumento"].ToString());
+                        oMovimientoDTO.FechaVencimiento = Convert.ToDateTime(drd["FechaVencimiento"].ToString());
+                        oMovimientoDTO.IdListaPrecios = Convert.ToInt32(drd["IdListaPrecios"].ToString());
+                        oMovimientoDTO.Referencia = (drd["Referencia"].ToString());
+                        oMovimientoDTO.Comentario = (drd["Comentario"].ToString());
+                        oMovimientoDTO.DocEntrySap = Convert.ToInt32(drd["DocEntrySap"].ToString());
+                        oMovimientoDTO.DocNumSap = (drd["DocNumSap"].ToString());
+                        oMovimientoDTO.IdCentroCosto = Convert.ToInt32(drd["IdCentroCosto"].ToString());
+                        oMovimientoDTO.SubTotal = Convert.ToDecimal(drd["SubTotal"].ToString());
+                        oMovimientoDTO.Impuesto = Convert.ToDecimal(drd["Impuesto"].ToString());
+                        oMovimientoDTO.IdTipoAfectacionIgv = Convert.ToInt32(drd["IdTipoAfectacionIgv"].ToString());
+                        oMovimientoDTO.Total = Convert.ToDecimal(drd["Total"].ToString());
+                        oMovimientoDTO.IdAlmacen = Convert.ToInt32(drd["IdAlmacen"].ToString());
+                        oMovimientoDTO.IdSerie = Convert.ToInt32(drd["IdSerie"].ToString());
+                        oMovimientoDTO.Correlativo = Convert.ToInt32(drd["Correlativo"].ToString());
+                        oMovimientoDTO.IdSociedad = Convert.ToInt32(drd["IdSociedad"].ToString());
+                        oMovimientoDTO.NombTipoDocumentoOperacion = (drd["NombTipoDocumentoOperacion"].ToString());
+                        oMovimientoDTO.NombSerie = (drd["NombSerie"].ToString());
+                        oMovimientoDTO.Estado = Convert.ToBoolean(drd["Estado"].ToString());
+                        oMovimientoDTO.DescCuadrilla = (drd["DescCuadrilla"].ToString());
+                        oMovimientoDTO.NombAlmacen = (drd["NombAlmacen"].ToString());
+                        lstMovimientoDTO.Add(oMovimientoDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstMovimientoDTO;
+        }
 
 
         #region ObtenerDAtosxId
@@ -221,9 +291,10 @@ namespace DAO
                         oMovimientoDTO.EntregadoA = Convert.ToInt32(drd["EntregadoA"].ToString());
                         oMovimientoDTO.IdBase = Convert.ToInt32(drd["IdBase"].ToString());
                         oMovimientoDTO.IdObra = Convert.ToInt32(drd["IdObra"].ToString());
-                        oMovimientoDTO.IdUsuario = Convert.ToInt32(drd["IdUsuario"].ToString());
-                        oMovimientoDTO.CreatedAt = Convert.ToDateTime(drd["CreatedAt"].ToString());
-
+                        oMovimientoDTO.IdUsuario = Convert.ToInt32((String.IsNullOrEmpty(drd["IdUsuario"].ToString())) ? "0" : drd["IdUsuario"].ToString());
+                        oMovimientoDTO.CreatedAt = Convert.ToDateTime((String.IsNullOrEmpty(drd["CreatedAt"].ToString())) ? "2022-08-01" : drd["CreatedAt"].ToString());
+                        oMovimientoDTO.NombUsuario = (drd["NombUsuario"].ToString());
+            
 
                     }
                     drd.Close();

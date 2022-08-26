@@ -64,6 +64,7 @@ namespace DAO
                     while (drd.Read())
                     {
                         GrupoDTO oGrupoDTO = new GrupoDTO();
+                        oGrupoDTO.IdObra = int.Parse(drd["IdObra"].ToString());
                         oGrupoDTO.IdGrupo = int.Parse(drd["IdGrupo"].ToString());
                         oGrupoDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
                         oGrupoDTO.Codigo = drd["Codigo"].ToString();
@@ -97,6 +98,7 @@ namespace DAO
                     while (drd.Read())
                     {
                         GrupoDTO oGrupoDTO = new GrupoDTO();
+                        oGrupoDTO.IdObra = int.Parse(drd["IdObra"].ToString());
                         oGrupoDTO.IdGrupo = int.Parse(drd["IdGrupo"].ToString());
                         oGrupoDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
                         oGrupoDTO.Codigo = drd["Codigo"].ToString();
@@ -165,6 +167,7 @@ namespace DAO
                         cn.Open();
                         SqlDataAdapter da = new SqlDataAdapter("SMC_UpdateInsertGrupo", cn);
                         da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdObra", oGrupoDTO.IdObra);
                         da.SelectCommand.Parameters.AddWithValue("@IdGrupo", oGrupoDTO.IdGrupo);
                         da.SelectCommand.Parameters.AddWithValue("@Codigo", oGrupoDTO.Codigo);
                         da.SelectCommand.Parameters.AddWithValue("@Descripcion", oGrupoDTO.Descripcion);

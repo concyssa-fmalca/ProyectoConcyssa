@@ -67,6 +67,11 @@ namespace DTO
 
         public int IdUsuario { get; set; }
         public DateTime CreatedAt { get; set; }
+        public string NombUsuario { get; set; }
+
+        public string NombAlmacen { get; set; }
+        public string DescCuadrilla { get; set; }
+        public string NombObra { get; set; }
 
     }
 }

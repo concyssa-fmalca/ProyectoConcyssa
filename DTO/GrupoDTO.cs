@@ -12,6 +12,7 @@ namespace DTO
         public string Codigo { get; set; }
         public string Descripcion { get; set; }
         public int IdSociedad { get; set; }
+        public int IdObra { get; set; }
         public bool Estado { get; set; }
         public bool Eliminado { get; set; }
         public IList<SubGrupoDTO> SubGrupos { get; set; }

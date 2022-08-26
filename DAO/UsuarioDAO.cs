@@ -84,6 +84,40 @@ namespace DAO
             return lstUsuarioDTO;
         }
 
+        
+        public List<UsuarioDTO> ObtenerBasesxIdUsuario(int Idusuario,ref string mensaje_error)
+        {
+            List<UsuarioDTO> lstUsuarioDTO = new List<UsuarioDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarBasesxIdUsuario", cn);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    da.SelectCommand.Parameters.AddWithValue("@Idusuario", Idusuario);
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        UsuarioDTO oUsuarioDTO = new UsuarioDTO();
+                        oUsuarioDTO.IdUsuario = int.Parse(drd["IdUsuario"].ToString());
+                        oUsuarioDTO.Usuario = drd["Usuario"].ToString();
+                        oUsuarioDTO.Nombre = drd["Nombre"].ToString();
+                        oUsuarioDTO.IdPerfil = int.Parse(drd["IdPerfil"].ToString());
+                        oUsuarioDTO.IdBase = Convert.ToInt32(drd["IdBase"].ToString());
+                        lstUsuarioDTO.Add(oUsuarioDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstUsuarioDTO;
+        }
 
         public int UpdateInsertUsuario(UsuarioDTO oUsuarioDTO, ref string mensaje_error)
         {

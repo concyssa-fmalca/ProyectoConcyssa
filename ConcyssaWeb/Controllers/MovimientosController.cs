@@ -45,7 +45,23 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
+        public string ObtenerMovimientosSalida(int Estado = 3)
+        {
+            string mensaje_error = "";
+            MovimientoDAO oMovimientoDAO = new MovimientoDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            List<MovimientoDTO> oMovimientoDTO = oMovimientoDAO.ObtenerMovimientosSalida(IdSociedad, ref mensaje_error, Estado);
+            if (mensaje_error.ToString().Length == 0)
+            {
+                return JsonConvert.SerializeObject(oMovimientoDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
 
-        
+
+
     }
 }

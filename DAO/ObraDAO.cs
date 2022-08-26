@@ -159,6 +159,7 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@ContratoMantenimiento", oObraDTO.ContratoMantenimiento);
                         da.SelectCommand.Parameters.AddWithValue("@VisibleInternet", oObraDTO.VisibleInternet);
                         da.SelectCommand.Parameters.AddWithValue("@Estado", oObraDTO.Estado);
+                        da.SelectCommand.Parameters.AddWithValue("@Direccion", oObraDTO.Direccion);
                         da.SelectCommand.Parameters.AddWithValue("@Eliminado", oObraDTO.Eliminado);
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
@@ -234,6 +235,7 @@ namespace DAO
                         oObraDTO.VisibleInternet = bool.Parse(drd["VisibleInternet"].ToString());
                         oObraDTO.Estado = bool.Parse(drd["Estado"].ToString());
                         oObraDTO.Eliminado = bool.Parse(drd["Eliminado"].ToString());
+                        oObraDTO.Direccion = (drd["Direccion"].ToString());
                         //oObraDTO.DescripcionBase = (drd["DescripcionBase"].ToString());
 
 
