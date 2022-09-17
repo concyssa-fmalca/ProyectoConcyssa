@@ -47,7 +47,9 @@ namespace DAO
                         oKardexDTO.Correlativo = Convert.ToInt32(drd["Correlativo"].ToString());
                         oKardexDTO.TipoTransaccion = (drd["TipoTransaccion"].ToString());
                         oKardexDTO.DescUnidadMedidaBase = (drd["DescUnidadMedidaBase"].ToString());
-                        
+                        oKardexDTO.NombUsuario = (drd["NombUsuario"].ToString());
+
+
                         lstKardexDTO.Add(oKardexDTO);
                     }
                     drd.Close();
@@ -60,6 +62,78 @@ namespace DAO
                 }
             }
             return lstKardexDTO;
+        }
+
+        
+        public ArticuloStockDTO ObtenerArticuloxIdArticuloxIdAlm(int IdArticulo,int IdAlmacen,ref string mensaje_error)
+        {
+
+            ArticuloStockDTO oArticuloStockDTO = new ArticuloStockDTO();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerArticuloStockxIdArticuloxIdAlm", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdArticulo", IdArticulo);
+                    da.SelectCommand.Parameters.AddWithValue("@IdAlmacen", IdAlmacen);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        //ArticuloStockDTO oArticuloStockDTO = new ArticuloStockDTO();
+                        oArticuloStockDTO.IdArticuloStock = Convert.ToInt32(drd["IdArticuloStock"].ToString());
+                        oArticuloStockDTO.IdArticulo = Convert.ToInt32(drd["IdArticulo"].ToString());
+                        oArticuloStockDTO.Stock = Convert.ToDecimal(drd["Stock"].ToString());
+                        oArticuloStockDTO.PrecioPromedio = Convert.ToDecimal(drd["PrecioPromedio"].ToString());
+                        //lstArticuloDTO.Add(oArticuloStockDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return oArticuloStockDTO;
+        }
+
+        public List<ArticuloStockDTO> ObtenerStockxAlmacen(int IdAlmacen, ref string mensaje_error)
+        {
+
+            List<ArticuloStockDTO> lstArticuloStockDTO = new List<ArticuloStockDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_InformeInventarioxIdAlmacen", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdAlmacen", IdAlmacen);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        ArticuloStockDTO oArticuloStockDTO = new ArticuloStockDTO();
+                        oArticuloStockDTO.IdArticulo = Convert.ToInt32(drd["IdArticulo"].ToString());
+                        oArticuloStockDTO.IdAlmacen = Convert.ToInt32(drd["IdAlmacen"].ToString());
+                        oArticuloStockDTO.NombArticulo =(drd["NombArticulo"].ToString());
+                        oArticuloStockDTO.NombAlmacen = (drd["NombAlmacen"].ToString());
+                        oArticuloStockDTO.Stock = Convert.ToDecimal(drd["Stock"].ToString());
+                        oArticuloStockDTO.PrecioPromedio = Convert.ToDecimal(drd["PrecioPromedio"].ToString());
+                        lstArticuloStockDTO.Add(oArticuloStockDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstArticuloStockDTO;
         }
 
     }

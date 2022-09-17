@@ -35,6 +35,10 @@ namespace DAO
                         oUsuarioDTO.SapUsuario = drd["SapUsuario"].ToString();
                         oUsuarioDTO.SapPassword = drd["SapPassword"].ToString();
                         oUsuarioDTO.Estado = Convert.ToBoolean(drd["Estado"].ToString());
+                        oUsuarioDTO.MovimientoInventario = Convert.ToBoolean(drd["MovimientoInventario"].ToString());
+
+                        
+
                         lstUsuarioDTO.Add(oUsuarioDTO);
                     }
                     drd.Close();
@@ -70,6 +74,7 @@ namespace DAO
                         oUsuarioDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
                         oUsuarioDTO.NombreSociedad = drd["NombreSociedad"].ToString();
                         oUsuarioDTO.Estado = bool.Parse(drd["Estado"].ToString());
+                        oUsuarioDTO.MovimientoInventario = Convert.ToBoolean(drd["MovimientoInventario"].ToString());
                         lstUsuarioDTO.Add(oUsuarioDTO);
                     }
                     drd.Close();
@@ -105,6 +110,7 @@ namespace DAO
                         oUsuarioDTO.Nombre = drd["Nombre"].ToString();
                         oUsuarioDTO.IdPerfil = int.Parse(drd["IdPerfil"].ToString());
                         oUsuarioDTO.IdBase = Convert.ToInt32(drd["IdBase"].ToString());
+                        oUsuarioDTO.MovimientoInventario= Convert.ToBoolean(drd["MovimientoInventario"].ToString());
                         lstUsuarioDTO.Add(oUsuarioDTO);
                     }
                     drd.Close();
@@ -143,6 +149,8 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@SapUsuario", oUsuarioDTO.SapUsuario);
                         da.SelectCommand.Parameters.AddWithValue("@SapPassword", oUsuarioDTO.SapPassword);
                         da.SelectCommand.Parameters.AddWithValue("@Estado", oUsuarioDTO.Estado);
+                        da.SelectCommand.Parameters.AddWithValue("@MovimientoInventario", oUsuarioDTO.MovimientoInventario);
+
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
                         return rpta;
@@ -181,6 +189,8 @@ namespace DAO
                         oUsuarioDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
                         oUsuarioDTO.NombreSociedad = drd["NombreSociedad"].ToString();
                         oUsuarioDTO.Estado = bool.Parse(drd["Estado"].ToString());
+                        oUsuarioDTO.MovimientoInventario = bool.Parse(drd["MovimientoInventario"].ToString());
+
                         lstUsuarioDTO.Add(oUsuarioDTO);
                     }
                     drd.Close();

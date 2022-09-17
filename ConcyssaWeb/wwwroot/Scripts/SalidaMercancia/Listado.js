@@ -666,14 +666,28 @@ function CargarGrupoUnidadMedida() {
         llenarComboGrupoUnidadMedidaItem(grupounidad, "cboGrupoUnidadMedida", "Seleccione")
     });
 }
+function validadJson(json) {
+    try {
+        object = JSON.parse(json);
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
 
 function CargarDefinicionxGrupo() {
     console.log('CargarDefinicionxGrupo');
     let IdGrupoUnidadMedida = $("#cboGrupoUnidadMedida").val();
     $.ajaxSetup({ async: false });
     $.post("/GrupoUnidadMedida/ObtenerDefinicionUnidadMedidaxGrupo", { 'IdGrupoUnidadMedida': IdGrupoUnidadMedida }, function (data, status) {
-        let definicion = JSON.parse(data);
-        llenarComboDefinicionGrupoUnidadItem(definicion, "cboMedidaItem", "Seleccione")
+        if (validadJson(data)) {
+            let definicion = JSON.parse(data);
+            llenarComboDefinicionGrupoUnidadItem(definicion, "cboMedidaItem", "Seleccione")
+        } else {
+            $("#cboMedidaItem").html('<option value="0">SELECCIONE</option>')
+        }
+
     });
 }
 
@@ -1049,6 +1063,10 @@ function ObtenerNumeracion() {
 
 
 function GuardarSolicitud() {
+
+
+
+
     let ArrayGeneral = new Array();
 
 
@@ -1148,6 +1166,21 @@ function GuardarSolicitud() {
     let IdTipoDocumentoRef = $("#IdTipoDocumentoRef").val();
     let SerieNumeroRef = $("#SerieNumeroRef").val();
     //END Cabecera
+
+    //Validaciones
+    if ($("#cboTipoDocumentoOperacion").val()==0 ) {
+        Swal.fire(
+            'Error!',
+            'Complete el campo de Tipo de Movimiento',
+            'error'
+        )
+        return;
+    }
+    
+    //End Validaciones
+
+
+
 
     //let oMovimientoDetalleDTO = {};
     //oMovimientoDetalleDTO.Total = arrayTotal
@@ -1313,7 +1346,7 @@ function limpiarDatos() {
 
 
 function ObtenerDatosxID(IdMovimiento) {
-
+    $("#txtId").val(IdMovimiento);
 
     CargarCentroCosto();
     listarEmpleados();
@@ -1944,4 +1977,65 @@ function LimpiarModalItem() {
     //$("#cboAlmacenItem").val(0);
     $("#txtReferenciaItem").val("");
 
+}
+
+
+function GenerarExtorno() {
+    let IdMovimiento = $("#txtId").val();
+    Swal.fire({
+        title: 'DESEA GENERAR EXTORNO?',
+        text: "Se validara si los productos ingresados se encuentran con Stock",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si Generar!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: "GenerarSalidaExtorno",
+                type: "POST",
+                async: true,
+                data: {
+                    'IdMovimiento': IdMovimiento
+                },
+                beforeSend: function () {
+                    Swal.fire({
+                        title: "Cargando...",
+                        text: "Por favor espere",
+                        showConfirmButton: false,
+                        allowOutsideClick: false
+                    });
+                },
+                success: function (data) {
+                    if (data == 1) {
+                        Swal.fire(
+                            'Correcto',
+                            'Proceso Realizado Correctamente',
+                            'success'
+                        )
+                        //swal("Exito!", "Proceso Realizado Correctamente", "success")
+                        table.destroy();
+                        ConsultaServidor("../Movimientos/ObtenerMovimientosIngresos");
+
+                    } else {
+                        Swal.fire(
+                            'Error!',
+                            'Ocurrio un Error!',
+                            'error'
+                        )
+
+                    }
+
+
+                }
+            }).fail(function () {
+                Swal.fire(
+                    'Error!',
+                    'Comunicarse con el Area Soporte: smarcode@smartcode.pe !',
+                    'error'
+                )
+            });
+        }
+    })
 }

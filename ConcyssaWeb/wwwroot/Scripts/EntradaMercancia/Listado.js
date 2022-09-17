@@ -136,9 +136,17 @@ function ObtenerAlmacenxIdObra() {
     let IdObra = $("#IdObra").val();
     $.ajaxSetup({ async: false });
     $.post("/Almacen/ObtenerAlmacenxIdObra", { 'IdObra': IdObra }, function (data, status) {
-        let almacen = JSON.parse(data);
-        llenarComboAlmacen(almacen, "cboAlmacen", "Seleccione")
-        llenarComboAlmacen(almacen, "cboAlmacenItem", "Seleccione")
+        if (validadJson(data)) {
+            let almacen = JSON.parse(data);
+            llenarComboAlmacen(almacen, "cboAlmacen", "Seleccione")
+            llenarComboAlmacen(almacen, "cboAlmacenItem", "Seleccione")
+        } else {
+            $("#cboAlmacen").html('<option value="0">SELECCIONE</option>')
+            $("#cboAlmacenItem").html('<option value="0">SELECCIONE</option>')
+        }
+
+
+        
     });
 }
 
@@ -1101,6 +1109,17 @@ function ObtenerNumeracion() {
 
 
 function GuardarSolicitud() {
+    //Validaciones
+    if ($("#cboTipoDocumentoOperacion").val() == 0) {
+        Swal.fire(
+            'Error!',
+            'Complete el campo de Tipo de Movimiento',
+            'error'
+        )
+        return;
+    }
+ 
+
     let ArrayGeneral = new Array();
     
     
@@ -1366,6 +1385,7 @@ function limpiarDatos() {
 
 
 function ObtenerDatosxID(IdMovimiento) {
+    $("#txtId").val(IdMovimiento);
     CargarCentroCosto();
     listarEmpleados();
     ObtenerTiposDocumentos()
@@ -1461,8 +1481,9 @@ function CalcularTotalDetalle(contador) {
     } else {
         impuesto = (subtotal * varPorcentaje);
         varTotal = subtotal + impuesto;
-    }
-    $("#txtItemTotal" + contador).val(formatNumber(varTotal.toFixed(2))).change();
+    }   
+    console.log(formatNumber(varTotal.toFixed(2)));
+    $("#txtItemTotal" + contador).val((varTotal.toFixed(2))).change();
 
 
 }
@@ -1989,4 +2010,64 @@ function LimpiarModalItem() {
     //$("#cboAlmacenItem").val(0);
     $("#txtReferenciaItem").val("");
 
+}
+
+function GenerarExtorno() {
+    let IdMovimiento=$("#txtId").val();
+    Swal.fire({
+        title: 'DESEA GENERAR EXTORNO?',
+        text: "Se validara si los productos ingresados se encuentran con Stock",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si Generar!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: "GenerarIngresoExtorno",
+                type: "POST",
+                async: true,
+                data: {
+                    'IdMovimiento': IdMovimiento
+                },
+                beforeSend: function () {
+                    Swal.fire({
+                        title: "Cargando...",
+                        text: "Por favor espere",
+                        showConfirmButton: false,
+                        allowOutsideClick: false
+                    });
+                },
+                success: function (data) {
+                    if (data == 1) {
+                        Swal.fire(
+                            'Correcto',
+                            'Proceso Realizado Correctamente',
+                            'success'
+                        )
+                        //swal("Exito!", "Proceso Realizado Correctamente", "success")
+                        table.destroy();
+                        ConsultaServidor("../Movimientos/ObtenerMovimientosIngresos");
+
+                    } else {
+                        Swal.fire(
+                            'Error!',
+                            'Ocurrio un Error!',
+                            'error'
+                        )
+
+                    }
+
+
+                }
+            }).fail(function () {
+                Swal.fire(
+                    'Error!',
+                    'Comunicarse con el Area Soporte: smarcode@smartcode.pe !',
+                    'error'
+                )
+            });
+        }
+    })
 }

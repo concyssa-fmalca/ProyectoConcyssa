@@ -36,39 +36,56 @@ function listarObra(){
 }
 
 function ConsultaServidor(url) {
+    table = $('#table_id').dataTable({
+        language: lenguaje_data,
+        responsive: true,
+        ajax: {
+            url: url,
+            type: 'POST',
+            data: {
 
-    $.post(url, function (data, status) {
+                pagination: {
+                    perpage: 50,
+                },
+            },
+        },
 
-        //console.log(data);
-        if (data == "error") {
-            table = $("#table_id").DataTable(lenguaje);
-            return;
-        }
+        columnDefs: [
+            // {"className": "text-center", "targets": "_all"},
+            {
+                targets: -1,
+                orderable: false,
+                render: function (data, type, full, meta) {
+   
+                    return `<button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(` + full.IdAlmacen + `)"></button>
+                            <button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(` + full.IdAlmacen + `)"></button>`
+                },
+            },
+            {
+                targets: 0,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return meta.row+1
+                },
+            },
+            {
+                targets: 1,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.Codigo.toUpperCase()
+                },
+            },
+            {
+                targets: 2,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.Descripcion.toUpperCase()
+                },
+            }
 
-        let tr = '';
-
-        let almacen = JSON.parse(data);
-        let total_almacen = almacen.length;
-
-        for (var i = 0; i < almacen.length; i++) {
-
-
-            tr += '<tr>' +
-                '<td>' + (i + 1) + '</td>' +
-                '<td>' + almacen[i].Codigo.toUpperCase() + '</td>' +
-                '<td>' + almacen[i].Descripcion.toUpperCase() + '</td>' +
-                '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + almacen[i].IdAlmacen + ')"></button>' +
-                '<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + almacen[i].IdAlmacen + ')"></button></td >' +
-                '</tr>';
-        }
-
-        $("#tbody_almacen").html(tr);
-        $("#spnTotalRegistros").html(total_almacen);
-
-        table = $("#table_id").DataTable(lenguaje);
-
-    });
-
+        ],
+        "bDestroy": true
+    }).DataTable();
 }
 
 
@@ -103,8 +120,8 @@ function GuardarAlmacen() {
 
         if (data == 1) {
             swal("Exito!", "Proceso Realizado Correctamente", "success")
-            table.destroy();
-            ConsultaServidor("ObtenerAlmacen");
+            table.ajax.reload();
+         
             limpiarDatos();
 
         } else {
@@ -156,8 +173,8 @@ function eliminar(varIdAlmacen) {
                 limpiarDatos();
             } else {
                 swal("Exito!", "Almacen Eliminada", "success")
-                table.destroy();
-                ConsultaServidor("ObtenerAlmacen");
+                table.ajax.reload();
+               
                 limpiarDatos();
             }
 

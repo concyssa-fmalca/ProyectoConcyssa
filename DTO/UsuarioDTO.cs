@@ -23,5 +23,6 @@ namespace DTO
         public string? SapPassword { get; set; }
         
         public int IdBase { get; set; }
+        public bool MovimientoInventario { get; set; }
     }
 }

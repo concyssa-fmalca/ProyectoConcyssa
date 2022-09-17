@@ -1,4 +1,36 @@
 ﻿let table = '';
+function ObtenerConfiguracionDecimales() {
+    $.post("/ConfiguracionDecimales/ObtenerConfiguracionDecimales", function (data, status) {
+
+        let datos = JSON.parse(data);
+        DecimalesCantidades = datos[0].Cantidades;
+        DecimalesImportes = datos[0].Importes;
+        DecimalesPrecios = datos[0].Precios;
+        DecimalesPorcentajes = datos[0].Porcentajes;
+    });
+}
+let DecimalesImportes = 0;
+let DecimalesPrecios = 0;
+let DecimalesCantidades = 0;
+let DecimalesPorcentajes = 0;
+
+
+function formatNumber(num) {
+    if (!num || num == 'NaN') return '-';
+    if (num == 'Infinity') return '&#x221e;';
+    num = num.toString().replace(/\$|\,/g, '');
+    if (isNaN(num))
+        num = "0";
+    sign = (num == (num = Math.abs(num)));
+    num = Math.floor(num * 100 + 0.50000000001);
+    cents = num % 100;
+    num = Math.floor(num / 100).toString();
+    if (cents < 10)
+        cents = "0" + cents;
+    for (var i = 0; i < Math.floor((num.length - (1 + i)) / 3); i++)
+        num = num.substring(0, num.length - (4 * i + 3)) + ',' + num.substring(num.length - (4 * i + 3));
+    return (((sign) ? '' : '-') + num + '.' + cents);
+}
 
 
 window.onload = function () {
@@ -107,12 +139,14 @@ function ListarDatatableKardex(url,IdArticulo, IdAlmacen, FechaInicio, FechaTerm
                 '<td>' +'-'+ '</td>' +
                 '<td>' + division[i].FechaDocumento.split('T')[0] + '</td>' +
                 '<td>' + division[i].DescUnidadMedidaBase + '</td>' +
-                '<td>' + entrada + '</td>' +
-                '<td>' + salida + '</td>' +
+                '<td>' + formatNumber( division[i].CantidadBase ) + '</td>' +
+                '<td>' + formatNumber(division[i].PrecioRegistro) + '</td>' +
+                '<td>' + formatNumber( (division[i].CantidadBase * division[i].PrecioPromedio)) + '</td>' +
                 '<td>' + division[i].Saldo + '</td>' +
-                '<td>' + division[i].PrecioRegistro + '</td>' +
-                '<td>' + division[i].PrecioPromedio + '</td>'+
-                '<td>' + Math.abs(division[i].PrecioPromedio * division[i].Saldo) + '</td>'+
+                
+                '<td>' + formatNumber(division[i].PrecioPromedio) + '</td>'+
+                '<td>' + formatNumber(Math.abs(division[i].PrecioPromedio * division[i].Saldo)) + '</td>' +
+                '<td>' + division[i].NombUsuario + '</td>' +
             '</tr>';
         }
 

@@ -1,0 +1,71 @@
+﻿@{
+    ViewBag.Title = "Listado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" style="height:93%;">
+    <div class="panel">
+        <div class="container-fluid">
+            <div class="topbar-left col-xs-6">
+                <h3>Informe Inventario Almacen</h3>
+            </div>
+        </div>
+        <div class="container-fluid ">
+            <div class="col-xs-12">
+                <div class="topbar-left col-xs-12">
+                    <h4 style="font-size:1.2em;">Total de Registros: <span id="spnTotalRegistros"></span></h4>
+                </div>
+            </div>
+            @*    <div class="col-xs-6 right">
+
+            </div>
+            *@
+            <div class="row">
+            
+                <div class="col-sm-1"></div>
+                <div class='form-group-sm'>
+                    <label for="txtPrecioUnitarioItem" class="control-label col-sm-1 left-right">Almacen</label>
+                    <div class="col-sm-3">
+                        <select id="IdAlmacen" class="form-control input-sm" tabindex="0" onchange="ObtenerStockxAlmacen()"></select>
+                    </div>
+                </div>
+            </div>
+
+      
+
+        </div>
+
+
+    </div>
+    <div class="panel">
+        <div class="container-fluid">
+            <table id="table_id" class="table text-center table-resposive" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Almacen</th>
+                        <th>Producto</th>
+                        <th>Stock</th>
+                        <th>Precio Promedio</th>
+                        <th>Valorizado</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody_division"></tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+
+
+</div>
+
+
+<script src="~/Scripts/InformeInventarioAlmacen/Listado.js"></script>
+<script src="~/Scripts/General.js"></script>
+<script src="~/js/pdf/jspdf.min.js"></script>
+<script src="~/js/pdf/faker.min.js"></script>
+<script src="~/js/pdf/jspdf.plugin.autotable.src.js"></script>
+
+

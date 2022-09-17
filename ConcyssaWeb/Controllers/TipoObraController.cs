@@ -15,11 +15,15 @@ namespace ConcyssaWeb.Controllers
         {
             string mensaje_error = "";
             TipoObraDAO oTipoObraDAO = new TipoObraDAO();
+            DataTableDTO oDataTableDTO = new DataTableDTO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             List<TipoObraDTO> lstTipoObraDTO = oTipoObraDAO.ObtenerTipoObra(IdSociedad, ref mensaje_error, estado);
             if (lstTipoObraDTO.Count > 0)
             {
+ 
+                //return oDataTableDTO;
                 return JsonConvert.SerializeObject(lstTipoObraDTO);
+
             }
             else
             {
@@ -27,6 +31,29 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
+
+        public string ObtenerTipoObraDT(int estado = 3)
+        {
+            string mensaje_error = "";
+            TipoObraDAO oTipoObraDAO = new TipoObraDAO();
+            DataTableDTO oDataTableDTO = new DataTableDTO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            List<TipoObraDTO> lstTipoObraDTO = oTipoObraDAO.ObtenerTipoObra(IdSociedad, ref mensaje_error, estado);
+            if (lstTipoObraDTO.Count > 0)
+            {
+                oDataTableDTO.sEcho = 1;
+                oDataTableDTO.iTotalDisplayRecords = lstTipoObraDTO.Count;
+                oDataTableDTO.iTotalRecords = lstTipoObraDTO.Count;
+                oDataTableDTO.aaData = (lstTipoObraDTO);
+                //return oDataTableDTO;
+                return JsonConvert.SerializeObject(oDataTableDTO);
+
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
 
         public string ObtenerDatosxID(int IdTipoObra)
         {

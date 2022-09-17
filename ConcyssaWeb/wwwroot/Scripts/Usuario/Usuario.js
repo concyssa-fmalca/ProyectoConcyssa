@@ -114,9 +114,14 @@ function GuardarUsuario() {
     let varPerfil = $("#cboPerfil").val();
     let varSociedad = $("#cboSociedad").val();
     let varEstado = false;
+    let MovimientoInventario = false;
 
     if ($('#chkActivo')[0].checked) {
         varEstado = true;
+    }
+
+    if ($('#MovimientoInventario')[0].checked) {
+        MovimientoInventario = true;
     }
 
     $.post('UpdateInsertUsuario', {
@@ -165,6 +170,13 @@ function ObtenerDatosxID(varIdUsuario) {
             if (usuarios[0].Estado) {
                 $("#chkActivo").prop('checked', true);
             }
+
+            if (usuarios[0].MovimientoInventario) {
+                $("#MovimientoInventario").prop('checked', true);
+            }
+
+
+            
 
             $.post("ObtenerSociedades", function (data, status) {
                 let contenido;
@@ -231,6 +243,7 @@ function limpiarDatos() {
     $("#txtUsuario").val("");
     $("#txtContraseña").val("");
     $("#chkActivo").prop('checked', false);
+    $("#MovimientoInventario").prop('checked', false);
 }
 
 

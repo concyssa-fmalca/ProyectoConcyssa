@@ -39,6 +39,8 @@ namespace DAO
                         oCuadrillaDTO.IdArea = Convert.ToInt32(drd["IdArea"].ToString());
                         oCuadrillaDTO.IdSociedad = Convert.ToInt32(drd["IdSociedad"].ToString());
                         oCuadrillaDTO.Estado = Convert.ToBoolean(drd["Estado"].ToString());
+                        oCuadrillaDTO.EsTercero = Convert.ToBoolean(drd["EsTercero"].ToString());
+                        
                         lstCuadrillaDTO.Add(oCuadrillaDTO);
                     }
                     drd.Close();
@@ -80,6 +82,7 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@IdArea", oCuadrillaDTO.IdArea);
                         da.SelectCommand.Parameters.AddWithValue("@IdSociedad", oCuadrillaDTO.IdSociedad);
                         da.SelectCommand.Parameters.AddWithValue("@Estado", oCuadrillaDTO.Estado);
+                        da.SelectCommand.Parameters.AddWithValue("@EsTercero", oCuadrillaDTO.EsTercero);
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
                         return rpta;
@@ -121,6 +124,8 @@ namespace DAO
                         oCuadrillaDTO.IdArea = Convert.ToInt32(drd["IdArea"].ToString());
                         oCuadrillaDTO.IdSociedad = Convert.ToInt32(drd["IdSociedad"].ToString());
                         oCuadrillaDTO.Estado = Convert.ToBoolean(drd["Estado"].ToString());
+                        oCuadrillaDTO.EsTercero = Convert.ToBoolean(drd["EsTercero"].ToString());
+
                         lstCuadrillaDTO.Add(oCuadrillaDTO);
                     }
                     drd.Close();

@@ -22,5 +22,6 @@ namespace DTO
         public bool IsActivoFijo { get; set; }
         public bool Estado { get; set; }
         public bool Eliminado { get; set; }
+        public bool EsTercero { get; set; }
     }
 }

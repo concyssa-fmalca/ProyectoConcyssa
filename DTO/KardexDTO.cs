@@ -32,5 +32,7 @@ namespace DTO
         public string TipoTransaccion { get; set; }
         public string DescUnidadMedidaBase { get; set; }
 
+        public string NombUsuario { get; set; }
+
     }
 }

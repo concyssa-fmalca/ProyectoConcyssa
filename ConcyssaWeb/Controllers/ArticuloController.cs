@@ -60,7 +60,28 @@ namespace ConcyssaWeb.Controllers
                 return mensaje_error;
             }
         }
-
+        
+        public string ListarArticulosCatalogoxSociedadxAlmacenStockxIdTipoProductoDT(int IdTipoProducto, int IdAlmacen, int estado = 3)
+        {
+            string mensaje_error = "";
+            ArticuloDAO oArticuloDAO = new ArticuloDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            List<ArticuloDTO> lstArticuloDTO = oArticuloDAO.ListarArticulosCatalogoxSociedadxAlmacenStockxIdTipoProducto(IdSociedad, IdAlmacen, IdTipoProducto, ref mensaje_error, estado);
+            DataTableDTO oDataTableDTO = new DataTableDTO();
+            if (lstArticuloDTO.Count > 0)
+            {
+                oDataTableDTO.sEcho = 1;
+                oDataTableDTO.iTotalDisplayRecords = lstArticuloDTO.Count;
+                oDataTableDTO.iTotalRecords = lstArticuloDTO.Count;
+                oDataTableDTO.aaData = (lstArticuloDTO);
+                //return oDataTableDTO;
+                return JsonConvert.SerializeObject(oDataTableDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
         public string ListarArticulosxSociedadxAlmacenStockxProducto(int IdArticulo,int IdAlmacen, int estado = 3)
         {
             string mensaje_error = "";

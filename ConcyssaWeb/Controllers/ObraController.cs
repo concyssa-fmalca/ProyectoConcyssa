@@ -111,11 +111,20 @@ namespace ConcyssaWeb.Controllers
         {
             string mensaje_error = "";
             ObraDAO oObraDAO = new ObraDAO();
+            DataTableDTO oDataTableDTO = new DataTableDTO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             List<ObraCatalogoDTO> lstObraDTO = oObraDAO.ListarArticulosxIdSociedadObra(IdSociedad, IdObra, ref mensaje_error);
             if (lstObraDTO.Count > 0)
             {
-                return JsonConvert.SerializeObject(lstObraDTO);
+                oDataTableDTO.sEcho = 1;
+                oDataTableDTO.iTotalDisplayRecords = lstObraDTO.Count;
+                oDataTableDTO.iTotalRecords = lstObraDTO.Count;
+                oDataTableDTO.aaData = (lstObraDTO);
+                //return oDataTableDTO;
+                return JsonConvert.SerializeObject(oDataTableDTO);
+
+
+                //return JsonConvert.SerializeObject(lstObraDTO);
             }
             else
             {

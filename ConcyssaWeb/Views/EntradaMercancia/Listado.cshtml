@@ -241,25 +241,25 @@
                             </div>
 
                             <div class="row">
-                                <div class='form-group-sm'>
+                                @*<div class='form-group-sm'>
                                     <label for="IdCuadrilla" class="control-label col-sm-1 left-align">Cuadrilla</label>
                                     <div class="col-sm-4">
                                         <select id="IdCuadrilla" type="text" class="form-control input-sm" tabindex="3">
                                             <option value="0">SELECCIONE CUADRILLAS </option>
                                         </select>
                                     </div>
-                                </div>
-                                <div class='form-group-sm'>
+                                </div>*@
+                               @* <div class='form-group-sm'>
                                     <label for="IdResponsable" style="text-align: right;" class="control-label col-sm-1 right-align">Responsable</label>
                                     <div class="col-sm-2">
                                         <select id="IdResponsable" type="text" class="form-control input-sm" tabindex="3">
                                             <option value="0">SELECCIONE Responsable </option>
                                         </select>
                                     </div>
-                                </div>
+                                </div>*@
                                 <div class='form-group-sm'>
-                                    <label for="cboCentroCosto" style="text-align: right;" class="control-label col-sm-2 right-align">Centro de Costo</label>
-                                    <div class="col-sm-2">
+                                    <label for="cboCentroCosto" class="control-label col-sm-2 left-align">Centro de Costo</label>
+                                    <div class="col-sm-4">
                                         <select id="cboCentroCosto" class="form-control input-sm" tabindex="0"></select>
                                     </div>
                                 </div>
@@ -474,7 +474,20 @@
                                     <p>Tipo  Documento: <select style="height: 20px" id="IdTipoDocumentoRef" class="form-control input-sm" tabindex="0"></select> </p>
                                 <hr style="margin: 0px 0px 5px 0px"/> 
                                 <p>Serie y Numero:  <input id="SerieNumeroRef" type="text" class="form-control huser-20" tabindex="16" > </p>
-                                 <hr style="margin: 0px 0px 5px 0px"/> 
+                                 <hr style="margin: 0px 0px 5px 0px"/>
+
+                                <p>Cuadrilla:<select  style="height: 20px"  id="IdCuadrilla" type="text" class="form-control input-sm" tabindex="0">
+                                        <option value="0">SELECCIONE CUADRILLAS </option>
+                                    </select> </p>
+                                <hr style="margin: 0px 0px 5px 0px"/>
+
+                                <p>Responsable:<select  style="height: 20px"  id="IdResponsable" type="text" class="form-control input-sm" tabindex="0">
+                                            <option value="0">SELECCIONE Responsable </option>
+                                        </select> </p>
+                                <hr style="margin: 0px 0px 5px 0px"/>
+
+
+                                
                                 @*<p>Ref1  <input id="txtTotal" type="number" class="form-control huser-20" tabindex="16" > </p>
                                 <hr style="margin: 0px 0px 5px 0px"/> 
                                 <p>Ref1  <input id="txtTotal" type="number" class="form-control huser-20" tabindex="16" > </p>*@
@@ -500,6 +513,7 @@
 
                 <div class="col-sm-6">
                     <div class='form-group-sm'>
+                        <button type="button" id="btnExtorno" onclick="GenerarExtorno()" class="btn btn-primary pull-right plu">Extorno</button>
                         <button type="button" id="btnGrabar" onclick="GuardarSolicitud()" class="btn btn-primary pull-right plu">Grabar</button>
                         <button type="button" id="btnCancelar" onclick="CerrarModal()" class="btn btn-danger pull-right" style="background-color:orange;">Cancelar</button>
                     </div>

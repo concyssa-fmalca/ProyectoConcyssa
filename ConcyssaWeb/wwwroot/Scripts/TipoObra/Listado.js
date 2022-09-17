@@ -8,38 +8,33 @@ window.onload = function () {
 
 
 function ConsultaServidor(url) {
+    table = $('#table_id').dataTable({
+        responsive: true,
+        ajax: {
+            url: url,
+            type: 'POST',
+            data: {
+                
+                pagination: {
+                    perpage: 50,
+                },
+            },
+        },
 
-    $.post(url, function (data, status) {
+        columnDefs: [
+            // {"className": "text-center", "targets": "_all"},
+            {
+                targets: -1,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.Descripcion
+                },
+            }
+            
+        ],
+        "bDestroy": true
+    }).DataTable();
 
-        //console.log(data);
-        if (data == "error") {
-            table = $("#table_id").DataTable(lenguaje);
-            return;
-        }
-
-        let tr = '';
-
-        let tipoobra = JSON.parse(data);
-        let total_tipoobra = tipoobra.length;
-
-        for (var i = 0; i < tipoobra.length; i++) {
-
-
-            tr += '<tr>' +
-                '<td>' + (i + 1) + '</td>' +
-                '<td>' + tipoobra[i].Codigo.toUpperCase() + '</td>' +
-                '<td>' + tipoobra[i].Descripcion.toUpperCase() + '</td>' +
-                '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + tipoobra[i].IdTipoObra + ')"></button>' +
-                '<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + tipoobra[i].IdTipoObra + ')"></button></td >' +
-                '</tr>';
-        }
-
-        $("#tbody_tipoobra").html(tr);
-        $("#spnTotalRegistros").html(total_tipoobra);
-
-        table = $("#table_id").DataTable(lenguaje);
-
-    });
 
 }
 

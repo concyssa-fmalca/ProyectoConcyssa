@@ -70,10 +70,17 @@ function GuardarCuadrilla() {
     let IdSupervisor = $("#IdSupervisor").val();
     let IdArea = $("#IdArea").val();
     let varEstado = false;
+    let EsTercero = false;
 
     if ($('#chkActivo')[0].checked) {
         varEstado = true;
     }
+
+    if ($('#EsTercero')[0].checked) {
+        EsTercero = true;
+    }
+
+    
 
     $.post('UpdateInsertCuadrilla', {
         'IdCuadrilla': varIdCuadrilla,
@@ -85,7 +92,8 @@ function GuardarCuadrilla() {
         'IdSupervisor': IdSupervisor,
         'IdCapataz': IdCapataz,
         'IdArea': IdArea,
-        'Estado': varEstado
+        'Estado': varEstado,
+        'EsTercero': EsTercero
     }, function (data, status) {
 
         if (data == 1) {
@@ -129,6 +137,10 @@ function ObtenerDatosxID(varIdCuadrilla) {
             $("#IdArea").val(cuadrilla[0].IdArea);
             if (cuadrilla[0].Estado) {
                 $("#chkActivo").prop('checked', true);
+            } 
+
+            if (cuadrilla[0].EsTercero) {
+                $("#EsTercero").prop('checked', true);
             } 
 
             
@@ -303,6 +315,7 @@ function limpiarDatos() {
     $("#txtCodigo").val("");
     $("#txtDescripcion").val("");
     $("#chkActivo").prop('checked', false);
+    $("#EsTercero").prop('checked', false);
 }
 
 

@@ -1,4 +1,36 @@
-﻿let table = '';
+﻿function ObtenerConfiguracionDecimales() {
+    $.post("/ConfiguracionDecimales/ObtenerConfiguracionDecimales", function (data, status) {
+
+        let datos = JSON.parse(data);
+        DecimalesCantidades = datos[0].Cantidades;
+        DecimalesImportes = datos[0].Importes;
+        DecimalesPrecios = datos[0].Precios;
+        DecimalesPorcentajes = datos[0].Porcentajes;
+    });
+}
+
+
+
+
+function formatNumber(num) {
+    if (!num || num == 'NaN') return '-';
+    if (num == 'Infinity') return '&#x221e;';
+    num = num.toString().replace(/\$|\,/g, '');
+    if (isNaN(num))
+        num = "0";
+    sign = (num == (num = Math.abs(num)));
+    num = Math.floor(num * 100 + 0.50000000001);
+    cents = num % 100;
+    num = Math.floor(num / 100).toString();
+    if (cents < 10)
+        cents = "0" + cents;
+    for (var i = 0; i < Math.floor((num.length - (1 + i)) / 3); i++)
+        num = num.substring(0, num.length - (4 * i + 3)) + ',' + num.substring(num.length - (4 * i + 3));
+    return (((sign) ? '' : '-') + num + '.' + cents);
+}
+
+
+let table = '';
 let tableItems = '';
 let tableProyecto = '';
 let tableCentroCosto = '';
@@ -150,7 +182,7 @@ function llenarComboCentroCosto(lista, idCombo, primerItem) {
 
 
 window.onload = function () {
-    var url = "../Movimientos/ObtenerMovimientosIngresos";
+    var url = "../Movimientos/ObtenerMovimientosTranferencias";
 
     ObtenerConfiguracionDecimales();
     ConsultaServidor(url);
@@ -599,13 +631,32 @@ function CargarGrupoUnidadMedida() {
     });
 }
 
+
+
+function validadJson(json) {
+    try {
+        object = JSON.parse(json);
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
+
+
 function CargarDefinicionxGrupo() {
     console.log('CargarDefinicionxGrupo');
     let IdGrupoUnidadMedida = $("#cboGrupoUnidadMedida").val();
     $.ajaxSetup({ async: false });
     $.post("/GrupoUnidadMedida/ObtenerDefinicionUnidadMedidaxGrupo", { 'IdGrupoUnidadMedida': IdGrupoUnidadMedida }, function (data, status) {
-        let definicion = JSON.parse(data);
-        llenarComboDefinicionGrupoUnidadItem(definicion, "cboMedidaItem", "Seleccione")
+        if(validadJson(data)) {
+            let definicion = JSON.parse(data);
+            llenarComboDefinicionGrupoUnidadItem(definicion, "cboMedidaItem", "Seleccione")
+        } else {
+            $("#cboMedidaItem").html('<option value="0">SELECCIONE</option>')
+        }
+        //let definicion = JSON.parse(data);
+        //llenarComboDefinicionGrupoUnidadItem(definicion, "cboMedidaItem", "Seleccione")
     });
 }
 
@@ -1201,7 +1252,7 @@ function GuardarSolicitud() {
                 )
                 //swal("Exito!", "Proceso Realizado Correctamente", "success")
                 table.destroy();
-                ConsultaServidor("../Movimientos/ObtenerMovimientosIngresos");
+                ConsultaServidor("../Movimientos/ObtenerMovimientosTranferencias");
 
             } else {
                 Swal.fire(
@@ -1711,6 +1762,8 @@ function SeleccionarItemListado() {
         } else {
             let datos = JSON.parse(data);
             console.log(datos);
+            $("#cboGrupoUnidadMedida").val(0).change();
+
 
             $("#txtCodigoItem").val(datos[0].Codigo);
             $("#txtIdItem").val(datos[0].IdArticulo);

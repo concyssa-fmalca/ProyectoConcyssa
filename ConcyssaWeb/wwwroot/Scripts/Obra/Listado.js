@@ -1,4 +1,5 @@
 ﻿let table = '';
+let tablecatalogo;
 //let table2 = $("#table_catalogoobra").DataTable(lenguaje);;
 
 window.onload = function () {
@@ -128,51 +129,123 @@ function ConsultaServidor(url) {
 function uicatalogoproducto(IdObra) {
     AbrirModal("modal-catalogoproducto");
     CargarCatalogoProductoxIdObra(IdObra);
-    table2.destroy();
-    table2 = $("#table_catalogoobra").DataTable(lenguaje);
+
 }
 
 function CargarCatalogoProductoxIdObra(IdObra) {
-    $.ajax({
-        url: "../Obra/CargarCatalogoxIdObra",
-        type: "GET",
-        contentType: "application/json",
-        dataType: "json",
-        data: {
-            'IdObra': IdObra
+    $("#txtIdObraCatalogoProducto").val(IdObra);
+    tablecatalogo = $('#table_catalogoobra').dataTable({
+        language: lenguaje_data,
+        responsive: true,
+        ajax: {
+            url: "../Obra/CargarCatalogoxIdObra",
+            type: 'POST',
+            data: {
+                IdObra: IdObra,
+                pagination: {
+                    perpage: 50,
+                },
+            },
         },
-        cache: false,
-        contentType: false,
-        success: function (datos) {
 
-            $("#txtIdObraCatalogoProducto").val(IdObra);
-            let tr = '';
-            for (var i = 0; i < datos.length; i++) {
-                tr += `<tr>
-                    <td>`+ (i + 1) + `</td>
-                    <td>`+ datos[i].DescripcionArticulo + `</td>`;
-                if (datos[i].IdTipoProducto==0) {
-                    tr += `<td>` + ` <input type="radio" name="tipoproducto` + datos[i].IdArticulo + `" value="1" idProducto="` + datos[i].IdArticulo +`">` + `</td>
-                    <td>` + ` <input type="radio" name="tipoproducto` + datos[i].IdArticulo + `" value="2" idProducto="` + datos[i].IdArticulo +`">` + `</td>`;
-                }
+        columnDefs: [
+            // {"className": "text-center", "targets": "_all"},
+      
+            {
+                targets: 0,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return meta.row + 1
+                },
+            },
+            {
+                targets: 1,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.DescripcionArticulo.toUpperCase()
+                },
+            },
+            {
+                targets: 2,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    if (full.IdTipoProducto == 0) {
+                        return ` <input type="radio" name="tipoproducto` + full.IdArticulo + `" value="1" idProducto="` + full.IdArticulo + `">`
+                    }
+                    if (full.IdTipoProducto == 1) {
+                        return ` <input type="radio" name="tipoproducto` + full.IdArticulo + `" value="1" idProducto="` + full.IdArticulo + `" checked>`;
+                    }
 
-                if (datos[i].IdTipoProducto == 1) {
-                    tr += `<td>` + ` <input type="radio" name="tipoproducto` + datos[i].IdArticulo + `" value="1" idProducto="` + datos[i].IdArticulo +`" checked>` + `</td>
-                    <td>`+ ` <input type="radio" name="tipoproducto` + datos[i].IdArticulo + `" value="2" idProducto="` + datos[i].IdArticulo +`">` + `</td>`;
-                }
+                    if (full.IdTipoProducto == 2) {
+                        return ` <input type="radio" name="tipoproducto` + full.IdArticulo + `" value="1" idProducto="` + full.IdArticulo + `">`;
+                    }
 
-                if (datos[i].IdTipoProducto == 2) {
-                    tr += `<td>` + ` <input type="radio" name="tipoproducto` + datos[i].IdArticulo + `" value="1" idProducto="` + datos[i].IdArticulo +`">` + `</td>
-                    <td>`+ ` <input type="radio" name="tipoproducto` + datos[i].IdArticulo + `" value="2" checked idProducto="` + datos[i].IdArticulo +`">` + `</td>`;
                 }
-                
-                tr+=`</tr>`;
+            },
+            {
+                targets: 3,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    if (full.IdTipoProducto == 0) {
+                        return ` <input type="radio" name="tipoproducto` + full.IdArticulo + `" value="2" idProducto="` + full.IdArticulo + `">`
+                    }
+                    if (full.IdTipoProducto == 1) {
+                        return ` <input type="radio" name="tipoproducto` + full.IdArticulo + `" value="2" idProducto="` + full.IdArticulo + `">`
+                    }
+
+                    if (full.IdTipoProducto == 2) {
+                        return ` <input type="radio" name="tipoproducto` + full.IdArticulo + `" value="2" checked idProducto="` +full.IdArticulo + `">`;
+                    }
+                },
             }
 
-            $("#tbody_catalogo").html(tr);
-            table2 = $("#table_catalogoobra").DataTable(lenguaje);
-        }
-    });
+        ],
+        "bDestroy": true
+    }).DataTable();
+
+
+
+
+    //$.ajax({
+    //    url: "../Obra/CargarCatalogoxIdObra",
+    //    type: "GET",
+    //    contentType: "application/json",
+    //    dataType: "json",
+    //    data: {
+    //        'IdObra': IdObra
+    //    },
+    //    cache: false,
+    //    contentType: false,
+    //    success: function (datos) {
+
+    //        $("#txtIdObraCatalogoProducto").val(IdObra);
+    //        let tr = '';
+    //        for (var i = 0; i < datos.length; i++) {
+    //            tr += `<tr>
+    //                <td>`+ (i + 1) + `</td>
+    //                <td>`+ datos[i].DescripcionArticulo + `</td>`;
+    //            if (datos[i].IdTipoProducto==0) {
+    //                tr += `<td>` + ` <input type="radio" name="tipoproducto` + datos[i].IdArticulo + `" value="1" idProducto="` + datos[i].IdArticulo +`">` + `</td>
+    //                <td>` + ` <input type="radio" name="tipoproducto` + datos[i].IdArticulo + `" value="2" idProducto="` + datos[i].IdArticulo +`">` + `</td>`;
+    //            }
+
+    //            if (datos[i].IdTipoProducto == 1) {
+    //                tr += `<td>` + ` <input type="radio" name="tipoproducto` + datos[i].IdArticulo + `" value="1" idProducto="` + datos[i].IdArticulo +`" checked>` + `</td>
+    //                <td>`+ ` <input type="radio" name="tipoproducto` + datos[i].IdArticulo + `" value="2" idProducto="` + datos[i].IdArticulo +`">` + `</td>`;
+    //            }
+
+    //            if (datos[i].IdTipoProducto == 2) {
+    //                tr += `<td>` + ` <input type="radio" name="tipoproducto` + datos[i].IdArticulo + `" value="1" idProducto="` + datos[i].IdArticulo +`">` + `</td>
+    //                <td>`+ ` <input type="radio" name="tipoproducto` + datos[i].IdArticulo + `" value="2" checked idProducto="` + datos[i].IdArticulo +`">` + `</td>`;
+    //            }
+                
+    //            tr+=`</tr>`;
+    //        }
+
+    //        $("#tbody_catalogo").html(tr);
+    //        table2 = $("#table_catalogoobra").DataTable(lenguaje);
+    //    }
+    //});
 }
 
 
