@@ -72,6 +72,8 @@ namespace ConcyssaWeb.Controllers
                     int respuesta1 = oPedidoDAO.InsertUpdatePedidoDetalle(oPedidoDTO.detalles[i], ref mensaje_error);
                 }
 
+                oPedidoDAO.UpdateTotalesPedido(respuesta, ref mensaje_error);
+
             }
 
             if (mensaje_error.Length > 0)

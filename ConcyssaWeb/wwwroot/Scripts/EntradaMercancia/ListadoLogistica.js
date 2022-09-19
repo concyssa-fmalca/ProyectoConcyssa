@@ -656,14 +656,15 @@ function AgregarLinea() {
     $("#txtDescripcionArticulo" + contador).val(DescripcionItem);
     $("#cboUnidadMedida" + contador).val(MedidaItem);
     $("#txtCantidadNecesaria" + contador).val(formatNumber(parseFloat(CantidadItem).toFixed(DecimalesCantidades))).change();
-    $("#txtPrecioInfo" + contador).val(PrecioUnitarioItem).change();
+    
     $("#cboProyecto" + contador).val(ProyectoItem);
     $("#cboAlmacen" + contador).val(AlmacenItem);
     $("#cboPrioridadDetalle" + contador).val(PrioridadItem);
 
     $("#cboCentroCostos" + contador).val(CentroCostoItem);
     $("#txtReferencia" + contador).val(ReferenciaItem);
-
+    $("#txtPrecioInfo" + contador).val(PrecioUnitarioItem).change();
+    CalcularTotalDetalle(contador)
     LimpiarModalItem();
 }
 
@@ -1006,10 +1007,12 @@ function llenarComboTipoDocumentoOperacion(lista, idCombo, primerItem) {
     var nRegistros = lista.length;
     var nCampos;
     var campos;
+    let PrimerId = 0;
     for (var i = 0; i < nRegistros; i++) {
 
         if (lista.length > 0) {
-            if (lista[i].CodeExt == "59") {
+            if (lista[i].CodeExt == "20") {
+                PrimerId = lista[0].IdTipoDocumento;
                 contenido += "<option value='" + lista[i].IdTipoDocumento + "'>" + lista[i].Descripcion + "</option>";
 
             }
@@ -1018,6 +1021,7 @@ function llenarComboTipoDocumentoOperacion(lista, idCombo, primerItem) {
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
+    $("#" + idCombo).val(PrimerId)
 }
 
 
@@ -1255,7 +1259,7 @@ function GuardarSolicitud() {
 
 
     $.ajax({
-        url: "UpdateInsertMovimiento",
+        url: "UpdateInsertMovimientoEMLogistica",
         type: "POST",
         async: true,
         data: {
@@ -2152,6 +2156,7 @@ function listarpedidosdt() {
         ultimaFila = $("#" + data["DT_RowId"]);
         AgregarPedidoToEntradaMercancia(data);
         $('#ModalListadoPedido').modal('hide');
+        tablepedido.ajax.reload()
         //$("#tbody_detalle").find('tbody').empty();
         //AgregarItemTranferir(((table.row(this).index()) + 1), data["IdArticulo"], data["Descripcion"], (data["CantidadEnviada"] - data["CantidadTranferida"]), data["Stock"]);
 
@@ -2172,15 +2177,17 @@ function AgregarPedidoToEntradaMercancia(data) {
             let IdItem = datos[k]['IdArticulo'];
             let CodigoItem = "xxx";
             let MedidaItem = datos[k]['IdDefinicion'];
-            let DescripcionItem = datos[k]['IdArticulo'];
-            let PrecioUnitarioItem = datos[k]['IdArticulo'];
-            let CantidadItem = datos[k]['IdArticulo'];
+            let DescripcionItem = datos[k]['DescripcionArticulo'];
+            let PrecioUnitarioItem = datos[k]['valor_unitario'];
+            let CantidadItem = datos[k]['Cantidad'];
             let ProyectoItem = datos[k]['IdArticulo'];
             let CentroCostoItem = datos[k]['IdArticulo'];
             let ReferenciaItem = datos[k]['IdArticulo'];
             let AlmacenItem = datos[k]['IdArticulo'];
             let PrioridadItem = datos[k]['IdArticulo'];
             let IdGrupoUnidadMedida = datos[k]['IdGrupoUnidadMedida'];
+            let IdIndicadorImpuesto = datos[k]['IdIndicadorImpuesto'];
+            
       
             //txtReferenciaItem
 
@@ -2294,7 +2301,7 @@ function AgregarPedidoToEntradaMercancia(data) {
             <td input style="display:none;"><input class="form-control TipoCambioDeCabecera" type="number" name="txtTipoCambio[]" id="txtTipoCambioDetalle`+ contador + `" disabled></td>
             <td><input class="form-control"  type="number" name="txtCantidadNecesaria[]" value="0" id="txtCantidadNecesaria`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)"></td>
             <td><input class="form-control" type="number" name="txtPrecioInfo[]" value="0" id="txtPrecioInfo`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)"></td>
-            <td input style="display:none;">
+            <td>
             <select class="form-control ImpuestoCabecera" name="cboIndicadorImpuesto[]" id="cboIndicadorImpuestoDetalle`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)">`;
             tr += `  <option impuesto="0" value="0">Seleccione</option>`;
             for (var i = 0; i < IndicadorImpuesto.length; i++) {
@@ -2341,7 +2348,7 @@ function AgregarPedidoToEntradaMercancia(data) {
 
             let varMoneda = $("#cboMoneda").val();
             let varTipoCambio = $("#txtTipoCambio").val();
-            let varimpuesto = $("#cboImpuesto").val();
+          
 
             if (varMoneda) {
                 $(".MonedaDeCabecera").val(varMoneda);
@@ -2349,9 +2356,7 @@ function AgregarPedidoToEntradaMercancia(data) {
             if (varTipoCambio) {
                 $(".TipoCambioDeCabecera").val(varTipoCambio);
             }
-            if (varimpuesto) {
-                $(".ImpuestoCabecera").val(varimpuesto);
-            }
+            
 
 
 
@@ -2364,6 +2369,9 @@ function AgregarPedidoToEntradaMercancia(data) {
             $("#cboProyecto" + contador).val(ProyectoItem);
             $("#cboAlmacen" + contador).val(AlmacenItem);
             $("#cboPrioridadDetalle" + contador).val(PrioridadItem);
+            $("#cboIndicadorImpuestoDetalle" + contador).val(IdIndicadorImpuesto);
+
+            
 
             $("#cboCentroCostos" + contador).val(CentroCostoItem);
             $("#txtReferencia" + contador).val(ReferenciaItem);

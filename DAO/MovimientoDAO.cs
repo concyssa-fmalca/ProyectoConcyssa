@@ -7,6 +7,116 @@ namespace DAO
 {
     public class MovimientoDAO
     {
+
+
+        #region InsertUpdateMovimientoOPDN
+        public int InsertUpdateMovimientoOPDN(MovimientoDTO oMovimientoDTO, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_InsertUpdateMovimientoOPDN", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdOPDN", oMovimientoDTO.IdMovimiento);
+                        da.SelectCommand.Parameters.AddWithValue("@IdSociedad", oMovimientoDTO.IdSociedad);
+                        da.SelectCommand.Parameters.AddWithValue("@IdAlmacen", oMovimientoDTO.IdAlmacen);
+                        da.SelectCommand.Parameters.AddWithValue("@IdSerie", oMovimientoDTO.IdSerie);
+                        da.SelectCommand.Parameters.AddWithValue("@IdTipoDocumento", oMovimientoDTO.IdTipoDocumento);
+                        da.SelectCommand.Parameters.AddWithValue("@ObjType", oMovimientoDTO.ObjType);
+                        da.SelectCommand.Parameters.AddWithValue("@IdMoneda", oMovimientoDTO.IdMoneda);
+                        da.SelectCommand.Parameters.AddWithValue("@CodMoneda", oMovimientoDTO.CodMoneda);
+                        da.SelectCommand.Parameters.AddWithValue("@TipoCambio", oMovimientoDTO.TipoCambio);
+                        da.SelectCommand.Parameters.AddWithValue("@IdCliente", oMovimientoDTO.IdCliente);
+                        da.SelectCommand.Parameters.AddWithValue("@FechaContabilizacion", oMovimientoDTO.FechaContabilizacion.ToString("yyyyMMdd"));
+                        da.SelectCommand.Parameters.AddWithValue("@FechaDocumento", oMovimientoDTO.FechaDocumento.ToString("yyyyMMdd"));
+                        da.SelectCommand.Parameters.AddWithValue("@FechaVencimiento", oMovimientoDTO.FechaVencimiento.ToString("yyyyMMdd"));
+                        da.SelectCommand.Parameters.AddWithValue("@IdListaPrecios", oMovimientoDTO.IdListaPrecios);
+                        da.SelectCommand.Parameters.AddWithValue("@Referencia", oMovimientoDTO.Referencia);
+                        da.SelectCommand.Parameters.AddWithValue("@Comentario", oMovimientoDTO.Comentario);
+                        da.SelectCommand.Parameters.AddWithValue("@SubTotal", oMovimientoDTO.SubTotal);
+                        da.SelectCommand.Parameters.AddWithValue("@Impuesto", oMovimientoDTO.Impuesto);
+                        da.SelectCommand.Parameters.AddWithValue("@Total", oMovimientoDTO.Total);
+                        da.SelectCommand.Parameters.AddWithValue("@IdCuadrilla", oMovimientoDTO.IdCuadrilla);
+                        da.SelectCommand.Parameters.AddWithValue("@IdAlmacenDestino", oMovimientoDTO.IdAlmacenDestino);
+                        da.SelectCommand.Parameters.AddWithValue("@IdResponsable", oMovimientoDTO.IdResponsable);
+                        da.SelectCommand.Parameters.AddWithValue("@IdTipoDocumentoRef", oMovimientoDTO.IdTipoDocumentoRef);
+                        da.SelectCommand.Parameters.AddWithValue("@NumSerieTipoDocumentoRef", oMovimientoDTO.NumSerieTipoDocumentoRef);
+                        da.SelectCommand.Parameters.AddWithValue("@EntregadoA", oMovimientoDTO.EntregadoA);
+                        da.SelectCommand.Parameters.AddWithValue("@IdUsuario", oMovimientoDTO.IdUsuario);
+                        da.SelectCommand.Parameters.AddWithValue("@IdCentroCosto", oMovimientoDTO.IdCentroCosto);
+
+
+
+                        int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region InsertUpdateOPDNDetalle
+        public int InsertUpdateOPDNDetalle(MovimientoDetalleDTO oMovimientoDetalleDTO, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_InsertUpdateOPDNDetalle", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdOPDNDetalle", oMovimientoDetalleDTO.IdMovimientoDetalle);
+                        da.SelectCommand.Parameters.AddWithValue("@IdOPDN", oMovimientoDetalleDTO.IdMovimiento);
+                        da.SelectCommand.Parameters.AddWithValue("@IdArticulo", oMovimientoDetalleDTO.IdArticulo);
+                        da.SelectCommand.Parameters.AddWithValue("@DescripcionArticulo", oMovimientoDetalleDTO.DescripcionArticulo);
+                        da.SelectCommand.Parameters.AddWithValue("@IdDefinicionGrupoUnidad", oMovimientoDetalleDTO.IdDefinicionGrupoUnidad);
+                        da.SelectCommand.Parameters.AddWithValue("@IdAlmacen", oMovimientoDetalleDTO.IdAlmacen);
+                        da.SelectCommand.Parameters.AddWithValue("@Cantidad", oMovimientoDetalleDTO.Cantidad);
+                        da.SelectCommand.Parameters.AddWithValue("@Igv", oMovimientoDetalleDTO.Igv);
+                        da.SelectCommand.Parameters.AddWithValue("@PrecioUnidadBase", oMovimientoDetalleDTO.PrecioUnidadBase);
+                        da.SelectCommand.Parameters.AddWithValue("@PrecioUnidadTotal", oMovimientoDetalleDTO.PrecioUnidadTotal);
+                        da.SelectCommand.Parameters.AddWithValue("@TotalBase", oMovimientoDetalleDTO.TotalBase);
+                        da.SelectCommand.Parameters.AddWithValue("@Total", oMovimientoDetalleDTO.Total);
+                        da.SelectCommand.Parameters.AddWithValue("@CuentaContable", oMovimientoDetalleDTO.CuentaContable);
+                        da.SelectCommand.Parameters.AddWithValue("@IdCentroCosto", oMovimientoDetalleDTO.IdCentroCosto);
+                        da.SelectCommand.Parameters.AddWithValue("@IdAfectacionIgv", oMovimientoDetalleDTO.IdAfectacionIgv);
+                        da.SelectCommand.Parameters.AddWithValue("@Descuento", oMovimientoDetalleDTO.Descuento);
+                        da.SelectCommand.Parameters.AddWithValue("@IdAlmacenDestino", oMovimientoDetalleDTO.IdAlmacenDestino);
+                        int rpta = da.SelectCommand.ExecuteNonQuery();
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+                }
+            }
+        }
+        #endregion
+
+
         #region InsertUpdateMovimiento
         public int InsertUpdateMovimiento(MovimientoDTO oMovimientoDTO,ref string mensaje_error)
         {

@@ -40,6 +40,17 @@ namespace DTO
         public int IdBase { get; set; }
         public int IdObra { get; set; }
 
+        public string NombSerie { get; set; }
+        public decimal total_exportacion { get; set; }
+        public decimal total_operaciones_gravadas { get; set; }
+        public decimal total_operaciones_inafectas { get; set; }
+        public decimal total_operaciones_exoneradas { get; set; }
+        public decimal total_operaciones_gratuitas { get; set; }
+        public decimal total_igv { get; set; }
+        public decimal total_impuestos { get; set; }
+        public decimal total_valor { get; set; }
+        public decimal total_venta { get; set; }
+
 
     }
     public class PedidoDetalleDTO
@@ -64,6 +75,10 @@ namespace DTO
         public int IdIndicadorImpuesto { get; set; }
         public string CodImpuesto { get; set; }
         public string NombImpuesto { get; set; }
+        public string Referencia { get; set; }
         public int IdGrupoUnidadMedida { get; set; }
+
+
+        
     }
 }

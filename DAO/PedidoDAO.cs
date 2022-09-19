@@ -56,6 +56,8 @@ namespace DAO
                         oPedidoDTO.NombreProveedor = (drd["NombreProveedor"].ToString());
                         oPedidoDTO.NombMoneda = (drd["NombMoneda"].ToString());
                         oPedidoDTO.NombTipoPedido = (drd["NombTipoPedido"].ToString());
+                        oPedidoDTO.NombSerie = (drd["NombSerie"].ToString());
+                        oPedidoDTO.total_venta = Convert.ToDecimal(drd["total_venta"].ToString());
 
 
                         lstPedidoDTO.Add(oPedidoDTO);
@@ -156,6 +158,8 @@ namespace DAO
                         oPedidoDetalleDTO.DT_RowId = Convert.ToInt32(drd["IdPedidoDetalle"].ToString());
                         oPedidoDetalleDTO.IdPedidoDetalle = Convert.ToInt32(drd["IdPedidoDetalle"].ToString());
                         oPedidoDetalleDTO.IdPedido = Convert.ToInt32(drd["IdPedido"].ToString());
+                        oPedidoDetalleDTO.DescripcionArticulo =(drd["DescripcionArticulo"].ToString());
+
                         oPedidoDetalleDTO.IdArticulo = Convert.ToInt32(drd["IdArticulo"].ToString());
                         oPedidoDetalleDTO.IdGrupoArticulo = Convert.ToInt32(drd["IdGrupoArticulo"].ToString());
                         oPedidoDetalleDTO.IdDefinicion = Convert.ToInt32(drd["IdDefinicion"].ToString());
@@ -221,6 +225,7 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@Serie", oPedidoDTO.Serie);
                         da.SelectCommand.Parameters.AddWithValue("@Correlativo", oPedidoDTO.Correlativo);
                         da.SelectCommand.Parameters.AddWithValue("@TipoCambio", oPedidoDTO.TipoCambio);
+
                         int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
                         transactionScope.Complete();
                         return rpta;
@@ -269,8 +274,46 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@total_valor_item", oPedidoDetalleDTO.total_valor_item);
                         da.SelectCommand.Parameters.AddWithValue("@total_item", oPedidoDetalleDTO.total_item);
                         da.SelectCommand.Parameters.AddWithValue("@IdIndicadorImpuesto", oPedidoDetalleDTO.IdIndicadorImpuesto);
+                        da.SelectCommand.Parameters.AddWithValue("@Referencia", oPedidoDetalleDTO.Referencia);
 
                         
+
+
+
+
+                        int rpta = da.SelectCommand.ExecuteNonQuery();
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+                }
+            }
+        }
+        #endregion
+
+
+
+        #region UpdateTotalesPedido
+        public int UpdateTotalesPedido(int  IdPedido, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_UpdateTotalesPedido", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdPedido", IdPedido);
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
                         return rpta;

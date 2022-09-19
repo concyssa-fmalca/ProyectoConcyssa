@@ -26,7 +26,7 @@ function llenarCondicionPago(lista, idCombo, primerItem) {
     var campos;
     for (var i = 0; i < nRegistros; i++) {
 
-        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdMoneda + "'>" + lista[i].Descripcion + "</option>"; }
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdCondicionPago + "'>" + lista[i].Descripcion + "</option>"; }
         else { }
     }
     var cbo = document.getElementById(idCombo);
@@ -116,7 +116,7 @@ function listarPedidoDt() {
                     targets: 5,
                     orderable: false,
                     render: function (data, type, full, meta) {
-                        return 3
+                        return full.NombSerie+'-'+full.Correlativo
                     },
                 },
                 {
@@ -137,7 +137,7 @@ function listarPedidoDt() {
                     targets: 8,
                     orderable: false,
                     render: function (data, type, full, meta) {
-                        return 0
+                        return full.total_venta
                     },
                 }
 
@@ -1074,7 +1074,8 @@ function GuardarPedido() {
                 'total_igv': 0,
                 'total_impuestos': arrayTotal[i] - (arrayPrecioInfo[i] * arrayCantidadNecesaria[i]),
                 'total_valor_item': (arrayPrecioInfo[i] * arrayCantidadNecesaria[i]),
-                'total_item': arrayTotal[i]
+                'total_item': arrayTotal[i],
+                'Referencia': arrayReferencia[i],
             })
         }
 
@@ -1088,7 +1089,7 @@ function GuardarPedido() {
             detalles,
             //cabecera
             'IdAlmacen': IdAlmacen,
-            'IdSerie': IdSerie,
+            'Serie': $("#IdSerie").val(),
             'IdProveedor': $("#IdProveedor").val(),
             'Direccion': $("#Direccion").val(),
             'Telefono': $("#Telefono").val(),
@@ -1096,7 +1097,7 @@ function GuardarPedido() {
             'FechaContabilizacion': $("#txtFechaContabilizacion").val(),
             'FechaDocumento': $("#txtFechaDocumento").val(),
             'IdTipoPedido': $("#IdTipoPedido").val(),
-            'LugarEntrega': $("#LugarEntrefa").val(),
+            'LugarEntrega': $("#LugarEntrega").val(),
             'IdCondicionPago': $("#IdCondicionPago").val(),
             'ElaboradoPor': 1,
             'IdMoneda': $("#cboMoneda").val(),
