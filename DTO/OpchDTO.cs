@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace DTO
 {
-    public class OpdnDTO
+
+    public class OpchDTO
     {
         public int DT_RowId { get; set; }
-        public int IdOPDN { get; set; }
+        public int IdOPCH { get; set; }
         public int IdTipoDocumento { get; set; }
 
         public string ObjType { get; set; }
@@ -46,7 +47,7 @@ namespace DTO
         public bool Eliminado { get; set; }
 
 
-        public IList<OPDNDetalle> detalles { get; set; }
+        public IList<OPCHDetalle> detalles { get; set; }
 
 
 
@@ -73,15 +74,14 @@ namespace DTO
         public string NombAlmacen { get; set; }
         public string DescCuadrilla { get; set; }
         public string NombObra { get; set; }
-        public decimal CantidadUsada { get; set; }
 
     }
 
-    public class OPDNDetalle
+    public class OPCHDetalle
     {
         public int DT_RowId { get; set; }
-        public int IdOPDNDetalle { get; set; }
-        public int IdOPDN { get; set; }
+        public int IdOPCHDetalle { get; set; }
+        public int IdOPCH { get; set; }
         public int IdArticulo { get; set; }
         public string DescripcionArticulo { get; set; }
         public int IdAlmacen { get; set; }

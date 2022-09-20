@@ -69,7 +69,7 @@
     <div class="panel">
         <div class="container-fluid">
             <div class="topbar-left col-xs-6">
-                <h3>Ingresos</h3>
+                <h3>FACTURA PROVEEDOR</h3>
             </div>
         </div>
         <div class="container-fluid">
@@ -99,8 +99,7 @@
                         <th>Cuadrilla</th>
                         <th>Obra</th>
                         <th>Almacen</th>
-
-                        <th style="display:none">Estado</th>
+                   
                         <th>Mas</th>
                     </tr>
                 </thead>
@@ -124,6 +123,9 @@
                         <div class='form-horizontal col-9 col-sm-9'>
                             <div class="form-group-sm" style="display:none;">
                                 <input placeholder='' id='txtId' type='text' style="display:none;">
+                                <input id='IdPedido' type='text' style="display:none;">
+                                <input  id='IdOPDN' type='text' style="display:none;">
+
                                 @*<input placeholder='' id='txtEstado' type='text' style="display:none;">*@
                             </div>
 
@@ -918,7 +920,7 @@
                                             <th>Numero Pedido</th>
                                             <th>Proveedor</th>
                                             <th>Monto Total</th>
-                                            <th>Accion</th>
+                                            @*<th>Accion</th>*@
                                         </tr>
                                     </thead>
                                     <tbody id="tbody_listado_pedidos"></tbody>
@@ -959,7 +961,7 @@
                                             <th>Numero Pedido</th>
                                             <th>Proveedor</th>
                                             <th>Monto Total</th>
-                                            <th>Accion</th>
+                                            @*<th>Accion</th>*@
                                         </tr>
                                     </thead>
                                     <tbody id="tbody_listado_pedidos"></tbody>

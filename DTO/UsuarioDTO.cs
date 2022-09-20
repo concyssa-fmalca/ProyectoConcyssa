@@ -24,5 +24,9 @@ namespace DTO
         
         public int IdBase { get; set; }
         public bool MovimientoInventario { get; set; }
+
+        public string NombreUsuario { get; set; }
+        public int IdDepartamento { get; set; }
+        public string Correo { get; set; }
     }
 }

@@ -233,5 +233,44 @@ namespace DAO
             }
         }
 
+
+        public List<UsuarioDTO> ObtenerUsuariosAutorizadores(string IdSociedad)
+        {
+            List<UsuarioDTO> lstUsuarioDTO = new List<UsuarioDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarUsuariosAutorizadores", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSociedad", int.Parse(IdSociedad));
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        UsuarioDTO oUsuarioDTO = new UsuarioDTO();
+                        oUsuarioDTO.IdUsuario = int.Parse(drd["Id"].ToString());
+                        oUsuarioDTO.Usuario = drd["Usuario"].ToString();
+                        oUsuarioDTO.NombreUsuario = drd["Nombre"].ToString();
+                        oUsuarioDTO.IdPerfil = int.Parse(drd["IdPerfil"].ToString());
+                        oUsuarioDTO.NombrePerfil = drd["NombrePerfil"].ToString();
+                        oUsuarioDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
+                        oUsuarioDTO.NombreSociedad = drd["NombreSociedad"].ToString();
+                        oUsuarioDTO.Estado = bool.Parse(drd["Estado"].ToString());
+                        oUsuarioDTO.IdDepartamento = int.Parse(drd["IdDepartamento"].ToString());
+                        oUsuarioDTO.Correo = drd["Correo"].ToString();
+                        lstUsuarioDTO.Add(oUsuarioDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            return lstUsuarioDTO;
+        }
+
     }
 }

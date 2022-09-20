@@ -50,6 +50,7 @@ namespace DTO
         public decimal total_impuestos { get; set; }
         public decimal total_valor { get; set; }
         public decimal total_venta { get; set; }
+        public decimal CantidadDisponible { get; set; }
 
 
     }
@@ -77,8 +78,10 @@ namespace DTO
         public string NombImpuesto { get; set; }
         public string Referencia { get; set; }
         public int IdGrupoUnidadMedida { get; set; }
+        public decimal CantidadObtenida { get; set; }
 
 
-        
+
+
     }
 }

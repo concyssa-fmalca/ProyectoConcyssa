@@ -133,9 +133,16 @@ function ListarDatatableKardex(url,IdArticulo, IdAlmacen, FechaInicio, FechaTerm
             tr += '<tr>' +
                 '<td>' + (i + 1) + '</td>' +
                 '<td>' + division[i].DescArticulo.toUpperCase() + '</td>' +
-                '<td>' + division[i].FechaRegistro.split('T')[0] + '</td>' +
-                '<td>' + division[i].TipoTransaccion.toUpperCase() + '</td>' +
-                '<td>' + division[i].DescSerie.toUpperCase() + `-` + division[i].Correlativo+ '</td>' +
+                '<td>' + division[i].FechaRegistro.split('T')[0] + '</td>';
+            if (division[i].DetalleOPDN <> 0) {
+                tr += '<td>ENTREGA MERCANCIA</td>';
+
+            } else {
+                tr += '<td>' + division[i].TipoTransaccion.toUpperCase() + '</td>';
+
+            }
+              
+                tr += '<td>' + division[i].DescSerie.toUpperCase() + `-` + division[i].Correlativo+ '</td>' +
                 '<td>' +'-'+ '</td>' +
                 '<td>' + division[i].FechaDocumento.split('T')[0] + '</td>' +
                 '<td>' + division[i].DescUnidadMedidaBase + '</td>' +

@@ -26,7 +26,7 @@ namespace ConcyssaWeb.Controllers
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             DataTableDTO oDataTableDTO = new DataTableDTO();
             List<OpdnDTO> lstOpdnDTO = oOpdnDAO.ObtenerOPDNxEstado(IdSociedad, ref mensaje_error, EstadoOPDN);
-            if (lstOpdnDTO.Count > 0)
+            if (lstOpdnDTO.Count >= 0 && mensaje_error.Length==0)
             {
                 oDataTableDTO.sEcho = 1;
                 oDataTableDTO.iTotalDisplayRecords = lstOpdnDTO.Count;
@@ -36,6 +36,48 @@ namespace ConcyssaWeb.Controllers
                 return JsonConvert.SerializeObject(oDataTableDTO);
 
             }
+                        
+            return mensaje_error;
+        }
+
+        public string ListarOPDNDTModalOPCH(string EstadoOPDN = "ABIERTO")
+        {
+            string mensaje_error = "";
+            OpdnDAO oOpdnDAO = new OpdnDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            DataTableDTO oDataTableDTO = new DataTableDTO();
+            List<OpdnDTO> lstOpdnDTO = oOpdnDAO.ListarOPDNDTModalOPCH(IdSociedad, ref mensaje_error, EstadoOPDN);
+            if (lstOpdnDTO.Count >= 0 && mensaje_error.Length == 0)
+            {
+                oDataTableDTO.sEcho = 1;
+                oDataTableDTO.iTotalDisplayRecords = lstOpdnDTO.Count;
+                oDataTableDTO.iTotalRecords = lstOpdnDTO.Count;
+                oDataTableDTO.aaData = (lstOpdnDTO);
+                //return oDataTableDTO;
+                return JsonConvert.SerializeObject(oDataTableDTO);
+
+            }
+
+            return mensaje_error;
+        }
+
+        public string ObtenerOPDNDetalle(int IdOPDN)
+        {
+            string mensaje_error = "";
+            OpdnDAO oOpdnDAO = new OpdnDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            DataTableDTO oDataTableDTO = new DataTableDTO();
+            List<OPDNDetalle> lstOPDNDetalle = oOpdnDAO.ObtenerDetalleOpdn(IdOPDN, ref mensaje_error);
+            if (lstOPDNDetalle.Count > 0)
+            {
+                //oDataTableDTO.sEcho = 1;
+                //oDataTableDTO.iTotalDisplayRecords = lstOPDNDetalle.Count;
+                //oDataTableDTO.iTotalRecords = lstOPDNDetalle.Count;
+                //oDataTableDTO.aaData = (lstOPDNDetalle);
+                //return oDataTableDTO;
+                return JsonConvert.SerializeObject(lstOPDNDetalle);
+
+            }
             else
             {
                 return mensaje_error;
@@ -43,13 +85,19 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
+        
 
 
-        public string UpdateInsertMovimientoEMLogistica(MovimientoDTO oMovimientoDTO)
+
+
+
+
+
+        public string UpdateInsertMovimientoEMLogistica(OpdnDTO oOpdnDTO)
         {
             string mensaje_error = "";
-            int IdSociedad = Convert.ToInt32((String.IsNullOrEmpty(oMovimientoDTO.IdSociedad.ToString())) ? Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad")) : oMovimientoDTO.IdSociedad);
-            int IdUsuario = Convert.ToInt32((String.IsNullOrEmpty(oMovimientoDTO.IdUsuario.ToString())) ? Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")) : oMovimientoDTO.IdUsuario);
+            int IdSociedad = Convert.ToInt32((String.IsNullOrEmpty(oOpdnDTO.IdSociedad.ToString())) ? Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad")) : oOpdnDTO.IdSociedad);
+            int IdUsuario = Convert.ToInt32((String.IsNullOrEmpty(oOpdnDTO.IdUsuario.ToString())) ? Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")) : oOpdnDTO.IdUsuario);
             if (IdSociedad==0)
             {
                 IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
@@ -61,21 +109,24 @@ namespace ConcyssaWeb.Controllers
             //int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             //int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
 
-            oMovimientoDTO.IdSociedad = IdSociedad;
-            oMovimientoDTO.IdUsuario = IdUsuario;
+            oOpdnDTO.IdSociedad = IdSociedad;
+            oOpdnDTO.IdUsuario = IdUsuario;
             MovimientoDAO oMovimimientoDAO = new MovimientoDAO();
-            int respuesta = oMovimimientoDAO.InsertUpdateMovimientoOPDN(oMovimientoDTO, ref mensaje_error);
+            OpdnDAO oOpdnDAO = new OpdnDAO();
+            int respuesta = oMovimimientoDAO.InsertUpdateMovimientoOPDN(oOpdnDTO, ref mensaje_error);
             if (mensaje_error.Length > 0)
             {
                 return mensaje_error;
             }
             if (respuesta > 0)
             {
-                for (int i = 0; i < oMovimientoDTO.detalles.Count; i++)
+                for (int i = 0; i < oOpdnDTO.detalles.Count; i++)
                 {
-                    oMovimientoDTO.detalles[i].IdMovimiento = respuesta;
-                    int respuesta1 = oMovimimientoDAO.InsertUpdateOPDNDetalle(oMovimientoDTO.detalles[i], ref mensaje_error);
+                    oOpdnDTO.detalles[i].IdOPDN = respuesta;
+                    int respuesta1 = oMovimimientoDAO.InsertUpdateOPDNDetalle(oOpdnDTO.detalles[i], ref mensaje_error);
                 }
+                oOpdnDAO.UpdateTotalesOPDN(respuesta, ref mensaje_error);
+                
 
             }
 

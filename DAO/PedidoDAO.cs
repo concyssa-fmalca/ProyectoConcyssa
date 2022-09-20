@@ -111,6 +111,7 @@ namespace DAO
                         oPedidoDTO.IdMoneda = Convert.ToInt32(drd["IdMoneda"].ToString());
                         oPedidoDTO.Observacion = (drd["Observacion"].ToString());
                         oPedidoDTO.Serie = Convert.ToInt32(drd["Serie"].ToString());
+                        oPedidoDTO.NombSerie = (drd["NombSerie"].ToString());
                         oPedidoDTO.Correlativo = Convert.ToInt32(drd["Correlativo"].ToString());
                         oPedidoDTO.TipoCambio = Convert.ToDecimal(drd["TipoCambio"].ToString());
                         oPedidoDTO.NombAlmacen = (drd["NombAlmacen"].ToString());
@@ -122,6 +123,9 @@ namespace DAO
                         oPedidoDTO.NombTipoPedido = (drd["NombTipoPedido"].ToString());
                         oPedidoDTO.IdBase = Convert.ToInt32(drd["IdBase"].ToString());
                         oPedidoDTO.IdObra = Convert.ToInt32(drd["IdObra"].ToString());
+                        oPedidoDTO.total_venta = Convert.ToDecimal(drd["total_venta"].ToString());
+                        oPedidoDTO.CantidadDisponible = Convert.ToDecimal(drd["CantidadDisponible"].ToString());
+
                         lstPedidoDTO.Add(oPedidoDTO);
                     }
                     drd.Close();
@@ -164,6 +168,7 @@ namespace DAO
                         oPedidoDetalleDTO.IdGrupoArticulo = Convert.ToInt32(drd["IdGrupoArticulo"].ToString());
                         oPedidoDetalleDTO.IdDefinicion = Convert.ToInt32(drd["IdDefinicion"].ToString());
                         oPedidoDetalleDTO.Cantidad = Convert.ToDecimal(drd["Cantidad"].ToString());
+                        oPedidoDetalleDTO.CantidadObtenida = Convert.ToDecimal(drd["CantidadObtenida"].ToString());
                         oPedidoDetalleDTO.valor_unitario = Convert.ToDecimal(drd["valor_unitario"].ToString());
                         oPedidoDetalleDTO.precio_unitario = Convert.ToDecimal(drd["precio_unitario"].ToString());
                         oPedidoDetalleDTO.total_base_igv = Convert.ToDecimal(drd["total_base_igv"].ToString());

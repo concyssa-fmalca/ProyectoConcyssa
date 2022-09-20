@@ -27,7 +27,11 @@ namespace DAO
                     {
                         KardexDTO oKardexDTO = new KardexDTO();
                         oKardexDTO.IdKardex = Convert.ToInt32(drd["IdKardex"].ToString());
-                        oKardexDTO.IdDetallleMovimiento = Convert.ToInt32(drd["IdDetallleMovimiento"].ToString());
+
+                        var dd = drd["IdDetalleOPDN"].ToString();
+                        oKardexDTO.IdDetalleMovimiento = Convert.ToInt32((drd["IdDetalleMovimiento"].ToString()==""? 0: drd["IdDetalleMovimiento"].ToString()));
+                        oKardexDTO.IdDetalleOPDN = Convert.ToInt32((drd["IdDetalleOPDN"].ToString() == "" ? 0 : drd["IdDetalleOPDN"].ToString()));
+                        oKardexDTO.IdDetalleOPCH = Convert.ToInt32((drd["IdDetalleOPCH"].ToString() == "" ? 0 : drd["IdDetalleOPCH"].ToString()));
                         oKardexDTO.IdDefinicionGrupoUnidad = Convert.ToInt32(drd["IdDefinicionGrupoUnidad"].ToString());
                         oKardexDTO.CantidadBase = Convert.ToDecimal(drd["CantidadBase"].ToString());
                         oKardexDTO.IdUnidadMedidaBase = Convert.ToInt32(drd["IdUnidadMedidaBase"].ToString());

@@ -9,7 +9,9 @@ namespace DTO
     public class KardexDTO
     {
         public int IdKardex { get; set; }
-        public int IdDetallleMovimiento { get; set; }
+        public int IdDetalleMovimiento { get; set; }
+        public int IdDetalleOPCH { get; set; }
+        public int IdDetalleOPDN { get; set; }
         public int IdDefinicionGrupoUnidad { get; set; }
         public decimal CantidadBase { get; set; }
         public int IdUnidadMedidaBase { get; set; }

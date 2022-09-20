@@ -994,7 +994,68 @@ function LimpiarModalItem() {
 }
 
 function GuardarPedido() {
+    //validaciones
+    if ($("#IdSerie").val() == 0) {
+        Swal.fire(
+            'Error!',
+            'Seleccione una Serie',
+            'error'
+        )
+        return;
+    }
 
+    if ($("#IdObra").val() == 0) {
+        Swal.fire(
+            'Error!',
+            'Seleccione una Obra',
+            'error'
+        )
+        return;
+    }
+
+    if ($("#IdAlmacen").val() == 0) {
+        Swal.fire(
+            'Error!',
+            'Seleccione un Almacen',
+            'error'
+        )
+        return;
+    }
+    
+    
+
+    if ($("#IdProveedor").val() == 0) {
+        Swal.fire(
+            'Error!',
+            'Seleccione una Proveedor',
+            'error'
+        )
+        return;
+    }
+
+    if ($("#IdTipoPedido").val() == 0) {
+        Swal.fire(
+            'Error!',
+            'Seleccione Tipo Pedido',
+            'error'
+        )
+        return;
+    }
+
+    if ($("#IdCondicionPago").val() == 0) {
+        Swal.fire(
+            'Error!',
+            'Seleccione Condicion de Pago',
+            'error'
+        )
+        return;
+    }
+
+
+    
+    
+
+    
     //Cabecera
     let IdAlmacen = $("#IdAlmacen").val();
     let FechaDocumento = $("#txtFechaDocumento").val();
@@ -1054,11 +1115,13 @@ function GuardarPedido() {
         arrayReferencia.push($(elemento).val());
     });
     //end detalle
-
+  
     let detalles = [];
     if (arrayIdArticulo.length == arrayIdUnidadMedida.length && arrayCantidadNecesaria.length == arrayPrecioInfo.length) {
 
         for (var i = 0; i < arrayIdArticulo.length; i++) {
+           
+            
             detalles.push({
                 'IdPedidoDetalle': 0,
                 'IdPedido': 0,
@@ -1080,7 +1143,7 @@ function GuardarPedido() {
         }
 
     }
-    console.log(detalles);
+
     $.ajax({
         url: "UpdateInsertPedido",
         type: "POST",

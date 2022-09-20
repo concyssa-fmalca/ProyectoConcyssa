@@ -57,6 +57,29 @@ namespace ConcyssaWeb.Controllers
 
         }
 
+        public string ObtenerUsuariosAutorizadores()
+        {
+            //string valida = "";
+            //valida = validarEmpresaActual();
+            //if (valida != "")
+            //{
+            //    return valida;
+            //}
+
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            UsuarioDAO oUsuarioDAO = new UsuarioDAO();
+            List<UsuarioDTO> lstUsuarioDTO = oUsuarioDAO.ObtenerUsuariosAutorizadores(IdSociedad.ToString());
+            if (lstUsuarioDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstUsuarioDTO);
+            }
+            else
+            {
+                return "error";
+            }
+
+        }
+
         public string ObtenerSociedades()
         {
             string mensaje_error = "";

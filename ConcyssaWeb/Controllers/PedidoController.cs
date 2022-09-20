@@ -33,9 +33,15 @@ namespace ConcyssaWeb.Controllers
             }
             else
             {
-                return mensaje_error;
+                oDataTableDTO.sEcho = 1;
+                oDataTableDTO.iTotalDisplayRecords = lstPedidoDTO.Count;
+                oDataTableDTO.iTotalRecords = lstPedidoDTO.Count;
+                oDataTableDTO.aaData = (lstPedidoDTO);
+                //return oDataTableDTO;
+                return JsonConvert.SerializeObject(oDataTableDTO);
 
             }
+            return mensaje_error;
         }
 
 
@@ -112,9 +118,15 @@ namespace ConcyssaWeb.Controllers
             }
             else
             {
-                return mensaje_error;
-             
+                oDataTableDTO.sEcho = 1;
+                oDataTableDTO.iTotalDisplayRecords = lstPedidoDTO.Count;
+                oDataTableDTO.iTotalRecords = lstPedidoDTO.Count;
+                oDataTableDTO.aaData = (lstPedidoDTO);
+                //return oDataTableDTO;
+                return JsonConvert.SerializeObject(oDataTableDTO);
+
             }
+            return mensaje_error;
         }
 
         public string ObtenerPedidoDetalle(int IdPedido)
