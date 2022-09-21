@@ -125,6 +125,9 @@ namespace DAO
                         oOpdnDTO.IdObra = Convert.ToInt32(drd["IdObra"].ToString());
                         oOpdnDTO.IdBase = Convert.ToInt32(drd["IdBase"].ToString());
                         oOpdnDTO.CantidadUsada = Convert.ToDecimal(drd["CantidadUsada"].ToString());
+                        oOpdnDTO.IdProveedor = Convert.ToInt32(drd["IdProveedor"].ToString());
+                        oOpdnDTO.IdCondicionPago = Convert.ToInt32(drd["IdCondicionPago"].ToString());
+
 
 
                         lstOPDNDTO.Add(oOpdnDTO);

@@ -66,6 +66,75 @@ let DecimalesPorcentajes = 0;
 
 
 /*USANDO */
+function ObtenerProveedorxId() {
+    //console.log(varIdUsuario);
+    let IdProveedor = $("#IdProveedor").val();
+    $.post('/Proveedor/ObtenerDatosxID', {
+        'IdProveedor': IdProveedor,
+    }, function (data, status) {
+
+        if (data == "Error") {
+            swal("Error!", "Ocurrio un error")
+            limpiarDatos();
+        } else {
+            let proveedores = JSON.parse(data);
+            $("#Direccion").val(proveedores[0].DireccionFiscal);
+            $("#Telefono").val(proveedores[0].Telefono);
+
+        }
+
+    });
+}
+
+
+function CargarProveedor() {
+    $.ajaxSetup({ async: false });
+    $.post("/Proveedor/ObtenerProveedores", { estado: 1 }, function (data, status) {
+        let proveedores = JSON.parse(data);
+        llenarComboProveedor(proveedores, "IdProveedor", "Seleccione")
+    });
+}
+
+function llenarComboProveedor(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdProveedor + "'>" + lista[i].RazonSocial + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+}
+
+function CargarCondicionPago() {
+    $.ajaxSetup({ async: false });
+    $.post("/CondicionPago/ObtenerCondicionPagos", function (data, status) {
+        let condicionpago = JSON.parse(data);
+        llenarCondicionPago(condicionpago, "IdCondicionPago", "Seleccione")
+    });
+}
+
+
+function llenarCondicionPago(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdCondicionPago + "'>" + lista[i].Descripcion + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+}
+
+
 function ObtenerTiposDocumentos() {
     $.ajaxSetup({ async: false });
     $.post("/TiposDocumentos/ObtenerTiposDocumentos", { 'estado': 1 }, function (data, status) {
@@ -73,6 +142,8 @@ function ObtenerTiposDocumentos() {
         llenarTiposDocumentos(tiposdocumentos, "IdTipoDocumentoRef", "Seleccione")
     });
 }
+
+
 
 function llenarTiposDocumentos(lista, idCombo, primerItem) {
     var contenido = "";
@@ -328,7 +399,7 @@ function ModalNuevo() {
     $("#IdOPDN").val(0);
 
 
-    $("#lblTituloModal").html("Nuevo Ingreso");
+    $("#lblTituloModal").html("Nueva Factura Proveedor");
     CargarCentroCosto();
     listarEmpleados();
     ObtenerTiposDocumentos()
@@ -363,6 +434,8 @@ function ModalNuevo() {
     $("#IdBase").val(0).change();
     AbrirModal("modal-form");
     ListarBasesxUsuario();
+    CargarProveedor();
+    CargarCondicionPago();
     //setearValor_ComboRenderizado("cboCodigoArticulo");
 }
 
@@ -1123,7 +1196,7 @@ function ObtenerNumeracion() {
 
 function GuardarSolicitud() {
     //Validaciones
-    if ($("#cboTipoDocumentoOperacion").val() == 0) {
+    if ($("#cboTipoDocumentoOperacion").val() == 0 || $("#cboTipoDocumentoOperacion").val()==null) {
         Swal.fire(
             'Error!',
             'Complete el campo de Tipo de Movimiento',
@@ -1132,6 +1205,58 @@ function GuardarSolicitud() {
         return;
     }
 
+    if ($("#IdTipoDocumentoRef").val() == 0 || $("#IdTipoDocumentoRef").val() == null) {
+        Swal.fire(
+            'Error!',
+            'Complete el campo de Documento de referencia',
+            'error'
+        )
+        return;
+    } 
+    if ($("#IdCuadrilla").val() == 0 || $("#IdCuadrilla").val() == null) {
+        Swal.fire(
+            'Error!',
+            'Complete el campo de Cuadrilla',
+            'error'
+        )
+        return;
+    }
+    
+    if ($("#IdResponsable").val() == 0 || $("#IdResponsable").val() == null) {
+        Swal.fire(
+            'Error!',
+            'Complete el campo Responsable',
+            'error'
+        )
+        return;
+    }
+    
+    if ($("#cboSerie").val() == 0 || $("#cboSerie").val() == null) {
+        Swal.fire(
+            'Error!',
+            'Complete el campo Serie',
+            'error'
+        )
+        return;
+    }
+    
+    if ($("#IdCondicionPago").val() == 0 || $("#IdCondicionPago").val() == null) {
+        Swal.fire(
+            'Error!',
+            'Complete el campo de Condicion de Pago',
+            'error'
+        )
+        return;
+    }
+    
+    if ($("#IdProveedor").val() == 0 || $("#IdProveedor").val() == null) {
+        Swal.fire(
+            'Error!',
+            'Complete el campo de Proveedor',
+            'error'
+        )
+        return;
+    }
 
     let ArrayGeneral = new Array();
 
@@ -1289,7 +1414,8 @@ function GuardarSolicitud() {
                 'total_item': arrayTotal[i],
                 'Referencia': arrayReferencia[i],
                 'NombTablaOrigen': NombTablaOrigen,
-                'IdOrigen': arraytxtIdOrigen[i]
+                'IdOrigen': arraytxtIdOrigen[i],
+               
   
             })
         }
@@ -1321,7 +1447,9 @@ function GuardarSolicitud() {
             'IdCuadrilla': IdCuadrilla,
             'IdResponsable': IdResponsable,
             'IdTipoDocumentoRef': IdTipoDocumentoRef,
-            'NumSerieTipoDocumentoRef': SerieNumeroRef
+            'NumSerieTipoDocumentoRef': SerieNumeroRef,
+            'IdProveedor': $("#IdProveedor").val(),
+            'IdCondicionPago': $("#IdCondicionPago").val()
         },
         beforeSend: function () {
             Swal.fire({
@@ -1339,8 +1467,7 @@ function GuardarSolicitud() {
                     'success'
                 )
                 //swal("Exito!", "Proceso Realizado Correctamente", "success")
-                table.destroy();
-                ConsultaServidor("../Movimientos/ObtenerMovimientosIngresos");
+                listarOpch()
 
             } else {
                 Swal.fire(
@@ -2467,6 +2594,9 @@ function AgregarOPNDDetalle(data) {
   
     $("#IdObra").val(data['IdObra']).change();
     $("#cboAlmacen").val(data['IdAlmacen']).change();
+    $("#IdProveedor").val(data['IdProveedor']).change();
+    $("#IdCondicionPago").val(data['IdCondicionPago']);
+
     $.ajaxSetup({ async: false });
     $.post("/EntradaMercancia/ObtenerOPDNDetalle", { 'IdOPDN': data['IdOPDN'] }, function (data, status) {
         let datos = JSON.parse(data);

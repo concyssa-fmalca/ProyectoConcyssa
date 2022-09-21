@@ -73,8 +73,8 @@ function listarPedidoDt() {
                     orderable: false,
                     render: function (data, type, full, meta) {
 
-                        return `<button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(` + full.IdAlmacen + `)"></button>
-                            <button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(` + full.IdAlmacen + `)"></button>`
+                        return `<button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(` + full.IdPedido + `)"></button>
+                            <button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(` + full.IdPedido + `)"></button>`
                     },
                 },
                 {
@@ -1199,5 +1199,216 @@ function GuardarPedido() {
             'Comunicarse con el Area Soporte: smarcode@smartcode.pe !',
             'error'
         )
+    });
+}
+
+function ObtenerDatosxID(id) {
+    $("#div_tabla_listadorequerimiento_items").hide();
+    $("#div_tabla_listado_items").show();
+    $("#btnVerItemModal2").hide();
+    $("#btnVerItemModal1").show();
+    ListarBasesxUsuario();
+    CargarBase()
+    CargarPedido();
+    CargarSeries();
+    CargarProveedor();
+    CargarMoneda();
+    CargarCondicionPago();
+    $("#lblTituloModal").html("Editar Pedido");
+    AbrirModal("modal-form");
+
+    $.post('/Pedido/ObtenerDatosxID', {
+        'IdPedido': id,
+    }, function (data, status) {
+        let pedido = JSON.parse(data);
+;
+        $("#IdBase").val(pedido.IdBase).change();
+        $("#IdObra").val(pedido.IdObra).change();
+        $("#IdAlmacen").val(pedido.IdAlmacen)
+        $("#IdSerie").val(pedido.Serie)
+        $("#IdProveedor").val(pedido.IdProveedor).change();
+        $("#IdTipoPedido").val(pedido.IdTipoPedido)
+        $("#LugarEntrega").val(pedido.LugarEntrega)
+        $("#IdCondicionPago").val(pedido.IdCondicionPago)
+
+
+        for (var i = 0; i < pedido.detalles.length; i++) {
+            console.log(pedido.detalles[i].IdArticulo)
+            let IdItem = pedido.detalles[i].IdArticulo;
+            let CodigoItem = pedido.detalles[i].IdArticulo;
+            let MedidaItem = pedido.detalles[i].IdDefinicion;
+            let DescripcionItem = pedido.detalles[i].DescripcionArticulo;
+            let PrecioUnitarioItem = pedido.detalles[i].valor_unitario;
+            let CantidadItem = pedido.detalles[i].Cantidad;
+            let ProyectoItem = 0;
+            let CentroCostoItem = 0; 
+            let ReferenciaItem = pedido.detalles[i].Referencia;
+            let AlmacenItem =0;
+            let PrioridadItem =0;
+            let IdGrupoUnidadMedida = pedido.detalles[i].IdGrupoUnidadMedida; 
+            let IdIndicadorImpuesto = pedido.detalles[i].IdIndicadorImpuesto; 
+
+            //txtReferenciaItem
+
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0');
+            var yyyy = today.getFullYear();
+
+            today = yyyy + '-' + mm + '-' + dd;
+
+
+            let UnidadMedida;
+            let IndicadorImpuesto;
+            let Almacen;
+            let Proveedor;
+            let LineaNegocio;
+            let CentroCosto;
+            let Proyecto;
+            let Moneda;
+
+           
+            alert(IdGrupoUnidadMedida)
+            //validaciones
+            $.ajaxSetup({ async: false });
+            $.post("/GrupoUnidadMedida/ObtenerDefinicionUnidadMedidaxGrupo", { 'IdGrupoUnidadMedida': IdGrupoUnidadMedida }, function (data, status) {
+                UnidadMedida = JSON.parse(data);
+            });
+
+            $.post("/IndicadorImpuesto/ObtenerIndicadorImpuestos", function (data, status) {
+                IndicadorImpuesto = JSON.parse(data);
+            });
+
+            $.post("../Almacen/ObtenerAlmacen", function (data, status) {
+                Almacen = JSON.parse(data);
+            });
+
+            $.post("/Proveedor/ObtenerProveedores", function (data, status) {
+                Proveedor = JSON.parse(data);
+            });
+
+   
+
+            $.post("/Moneda/ObtenerMonedas", function (data, status) {
+                Moneda = JSON.parse(data);
+            });
+
+            contador++;
+            let tr = '';
+
+            //<select class="form-control select2" id="cboCodigoArticulo" name="cboCodigoArticulo[]">
+            //    <option value="0">Seleccione</option>
+            //</select>
+            tr += `<tr>
+            <td><input input style="display:none;" class="form-control" type="text" value="0" id="txtIdSolicitudRQDetalle" name="txtIdSolicitudRQDetalle[]"/></td>
+            <td input style="display:none;">
+            <input  class="form-control" type="text" id="txtIdArticulo`+ contador + `" name="txtIdArticulo[]" />
+            <input class="form-control" type="text" id="txtCodigoArticulo`+ contador + `" name="txtCodigoArticulo[]" />
+            </td>
+            <td><input class="form-control" type="text" id="txtDescripcionArticulo`+ contador + `" name="txtDescripcionArticulo[]"/></td>
+            <td>
+            <select class="form-control" id="cboUnidadMedida`+ contador + `" name="cboUnidadMedida[]">`;
+            tr += `  <option value="0">Seleccione</option>`;
+            for (var i = 0; i < UnidadMedida.length; i++) {
+                tr += `  <option value="` + UnidadMedida[i].IdDefinicionGrupo + `">` + UnidadMedida[i].DescUnidadMedidaAlt + `</option>`;
+            }
+            tr += `</select>
+            </td>
+           
+           
+            <td input style="display:none;">
+            <select class="form-control MonedaDeCabecera" style="width:100px" name="cboMoneda[]" id="cboMonedaDetalle`+ contador + `" disabled>`;
+            tr += `  <option value="0">Seleccione</option>`;
+            for (var i = 0; i < Moneda.length; i++) {
+                tr += `  <option value="` + Moneda[i].IdMoneda + `">` + Moneda[i].Descripcion + `</option>`;
+            }
+            tr += `</select>
+            </td>
+            <td input style="display:none;"><input class="form-control TipoCambioDeCabecera" type="number" name="txtTipoCambio[]" id="txtTipoCambioDetalle`+ contador + `" disabled></td>
+            <td><input class="form-control"  type="number" name="txtCantidadNecesaria[]" value="0" id="txtCantidadNecesaria`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)"></td>
+            <td><input class="form-control" type="number" name="txtPrecioInfo[]" value="0" id="txtPrecioInfo`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)"></td>
+            <td input>
+            <select class="form-control ImpuestoCabecera" name="cboIndicadorImpuestoDetalle[]" id="cboIndicadorImpuestoDetalle`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)">`;
+            tr += `  <option impuesto="0" value="0">Seleccione</option>`;
+            for (var i = 0; i < IndicadorImpuesto.length; i++) {
+                tr += `  <option impuesto="` + IndicadorImpuesto[i].Porcentaje + `" value="` + IndicadorImpuesto[i].IdIndicadorImpuesto + `">` + IndicadorImpuesto[i].Descripcion + `</option>`;
+            }
+            tr += `</select>
+            </td>
+            <td><input class="form-control changeTotal" type="number" style="width:100px" name="txtItemTotal[]" id="txtItemTotal`+ contador + `" onchange="CalcularTotales()"></td>
+            <td style="display:none">
+            <select class="form-control" style="width:100px" id="cboAlmacen`+ contador + `" name="cboAlmacen[]">`;
+            tr += `  <option value="0">Seleccione</option>`;
+            for (var i = 0; i < Almacen.length; i++) {
+                tr += `  <option value="` + Almacen[i].IdAlmacen + `">` + Almacen[i].Descripcion + `</option>`;
+            }
+            tr += `</select>
+            </td>`
+            tr += `
+            <td input style="display:none;"><input class="form-control" type="text" name="txtNumeroFacbricacion[]"></td>
+            <td input style="display:none;"><input class="form-control" type="text" name="txtNumeroSerie[]"></td>
+            <td input style="display:none;">
+            <select class="form-control" name="cboLineaNegocio[]">`;
+            tr += `  <option value="0">Seleccione</option>`;
+            //for (var i = 0; i < LineaNegocio.length; i++) {
+            //    tr += `  <option value="` + LineaNegocio[i].IdLineaNegocio + `">` + LineaNegocio[i].Descripcion + `</option>`;
+            //}
+            tr += `</select>
+            </td>`;
+            //for (var i = 0; i < CentroCosto.length; i++) {
+            //    tr += `  <option value="` + CentroCosto[i].IdCentroCosto + `">` + CentroCosto[i].Descripcion + `</option>`;
+            //}
+
+            //for (var i = 0; i < Proyecto.length; i++) {
+            //    tr += `  <option value="` + Proyecto[i].IdProyecto + `">` + Proyecto[i].Descripcion + `</option>`;
+            //}
+            tr += `
+            <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
+            <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
+            <td ><input class="form-control" type="text" value="" id="txtReferencia`+ contador + `" name="txtReferencia[]"></td>
+            <td><button class="btn btn-xs btn-danger borrar">-</button></td>
+          <tr>`;
+
+            $("#tabla").find('tbody').append(tr);
+
+
+            let varMoneda = $("#cboMoneda").val();
+            let varTipoCambio = $("#txtTipoCambio").val();
+            let varimpuesto = $("#cboImpuesto").val();
+
+            if (varMoneda) {
+                $(".MonedaDeCabecera").val(varMoneda);
+            }
+            if (varTipoCambio) {
+                $(".TipoCambioDeCabecera").val(varTipoCambio);
+            }
+            if (varimpuesto) {
+                $(".ImpuestoCabecera").val(varimpuesto);
+            }
+
+
+
+            $("#txtIdArticulo" + contador).val(IdItem);
+            $("#txtCodigoArticulo" + contador).val(CodigoItem);
+            $("#txtDescripcionArticulo" + contador).val(DescripcionItem);
+            $("#cboUnidadMedida" + contador).val(MedidaItem);
+            $("#txtCantidadNecesaria" + contador).val(CantidadItem).change();
+            $("#txtPrecioInfo" + contador).val(PrecioUnitarioItem).change();
+            $("#cboProyecto" + contador).val(ProyectoItem);
+            $("#cboAlmacen" + contador).val(AlmacenItem);
+            $("#cboPrioridadDetalle" + contador).val(PrioridadItem);
+
+            $("#cboIndicadorImpuestoDetalle" + contador).val(IdIndicadorImpuesto).change();
+
+            $("#cboCentroCostos" + contador).val(CentroCostoItem);
+            $("#txtReferencia" + contador).val(ReferenciaItem);
+            CalcularTotalDetalle(contador);
+        }
+
+        
+
+
+        
+     
     });
 }

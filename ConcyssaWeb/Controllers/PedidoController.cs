@@ -153,6 +153,31 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
+        public string ObtenerDatosxID(int IdPedido)
+        {
+            string mensaje_error = "";
+            PedidoDAO oPedidoDAO = new PedidoDAO();
+            PedidoDTO oPedidoDTO = new PedidoDTO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+
+            oPedidoDTO = oPedidoDAO.ObtenerPedidoxId(IdPedido, ref mensaje_error);
+            if (oPedidoDTO !=null)
+            {
+                //oDataTableDTO.sEcho = 1;
+                //oDataTableDTO.iTotalDisplayRecords = lstPedidoDetalleDTO.Count;
+                //oDataTableDTO.iTotalRecords = lstPedidoDetalleDTO.Count;
+                //oDataTableDTO.aaData = (lstPedidoDetalleDTO);
+                //return oDataTableDTO;
+                return JsonConvert.SerializeObject(oPedidoDTO);
+
+            }
+            else
+            {
+                return mensaje_error;
+
+            }
+        }
+
 
     }
 }

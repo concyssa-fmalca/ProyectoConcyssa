@@ -75,6 +75,9 @@ namespace DTO
         public string NombObra { get; set; }
         public decimal CantidadUsada { get; set; }
 
+        public int IdProveedor { get; set; }
+        public int IdCondicionPago { get; set; }
+
     }
 
     public class OPDNDetalle

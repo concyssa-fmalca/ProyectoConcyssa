@@ -3,6 +3,52 @@ let contarclick = 0;
 var ultimaFila = null;
 var colorOriginal;
 let tableopdn;
+
+
+function ObtenerProveedorxId() {
+    //console.log(varIdUsuario);
+    let IdProveedor = $("#IdProveedor").val();
+    $.post('/Proveedor/ObtenerDatosxID', {
+        'IdProveedor': IdProveedor,
+    }, function (data, status) {
+
+        if (data == "Error") {
+            swal("Error!", "Ocurrio un error")
+            limpiarDatos();
+        } else {
+            let proveedores = JSON.parse(data);
+            $("#Direccion").val(proveedores[0].DireccionFiscal);
+            $("#Telefono").val(proveedores[0].Telefono);
+
+        }
+
+    });
+}
+
+
+function CargarProveedor() {
+    $.ajaxSetup({ async: false });
+    $.post("/Proveedor/ObtenerProveedores", { estado: 1 }, function (data, status) {
+        let proveedores = JSON.parse(data);
+        llenarComboProveedor(proveedores, "IdProveedor", "Seleccione")
+    });
+}
+
+function llenarComboProveedor(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdProveedor + "'>" + lista[i].RazonSocial + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+}
+
 function ObtenerConfiguracionDecimales() {
     $.post("/ConfiguracionDecimales/ObtenerConfiguracionDecimales", function (data, status) {
 
@@ -60,7 +106,29 @@ let DecimalesPrecios = 0;
 let DecimalesCantidades = 0;
 let DecimalesPorcentajes = 0;
 
+function CargarCondicionPago() {
+    $.ajaxSetup({ async: false });
+    $.post("/CondicionPago/ObtenerCondicionPagos", function (data, status) {
+        let condicionpago = JSON.parse(data);
+        llenarCondicionPago(condicionpago, "IdCondicionPago", "Seleccione")
+    });
+}
 
+
+function llenarCondicionPago(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdCondicionPago + "'>" + lista[i].Descripcion + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+}
 
 
 
@@ -326,15 +394,17 @@ function ConsultaServidor(url) {
 function ModalNuevo() {
     $("#IdPedido").val(0);
     $("#IdOPCH").val(0);
-    $("#lblTituloModal").html("Nuevo Ingreso");
+    $("#lblTituloModal").html("Entrega Mercancia");
     CargarCentroCosto();
     listarEmpleados();
     ObtenerTiposDocumentos()
     //CargarAlmacen()
     CargarBase()
     CargarTipoDocumentoOperacion()
-    ObtenerCuadrillas()
+    ObtenerCuadrillas();
     CargarSeries();
+    CargarCondicionPago();
+    CargarProveedor();
 
 
     //AgregarLinea();
@@ -1151,7 +1221,7 @@ function GuardarSolicitud() {
     if ($("#IdCuadrilla").val() == 0 || $("#IdCuadrilla").val() == null) {
         Swal.fire(
             'Error!',
-            'Complete el campo Documento Referencia',
+            'Complete el campo  Cuadrilla',
             'error'
         )
         return;
@@ -1161,7 +1231,7 @@ function GuardarSolicitud() {
     if ($("#IdResponsable").val() == 0 || $("#IdResponsable").val() == null) {
         Swal.fire(
             'Error!',
-            'Complete el campo Documento Referencia',
+            'Complete el campo Responsable',
             'error'
         )
         return;
@@ -1174,7 +1244,24 @@ function GuardarSolicitud() {
         )
         return;
     } 
+
+    if ($("#IdProveedor").val() == 0 || $("#IdProveedor").val() == null) {
+        Swal.fire(
+            'Error!',
+            'Complete el campo Centro de Costo',
+            'error'
+        )
+        return;
+    }
     
+    if ($("#IdCondicionPago").val() == 0 || $("#IdCondicionPago").val() == null) {
+        Swal.fire(
+            'Error!',
+            'Complete el campo Centro de Costo',
+            'error'
+        )
+        return;
+    }
     
     
 
@@ -1364,7 +1451,9 @@ function GuardarSolicitud() {
             'IdCuadrilla': IdCuadrilla,
             'IdResponsable': IdResponsable,
             'IdTipoDocumentoRef': IdTipoDocumentoRef,
-            'NumSerieTipoDocumentoRef': SerieNumeroRef
+            'NumSerieTipoDocumentoRef': SerieNumeroRef,
+            'IdProveedor': $("#IdProveedor").val(),
+            'IdCondicionPago': $("#IdCondicionPago").val()
 
         },
         beforeSend: function () {
@@ -1383,8 +1472,7 @@ function GuardarSolicitud() {
                     'success'
                 )
                 //swal("Exito!", "Proceso Realizado Correctamente", "success")
-                table.destroy();
-                ConsultaServidor("../Movimientos/ObtenerMovimientosIngresos");
+                listaropdnDT()
 
             } else {
                 Swal.fire(
@@ -2208,6 +2296,10 @@ function AgregarPedidoToEntradaMercancia(data) {
     $("#IdBase").val(data['IdBase']).change();
     $("#IdObra").val(data['IdObra']).change();
     $("#cboAlmacen").val(data['IdAlmacen']).change();
+    $("#IdProveedor").val(data['IdProveedor']).change();
+    $("#IdCondicionPago").val(data['IdCondicionPago']).change();
+
+    
     $.ajaxSetup({ async: false });
     $.post("/Pedido/ObtenerPedidoDetalle", { 'IdPedido': data['IdPedido'] }, function (data, status) {
         let datos = JSON.parse(data);
@@ -2323,7 +2415,7 @@ function AgregarPedidoToEntradaMercancia(data) {
             </td>
             <td><input class="form-control" type="text" id="txtDescripcionArticulo`+ contador + `" name="txtDescripcionArticulo[]"/></td>
             <td>
-            <select class="form-control" id="cboUnidadMedida`+ contador + `" name="cboUnidadMedida[]">`;
+            <select class="form-control" id="cboUnidadMedida`+ contador + `" name="cboUnidadMedida[]" disabled>`;
             tr += `  <option value="0">Seleccione</option>`;
             for (var i = 0; i < UnidadMedida.length; i++) {
                 tr += `  <option value="` + UnidadMedida[i].IdDefinicionGrupo + `">` + UnidadMedida[i].DescUnidadMedidaAlt + `</option>`;
@@ -2346,16 +2438,16 @@ function AgregarPedidoToEntradaMercancia(data) {
                  <input type="hidden" name="txtCantidadNecesariaMaxima[]" value="`+ datos[k]['CantidadObtenida'] + `" id="txtCantidadNecesariaMaxima` + contador + `" >
                  <input type="hidden" name="txtIdOrigen[]" value="`+ datos[k]['IdPedidoDetalle'] + `" id="txtIdOrigen` + contador + `" >
             </td>
-            <td><input class="form-control" type="number" name="txtPrecioInfo[]" value="0" id="txtPrecioInfo`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)"></td>
+            <td><input class="form-control" type="number" name="txtPrecioInfo[]" value="0" id="txtPrecioInfo`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" readonly></td>
             <td>
-            <select class="form-control ImpuestoCabecera" name="cboIndicadorImpuestoDetalle[]" id="cboIndicadorImpuestoDetalle`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)">`;
+            <select class="form-control ImpuestoCabecera" name="cboIndicadorImpuestoDetalle[]" id="cboIndicadorImpuestoDetalle`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled>`;
             tr += `  <option impuesto="0" value="0">Seleccione</option>`;
             for (var i = 0; i < IndicadorImpuesto.length; i++) {
                 tr += `  <option impuesto="` + IndicadorImpuesto[i].Porcentaje + `" value="` + IndicadorImpuesto[i].IdIndicadorImpuesto + `">` + IndicadorImpuesto[i].Descripcion + `</option>`;
             }
             tr += `</select>
             </td>
-            <td><input class="form-control changeTotal" type="number" style="width:100px" name="txtItemTotal[]" id="txtItemTotal`+ contador + `" onchange="CalcularTotales()"></td>
+            <td><input class="form-control changeTotal" type="number" style="width:100px" name="txtItemTotal[]" id="txtItemTotal`+ contador + `" onchange="CalcularTotales()" readonly></td>
             <td style="display:none">
             <select class="form-control" style="width:100px" id="cboAlmacen`+ contador + `" name="cboAlmacen[]">`;
             tr += `  <option value="0">Seleccione</option>`;

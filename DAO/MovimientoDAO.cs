@@ -52,6 +52,9 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@EntregadoA", oOpdnDTO.EntregadoA);
                         da.SelectCommand.Parameters.AddWithValue("@IdUsuario", oOpdnDTO.IdUsuario);
                         da.SelectCommand.Parameters.AddWithValue("@IdCentroCosto", oOpdnDTO.IdCentroCosto);
+                        da.SelectCommand.Parameters.AddWithValue("@IdProveedor", oOpdnDTO.IdProveedor);
+                        da.SelectCommand.Parameters.AddWithValue("@IdCondicionPago", oOpdnDTO.IdCondicionPago);
+
 
 
 
@@ -606,6 +609,9 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@EntregadoA", oOpchDTO.EntregadoA);
                         da.SelectCommand.Parameters.AddWithValue("@IdUsuario", oOpchDTO.IdUsuario);
                         da.SelectCommand.Parameters.AddWithValue("@IdCentroCosto", oOpchDTO.IdCentroCosto);
+                        da.SelectCommand.Parameters.AddWithValue("@IdProveedor", oOpchDTO.IdProveedor);
+                        da.SelectCommand.Parameters.AddWithValue("@idCondicionPago", oOpchDTO.idCondicionPago);
+
                         int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
                         transactionScope.Complete();
                         return rpta;

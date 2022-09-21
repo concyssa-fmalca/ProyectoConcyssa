@@ -279,6 +279,44 @@
                             </div>
 
 
+                            <hr style="margin:6px" />
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for="txtNumeracion" class="control-label col-sm-2 left-align">Proveedor</label>
+                                    <div class="col-sm-10">
+                                        <select id="IdProveedor" type="text" class="form-control input-sm" tabindex="3" onchange="ObtenerProveedorxId()" ></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for="Direccion" class="control-label col-sm-2 left-align">Direccion</label>
+                                    <div class="col-sm-10">
+                                        <textarea class="" id="Direccion" style="width:100%"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for="Telefono" class="control-label col-sm-2 left-align">Telefono</label>
+                                    <div class="col-sm-4">
+                                        <input id="Telefono" type="text" class="form-control input-sm" tabindex="2">
+                                    </div>
+                                </div>
+
+                                <div class='form-group-sm'>
+                                    <label for="FechaEntrega" class="control-label col-sm-2 left-align">Fecha Entrega</label>
+                                    <div class="col-sm-4">
+                                        <input id="FechaEntrega" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control input-sm" tabindex="2">
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+
+
 
                             <br />
 
@@ -489,6 +527,14 @@
                                         Responsable:
                                         <select style="height: 20px" id="IdResponsable" type="text" class="form-control input-sm" tabindex="0">
                                             <option value="0">SELECCIONE Responsable </option>
+                                        </select>
+                                    </p>
+                                    <hr style="margin: 0px 0px 5px 0px" />
+
+                                    <p>
+                                        Forma de Pago:
+                                        <select style="height: 20px" id="IdCondicionPago" type="text" class="form-control input-sm" tabindex="0">
+                                            <option value="0"> - Condicion Pago - </option>
                                         </select>
                                     </p>
                                     <hr style="margin: 0px 0px 5px 0px" />

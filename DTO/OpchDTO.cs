@@ -74,6 +74,8 @@ namespace DTO
         public string NombAlmacen { get; set; }
         public string DescCuadrilla { get; set; }
         public string NombObra { get; set; }
+        public int IdProveedor { get; set; }
+        public int idCondicionPago {get;set;}
 
     }
 

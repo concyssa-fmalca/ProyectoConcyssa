@@ -332,5 +332,143 @@ namespace DAO
             }
         }
         #endregion
+
+
+        public PedidoDTO ObtenerPedidoxId(int IdPedido, ref string mensaje_error)
+        {
+            PedidoDTO oPedidoDTO = new PedidoDTO();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_PedidoxID", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdPedido", IdPedido);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        oPedidoDTO.IdPedido = Convert.ToInt32(drd["IdPedido"].ToString());
+                        oPedidoDTO.IdAlmacen = Convert.ToInt32(drd["IdAlmacen"].ToString());
+                        oPedidoDTO.IdSociedad = Convert.ToInt32(drd["IdSociedad"].ToString());
+                        oPedidoDTO.IdProveedor = Convert.ToInt32(drd["IdProveedor"].ToString());
+                        oPedidoDTO.Direccion = (drd["Direccion"].ToString());
+                        oPedidoDTO.Telefono = (drd["Telefono"].ToString());
+                        oPedidoDTO.FechaEntrega = Convert.ToDateTime(drd["FechaEntrega"].ToString());
+                        oPedidoDTO.FechaDocumento = Convert.ToDateTime(drd["FechaDocumento"].ToString());
+                        oPedidoDTO.FechaContabilizacion = Convert.ToDateTime(drd["FechaContabilizacion"].ToString());
+                        oPedidoDTO.IdTipoPedido = Convert.ToInt32(drd["IdTipoPedido"].ToString());
+                        oPedidoDTO.LugarEntrega = (drd["LugarEntrega"].ToString());
+                        oPedidoDTO.IdCondicionPago = Convert.ToInt32(drd["IdCondicionPago"].ToString());
+                        oPedidoDTO.ElaboradoPor = Convert.ToInt32(drd["ElaboradoPor"].ToString());
+                        oPedidoDTO.IdUsuario = Convert.ToInt32(drd["IdUsuario"].ToString());
+                        oPedidoDTO.IdMoneda = Convert.ToInt32(drd["IdMoneda"].ToString());
+                        oPedidoDTO.Observacion = (drd["Observacion"].ToString());
+                        oPedidoDTO.Serie = Convert.ToInt32(drd["Serie"].ToString());
+                        oPedidoDTO.Correlativo = Convert.ToInt32(drd["Correlativo"].ToString());
+                        oPedidoDTO.TipoCambio = Convert.ToDecimal(drd["TipoCambio"].ToString());
+                        oPedidoDTO.NombAlmacen = (drd["NombAlmacen"].ToString());
+                        oPedidoDTO.NombBase = (drd["NombBase"].ToString());
+                        oPedidoDTO.NombObra = (drd["NombObra"].ToString());
+                        oPedidoDTO.NumProveedor = (drd["NumProveedor"].ToString());
+                        oPedidoDTO.NombreProveedor = (drd["NombreProveedor"].ToString());
+                        oPedidoDTO.NombMoneda = (drd["NombMoneda"].ToString());
+                        oPedidoDTO.NombTipoPedido = (drd["NombTipoPedido"].ToString());
+                        oPedidoDTO.NombSerie = (drd["NombSerie"].ToString());
+                        oPedidoDTO.total_venta = Convert.ToDecimal(drd["total_venta"].ToString());
+                        oPedidoDTO.IdProveedor = Convert.ToInt32(drd["IdProveedor"].ToString());
+                        oPedidoDTO.IdCondicionPago = Convert.ToInt32(drd["IdCondicionPago"].ToString());
+                        oPedidoDTO.IdObra = Convert.ToInt32(drd["IdObra"].ToString());
+                        oPedidoDTO.IdBase = Convert.ToInt32(drd["IdBase"].ToString());
+
+
+
+
+
+                    }
+                    drd.Close();
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+
+            #region Contar Detalle 
+            Int32 filasdetalle = 0;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarPedidoDetalle", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdPedido", IdPedido);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader dr1 = da.SelectCommand.ExecuteReader();
+                    while (dr1.Read())
+                    {
+                        filasdetalle++;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error += ex.Message.ToString();
+                }
+            }
+
+           oPedidoDTO.detalles = new PedidoDetalleDTO[filasdetalle];
+
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarPedidoDetalle", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdPedido", IdPedido);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader dr2 = da.SelectCommand.ExecuteReader();
+                    Int32 posicion = 0;
+                    while (dr2.Read())
+                    {
+                        PedidoDetalleDTO oPedidoDetalleDTO = new PedidoDetalleDTO();
+                        oPedidoDetalleDTO.DT_RowId = Convert.ToInt32(dr2["IdPedidoDetalle"].ToString());
+                        oPedidoDetalleDTO.IdPedidoDetalle = Convert.ToInt32(dr2["IdPedidoDetalle"].ToString());
+                        oPedidoDetalleDTO.IdPedido = Convert.ToInt32(dr2["IdPedido"].ToString());
+                        oPedidoDetalleDTO.DescripcionArticulo = (dr2["DescripcionArticulo"].ToString());
+
+                        oPedidoDetalleDTO.IdArticulo = Convert.ToInt32(dr2["IdArticulo"].ToString());
+                        oPedidoDetalleDTO.IdGrupoArticulo = Convert.ToInt32(dr2["IdGrupoArticulo"].ToString());
+                        oPedidoDetalleDTO.IdDefinicion = Convert.ToInt32(dr2["IdDefinicion"].ToString());
+                        oPedidoDetalleDTO.Cantidad = Convert.ToDecimal(dr2["Cantidad"].ToString());
+                        oPedidoDetalleDTO.CantidadObtenida = Convert.ToDecimal(dr2["CantidadObtenida"].ToString());
+                        oPedidoDetalleDTO.valor_unitario = Convert.ToDecimal(dr2["valor_unitario"].ToString());
+                        oPedidoDetalleDTO.precio_unitario = Convert.ToDecimal(dr2["precio_unitario"].ToString());
+                        oPedidoDetalleDTO.total_base_igv = Convert.ToDecimal(dr2["total_base_igv"].ToString());
+                        oPedidoDetalleDTO.porcentaje_igv = Convert.ToDecimal(dr2["porcentaje_igv"].ToString());
+                        oPedidoDetalleDTO.total_igv = Convert.ToDecimal(dr2["total_igv"].ToString());
+                        oPedidoDetalleDTO.total_impuestos = Convert.ToDecimal(dr2["total_impuestos"].ToString());
+                        oPedidoDetalleDTO.total_valor_item = Convert.ToDecimal(dr2["total_valor_item"].ToString());
+                        oPedidoDetalleDTO.total_item = Convert.ToDecimal(dr2["total_item"].ToString());
+                        oPedidoDetalleDTO.IdIndicadorImpuesto = Convert.ToInt32(dr2["IdIndicadorImpuesto"].ToString());
+                        oPedidoDetalleDTO.CodImpuesto = (dr2["CodImpuesto"].ToString());
+                        oPedidoDetalleDTO.NombImpuesto = (dr2["NombImpuesto"].ToString());
+                        oPedidoDetalleDTO.IdGrupoUnidadMedida = Convert.ToInt32(dr2["IdGrupoUnidadMedida"].ToString());
+              
+                        oPedidoDTO.detalles[posicion] = oPedidoDetalleDTO;
+                        posicion = posicion + 1;
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                }
+                #endregion
+
+                return oPedidoDTO;
+            }
+            
+        }
+
     }
 }
