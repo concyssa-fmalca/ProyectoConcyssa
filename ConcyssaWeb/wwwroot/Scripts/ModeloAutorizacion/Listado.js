@@ -218,7 +218,7 @@ function AgregarLinea() {
             <select class="form-control" name="cboUsuario[]" id="cboUsuario`+ contador + `"  onchange="ObtenerDepartamentoUsuario(` + contador + `)" >`;
     tr += `  <option value="0">Seleccione</option>`;
     for (var i = 0; i < Usuarios.length; i++) {
-        tr += `  <option value="` + Usuarios[i].IdUsuario + `">` + Usuarios[i].NombreUsuario + `</option>`;
+        tr += `  <option value="` + Usuarios[i].IdUsuario + `">` + Usuarios[i].Nombre + `</option>`;
     }
     tr += `</select>
             </td>
@@ -509,7 +509,6 @@ function AgregarLineaDetalleEtapa(contador1, IdModeloAutorizacionEtapa, IdEtapa,
 }
 
 function AgregarLineaDetalleAutor(contador, IdModeloAutorizacionAutor, IdAutor, IdDepartamento) {
-
     let Departamentos;
     let Usuarios;
 
@@ -539,9 +538,9 @@ function AgregarLineaDetalleAutor(contador, IdModeloAutorizacionAutor, IdAutor, 
     tr += `  <option value="0">Seleccione</option>`;
     for (var i = 0; i < Usuarios.length; i++) {
         if (Usuarios[i].IdUsuario == IdAutor) {
-            tr += `  <option value="` + Usuarios[i].IdUsuario + `" selected>` + Usuarios[i].NombreUsuario + `</option>`;
+            tr += `  <option value="` + Usuarios[i].IdUsuario + `" selected>` + Usuarios[i].Nombre + `</option>`;
         } else {
-            tr += `  <option value="` + Usuarios[i].IdUsuario + `">` + Usuarios[i].NombreUsuario + `</option>`;
+            tr += `  <option value="` + Usuarios[i].IdUsuario + `">` + Usuarios[i].Nombre + `</option>`;
         }
 
     }

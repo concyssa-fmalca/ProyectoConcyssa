@@ -38,5 +38,7 @@ namespace DTO
         //Opcional
         public decimal PrecioPromedio { get; set; }
         public string NombUnidadMedida { get; set; }
+
+        public decimal UltimoPrecioCompra { get; set; }
     }
 }

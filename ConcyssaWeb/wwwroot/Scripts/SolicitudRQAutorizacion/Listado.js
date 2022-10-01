@@ -499,10 +499,10 @@ function ObtenerDatosxID(NumeroSolicitud, IdSolicitudRQ, UsuarioAprobador, IdSol
         },
         success: function (data) {
 
-            var errorEmpresa = validarEmpresa(data);
-            if (errorEmpresa) {
-                return;
-            }
+            //var errorEmpresa = validarEmpresa(data);
+            //if (errorEmpresa) {
+            //    return;
+            //}
 
 
             SweetAlert.close();
@@ -590,7 +590,7 @@ function AgregarLineaDetalle(IdDetalle, Numero, DescripcionServicio, IdClaseArti
         IndicadorImpuesto = JSON.parse(data);
     });
 
-    $.post("/Almacen/ObtenerAlmacenes", function (data, status) {
+    $.post("/Almacen/ObtenerAlmacen", function (data, status) {
         var errorEmpresa = validarEmpresa(data);
         if (errorEmpresa) {
             return;
@@ -606,29 +606,29 @@ function AgregarLineaDetalle(IdDetalle, Numero, DescripcionServicio, IdClaseArti
         Proveedor = JSON.parse(data);
     });
 
-    $.post("/LineaNegocio/ObtenerLineaNegocios", function (data, status) {
-        var errorEmpresa = validarEmpresa(data);
-        if (errorEmpresa) {
-            return;
-        }
-        LineaNegocio = JSON.parse(data);
-    });
+    //$.post("/LineaNegocio/ObtenerLineaNegocios", function (data, status) {
+    //    var errorEmpresa = validarEmpresa(data);
+    //    if (errorEmpresa) {
+    //        return;
+    //    }
+    //    LineaNegocio = JSON.parse(data);
+    //});
 
-    $.post("/CentroCosto/ObtenerCentroCostos", function (data, status) {
-        var errorEmpresa = validarEmpresa(data);
-        if (errorEmpresa) {
-            return;
-        }
-        CentroCosto = JSON.parse(data);
-    });
+    //$.post("/CentroCosto/ObtenerCentroCostos", function (data, status) {
+    //    var errorEmpresa = validarEmpresa(data);
+    //    if (errorEmpresa) {
+    //        return;
+    //    }
+    //    CentroCosto = JSON.parse(data);
+    //});
 
-    $.post("/Proyecto/ObtenerProyectos", function (data, status) {
-        var errorEmpresa = validarEmpresa(data);
-        if (errorEmpresa) {
-            return;
-        }
-        Proyecto = JSON.parse(data);
-    });
+    //$.post("/Proyecto/ObtenerProyectos", function (data, status) {
+    //    var errorEmpresa = validarEmpresa(data);
+    //    if (errorEmpresa) {
+    //        return;
+    //    }
+    //    Proyecto = JSON.parse(data);
+    //});
 
     $.post("/Moneda/ObtenerMonedas", function (data, status) {
         var errorEmpresa = validarEmpresa(data);
@@ -648,9 +648,8 @@ function AgregarLineaDetalle(IdDetalle, Numero, DescripcionServicio, IdClaseArti
         DescripcionItem = DescripcionServicio;
 
     } else {
-        $.post('/Articulo/ObtenerArticuloxCodigoDescripcion', {
-            'Codigo': IdArticulo,
-            'TipoItem': IdClaseArticulo
+        $.post('/Articulo/ObtenerDatosxID', {
+            'IdArticulo': IdArticulo
         }, function (data, status) {
             var errorEmpresa = validarEmpresa(data);
             if (errorEmpresa) {
@@ -668,24 +667,24 @@ function AgregarLineaDetalle(IdDetalle, Numero, DescripcionServicio, IdClaseArti
     let StockItem = 0;
     let Comprometido = 0;
     let EnPedido = 0;
-    if (IdClaseArticulo != 3) {
-        $.post('/Articulo/ObtenerArticuloxCodigo', {
-            'Codigo': IdArticulo,
-            'TipoItem': IdClaseArticulo,
-            'Almacen': IdAlmacen
+    //if (IdClaseArticulo != 3) {
+    //    $.post('/Articulo/ObtenerArticuloxCodigo', {
+    //        'Codigo': IdArticulo,
+    //        'TipoItem': IdClaseArticulo,
+    //        'Almacen': IdAlmacen
 
-        }, function (data, status) {
-            var errorEmpresa = validarEmpresa(data);
-            if (errorEmpresa) {
-                return;
-            }
+    //    }, function (data, status) {
+    //        var errorEmpresa = validarEmpresa(data);
+    //        if (errorEmpresa) {
+    //            return;
+    //        }
 
-            let articulos = JSON.parse(data);
-            StockItem = articulos[0].Stock;
-            Comprometido = articulos[0].Comprometido;
-            EnPedido = articulos[0].EnPedido;
-        });
-    }
+    //        let articulos = JSON.parse(data);
+    //        StockItem = articulos[0].Stock;
+    //        Comprometido = articulos[0].Comprometido;
+    //        EnPedido = articulos[0].EnPedido;
+    //    });
+    //}
 
 
 
@@ -757,19 +756,19 @@ function AgregarLineaDetalle(IdDetalle, Numero, DescripcionServicio, IdClaseArti
             <td>
             <select style="display:none" class="form-control" name="cboCentroCostos[]" disabled>`;
     tr += `  <option value="0">Seleccione</option>`;
-    for (var i = 0; i < CentroCosto.length; i++) {
-        if (CentroCosto[i].IdCentroCosto == IdCentroCosto) {
-            tr += `  <option value="` + CentroCosto[i].IdCentroCosto + `" selected>` + CentroCosto[i].IdCentroCosto + `</option>`;
-        } else {
-            tr += `  <option value="` + CentroCosto[i].IdCentroCosto + `">` + CentroCosto[i].IdCentroCosto + `</option>`;
-        }
-    }
+    //for (var i = 0; i < CentroCosto.length; i++) {
+    //    if (CentroCosto[i].IdCentroCosto == IdCentroCosto) {
+    //        tr += `  <option value="` + CentroCosto[i].IdCentroCosto + `" selected>` + CentroCosto[i].IdCentroCosto + `</option>`;
+    //    } else {
+    //        tr += `  <option value="` + CentroCosto[i].IdCentroCosto + `">` + CentroCosto[i].IdCentroCosto + `</option>`;
+    //    }
+    //}
     tr += `</select>`;
-    for (var i = 0; i < CentroCosto.length; i++) {
-        if (CentroCosto[i].IdCentroCosto == IdCentroCosto) {
-            tr += `<input class="form-control" type="text"  value="` + CentroCosto[i].IdCentroCosto + `" disabled/>`;
-        }
-    }
+    //for (var i = 0; i < CentroCosto.length; i++) {
+    //    if (CentroCosto[i].IdCentroCosto == IdCentroCosto) {
+    //        tr += `<input class="form-control" type="text"  value="` + CentroCosto[i].IdCentroCosto + `" disabled/>`;
+    //    }
+    //}
     tr += `</td>
             <td>
             <select class="form-control EstadoItem" id="cboEstadoItem`+ contador + `" name="cboEstadoItem[]">
@@ -822,13 +821,13 @@ function AgregarLineaDetalle(IdDetalle, Numero, DescripcionServicio, IdClaseArti
             <td style="display:none">
             <select class="form-control" name="cboProyecto[]" disabled>`;
     tr += `  <option value="0">Seleccione</option>`;
-    for (var i = 0; i < Proyecto.length; i++) {
-        if (Proyecto[i].IdProyecto == IdProyecto) {
-            tr += `  <option value="` + Proyecto[i].IdProyecto + `" selected>` + Proyecto[i].IdProyecto + `</option>`;
-        } else {
-            tr += `  <option value="` + Proyecto[i].IdProyecto + `">` + Proyecto[i].IdProyecto + `</option>`;
-        }
-    }
+    //for (var i = 0; i < Proyecto.length; i++) {
+    //    if (Proyecto[i].IdProyecto == IdProyecto) {
+    //        tr += `  <option value="` + Proyecto[i].IdProyecto + `" selected>` + Proyecto[i].IdProyecto + `</option>`;
+    //    } else {
+    //        tr += `  <option value="` + Proyecto[i].IdProyecto + `">` + Proyecto[i].IdProyecto + `</option>`;
+    //    }
+    //}
     tr += `</select>
             </td>
             <td ><textarea class="form-control" type="text" value="`+ Referencia + `"  name="txtReferencia[]" disabled>` + Referencia + `</textarea></td>

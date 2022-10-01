@@ -150,5 +150,39 @@ namespace ConcyssaWeb.Controllers
                 return mensaje_error;
             }
         }
+
+        public string ObtenerArticulosConStock(int Almacen,int Stock,int TipoItem,int TipoProducto )
+        {
+            string mensaje_error = "";
+            ArticuloDAO oArticuloDAO = new ArticuloDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            List<ArticuloDTO> lstArticuloDTO = oArticuloDAO.ObtenerArticulosRequerimientos(Almacen,Stock, TipoItem, TipoProducto, IdSociedad, ref mensaje_error);
+            if (lstArticuloDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstArticuloDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
+
+
+        public string ObtenerArticuloxIdArticuloRequerimiento(int IdArticulo, int IdAlmacen, int TipoItem)
+        {
+            string mensaje_error = "";
+            ArticuloDAO oArticuloDAO = new ArticuloDAO();
+            ArticuloDTO oArticuloDTO = oArticuloDAO.ObtenerArticuloxIdArticuloRequerimiento(IdArticulo,IdAlmacen, ref mensaje_error);
+            if (oArticuloDTO!=null)
+            {
+                return JsonConvert.SerializeObject(oArticuloDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
+
+        
     }
 }

@@ -1,5 +1,5 @@
 ﻿let table = '';
-
+alert('ddd');
 window.onload = function () {
     var url = "ObtenerUsuarios";
     ConsultaServidor(url);
@@ -44,9 +44,40 @@ function ConsultaServidor(url) {
 
 function ModalNuevo() {
     $("#lblTituloModal").html("Nuevo Usuario");
+    alert('eee');
     AbrirModal("modal-form");
     CargarPerfiles();
     CargarSociedades();
+    CargarDepartamentos();
+}
+
+
+function CargarDepartamentos() {
+
+    $.post("/Departamento/ObtenerDepartamentos", function (data, status) {
+        //var errorEmpresa = validarEmpresa(data);
+        //if (errorEmpresa) {
+        //    return;
+        //}
+        let departamentos = JSON.parse(data);
+        llenarComboDepartamento(departamentos, "cboDepartamento", "Seleccione")
+
+    });
+}
+
+function llenarComboDepartamento(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value=''>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdDepartamento + "'>" + lista[i].Descripcion + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
 }
 
 function CargarPerfiles() {
@@ -113,6 +144,11 @@ function GuardarUsuario() {
     let varSociedad = $("#cboSociedad").val();
     let varEstado = false;
 
+    let varDepartamento = $("#cboDepartamento").val();
+    let varUsuarioSAP = $("#txtUsuarioSap").val();
+    let varContrasenaSAP = $("#txtContrasenaSap").val();
+    let varCorreo = $("#txtCorreo").val();
+
     if ($('#chkActivo')[0].checked) {
         varEstado = true;
     }
@@ -124,7 +160,11 @@ function GuardarUsuario() {
         'Password': varContraseña,
         'IdPerfil': varPerfil,
         'IdSociedad': varSociedad,
-        'Estado': varEstado
+        'Estado': varEstado,
+        'SapUsuario': varUsuarioSAP,
+        'SapPassword': varContrasenaSAP,
+        'IdDepartamento': varDepartamento,
+        'Correo': varCorreo
     }, function (data, status) {
 
         if (data == 1) {
@@ -190,6 +230,28 @@ function ObtenerDatosxID(varIdUsuario) {
                     }
                 }
                 let cbo = document.getElementById("cboPerfil");
+                if (cbo != null) cbo.innerHTML = contenido;
+            });
+
+
+
+            $.post("/Departamento/ObtenerDepartamentos", function (data, status) {
+                //var errorEmpresa = validarEmpresa(data);
+                //if (errorEmpresa) {
+                //    return;
+                //}
+
+                let contenido;
+                let departamentos = JSON.parse(data);
+                //console.log(perfiles);
+                for (var i = 0; i < departamentos.length; i++) {
+                    if (departamentos[i].IdDepartamento == usuarios[0].IdDepartamento) {
+                        contenido += "<option selected value='" + departamentos[i].IdDepartamento + "'>" + departamentos[i].Descripcion + "</option>";
+                    } else {
+                        contenido += "<option value='" + departamentos[i].IdDepartamento + "'>" + departamentos[i].Descripcion + "</option>";
+                    }
+                }
+                let cbo = document.getElementById("cboDepartamento");
                 if (cbo != null) cbo.innerHTML = contenido;
             });
 

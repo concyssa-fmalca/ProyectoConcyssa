@@ -132,5 +132,38 @@ namespace DAO
             }
         }
 
+
+        public List<DepartamentoDTO> ObtenerDepartamentosxUsuario(int IdUsuario)
+        {
+            List<DepartamentoDTO> lstDepartamentoDTO = new List<DepartamentoDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarDepartamentosxUsuario", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        DepartamentoDTO oDepartamentoDTO = new DepartamentoDTO();
+                        oDepartamentoDTO.IdDepartamento = int.Parse(drd["Id"].ToString());
+                        oDepartamentoDTO.Codigo = drd["Codigo"].ToString();
+                        oDepartamentoDTO.Descripcion = drd["Descripcion"].ToString();
+                        oDepartamentoDTO.Estado = bool.Parse(drd["Estado"].ToString());
+                        lstDepartamentoDTO.Add(oDepartamentoDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            return lstDepartamentoDTO;
+        }
+
     }
 }

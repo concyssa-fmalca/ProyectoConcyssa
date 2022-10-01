@@ -58,6 +58,31 @@ namespace ConcyssaWeb.Controllers
 
         }
 
+        public string ObtenerDepartamentosxUsuario(int IdUsuario)
+        {
+            string valida = "";
+            //valida = validarEmpresaActual();
+            //if (valida != "")
+            //{
+            //    return valida;
+            //}
+
+
+
+            DepartamentoDAO oDepartamentoDAO = new DepartamentoDAO();
+            List<DepartamentoDTO> lstDepartamentoDTO = oDepartamentoDAO.ObtenerDepartamentosxUsuario(IdUsuario);
+
+            if (lstDepartamentoDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstDepartamentoDTO);
+            }
+            else
+            {
+                return "error";
+            }
+
+        }
+
         public int EliminarDepartamento(int IdDepartamento)
         {
             DepartamentoDAO oDepartamentoDAO = new DepartamentoDAO();

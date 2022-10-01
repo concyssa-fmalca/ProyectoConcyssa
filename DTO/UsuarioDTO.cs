@@ -27,6 +27,7 @@ namespace DTO
 
         public string NombreUsuario { get; set; }
         public int IdDepartamento { get; set; }
+        public string NombreDepartamento { get; set; }
         public string Correo { get; set; }
     }
 }

@@ -146,7 +146,7 @@ namespace DAO
                             dad.SelectCommand.Parameters.AddWithValue("@IdCentroCostos", oSolicitudRQDetalleDTO.IdCentroCostos[i]);
                             dad.SelectCommand.Parameters.AddWithValue("@IdProyecto", oSolicitudRQDetalleDTO.IdProyecto[i]);
                             dad.SelectCommand.Parameters.AddWithValue("@IdMoneda", oSolicitudRQDetalleDTO.IdItemMoneda[i]);
-                            dad.SelectCommand.Parameters.AddWithValue("@TipoCambio", oSolicitudRQDetalleDTO.ItemTipoCambio[i]);
+                            dad.SelectCommand.Parameters.AddWithValue("@TipoCambio", 1);
                             dad.SelectCommand.Parameters.AddWithValue("@IdSociedad", int.Parse(IdSociedad));
                             dad.SelectCommand.Parameters.AddWithValue("@Referencia", oSolicitudRQDetalleDTO.Referencia[i]);
                             dad.SelectCommand.Parameters.AddWithValue("@EstadoDetalle", oSolicitudRQDetalleDTO.EstadoDetalle[i]);//;oSolicitudRQDetalleDTO.EstadoDetalle[i]);

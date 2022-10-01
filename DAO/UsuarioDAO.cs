@@ -150,6 +150,9 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@SapPassword", oUsuarioDTO.SapPassword);
                         da.SelectCommand.Parameters.AddWithValue("@Estado", oUsuarioDTO.Estado);
                         da.SelectCommand.Parameters.AddWithValue("@MovimientoInventario", oUsuarioDTO.MovimientoInventario);
+                        da.SelectCommand.Parameters.AddWithValue("@Correo", oUsuarioDTO.Correo);
+                        da.SelectCommand.Parameters.AddWithValue("@IdDepartamento", oUsuarioDTO.IdDepartamento);
+
 
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
@@ -190,6 +193,13 @@ namespace DAO
                         oUsuarioDTO.NombreSociedad = drd["NombreSociedad"].ToString();
                         oUsuarioDTO.Estado = bool.Parse(drd["Estado"].ToString());
                         oUsuarioDTO.MovimientoInventario = bool.Parse(drd["MovimientoInventario"].ToString());
+
+                        oUsuarioDTO.SapUsuario = drd["SapUsuario"].ToString();
+                        oUsuarioDTO.SapPassword = drd["SapPassword"].ToString();
+                        oUsuarioDTO.Correo = drd["Correo"].ToString();
+                        oUsuarioDTO.IdDepartamento =Convert.ToInt32((String.IsNullOrEmpty(drd["IdDepartamento"].ToString())) ? "0" : drd["IdDepartamento"].ToString());
+
+
 
                         lstUsuarioDTO.Add(oUsuarioDTO);
                     }
@@ -249,7 +259,7 @@ namespace DAO
                     while (drd.Read())
                     {
                         UsuarioDTO oUsuarioDTO = new UsuarioDTO();
-                        oUsuarioDTO.IdUsuario = int.Parse(drd["Id"].ToString());
+                        oUsuarioDTO.IdUsuario = int.Parse(drd["IdUsuario"].ToString());
                         oUsuarioDTO.Usuario = drd["Usuario"].ToString();
                         oUsuarioDTO.NombreUsuario = drd["Nombre"].ToString();
                         oUsuarioDTO.IdPerfil = int.Parse(drd["IdPerfil"].ToString());
@@ -257,7 +267,7 @@ namespace DAO
                         oUsuarioDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
                         oUsuarioDTO.NombreSociedad = drd["NombreSociedad"].ToString();
                         oUsuarioDTO.Estado = bool.Parse(drd["Estado"].ToString());
-                        oUsuarioDTO.IdDepartamento = int.Parse(drd["IdDepartamento"].ToString());
+                        oUsuarioDTO.IdDepartamento = Convert.ToInt32((String.IsNullOrEmpty(drd["IdDepartamento"].ToString())) ? "0" : drd["IdDepartamento"].ToString());
                         oUsuarioDTO.Correo = drd["Correo"].ToString();
                         lstUsuarioDTO.Add(oUsuarioDTO);
                     }

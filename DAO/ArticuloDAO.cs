@@ -55,7 +55,89 @@ namespace DAO
             return lstArticuloDTO;
         }
 
+        public List<ArticuloDTO> ObtenerArticulosRequerimientos(int Almacen, int Stock, int TipoItem,int TipoProducto,int IdSociedad, ref string mensaje_error)
+        {
+            List<ArticuloDTO> lstArticuloDTO = new List<ArticuloDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerArticulosRequerimientos", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdAlmacen", Almacen);
+                    da.SelectCommand.Parameters.AddWithValue("@Stock", Stock);
+                    da.SelectCommand.Parameters.AddWithValue("@TipoItem", TipoItem);
+                    da.SelectCommand.Parameters.AddWithValue("@TipoProducto", TipoProducto);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        ArticuloDTO oArticuloDTO = new ArticuloDTO();
+                        oArticuloDTO.IdArticulo = int.Parse(drd["IdArticulo"].ToString());
+                        oArticuloDTO.Codigo = drd["Codigo"].ToString();
+                        oArticuloDTO.Descripcion1 = drd["Descripcion1"].ToString();
+                        oArticuloDTO.NombUnidadMedida = (drd["NombUnidadMedida"].ToString());
+                        oArticuloDTO.IdUnidadMedidaInv = Convert.ToInt32(drd["IdUnidadMedidaInv"].ToString());
+                        oArticuloDTO.Stock = Convert.ToDecimal(drd["Stock"].ToString());
+                        lstArticuloDTO.Add(oArticuloDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstArticuloDTO;
+        }
+
+        public ArticuloDTO ObtenerArticuloxIdArticuloRequerimiento(int IdArticulo,int IdAlmacen, ref string mensaje_error)
+        {
+            ArticuloDTO oArticuloDTO = new ArticuloDTO();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerArticuloxIdArticuloRequerimiento", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdArticulo", IdArticulo);
+                    da.SelectCommand.Parameters.AddWithValue("@IdAlmacen", IdAlmacen);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        oArticuloDTO.IdArticulo = int.Parse(drd["IdArticulo"].ToString());
+                        oArticuloDTO.Codigo = drd["Codigo"].ToString();
+                        oArticuloDTO.Descripcion1 = drd["Descripcion1"].ToString();
+                        oArticuloDTO.NombUnidadMedida = (drd["NombUnidadMedida"].ToString());
+                        oArticuloDTO.IdUnidadMedidaInv = Convert.ToInt32(drd["IdUnidadMedidaInv"].ToString());
+                        oArticuloDTO.IdUnidadMedida = Convert.ToInt32(drd["IdUnidadMedida"].ToString());
+
+                        oArticuloDTO.IdGrupoUnidadMedida = Convert.ToInt32(drd["IdGrupoUnidadMedida"].ToString());
+                        oArticuloDTO.UltimoPrecioCompra = Convert.ToDecimal(drd["UltimoPrecioCompra"].ToString());
+                        oArticuloDTO.Stock = Convert.ToDecimal(drd["Stock"].ToString());
+    
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return oArticuloDTO;
+        }
+
+
         
+
+
+
         public List<ArticuloDTO> ListarArticulosCatalogoxSociedadxAlmacenStockxIdTipoProducto(int IdSociedad, int IdAlmacen,int IdTipoProducto, ref string mensaje_error, int Estado = 3)
         {
             List<ArticuloDTO> lstArticuloDTO = new List<ArticuloDTO>();

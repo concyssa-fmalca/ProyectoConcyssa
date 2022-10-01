@@ -15,11 +15,11 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerEtapaAutorizacion()
         {
             string valida = "";
-            valida = validarEmpresaActual();
-            if (valida != "")
-            {
-                return valida;
-            }
+            //valida = validarEmpresaActual();
+            //if (valida != "")
+            //{
+            //    return valida;
+            //}
 
 
             EtapaAutorizacionDAO oEtapaAutorizacionDAO = new EtapaAutorizacionDAO();
@@ -38,11 +38,11 @@ namespace ConcyssaWeb.Controllers
         public int UpdateInsertEtapaAutorizacion(EtapaAutorizacionDTO etapaAutorizacionDTO)
         {
             int valida = 0;
-            valida = validarEmpresaActualUpdateInsert();
-            if (valida != 0)
-            {
-                return valida;
-            }
+            //valida = validarEmpresaActualUpdateInsert();
+            //if (valida != 0)
+            //{
+            //    return valida;
+            //}
 
 
             EtapaAutorizacionDAO oEtapaAutorizacionDAO = new EtapaAutorizacionDAO();

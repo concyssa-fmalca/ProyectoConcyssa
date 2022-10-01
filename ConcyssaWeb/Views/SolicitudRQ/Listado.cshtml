@@ -182,26 +182,45 @@
 
                             <div class="row">
                                 <div class='form-group-sm'>
+                                    <label for="IdBase" class="control-label col-sm-2 left-align">Base</label>
+                                    <div class="col-sm-4">
+                                        <select id="IdBase" class="form-control input-sm" tabindex="0" onchange="ObtenerObraxIdBase()"></select>
+                                    </div>
+                                </div>
+
+                                <div class='form-group-sm'>
+                                    <label for="IdObra" class="control-label col-sm-2 left-align">Obra</label>
+                                    <div class="col-sm-4">
+                                        <select id="IdObra" class="form-control input-sm" tabindex="0" onchange="ObtenerAlmacenxIdObra()"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for="cboAlmacen" class="control-label col-sm-2 left-align">Almacen</label>
+                                    <div class="col-sm-4">
+                                        <select id="cboAlmacen" class="form-control input-sm" tabindex="0" onchange="seleccionarAlmacenItem()"></select>
+                                    </div>
+                                </div>
+
+                                <div class='form-group-sm'>
                                     <label for="cboSerie" class="control-label col-sm-2 left-align">Serie</label>
                                     <div class="col-sm-4">
                                         <select id="cboSerie" class="form-control input-sm" tabindex="0" onchange="ObtenerNumeracion()" disabled></select>
                                     </div>
                                 </div>
-                                <div class='form-group-sm' style="display:none">
+                               @* <div class='form-group-sm' style="display:none">
                                     <label for="txtEstado" class="control-label col-sm-2 left-align">Estado</label>
                                     <div class="col-sm-4">
                                         <input id="txtEstado" type="text" class="form-control input-sm" tabindex="1" value="1" disabled>
                                     </div>
-                                </div>
+                                </div>*@
+                                 <input id="txtEstado" type="hidden" class="form-control input-sm" tabindex="1" value="1" disabled>
                             </div>
 
                             <div class="row">
-                                <div class='form-group-sm'>
-                                    <label for="txtNumeracion" class="control-label col-sm-2 left-align">Numeracion</label>
-                                    <div class="col-sm-4">
-                                        <input id="txtNumeracion" type="text" class="form-control input-sm" tabindex="2" disabled>
-                                    </div>
-                                </div>
 
                                 <div class='form-group-sm'>
                                     <label for="cboPrioridad" class="control-label col-sm-2 left-align">Prioridad</label>
@@ -212,6 +231,15 @@
                                         </select>
                                     </div>
                                 </div>
+
+                                <div class='form-group-sm'>
+                                    <label for="txtNumeracion" class="control-label col-sm-2 left-align">Numeracion</label>
+                                    <div class="col-sm-4">
+                                        <input id="txtNumeracion" type="text" class="form-control input-sm" tabindex="2" disabled>
+                                    </div>
+                                </div>
+
+                                
 
                             </div>
 
@@ -319,6 +347,16 @@
                                             <option value="1">Producto</option>
                                             <option value="2">Servicio</option>
                                             <option value="3">Activo</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class='form-group-sm'>
+                                    <div class="col-sm-4">
+                                        <select class="form-control" id="IdTipoProducto" style="margin-bottom:10px;margin-top:5px">
+                                            <option value="0">Seleccione</option>
+                                            <option value="1">MATERIALES</option>
+                                            <option value="2">AUXILIARES</option>
                                         </select>
                                     </div>
                                 </div>
