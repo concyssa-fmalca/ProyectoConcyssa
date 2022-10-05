@@ -19,6 +19,35 @@ namespace ConcyssaWeb.Controllers
         {
             return View();
         }
+
+
+        public string ObtenerDatosxIDOPDN(int IdOPDN)
+        {
+            string mensaje_error = "";
+            OpdnDAO oOpdnDAO = new OpdnDAO();
+            OpdnDTO oOpdnDTO = oOpdnDAO.ObtenerDatosxIDOPDN(IdOPDN, ref mensaje_error);
+            if (mensaje_error.ToString().Length == 0)
+            {
+                List<OPDNDetalle> lstOPDNDetalle = new List<OPDNDetalle>();
+                lstOPDNDetalle=oOpdnDAO.ObtenerDetalleOpdn(IdOPDN, ref mensaje_error);
+                oOpdnDTO.detalles = new OPDNDetalle[lstOPDNDetalle.Count()];
+                for (int i = 0; i < lstOPDNDetalle.Count; i++)
+                {
+                    oOpdnDTO.detalles[i] = lstOPDNDetalle[i];
+                
+
+                }
+                
+
+                return JsonConvert.SerializeObject(oOpdnDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
+
+
         public string ListarOPDNDT(string EstadoOPDN = "ABIERTO")
         {
             string mensaje_error = "";

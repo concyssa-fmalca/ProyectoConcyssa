@@ -197,6 +197,20 @@ namespace ConcyssaWeb.Controllers
 
         }
 
+        public bool ValidarSipuedeAprobar(int IdSolicitudRQ,int IdEtapa)
+        {
+            SolicitudRQAutorizacionDAO oSolicitudRQAutorizacionDAO = new SolicitudRQAutorizacionDAO();
+            int puedeentrar=oSolicitudRQAutorizacionDAO.ValidarSipuedeAprobar(IdSolicitudRQ, IdEtapa);
+            if (puedeentrar==1)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+            
+        }
 
         public int UpdateInsertModeloAprobaciones(List<SolicitudRQModeloAprobacionesDTO> solicitudRQModeloAprobacionesDTO)
         {
@@ -435,7 +449,9 @@ namespace ConcyssaWeb.Controllers
             else
             {
                 SolicitudRQDAO oSolicitudDAO = new SolicitudRQDAO();
-                List<SolicitudRQDTO> lstSolicitudRQDTO = oSolicitudDAO.ObtenerDatosxID(IdSolicitudRQ);
+                //List<SolicitudRQDTO> lstSolicitudRQDTO = oSolicitudDAO.ObtenerDatosxID(IdSolicitudRQ);
+                List<SolicitudRQDTO> lstSolicitudRQDTO = oSolicitudDAO.ObtenerDatosxIDNuevo(IdSolicitudRQ,IdAprobador,IdEtapa);
+
 
                 if (lstSolicitudRQDTO.Count > 0)
                 {

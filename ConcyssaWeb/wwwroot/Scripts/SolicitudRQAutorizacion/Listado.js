@@ -113,9 +113,22 @@ function ConsultaServidor(url) {
 
         for (var i = 0; i < solicitudes.length; i++) {
 
+            if (Estado==1) {
+                let respuesta = validarsipuedeaprobar(solicitudes[i].IdSolicitud, solicitudes[i].IdEtapa);
+                if (respuesta == false) {
+                    tr += '<tr style="display:none" id="solicitud' + solicitudes[i].IdSolicitud + '" onclick="FilaSeleccionada(' + "'" + solicitudes[i].NumeroSolicitud + "'" + ',' + solicitudes[i].IdSolicitud + ',' + solicitudes[i].UsuarioAprobador + ',' + solicitudes[i].IdSolicitudModelo + ',' + solicitudes[i].IdEtapa + ',' + solicitudes[i].IdClaseArticulo + ')">';
+                } else {
+                    tr += '<tr id="solicitud' + solicitudes[i].IdSolicitud + '" onclick="FilaSeleccionada(' + "'" + solicitudes[i].NumeroSolicitud + "'" + ',' + solicitudes[i].IdSolicitud + ',' + solicitudes[i].UsuarioAprobador + ',' + solicitudes[i].IdSolicitudModelo + ',' + solicitudes[i].IdEtapa + ',' + solicitudes[i].IdClaseArticulo + ')">';
+                }
+            }else{
+                tr += '<tr id="solicitud' + solicitudes[i].IdSolicitud + '" onclick="FilaSeleccionada(' + "'" + solicitudes[i].NumeroSolicitud + "'" + ',' + solicitudes[i].IdSolicitud + ',' + solicitudes[i].UsuarioAprobador + ',' + solicitudes[i].IdSolicitudModelo + ',' + solicitudes[i].IdEtapa + ',' + solicitudes[i].IdClaseArticulo + ')">';
+            }
 
-            tr += '<tr id="solicitud' + solicitudes[i].IdSolicitud + '" onclick="FilaSeleccionada(' + "'" + solicitudes[i].NumeroSolicitud + "'" + ',' + solicitudes[i].IdSolicitud + ',' + solicitudes[i].UsuarioAprobador + ',' + solicitudes[i].IdSolicitudModelo + ',' + solicitudes[i].IdEtapa + ',' + solicitudes[i].IdClaseArticulo + ')">' +
-                '<td>';
+            
+
+
+
+            tr += '<td>';
             if (solicitudes[i].Estado == "Aprobado" || solicitudes[i].FechaAprobacion != "") {
                 tr += '<i class="fa fa-check" aria-hidden="true"></i>';
             } else if (solicitudes[i].Estado == "Rechazado") {
@@ -125,6 +138,7 @@ function ConsultaServidor(url) {
             }
             tr += '</td > ' +
                 '<td>' + solicitudes[i].NumeroSolicitud + '</td>' +
+                '<td>' + solicitudes[i].NombEtapa.toUpperCase() + '</td>' +
                 '<td>' + solicitudes[i].Solicitante.toUpperCase() + '</td>' +
                 '<td>' + solicitudes[i].Area.toUpperCase() + '</td>' +
                 '<td>' + solicitudes[i].TipoArticulo.toUpperCase() + '</td>' +
@@ -191,9 +205,29 @@ function ConsultaServidor(url) {
 }
 
 
+function validarsipuedeaprobar(IdSolicitudRQ, IdEtapa) {
+    let respuestaa = false;
+    $.ajaxSetup({ async: false });
+    $.post('ValidarSipuedeAprobar', { 'IdSolicitudRQ': IdSolicitudRQ, 'IdEtapa': IdEtapa }, function (data, status) {
+        respuestaa=data
+    });
+    return respuestaa;
+
+}
+
 
 function FilaSeleccionada(NumeroSolicitud, IdSolicitudRQ, UsuarioAprobador, IdSolicitudModelo, IdEtapa, IdClaseArticulo) {
 
+    let respuesta=validarsipuedeaprobar( IdSolicitudRQ, IdEtapa)
+    if (respuesta==false) {
+        Swal.fire(
+            'No puede ingresar',
+            'No puede ingresar a la fila seleccionada,la etapa anterior se encuentra en proceso',
+            'warning'
+        )
+        $("#tbody_detalle").html('');
+        return;
+    }
 
     $('#table_id').on('click', 'tr', function () {
 
@@ -517,7 +551,7 @@ function ObtenerDatosxID(NumeroSolicitud, IdSolicitudRQ, UsuarioAprobador, IdSol
                 let Detalle = solicitudes[0].Detalle;
 
                 for (var i = 0; i < Detalle.length; i++) {
-                    AgregarLineaDetalle(Detalle[i].IdDetalle, solicitudes[0].Numero, Detalle[i].Descripcion, IdClaseArticulo, Detalle[i].Prioridad, i, Detalle[i].EstadoDisabled, Detalle[i].EstadoItemAutorizado, IdSolicitudRQ, UsuarioAprobador, IdSolicitudModelo, Detalle[i].IdArticulo, Detalle[i].IdSolicitudRQDetalle, Detalle[i].IdUnidadMedida, Detalle[i].IdIndicadorImpuesto, Detalle[i].IdAlmacen, Detalle[i].IdProveedor, Detalle[i].IdLineaNegocio, Detalle[i].IdCentroCostos, Detalle[i].IdProyecto, Detalle[i].IdItemMoneda, Detalle[i].ItemTipoCambio, Detalle[i].CantidadNecesaria.toFixed(DecimalesCantidades), Detalle[i].PrecioInfo.toFixed(DecimalesPrecios), Detalle[i].ItemTotal.toFixed(DecimalesImportes), Detalle[i].NumeroFabricacion, Detalle[i].NumeroSerie, Detalle[i].FechaNecesaria, Detalle[i].Referencia, Detalle[i].DescripcionItem);
+                    AgregarLineaDetalle(Detalle[i].IdDetalle, solicitudes[0].Numero, Detalle[i].Descripcion, IdClaseArticulo, Detalle[i].Prioridad, i, Detalle[i].EstadoDisabled, Detalle[i].EstadoItemAutorizado, IdSolicitudRQ, UsuarioAprobador, IdSolicitudModelo, Detalle[i].IdArticulo, Detalle[i].IdSolicitudRQDetalle, Detalle[i].IdUnidadMedida, Detalle[i].IdIndicadorImpuesto, Detalle[i].IdAlmacen, Detalle[i].IdProveedor, Detalle[i].IdLineaNegocio, Detalle[i].IdCentroCostos, Detalle[i].IdProyecto, Detalle[i].IdItemMoneda, Detalle[i].ItemTipoCambio, Detalle[i].CantidadNecesaria.toFixed(DecimalesCantidades), Detalle[i].PrecioInfo.toFixed(DecimalesPrecios), Detalle[i].ItemTotal.toFixed(DecimalesImportes), Detalle[i].NumeroFabricacion, Detalle[i].NumeroSerie, Detalle[i].FechaNecesaria, Detalle[i].Referencia, Detalle[i].DescripcionItem, Detalle[i].AprobadoAnterior);
                     $("#cboImpuesto").val(Detalle[0].IdIndicadorImpuesto);
                 }
 
@@ -558,10 +592,11 @@ function ObtenerDatosxID(NumeroSolicitud, IdSolicitudRQ, UsuarioAprobador, IdSol
 
 
 
-function AgregarLineaDetalle(IdDetalle, Numero, DescripcionServicio, IdClaseArticulo, Prioridad, contador, EstadoDisabled, EstadoItemAutorizado, IdSolicitudRQ, UsuarioAprobador, IdSolicitudModelo, IdArticulo, IdSolicitudRQDetalle, IdUnidadMedida, IdIndicadorImpuesto, IdAlmacen, IdProveedor, IdLineaNegocio, IdCentroCosto, IdProyecto, IdMoneda, ItemTipoCambio, CantidadNecesaria, PrecioInfo, ItemTotal, NumeroFabricacion, NumeroSerie, FechaNecesaria, Referencia, DescripcionItem) {
+function AgregarLineaDetalle(IdDetalle, Numero, DescripcionServicio, IdClaseArticulo, Prioridad, contador, EstadoDisabled, EstadoItemAutorizado, IdSolicitudRQ, UsuarioAprobador, IdSolicitudModelo, IdArticulo, IdSolicitudRQDetalle, IdUnidadMedida, IdIndicadorImpuesto, IdAlmacen, IdProveedor, IdLineaNegocio, IdCentroCosto, IdProyecto, IdMoneda, ItemTipoCambio, CantidadNecesaria, PrecioInfo, ItemTotal, NumeroFabricacion, NumeroSerie, FechaNecesaria, Referencia, DescripcionItem, AprobadoAnterior=1) {
 
     console.log("detal");
     console.log(IdDetalle);
+
     console.log("detal");
 
     let UnidadMedida;
@@ -694,8 +729,15 @@ function AgregarLineaDetalle(IdDetalle, Numero, DescripcionServicio, IdClaseArti
 
     let tr = '';
 
-    tr += `<tr>
-            <td style="display:none;">
+    if (AprobadoAnterior == 0) {
+        tr += `<tr style="display:none;">`;
+    } else {
+        tr += `<tr>`;
+    }
+
+    
+
+    tr +=`<td style="display:none;">
 
             <input  class="form-control" type="text" value="`+ IdSolicitudRQDetalle + `" id="txtIdSolicitudRQDetalle" name="txtIdSolicitudRQDetalle[]"/>
             <input  class="form-control" type="text" value="`+ UsuarioAprobador + `" id="txtUsuarioAprobador" name="txtUsuarioAprobador[]"/>
@@ -770,14 +812,26 @@ function AgregarLineaDetalle(IdDetalle, Numero, DescripcionServicio, IdClaseArti
     //    }
     //}
     tr += `</td>
-            <td>
-            <select class="form-control EstadoItem" id="cboEstadoItem`+ contador + `" name="cboEstadoItem[]">
+            <td>`;
+
+    if (AprobadoAnterior == 0) {
+        tr += ` <select class="form-control" id="cboEstadoItem` + contador + `" name="cboEstadoItem[]">
                 <option value="1">Pendiente</option>
                 <option value="2">Aprobado</option>
                 <option value="3">Rechazado</option>
                 
-            </select>
-            </td>
+            </select>`;
+    } else {
+        tr += ` <select class="form-control EstadoItem" id="cboEstadoItem` + contador + `" name="cboEstadoItem[]">
+                <option value="1">Pendiente</option>
+                <option value="2">Aprobado</option>
+                <option value="3">Rechazado</option>
+                
+            </select>`;
+    }
+    
+
+    tr += `</td>
 
             <td style="display:none"><input class="form-control" type="number"  value="`+ StockItem + `" name="txtStockItem[]" id="txtStockItem` + contador + `" disabled></td>
             <td style="display:none"><input class="form-control" type="number"  value="`+ Comprometido + `" name="txtComprometido[]" id="txtComprometido` + contador + `" disabled></td>

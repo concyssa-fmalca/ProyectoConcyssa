@@ -12,6 +12,70 @@ namespace DAO
 {
     public class OpchDAO
     {
+
+
+        public OpchDTO ObtenerDatosxIdOpch(int IdOpch,ref string mensaje_error)
+        {
+            OpchDTO oOpchDTO = new OpchDTO();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerOpchxID", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdOpch", IdOpch);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        oOpchDTO.DT_RowId = Convert.ToInt32(drd["IdOPCH"].ToString());
+                        oOpchDTO.IdOPCH = Convert.ToInt32(drd["IdOPCH"].ToString());
+                        oOpchDTO.IdTipoDocumento = Convert.ToInt32(drd["IdTipoDocumento"].ToString());
+                        oOpchDTO.ObjType = (drd["ObjType"].ToString());
+                        oOpchDTO.IdMoneda = Convert.ToInt32(drd["IdMoneda"].ToString());
+                        oOpchDTO.CodMoneda = (drd["CodMoneda"].ToString());
+                        oOpchDTO.TipoCambio = Convert.ToDecimal(drd["TipoCambio"].ToString());
+                        oOpchDTO.IdCliente = Convert.ToInt32(drd["IdCliente"].ToString());
+                        oOpchDTO.FechaContabilizacion = Convert.ToDateTime(drd["FechaContabilizacion"].ToString());
+                        oOpchDTO.FechaDocumento = Convert.ToDateTime(drd["FechaDocumento"].ToString());
+                        oOpchDTO.FechaVencimiento = Convert.ToDateTime(drd["FechaVencimiento"].ToString());
+                        oOpchDTO.IdListaPrecios = Convert.ToInt32(drd["IdListaPrecios"].ToString());
+                        oOpchDTO.Referencia = (drd["Referencia"].ToString());
+                        oOpchDTO.Comentario = (drd["Comentario"].ToString());
+                        oOpchDTO.DocEntrySap = Convert.ToInt32(drd["DocEntrySap"].ToString());
+                        oOpchDTO.DocNumSap = (drd["DocNumSap"].ToString());
+                        oOpchDTO.IdCentroCosto = Convert.ToInt32(drd["IdCentroCosto"].ToString());
+                        oOpchDTO.SubTotal = Convert.ToDecimal(drd["SubTotal"].ToString());
+                        oOpchDTO.Impuesto = Convert.ToDecimal(drd["Impuesto"].ToString());
+                        oOpchDTO.IdTipoAfectacionIgv = Convert.ToInt32(drd["IdTipoAfectacionIgv"].ToString());
+                        oOpchDTO.Total = Convert.ToDecimal(drd["Total"].ToString());
+                        oOpchDTO.IdAlmacen = Convert.ToInt32(drd["IdAlmacen"].ToString());
+                        oOpchDTO.IdSerie = Convert.ToInt32(drd["IdSerie"].ToString());
+                        oOpchDTO.Correlativo = Convert.ToInt32(drd["Correlativo"].ToString());
+                        oOpchDTO.IdSociedad = Convert.ToInt32(drd["IdSociedad"].ToString());
+                        oOpchDTO.NombTipoDocumentoOperacion = (drd["NombTipoDocumentoOperacion"].ToString());
+                        oOpchDTO.NombSerie = (drd["NombSerie"].ToString());
+                        oOpchDTO.Estado = Convert.ToBoolean(drd["Estado"].ToString());
+                        oOpchDTO.DescCuadrilla = (drd["DescCuadrilla"].ToString());
+                        oOpchDTO.NombAlmacen = (drd["NombAlmacen"].ToString());
+                        oOpchDTO.NombObra = (drd["NombObra"].ToString());
+                        oOpchDTO.IdAlmacen = Convert.ToInt32(drd["IdAlmacen"].ToString());
+                        oOpchDTO.IdObra = Convert.ToInt32(drd["IdObra"].ToString());
+                        oOpchDTO.IdBase = Convert.ToInt32(drd["IdBase"].ToString());
+                        oOpchDTO.IdProveedor = Convert.ToInt32(drd["IdProveedor"].ToString());
+
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return oOpchDTO;
+        }
         public List<OpchDTO> ObtenerOPCHxEstado(int IdSociedad, ref string mensaje_error, string EstadoOPCH)
         {
             List<OpchDTO> lstOPCHDTO = new List<OpchDTO>();
@@ -98,7 +162,6 @@ namespace DAO
                         oOPCHDetalle.IdOPCH = Convert.ToInt32(drd["IdOPCH"].ToString());
                         oOPCHDetalle.IdOPCHDetalle = Convert.ToInt32(drd["IdOPCHDetalle"].ToString());
                         oOPCHDetalle.DescripcionArticulo = (drd["DescripcionArticulo"].ToString());
-
                         oOPCHDetalle.IdArticulo = Convert.ToInt32(drd["IdArticulo"].ToString());
                         oOPCHDetalle.IdGrupoUnidadMedida = Convert.ToInt32(drd["IdGrupoUnidadMedida"].ToString());
                         oOPCHDetalle.IdDefinicionGrupoUnidad = Convert.ToInt32(drd["IdDefinicionGrupoUnidad"].ToString());

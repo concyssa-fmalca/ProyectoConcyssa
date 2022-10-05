@@ -77,6 +77,7 @@ namespace DTO
 
         public int IdProveedor { get; set; }
         public int IdCondicionPago { get; set; }
+        public string NombProveedor { get; set; }
 
     }
 

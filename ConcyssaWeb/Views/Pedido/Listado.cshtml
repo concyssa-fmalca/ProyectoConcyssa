@@ -121,6 +121,17 @@
                                 @*<input placeholder='' id='txtEstado' type='text' style="display:none;">*@
                             </div>
 
+                            <div class="row" style="text-align: center">
+                                <div class='form-group-sm'>
+                                    <button class="btn btn-sm btn-warning" onclick="mostrarproductosaprobados()">MOSTRAR PRODUCTOS APROBADOS</button>
+                                    <br />
+                                    <button class="btn btn-sm btn-success" onclick="mostrarParaGenerar()">Generar Orden Segun Productos Aprobados</button>
+                                </div>
+                            </div>
+
+                            <br />
+                            <br />
+
                             <div class="row">
                                 <div class='form-group-sm'>
                                     <label for="IdBase" class="control-label col-sm-2 left-align">Base</label>
@@ -196,14 +207,14 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <hr style="margin:6px" />
 
                             <div class="row">
                                 <div class='form-group-sm'>
                                     <label for="txtNumeracion" class="control-label col-sm-2 left-align">Proveedor</label>
                                     <div class="col-sm-10">
-                                        <select id="IdProveedor" type="text" class="form-control input-sm" tabindex="3" onchange="ObtenerProveedorxId()" ></select>
+                                        <select id="IdProveedor" type="text" class="form-control input-sm" tabindex="3" onchange="ObtenerProveedorxId()"></select>
                                     </div>
                                 </div>
                             </div>
@@ -309,7 +320,7 @@
                                 {
                                     <div class="row">
                                         <div class=''>
-                                            <div class="col-sm-8">
+                            !important               <div class="col-sm-8">
                                                 @*<label for="file">Subir Anexos</label>*@
                                                 <input type="file" name="file" id="file" class="form-control" />
                                             </div>
@@ -351,12 +362,12 @@
 
                             <br />
                             <div class="row">
-                                <div class='form-group-sm' >
+                                <div class='form-group-sm'>
                                     <div class="col-sm-6">
                                     </div>
                                     @*<label for="cboTitular" class="control-label col-sm-2 left-align">Titular</label>
                                     <div class="col-sm-4">
-                                        <select id="cboTitular" class="form-control input-sm" tabindex="11"></select>
+                                    <select id="cboTitular" class="form-control input-sm" tabindex="11"></select>
                                     </div>*@
                                 </div>
 
@@ -474,7 +485,7 @@
 
                 <div class="col-sm-6">
                     <div class='form-group-sm'>
-                        
+
                         <button type="button" id="btnGrabar" onclick="GuardarPedido()" class="btn btn-primary pull-right plu">Grabar</button>
                         <button type="button" id="btnCancelar" onclick="CerrarModal()" class="btn btn-danger pull-right" style="background-color:orange;">Cancelar</button>
                     </div>
@@ -614,7 +625,7 @@
 
                                 </div>
 
-                                 <div class="row">
+                                <div class="row">
 
                                     <div class='form-group-sm'>
                                         <label for="txtStockAlmacenItem" class="control-label col-sm-2 left-align">Stock en Almacen</label>
@@ -683,7 +694,8 @@
 
                 <div class="panel" style="margin-bottom:0px">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="lblTituloModalItem">Listado Items
+                        <h5 class="modal-title" id="lblTituloModalItem">
+                            Listado Items
                             <button class="aling-rigth btn-sm btn-info" id="btnVerItemModal1" onclick="VerItemModal(1)">Ver Requerimiento Activos</button>
                             <button class="aling-rigth btn-sm btn-info" id="btnVerItemModal2" onclick="VerItemModal(2)">Ver Items</button>
 
@@ -737,7 +749,217 @@
     </div>
 
 
+    @*MODAL PRODCTOS APROBADOS*@
+    <div class="modal fade" data-backdrop="static"
+         data-keyboard="false" id="ModalProductosAprobados" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg allcp-form" style="margin-top:120px;width:95% !important" role="document">
+            <div class="modal-content">
 
+
+                <div class="panel" style="margin-bottom:0px">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="lblTituloModalItem">Listado de Item Aprobados</h5>
+                    </div>
+                    <div class="panel-body ">
+                        <div class='col s12 m12 '>
+                            <div class='container-fluid'>
+                                <div class="row">
+                                    <div class="table-responsive">
+                                        <table class="table display" id="tabla_listado_itemsaprobados" style="width:100%  !important;">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">N° Solicitud</th>
+                                                    <th scope="col">OBRA</th>
+                                                    <th scope="col">Producto</th>
+                                                    <th scope="col">Unidad Medida</th>
+                                                    <th scope="col">Cantidad</th>
+                                                    <th scope="col">Proveedor</th>
+                                                </tr>
+                                            </thead>
+
+                                        </table>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+
+
+                        <div class='col s12 m12'>
+                            <div class='container-fluid'>
+                                <div class="row">
+                                    <div class="col-sm-6 s6 m6">
+                                        <h5>Proveedor Producto <button class="btn btn-sm btn-info" onclick="agregarProvedoraProductoxSeparado()">Agregar</button> </h5>
+                                        <div class="table-responsive">
+                                            <table class="table" id="tabla_proveedor_aprobados">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Proveedor</th>
+                                                        <th scope="col">Precio NAC</th>
+                                                        <th scope="col">Precio EXT</th>
+                                                        <th scope="col">Accion</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-6 s6 m6">
+                                        <h5 style="color:red">Stock Actual</h5>
+                                        <div class="table-responsive">
+                                            <table class="table" id="tabla_aprobados_stock">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Obra</th>
+                                                        <th scope="col">Almacen</th>
+                                                        <th scope="col">Producto</th>
+                                                        <th scope="col">Stock</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody> </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                        <div class='col s12 m12'>
+                            <div class='container-fluid'>
+                                <div class="row">
+                                    <h4>Ultimas Compras</h4>
+                                    <div class="col-sm-12">
+                                        <div class="table-responsive">
+                                            <table class="table" id="tabla_listado_itemsaprobados">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Proveedor</th>
+                                                        <th scope="col">Precio NAC</th>
+                                                        <th scope="col">Precio EXT</th>
+                                                        <th scope="col">Cantidad</th>
+                                                        <th scope="col">Fecha</th>
+                                                        <th scope="col">Obra</th>
+                                                    </tr>
+                                                </thead>
+
+                                            </table>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger pull-right" style="background-color:orange;" data-dismiss="modal" onclick="LimpiarModalItem()">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*MODAL PRODUCTOS AGRUPADOS POR PROVEEDOR*@
+    <div class="modal fade" data-backdrop="static"
+         data-keyboard="false" id="ModalOrdenAgrupadaporProductoAprobador" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg allcp-form" style="margin-top:120px" role="document">
+            <div class="modal-content">
+
+
+                <div class="panel" style="margin-bottom:0px">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="lblTituloModalItem">Seleccione Proveedoor para generar Pedido</h5>
+                    </div>
+                    <div class="panel-body ">
+                        <div class='col s12 m12 '>
+                            <div class='container-fluid'>
+                                <div class="row">
+                                    <div class="table-responsive">
+                                        <table class="table display" id="tabla_listado_productosaprobadosrq" style="width:100%  !important;">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">#</th>
+                                                    <th scope="col">Obra</th>
+                                                    <th scope="col">Base</th>
+                                                    <th scope="col">Almacen</th>
+                                                    <th scope="col">Proveedor</th>
+                                                    <th scope="col">Accciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger pull-right" style="background-color:orange;" data-dismiss="modal" onclick="LimpiarModalItem()">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    @*MODAL PARA ASIGANR AL PROVEEDOR SI NO TIENE DATO*@
+    <div class="modal fade" data-backdrop="static"
+         data-keyboard="false" id="modalasignarproveedor" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered allcp-form" style="margin-top:120px" role="document">
+            <div class="modal-content">
+
+
+                <div class="panel" style="margin-bottom:0px">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="lblTituloModalItem">
+                            Asignar proveedor
+                        </h5>
+                    </div>
+                    <div class="panel-body ">
+                        <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for="IdProveedorAsignar" class="control-label col-sm-2 left-align">Proveedor</label>
+                                    <div class="col-sm-8">
+                                        <select id="IdProveedorAsignar" class="form-control input-sm" tabindex="0"></select>
+                                    </div>
+                                </div>
+
+                                
+                        </div>
+
+                        <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for="PrecioAsignar" class="control-label col-sm-2 left-align">Precio</label>
+                                    <div class="col-sm-8">
+                                        <input id="PrecioAsignar" class="form-control"  value="0"/>
+                                    </div>
+                                </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary pull-right plu" onclick="GuardarAsignarProveedorProducto()" data-dismiss="modal">Aceptar</button>
+                        <button type="button" class="btn btn-danger pull-right" style="background-color:orange;" data-dismiss="modal" onclick="CerrarModalListadoItems()">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </div>
 

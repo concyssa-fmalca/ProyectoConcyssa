@@ -228,7 +228,7 @@ function GuardarArticulo() {
     if ($('input:radio[name=inlineRadioOptions]:checked').val()==1) {
         varEstado = true;
     }
-
+    FacturaProveedor / Listado
     let IdGrupoUnidadMedida = $("#IdGrupoUnidadMedida").val();
     let IdUnidadMedidaInv = $("#IdUnidadMedidaInv").val();
 

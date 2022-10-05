@@ -306,6 +306,8 @@ namespace DAO
                         oSolicitudRQDetalleDTO.Prioridad = int.Parse(drd["Prioridad"].ToString());
                         oSolicitudRQDetalleDTO.EstadoDisabled = int.Parse(drd["EstadoDisabled"].ToString());
                         oSolicitudRQDetalleDTO.IdDetalle = int.Parse(drd["IdDetalle"].ToString());
+                        oSolicitudRQDetalleDTO.AprobadoAnterior = int.Parse(drd["AprobadoAnterior"].ToString());
+
                         //oSolicitudRQDetalleDTO.DescripcionItem = drd["DescripcionItem"].ToString();
                         //lstSolicitudRQDTO.Add(oSolicitudRQDTO.Detalle.Add(oSolicitudRQDetalleDTO));
                         oSolicitudRQDTO.Detalle[posicion] = oSolicitudRQDetalleDTO;
