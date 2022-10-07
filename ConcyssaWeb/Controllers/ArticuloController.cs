@@ -183,6 +183,40 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
-        
+
+        public string InsertStockArticuloAlmacen(int IdProducto, int IdAlmacen, decimal StockMinimo, decimal StockMaximo, decimal StockAlerta)
+        {
+            string mensaje_error = "";
+            ArticuloDAO oArticuloDAO = new ArticuloDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+
+            bool respuesta = oArticuloDAO.InsertStockArticuloAlmacen(IdProducto, IdAlmacen, StockMinimo, StockMaximo, StockAlerta, ref mensaje_error);
+            if (respuesta)
+            {
+                return "1";
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
+
+
+
+        public string ObtenerStockArticuloXAlmacen(int IdArticulo)
+        {
+            string mensaje_error = "";
+            ArticuloDAO oArticuloDAO = new ArticuloDAO();
+            List<StockArticuloAlmacenDTO> oArticuloDTO = oArticuloDAO.ObtenerStockArticuloXAlmacen(IdArticulo, ref mensaje_error);
+            if (oArticuloDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(oArticuloDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
+
     }
 }

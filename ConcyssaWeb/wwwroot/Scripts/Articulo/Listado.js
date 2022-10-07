@@ -37,7 +37,7 @@ function listarUnidadMedida() {
             let options = `<option value="0">Seleccione</option>`;
             if (datos.length > 0) {
                 for (var i = 0; i < datos.length; i++) {
-                    options += `<option value="` + datos[i].IdUnidadMedida +`">` + datos[i].Descripcion +`</option>`;
+                    options += `<option value="` + datos[i].IdUnidadMedida + `">` + datos[i].Descripcion + `</option>`;
                 }
                 $("#cboIdUnidadMedida").html(options);
             }
@@ -106,9 +106,9 @@ function ConsultaServidor(url) {
 
         let articulos = JSON.parse(data);
         let total_articulos = articulos.length;
-       
+
         for (var i = 0; i < articulos.length; i++) {
-    
+
             tr += '<tr>' +
                 '<td>' + (i + 1) + '</td>' +
                 '<td>' + articulos[i].Codigo.toUpperCase() + '</td>' +
@@ -122,7 +122,7 @@ function ConsultaServidor(url) {
                 '<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + articulos[i].IdArticulo + ')"></button></td >' +
                 '</tr>';
         }
-        
+
         $("#tbody_Articulos").html(tr);
         $("#spnTotalRegistros").html(total_articulos);
 
@@ -135,6 +135,9 @@ function ConsultaServidor(url) {
 
 function ModalNuevo() {
     $("#lblTituloModal").html("Nuevo Articulo");
+    $("#TablaAlmacenes").hide();
+
+
     AbrirModal("modal-form");
     //CargarPerfiles();
     //CargarSociedades();
@@ -183,7 +186,7 @@ function llenarComboDefinicionGrupoUnidadItem(lista, idCombo, primerItem) {
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
     $("#IdUnidadMedidaInv").val(29)
-  
+
 }
 
 
@@ -225,10 +228,10 @@ function GuardarArticulo() {
     }
 
     varEstado = false;
-    if ($('input:radio[name=inlineRadioOptions]:checked').val()==1) {
+    if ($('input:radio[name=inlineRadioOptions]:checked').val() == 1) {
         varEstado = true;
     }
-    FacturaProveedor / Listado
+
     let IdGrupoUnidadMedida = $("#IdGrupoUnidadMedida").val();
     let IdUnidadMedidaInv = $("#IdUnidadMedidaInv").val();
 
@@ -267,6 +270,7 @@ function GuardarArticulo() {
 function ObtenerDatosxID(varIdArticulo) {
     limpiarDatos();
     $("#lblTituloModal").html("Editar Articulo");
+
     AbrirModal("modal-form");
 
     //console.log(varIdUsuario);
@@ -280,8 +284,8 @@ function ObtenerDatosxID(varIdArticulo) {
             limpiarDatos();
         } else {
             let articulos = JSON.parse(data);
-            //console.log(usuarios);
-       
+            console.log(articulos);
+
             $("#txtId").val(articulos[0].IdArticulo);
             $("#txtCodigo").val(articulos[0].Codigo);
             $("#txtDescripcion1").val(articulos[0].Descripcion1);
@@ -290,8 +294,8 @@ function ObtenerDatosxID(varIdArticulo) {
             $("#cboIdCodigoUbso").val(articulos[0].IdCodigoUbso);
 
             $("#IdGrupoUnidadMedida").val(articulos[0].IdGrupoUnidadMedida).change();
-            $("#idIdUnidadMedidaInv").val(29);
-   
+            $("#idIdUnidadMedidaInv").val(articulos[0].IdUnidadMedidaInv);
+
             if (articulos[0].ActivoFijo) {
                 $("#chkActivoFijo").prop('checked', true);
             }
@@ -311,7 +315,8 @@ function ObtenerDatosxID(varIdArticulo) {
             }
 
 
-            
+            ObtenerAlmacenes();
+            $("#TablaAlmacenes").show();
 
         }
 
@@ -357,3 +362,64 @@ function limpiarDatos() {
 
 
 
+function ObtenerAlmacenes() {
+
+    let IdProducto = $("#txtId").val();
+    console.log(IdProducto);
+
+
+    $.post("/Articulo/ObtenerStockArticuloXAlmacen", { 'IdArticulo': IdProducto }, function (data, status) {
+
+        //console.log(data);
+        if (data == "error") {
+            table = $("#table_id").DataTable(lenguaje);
+            return;
+        }
+
+        let tr = '';
+
+        let datos = JSON.parse(data);
+
+
+        console.log(datos);
+
+        for (var i = 0; i < datos.length; i++) {
+
+            tr += '<tr style="font-size: 12px;font-weight: 400;color: #626262;outline: none;">' +
+                '<td style="font-size: 12px;font-weight: 400;color: #626262;outline: none;">' + (i + 1) + '</td>' +
+                '<td style="font-size: 12px;font-weight: 400;color: #626262;outline: none;">' + datos[i].Descripcion.toUpperCase() + '</td>' +
+                '<td><input type="number" class="form-control" id="StockMinimo' + datos[i].IdAlmacen + '" name="StockMinimo[]" value="' + datos[i].StockMinimo + '"/></td>' +
+                '<td><input type="number" class="form-control" id="StockMaximo' + datos[i].IdAlmacen + '" name="StockMaximo[]" value="' + datos[i].StockMaximo + '"/></td>' +
+                '<td><input type="number" class="form-control" id="StockAlerta' + datos[i].IdAlmacen + '" name="StockAlerta[]" value="' + datos[i].StockAlerta + '"/></td>' +
+                '<td>' + datos[i].StockAlmacen + '</td>' +
+                '<td><button type="btn btn-primary btn-xs" onclick="GuardarStock(' + IdProducto + ',' + datos[i].IdAlmacen + ')">Guardar</button></td>' +
+                '</tr>';
+        }
+
+        $("#tbody_inventario").html(tr);
+
+
+
+    });
+
+}
+
+
+function GuardarStock(IdProducto, IdAlmacen) {
+    let StockMinimo = $("#StockMinimo" + IdAlmacen).val();
+    let StockMaximo = $("#StockMaximo" + IdAlmacen).val();
+    let StockAlerta = $("#StockAlerta" + IdAlmacen).val();
+    $.post("InsertStockArticuloAlmacen", { 'IdProducto': IdProducto, 'IdAlmacen': IdAlmacen, 'StockMinimo': StockMinimo, 'StockMaximo': StockMaximo, 'StockAlerta': StockAlerta },
+        function (data) {
+
+            if (data == "1") {
+                swal("Exito!", "Articulo Eliminado", "success")
+            } else {
+                swal("Error!", "Ocurrio un Error")
+            }
+
+
+        })
+
+
+}
