@@ -47,7 +47,7 @@ function ConsultaServidor(url) {
 
 
 function ModalNuevo() {
-    $("#lblTituloModal").html("Nueva Linea de Negocio");
+    $("#lblTituloModal").html("Nuevo Rubro Proveedor");
     AbrirModal("modal-form");
 }
 
@@ -86,7 +86,7 @@ function GuardarRubroProveedor() {
 }
 
 function ObtenerDatosxID(varIdRubroProveedor) {
-    $("#lblTituloModal").html("Editar Linea de Negocio");
+    $("#lblTituloModal").html("Editar Rubro Proveedor");
     AbrirModal("modal-form");
 
     //console.log(varIdUsuario);
@@ -114,17 +114,17 @@ function ObtenerDatosxID(varIdRubroProveedor) {
 
 }
 
-function eliminar(varIdLineaNegocio) {
+function eliminar(varIdRubroProveedor) {
 
 
-    alertify.confirm('Confirmar', '¿Desea eliminar esta linea de negocio?', function () {
-        $.post("EliminarLineaNegocio", { 'IdLineaNegocio': varIdLineaNegocio }, function (data) {
+    alertify.confirm('Confirmar', '¿Desea eliminar este Rubro Proveedor?', function () {
+        $.post("EliminarRubroProveedor", { 'IdRubroProveedor': varIdRubroProveedor }, function (data) {
 
             if (data == 0) {
                 swal("Error!", "Ocurrio un Error")
                 limpiarDatos();
             } else {
-                swal("Exito!", "Linea de Negocio Eliminada", "success")
+                swal("Exito!", "Rubro Proveedor Eliminado", "success")
                 table.destroy();
                 ConsultaServidor("ObtenerRubroProveedor");
                 limpiarDatos();

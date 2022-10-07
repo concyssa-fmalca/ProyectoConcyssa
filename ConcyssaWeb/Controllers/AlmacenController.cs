@@ -81,7 +81,7 @@ namespace ConcyssaWeb.Controllers
             AlmacenDAO oAlmacenDAO = new AlmacenDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             oAlmacenDTO.IdSociedad = IdSociedad;
-            int respuesta = oAlmacenDAO.UpdateInsertAlmacen(oAlmacenDTO, ref mensaje_error);
+            int respuesta = oAlmacenDAO.UpdateInsertAlmacen(oAlmacenDTO, ref mensaje_error, Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")));
 
             if (mensaje_error.Length > 0)
             {

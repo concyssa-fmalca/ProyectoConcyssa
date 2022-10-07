@@ -114,11 +114,11 @@ function ObtenerDatosxID(varIdDivision) {
 
 }
 
-function eliminar(varIdLineaNegocio) {
+function eliminar(varIdDivision) {
 
 
     alertify.confirm('Confirmar', '¿Desea eliminar esta Division?', function () {
-        $.post("EliminarLineaNegocio", { 'IdLineaNegocio': varIdLineaNegocio }, function (data) {
+        $.post("EliminarDivision", { 'IdDivision': varIdDivision }, function (data) {
 
             if (data == 0) {
                 swal("Error!", "Ocurrio un Error")

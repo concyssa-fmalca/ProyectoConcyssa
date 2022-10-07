@@ -55,7 +55,7 @@ namespace ConcyssaWeb.Controllers
             VehiculoDAO oVehiculoDAO = new VehiculoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             oVehiculoDTO.IdSociedad = IdSociedad;
-            int respuesta = oVehiculoDAO.UpdateInsertVehiculo(oVehiculoDTO, ref mensaje_error);
+            int respuesta = oVehiculoDAO.UpdateInsertVehiculo(oVehiculoDTO, ref mensaje_error, Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")));
 
             if (mensaje_error.Length > 0)
             {

@@ -47,7 +47,7 @@ function ConsultaServidor(url) {
 
 
 function ModalNuevo() {
-    $("#lblTituloModal").html("Nueva Linea de Negocio");
+    $("#lblTituloModal").html("Nueva Marca");
     AbrirModal("modal-form");
 }
 
@@ -86,7 +86,7 @@ function GuardarMarca() {
 }
 
 function ObtenerDatosxID(varIdMarca) {
-    $("#lblTituloModal").html("Editar Linea de Negocio");
+    $("#lblTituloModal").html("Editar Marca");
     AbrirModal("modal-form");
 
     //console.log(varIdUsuario);
@@ -114,17 +114,17 @@ function ObtenerDatosxID(varIdMarca) {
 
 }
 
-function eliminar(varIdLineaNegocio) {
+function eliminar(varIdMarca) {
 
 
-    alertify.confirm('Confirmar', '¿Desea eliminar esta linea de negocio?', function () {
-        $.post("EliminarLineaNegocio", { 'IdLineaNegocio': varIdLineaNegocio }, function (data) {
+    alertify.confirm('Confirmar', '¿Desea eliminar esta Marca?', function () {
+        $.post("EliminarMarca", { 'IdMarca': varIdMarca }, function (data) {
 
             if (data == 0) {
                 swal("Error!", "Ocurrio un Error")
                 limpiarDatos();
             } else {
-                swal("Exito!", "Linea de Negocio Eliminada", "success")
+                swal("Exito!", "Marca Eliminada", "success")
                 table.destroy();
                 ConsultaServidor("ObtenerMarca");
                 limpiarDatos();

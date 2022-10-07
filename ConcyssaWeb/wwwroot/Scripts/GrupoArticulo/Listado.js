@@ -140,6 +140,7 @@ function eliminar(varIdGrupoArticulo) {
 
 
 function limpiarDatos() {
+    console.log("hola");
     $("#txtId").val("");
     $("#txtCodigo").val("");
     $("#txtDescripcion").val("");

@@ -35,7 +35,7 @@ namespace ConcyssaWeb.Controllers
             CuadrillaDAO oCuadrillaDAO = new CuadrillaDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             oCuadrillaDTO.IdSociedad = IdSociedad;
-            int respuesta = oCuadrillaDAO.UpdateInsertCuadrilla(oCuadrillaDTO, ref mensaje_error);
+            int respuesta = oCuadrillaDAO.UpdateInsertCuadrilla(oCuadrillaDTO, ref mensaje_error, Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")));
 
             if (mensaje_error.Length > 0)
             {

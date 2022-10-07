@@ -114,17 +114,17 @@ function ObtenerDatosxID(varIdVia) {
 
 }
 
-function eliminar(varIdLineaNegocio) {
+function eliminar(varIdVia) {
 
 
-    alertify.confirm('Confirmar', '¿Desea eliminar esta linea de negocio?', function () {
-        $.post("EliminarVia", { 'IdVia': varIdLineaNegocio }, function (data) {
+    alertify.confirm('Confirmar', '¿Desea eliminar esta Via?', function () {
+        $.post("EliminarVia", { 'IdVia': varIdVia }, function (data) {
 
             if (data == 0) {
                 swal("Error!", "Ocurrio un Error")
                 limpiarDatos();
             } else {
-                swal("Exito!", "Linea de Negocio Eliminada", "success")
+                swal("Exito!", "Via Eliminada", "success")
                 table.destroy();
                 ConsultaServidor("ObtenerVia");
                 limpiarDatos();

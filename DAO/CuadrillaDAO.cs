@@ -56,7 +56,7 @@ namespace DAO
         }
 
         
-        public int UpdateInsertCuadrilla(CuadrillaDTO oCuadrillaDTO, ref string mensaje_error)
+        public int UpdateInsertCuadrilla(CuadrillaDTO oCuadrillaDTO, ref string mensaje_error,int IdUsuario)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
@@ -83,6 +83,8 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@IdSociedad", oCuadrillaDTO.IdSociedad);
                         da.SelectCommand.Parameters.AddWithValue("@Estado", oCuadrillaDTO.Estado);
                         da.SelectCommand.Parameters.AddWithValue("@EsTercero", oCuadrillaDTO.EsTercero);
+                        da.SelectCommand.Parameters.AddWithValue("@UsuarioCreacion", IdUsuario);
+                        da.SelectCommand.Parameters.AddWithValue("@UsuarioActualizacion", IdUsuario);
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
                         return rpta;

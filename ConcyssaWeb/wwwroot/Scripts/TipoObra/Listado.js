@@ -2,7 +2,7 @@
 
 
 window.onload = function () {
-    var url = "ObtenerTipoObra";
+    var url = "ObtenerTipoObraDT";
     ConsultaServidor(url);
 };
 
@@ -27,6 +27,28 @@ function ConsultaServidor(url) {
                 targets: -1,
                 orderable: false,
                 render: function (data, type, full, meta) {
+                    return `<button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID('`+ full.Codigo + `')"></button>
+                            <button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar('`+ full.Codigo + `')"></button>`
+                },
+            },
+            {
+                targets: 0,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return meta.row + 1
+                },
+            },
+            {
+                targets:1 ,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.Codigo
+                },
+            },
+            {
+                targets: 2,
+                orderable: false,
+                render: function (data, type, full, meta) {
                     return full.Descripcion
                 },
             }
@@ -42,7 +64,7 @@ function ConsultaServidor(url) {
 
 
 function ModalNuevo() {
-    $("#lblTituloModal").html("Nueva Linea de Negocio");
+    $("#lblTituloModal").html("Nuevo Tipo de Obra");
     AbrirModal("modal-form");
 }
 
@@ -69,7 +91,7 @@ function GuardarTipoObra() {
         if (data == 1) {
             swal("Exito!", "Proceso Realizado Correctamente", "success")
             table.destroy();
-            ConsultaServidor("ObtenerTipoObra");
+            ConsultaServidor("ObtenerTipoObraDT");
             limpiarDatos();
 
         } else {
@@ -81,7 +103,7 @@ function GuardarTipoObra() {
 }
 
 function ObtenerDatosxID(varIdTipoObra) {
-    $("#lblTituloModal").html("Editar Linea de Negocio");
+    $("#lblTituloModal").html("Editar Tipo Obra");
     AbrirModal("modal-form");
 
     //console.log(varIdUsuario);
@@ -109,19 +131,19 @@ function ObtenerDatosxID(varIdTipoObra) {
 
 }
 
-function eliminar(varIdLineaNegocio) {
+function eliminar(varIdTipoObra) {
 
 
-    alertify.confirm('Confirmar', '¿Desea eliminar esta linea de negocio?', function () {
-        $.post("EliminarLineaNegocio", { 'IdLineaNegocio': varIdLineaNegocio }, function (data) {
+    alertify.confirm('Confirmar', '¿Desea eliminar este Tipo de obra?', function () {
+        $.post("EliminarTipoObra", { 'IdTipoObra': varIdTipoObra }, function (data) {
 
             if (data == 0) {
                 swal("Error!", "Ocurrio un Error")
                 limpiarDatos();
             } else {
-                swal("Exito!", "Linea de Negocio Eliminada", "success")
+                swal("Exito!", "Tipo de Obra Eliminada", "success")
                 table.destroy();
-                ConsultaServidor("ObtenerTipoObra");
+                ConsultaServidor("ObtenerTipoObraDT");
                 limpiarDatos();
             }
 
@@ -141,3 +163,18 @@ function limpiarDatos() {
 
 
 
+function soloEnteros(e, obj) {
+    var charCode = (e.which) ? e.which : e.keyCode;
+    if (charCode == 13) {
+        var tidx = parseInt(obj.getAttribute('tabindex')) + 1;
+        elems = document.getElementsByClassName('input-sm');
+        for (var i = elems.length; i--;) {
+            var tidx2 = elems[i].getAttribute('tabindex');
+            if (tidx2 == tidx) { elems[i].focus(); break; }
+        }
+    } else if (charCode == 46 || charCode > 31 && (charCode < 48 || charCode > 57)) {
+        e.preventDefault();
+        return false;
+    }
+    return true;
+}

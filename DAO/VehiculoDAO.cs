@@ -94,7 +94,7 @@ namespace DAO
         }
 
 
-        public int UpdateInsertVehiculo(VehiculoDTO oVehiculoDTO, ref string mensaje_error)
+        public int UpdateInsertVehiculo(VehiculoDTO oVehiculoDTO, ref string mensaje_error,int IdUsuario)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
@@ -118,6 +118,8 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@IdChofer", oVehiculoDTO.IdChofer);
                         da.SelectCommand.Parameters.AddWithValue("@IdSociedad", oVehiculoDTO.IdSociedad);
                         da.SelectCommand.Parameters.AddWithValue("@Estado", oVehiculoDTO.Estado);
+                        da.SelectCommand.Parameters.AddWithValue("@UsuarioCreacion", IdUsuario);
+                        da.SelectCommand.Parameters.AddWithValue("@UsuarioActualizacion", IdUsuario);
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
                         return rpta;

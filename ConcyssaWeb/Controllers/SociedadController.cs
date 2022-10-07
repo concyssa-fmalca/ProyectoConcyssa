@@ -34,7 +34,7 @@ namespace ConcyssaWeb.Controllers
         {
             string error_mensaje = "";
             SociedadDAO SociedadDAO = new SociedadDAO();
-            int resultado = SociedadDAO.UpdateInsertSociedad(sociedadDTO,ref error_mensaje);
+            int resultado = SociedadDAO.UpdateInsertSociedad(sociedadDTO,ref error_mensaje,Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")));
             if (error_mensaje.Length>0)
             {
                 return error_mensaje;

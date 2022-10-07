@@ -1517,89 +1517,6 @@ function limpiarDatos() {
 }
 
 
-function ObtenerDatosxIDOPDN(IdOPDN) {
-    $("#txtId").val(IdOPDN);
-    CargarCentroCosto();
-    listarEmpleados();
-    ObtenerTiposDocumentos()
-    CargarBase()
-    CargarTipoDocumentoOperacion()
-    ObtenerCuadrillas()
-    CargarSeries();
-    CargarCondicionPago()
-    CargarMoneda();
-    CargarProveedor();
-    CargarImpuestos();
-
-
-
-
-    $("#lblTituloModal").html("Editar Ingreso");
-    AbrirModal("modal-form");
-
-
-
-
-
-    $.post('ObtenerDatosxIDOPDN', {
-        'IdOPDN': IdOPDN,
-    }, function (data, status) {
-
-
-        if (data == "Error") {
-            swal("Error!", "Ocurrio un error")
-            limpiarDatos();
-        } else {
-            let movimiento = JSON.parse(data);
-            console.log(movimiento);
-
-            $("#cboAlmacen").val(movimiento.IdAlmacen);
-            $("#cboSerie").val(movimiento.IdSerie);
-            $("#cboMoneda").val(movimiento.IdMoneda);
-            $("#TipoCambio").val(movimiento.TipoCambio);
-            $("#txtTotalAntesDescuento").val(formatNumber(movimiento.SubTotal.toFixed(DecimalesPrecios)))
-            $("#txtImpuesto").val(formatNumber(movimiento.Impuesto.toFixed(DecimalesPrecios)))
-            $("#txtTotal").val(formatNumber(movimiento.Total.toFixed(DecimalesPrecios)))
-            $("#IdCuadrilla").val(movimiento.IdCuadrilla)
-            $("#IdResponsable").val(movimiento.IdResponsable)
-            $("#cboCentroCosto").val(movimiento.IdCentroCosto)
-            $("#cboTipoDocumentoOperacion").val(movimiento.IdTipoDocumento)
-            $("#IdTipoDocumentoRef").val(movimiento.IdTipoDocumentoRef)
-            $("#SerieNumeroRef").val(movimiento.NumSerieTipoDocumentoRef)
-            $("#IdProveedor").val(movimiento.IdProveedor).change();
-            $("#IdBase").val(movimiento.IdBase).change();
-            $("#IdObra").val(movimiento.IdObra).change();
-            $("#cboAlmacen").val(movimiento.IdAlmacen);
-
-            $("#CreatedAt").html(movimiento.CreatedAt.replace("T", " "));
-            $("#NombUsuario").html(movimiento.NombUsuario);
-
-            //agrega detalle
-            let tr = '';
-
-            let Detalle = movimiento.detalles;
-            $("#total_items").html(Detalle.length)
-            console.log(Detalle);
-            console.log("Detalle");
-            for (var i = 0; i < Detalle.length; i++) {
-                AgregarLineaDetalle(i, Detalle[i]);
-                $("#cboImpuesto").val(Detalle[0].IdIndicadorImpuesto);
-            }
-
-
-            let DetalleAnexo = solicitudes[0].DetallesAnexo;
-            for (var i = 0; i < DetalleAnexo.length; i++) {
-                AgregarLineaDetalleAnexo(DetalleAnexo[i].IdSolicitudRQAnexos, DetalleAnexo[i].Nombre)
-            }
-
-
-        }
-
-    });
-}
-
-
-
 function ObtenerDatosxID(IdMovimiento) {
     $("#txtId").val(IdMovimiento);
     CargarCentroCosto();
@@ -2641,9 +2558,8 @@ function listaropdnDT() {
                 targets: -1,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    //<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(` + full.IdOPDN + `)"></button>`
-                    return `<button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxIDOPDN(` + full.IdOPDN + `)"></button>
-                            `
+
+                    return 0
                 },
             },
             {

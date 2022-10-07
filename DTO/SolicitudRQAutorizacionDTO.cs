@@ -30,7 +30,5 @@ namespace DTO
         public int IdSolicitudModelo { get; set; }
         public int IdEtapa { get; set; }
 
-        public string NombEtapa { get; set; }
-
     }
 }

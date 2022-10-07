@@ -314,6 +314,42 @@ namespace DAO
             return exito;
         }
 
+
+
+
+        public bool InsertStockArticuloAlmacen(int IdProducto, int IdAlmacen, decimal StockMinimo, decimal StockMaximo, decimal StockAlerta,ref string mensaje_error)
+        {
+            bool exito = false;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_InsertStockArticuloAlmacen", cn);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    da.SelectCommand.Parameters.AddWithValue("@IdArticulo", IdProducto);
+                    da.SelectCommand.Parameters.AddWithValue("@IdAlmacen", IdAlmacen);
+                    da.SelectCommand.Parameters.AddWithValue("@StockMinimo", StockMinimo);
+                    da.SelectCommand.Parameters.AddWithValue("@StockMaximo", StockMaximo);
+                    da.SelectCommand.Parameters.AddWithValue("@StockAlerta", StockAlerta);
+
+                    int i = da.SelectCommand.ExecuteNonQuery();
+                    if (i > 0)
+                    {
+                        exito = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return exito;
+        }
+
+
+
+
         public List<ArticuloDTO> ObtenerDatosxID(int IdArticulo, ref string mensaje_error)
         {
             List<ArticuloDTO> lstArticuloDTO = new List<ArticuloDTO>();
@@ -386,6 +422,46 @@ namespace DAO
             }
             return exito;
         }
+
+
+
+        public List<StockArticuloAlmacenDTO> ObtenerStockArticuloXAlmacen(int IdArticulo, ref string mensaje_error)
+        {
+            List<StockArticuloAlmacenDTO> lstArticuloDTO = new List<StockArticuloAlmacenDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerStockAlmacenxIdProducto", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdProducto", IdArticulo);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        StockArticuloAlmacenDTO oArticuloDTO = new StockArticuloAlmacenDTO();
+                        oArticuloDTO.IdProducto = Convert.ToInt32(drd["IdProducto"].ToString());
+                        oArticuloDTO.IdAlmacen = int.Parse(drd["IdAlmacen"].ToString());
+                        oArticuloDTO.Descripcion = (drd["Descripcion"].ToString());
+                        oArticuloDTO.StockMinimo = decimal.Parse(drd["StockMinimo"].ToString());
+                        oArticuloDTO.StockMaximo = decimal.Parse(drd["StockMaximo"].ToString());
+                        oArticuloDTO.StockAlerta = decimal.Parse(drd["StockAlerta"].ToString());
+                        oArticuloDTO.StockAlmacen = decimal.Parse(drd["StockAlmacen"].ToString());
+
+                        lstArticuloDTO.Add(oArticuloDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstArticuloDTO;
+        }
+
 
     }
 }

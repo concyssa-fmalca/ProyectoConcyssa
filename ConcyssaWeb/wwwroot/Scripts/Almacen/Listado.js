@@ -2,7 +2,7 @@
 
 
 window.onload = function () {
-    var url = "ObtenerAlmacen";
+    var url = "ObtenerAlmacenDT";
     ConsultaServidor(url);
 
     listarObra();
@@ -190,6 +190,7 @@ function limpiarDatos() {
     $("#txtCodigo").val("");
     $("#txtDescripcion").val("");
     $("#chkActivo").prop('checked', false);
+    $("#IdObra").val(0);
 }
 
 

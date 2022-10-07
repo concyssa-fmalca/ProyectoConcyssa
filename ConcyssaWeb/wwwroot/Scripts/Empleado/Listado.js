@@ -100,6 +100,15 @@ function GuardarEmpleado() {
         varEstado = true;
     }
 
+    if (varFechaIngreso) {
+        //console.log("lleno");
+    } else {
+        swal("Error!", "Debe llenar fecha de ingreso")
+        return;
+    }
+
+
+
     $.post('UpdateInsertEmpleado', {
         'IdEmpleado': varIdEmpleado,
         'CodigoCliente': varCodigo,
@@ -372,7 +381,7 @@ function ValidarBotonBuscar() {
         $("#btnBuscarReniec").hide();
     }
 
-    limpiarDatos();
+    //limpiarDatos();
 
 }
 

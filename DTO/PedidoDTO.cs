@@ -79,35 +79,9 @@ namespace DTO
         public string Referencia { get; set; }
         public int IdGrupoUnidadMedida { get; set; }
         public decimal CantidadObtenida { get; set; }
-        public string DescOrigen { get; set; }
 
-        public int IdOrigen { get; set; }
 
-    }
 
-    public class AsignadoPedidoRequeridoDTO
-    {
-        public int IdAsignadoPedidoRequerimiento { get; set; }
-        public int IdAlmacen { get; set; }
-        public int IdSolicitudDetalle { get; set; }
-        public decimal Cantidad { get; set; }
-        public int IdUnidadMedida { get; set; }
-        public int IdGrupoUnidadMedida { get; set; }
-        public decimal Precio { get; set; }
-        public int IdProveedor { get; set; }
-        public int FechaAsignado { get; set; }
 
-        public int Estado { get; set; }
-        public int IdUsuario { get; set; }
-        public string RazonSocial { get; set; }
-        public string NombAlmacen { get; set; }
-        public int IdObra { get; set; }
-        public int IdBase { get; set; }
-        public  string NombObra { get; set; }
-        public string NombBase { get; set; }
-        public string NombRequerido { get; set; }
-        public string NombArticulo { get; set; }
-        public int IdArticulo { get; set; }
-    
     }
 }

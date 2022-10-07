@@ -134,7 +134,7 @@ function ListarDatatableKardex(url,IdArticulo, IdAlmacen, FechaInicio, FechaTerm
                 '<td>' + (i + 1) + '</td>' +
                 '<td>' + division[i].DescArticulo.toUpperCase() + '</td>' +
                 '<td>' + division[i].FechaRegistro.split('T')[0] + '</td>';
-            if (division[i].DetalleOPDN <> 0) {
+            if (division[i].DetalleOPDN != 0) {
                 tr += '<td>ENTREGA MERCANCIA</td>';
 
             } else {

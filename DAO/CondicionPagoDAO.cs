@@ -40,7 +40,7 @@ namespace DAO
             return lstCondicionPagoDTO;
         }
 
-        public int UpdateInsertCondicionPago(CondicionPagoDTO oCondicionPagoDTO, string IdSociedad)
+        public int UpdateInsertCondicionPago(CondicionPagoDTO oCondicionPagoDTO, string IdSociedad,int IdUsuario)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
@@ -61,6 +61,8 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@Dias", oCondicionPagoDTO.Dias);
                         da.SelectCommand.Parameters.AddWithValue("@Estado", oCondicionPagoDTO.Estado);
                         da.SelectCommand.Parameters.AddWithValue("@IdSociedad", int.Parse(IdSociedad));
+                        da.SelectCommand.Parameters.AddWithValue("@UsuarioCreacion", IdUsuario);
+                        da.SelectCommand.Parameters.AddWithValue("@UsuarioActualizacion", IdUsuario);
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
                         return rpta;

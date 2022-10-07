@@ -43,7 +43,7 @@ namespace DAO
             return lstSociedadDTO;
         }
 
-        public int UpdateInsertSociedad(SociedadDTO oSociedadDTO, ref string error_mensaje)
+        public int UpdateInsertSociedad(SociedadDTO oSociedadDTO, ref string error_mensaje,int IdUsuario)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
@@ -63,6 +63,8 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@Descripcion", oSociedadDTO.Descripcion);
                         da.SelectCommand.Parameters.AddWithValue("@NumeroDocumento", oSociedadDTO.NumeroDocumento);
                         da.SelectCommand.Parameters.AddWithValue("@Estado", oSociedadDTO.Estado);
+                        da.SelectCommand.Parameters.AddWithValue("@UsuarioCreacion", IdUsuario);
+                        da.SelectCommand.Parameters.AddWithValue("@UsuarioActualizacion", IdUsuario);
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
                         return rpta;

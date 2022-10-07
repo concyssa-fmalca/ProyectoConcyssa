@@ -13,7 +13,7 @@ function ConsultaServidor(url) {
 
         //console.log(data);
         if (data == "error") {
-            table = $("#table_id").DataTable(lenguaje);
+            table = $("#dt_codigoubso").DataTable(lenguaje);
             return;
         }
 
@@ -37,7 +37,7 @@ function ConsultaServidor(url) {
         $("#tbody_codigoUbso").html(tr);
         $("#spnTotalRegistros").html(total_codigoubso);
 
-        table = $("#table_id").DataTable(lenguaje);
+        table = $("#dt_codigoubso").DataTable(lenguaje);
 
     });
 
@@ -75,7 +75,7 @@ function GuardarCodigoUbso() {
         if (data == 1) {
             swal("Exito!", "Proceso Realizado Correctamente", "success")
             table.destroy();
-            ConsultaServidor("ObtenerUnidadMedidas");
+            ConsultaServidor("ObtenerCodigoUbso");
             limpiarDatos();
         } else {
             swal("Error!", "Ocurrio un Error")
@@ -86,7 +86,7 @@ function GuardarCodigoUbso() {
 }
 
 function ObtenerDatosxID(varIdCodigoUbso) {
-    $("#lblTituloModal").html("Editar Unidad de Medida");
+    $("#lblTituloModal").html("Editar Codigo Ubso");
     AbrirModal("modal-form");
 
     //console.log(varIdUsuario);
@@ -114,19 +114,19 @@ function ObtenerDatosxID(varIdCodigoUbso) {
 
 }
 
-function eliminar(varIdUnidadMedida) {
+function eliminar(varIdCodigoUbso) {
 
 
-    alertify.confirm('Confirmar', '¿Desea eliminar esta unidad de medida?', function () {
-        $.post("EliminarUnidadMedida", { 'IdUnidadMedida': varIdUnidadMedida }, function (data) {
+    alertify.confirm('Confirmar', '¿Desea eliminar este Codigo?', function () {
+        $.post("EliminarCodigoUbso", { 'IdCodigoUbso': varIdCodigoUbso }, function (data) {
 
             if (data == 0) {
                 swal("Error!", "Ocurrio un Error")
                 limpiarDatos();
             } else {
-                swal("Exito!", "Unidad de Medida Eliminado", "success")
+                swal("Exito!", "Codigo Eliminado", "success")
                 table.destroy();
-                ConsultaServidor("ObtenerUnidadMedidas");
+                ConsultaServidor("ObtenerCodigoUbso");
                 limpiarDatos();
             }
 

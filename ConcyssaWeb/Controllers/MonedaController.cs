@@ -32,7 +32,7 @@ namespace ConcyssaWeb.Controllers
 
             MonedaDAO oMonedaDAO = new MonedaDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            int resultado = oMonedaDAO.UpdateInsertMoneda(MonedaDTO, IdSociedad.ToString());
+            int resultado = oMonedaDAO.UpdateInsertMoneda(MonedaDTO, IdSociedad.ToString(), Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")));
             if (resultado != 0)
             {
                 resultado = 1;

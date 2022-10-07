@@ -42,7 +42,7 @@ namespace DAO
             return lstRubroProveedorDTO;
         }
 
-        public int UpdateInsertRubroProveedor(RubroProveedorDTO oRubroProveedorDTO, ref string mensaje_error)
+        public int UpdateInsertRubroProveedor(RubroProveedorDTO oRubroProveedorDTO, ref string mensaje_error,int IdUsuario)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
@@ -62,6 +62,8 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@Descripcion", oRubroProveedorDTO.Descripcion);
                         da.SelectCommand.Parameters.AddWithValue("@IdSociedad", oRubroProveedorDTO.IdSociedad);
                         da.SelectCommand.Parameters.AddWithValue("@Estado", oRubroProveedorDTO.Estado);
+                        da.SelectCommand.Parameters.AddWithValue("@UsuarioCreacion", IdUsuario);
+                        da.SelectCommand.Parameters.AddWithValue("@UsuarioActualizacion", IdUsuario);
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
                         return rpta;

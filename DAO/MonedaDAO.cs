@@ -41,7 +41,7 @@ namespace DAO
             return lstMonedaDTO;
         }
 
-        public int UpdateInsertMoneda(MonedaDTO oMonedaDTO, string IdSociedad)
+        public int UpdateInsertMoneda(MonedaDTO oMonedaDTO, string IdSociedad,int IdUsuario)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
@@ -62,6 +62,8 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@Base", oMonedaDTO.Base);
                         da.SelectCommand.Parameters.AddWithValue("@Estado", oMonedaDTO.Estado);
                         da.SelectCommand.Parameters.AddWithValue("@IdSociedad", int.Parse(IdSociedad));
+                        da.SelectCommand.Parameters.AddWithValue("@UsuarioCreacion", IdUsuario);
+                        da.SelectCommand.Parameters.AddWithValue("@UsuarioActualizacion", IdUsuario);
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
                         return rpta;
