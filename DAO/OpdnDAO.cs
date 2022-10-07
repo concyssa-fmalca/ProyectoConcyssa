@@ -8,71 +8,6 @@ namespace DAO
     public class OpdnDAO
     {
 
-        public OpdnDTO  ObtenerDatosxIDOPDN(int IdOpdn, ref string mensaje_error)
-        {
-            OpdnDTO oOpdnDTO = new OpdnDTO();
-            using (SqlConnection cn = new Conexion().conectar())
-            {
-                try
-                {
-                    cn.Open();
-                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerDatosxIDOPDN", cn);
-                    da.SelectCommand.Parameters.AddWithValue("@IdOPDN", IdOpdn);
-                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
-                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
-                    while (drd.Read())
-                    {
-                        oOpdnDTO.DT_RowId = Convert.ToInt32(drd["IdOPDN"].ToString());
-                        oOpdnDTO.IdOPDN = Convert.ToInt32(drd["IdOPDN"].ToString());
-                        oOpdnDTO.IdTipoDocumento = Convert.ToInt32(drd["IdTipoDocumento"].ToString());
-                        oOpdnDTO.ObjType = (drd["ObjType"].ToString());
-                        oOpdnDTO.IdMoneda = Convert.ToInt32(drd["IdMoneda"].ToString());
-                        oOpdnDTO.CodMoneda = (drd["CodMoneda"].ToString());
-                        oOpdnDTO.TipoCambio = Convert.ToDecimal(drd["TipoCambio"].ToString());
-                        oOpdnDTO.IdCliente = Convert.ToInt32(drd["IdCliente"].ToString());
-                        oOpdnDTO.FechaContabilizacion = Convert.ToDateTime(drd["FechaContabilizacion"].ToString());
-                        oOpdnDTO.FechaDocumento = Convert.ToDateTime(drd["FechaDocumento"].ToString());
-                        oOpdnDTO.FechaVencimiento = Convert.ToDateTime(drd["FechaVencimiento"].ToString());
-                        oOpdnDTO.IdListaPrecios = Convert.ToInt32(drd["IdListaPrecios"].ToString());
-                        oOpdnDTO.Referencia = (drd["Referencia"].ToString());
-                        oOpdnDTO.Comentario = (drd["Comentario"].ToString());
-                        oOpdnDTO.DocEntrySap = Convert.ToInt32(drd["DocEntrySap"].ToString());
-                        oOpdnDTO.DocNumSap = (drd["DocNumSap"].ToString());
-                        oOpdnDTO.IdCentroCosto = Convert.ToInt32(drd["IdCentroCosto"].ToString());
-                        oOpdnDTO.SubTotal = Convert.ToDecimal(drd["SubTotal"].ToString());
-                        oOpdnDTO.Impuesto = Convert.ToDecimal(drd["Impuesto"].ToString());
-                        oOpdnDTO.IdTipoAfectacionIgv = Convert.ToInt32(drd["IdTipoAfectacionIgv"].ToString());
-                        oOpdnDTO.Total = Convert.ToDecimal(drd["Total"].ToString());
-                        oOpdnDTO.IdAlmacen = Convert.ToInt32(drd["IdAlmacen"].ToString());
-                        oOpdnDTO.IdSerie = Convert.ToInt32(drd["IdSerie"].ToString());
-                        oOpdnDTO.Correlativo = Convert.ToInt32(drd["Correlativo"].ToString());
-                        oOpdnDTO.IdSociedad = Convert.ToInt32(drd["IdSociedad"].ToString());
-                        oOpdnDTO.NombTipoDocumentoOperacion = (drd["NombTipoDocumentoOperacion"].ToString());
-                        oOpdnDTO.NombSerie = (drd["NombSerie"].ToString());
-                        oOpdnDTO.Estado = Convert.ToBoolean(drd["Estado"].ToString());
-                        oOpdnDTO.DescCuadrilla = (drd["DescCuadrilla"].ToString());
-                        oOpdnDTO.NombAlmacen = (drd["NombAlmacen"].ToString());
-                        oOpdnDTO.NombObra = (drd["NombObra"].ToString());
-                        oOpdnDTO.IdAlmacen = Convert.ToInt32(drd["IdAlmacen"].ToString());
-                        oOpdnDTO.IdObra = Convert.ToInt32(drd["IdObra"].ToString());
-                        oOpdnDTO.IdBase = Convert.ToInt32(drd["IdBase"].ToString());
-                        oOpdnDTO.IdProveedor = Convert.ToInt32(drd["IdProveedor"].ToString());
-
-
-                    }
-                    drd.Close();
-                }
-                catch (Exception ex)
-                {
-                    mensaje_error = ex.Message.ToString();
-                }
-            }
-
-
-            return oOpdnDTO;
-        }
-
-
         public List<OpdnDTO> ObtenerOPDNxEstado(int IdSociedad, ref string mensaje_error, string EstadoOPDN)
         {
             List<OpdnDTO> lstOPDNDTO = new List<OpdnDTO>();
@@ -192,7 +127,9 @@ namespace DAO
                         oOpdnDTO.CantidadUsada = Convert.ToDecimal(drd["CantidadUsada"].ToString());
                         oOpdnDTO.IdProveedor = Convert.ToInt32(drd["IdProveedor"].ToString());
                         oOpdnDTO.IdCondicionPago = Convert.ToInt32(drd["IdCondicionPago"].ToString());
-                        oOpdnDTO.NombProveedor =(drd["NombProveedor"].ToString());
+
+
+
                         lstOPDNDTO.Add(oOpdnDTO);
                     }
                     drd.Close();

@@ -47,7 +47,7 @@ namespace DAO
             return lstCodigoUbsoDTO;
         }
         
-        public int UpdateInsertCodigoUbso(CodigoUbsoDTO oCodigoUbsoDTO, ref string mensaje_error)
+        public int UpdateInsertCodigoUbso(CodigoUbsoDTO oCodigoUbsoDTO, ref string mensaje_error,int IdUsuario)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
@@ -67,6 +67,8 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@IdSociedad", oCodigoUbsoDTO.IdSociedad);
                         da.SelectCommand.Parameters.AddWithValue("@Descripcion", oCodigoUbsoDTO.Descripcion);
                         da.SelectCommand.Parameters.AddWithValue("@Estado", oCodigoUbsoDTO.Estado);
+                        da.SelectCommand.Parameters.AddWithValue("@UsuarioCreacion", IdUsuario);
+                        da.SelectCommand.Parameters.AddWithValue("@UsuarioActualizacion", IdUsuario);
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
                         return rpta;
@@ -115,7 +117,7 @@ namespace DAO
         }
 
 
-        public int Delete(int IdCodigoUbso, ref string mensaje_error)
+        public string Delete(int IdCodigoUbso, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
@@ -128,17 +130,17 @@ namespace DAO
                     try
                     {
                         cn.Open();
-                        SqlDataAdapter da = new SqlDataAdapter("SMC_EliminarLineaNegocio", cn);
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_EliminarCodigoUbso", cn);
                         da.SelectCommand.CommandType = CommandType.StoredProcedure;
                         da.SelectCommand.Parameters.AddWithValue("@IdCodigoUbso", IdCodigoUbso);
                         int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
                         transactionScope.Complete();
-                        return rpta;
+                        return rpta.ToString();
                     }
                     catch (Exception ex)
                     {
                         mensaje_error = ex.Message.ToString();
-                        return -1;
+                        return "0";
                     }
                 }
             }

@@ -54,7 +54,7 @@ namespace ConcyssaWeb.Controllers
             CategoriaDAO oCategoriaDAO = new CategoriaDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             oCategoriaDTO.IdSociedad = IdSociedad;
-            int respuesta = oCategoriaDAO.UpdateInsertCategoria(oCategoriaDTO, ref mensaje_error);
+            int respuesta = oCategoriaDAO.UpdateInsertCategoria(oCategoriaDTO, ref mensaje_error, Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")));
 
             if (mensaje_error.Length > 0)
             {

@@ -55,7 +55,7 @@ namespace ConcyssaWeb.Controllers
             ViaDAO oViaDAO = new ViaDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             oViaDTO.IdSociedad = IdSociedad;
-            int respuesta = oViaDAO.UpdateInsertVia(oViaDTO, ref mensaje_error);
+            int respuesta = oViaDAO.UpdateInsertVia(oViaDTO, ref mensaje_error, Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")));
 
             if (mensaje_error.Length > 0)
             {

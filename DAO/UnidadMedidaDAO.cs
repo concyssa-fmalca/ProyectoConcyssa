@@ -78,7 +78,7 @@ namespace DAO
             return lstUnidadMedidaDTO;
         }
 
-        public string UpdateInsertUnidadMedida(UnidadMedidaDTO oUnidadMedidaDTO, ref string mensaje_error)
+        public string UpdateInsertUnidadMedida(UnidadMedidaDTO oUnidadMedidaDTO, ref string mensaje_error, int IdUsuario)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
@@ -99,6 +99,8 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@CodigoSunat", oUnidadMedidaDTO.CodigoSunat);
                         da.SelectCommand.Parameters.AddWithValue("@Descripcion", oUnidadMedidaDTO.Descripcion);
                         da.SelectCommand.Parameters.AddWithValue("@Estado", oUnidadMedidaDTO.Estado);
+                        da.SelectCommand.Parameters.AddWithValue("@UsuarioCreacion", IdUsuario);
+                        da.SelectCommand.Parameters.AddWithValue("@UsuarioActualizacion", IdUsuario);
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
                         return rpta.ToString();

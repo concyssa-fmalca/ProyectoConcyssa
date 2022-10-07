@@ -54,7 +54,7 @@ namespace ConcyssaWeb.Controllers
             DivisionDAO oDivisionDAO = new DivisionDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             oDivisionDTO.IdSociedad = IdSociedad;
-            int respuesta = oDivisionDAO.UpdateInsertDivision(oDivisionDTO, ref mensaje_error);
+            int respuesta = oDivisionDAO.UpdateInsertDivision(oDivisionDTO, ref mensaje_error, Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")));
 
             if (mensaje_error.Length > 0)
             {
@@ -72,5 +72,21 @@ namespace ConcyssaWeb.Controllers
                 }
             }
         }
+
+
+        public int EliminarDivision(int IdDivision)
+        {
+            string mensaje_error = "";
+            DivisionDAO oDivisionDAO = new DivisionDAO();
+            int resultado = oDivisionDAO.Delete(IdDivision, ref mensaje_error);
+            if (resultado == 0)
+            {
+                resultado = 1;
+            }
+
+            return resultado;
+        }
+
+
     }
 }

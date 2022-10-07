@@ -8,35 +8,6 @@ namespace DAO
 {
     public class SolicitudRQAutorizacionDAO
     {
-
-        public int ValidarSipuedeAprobar(int IdSolicitudRQ, int IdEtapa)
-        {
-            int puedeentrar = 0;
-            using (SqlConnection cn = new Conexion().conectar())
-            {
-                try
-                {
-                    cn.Open();
-                    SqlDataAdapter da = new SqlDataAdapter("SMC_ValidarSipuedeAprobar", cn);
-                    da.SelectCommand.Parameters.AddWithValue("@IdSolicitud", IdSolicitudRQ);
-                    da.SelectCommand.Parameters.AddWithValue("@IdEtapa", IdEtapa);
-                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
-                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
-                    while (drd.Read())
-                    {
-                        puedeentrar = int.Parse(drd["puedeentrar"].ToString());
-                    }
-                    drd.Close();
-
-
-                }
-                catch (Exception ex)
-                {
-                }
-            }
-            return puedeentrar;
-        }
-
         public List<SolicitudRQAutorizacionDTO> ObtenerSolicitudesxAutorizar(string IdUsuario, string IdSociedad, string FechaInicio, string FechaFinal, int Estado)
         {
             List<SolicitudRQAutorizacionDTO> lstSolicitudRQAutorizacionDTO = new List<SolicitudRQAutorizacionDTO>();
@@ -75,9 +46,6 @@ namespace DAO
                         //oSolicitudRQAutorizacionDTO.FechaAprobacion = drd["FechaAprobacion"].ToString();
                         oSolicitudRQAutorizacionDTO.IdSolicitudModelo = int.Parse(drd["IdSolicitudModelo"].ToString());
                         oSolicitudRQAutorizacionDTO.IdEtapa = int.Parse(drd["IdEtapaAutorizacion"].ToString());
-                        oSolicitudRQAutorizacionDTO.NombEtapa = (drd["NombEtapa"].ToString());
-
-
                         lstSolicitudRQAutorizacionDTO.Add(oSolicitudRQAutorizacionDTO);
                     }
                     drd.Close();

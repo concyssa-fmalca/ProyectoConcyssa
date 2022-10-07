@@ -53,7 +53,7 @@ namespace ConcyssaWeb.Controllers
             TipoProductoDAO oTipoProductoDAO = new TipoProductoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             oTipoProductoDTO.IdSociedad = IdSociedad;
-            int respuesta = oTipoProductoDAO.UpdateInsertTipoProducto(oTipoProductoDTO, ref mensaje_error);
+            int respuesta = oTipoProductoDAO.UpdateInsertTipoProducto(oTipoProductoDTO, ref mensaje_error, Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")));
 
             if (mensaje_error.Length > 0)
             {

@@ -42,7 +42,7 @@ namespace DAO
             return lstViaDTO;
         }
 
-        public int UpdateInsertVia(ViaDTO oViaDTO, ref string mensaje_error)
+        public int UpdateInsertVia(ViaDTO oViaDTO, ref string mensaje_error,int IdUsuario)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
@@ -62,6 +62,8 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@Descripcion", oViaDTO.Descripcion);
                         da.SelectCommand.Parameters.AddWithValue("@IdSociedad", oViaDTO.IdSociedad);
                         da.SelectCommand.Parameters.AddWithValue("@Estado", oViaDTO.Estado);
+                        da.SelectCommand.Parameters.AddWithValue("@UsuarioCreacion", IdUsuario);
+                        da.SelectCommand.Parameters.AddWithValue("@UsuarioActualizacion", IdUsuario);
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
                         return rpta;

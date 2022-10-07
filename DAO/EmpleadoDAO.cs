@@ -62,7 +62,7 @@ namespace DAO
             return lstEmpleadoDTO;
         }
 
-        public int UpdateInsertEmpleado(EmpleadoDTO EmpleadoDTO, string IdSociedad)
+        public int UpdateInsertEmpleado(EmpleadoDTO EmpleadoDTO, string IdSociedad,int IdUsuario)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
@@ -106,11 +106,13 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@Estado", EmpleadoDTO.Estado);
                         da.SelectCommand.Parameters.AddWithValue("@Tipo", EmpleadoDTO.Tipo);
                         da.SelectCommand.Parameters.AddWithValue("@IdSociedad", int.Parse(IdSociedad));
+                        da.SelectCommand.Parameters.AddWithValue("@UsuarioCreacion", IdUsuario);
+                        da.SelectCommand.Parameters.AddWithValue("@UsuarioActualizacion", IdUsuario);
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
                         return rpta;
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         return 0;
                     }

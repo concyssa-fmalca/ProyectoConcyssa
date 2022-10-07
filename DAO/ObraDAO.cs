@@ -133,7 +133,7 @@ namespace DAO
         }
 
 
-        public int UpdateInsertObra(ObraDTO oObraDTO, ref string mensaje_error)
+        public int UpdateInsertObra(ObraDTO oObraDTO, ref string mensaje_error,int IdUsuario)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
@@ -161,6 +161,8 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@Estado", oObraDTO.Estado);
                         da.SelectCommand.Parameters.AddWithValue("@Direccion", oObraDTO.Direccion);
                         da.SelectCommand.Parameters.AddWithValue("@Eliminado", oObraDTO.Eliminado);
+                        da.SelectCommand.Parameters.AddWithValue("@UsuarioCreacion", IdUsuario);
+                        da.SelectCommand.Parameters.AddWithValue("@UsuarioActualizacion", IdUsuario);
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
                         return rpta;

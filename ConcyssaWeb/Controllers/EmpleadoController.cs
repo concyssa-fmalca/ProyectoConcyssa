@@ -32,7 +32,7 @@ namespace ConcyssaWeb.Controllers
 
             EmpleadoDAO oEmpleadoDAO = new EmpleadoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            int resultado = oEmpleadoDAO.UpdateInsertEmpleado(empleadoDTO, IdSociedad.ToString());
+            int resultado = oEmpleadoDAO.UpdateInsertEmpleado(empleadoDTO, IdSociedad.ToString(), Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")));
             if (resultado != 0)
             {
                 resultado = 1;

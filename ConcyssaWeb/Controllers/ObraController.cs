@@ -51,7 +51,7 @@ namespace ConcyssaWeb.Controllers
             ObraDAO oObraDAO = new ObraDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             oObraDTO.IdSociedad = IdSociedad;
-            int respuesta = oObraDAO.UpdateInsertObra(oObraDTO, ref mensaje_error);
+            int respuesta = oObraDAO.UpdateInsertObra(oObraDTO, ref mensaje_error, Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")));
 
             if (mensaje_error.Length > 0)
             {

@@ -136,6 +136,8 @@ function eliminar(varIdSociedad) {
 
 
 function limpiarDatos() {
+    $("#txtNumeroDocumento").val("");
+    $("#txtDescripcion").val("");
     $("#txtId").val("");
     $("#txtNombreSociedad").val("");
     $("#txtNombreBD").val("");

@@ -411,6 +411,12 @@ function limpiarDatos() {
     $("#txtCodigo").val("");
     $("#txtDescripcion").val("");
     $("#chkActivo").prop('checked', false);
+
+    $("#IdBase").val(0);
+    $("#txtDescripcionCorta").val("");
+    $("#txtDireccion").val("");
+    $("#IdTipoObra").val(0);
+    $("#IdDivision").val(0);
 }
 
 

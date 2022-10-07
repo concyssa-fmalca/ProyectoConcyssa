@@ -55,7 +55,7 @@ namespace ConcyssaWeb.Controllers
             BaseDAO oBaseDAO = new BaseDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             oBaseDTO.IdSociedad = IdSociedad;
-            int respuesta = oBaseDAO.UpdateInsertBase(oBaseDTO, ref mensaje_error);
+            int respuesta = oBaseDAO.UpdateInsertBase(oBaseDTO, ref mensaje_error, Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")));
 
             if (mensaje_error.Length > 0)
             {

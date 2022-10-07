@@ -86,6 +86,7 @@ function AbrirModal(idModal) {
 function closePopup() {
     $.magnificPopup.close();
     limpiarDatos();
+    //console.log("hola11");
     //if (scrollHeight > 0) {
     //    setTimeout(function () {
     //        var html = document.getElementsByTagName("HTML")[0];

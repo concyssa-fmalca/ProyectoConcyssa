@@ -43,7 +43,7 @@ namespace DAO
             return lstCategoriaDTO;
         }
 
-        public int UpdateInsertCategoria(CategoriaDTO oCategoriaDTO, ref string mensaje_error)
+        public int UpdateInsertCategoria(CategoriaDTO oCategoriaDTO, ref string mensaje_error,int IdUsuario)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
@@ -63,6 +63,8 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@Descripcion", oCategoriaDTO.Descripcion);
                         da.SelectCommand.Parameters.AddWithValue("@IdSociedad", oCategoriaDTO.IdSociedad);
                         da.SelectCommand.Parameters.AddWithValue("@Estado", oCategoriaDTO.Estado);
+                        da.SelectCommand.Parameters.AddWithValue("@UsuarioCreacion", IdUsuario);
+                        da.SelectCommand.Parameters.AddWithValue("@UsuarioActualizacion", IdUsuario);
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
                         return rpta;

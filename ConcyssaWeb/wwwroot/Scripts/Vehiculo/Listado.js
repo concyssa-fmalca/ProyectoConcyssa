@@ -25,6 +25,9 @@ function ConsultaServidor(url) {
         let Vehiculo = JSON.parse(data);
         let total_Vehiculo = Vehiculo.length;
 
+        console.log("hola");
+        console.log(Vehiculo);
+
         for (var i = 0; i < Vehiculo.length; i++) {
 
 
@@ -32,7 +35,7 @@ function ConsultaServidor(url) {
                 '<td>' + (i + 1) + '</td>' +
                 '<td>' + Vehiculo[i].Placa + '</td>' +
                 '<td>' + Vehiculo[i].MarcaDescripcion.toUpperCase() + '</td>' +
-                '<td>' + Vehiculo[i].CertificadoInscripcion + '</td>' +
+                //'<td>' + Vehiculo[i].CertificadoInscripcion + '</td>' +
                 '<td>' + Vehiculo[i].BaseDescripcion.toUpperCase() + '</td>' +
                 '<td>' + Vehiculo[i].ChoferDescripcion.toUpperCase() + '</td>' +
                 '<td>' + Vehiculo[i].Condicion.toUpperCase() + '</td>' +
@@ -107,7 +110,7 @@ function listarMacas() {
         contentType: false,
         success: function (datos) {
             $("#cboIdMarca").html('');
-            let options = `<option value="0">Seleccione</option>`;
+            let options = `<option value="0" selected>Seleccione</option>`;
             if (datos.length > 0) {
                 console.log(datos)
                 for (var i = 0; i < datos.length; i++) {
@@ -133,7 +136,7 @@ function listarBase() {
         contentType: false,
         success: function (datos) {
             $("#cboIdBase").html('');
-            let options = `<option value="0">Seleccione</option>`;
+            let options = `<option value="0" selected>Seleccione</option>`;
             if (datos.length > 0) {
                
                 for (var i = 0; i < datos.length; i++) {
@@ -159,7 +162,7 @@ function listarEmpleado() {
         contentType: false,
         success: function (datos) {
             $("#cboIdChofer").html('');
-            let options = `<option value="0">Seleccione</option>`;
+            let options = `<option value="0" selected>Seleccione</option>`;
             if (datos.length > 0) {
 
                 for (var i = 0; i < datos.length; i++) {
@@ -232,11 +235,11 @@ function eliminar(varIdLineaNegocio) {
 
 function limpiarDatos() {
     $("#txtId").val("");
-    $("#cboIdMarca").val("");
-    $("#cboIdBase").val("");
-    $("#cboCondicion").val("");
+    $("#cboIdMarca").val(0);
+    $("#cboIdBase").val(0);
+    $("#cboCondicion").val(0);
     $("#txtCertfificadoInscripcion").val("");
-    $("#cboIdChofer").val("");
+    $("#cboIdChofer").val(0);
     $("#txtPlaca").val("");
 }
 

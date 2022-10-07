@@ -316,6 +316,14 @@ function limpiarDatos() {
     $("#txtDescripcion").val("");
     $("#chkActivo").prop('checked', false);
     $("#EsTercero").prop('checked', false);
+
+    $("#IdObra").val(0);
+    $("#IdGrupo").val(0);
+    $("#IdSubGrupo").val(0);
+    $("#IdCapataz").val(0);
+    $("#IdSupervisor").val(0);
+    $("#IdArea").val(0);
+    
 }
 
 

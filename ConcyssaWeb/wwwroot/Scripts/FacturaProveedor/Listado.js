@@ -2248,7 +2248,7 @@ function listarentregadt() {
                 targets: 2,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.NombProveedor
+                    return '-'
                 },
             },
             {
@@ -2857,8 +2857,7 @@ function listarOpch() {
                 targets: -1,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return `<button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxIDOPCH(` + full.IdOPCH + `)"></button>
-                            `
+                    return meta.row + 1
                 },
             },
             {
@@ -2939,100 +2938,4 @@ function listarOpch() {
         //AgregarItemTranferir(((table.row(this).index()) + 1), data["IdArticulo"], data["Descripcion"], (data["CantidadEnviada"] - data["CantidadTranferida"]), data["Stock"]);
 
     });
-}
-
-
-
-function ObtenerDatosxIDOPCH(IdOpch) {
-    $("#txtId").val(IdOpch);
-
-    /*NUEVO*/
-    CargarCentroCosto();
-    listarEmpleados();
-    ObtenerTiposDocumentos()
-    //CargarAlmacen()
-    CargarBase()
-    CargarTipoDocumentoOperacion()
-    ObtenerCuadrillas()
-    CargarSeries();
-    CargarSolicitante(1);
-    CargarSucursales();
-    CargarMoneda();
-    CargarImpuestos();
-    ListarBasesxUsuario();
-    CargarProveedor();
-    CargarCondicionPago();
-
-
-    $("#cboImpuesto").val(2).change();
-    $("#cboSerie").val(1).change();
-    /*END NUEVO*/
-
-
-
-    $("#lblTituloModal").html("Editar Factura Proveedor");
-    AbrirModal("modal-form");
-
-
-
-
-
-    $.post('ObtenerDatosxIdOpch', {
-        'IdOpch': IdOpch,
-    }, function (data, status) {
-
-
-        if (data == "Error") {
-            swal("Error!", "Ocurrio un error")
-            limpiarDatos();
-        } else {
-            let movimiento = JSON.parse(data);
-            console.log(movimiento);
-
-            $("#cboAlmacen").val(movimiento.IdAlmacen);
-            $("#cboSerie").val(movimiento.IdSerie);
-            $("#cboMoneda").val(movimiento.IdMoneda);
-            $("#TipoCambio").val(movimiento.TipoCambio);
-            $("#txtTotalAntesDescuento").val(formatNumber(movimiento.SubTotal.toFixed(DecimalesPrecios)))
-            $("#txtImpuesto").val(formatNumber(movimiento.Impuesto.toFixed(DecimalesPrecios)))
-            $("#txtTotal").val(formatNumber(movimiento.Total.toFixed(DecimalesPrecios)))
-            $("#IdCuadrilla").val(movimiento.IdCuadrilla)
-            $("#IdResponsable").val(movimiento.IdResponsable)
-            $("#cboCentroCosto").val(movimiento.IdCentroCosto)
-            $("#cboTipoDocumentoOperacion").val(movimiento.IdTipoDocumento)
-            $("#IdTipoDocumentoRef").val(movimiento.IdTipoDocumentoRef)
-            $("#SerieNumeroRef").val(movimiento.NumSerieTipoDocumentoRef)
-
-            $("#IdBase").val(movimiento.IdBase).change();
-            $("#IdObra").val(movimiento.IdObra).change();
-            $("#cboAlmacen").val(movimiento.IdAlmacen);
-            $("#IdProveedor").val(movimiento.IdProveedor).change();
-
-
-            $("#CreatedAt").html(movimiento.CreatedAt.replace("T", " "));
-            $("#NombUsuario").html(movimiento.NombUsuario);
-
-            //agrega detalle
-            let tr = '';
-
-            let Detalle = movimiento.detalles;
-            $("#total_items").html(Detalle.length)
-            console.log(Detalle);
-            console.log("Detalle");
-            for (var i = 0; i < Detalle.length; i++) {
-                AgregarLineaDetalle(i, Detalle[i]);
-                $("#cboImpuesto").val(Detalle[0].IdIndicadorImpuesto);
-            }
-
-
-            let DetalleAnexo = solicitudes[0].DetallesAnexo;
-            for (var i = 0; i < DetalleAnexo.length; i++) {
-                AgregarLineaDetalleAnexo(DetalleAnexo[i].IdSolicitudRQAnexos, DetalleAnexo[i].Nombre)
-            }
-
-
-        }
-
-    });
-
 }

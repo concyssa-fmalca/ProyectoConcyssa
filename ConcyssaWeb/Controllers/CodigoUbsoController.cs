@@ -76,7 +76,7 @@ namespace ConcyssaWeb.Controllers
             CodigoUbsoDAO oCodigoUbsoDAO = new CodigoUbsoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             oCodigoUbsoDTO.IdSociedad = IdSociedad;
-            int respuesta = oCodigoUbsoDAO.UpdateInsertCodigoUbso(oCodigoUbsoDTO, ref mensaje_error);
+            int respuesta = oCodigoUbsoDAO.UpdateInsertCodigoUbso(oCodigoUbsoDTO, ref mensaje_error, Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")));
 
             if (mensaje_error.Length>0)
             {
@@ -95,5 +95,26 @@ namespace ConcyssaWeb.Controllers
             }
 
         }
+
+
+        public string EliminarCodigoUbso(int IdCodigoUbso)
+        {
+            string mensaje_error = "";
+            CodigoUbsoDAO oCodigoUbsoDAO = new CodigoUbsoDAO();
+            string resultado = oCodigoUbsoDAO.Delete(IdCodigoUbso, ref mensaje_error);
+            if (mensaje_error.Length > 0)
+            {
+                return mensaje_error;
+            }
+
+            if (resultado == "0")
+            {
+                resultado = "1";
+            }
+
+            return resultado;
+        }
+
+
     }
 }

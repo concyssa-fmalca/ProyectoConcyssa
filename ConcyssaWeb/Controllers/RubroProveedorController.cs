@@ -54,7 +54,7 @@ namespace ConcyssaWeb.Controllers
             RubroProveedorDAO oRubroProveedorDAO = new RubroProveedorDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             oRubroProveedorDTO.IdSociedad = IdSociedad;
-            int respuesta = oRubroProveedorDAO.UpdateInsertRubroProveedor(oRubroProveedorDTO, ref mensaje_error);
+            int respuesta = oRubroProveedorDAO.UpdateInsertRubroProveedor(oRubroProveedorDTO, ref mensaje_error, Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")));
 
             if (mensaje_error.Length > 0)
             {
@@ -72,5 +72,22 @@ namespace ConcyssaWeb.Controllers
                 }
             }
         }
+
+
+        public int EliminarRubroProveedor(int IdRubroProveedor)
+        {
+            string mensaje_error = "";
+            RubroProveedorDAO oRubroProveedorDAO = new RubroProveedorDAO();
+            int resultado = oRubroProveedorDAO.Delete(IdRubroProveedor, ref mensaje_error);
+            if (resultado == 0)
+            {
+                resultado = 1;
+            }
+
+            return resultado;
+        }
+
+
+
     }
 }

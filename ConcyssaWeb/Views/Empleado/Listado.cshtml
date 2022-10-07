@@ -136,13 +136,13 @@
                                 <div class='form-group-sm'>
                                     <label for="txtCodigo" class="control-label col-sm-2 left-align">Codigo Cliente</label>
                                     <div class="col-sm-4">
-                                        <input id="txtCodigo" type="text" class="form-control input-sm" tabindex="0">
+                                        <input id="txtCodigo" type="text" class="form-control input-sm" tabindex="1">
                                     </div>
                                 </div>
                                 <div class='form-group-sm'>
                                     <label for="cboTipoPersona" class="control-label col-sm-2 left-align">Tipo Persona</label>
                                     <div class="col-sm-4">
-                                        <select id="cboTipoPersona" class="form-control input-sm" tabindex="1"></select>
+                                        <select id="cboTipoPersona" class="form-control input-sm" tabindex="2"></select>
                                     </div>
                                 </div>
                             </div>
@@ -150,13 +150,13 @@
                                 <div class='form-group-sm'>
                                     <label for="cboTipoDocumento" class="control-label col-sm-2 left-align">Tipo de Documento</label>
                                     <div class="col-sm-4">
-                                        <select id="cboTipoDocumento" class="form-control input-sm" tabindex="2" onchange="ValidarBotonBuscar()"></select>
+                                        <select id="cboTipoDocumento" class="form-control input-sm" tabindex="3" onchange="ValidarBotonBuscar()"></select>
                                     </div>
                                 </div>
                                 <div class='form-group-sm' id="divDocumento">
                                     <label for="txtNroDocumento" class="control-label col-sm-1 left-align">N°</label><label id="lblDocumento" class="control-label col-sm-1 left-align">Documento</label>
                                     <div class="col-sm-4">
-                                        <input id="txtNroDocumento" type="text" class="form-control input-sm" tabindex="3" onkeypress="soloEnteros(event, this);" maxlength="11">
+                                        <input id="txtNroDocumento" type="text" class="form-control input-sm" tabindex="4" onkeypress="soloEnteros(event, this);" maxlength="11">
                                     </div>
                                 </div>
                             </div>
@@ -168,7 +168,7 @@
                                     <button type="button" id="btnBuscarReniec" onclick="Buscar(1);" class="btn btn-info btn-xs">Buscar</button>
                                 </div>
                                 <div class="col-sm-1">
-                                    <input type="text" maxlength="4" id="txtCaptchaReniec" class="form-control input-sm" style="text-transform:uppercase; display:none;" tabindex="5" />
+                                    <input type="text" maxlength="4" id="txtCaptchaReniec" class="form-control input-sm" style="text-transform:uppercase; display:none;"  />
                                 </div>
                                 <div class="col-sm-1" id="imgCaptchaReniec" style="height:14px;">
 
@@ -196,7 +196,7 @@
                             <div class='form-group-sm'>
                                 <label for="txtRazonSocial" id="lblRazonSocial" class="control-label col-sm-2 left-align">Razon Social</label>
                                 <div class="col-sm-4">
-                                    <input id="txtRazonSocial" type="text" class="form-control input-sm" tabindex="4">
+                                    <input id="txtRazonSocial" type="text" class="form-control input-sm" tabindex="5">
                                 </div>
                             </div>
                         </div>
@@ -219,7 +219,7 @@
                             <div class='form-group-sm'>
                                 <label for="txtDireccionFiscal" class="control-label col-sm-2 left-align">Direccion del Domicilio fiscal</label>
                                 <div class="col-sm-10">
-                                    <input placeholder="" id="txtDireccionFiscal" type="text" class="form-control input-sm" tabindex="5">
+                                    <input placeholder="" id="txtDireccionFiscal" type="text" class="form-control input-sm" tabindex="8">
                                 </div>
                             </div>
                         </div>
@@ -233,13 +233,13 @@
                             <div class='form-group-sm'>
                                 <label for="cboDepartamento" class="control-label col-sm-2 left-align">Departamento</label>
                                 <div class="col-sm-2">
-                                    <select id="cboDepartamento" class="form-control input-sm" tabindex="7" onchange=" CargarProvincias()"></select>
+                                    <select id="cboDepartamento" class="form-control input-sm" tabindex="9" onchange=" CargarProvincias()"></select>
                                 </div>
                             </div>
                             <div class='form-group-sm'>
                                 <label for="cboProvincia" class="control-label col-sm-2 left-align">Provincia</label>
                                 <div class="col-sm-2">
-                                    <select id="cboProvincia" class="form-control input-sm" tabindex="8" onchange="CargarDistritos()"></select>
+                                    <select id="cboProvincia" class="form-control input-sm" tabindex="10" onchange="CargarDistritos()"></select>
                                 </div>
                             </div>
                         </div>
@@ -247,19 +247,19 @@
                             <div class='form-group-sm'>
                                 <label for="cboDistrito" class="control-label col-sm-2 left-align">Distrito</label>
                                 <div class="col-sm-2">
-                                    <select id="cboDistrito" class="form-control input-sm" tabindex="9"></select>
+                                    <select id="cboDistrito" class="form-control input-sm" tabindex="11"></select>
                                 </div>
                             </div>
                             <div class='form-group-sm'>
                                 <label for="txtTlf1" class="control-label col-sm-2 left-align">Teléfono 1</label>
                                 <div class="col-sm-2">
-                                    <input placeholder="" onkeypress="return isNumberKey(event, this);" id="txtTlf1" type="text" class="form-control input-sm" tabindex="10">
+                                    <input placeholder="" onkeypress="return isNumberKey(event, this);" id="txtTlf1" type="text" class="form-control input-sm" tabindex="12">
                                 </div>
                             </div>
                             <div class='form-group-sm'>
                                 <label for="txtPais" class="control-label col-sm-2 left-align">Pais</label>
                                 <div class="col-sm-2">
-                                    <select id="cboPais" class="form-control input-sm"></select>
+                                    <select id="cboPais" class="form-control input-sm" tabindex="13"></select>
                                 </div>
                             </div>
                         </div>
@@ -268,17 +268,17 @@
                                 <div style="display:none;">
                                     <label for="txtDireccion1" class="control-label col-sm-2 left-align">Direccion 1</label>
                                     <div class="col-sm-10">
-                                        <input placeholder="" id="txtDireccion1" type="text" class="form-control input-sm" tabindex="11">
+                                        <input placeholder="" id="txtDireccion1" type="text" class="form-control input-sm" tabindex="14">
                                     </div>
                                 </div>
 
                                 <label for="txtComprobantesElectronicos" class="control-label col-sm-2 left-align">Comprobantes Electrónicos</label>
                                 <div class="col-sm-7">
-                                    <input placeholder="" id="txtComprobantesElectronicos" type="text" maxlength="100" class="form-control input-sm" tabindex="11">
+                                    <input placeholder="" id="txtComprobantesElectronicos" type="text" maxlength="100" class="form-control input-sm" tabindex="15">
                                 </div>
                                 <label for="txtAfiliadoPLE" class="control-label col-sm-2 left-align">Afiliado al PLE desde</label>
                                 <div class="col-sm-1">
-                                    <input placeholder="" id="txtAfiliadoPLE" type="text" maxlength="10" class="form-control input-sm" tabindex="12">
+                                    <input placeholder="" id="txtAfiliadoPLE" type="text" maxlength="10" class="form-control input-sm" tabindex="16">
                                 </div>
                             </div>
                         </div>
@@ -286,13 +286,13 @@
                             <div class='form-group-sm'>
                                 <label for="cboCondicionPago" class="control-label col-sm-2 left-align">Condicion Pago</label>
                                 <div class="col-sm-4">
-                                    <select id="cboCondicionPago" class="form-control input-sm" tabindex="13"></select>
+                                    <select id="cboCondicionPago" class="form-control input-sm" tabindex="17"></select>
                                 </div>
                             </div>
                             <div class='form-group-sm'>
                                 <label for="txtLineaCredito" class="control-label col-sm-2 left-align">Linea Credito</label>
                                 <div class="col-sm-4">
-                                    <input id="txtLineaCredito" type="text" class="form-control input-sm" tabindex="14">
+                                    <input id="txtLineaCredito" type="text" class="form-control input-sm" tabindex="18">
                                 </div>
                             </div>
                         </div>
@@ -300,19 +300,19 @@
                             <div class='form-group-sm'>
                                 <label for="txtEmail" class="control-label col-sm-2 left-align">Email</label>
                                 <div class="col-sm-3">
-                                    <input id="txtEmail" type="text" class="form-control input-sm" tabindex="15">
+                                    <input id="txtEmail" type="text" class="form-control input-sm" tabindex="19">
                                 </div>
                             </div>
                             <div class='form-group-sm'>
                                 <label for="txtWeb" class="control-label col-sm-1 left-align">Web</label>
                                 <div class="col-sm-3">
-                                    <input id="txtWeb" type="text" class="form-control input-sm" tabindex="16">
+                                    <input id="txtWeb" type="text" class="form-control input-sm" tabindex="20">
                                 </div>
                             </div>
                             <div class='form-group-sm'>
                                 <label for="txtFax" class="control-label col-sm-1 left-align">Fax</label>
                                 <div class="col-sm-2">
-                                    <input id="txtFax" type="text" class="form-control input-sm" tabindex="17">
+                                    <input id="txtFax" type="text" class="form-control input-sm" tabindex="21">
                                 </div>
                             </div>
                         </div>
@@ -320,7 +320,7 @@
                             <div class='form-group-sm'>
                                 <label for="txtNombreContacto" class="control-label col-sm-2 left-align">Nombre Contacto</label>
                                 <div class="col-sm-8">
-                                    <input id="txtNombreContacto" type="text" class="form-control input-sm" tabindex="18">
+                                    <input id="txtNombreContacto" type="text" class="form-control input-sm" tabindex="22">
                                 </div>
                             </div>
                         </div>
@@ -328,13 +328,13 @@
                             <div class='form-group-sm'>
                                 <label for="txtTlfContacto" class="control-label col-sm-2 left-align">Teléfono Contacto</label>
                                 <div class="col-sm-3">
-                                    <input id="txtTlfContacto" type="text" class="form-control input-sm" tabindex="19">
+                                    <input id="txtTlfContacto" type="text" class="form-control input-sm" tabindex="23">
                                 </div>
                             </div>
                             <div class='form-group-sm'>
                                 <label for="txtEmailContacto" class="control-label col-sm-2 left-align">Email Contacto</label>
                                 <div class="col-sm-5">
-                                    <input id="txtEmailContacto" type="text" class="form-control input-sm" tabindex="20">
+                                    <input id="txtEmailContacto" type="text" class="form-control input-sm" tabindex="24">
                                 </div>
                             </div>
                         </div>
@@ -342,7 +342,7 @@
                             <div class='form-group-sm'>
                                 <label for="txtFechaIngreso" class="control-label col-sm-2 left-align">Fecha Ingreso</label>
                                 <div class="col-sm-2">
-                                    <input id="txtFechaIngreso" type="date" class="form-control date input-sm" tabindex="21">
+                                    <input id="txtFechaIngreso" type="date" class="form-control date input-sm" tabindex="25">
                                 </div>
                             </div>
                             @*<div class='form-group-sm'>
@@ -362,7 +362,7 @@
                             <div class='form-group-sm'>
                                 <label for="txtObservacion" class="control-label col-sm-2 left-align">Observacion</label>
                                 <div class="col-sm-10">
-                                    <input id="txtObservacion" type="text" class="form-control input-sm" tabindex="22">
+                                    <input id="txtObservacion" type="text" class="form-control input-sm" tabindex="26">
                                 </div>
                             </div>
                         </div>

@@ -52,7 +52,7 @@ namespace ConcyssaWeb.Controllers
             string mensaje_error = "";
             UnidadMedidaDAO oUnidadMedidaDAO = new UnidadMedidaDAO();
             UnidadMedidaDTO.IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            string resultado = oUnidadMedidaDAO.UpdateInsertUnidadMedida(UnidadMedidaDTO,ref mensaje_error);
+            string resultado = oUnidadMedidaDAO.UpdateInsertUnidadMedida(UnidadMedidaDTO,ref mensaje_error, Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")));
             if (mensaje_error.Length>0)
             {
                 return mensaje_error;
