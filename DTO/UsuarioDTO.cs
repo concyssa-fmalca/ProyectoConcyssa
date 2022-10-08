@@ -21,7 +21,7 @@ namespace DTO
         public bool Estado { get; set; }
         public string? SapUsuario { get; set; }
         public string? SapPassword { get; set; }
-        
+
         public int IdBase { get; set; }
         public bool MovimientoInventario { get; set; }
 
@@ -30,4 +30,16 @@ namespace DTO
         public string NombreDepartamento { get; set; }
         public string Correo { get; set; }
     }
+
+    public class UsuarioBaseAlmacenDTO{
+        public int IdUsuarioBase { get; set; }
+        public int IdBase { get; set; }
+        public int IdObra { get;set; }
+        public int IdUsuario { get; set; }
+        public int IdAlmacen { get; set; }
+        public int CountBase { get; set; }
+        public int CountAlmacen { get; set; }
+
+    }
+
 }

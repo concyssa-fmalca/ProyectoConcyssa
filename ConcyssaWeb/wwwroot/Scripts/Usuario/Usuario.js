@@ -1,5 +1,5 @@
 ﻿let table = '';
-
+let contartr = 0;
 window.onload = function () {
     var url = "ObtenerUsuarios";
     ConsultaServidor(url);
@@ -28,8 +28,11 @@ function ConsultaServidor(url) {
                 '<td>' + usuarios[i].Usuario.toUpperCase() + '</td>' +
                 '<td>' + usuarios[i].NombrePerfil.toUpperCase() + '</td>' +
                 '<td>' + usuarios[i].NombreSociedad.toUpperCase() + '</td>' +
-                '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + usuarios[i].IdUsuario + ')"></button>' +
-                '<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + usuarios[i].IdUsuario + ')"></button></td >' +
+                '<td>'+
+                    '<button class="btn btn-primary fa fa-pencil btn-xs" onclick = "ObtenerDatosxID(' + usuarios[i].IdUsuario + ')" ></button > ' +
+                    '<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + usuarios[i].IdUsuario + ')"></button>' +
+                    '<button class="btn btn-info btn-xs " onclick="AbrirModalBaseAlmacen(' + usuarios[i].IdUsuario + ')">BA</button>'
+                '</td > ' +
                 '</tr>';
         }
 
@@ -309,5 +312,204 @@ function limpiarDatos() {
     $("#MovimientoInventario").prop('checked', false);
 }
 
+function listartablealmacenbase(IdUsuario) {
+    $("#table_base_almacen").html("");
+    $.post("ObtenerBaseAlmacenxIdUsuario", { 'IdUsuario': IdUsuario }, function (data, status) {
+        let basealmacenes = JSON.parse(data);
+        let tr = "";
+        for (var i = 0; i < basealmacenes.length; i++) {
+            contartr++;
+            tr = `<tr  id="trab` + contartr +`">
+                <td>`+ (i + 1) + `</td>
+                <td>
+                    <select id="ab_IdBase`+ contartr + `" onchange="ObtenerObraxIdBase(` + contartr + `)" class="form-control input-sm">
+                    </select>
+                </td>
+                <td>    
+                    <select id="ab_IdObra`+ contartr + `" onchange="ObtenerAlmacenxIdObra(` + contartr + `)" class="form-control input-sm">
+                    </select>
+                </td>
+                <td><select id="ab_IdAlmacen`+ contartr + `" class="form-control input-sm">
+                    </select></td>
+                <td>
+                    <button class="btn btn-info"  onclick="savealmacenbase(`+ contartr + `,` + basealmacenes[i].IdUsuarioBase + `)">GUARDAR</button>
+                    <button class="btn btn-danger" onclick="eliminartralmacenbase(0)">-</button>
+                </td>
+            </tr>`;
+            $("#table_base_almacen").append(tr);
+            CargarBase(contartr);
+            $("#ab_IdBase" + contartr).val(basealmacenes[i].IdBase).change();
+            $("#ab_IdObra" + contartr).val(basealmacenes[i].IdObra).change();
+            $("#ab_IdAlmacen" + contartr).val(basealmacenes[i].IdAlmacen);
+        }
+    });
+}
 
 
+function AbrirModalBaseAlmacen(IdUsuario) {
+   
+    $("#txtIdUsuarioAlmacenBase").val(IdUsuario)
+    AbrirModal("modal-almacen-base");
+    listartablealmacenbase(IdUsuario)
+    
+
+}
+
+
+function CargarBase(countbase) {
+    $.ajaxSetup({ async: false });
+    $.post("/Base/ObtenerBase", function (data, status) {
+        let base = JSON.parse(data);
+        llenarComboBase(base, "ab_IdBase" + countbase, "Seleccione")
+    });
+}
+
+function llenarComboBase(lista, idCombo, primerItem) {
+
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdBase + "'>" + lista[i].Descripcion.toUpperCase() + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+}
+
+
+
+
+
+function ObtenerObraxIdBase(countbase) {
+    let IdBase = $("#ab_IdBase" + countbase).val();
+    $.ajaxSetup({ async: false });
+    $.post("/Obra/ObtenerObraxIdBase", { 'IdBase': IdBase }, function (data, status) {
+        let obra = JSON.parse(data);
+        llenarComboObra(obra, "ab_IdObra" + countbase, "Seleccione")
+    });
+}
+
+function llenarComboObra(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdObra + "'>" + lista[i].Descripcion.toUpperCase() + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+}
+
+
+function ObtenerAlmacenxIdObra(counttr) {
+    let IdObra = $("#ab_IdObra" + counttr).val();
+    $.ajaxSetup({ async: false });
+    $.post("/Almacen/ObtenerAlmacenxIdObra", { 'IdObra': IdObra }, function (data, status) {
+        if (validadJson(data)) {
+            let almacen = JSON.parse(data);
+            llenarComboAlmacen(almacen, "ab_IdAlmacen" + counttr, "Seleccione")
+        } else {
+            $("#ab_IdAlmacen" + counttr).html('<option value="0">SELECCIONE</option>')
+
+        }
+
+    });
+}
+
+function llenarComboAlmacen(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdAlmacen + "'>" + lista[i].Descripcion.toUpperCase() + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+}
+
+function validadJson(json) {
+    try {
+        object = JSON.parse(json);
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
+function addtrAlmacenBase() {
+    contartr++;
+    tr = `<tr id="trab` + contartr +`">
+                <td>-</td>
+                <td>
+                    <select id="ab_IdBase`+ contartr + `" onchange="ObtenerObraxIdBase(` + contartr + `)" class="form-control input-sm">
+                    </select>
+                </td>
+                <td>    
+                    <select id="ab_IdObra`+ contartr + `" onchange="ObtenerAlmacenxIdObra(` + contartr + `)" class="form-control input-sm">
+                    </select>
+                </td>
+                <td><select id="ab_IdAlmacen`+ contartr + `" class="form-control input-sm">
+                    </select></td>
+                <td>
+                    <button class="btn btn-info" onclick="savealmacenbase(`+ contartr +`,0)">GUARDAR</button>
+                    <button class="btn btn-danger" onclick="eliminartralmacenbase(0,`+ contartr +`)">GUARDAR</button>
+                </td>
+            </tr>`;
+    $("#table_base_almacen").append(tr);
+    CargarBase(contartr);
+}
+
+function savealmacenbase(contarr, IdUsuarioBase) {
+    let IdBase = $("#ab_IdBase" + contarr).val();
+    let IdObra = $("#ab_IdObra" + contarr).val();
+    let IdAlmacen = $("#ab_IdAlmacen" + contarr).val();
+    let IdUsuario = $("#txtIdUsuarioAlmacenBase").val();
+    if (IdBase==0) {
+        swal("Error!", "Seleccione una Base");
+        return;
+    }
+    if (IdObra == 0) {
+        swal("Error!", "Seleccione una Obra");
+        return;
+    }
+    if (IdAlmacen == 0) {
+        swal("Error!", "Seleccione un Almacen");
+        return;
+    }
+
+
+    $.post("GuardarAlmacenBasexUsuario", { 'IdUsuarioBase': IdUsuarioBase,'IdBase': IdBase, 'IdObra': IdObra, 'IdAlmacen': IdAlmacen, 'IdUsuario': IdUsuario }, function (data, status) {
+        if (data == 1) {
+            swal("Exito!", "Proceso Realizado Correctamente", "success")
+        } else {
+            swal("Error!", "Ocurrio un Error")
+        }
+        listartablealmacenbase(IdUsuario);
+    });
+}
+
+function eliminartralmacenbase(IdEliminar,contartr) {
+    if (IdEliminar == 0) {
+        $("#trab" + contartr).remove();
+    } else {
+        $.post("EliminarUsuarioBase", { 'IdUsuarioBase': IdEliminar }, function (data, status) {
+            if (data == 1) {
+                swal("Exito!", "Proceso Realizado Correctamente", "success")
+            } else {
+                swal("Error!", "Ocurrio un Error")
+            }
+        });
+    }
+}

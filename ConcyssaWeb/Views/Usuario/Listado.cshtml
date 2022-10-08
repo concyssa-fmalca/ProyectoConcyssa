@@ -27,7 +27,7 @@
             <div class="col-xs-6 right">
                 <button class="btn btn-sm  btn-primary pull-right plu" data-target="modal1" onclick="ModalNuevo()" style="margin-left:10px;">Nuevo</button>
                 @*<button class="btn btn-sm  btn-success pull-right plu" id="btnPdf" style="margin-left:10px;">Descargar PDF</button>
-                    <button class="btn btn-sm btn-info pull-right plu" id="btnExcel" style="margin-left:10px;">Descargar Excel</button>*@
+                <button class="btn btn-sm btn-info pull-right plu" id="btnExcel" style="margin-left:10px;">Descargar Excel</button>*@
             </div>
         </div>
     </div>
@@ -54,101 +54,101 @@
 
     <!-- Modal -->
     <div id="modal-form" class="popup-sm allcp-form mfp-with-anim mfp-hide">
-            <div class="panel">
-                <div class="panel-heading">
-                    <h5 id='lblTituloModal'></h5>
-                </div>
-                <div class="panel-body ">
-                    <div class='col s12 m12 '>
-                        <div class='container-fluid'>
-                            <input id='txtId' name="txtId" type='hidden' class="form-control input-sm">
-                            <div class='form-horizontal'>
-                                <div class="row">
-                                    <div class='form-group-sm'>
-                                        <label for='txtNombre' class="control-label col-sm-4 left-align">Nombre</label>
-                                        <div class="col-sm-8">
-                                            <input id='txtNombre' name="txtNombre" type='text' class="form-control input-sm" tabindex="1">
-                                        </div>
+        <div class="panel">
+            <div class="panel-heading">
+                <h5 id='lblTituloModal'></h5>
+            </div>
+            <div class="panel-body ">
+                <div class='col s12 m12 '>
+                    <div class='container-fluid'>
+                        <input id='txtId' name="txtId" type='hidden' class="form-control input-sm">
+                        <div class='form-horizontal'>
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='txtNombre' class="control-label col-sm-4 left-align">Nombre</label>
+                                    <div class="col-sm-8">
+                                        <input id='txtNombre' name="txtNombre" type='text' class="form-control input-sm" tabindex="1">
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class='form-group-sm'>
-                                        <label for='txtUsuario' class="control-label col-sm-4 left-align">Usuario</label>
-                                        <div class="col-sm-8">
-                                            <input id='txtUsuario' name="txtUsuario" type='text' class="form-control input-sm" tabindex="2">
-                                        </div>
+                            </div>
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='txtUsuario' class="control-label col-sm-4 left-align">Usuario</label>
+                                    <div class="col-sm-8">
+                                        <input id='txtUsuario' name="txtUsuario" type='text' class="form-control input-sm" tabindex="2">
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="row">
-                                    <div class='form-group-sm'>
-                                        <label for='txtContraseña' class="control-label col-sm-4 left-align">Contraseña</label>
-                                        <div class="col-sm-8">
-                                            <input id='txtContraseña' name="txtContraseña" type='text' class="form-control input-sm" tabindex="3">
-                                        </div>
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='txtContraseña' class="control-label col-sm-4 left-align">Contraseña</label>
+                                    <div class="col-sm-8">
+                                        <input id='txtContraseña' name="txtContraseña" type='text' class="form-control input-sm" tabindex="3">
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class='form-group-sm'>
-                                        <label for='txtUsuarioSap' class="control-label col-sm-4 left-align">Usuario SAP</label>
-                                        <div class="col-sm-8">
-                                            <input id='txtUsuarioSap' name="txtUsuarioSap" type='text' class="form-control input-sm" tabindex="4">
-                                        </div>
+                            </div>
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='txtUsuarioSap' class="control-label col-sm-4 left-align">Usuario SAP</label>
+                                    <div class="col-sm-8">
+                                        <input id='txtUsuarioSap' name="txtUsuarioSap" type='text' class="form-control input-sm" tabindex="4">
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="row">
-                                    <div class='form-group-sm'>
-                                        <label for='txtContrasenaSap' class="control-label col-sm-4 left-align">Contraseña SAP</label>
-                                        <div class="col-sm-8">
-                                            <input id='txtContrasenaSap' name="txtContrasenaSap" type='text' class="form-control input-sm" tabindex="5">
-                                        </div>
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='txtContrasenaSap' class="control-label col-sm-4 left-align">Contraseña SAP</label>
+                                    <div class="col-sm-8">
+                                        <input id='txtContrasenaSap' name="txtContrasenaSap" type='text' class="form-control input-sm" tabindex="5">
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="row">
-                                    <div class='form-group-sm'>
-                                        <label for='txtCorreo' class="control-label col-sm-4 left-align">Correo Electronico</label>
-                                        <div class="col-sm-8">
-                                            <input id='txtCorreo' name="txtCorreo" type='text' class="form-control input-sm" tabindex="6">
-                                        </div>
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='txtCorreo' class="control-label col-sm-4 left-align">Correo Electronico</label>
+                                    <div class="col-sm-8">
+                                        <input id='txtCorreo' name="txtCorreo" type='text' class="form-control input-sm" tabindex="6">
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class='form-group-sm'>
-                                        <label for='cboPerfil' class="control-label col-sm-4 left-align">Perfil</label>
-                                        <div class="col-sm-8">
-                                            <select id="cboPerfil" name="cboPerfil" class="form-control input-sm" tabindex="4"></select>
-                                        </div>
+                            </div>
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='cboPerfil' class="control-label col-sm-4 left-align">Perfil</label>
+                                    <div class="col-sm-8">
+                                        <select id="cboPerfil" name="cboPerfil" class="form-control input-sm" tabindex="4"></select>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class='form-group-sm'>
-                                        <label for='cboDepartamento' class="control-label col-sm-4 left-align">Area Solicitante</label>
-                                        <div class="col-sm-8">
-                                            <select id="cboDepartamento" name="cboDepartamento" class="form-control input-sm" tabindex="8"></select>
-                                        </div>
+                            </div>
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='cboDepartamento' class="control-label col-sm-4 left-align">Area Solicitante</label>
+                                    <div class="col-sm-8">
+                                        <select id="cboDepartamento" name="cboDepartamento" class="form-control input-sm" tabindex="8"></select>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="row">
-                                    <div class='form-group-sm'>
-                                        <label for='cboSociedad' class="control-label col-sm-4 left-align">Sociedad</label>
-                                        <div class="col-sm-8">
-                                            <select id="cboSociedad" name="cboSociedad" class="form-control input-sm" tabindex="5"></select>
-                                        </div>
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='cboSociedad' class="control-label col-sm-4 left-align">Sociedad</label>
+                                    <div class="col-sm-8">
+                                        <select id="cboSociedad" name="cboSociedad" class="form-control input-sm" tabindex="5"></select>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="row">
-                                    <div class='form-group-sm col-sm-4'></div>
-                                    <div class='form-group-sm'>
-                                        <div class="checkbox-custom col-xs-6">
-                                            <input type="checkbox" id="chkActivo" />
-                                            <label for="chkActivo">Activo</label>
-                                        </div>
+                            <div class="row">
+                                <div class='form-group-sm col-sm-4'></div>
+                                <div class='form-group-sm'>
+                                    <div class="checkbox-custom col-xs-6">
+                                        <input type="checkbox" id="chkActivo" />
+                                        <label for="chkActivo">Activo</label>
                                     </div>
                                 </div>
+                            </div>
                             <div class="row">
                                 <div class='form-group-sm col-sm-4'></div>
                                 <div class='form-group-sm'>
@@ -158,18 +158,56 @@
                                     </div>
                                 </div>
                             </div>
-                            </div>
-
                         </div>
-                    </div>
-                </div>
-                <div class="panel-footer text-right">
-                    <div class="row">
-                        <button type="button" id="btnGrabar" onclick="GuardarUsuario()" class="btn btn-primary pull-right plu">Grabar</button>
-                        <button type="button" id="btnCancelar" class="btn btn-danger pull-right" style="background-color:orange;" onclick="closePopup();">Cancelar</button>
+
                     </div>
                 </div>
             </div>
+            <div class="panel-footer text-right">
+                <div class="row">
+                    <button type="button" id="btnGrabar" onclick="GuardarUsuario()" class="btn btn-primary pull-right plu">Grabar</button>
+                    <button type="button" id="btnCancelar" class="btn btn-danger pull-right" style="background-color:orange;" onclick="closePopup();">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal ALMACEN BASE-->
+    <div id="modal-almacen-base" class="popup-sm allcp-form mfp-with-anim mfp-hide">
+        <div class="panel">
+            <div class="panel-heading">
+                <h5>ALMACEN BASE</h5>
+            </div>
+            <div class="panel-body ">
+                <div class='col s12 m12 '>
+                    <div class='container-fluid'>
+                        <input id='txtIdUsuarioAlmacenBase' name="txtIdUsuarioAlmacenBase" type='hidden' class="form-control input-sm">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#<button class="btn btn-info" onclick="addtrAlmacenBase()">+</button> </th>
+                                    <th scope="col">BASE</th>
+                                    <th scope="col">OBRA</th>
+                                    <th scope="col">ALMACEN</th>
+                                    <th scope="col">ACCION</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table_base_almacen">
+                                
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer text-right">
+                <div class="row">
+                    <button type="button" id="btnGrabar" onclick="GuardarUsuario()" class="btn btn-primary pull-right plu">Grabar</button>
+                    <button type="button" id="btnCancelar" class="btn btn-danger pull-right" style="background-color:orange;" onclick="closePopup();">Cancelar</button>
+                </div>
+            </div>
+        </div>
     </div>
 
 

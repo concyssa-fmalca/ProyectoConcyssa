@@ -119,7 +119,7 @@ function eliminar(varIdLineaNegocio) {
 
 
     alertify.confirm('Confirmar', '¿Desea eliminar esta Area?', function () {
-        $.post("EliminarLineaNegocio", { 'IdLineaNegocio': varIdLineaNegocio }, function (data) {
+        $.post("EliminarArea", { 'IdArea': varIdLineaNegocio }, function (data) {
 
             if (data == 0) {
                 swal("Error!", "Ocurrio un Error")

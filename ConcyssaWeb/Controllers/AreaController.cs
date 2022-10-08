@@ -73,5 +73,17 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
+        public int EliminarArea(int IdArea)
+        {
+            string mensaje_error = "";
+            AreaDAO oAreaDAO = new AreaDAO();
+            int resultado = oAreaDAO.Delete(IdArea, ref mensaje_error);
+            if (resultado == 0)
+            {
+                resultado = 1;
+            }
+
+            return resultado;
+        }
     }
 }

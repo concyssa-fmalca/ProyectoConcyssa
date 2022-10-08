@@ -7,7 +7,7 @@ namespace ConcyssaWeb.Controllers
 {
     public class UsuarioController : Controller
     {
-        
+
 
         // GET: Usuario
         public IActionResult Listado()
@@ -39,7 +39,7 @@ namespace ConcyssaWeb.Controllers
             {
                 string mensaje_error = "";
                 PerfilDAO oPerfilDAO = new PerfilDAO();
-                List<PerfilDTO> lstPerfilDTO = oPerfilDAO.ObtenerPerfiles(IdSociedad,ref mensaje_error);
+                List<PerfilDTO> lstPerfilDTO = oPerfilDAO.ObtenerPerfiles(IdSociedad, ref mensaje_error);
                 if (lstPerfilDTO.Count > 0)
                 {
                     return JsonConvert.SerializeObject(lstPerfilDTO);
@@ -53,7 +53,7 @@ namespace ConcyssaWeb.Controllers
             {
                 return "No cuenta con una Sociedad";
             }
-            
+
 
         }
 
@@ -100,7 +100,7 @@ namespace ConcyssaWeb.Controllers
         {
             string mensaje_error = "";
             UsuarioDAO oUsuarioDAO = new UsuarioDAO();
-            int resultado = oUsuarioDAO.UpdateInsertUsuario(usuarioDTO,ref mensaje_error);
+            int resultado = oUsuarioDAO.UpdateInsertUsuario(usuarioDTO, ref mensaje_error);
             if (resultado != 0)
             {
                 resultado = 1;
@@ -114,7 +114,7 @@ namespace ConcyssaWeb.Controllers
         {
             string mensaje_error = "";
             UsuarioDAO oUsuarioDAO = new UsuarioDAO();
-            List<UsuarioDTO> lstUsuarioDTO = oUsuarioDAO.ObtenerDatosxID(IdUsuario,ref mensaje_error);
+            List<UsuarioDTO> lstUsuarioDTO = oUsuarioDAO.ObtenerDatosxID(IdUsuario, ref mensaje_error);
 
             if (lstUsuarioDTO.Count > 0)
             {
@@ -155,5 +155,43 @@ namespace ConcyssaWeb.Controllers
             return resultado;
         }
 
+        public string ObtenerBaseAlmacenxIdUsuario(int IdUsuario)
+        {
+            string mensaje_error = "";
+            UsuarioDAO oUsuarioDAO = new UsuarioDAO();
+            List<UsuarioBaseAlmacenDTO> lstUsuarioBaseAlmacenDTO = oUsuarioDAO.ObtenerBaseAlmacenxIdUsuario(IdUsuario, ref mensaje_error);
+            if (lstUsuarioBaseAlmacenDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstUsuarioBaseAlmacenDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
+
+        public int GuardarAlmacenBasexUsuario(UsuarioBaseAlmacenDTO oUsuarioBaseAlmacenDTO)
+        {
+            string mensaje_error = "";
+            UsuarioDAO oUsuarioDAO = new UsuarioDAO();
+            int resultado = oUsuarioDAO.UpdateInsertUsuarioBaseAlmacen(oUsuarioBaseAlmacenDTO, ref mensaje_error);
+            if (resultado != 0)
+            {
+                resultado = 1;
+            }
+
+            return resultado;
+        }
+
+        public int EliminarUsuarioBase(int IdUsuarioBase)
+        {
+            UsuarioDAO oUsuarioDAO = new UsuarioDAO();
+            int resultado = oUsuarioDAO.DeleteUsuarioBase(IdUsuarioBase);
+            if (resultado == 0)
+            {
+                resultado = 1;
+            }
+            return resultado;
+        }
     }
 }

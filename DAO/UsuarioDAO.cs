@@ -242,6 +242,34 @@ namespace DAO
                 }
             }
         }
+        
+        public int DeleteUsuarioBase(int IdUsuarioBase)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_EliminarUsuarioBase", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdUsuarioBase", IdUsuarioBase);
+                        int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        return -1;
+                    }
+                }
+            }
+        }
 
 
         public List<UsuarioDTO> ObtenerUsuariosAutorizadores(string IdSociedad)
@@ -280,6 +308,76 @@ namespace DAO
                 }
             }
             return lstUsuarioDTO;
+        }
+
+        public List<UsuarioBaseAlmacenDTO> ObtenerBaseAlmacenxIdUsuario(int IdUsuario, ref string mensaje_error)
+        {
+            List<UsuarioBaseAlmacenDTO> lstUsuarioBaseAlmacenDTO = new List<UsuarioBaseAlmacenDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerBaseAlmacenxIdUsuario", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        UsuarioBaseAlmacenDTO oUsuarioBaseAlmacenDTO = new UsuarioBaseAlmacenDTO();
+                        oUsuarioBaseAlmacenDTO.IdUsuarioBase = Convert.ToInt32(drd["IdUsuarioBase"].ToString());
+                        oUsuarioBaseAlmacenDTO.IdBase = Convert.ToInt32(drd["IdBase"].ToString());
+                        oUsuarioBaseAlmacenDTO.IdUsuario = Convert.ToInt32(drd["IdUsuario"].ToString());
+                        oUsuarioBaseAlmacenDTO.IdObra = Convert.ToInt32(drd["IdObra"].ToString());
+                        oUsuarioBaseAlmacenDTO.IdAlmacen = Convert.ToInt32(String.IsNullOrEmpty(drd["IdAlmacen"].ToString()) ? "0" : drd["IdAlmacen"].ToString() );
+                        oUsuarioBaseAlmacenDTO.CountBase = Convert.ToInt32(drd["CountBase"].ToString());
+                        oUsuarioBaseAlmacenDTO.CountAlmacen = Convert.ToInt32(drd["CountAlmacen"].ToString());
+                        lstUsuarioBaseAlmacenDTO.Add(oUsuarioBaseAlmacenDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstUsuarioBaseAlmacenDTO;
+        }
+
+
+        public int UpdateInsertUsuarioBaseAlmacen(UsuarioBaseAlmacenDTO oUsuarioBaseAlmacenDTO, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_UpdateInsertUsuarioBaseAlmacen", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdUsuarioBase", oUsuarioBaseAlmacenDTO.IdUsuarioBase);
+                        da.SelectCommand.Parameters.AddWithValue("@IdBase", oUsuarioBaseAlmacenDTO.IdBase);
+                        da.SelectCommand.Parameters.AddWithValue("@IdObra", oUsuarioBaseAlmacenDTO.IdObra);
+                        da.SelectCommand.Parameters.AddWithValue("@IdUsuario", oUsuarioBaseAlmacenDTO.IdUsuario);
+                        da.SelectCommand.Parameters.AddWithValue("@IdAlmacen", oUsuarioBaseAlmacenDTO.IdAlmacen);
+                        int rpta = da.SelectCommand.ExecuteNonQuery();
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return -1;
+                    }
+                }
+            }
         }
 
     }
