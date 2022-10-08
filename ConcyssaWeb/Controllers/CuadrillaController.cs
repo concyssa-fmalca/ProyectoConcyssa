@@ -70,6 +70,19 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
+        public int EliminarCuadrilla(int IdCuadrilla)
+        {
+            string mensaje_error = "";
+            CuadrillaDAO oCuadrillaDAO = new CuadrillaDAO();
+            int resultado = oCuadrillaDAO.Delete(IdCuadrilla, ref mensaje_error);
+            if (resultado == 0)
+            {
+                resultado = 1;
+            }
+
+            return resultado;
+        }
+
 
 
     }

@@ -291,7 +291,7 @@ function eliminar(varIdLineaNegocio) {
 
 
     alertify.confirm('Confirmar', '¿Desea eliminar esta Cuadrilla?', function () {
-        $.post("EliminarLineaNegocio", { 'IdLineaNegocio': varIdLineaNegocio }, function (data) {
+        $.post("EliminarCuadrilla", { 'IdCuadrilla': varIdLineaNegocio }, function (data) {
 
             if (data == 0) {
                 swal("Error!", "Ocurrio un Error")

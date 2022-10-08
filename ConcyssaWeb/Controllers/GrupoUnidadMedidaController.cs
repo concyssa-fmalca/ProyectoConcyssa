@@ -125,5 +125,35 @@ namespace ConcyssaWeb.Controllers
             }
             return "error";
         }
+
+
+        public int EliminarDefinicionGrupoUnidad(int IdDefinicionGrupo)
+        {
+            string mensaje_error = "";
+            DefinicionGrupoUnidadDAO oDefinicionGrupoUnidadDAO = new DefinicionGrupoUnidadDAO();
+            int resultado = oDefinicionGrupoUnidadDAO.Delete(IdDefinicionGrupo, ref mensaje_error);
+            if (resultado == 0)
+            {
+                resultado = 1;
+            }
+
+            return resultado;
+        }
+        
+
+        public int EliminarGrupoUnidadMedida(int IdGrupoUnidadMedida)
+        {
+            string mensaje_error = "";
+            GrupoUnidadMedidaDAO oGrupoUnidadMedidaDAO = new GrupoUnidadMedidaDAO();
+            int resultado = oGrupoUnidadMedidaDAO.Delete(IdGrupoUnidadMedida, ref mensaje_error);
+            if (resultado == 0)
+            {
+                resultado = 1;
+            }
+
+            return resultado;
+        }
+
     }
+    
 }

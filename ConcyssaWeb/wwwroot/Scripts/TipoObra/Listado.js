@@ -27,8 +27,8 @@ function ConsultaServidor(url) {
                 targets: -1,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return `<button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID('`+ full.Codigo + `')"></button>
-                            <button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar('`+ full.Codigo + `')"></button>`
+                    return `<button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID('` + full.IdTipoObra + `')"></button>
+                            <button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar('`+ full.IdTipoObra + `')"></button>`
                 },
             },
             {
@@ -133,9 +133,9 @@ function ObtenerDatosxID(varIdTipoObra) {
 
 function eliminar(varIdTipoObra) {
 
-
+    console.log(parseInt(varIdTipoObra));
     alertify.confirm('Confirmar', '¿Desea eliminar este Tipo de obra?', function () {
-        $.post("EliminarTipoObra", { 'IdTipoObra': varIdTipoObra }, function (data) {
+        $.post("EliminarTipoObra", { 'IdTipoObra': parseInt(varIdTipoObra) }, function (data) {
 
             if (data == 0) {
                 swal("Error!", "Ocurrio un Error")

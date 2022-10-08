@@ -104,7 +104,7 @@ function ConsultaServidor(url) {
                 '<td>' + grupounidades[i].Descripcion.toUpperCase() + '</td>' +
                 '<td>' + estado + '</td>' +
                 '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + grupounidades[i].IdGrupoUnidadMedida +')"></button>' +
-                //'<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + solicitudes[i].IdSolicitudRQ + ')"></button></td >' +
+                '<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminarGrupoUnidadMedida(' + grupounidades[i].IdGrupoUnidadMedida + ')"></button></td >' +
                 '</tr>';
         }
 
@@ -272,7 +272,7 @@ function ObtenerDatosxID(IdGrupoUnidadMedida) {
             limpiarDatos();
         } else {
             let grupounidadmedida = JSON.parse(data);
-
+           
             let cabecera = (JSON.parse(grupounidadmedida[0]));
             let detalle = (JSON.parse(grupounidadmedida[1]));
             
@@ -280,6 +280,7 @@ function ObtenerDatosxID(IdGrupoUnidadMedida) {
             $("#Descripcion").val(cabecera[0].Descripcion)
             $("#IdGrupoUnidadMedida").val(IdGrupoUnidadMedida);
             let tr = '';
+            console.log(detalle)
             for (var i = 0; i < detalle.length; i++) {
 
                 tr = `<tr>
@@ -301,7 +302,7 @@ function ObtenerDatosxID(IdGrupoUnidadMedida) {
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <button class="btn btn-xs btn-danger"  onclick="EliminarDetalle()">-</button>
+                                                    <button class="btn btn-xs btn-danger"  onclick="EliminarDetalle(`+ detalle[i].IdDefinicionGrupo+`)">-</button>
                                                 </td>
                                             </tr>`;
                 $("#tbody_detalle").append(tr);
@@ -322,11 +323,11 @@ function ObtenerDatosxID(IdGrupoUnidadMedida) {
 
 
 
-function EliminarDetalle(IdSolicitudRQDetalle, dato) {
+function EliminarDetalle(IdDefinicionGrupo, dato) {
 
     alertify.confirm('Confirmar', '¿Desea eliminar este item?', function () {
 
-        $.post("EliminarDetalleSolicitud", { 'IdSolicitudRQDetalle': IdSolicitudRQDetalle }, function (data, status) {
+        $.post("EliminarDefinicionGrupoUnidad", { 'IdDefinicionGrupo': IdDefinicionGrupo }, function (data, status) {
 
             if (data == 0) {
                 swal("Error!", "Ocurrio un Error")
@@ -339,10 +340,29 @@ function EliminarDetalle(IdSolicitudRQDetalle, dato) {
         });
 
     }, function () { });
-
-
-
 }
+
+
+
+function eliminarGrupoUnidadMedida(IdGrupoUnidadMedida, dato) {
+
+    alertify.confirm('Confirmar', '¿Desea eliminar este item?', function () {
+
+        $.post("EliminarGrupoUnidadMedida", { 'IdGrupoUnidadMedida': IdGrupoUnidadMedida }, function (data, status) {
+
+            if (data == 0) {
+                swal("Error!", "Ocurrio un Error")
+
+            } else {
+                swal("Exito!", "Eliminado", "success")
+          
+            }
+
+        });
+
+    }, function () { });
+}
+
 
 
 

@@ -118,7 +118,7 @@ function eliminar(varIdCentroCosto) {
 
 
     alertify.confirm('Confirmar', '¿Desea eliminar esta CentroCosto?', function () {
-        $.post("EliminarCategoria", { 'IdCentroCosto': varIdCentroCosto }, function (data) {
+        $.post("EliminarCentroCosto", { 'IdCentroCosto': varIdCentroCosto }, function (data) {
 
             if (data == 0) {
                 swal("Error!", "Ocurrio un Error")
@@ -126,7 +126,7 @@ function eliminar(varIdCentroCosto) {
             } else {
                 swal("Exito!", "CentroCosto Eliminada", "success")
                 table.destroy();
-                ConsultaServidor("ObtenerCategoria");
+                ConsultaServidor("ObtenerCentroCosto");
                 limpiarDatos();
             }
 
