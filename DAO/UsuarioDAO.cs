@@ -330,6 +330,7 @@ namespace DAO
                         oUsuarioBaseAlmacenDTO.IdUsuario = Convert.ToInt32(drd["IdUsuario"].ToString());
                         oUsuarioBaseAlmacenDTO.IdObra = Convert.ToInt32(drd["IdObra"].ToString());
                         oUsuarioBaseAlmacenDTO.IdAlmacen = Convert.ToInt32(String.IsNullOrEmpty(drd["IdAlmacen"].ToString()) ? "0" : drd["IdAlmacen"].ToString() );
+                        oUsuarioBaseAlmacenDTO.CountObra = Convert.ToInt32(drd["CountObra"].ToString());
                         oUsuarioBaseAlmacenDTO.CountBase = Convert.ToInt32(drd["CountBase"].ToString());
                         oUsuarioBaseAlmacenDTO.CountAlmacen = Convert.ToInt32(drd["CountAlmacen"].ToString());
                         lstUsuarioBaseAlmacenDTO.Add(oUsuarioBaseAlmacenDTO);

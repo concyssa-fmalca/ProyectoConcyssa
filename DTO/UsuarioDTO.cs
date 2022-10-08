@@ -38,6 +38,7 @@ namespace DTO
         public int IdUsuario { get; set; }
         public int IdAlmacen { get; set; }
         public int CountBase { get; set; }
+        public int CountObra { get; set; }
         public int CountAlmacen { get; set; }
 
     }

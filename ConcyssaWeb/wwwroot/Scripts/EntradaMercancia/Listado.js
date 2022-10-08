@@ -1,4 +1,8 @@
-﻿function ObtenerConfiguracionDecimales() {
+﻿let contadorBase = 0;
+let contadorObra = 0;
+let contadorAlmacen = 0;
+
+function ObtenerConfiguracionDecimales() {
     $.post("/ConfiguracionDecimales/ObtenerConfiguracionDecimales", function (data, status) {
 
         let datos = JSON.parse(data);
@@ -180,7 +184,9 @@ function CargarBase() {
     $.post("/Base/ObtenerBase", function (data, status) {
         let base = JSON.parse(data);
         llenarComboBase(base, "IdBase", "Seleccione")
+
     });
+    
 }
 
 function llenarComboBase(lista, idCombo, primerItem) {
@@ -196,6 +202,7 @@ function llenarComboBase(lista, idCombo, primerItem) {
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
+
 }
 
 
@@ -320,15 +327,25 @@ function ConsultaServidor(url) {
 function ModalNuevo() {
     
     $("#lblTituloModal").html("Nuevo Ingreso");
+    let seguiradelante = 'false';
+    seguiradelante = CargarBasesObraAlmacenSegunAsignado();
+
+    if (seguiradelante=='false') {
+        swal("Informacion!", "No tiene acceso a ninguna base, comunicarse con su administrador");
+        return true;
+    }
+    
     CargarCentroCosto();
     listarEmpleados();
     ObtenerTiposDocumentos()
+
+
     //CargarAlmacen()
-    CargarBase()
+    //CargarBase()
     CargarTipoDocumentoOperacion()
     ObtenerCuadrillas()
     CargarSeries();
-
+    
 
     //AgregarLinea();
     
@@ -339,7 +356,6 @@ function ModalNuevo() {
     CargarSucursales();
     //CargarDepartamentos();
     CargarMoneda();
-
     CargarImpuestos();
     $("#cboImpuesto").val(2).change();
     $("#cboSerie").val(1).change();
@@ -351,10 +367,7 @@ function ModalNuevo() {
     $("#NombUsuario").html("");
     $("#CreatedAt").html("");
     $("#SerieNumeroRef").val("");
-    $("#IdBase").val(0).change();
-    AbrirModal("modal-form");
-    ListarBasesxUsuario();
-    //setearValor_ComboRenderizado("cboCodigoArticulo");
+    
 }
 
 
@@ -2070,4 +2083,60 @@ function GenerarExtorno() {
             });
         }
     })
+}
+
+
+
+function CargarBasesObraAlmacenSegunAsignado() {
+    let respuesta = 'false';
+    $.ajaxSetup({ async: false });
+    $.post("/Usuario/ObtenerBaseAlmacenxIdUsuarioSession", function (data, status) {
+        if (validadJson(data)) {
+            let datos = JSON.parse(data);
+            console.log(datos[0]);
+            contadorBase=datos[0].CountBase;
+            contadorObra=datos[0].CountObra;
+            contadorAlmacen = datos[0].CountAlmacen;
+            AbrirModal("modal-form");
+            CargarBase();
+            if (contadorBase == 1 && contadorObra == 1 && contadorAlmacen == 1) {
+                $.ajaxSetup({ async: false });
+                $("#IdBase").val(datos[0].IdBase).change();
+                $("#IdObra").val(datos[0].IdObra).change();
+                $("#cboAlmacen").val(datos[0].IdAlmacen).change();
+                $("#IdBase").prop('disabled',true);
+                $("#IdObra").prop('disabled', true);
+                $("#cboAlmacen").prop('disabled', true);
+       
+            }
+            if (contadorBase == 1 && contadorObra == 1 && contadorAlmacen != 1) {
+                $.ajaxSetup({ async: false });
+                $("#IdBase").val(datos[0].IdBase).change();
+                $("#IdObra").val(datos[0].IdObra).change();
+                $("#cboAlmacen").val(datos[0].IdAlmacen).change();
+                $("#IdBase").prop('disabled', true);
+                $("#IdObra").prop('disabled', true);
+            }
+
+            if (contadorBase == 1 && contadorObra != 1 && contadorAlmacen != 1) {
+                $.ajaxSetup({ async: false });
+                $("#IdBase").val(datos[0].IdBase).change();
+                $("#IdObra").val(datos[0].IdObra).change();
+                $("#cboAlmacen").val(datos[0].IdAlmacen).change();
+                $("#IdBase").prop('disabled', true);
+            }
+            if (contadorBase != 1 && contadorObra != 1 && contadorAlmacen != 1) {
+                $.ajaxSetup({ async: false });
+                $("#IdBase").val(datos[0].IdBase).change();
+                $("#IdObra").val(datos[0].IdObra).change();
+                $("#cboAlmacen").val(datos[0].IdAlmacen).change();
+            }
+
+
+            respuesta= 'true';
+        } else {
+            respuesta= 'false';
+        }
+    });
+    return respuesta;
 }

@@ -170,6 +170,22 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
+        public string ObtenerBaseAlmacenxIdUsuarioSession()
+        {
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            string mensaje_error = "";
+            UsuarioDAO oUsuarioDAO = new UsuarioDAO();
+            List<UsuarioBaseAlmacenDTO> lstUsuarioBaseAlmacenDTO = oUsuarioDAO.ObtenerBaseAlmacenxIdUsuario(IdUsuario, ref mensaje_error);
+            if (lstUsuarioBaseAlmacenDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstUsuarioBaseAlmacenDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
+
         public int GuardarAlmacenBasexUsuario(UsuarioBaseAlmacenDTO oUsuarioBaseAlmacenDTO)
         {
             string mensaje_error = "";
