@@ -333,7 +333,7 @@ function listartablealmacenbase(IdUsuario) {
                     </select></td>
                 <td>
                     <button class="btn btn-info"  onclick="savealmacenbase(`+ contartr + `,` + basealmacenes[i].IdUsuarioBase + `)">GUARDAR</button>
-                    <button class="btn btn-danger" onclick="eliminartralmacenbase(0)">-</button>
+                    <button class="btn btn-danger" onclick="eliminartralmacenbase(`+ basealmacenes[i].IdUsuarioBase + `,` + contartr +`)">-</button>
                 </td>
             </tr>`;
             $("#table_base_almacen").append(tr);
@@ -351,8 +351,6 @@ function AbrirModalBaseAlmacen(IdUsuario) {
     $("#txtIdUsuarioAlmacenBase").val(IdUsuario)
     AbrirModal("modal-almacen-base");
     listartablealmacenbase(IdUsuario)
-    
-
 }
 
 
@@ -464,7 +462,7 @@ function addtrAlmacenBase() {
                     </select></td>
                 <td>
                     <button class="btn btn-info" onclick="savealmacenbase(`+ contartr +`,0)">GUARDAR</button>
-                    <button class="btn btn-danger" onclick="eliminartralmacenbase(0,`+ contartr +`)">GUARDAR</button>
+                    <button class="btn btn-danger" onclick="eliminartralmacenbase(0,`+ contartr +`)">-</button>
                 </td>
             </tr>`;
     $("#table_base_almacen").append(tr);
@@ -512,4 +510,5 @@ function eliminartralmacenbase(IdEliminar,contartr) {
             }
         });
     }
+    listartablealmacenbase($("#txtIdUsuarioAlmacenBase").val());
 }
