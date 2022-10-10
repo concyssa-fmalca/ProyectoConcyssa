@@ -1,4 +1,8 @@
-﻿function ObtenerConfiguracionDecimales() {
+﻿let contadorBase = 0;
+let contadorObra = 0;
+let contadorAlmacen = 0;
+
+function ObtenerConfiguracionDecimales() {
     $.post("/ConfiguracionDecimales/ObtenerConfiguracionDecimales", function (data, status) {
 
         let datos = JSON.parse(data);
@@ -270,12 +274,21 @@ function ConsultaServidor(url) {
 function ModalNuevo() {
 
     $("#lblTituloModal").html("Nueva Salida");
-    CargarBase();
+
+
+    let seguiradelante = 'false';
+    seguiradelante = CargarBasesObraAlmacenSegunAsignado();
+    if (seguiradelante == 'false') {
+        swal("Informacion!", "No tiene acceso a ninguna base, comunicarse con su administrador");
+        return true;
+    }
+
+
+
     ObtenerTiposDocumentos();
     listarEmpleados();
     ObtenerCuadrillas();
     CargarCentroCosto();
-    CargarAlmacen()
     CargarTipoDocumentoOperacion()
     CargarSeries();
 
@@ -298,7 +311,6 @@ function ModalNuevo() {
     $("#cboPrioridad").val(2);
     $("#cboClaseArticulo").prop("disabled", false);
     AbrirModal("modal-form");
-    ListarBasesxUsuario();
     $("#cboMoneda").prop("disabled", true);
     //setearValor_ComboRenderizado("cboCodigoArticulo");
 }
@@ -1204,6 +1216,7 @@ function GuardarSolicitud() {
                 'IdCentroCosto': IdCentroCosto,
                 'IdAfectacionIgv': 1,
                 'Descuento': 0,
+                'Referencia': arrayReferencia[i]
             })
         }
 
@@ -1835,8 +1848,11 @@ function SeleccionarItemListado() {
             $("#txtDescripcionItem").val(datos[0].Descripcion1);
             $("#cboMedidaItem").val(datos[0].IdUnidadMedida);
             $("#txtPrecioUnitarioItem").val(datos[0].UltimoPrecioCompra);
+           
+            
             $("#txtStockAlmacenItem").val(datos[0].Stock);
             $("#txtPrecioUnitarioItem").val(datos[0].PrecioPromedio)
+            $("#txtPrecioUnitarioItemOriginal").val(datos[0].PrecioPromedio);
             $("#txtPrecioUnitarioItem").prop("disabled", true);
 
             tableItems.destroy();
@@ -2038,4 +2054,67 @@ function GenerarExtorno() {
             });
         }
     })
+}
+
+
+function CargarBasesObraAlmacenSegunAsignado() {
+    let respuesta = 'false';
+    $.ajaxSetup({ async: false });
+    $.post("/Usuario/ObtenerBaseAlmacenxIdUsuarioSession", function (data, status) {
+        if (validadJson(data)) {
+            let datos = JSON.parse(data);
+            console.log(datos[0]);
+            contadorBase = datos[0].CountBase;
+            contadorObra = datos[0].CountObra;
+            contadorAlmacen = datos[0].CountAlmacen;
+            AbrirModal("modal-form");
+            CargarBase();
+            if (contadorBase == 1 && contadorObra == 1 && contadorAlmacen == 1) {
+                $.ajaxSetup({ async: false });
+                $("#IdBase").val(datos[0].IdBase).change();
+                $("#IdObra").val(datos[0].IdObra).change();
+                $("#cboAlmacen").val(datos[0].IdAlmacen).change();
+                $("#IdBase").prop('disabled', true);
+                $("#IdObra").prop('disabled', true);
+                $("#cboAlmacen").prop('disabled', true);
+
+            }
+            if (contadorBase == 1 && contadorObra == 1 && contadorAlmacen != 1) {
+                $.ajaxSetup({ async: false });
+                $("#IdBase").val(datos[0].IdBase).change();
+                $("#IdObra").val(datos[0].IdObra).change();
+                $("#cboAlmacen").val(datos[0].IdAlmacen).change();
+                $("#IdBase").prop('disabled', true);
+                $("#IdObra").prop('disabled', true);
+            }
+
+            if (contadorBase == 1 && contadorObra != 1 && contadorAlmacen != 1) {
+                $.ajaxSetup({ async: false });
+                $("#IdBase").val(datos[0].IdBase).change();
+                $("#IdObra").val(datos[0].IdObra).change();
+                $("#cboAlmacen").val(datos[0].IdAlmacen).change();
+                $("#IdBase").prop('disabled', true);
+            }
+            if (contadorBase != 1 && contadorObra != 1 && contadorAlmacen != 1) {
+                $.ajaxSetup({ async: false });
+                $("#IdBase").val(datos[0].IdBase).change();
+                $("#IdObra").val(datos[0].IdObra).change();
+                $("#cboAlmacen").val(datos[0].IdAlmacen).change();
+            }
+
+
+            respuesta = 'true';
+        } else {
+            respuesta = 'false';
+        }
+    });
+    return respuesta;
+}
+
+function ObtenerDatosDefinicion() {
+    let IdDefinicionGrupo=$("#cboMedidaItem").val();
+    $.post("/GrupoUnidadMedida/ObtenerDefinicionUnidadMedidaxIdDefinicionGrupo", { 'IdDefinicionGrupo': IdDefinicionGrupo }, function (data, status) {
+        let datos = JSON.parse(data);
+        $("#txtPrecioUnitarioItem").val($("#txtPrecioUnitarioItemOriginal").val() * datos.CantidadAlt);
+    });
 }

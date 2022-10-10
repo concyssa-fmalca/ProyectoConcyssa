@@ -31,6 +31,24 @@ namespace ConcyssaWeb.Controllers
             return "error";
         }
 
+        public string ObtenerDefinicionUnidadMedidaxIdDefinicionGrupo(int IdDefinicionGrupo)
+        {
+            string mensaje_error = "";
+            DefinicionGrupoUnidadDAO oDefinicionGrupoUnidadDAO = new DefinicionGrupoUnidadDAO();
+            DefinicionGrupoUnidadDTO oDefinicionGrupoUnidadDTO = oDefinicionGrupoUnidadDAO.ObtenerDefinicionUnidadMedidaxIdDefinicionGrupo(IdDefinicionGrupo, ref mensaje_error);
+
+            if (oDefinicionGrupoUnidadDTO!=null)
+            {
+
+                return JsonConvert.SerializeObject(oDefinicionGrupoUnidadDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+            return "error";
+        }
+
         public string ObtenerDatosxID(int IdGrupoUnidadMedida)
         {
             string mensaje_error = "";

@@ -289,6 +289,14 @@ function llenarComboCreadores(lista, idCombo, primerItem) {
 function ModalNuevo() {
 
     $("#lblTituloModal").html("Nueva Solicitud");
+    let seguiradelante = 'false';
+    seguiradelante = CargarBasesObraAlmacenSegunAsignado();
+
+    if (seguiradelante == 'false') {
+        swal("Informacion!", "No tiene acceso a ninguna base, comunicarse con su administrador");
+        return true;
+    }
+
     //AgregarLinea();
     CargarSeries();
     CargarSolicitante(1);
@@ -304,9 +312,7 @@ function ModalNuevo() {
     $("#cboMoneda").val("SOL").change();
     $("#cboPrioridad").val(2);
     $("#cboClaseArticulo").prop("disabled", false);
-
     $("#btnGrabar").show();
-    CargarBase();
     AbrirModal("modal-form");
     //setearValor_ComboRenderizado("cboCodigoArticulo");
 }
@@ -669,7 +675,7 @@ function AgregarLinea() {
             <input  class="form-control" type="text" id="txtIdArticulo`+ contador + `" name="txtIdArticulo[]" />
             </td>
 
-            <td><button class="btn btn-xs btn-danger borrar" ><img src="/assets/img/fa_trash.png" height ="15" width="15" /></button></td>
+            <td><button class="btn btn-xs btn-danger borrar" onclick="borrartr('tr`+ contador +`')" ><img src="/assets/img/fa_trash.png" height ="15" width="15" /></button></td>
             <td><input class="form-control" type="text" id="txtCodigoArticulo`+ contador + `" name="txtCodigoArticulo[]" disabled/></td>
             <td><textarea class="form-control" type="text" id="txtDescripcionArticulo`+ contador + `" name="txtDescripcionArticulo[]" disabled></textarea></td>
             <td>
@@ -720,7 +726,7 @@ function AgregarLinea() {
             <select class="form-control"  id="cboAlmacen`+ contador + `" name="cboAlmacen[]">`;
     tr += `  <option value="0">Seleccione</option>`;
     for (var i = 0; i < Almacen.length; i++) {
-        tr += `  <option value="` + Almacen[i].IdAlmacen + `">` + Almacen[i].IdAlmacen + `</option>`;
+        tr += `  <option value="` + Almacen[i].IdAlmacen + `">` + Almacen[i].Descripcion + `</option>`;
     }
     tr += `</select>
             </td>
@@ -3157,4 +3163,63 @@ function validarEmpresaUpdateInsert(rpta) {
         return true;
     }
     return false;
+}
+
+function CargarBasesObraAlmacenSegunAsignado() {
+    let respuesta = 'false';
+    $.ajaxSetup({ async: false });
+    $.post("/Usuario/ObtenerBaseAlmacenxIdUsuarioSession", function (data, status) {
+        if (validadJson(data)) {
+            let datos = JSON.parse(data);
+            console.log(datos[0]);
+            contadorBase = datos[0].CountBase;
+            contadorObra = datos[0].CountObra;
+            contadorAlmacen = datos[0].CountAlmacen;
+            AbrirModal("modal-form");
+            CargarBase();
+            if (contadorBase == 1 && contadorObra == 1 && contadorAlmacen == 1) {
+                $.ajaxSetup({ async: false });
+                $("#IdBase").val(datos[0].IdBase).change();
+                $("#IdObra").val(datos[0].IdObra).change();
+                $("#cboAlmacen").val(datos[0].IdAlmacen).change();
+                $("#IdBase").prop('disabled', true);
+                $("#IdObra").prop('disabled', true);
+                $("#cboAlmacen").prop('disabled', true);
+
+            }
+            if (contadorBase == 1 && contadorObra == 1 && contadorAlmacen != 1) {
+                $.ajaxSetup({ async: false });
+                $("#IdBase").val(datos[0].IdBase).change();
+                $("#IdObra").val(datos[0].IdObra).change();
+                $("#cboAlmacen").val(datos[0].IdAlmacen).change();
+                $("#IdBase").prop('disabled', true);
+                $("#IdObra").prop('disabled', true);
+            }
+
+            if (contadorBase == 1 && contadorObra != 1 && contadorAlmacen != 1) {
+                $.ajaxSetup({ async: false });
+                $("#IdBase").val(datos[0].IdBase).change();
+                $("#IdObra").val(datos[0].IdObra).change();
+                $("#cboAlmacen").val(datos[0].IdAlmacen).change();
+                $("#IdBase").prop('disabled', true);
+            }
+            if (contadorBase != 1 && contadorObra != 1 && contadorAlmacen != 1) {
+                $.ajaxSetup({ async: false });
+                $("#IdBase").val(datos[0].IdBase).change();
+                $("#IdObra").val(datos[0].IdObra).change();
+                $("#cboAlmacen").val(datos[0].IdAlmacen).change();
+            }
+
+
+            respuesta = 'true';
+        } else {
+            respuesta = 'false';
+        }
+    });
+    return respuesta;
+}
+
+function borrartr(id) {
+    $("#" + id).remove();
+    CalcularTotales();
 }

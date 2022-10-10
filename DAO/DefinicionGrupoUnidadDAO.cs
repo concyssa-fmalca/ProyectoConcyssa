@@ -8,9 +8,46 @@ namespace DAO
 {
     public class DefinicionGrupoUnidadDAO
     {
-        
-          public List<DefinicionGrupoUnidadDTO> ObtenerDefinicionesxIdGrupoUnidadMedida(int IdGrupoUnidadMedida, ref string mensaje_error)
-          {
+
+        public DefinicionGrupoUnidadDTO ObtenerDefinicionUnidadMedidaxIdDefinicionGrupo(int IdDefinicionGrupo,ref string mensaje_error)
+        {
+            DefinicionGrupoUnidadDTO oDefinicionGrupoUnidadDTO = new DefinicionGrupoUnidadDTO();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerDefinicionUnidadMedidaxIdDefinicionGrupo", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdDefinicionGrupo", IdDefinicionGrupo);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        oDefinicionGrupoUnidadDTO.IdDefinicionGrupo = Convert.ToInt32(drd["IdDefinicionGrupo"].ToString());
+                        oDefinicionGrupoUnidadDTO.IdGrupoUnidadMedida = Convert.ToInt32(drd["IdGrupoUnidadMedida"].ToString());
+                        oDefinicionGrupoUnidadDTO.IdUnidadMedidaBase = Convert.ToInt32(drd["IdUnidadMedidaBase"].ToString());
+                        oDefinicionGrupoUnidadDTO.CantidadBase = Convert.ToDecimal(drd["CantidadBase"].ToString());
+                        oDefinicionGrupoUnidadDTO.IdUnidadMedidaAlt = Convert.ToInt32(drd["IdUnidadMedidaAlt"].ToString());
+                        oDefinicionGrupoUnidadDTO.CantidadAlt = Convert.ToDecimal(drd["CantidadAlt"].ToString());
+                        oDefinicionGrupoUnidadDTO.DescUnidadMedidaAlt = (drd["DescUnidadMedidaAlt"].ToString());
+                        oDefinicionGrupoUnidadDTO.DescUnidadMedidaBase = (drd["DescUnidadMedidaBase"].ToString());
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return oDefinicionGrupoUnidadDTO;
+
+        }
+
+
+        public List<DefinicionGrupoUnidadDTO> ObtenerDefinicionesxIdGrupoUnidadMedida(int IdGrupoUnidadMedida, ref string mensaje_error)
+        {
             List<DefinicionGrupoUnidadDTO> lstDefinicionGrupoUnidadDTO = new List<DefinicionGrupoUnidadDTO>();
             using (SqlConnection cn = new Conexion().conectar())
             {
@@ -26,7 +63,7 @@ namespace DAO
                         DefinicionGrupoUnidadDTO oDefinicionGrupoUnidadDTO = new DefinicionGrupoUnidadDTO();
                         oDefinicionGrupoUnidadDTO.IdDefinicionGrupo = Convert.ToInt32(drd["IdDefinicionGrupo"].ToString());
                         oDefinicionGrupoUnidadDTO.IdGrupoUnidadMedida = Convert.ToInt32(drd["IdGrupoUnidadMedida"].ToString());
-                        oDefinicionGrupoUnidadDTO.IdUnidadMedidaBase =Convert.ToInt32( drd["IdUnidadMedidaBase"].ToString());
+                        oDefinicionGrupoUnidadDTO.IdUnidadMedidaBase = Convert.ToInt32(drd["IdUnidadMedidaBase"].ToString());
                         oDefinicionGrupoUnidadDTO.CantidadBase = Convert.ToDecimal(drd["CantidadBase"].ToString());
                         oDefinicionGrupoUnidadDTO.IdUnidadMedidaAlt = Convert.ToInt32(drd["IdUnidadMedidaAlt"].ToString());
                         oDefinicionGrupoUnidadDTO.CantidadAlt = Convert.ToDecimal(drd["CantidadAlt"].ToString());
@@ -44,7 +81,7 @@ namespace DAO
                 }
             }
             return lstDefinicionGrupoUnidadDTO;
-          }
+        }
 
         public List<DefinicionGrupoUnidadDTO> ListarDefinicionGrupoxIdDefinicionSelect(int IdDefinicionGrupo, ref string mensaje_error)
         {
@@ -82,7 +119,7 @@ namespace DAO
             return lstDefinicionGrupoUnidadDTO;
         }
 
-        
+
 
 
 

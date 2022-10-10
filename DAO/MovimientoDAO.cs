@@ -227,6 +227,8 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@IdAfectacionIgv", oMovimientoDetalleDTO.IdAfectacionIgv);
                         da.SelectCommand.Parameters.AddWithValue("@Descuento", oMovimientoDetalleDTO.Descuento);
                         da.SelectCommand.Parameters.AddWithValue("@IdAlmacenDestino", oMovimientoDetalleDTO.IdAlmacenDestino);
+                        da.SelectCommand.Parameters.AddWithValue("@Referencia", oMovimientoDetalleDTO.Referencia);
+
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
                         return rpta;

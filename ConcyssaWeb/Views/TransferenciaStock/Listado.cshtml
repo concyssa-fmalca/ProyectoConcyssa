@@ -567,7 +567,7 @@
                                     <div class='form-group-sm'>
                                         <label for="cboMedidaItem" class="control-label col-sm-2 left-align">Medida</label>
                                         <div class="col-sm-4">
-                                            <select id="cboMedidaItem" class="form-control input-sm" tabindex="2" style="height:26px"></select>
+                                            <select id="cboMedidaItem" class="form-control input-sm" tabindex="2" style="height:26px" onchange="ObtenerDatosDefinicion()"></select>
                                         </div>
                                     </div>
                                 </div>
@@ -586,6 +586,7 @@
                                     <div class='form-group-sm'>
                                         <label for="txtPrecioUnitarioItem" class="control-label col-sm-2 left-align">Precio Unitario</label>
                                         <div class="col-sm-4">
+                                            <input id="txtPrecioUnitarioItemOriginal" type="text" class="form-control input-sm">
                                             <input id="txtPrecioUnitarioItem" type="text" class="form-control input-sm" tabindex="4" >
                                         </div>
                                     </div>

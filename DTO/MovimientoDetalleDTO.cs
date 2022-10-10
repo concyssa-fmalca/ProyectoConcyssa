@@ -33,6 +33,6 @@ namespace DTO
         public int IdUnidadMedida { get; set; }
         public decimal CantidadBase { get; set; }
         public int IdAlmacenDestino { get; set; }
-        
+        public string Referencia { get; set; }
     }
 }

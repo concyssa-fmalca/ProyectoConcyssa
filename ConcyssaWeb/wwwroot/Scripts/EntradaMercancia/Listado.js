@@ -1256,6 +1256,7 @@ function GuardarSolicitud() {
                 'IdCentroCosto': IdCentroCosto,
                 'IdAfectacionIgv': 1,
                 'Descuento': 0,
+                'Referencia': arrayReferencia[i]
             })
         }
         
