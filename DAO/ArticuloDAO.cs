@@ -299,6 +299,8 @@ namespace DAO
                     da.SelectCommand.Parameters.AddWithValue("@Venta", oArticuloDTO.Venta);
                     da.SelectCommand.Parameters.AddWithValue("@IdGrupoUnidadMedida", oArticuloDTO.IdGrupoUnidadMedida);
                     da.SelectCommand.Parameters.AddWithValue("@IdUnidadMedidaInv", oArticuloDTO.IdUnidadMedidaInv);
+                    da.SelectCommand.Parameters.AddWithValue("@IdProveedor", oArticuloDTO.IdProveedor);
+
 
                     int i = da.SelectCommand.ExecuteNonQuery();
                     if (i > 0)
@@ -345,6 +347,8 @@ namespace DAO
                         oArticuloDTO.Venta = Convert.ToBoolean(drd["Venta"].ToString());
                         oArticuloDTO.IdGrupoUnidadMedida = Convert.ToInt32(drd["IdGrupoUnidadMedida"].ToString());
                         oArticuloDTO.IdUnidadMedidaInv = Convert.ToInt32(drd["IdUnidadMedidaInv"].ToString());
+                        oArticuloDTO.IdProveedor = Convert.ToInt32(drd["IdProveedor"].ToString());
+
 
                         lstArticuloDTO.Add(oArticuloDTO);
                     }

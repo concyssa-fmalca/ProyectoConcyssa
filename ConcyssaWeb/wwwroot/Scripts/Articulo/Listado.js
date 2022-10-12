@@ -1,6 +1,20 @@
 ﻿let table = '';
 
+function ObtenerProveedores() {
 
+    $.post("/Proveedor/ObtenerProveedores", function (data, status) {
+        let proveedor = JSON.parse(data);
+        console.log(proveedor);
+        let optionesselect = `<option value="0">SELECCIONE PROVEEDOR</option>`;
+        for (var i = 0; i < proveedor.length; i++) {
+            optionesselect += `<option value="` + proveedor[i].IdProveedor + `">` + proveedor[i].RazonSocial +`</option>`;
+
+        }
+        $("#txtProveedor").html(optionesselect);
+    });
+    
+
+}
 
 window.onload = function () {
     var url = "ObtenerArticulosxSociedad";
@@ -121,8 +135,8 @@ function ConsultaServidor(url) {
                 '<td>' +
              
                     `<div class="btn-group" role="group" aria-label="..." style="inline-size: max-content !important; ">
-                        <button class="btn btn-primary fa fa-pencil btn-xs" onclick = "ObtenerDatosxID(` + articulos[i].IdArticulo + `)" ></button > 
-                        <button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(` + articulos[i].IdArticulo + `)"></button>
+                        <button  style="margin-top:0px !important;margin-bottom:0px !important;" class="btn btn-primary fa fa-pencil btn-xs" onclick = "ObtenerDatosxID(` + articulos[i].IdArticulo + `)" ></button > 
+                        <button  style="margin-top:0px !important;margin-bottom:0px !important;" class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(` + articulos[i].IdArticulo + `)"></button>
                     </div>
                 </td>`+
                 '</tr>';
@@ -144,6 +158,7 @@ function ModalNuevo() {
 
 
     AbrirModal("modal-form");
+    ObtenerProveedores();
     //CargarPerfiles();
     //CargarSociedades();
     //CargarGrupoUnidadMedida();
@@ -254,7 +269,9 @@ function GuardarArticulo() {
         'Compra': varCompra,
         'Estado': varEstado,
         'IdGrupoUnidadMedida': IdGrupoUnidadMedida,
-        'IdUnidadMedidaInv': IdUnidadMedidaInv
+        'IdUnidadMedidaInv': IdUnidadMedidaInv,
+        'IdProveedor': $("#txtProveedor").val()
+
 
     }, function (data, status) {
 
@@ -275,7 +292,7 @@ function GuardarArticulo() {
 function ObtenerDatosxID(varIdArticulo) {
     limpiarDatos();
     $("#lblTituloModal").html("Editar Articulo");
-
+    ObtenerProveedores();
     AbrirModal("modal-form");
 
     //console.log(varIdUsuario);
@@ -300,7 +317,7 @@ function ObtenerDatosxID(varIdArticulo) {
 
             $("#IdGrupoUnidadMedida").val(articulos[0].IdGrupoUnidadMedida).change();
             $("#idIdUnidadMedidaInv").val(articulos[0].IdUnidadMedidaInv);
-
+            $("#txtProveedor").val(articulos[0].IdProveedor);
             if (articulos[0].ActivoFijo) {
                 $("#chkActivoFijo").prop('checked', true);
             }

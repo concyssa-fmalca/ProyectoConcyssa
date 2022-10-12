@@ -79,18 +79,19 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row">
+                                    <select id="cboIdUnidadMedida" name="cboIdUnidadMedida" tabindex="3" style="display:none"></select>
+                                  @*  <div class="row">
                                         <div class='form-group-sm'>
                                             <label for='cboIdUnidadMedida' class="control-label col-sm-4 left-align">Unidad Medida</label>
                                             <div class="col-sm-8">
                                                 <label class="field select">
-                                                    <select id="cboIdUnidadMedida" name="cboIdUnidadMedida" tabindex="3"></select>
+                                                    
                                                     <i class="arrow"></i>
                                                 </label>
                                             </div>
                                         </div>
                                     </div>
-
+*@
 
                                     <div class="row">
                                         <div class='form-group-sm'>
@@ -263,36 +264,42 @@
 
                                              <input id='txtComentario' type='hidden' class="form-control input-sm" tabindex="15_2">
 
-                                            <div class="col-lg-4  pl20 pr20">
+                                            <div class="col-lg-8  pl20 pr20">
 
                                                 <div class="row">
                                                     <div class='form-group-sm'>
                                                         <label for='txtDescripcion' class="control-label col-sm-4 left-align">Proveedor Por Defecto </label>
                                                         <div class="col-sm-7">
-                                                            <input id='txtProveedor' type='text' class="form-control input-sm" tabindex="1">
+                                                            <select id="txtProveedor" class="form-control" name="txtProveedor" tabindex="1"></select>
+                                                           
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-4  pl20 pr20" style="display:none">
+
+                                            <div style="display:none">
+                                                 <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="1" tabindex="15_3">Activo
+                                                  <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="0" tabindex="15_4">Inactico
+                                            </div>
+                                           @* <div class="col-lg-4  pl20 pr20" style="display:none">
                                                 <div class="row">
 
                                                     <div class='form-group-sm col-sm-3'>
                                                         <label class="radio-inline mr10">
-                                                            <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="1" tabindex="15_3">Activo
+                                                           
                                                         </label>
                                                     </div>
 
                                                     <div class='form-group-sm  col-sm-3'>
                                                         <label class="radio-inline mr10">
-                                                            <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="0" tabindex="15_4">Inactico
+                                                           
                                                         </label>
                                                     </div>
 
 
 
                                                 </div>
-                                            </div>
+                                            </div>*@
                                         </div>
                                     </div>
                                     <div id="tab15_2" class="tab-pane" style="display:none">

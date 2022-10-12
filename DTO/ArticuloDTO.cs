@@ -40,5 +40,6 @@ namespace DTO
         public string NombUnidadMedida { get; set; }
 
         public decimal UltimoPrecioCompra { get; set; }
+        public int IdProveedor { get; set; }
     }
 }

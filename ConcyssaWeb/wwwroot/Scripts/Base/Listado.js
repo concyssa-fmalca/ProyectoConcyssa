@@ -29,8 +29,8 @@ function ConsultaServidor(url) {
                 '<td>' + (i + 1) + '</td>' +
                 '<td>' + base[i].Codigo.toUpperCase() + '</td>' +
                 '<td>' + base[i].Descripcion.toUpperCase() + '</td>' +
-                '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + base[i].IdBase + ')"></button>' +
-                '<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + base[i].IdBase + ')"></button></td >' +
+                '<td><button  style="margin-top:0px !important;margin-bottom:0px !important;" class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + base[i].IdBase + ')"></button>' +
+                '<button style="margin-top:0px !important;margin-bottom:0px !important;" class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + base[i].IdBase + ')"></button></td >' +
                 '</tr>';
         }
 
