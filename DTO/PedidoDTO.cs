@@ -57,31 +57,57 @@ namespace DTO
     public class PedidoDetalleDTO
     {
         public int DT_RowId { get; set; }
-        public int IdPedidoDetalle {get;set;}
-        public int IdPedido {get;set;}
-        public string DescripcionArticulo { get; set; } 
-        public int IdArticulo { get;set;}
-        public int IdGrupoArticulo { get;set;}
-        public int IdDefinicion { get;set;}
-        public decimal Cantidad {get;set;}
-        public decimal valor_unitario {get;set;}
-        public decimal precio_unitario {get;set;}
-        public string codigo_tipo_afectacion_igv {get;set;}
-        public decimal total_base_igv {get;set;}
-        public decimal porcentaje_igv {get;set;}
-        public decimal total_igv {get;set;}
-        public decimal total_impuestos {get;set;}
-        public decimal total_valor_item {get;set;}
-        public decimal total_item {get;set;}
+        public int IdPedidoDetalle { get; set; }
+        public int IdPedido { get; set; }
+        public string DescripcionArticulo { get; set; }
+        public int IdArticulo { get; set; }
+        public int IdGrupoArticulo { get; set; }
+        public int IdDefinicion { get; set; }
+        public decimal Cantidad { get; set; }
+        public decimal valor_unitario { get; set; }
+        public decimal precio_unitario { get; set; }
+        public string codigo_tipo_afectacion_igv { get; set; }
+        public decimal total_base_igv { get; set; }
+        public decimal porcentaje_igv { get; set; }
+        public decimal total_igv { get; set; }
+        public decimal total_impuestos { get; set; }
+        public decimal total_valor_item { get; set; }
+        public decimal total_item { get; set; }
         public int IdIndicadorImpuesto { get; set; }
         public string CodImpuesto { get; set; }
         public string NombImpuesto { get; set; }
         public string Referencia { get; set; }
         public int IdGrupoUnidadMedida { get; set; }
         public decimal CantidadObtenida { get; set; }
+        public string DescOrigen { get; set; }
 
+        public int IdOrigen { get; set; }
 
+    }
 
+    public class AsignadoPedidoRequeridoDTO
+    {
+        public int IdAsignadoPedidoRequerimiento { get; set; }
+        public int IdAlmacen { get; set; }
+        public int IdSolicitudDetalle { get; set; }
+        public decimal Cantidad { get; set; }
+        public int IdUnidadMedida { get; set; }
+        public int IdGrupoUnidadMedida { get; set; }
+        public decimal Precio { get; set; }
+        public int IdProveedor { get; set; }
+        public int FechaAsignado { get; set; }
+
+        public int Estado { get; set; }
+        public int IdUsuario { get; set; }
+        public string RazonSocial { get; set; }
+        public string NombAlmacen { get; set; }
+        public int IdObra { get; set; }
+        public int IdBase { get; set; }
+        public string NombObra { get; set; }
+        public string NombBase { get; set; }
+        public string NombRequerido { get; set; }
+        public string NombArticulo { get; set; }
+        public int IdArticulo { get; set; }
 
     }
 }

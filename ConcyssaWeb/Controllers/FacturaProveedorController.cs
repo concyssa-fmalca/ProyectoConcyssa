@@ -120,5 +120,28 @@ namespace ConcyssaWeb.Controllers
                 }
             }
         }
+
+        public string ObtenerDatosxIdOpch(int IdOpch)
+        {
+            string mensaje_error = "";
+            OpchDAO oOpchDAO = new OpchDAO();
+            OpchDTO oOpchDTO = oOpchDAO.ObtenerDatosxIdOpch(IdOpch, ref mensaje_error);
+            if (mensaje_error.ToString().Length == 0)
+            {
+                List<OPCHDetalle> lstOPCHDetalle = new List<OPCHDetalle>();
+                lstOPCHDetalle = oOpchDAO.ObtenerDetalleOpch(IdOpch, ref mensaje_error);
+                oOpchDTO.detalles = new OPCHDetalle[lstOPCHDetalle.Count()];
+                for (int i = 0; i < lstOPCHDetalle.Count; i++)
+                {
+                    oOpchDTO.detalles[i] = lstOPCHDetalle[i];
+                }
+                return JsonConvert.SerializeObject(oOpchDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
+
     }
 }

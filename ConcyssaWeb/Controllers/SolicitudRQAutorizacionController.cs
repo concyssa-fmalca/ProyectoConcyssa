@@ -19,129 +19,129 @@ namespace ConcyssaWeb.Controllers
 
 
 
-            //SolicitudRQModeloAprobacionesDAO solicitudRQModeloAprobacionesDAO = new SolicitudRQModeloAprobacionesDAO();
-            //SolicitudRQDAO solicitudRQDAO = new SolicitudRQDAO();
-            //UsuarioDAO usuarioDAO = new UsuarioDAO();
-            //IndicadorImpuestoDAO indicadorImpuestoDAO = new IndicadorImpuestoDAO();
-            //MonedaDAO monedaDAO = new MonedaDAO();
-            //DepartamentoDAO departamentoDAO = new DepartamentoDAO();
-            //ConsultasHana consultasHana = new ConsultasHana();
+        //SolicitudRQModeloAprobacionesDAO solicitudRQModeloAprobacionesDAO = new SolicitudRQModeloAprobacionesDAO();
+        //SolicitudRQDAO solicitudRQDAO = new SolicitudRQDAO();
+        //UsuarioDAO usuarioDAO = new UsuarioDAO();
+        //IndicadorImpuestoDAO indicadorImpuestoDAO = new IndicadorImpuestoDAO();
+        //MonedaDAO monedaDAO = new MonedaDAO();
+        //DepartamentoDAO departamentoDAO = new DepartamentoDAO();
+        //ConsultasHana consultasHana = new ConsultasHana();
 
-            //List<SolicitudRQDTO> lstsolicitudRQDTO = new List<SolicitudRQDTO>();
-
-
-            //lstsolicitudRQDTO = solicitudRQModeloAprobacionesDAO.istarDetalleItemAprobados(int.Parse(Id), int.Parse(IdUsuario.ToString()), 13); //etapa 13
-
-            //if (lstsolicitudRQDTO[0].Detalle.Count == 0)
-            //{
-            //    lstsolicitudRQDTO = solicitudRQDAO.ObtenerDatosxID(int.Parse(Id));
-            //}
-
-            //var Solicitante = usuarioDAO.ObtenerDatosxID(lstsolicitudRQDTO[0].IdSolicitante);
-            //var Impuesto = indicadorImpuestoDAO.ObtenerDatosxID(lstsolicitudRQDTO[0].IdIndicadorImpuesto);
-
-            ////var Moneda = monedaDAO.ObtenerDatosxID(lstsolicitudRQDTO[0].IdMoneda);
-            //var Moneda = consultasHana.ListarMonedaxIDHana(lstsolicitudRQDTO[0].IdMoneda);
-
-            ////var Area = departamentoDAO.ObtenerDatosxID(lstsolicitudRQDTO[0].IdDepartamento);
-            //var Area = consultasHana.ListarDepartamentosxIDHana(lstsolicitudRQDTO[0].IdDepartamento.ToString());
-
-            //ViewBag.Solicitante = Solicitante[0].NombreUsuario;
-            //ViewBag.Impuesto = Impuesto[0].Descripcion;
-            //ViewBag.Moneda = Moneda[0].Descripcion;
-            //ViewBag.Area = Area[0].Descripcion;
-
-            //List<SolicitudDetallePDFDTO> detalle = new List<SolicitudDetallePDFDTO>();
-
-            //for (int i = 0; i < lstsolicitudRQDTO[0].Detalle.Count; i++)
-            //{
-            //    SolicitudDetallePDFDTO soli = new SolicitudDetallePDFDTO();
-            //    soli.IdArticulo = lstsolicitudRQDTO[0].Detalle[i].IdArticulo;
-            //    var UnidadMedida = consultasHana.ListarUnidadMedidaxIDHana(lstsolicitudRQDTO[0].Detalle[i].IdUnidadMedida);
-            //    if (UnidadMedida.Count > 0)
-            //    {
-            //        soli.UnidadMedida = UnidadMedida[0].Descripcion;
-            //    }
-            //    else
-            //    {
-            //        soli.UnidadMedida = "-";
-            //    }
-
-            //    soli.CantidadNecesaria = lstsolicitudRQDTO[0].Detalle[i].CantidadNecesaria;
-            //    soli.PrecioInfo = lstsolicitudRQDTO[0].Detalle[i].PrecioInfo;
-            //    var IndicadorImpuesto = indicadorImpuestoDAO.ObtenerDatosxID(lstsolicitudRQDTO[0].Detalle[i].IdIndicadorImpuesto);
-            //    if (IndicadorImpuesto.Count > 0)
-            //    {
-            //        soli.IndicadorImpuesto = IndicadorImpuesto[0].Descripcion;
-            //    }
-            //    else
-            //    {
-            //        soli.IndicadorImpuesto = "-";
-            //    }
-
-            //    soli.ItemTotal = lstsolicitudRQDTO[0].Detalle[i].ItemTotal;
-            //    var CentroCosto = consultasHana.ListarCentroCostoxIDHana(lstsolicitudRQDTO[0].Detalle[i].IdCentroCostos);
-            //    if (CentroCosto.Count > 0)
-            //    {
-            //        soli.CentroCostos = CentroCosto[0].Descripcion;
-            //    }
-            //    else
-            //    {
-            //        soli.CentroCostos = "";
-            //    }
-
-            //    soli.Proyecto = lstsolicitudRQDTO[0].Detalle[i].IdProyecto;
-
-            //    if (lstsolicitudRQDTO[0].Detalle[i].EstadoItemAutorizado == 2)
-            //    {
-            //        soli.EstadoItemAutorizado = "Aprobado";
-            //    }
-            //    else if (lstsolicitudRQDTO[0].Detalle[i].EstadoItemAutorizado == 3)
-            //    {
-            //        soli.EstadoItemAutorizado = "Rechazado";
-            //    }
-            //    else
-            //    {
-            //        soli.EstadoItemAutorizado = "Pendiente";
-            //    }
+        //List<SolicitudRQDTO> lstsolicitudRQDTO = new List<SolicitudRQDTO>();
 
 
-            //    if (lstsolicitudRQDTO[0].IdClaseArticulo == 2)
-            //    {
-            //        //var DescripcionItem = consultasHana.ListarServicioxIDDescripcionHana(lstsolicitudRQDTO[0].Detalle[i].IdArticulo);
-            //        soli.DescripcionItem = lstsolicitudRQDTO[0].Detalle[i].Descripcion;
-            //    }
-            //    else if (lstsolicitudRQDTO[0].IdClaseArticulo == 3)
-            //    {
-            //        soli.DescripcionItem = lstsolicitudRQDTO[0].Detalle[i].Descripcion;
-            //    }
-            //    else
-            //    {
-            //        var DescripcionItem = consultasHana.ListarProductosxIDDescripcionHana(lstsolicitudRQDTO[0].Detalle[i].IdArticulo);
-            //        soli.DescripcionItem = DescripcionItem[0].Descripcion1;
-            //    }
+        //lstsolicitudRQDTO = solicitudRQModeloAprobacionesDAO.istarDetalleItemAprobados(int.Parse(Id), int.Parse(IdUsuario.ToString()), 13); //etapa 13
+
+        //if (lstsolicitudRQDTO[0].Detalle.Count == 0)
+        //{
+        //    lstsolicitudRQDTO = solicitudRQDAO.ObtenerDatosxID(int.Parse(Id));
+        //}
+
+        //var Solicitante = usuarioDAO.ObtenerDatosxID(lstsolicitudRQDTO[0].IdSolicitante);
+        //var Impuesto = indicadorImpuestoDAO.ObtenerDatosxID(lstsolicitudRQDTO[0].IdIndicadorImpuesto);
+
+        ////var Moneda = monedaDAO.ObtenerDatosxID(lstsolicitudRQDTO[0].IdMoneda);
+        //var Moneda = consultasHana.ListarMonedaxIDHana(lstsolicitudRQDTO[0].IdMoneda);
+
+        ////var Area = departamentoDAO.ObtenerDatosxID(lstsolicitudRQDTO[0].IdDepartamento);
+        //var Area = consultasHana.ListarDepartamentosxIDHana(lstsolicitudRQDTO[0].IdDepartamento.ToString());
+
+        //ViewBag.Solicitante = Solicitante[0].NombreUsuario;
+        //ViewBag.Impuesto = Impuesto[0].Descripcion;
+        //ViewBag.Moneda = Moneda[0].Descripcion;
+        //ViewBag.Area = Area[0].Descripcion;
+
+        //List<SolicitudDetallePDFDTO> detalle = new List<SolicitudDetallePDFDTO>();
+
+        //for (int i = 0; i < lstsolicitudRQDTO[0].Detalle.Count; i++)
+        //{
+        //    SolicitudDetallePDFDTO soli = new SolicitudDetallePDFDTO();
+        //    soli.IdArticulo = lstsolicitudRQDTO[0].Detalle[i].IdArticulo;
+        //    var UnidadMedida = consultasHana.ListarUnidadMedidaxIDHana(lstsolicitudRQDTO[0].Detalle[i].IdUnidadMedida);
+        //    if (UnidadMedida.Count > 0)
+        //    {
+        //        soli.UnidadMedida = UnidadMedida[0].Descripcion;
+        //    }
+        //    else
+        //    {
+        //        soli.UnidadMedida = "-";
+        //    }
+
+        //    soli.CantidadNecesaria = lstsolicitudRQDTO[0].Detalle[i].CantidadNecesaria;
+        //    soli.PrecioInfo = lstsolicitudRQDTO[0].Detalle[i].PrecioInfo;
+        //    var IndicadorImpuesto = indicadorImpuestoDAO.ObtenerDatosxID(lstsolicitudRQDTO[0].Detalle[i].IdIndicadorImpuesto);
+        //    if (IndicadorImpuesto.Count > 0)
+        //    {
+        //        soli.IndicadorImpuesto = IndicadorImpuesto[0].Descripcion;
+        //    }
+        //    else
+        //    {
+        //        soli.IndicadorImpuesto = "-";
+        //    }
+
+        //    soli.ItemTotal = lstsolicitudRQDTO[0].Detalle[i].ItemTotal;
+        //    var CentroCosto = consultasHana.ListarCentroCostoxIDHana(lstsolicitudRQDTO[0].Detalle[i].IdCentroCostos);
+        //    if (CentroCosto.Count > 0)
+        //    {
+        //        soli.CentroCostos = CentroCosto[0].Descripcion;
+        //    }
+        //    else
+        //    {
+        //        soli.CentroCostos = "";
+        //    }
+
+        //    soli.Proyecto = lstsolicitudRQDTO[0].Detalle[i].IdProyecto;
+
+        //    if (lstsolicitudRQDTO[0].Detalle[i].EstadoItemAutorizado == 2)
+        //    {
+        //        soli.EstadoItemAutorizado = "Aprobado";
+        //    }
+        //    else if (lstsolicitudRQDTO[0].Detalle[i].EstadoItemAutorizado == 3)
+        //    {
+        //        soli.EstadoItemAutorizado = "Rechazado";
+        //    }
+        //    else
+        //    {
+        //        soli.EstadoItemAutorizado = "Pendiente";
+        //    }
 
 
-            //    detalle.Add(soli);
-            //}
+        //    if (lstsolicitudRQDTO[0].IdClaseArticulo == 2)
+        //    {
+        //        //var DescripcionItem = consultasHana.ListarServicioxIDDescripcionHana(lstsolicitudRQDTO[0].Detalle[i].IdArticulo);
+        //        soli.DescripcionItem = lstsolicitudRQDTO[0].Detalle[i].Descripcion;
+        //    }
+        //    else if (lstsolicitudRQDTO[0].IdClaseArticulo == 3)
+        //    {
+        //        soli.DescripcionItem = lstsolicitudRQDTO[0].Detalle[i].Descripcion;
+        //    }
+        //    else
+        //    {
+        //        var DescripcionItem = consultasHana.ListarProductosxIDDescripcionHana(lstsolicitudRQDTO[0].Detalle[i].IdArticulo);
+        //        soli.DescripcionItem = DescripcionItem[0].Descripcion1;
+        //    }
 
-            //ViewBag.Detalle = detalle;
+
+        //    detalle.Add(soli);
+        //}
+
+        //ViewBag.Detalle = detalle;
 
 
-            //string fileName = Id + "-Solicitud-" + lstsolicitudRQDTO[0].Serie + "-" + lstsolicitudRQDTO[0].Numero + ".pdf";
-            //string filePath = Server.MapPath("~/Anexos/" + fileName);
+        //string fileName = Id + "-Solicitud-" + lstsolicitudRQDTO[0].Serie + "-" + lstsolicitudRQDTO[0].Numero + ".pdf";
+        //string filePath = Server.MapPath("~/Anexos/" + fileName);
 
 
-            //var PDF = new Rotativa.ViewAsPdf("ReportePDF", lstsolicitudRQDTO)
-            //{
-            //    FileName = fileName
-            //};
+        //var PDF = new Rotativa.ViewAsPdf("ReportePDF", lstsolicitudRQDTO)
+        //{
+        //    FileName = fileName
+        //};
 
-            //byte[] applicationPDFData = PDF.BuildFile(ControllerContext);
+        //byte[] applicationPDFData = PDF.BuildFile(ControllerContext);
 
-            //var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite);
-            //fileStream.Write(applicationPDFData, 0, applicationPDFData.Length);
-            //fileStream.Close();
+        //var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite);
+        //fileStream.Write(applicationPDFData, 0, applicationPDFData.Length);
+        //fileStream.Close();
         //    var PDF;
         //    return PDF;
 
@@ -197,6 +197,20 @@ namespace ConcyssaWeb.Controllers
 
         }
 
+        public bool ValidarSipuedeAprobar(int IdSolicitudRQ, int IdEtapa)
+        {
+            SolicitudRQAutorizacionDAO oSolicitudRQAutorizacionDAO = new SolicitudRQAutorizacionDAO();
+            int puedeentrar = oSolicitudRQAutorizacionDAO.ValidarSipuedeAprobar(IdSolicitudRQ, IdEtapa);
+            if (puedeentrar == 1)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
 
         public int UpdateInsertModeloAprobaciones(List<SolicitudRQModeloAprobacionesDTO> solicitudRQModeloAprobacionesDTO)
         {
@@ -435,7 +449,9 @@ namespace ConcyssaWeb.Controllers
             else
             {
                 SolicitudRQDAO oSolicitudDAO = new SolicitudRQDAO();
-                List<SolicitudRQDTO> lstSolicitudRQDTO = oSolicitudDAO.ObtenerDatosxID(IdSolicitudRQ);
+                //List<SolicitudRQDTO> lstSolicitudRQDTO = oSolicitudDAO.ObtenerDatosxID(IdSolicitudRQ);
+                List<SolicitudRQDTO> lstSolicitudRQDTO = oSolicitudDAO.ObtenerDatosxIDNuevo(IdSolicitudRQ, IdAprobador, IdEtapa);
+
 
                 if (lstSolicitudRQDTO.Count > 0)
                 {
@@ -468,9 +484,9 @@ namespace ConcyssaWeb.Controllers
             //    "</body>";
 
             string msge = "";
-            string from = "mail.mineratitan@gmail.com";
+            string from = "concyssa.smc@gmail.com";
             string correo = from;
-            string password = "itjgiwuyjxuvdzfb";
+            string password = "tlbvngkvjcetzunr";
             string displayName = "SMC - Proceso de Autorizacion";
             MailMessage mail = new MailMessage();
             mail.From = new MailAddress(from, displayName);

@@ -69,6 +69,9 @@ let DecimalesPorcentajes = 0;
 function ObtenerProveedorxId() {
     //console.log(varIdUsuario);
     let IdProveedor = $("#IdProveedor").val();
+    if (IdProveedor == 0) {
+        IdProveedor = 5
+    }
     $.post('/Proveedor/ObtenerDatosxID', {
         'IdProveedor': IdProveedor,
     }, function (data, status) {
@@ -77,9 +80,13 @@ function ObtenerProveedorxId() {
             swal("Error!", "Ocurrio un error")
             limpiarDatos();
         } else {
-            let proveedores = JSON.parse(data);
-            $("#Direccion").val(proveedores[0].DireccionFiscal);
-            $("#Telefono").val(proveedores[0].Telefono);
+            if (!data == "error") {
+                let proveedores = JSON.parse(data);
+
+                $("#Direccion").val(proveedores[0].DireccionFiscal);
+                $("#Telefono").val(proveedores[0].Telefono);
+            }
+
 
         }
 
@@ -1196,7 +1203,7 @@ function ObtenerNumeracion() {
 
 function GuardarSolicitud() {
     //Validaciones
-    if ($("#cboTipoDocumentoOperacion").val() == 0 || $("#cboTipoDocumentoOperacion").val()==null) {
+    if ($("#cboTipoDocumentoOperacion").val() == 0 || $("#cboTipoDocumentoOperacion").val() == null) {
         Swal.fire(
             'Error!',
             'Complete el campo de Tipo de Movimiento',
@@ -1212,7 +1219,7 @@ function GuardarSolicitud() {
             'error'
         )
         return;
-    } 
+    }
     if ($("#IdCuadrilla").val() == 0 || $("#IdCuadrilla").val() == null) {
         Swal.fire(
             'Error!',
@@ -1221,7 +1228,7 @@ function GuardarSolicitud() {
         )
         return;
     }
-    
+
     if ($("#IdResponsable").val() == 0 || $("#IdResponsable").val() == null) {
         Swal.fire(
             'Error!',
@@ -1230,7 +1237,7 @@ function GuardarSolicitud() {
         )
         return;
     }
-    
+
     if ($("#cboSerie").val() == 0 || $("#cboSerie").val() == null) {
         Swal.fire(
             'Error!',
@@ -1239,7 +1246,7 @@ function GuardarSolicitud() {
         )
         return;
     }
-    
+
     if ($("#IdCondicionPago").val() == 0 || $("#IdCondicionPago").val() == null) {
         Swal.fire(
             'Error!',
@@ -1248,7 +1255,7 @@ function GuardarSolicitud() {
         )
         return;
     }
-    
+
     if ($("#IdProveedor").val() == 0 || $("#IdProveedor").val() == null) {
         Swal.fire(
             'Error!',
@@ -1415,8 +1422,8 @@ function GuardarSolicitud() {
                 'Referencia': arrayReferencia[i],
                 'NombTablaOrigen': NombTablaOrigen,
                 'IdOrigen': arraytxtIdOrigen[i],
-               
-  
+
+
             })
         }
 
@@ -2229,7 +2236,7 @@ function listarentregadt() {
 
         columnDefs: [
             // {"className": "text-center", "targets": "_all"},
-          
+
             {
                 targets: 0,
                 orderable: false,
@@ -2241,14 +2248,14 @@ function listarentregadt() {
                 targets: 1,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.NombSerie+'-'+full.Correlativo
+                    return full.NombSerie + '-' + full.Correlativo
                 },
             },
             {
                 targets: 2,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return '-'
+                    return full.NombProveedor
                 },
             },
             {
@@ -2272,6 +2279,7 @@ function listarentregadt() {
         if (ultimaFila != null) {
             ultimaFila.css('background-color', colorOriginal)
         }
+        $("#IdProveedor").val(data["IdProveedor"]).change();
         colorOriginal = $("#" + data["DT_RowId"]).css('background-color');
         $("#" + data["DT_RowId"]).css('background-color', '#dde5ed');
         ultimaFila = $("#" + data["DT_RowId"]);
@@ -2304,7 +2312,7 @@ function listarpedidosdt() {
 
         columnDefs: [
             // {"className": "text-center", "targets": "_all"},
-            
+
             {
                 targets: 0,
                 orderable: false,
@@ -2316,7 +2324,7 @@ function listarpedidosdt() {
                 targets: 1,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.NombSerie+'-'+full.Correlativo
+                    return full.NombSerie + '-' + full.Correlativo
                 },
             },
             {
@@ -2375,7 +2383,7 @@ function AgregarPedidoToEntradaMercancia(data) {
             let DescripcionItem = datos[k]['DescripcionArticulo'];
             let PrecioUnitarioItem = datos[k]['valor_unitario'];
             let CantidadItem = datos[k]['Cantidad'] - datos[k]['CantidadObtenida'];
-            let CantidadMaxima = datos[k]['Cantidad'] - datos[k]['CantidadObtenida']; 
+            let CantidadMaxima = datos[k]['Cantidad'] - datos[k]['CantidadObtenida'];
             let ProyectoItem = datos[k]['IdArticulo'];
             let CentroCostoItem = datos[k]['IdArticulo'];
             let ReferenciaItem = datos[k]['IdArticulo'];
@@ -2589,9 +2597,10 @@ function AgregarPedidoToEntradaMercancia(data) {
 
 
 function AgregarOPNDDetalle(data) {
+
     $("#IdOPDN").val(data['IdOPDN']);
     $("#IdBase").val(data['IdBase']).change();
-  
+
     $("#IdObra").val(data['IdObra']).change();
     $("#cboAlmacen").val(data['IdAlmacen']).change();
     $("#IdProveedor").val(data['IdProveedor']).change();
@@ -2601,7 +2610,7 @@ function AgregarOPNDDetalle(data) {
     $.post("/EntradaMercancia/ObtenerOPDNDetalle", { 'IdOPDN': data['IdOPDN'] }, function (data, status) {
         let datos = JSON.parse(data);
         for (var k = 0; k < datos.length; k++) {
-      
+
 
             /*AGREGAR LINEA*/
             let IdItem = datos[k]['IdArticulo'];
@@ -2857,7 +2866,8 @@ function listarOpch() {
                 targets: -1,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return meta.row + 1
+                    return `<button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxIDOPCH(` + full.IdOPCH + `)"></button>
+                            `
                 },
             },
             {
@@ -2938,4 +2948,100 @@ function listarOpch() {
         //AgregarItemTranferir(((table.row(this).index()) + 1), data["IdArticulo"], data["Descripcion"], (data["CantidadEnviada"] - data["CantidadTranferida"]), data["Stock"]);
 
     });
+}
+
+
+
+function ObtenerDatosxIDOPCH(IdOpch) {
+    $("#txtId").val(IdOpch);
+
+    /*NUEVO*/
+    CargarCentroCosto();
+    listarEmpleados();
+    ObtenerTiposDocumentos()
+    //CargarAlmacen()
+    CargarBase()
+    CargarTipoDocumentoOperacion()
+    ObtenerCuadrillas()
+    CargarSeries();
+    CargarSolicitante(1);
+    CargarSucursales();
+    CargarMoneda();
+    CargarImpuestos();
+    ListarBasesxUsuario();
+    CargarProveedor();
+    CargarCondicionPago();
+
+
+    $("#cboImpuesto").val(2).change();
+    $("#cboSerie").val(1).change();
+    /*END NUEVO*/
+
+
+
+    $("#lblTituloModal").html("Editar Factura Proveedor");
+    AbrirModal("modal-form");
+
+
+
+
+
+    $.post('ObtenerDatosxIdOpch', {
+        'IdOpch': IdOpch,
+    }, function (data, status) {
+
+
+        if (data == "Error") {
+            swal("Error!", "Ocurrio un error")
+            limpiarDatos();
+        } else {
+            let movimiento = JSON.parse(data);
+            console.log(movimiento);
+
+            $("#cboAlmacen").val(movimiento.IdAlmacen);
+            $("#cboSerie").val(movimiento.IdSerie);
+            $("#cboMoneda").val(movimiento.IdMoneda);
+            $("#TipoCambio").val(movimiento.TipoCambio);
+            $("#txtTotalAntesDescuento").val(formatNumber(movimiento.SubTotal.toFixed(DecimalesPrecios)))
+            $("#txtImpuesto").val(formatNumber(movimiento.Impuesto.toFixed(DecimalesPrecios)))
+            $("#txtTotal").val(formatNumber(movimiento.Total.toFixed(DecimalesPrecios)))
+            $("#IdCuadrilla").val(movimiento.IdCuadrilla)
+            $("#IdResponsable").val(movimiento.IdResponsable)
+            $("#cboCentroCosto").val(movimiento.IdCentroCosto)
+            $("#cboTipoDocumentoOperacion").val(movimiento.IdTipoDocumento)
+            $("#IdTipoDocumentoRef").val(movimiento.IdTipoDocumentoRef)
+            $("#SerieNumeroRef").val(movimiento.NumSerieTipoDocumentoRef)
+
+            $("#IdBase").val(movimiento.IdBase).change();
+            $("#IdObra").val(movimiento.IdObra).change();
+            $("#cboAlmacen").val(movimiento.IdAlmacen);
+            $("#IdProveedor").val(movimiento.IdProveedor).change();
+
+
+            $("#CreatedAt").html(movimiento.CreatedAt.replace("T", " "));
+            $("#NombUsuario").html(movimiento.NombUsuario);
+
+            //agrega detalle
+            let tr = '';
+
+            let Detalle = movimiento.detalles;
+            $("#total_items").html(Detalle.length)
+            console.log(Detalle);
+            console.log("Detalle");
+            for (var i = 0; i < Detalle.length; i++) {
+                AgregarLineaDetalle(i, Detalle[i]);
+                $("#cboImpuesto").val(Detalle[0].IdIndicadorImpuesto);
+            }
+
+
+            let DetalleAnexo = solicitudes[0].DetallesAnexo;
+            for (var i = 0; i < DetalleAnexo.length; i++) {
+                AgregarLineaDetalleAnexo(DetalleAnexo[i].IdSolicitudRQAnexos, DetalleAnexo[i].Nombre)
+            }
+
+
+        }
+
+    });
+
 }

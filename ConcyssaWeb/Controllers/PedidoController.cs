@@ -14,7 +14,7 @@ namespace ConcyssaWeb.Controllers
             return View();
         }
 
-        public string ObtenerPedidosEntregaLDT(string EstadoPedido="ABIERTO")
+        public string ObtenerPedidosEntregaLDT(string EstadoPedido = "ABIERTO")
         {
             string mensaje_error = "";
             PedidoDAO oPedidoDAO = new PedidoDAO();
@@ -51,7 +51,7 @@ namespace ConcyssaWeb.Controllers
             int IdSociedad = Convert.ToInt32((String.IsNullOrEmpty(oPedidoDTO.IdSociedad.ToString())) ? Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad")) : oPedidoDTO.IdSociedad);
             int IdUsuario = Convert.ToInt32((String.IsNullOrEmpty(oPedidoDTO.IdUsuario.ToString())) ? Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad")) : oPedidoDTO.IdUsuario);
 
-            if (IdSociedad==0)
+            if (IdSociedad == 0)
             {
                 IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             }
@@ -161,7 +161,7 @@ namespace ConcyssaWeb.Controllers
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
 
             oPedidoDTO = oPedidoDAO.ObtenerPedidoxId(IdPedido, ref mensaje_error);
-            if (oPedidoDTO !=null)
+            if (oPedidoDTO != null)
             {
                 //oDataTableDTO.sEcho = 1;
                 //oDataTableDTO.iTotalDisplayRecords = lstPedidoDetalleDTO.Count;
@@ -176,6 +176,102 @@ namespace ConcyssaWeb.Controllers
                 return mensaje_error;
 
             }
+        }
+
+
+        public string ListarItemAprobadosxSociedadDT(int IdPedido)
+        {
+            string mensaje_error = "";
+            PedidoDAO oPedidoDAO = new PedidoDAO();
+            List<ItemAprobadosDTO> lstItemAprobadosDTO = new List<ItemAprobadosDTO>();
+            DataTableDTO oDataTableDTO = new DataTableDTO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            lstItemAprobadosDTO = oPedidoDAO.ListarItemAprobadosxSociedad(IdSociedad, ref mensaje_error);
+            oDataTableDTO.sEcho = 1;
+            oDataTableDTO.iTotalDisplayRecords = lstItemAprobadosDTO.Count;
+            oDataTableDTO.iTotalRecords = lstItemAprobadosDTO.Count;
+            oDataTableDTO.aaData = (lstItemAprobadosDTO);
+            //return oDataTableDTO;
+            return JsonConvert.SerializeObject(oDataTableDTO);
+        }
+
+
+        public string ObtenerStockxIdDetalleSolicitudRQ(int IdDetalleRQ)
+        {
+            string mensaje_error = "";
+            List<ArticuloStockDTO> lstArticuloStockDTO = new List<ArticuloStockDTO>();
+            PedidoDAO oPedidoDAO = new PedidoDAO();
+            lstArticuloStockDTO = oPedidoDAO.ObtenerStockxIdDetalleSolicitudRQ(IdDetalleRQ, ref mensaje_error);
+            if (lstArticuloStockDTO.Count() > 0)
+            {
+                return JsonConvert.SerializeObject(lstArticuloStockDTO);
+
+            }
+            else
+            {
+                return mensaje_error;
+            }
+            return JsonConvert.SerializeObject(lstArticuloStockDTO);
+
+        }
+
+        public string ObtenerProveedoresPrecioxProducto(int IdArticulo)
+        {
+            string mensaje_error = "";
+            List<ProveedoresPrecioProductoDTO> lstProveedoresPrecioProductoDTO = new List<ProveedoresPrecioProductoDTO>();
+            PedidoDAO oPedidoDAO = new PedidoDAO();
+            lstProveedoresPrecioProductoDTO = oPedidoDAO.ObtenerProveedoresPrecioxProducto(IdArticulo, ref mensaje_error);
+            if (lstProveedoresPrecioProductoDTO.Count() > 0)
+            {
+                return JsonConvert.SerializeObject(lstProveedoresPrecioProductoDTO);
+
+            }
+            else
+            {
+                return mensaje_error;
+            }
+            return JsonConvert.SerializeObject(lstProveedoresPrecioProductoDTO);
+
+        }
+
+        public string ActualizarProveedorPrecio(int IdProveedor, decimal precionacional, decimal precioextranjero, int idproducto, int IdDetalleRq)
+        {
+            string mensaje_error = "";
+            PedidoDAO oPedidoDAO = new PedidoDAO();
+            oPedidoDAO.UpdateInsertPedidoAsignadoPedidoRQ(IdProveedor, precionacional, precioextranjero, idproducto, IdDetalleRq, ref mensaje_error);
+            if (mensaje_error.Length > 0)
+            {
+                return mensaje_error;
+            }
+            return "EXITO";
+        }
+
+        public string ListarProductosAsignadosxProveedorxIdUsuarioDT()
+        {
+            string mensaje_error = "";
+            PedidoDAO oPedidoDAO = new PedidoDAO();
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            List<AsignadoPedidoRequeridoDTO> lstAsignadoPedidoRequeridoDTO = new List<AsignadoPedidoRequeridoDTO>();
+            lstAsignadoPedidoRequeridoDTO = oPedidoDAO.ListarProductosAsignadosxProveedorxIdUsuario(IdUsuario, ref mensaje_error);
+            if (mensaje_error.Length > 0)
+            {
+                return mensaje_error;
+            }
+            DataTableDTO oDataTableDTO = new DataTableDTO();
+            oDataTableDTO.sEcho = 1;
+            oDataTableDTO.iTotalDisplayRecords = lstAsignadoPedidoRequeridoDTO.Count;
+            oDataTableDTO.iTotalRecords = lstAsignadoPedidoRequeridoDTO.Count;
+            oDataTableDTO.aaData = (lstAsignadoPedidoRequeridoDTO);
+            return JsonConvert.SerializeObject(oDataTableDTO);
+        }
+
+        public string ObtenerDatosProveedorXRQAsignados(int IdProveedor)
+        {
+            string mensaje_error = "";
+            List<AsignadoPedidoRequeridoDTO> lstAsignadoPedidoRequeridoDTO = new List<AsignadoPedidoRequeridoDTO>();
+            PedidoDAO oPedidoDAO = new PedidoDAO();
+            lstAsignadoPedidoRequeridoDTO = oPedidoDAO.ListarProductosAsignadosxProveedorDetalle(IdProveedor, ref mensaje_error);
+            return JsonConvert.SerializeObject(lstAsignadoPedidoRequeridoDTO);
         }
 
 

@@ -195,12 +195,15 @@ namespace ConcyssaWeb.Controllers
                                             var ResultadoEtapa = oEtapaAutorizacionDAO.ObtenerDatosxID(ResultadoModelo[0].DetallesEtapa[e].IdEtapa);
                                             UsuarioDAO oUsuarioDAO = new UsuarioDAO();
                                             //enviar correo
-                                            //for (int k = 0; k < ResultadoEtapa[0].Detalles.Count; k++)
-                                            //{
-                                            //    var UsersDeEtapa = oUsuarioDAO.ObtenerDatosxID(ResultadoEtapa[0].Detalles[k].IdUsuario);
-                                            //    var Solicitante = oUsuarioDAO.ObtenerDatosxID(solicitudRQDTO.IdSolicitante);
-                                            //    EnviarCorreo(UsersDeEtapa[0].Correo, Solicitante[0].NombreUsuario, solicitudRQDTO.Serie, solicitudRQDTO.Numero, Resultado[0].Mensaje);
-                                            //}
+                                            string mensaje_error = "";
+                                            for (int k = 0; k < ResultadoEtapa[0].Detalles.Count; k++)
+                                            {
+                                                var UsersDeEtapa = oUsuarioDAO.ObtenerDatosxID(ResultadoEtapa[0].Detalles[k].IdUsuario, ref mensaje_error);
+                                                var Solicitante = oUsuarioDAO.ObtenerDatosxID(solicitudRQDTO.IdSolicitante, ref mensaje_error);
+                                                EnviarCorreo(UsersDeEtapa[0].Correo, Solicitante[0].Nombre, solicitudRQDTO.Serie, solicitudRQDTO.Numero, Resultado[0].Mensaje);
+                                                EnviarCorreo("jhuniors.ramos@smartcode.pe", Solicitante[0].Nombre, solicitudRQDTO.Serie, solicitudRQDTO.Numero, Resultado[0].Mensaje);
+
+                                            }
                                             //enviar correo
                                         }
 

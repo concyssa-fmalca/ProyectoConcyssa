@@ -68,13 +68,13 @@
                 @*<button class="btn btn-sm  btn-primary " onclick="AprobarSolicitud()">Aprobar Seleccionados</button>*@
 
                 @*<button class="btn btn-sm  btn-success pull-right plu" id="btnPdf" style="margin-left:10px;">Descargar PDF</button>
-                    <button class="btn btn-sm btn-info pull-right plu" id="btnExcel" style="margin-left:10px;">Descargar Excel</button>*@
+                <button class="btn btn-sm btn-info pull-right plu" id="btnExcel" style="margin-left:10px;">Descargar Excel</button>*@
             </div>
             <div class="col-sm-3">
                 @*<button class="btn btn-sm   btn-primary " onclick="RechazarSolicitud()">Desaprobar Seleccionados</button>*@
 
                 @*<button class="btn btn-sm  btn-success pull-right plu" id="btnPdf" style="margin-left:10px;">Descargar PDF</button>
-                    <button class="btn btn-sm btn-info pull-right plu" id="btnExcel" style="margin-left:10px;">Descargar Excel</button>*@
+                <button class="btn btn-sm btn-info pull-right plu" id="btnExcel" style="margin-left:10px;">Descargar Excel</button>*@
             </div>
         </div>
     </div>
@@ -82,16 +82,16 @@
         <div class="container-fluid">
             <div class="panel" style="background-color:#effafc">
                 <div class="row">
-                   @* @if (base.Session["idPerfil"].ToString() == "2" || base.Session["idPerfil"].ToString() == "5" || base.Session["idPerfil"].ToString() == "6")
+                    @* @if (base.Session["idPerfil"].ToString() == "2" || base.Session["idPerfil"].ToString() == "5" || base.Session["idPerfil"].ToString() == "6")
                     {
 
                     }
                     else
                     {*@
-                        <label for="CboAutorizador" class="control-label col-sm-1 left-align" style="color:black;margin-top:5px">Autorizador</label>
-                        <div class="col-sm-2">
-                            <select id="CboAutorizador" class="form-control"></select>
-                        </div>
+                    <label for="CboAutorizador" class="control-label col-sm-1 left-align" style="color:black;margin-top:5px">Autorizador</label>
+                    <div class="col-sm-2">
+                        <select id="CboAutorizador" class="form-control"></select>
+                    </div>
                     @*}*@
 
                     <label for="FechaInicio" class="control-label col-sm-1 left-align" style="color:black;margin-top:5px">Fecha Inicio</label>
@@ -133,6 +133,7 @@
                         <tr>
                             <th><input style="display:none" type="checkbox" id="checkbox_all" onclick="seleccionar_todo()" /></th>
                             <th>N° Solicitud</th>
+                            <th>Etapa</th>
                             <th>Solicitante</th>
                             <th>Area Solicitante</th>
                             @*<th>Area</th>*@
@@ -204,19 +205,19 @@
                         @*<th>Accion</th>*@
 
                         @*<th width="400px" style="min-width:400px">Descripcion de Articulo</th>
-                            <th>Unidad de Medida</th>
-                            <th width="150px" style="min-width:150px">Estado</th>
-                            <th>Cantidad</th>
-                            <th>Precio Info</th>
-                            <th>Total</th>
-                            <th>Stock</th>
-                            <th>Comprometido</th>
-                            <th>En Pedido</th>
-                            <th width="200px" style="min-width:200px">Prioridad</th>
-                            <th width="150px" style="min-width:150px">Almacen</th>
-                            <th width="150px" style="min-width:150px">Centro Costos</th>
-                            <th width="150px" style="min-width:150px">Proyecto</th>
-                            <th width="250px" style="min-width:250px">Referencia</th>*@
+                        <th>Unidad de Medida</th>
+                        <th width="150px" style="min-width:150px">Estado</th>
+                        <th>Cantidad</th>
+                        <th>Precio Info</th>
+                        <th>Total</th>
+                        <th>Stock</th>
+                        <th>Comprometido</th>
+                        <th>En Pedido</th>
+                        <th width="200px" style="min-width:200px">Prioridad</th>
+                        <th width="150px" style="min-width:150px">Almacen</th>
+                        <th width="150px" style="min-width:150px">Centro Costos</th>
+                        <th width="150px" style="min-width:150px">Proyecto</th>
+                        <th width="250px" style="min-width:250px">Referencia</th>*@
 
                     </tr>
                 </thead>
@@ -335,7 +336,7 @@
                                     <div class="col-sm-4">
                                         <select id="cboEmpleado" class="form-control input-sm" tabindex="5" disabled>
                                             @*<option value="@base.Session["idUsuario"].ToString()" selected>@base.Session["NombUsuario"].ToString()</option>*@
-                                             <option value="1" selected>NOMUSUARio</option>
+                                            <option value="1" selected>NOMUSUARio</option>
                                         </select>
                                     </div>
                                 </div>
@@ -466,12 +467,12 @@
                                             <tbody></tbody>
 
                                             @*@for (var i = 0; i <= Model.Count - 1; i++)
-                                                {
-                                                    <tr>
-                                                        <td>@Model[i].ToString()</td>
-                                                        <td>@Html.ActionLink("Download", "Download", new { ImageName = Model[i].ToString() })</td>
-                                                    </tr>
-                                                }*@
+                                        {
+                                        <tr>
+                                        <td>@Model[i].ToString()</td>
+                                        <td>@Html.ActionLink("Download", "Download", new { ImageName = Model[i].ToString() })</td>
+                                        </tr>
+                                        }*@
                                         </table>
 
                                     </div>
