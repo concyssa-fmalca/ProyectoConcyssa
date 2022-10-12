@@ -335,7 +335,7 @@ function listartablealmacenbase(IdUsuario) {
                 <td><select id="ab_IdAlmacen`+ contartr + `" class="form-control input-sm">
                     </select></td>
                 <td>
-                    <button class="btn btn-info"  onclick="savealmacenbase(`+ contartr + `,` + basealmacenes[i].IdUsuarioBase + `)">GUARDAR</button>
+                    <button class="btn btn-info"  onclick="savealmacenbase(`+ contartr + `,` + basealmacenes[i].IdUsuarioBase + `)">+</button>
                     <button class="btn btn-danger" onclick="eliminartralmacenbase(`+ basealmacenes[i].IdUsuarioBase + `,` + contartr +`)">-</button>
                 </td>
             </tr>`;
