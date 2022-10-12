@@ -118,8 +118,13 @@ function ConsultaServidor(url) {
 
                 '<td style="display:none">' + articulos[i].ActivoFijo + '</td>' +
                 '<td style="display:none">' + articulos[i].IdCodigoUbso + '</td>' +
-                '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + articulos[i].IdArticulo + ')"></button>' +
-                '<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + articulos[i].IdArticulo + ')"></button></td >' +
+                '<td>' +
+             
+                    `<div class="btn-group" role="group" aria-label="..." style="inline-size: max-content !important; ">
+                        <button class="btn btn-primary fa fa-pencil btn-xs" onclick = "ObtenerDatosxID(` + articulos[i].IdArticulo + `)" ></button > 
+                        <button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(` + articulos[i].IdArticulo + `)"></button>
+                    </div>
+                </td>`+
                 '</tr>';
         }
 

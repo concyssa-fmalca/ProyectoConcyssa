@@ -1,5 +1,6 @@
 ﻿let table = '';
 let contartr = 0;
+
 window.onload = function () {
     var url = "ObtenerUsuarios";
     ConsultaServidor(url);
@@ -28,10 +29,12 @@ function ConsultaServidor(url) {
                 '<td>' + usuarios[i].Usuario.toUpperCase() + '</td>' +
                 '<td>' + usuarios[i].NombrePerfil.toUpperCase() + '</td>' +
                 '<td>' + usuarios[i].NombreSociedad.toUpperCase() + '</td>' +
-                '<td>'+
-                    '<button class="btn btn-primary fa fa-pencil btn-xs" onclick = "ObtenerDatosxID(' + usuarios[i].IdUsuario + ')" ></button > ' +
-                    '<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + usuarios[i].IdUsuario + ')"></button>' +
-                    '<button class="btn btn-info btn-xs " onclick="AbrirModalBaseAlmacen(' + usuarios[i].IdUsuario + ')">BA</button>'
+                '<td>' +
+                    `<div class="btn-group" role="group" aria-label="..." style="inline-size: max-content !important; ">
+                        <button style="margin-top:0px !important;margin-botton:0px !important" class="btn btn-primary fa fa-pencil btn-xs" onclick = "ObtenerDatosxID(` + usuarios[i].IdUsuario + `)" ></button>
+                        <button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(`+ usuarios[i].IdUsuario + `)"></button>
+                        <button class="btn btn-info btn-xs " onclick="AbrirModalBaseAlmacen(` + usuarios[i].IdUsuario + `)">BA</button>
+                    </div>`+
                 '</td > ' +
                 '</tr>';
         }
