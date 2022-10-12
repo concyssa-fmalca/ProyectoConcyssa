@@ -227,8 +227,16 @@ function ObtenerObraxIdBase() {
     let IdBase = $("#IdBase").val();
     $.ajaxSetup({ async: false });
     $.post("/Obra/ObtenerObraxIdBase", { 'IdBase': IdBase }, function (data, status) {
-        let obra = JSON.parse(data);
-        llenarComboObra(obra, "IdObra", "Seleccione")
+
+        if (validadJson(data)) {
+            let obra = JSON.parse(data);
+            llenarComboObra(obra, "IdObra", "Seleccione")
+        } else {
+            //$("#cboMedidaItem").html('<option value="0">SELECCIONE</option>')
+        }
+
+        //let obra = JSON.parse(data);
+        //llenarComboObra(obra, "IdObra", "Seleccione")
     });
 }
 
