@@ -1241,24 +1241,24 @@ function GuardarSolicitud() {
         return;
     }
 
-    if ($("#IdCuadrilla").val() == 0 || $("#IdCuadrilla").val() == null) {
-        Swal.fire(
-            'Error!',
-            'Complete el campo  Cuadrilla',
-            'error'
-        )
-        return;
-    }
+    //if ($("#IdCuadrilla").val() == 0 || $("#IdCuadrilla").val() == null) {
+    //    Swal.fire(
+    //        'Error!',
+    //        'Complete el campo  Cuadrilla',
+    //        'error'
+    //    )
+    //    return;
+    //}
 
 
-    if ($("#IdResponsable").val() == 0 || $("#IdResponsable").val() == null) {
-        Swal.fire(
-            'Error!',
-            'Complete el campo Responsable',
-            'error'
-        )
-        return;
-    }
+    //if ($("#IdResponsable").val() == 0 || $("#IdResponsable").val() == null) {
+    //    Swal.fire(
+    //        'Error!',
+    //        'Complete el campo Responsable',
+    //        'error'
+    //    )
+    //    return;
+    //}
     if ($("#cboCentroCosto").val() == 0 || $("#cboCentroCosto").val() == null) {
         Swal.fire(
             'Error!',

@@ -1,5 +1,25 @@
 ﻿
 let table = "";
+let DecimalesImportes = 0;
+let DecimalesPrecios = 0;
+let DecimalesCantidades = 0;
+let DecimalesPorcentajes = 0;
+
+
+function ObtenerConfiguracionDecimales() {
+    $.post("/ConfiguracionDecimales/ObtenerConfiguracionDecimales", function (data, status) {
+
+        let datos = JSON.parse(data);
+        DecimalesCantidades = datos[0].Cantidades;
+        DecimalesImportes = datos[0].Importes;
+        DecimalesPrecios = datos[0].Precios;
+        DecimalesPorcentajes = datos[0].Porcentajes;
+    });
+}
+
+
+
+
 window.onload = function () {
     CargarAlmacen();
 };
@@ -63,15 +83,14 @@ function ObtenerStockxAlmacen() {
 
         columnDefs: [
             // {"className": "text-center", "targets": "_all"},
-            {
-                targets: -1,
-                orderable: false,
-                render: function (data, type, full, meta) {
+            //{
+            //    targets: -1,
+            //    orderable: false,
+            //    render: function (data, type, full, meta) {
 
-                    return `<button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(` + full.IdAlmacen + `)"></button>
-                            <button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(` + full.IdAlmacen + `)"></button>`
-                },
-            },
+            //        return 1
+            //    },
+            //},
             {
                 targets: 0,
                 orderable: false,
@@ -90,7 +109,28 @@ function ObtenerStockxAlmacen() {
                 targets: 2,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.Descripcion.toUpperCase()
+                    return full.NombArticulo.toUpperCase()
+                },
+            },
+            {
+                targets: 3,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return formatNumber(full.Stock)
+                },
+            },
+            {
+                targets: 4,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return formatNumber(full.PrecioPromedio)
+                },
+            },
+            {
+                targets: 5,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return formatNumber(parseFloat(parseFloat(full.PrecioPromedio) * parseFloat(full.Stock)))
                 },
             }
 

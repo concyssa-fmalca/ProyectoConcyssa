@@ -128,6 +128,8 @@ namespace DAO
                         oArticuloStockDTO.NombAlmacen = (drd["NombAlmacen"].ToString());
                         oArticuloStockDTO.Stock = Convert.ToDecimal(drd["Stock"].ToString());
                         oArticuloStockDTO.PrecioPromedio = Convert.ToDecimal(drd["PrecioPromedio"].ToString());
+                        oArticuloStockDTO.Codigo = (drd["Codigo"].ToString());
+
                         lstArticuloStockDTO.Add(oArticuloStockDTO);
                     }
                     drd.Close();

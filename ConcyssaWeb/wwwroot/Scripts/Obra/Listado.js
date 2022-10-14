@@ -162,11 +162,18 @@ function CargarCatalogoProductoxIdObra(IdObra) {
                 targets: 1,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.DescripcionArticulo.toUpperCase()
+                    return full.Codigo.toUpperCase()
                 },
             },
             {
                 targets: 2,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.DescripcionArticulo.toUpperCase()
+                },
+            },
+            {
+                targets: 3,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     if (full.IdTipoProducto == 0) {
@@ -183,7 +190,7 @@ function CargarCatalogoProductoxIdObra(IdObra) {
                 }
             },
             {
-                targets: 3,
+                targets: 4,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     if (full.IdTipoProducto == 0) {

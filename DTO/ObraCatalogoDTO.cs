@@ -13,6 +13,8 @@ namespace DTO
         public int IdArticulo { get; set; }
         public int IdTipoProducto { get; set; }
         public string DescripcionArticulo { get; set; }
+        public string Codigo { get; set; }
+
 
     }
 }

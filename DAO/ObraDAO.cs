@@ -29,10 +29,13 @@ namespace DAO
                     {
                         ObraCatalogoDTO oObraCatalogoDTO = new ObraCatalogoDTO();
                         oObraCatalogoDTO.IdObraCatalogo = int.Parse(drd["IdObraCatalogo"].ToString());
+                        oObraCatalogoDTO.Codigo = (drd["Codigo"].ToString());
+
                         oObraCatalogoDTO.IdArticulo = int.Parse(drd["IdArticulo"].ToString());
                         oObraCatalogoDTO.DescripcionArticulo = (drd["DescripcionArticulo"].ToString());
                         oObraCatalogoDTO.IdTipoProducto = int.Parse(drd["IdTipoProducto"].ToString());
                         oObraCatalogoDTO.IdObra = int.Parse(drd["IdObra"].ToString());
+
                         lstObraCatalogoDTO.Add(oObraCatalogoDTO);
                     }
                     drd.Close();
