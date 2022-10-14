@@ -750,9 +750,11 @@ function llenarComboSerie(lista, idCombo, primerItem) {
     var nCampos;
     var campos;
     for (var i = 0; i < nRegistros; i++) {
-
-        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdSerie + "'>" + lista[i].Serie + "</option>"; }
-        else { }
+        if (lista[i].Documento==3) {
+            if (lista.length > 0) { contenido += "<option value='" + lista[i].IdSerie + "'>" + lista[i].Serie + "</option>"; }
+            else { }
+        }
+        
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;

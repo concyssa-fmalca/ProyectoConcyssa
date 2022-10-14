@@ -915,9 +915,11 @@ function llenarComboSerie(lista, idCombo, primerItem) {
     var nCampos;
     var campos;
     for (var i = 0; i < nRegistros; i++) {
-
-        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdSerie + "'>" + lista[i].Serie + "</option>"; }
-        else { }
+        if (lista[i].Documento == 6) {
+            if (lista.length > 0) { contenido += "<option value='" + lista[i].IdSerie + "'>" + lista[i].Serie + "</option>"; }
+            else { }
+        }
+        
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
@@ -1193,19 +1195,19 @@ function ObtenerNumeracion() {
 
     let varSerie = $("#cboSerie").val();
 
-    $.post("/Serie/ValidarNumeracionSerieSolicitudRQ", { 'IdSerie': varSerie }, function (data, status) {
-        if (data == 'sin datos') {
-            $.post("/Serie/ObtenerDatosxID", { 'IdSerie': varSerie }, function (data, status) {
-                let valores = JSON.parse(data);
-                $("#txtNumeracion").val(valores[0].NumeroInicial);
-            });
-        } else {
-            let values = JSON.parse(data);
-            let Numero = Number(values[0].NumeroInicial);
-            $("#txtNumeracion").val(Numero + 1);
+    //$.post("/Serie/ValidarNumeracionSerieSolicitudRQ", { 'IdSerie': varSerie }, function (data, status) {
+    //    if (data == 'sin datos') {
+    //        $.post("/Serie/ObtenerDatosxID", { 'IdSerie': varSerie }, function (data, status) {
+    //            let valores = JSON.parse(data);
+    //            $("#txtNumeracion").val(valores[0].NumeroInicial);
+    //        });
+    //    } else {
+    //        let values = JSON.parse(data);
+    //        let Numero = Number(values[0].NumeroInicial);
+    //        $("#txtNumeracion").val(Numero + 1);
 
-        }
-    });
+    //    }
+    //});
 
 }
 
