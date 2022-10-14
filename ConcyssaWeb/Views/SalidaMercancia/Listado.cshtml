@@ -152,7 +152,7 @@
                                 <div class='form-group-sm'>
                                     <label for="txtFechaDocumento" class="control-label col-sm-2 left-align">Fecha Documento</label>
                                     <div class="col-sm-4">
-                                        <input id="txtFechaDocumento" value="@DateTime.Now.ToString("yyyy-MM-dd")" type="date" class="form-control input-sm" tabindex="10" >
+                                        <input id="txtFechaDocumento" value="@DateTime.Now.ToString("yyyy-MM-dd")"  onchange="ValidarMonedaBase()" type="date" class="form-control input-sm" tabindex="10" >
                                     </div>
                                 </div>
 
@@ -239,25 +239,11 @@
                             </div>
 
                             <div class="row">
+                                
+                                
                                 <div class='form-group-sm'>
-                                    <label for="IdCuadrilla" class="control-label col-sm-1 left-align">Cuadrilla</label>
+                                    <label for="cboCentroCosto"  class="control-label col-sm-2 left-align">Centro de Costo</label>
                                     <div class="col-sm-4">
-                                        <select id="IdCuadrilla" type="text" class="form-control input-sm" tabindex="3">
-                                            <option value="0">SELECCIONE CUADRILLAS </option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class='form-group-sm'>
-                                    <label for="EntregadoA" style="text-align: right;" class="control-label col-sm-2 left-align">Entregado A:</label>
-                                    <div class="col-sm-2">
-                                        <select id="EntregadoA" type="text" class="form-control input-sm" tabindex="3">
-                                            <option value="0">SELECCIONE Responsable </option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class='form-group-sm'>
-                                    <label for="cboCentroCosto"  style="text-align: right;" class="control-label col-sm-1 left-align">Centro de Costo</label>
-                                    <div class="col-sm-2">
                                         <select id="cboCentroCosto" class="form-control input-sm" tabindex="0"></select>
                                     </div>
                                 </div>
@@ -297,7 +283,7 @@
 
                                 <div class='form-group-sm'>
                                     <div class="col-sm-4">
-                                        <button style="margin-bottom:10px;margin-top:5px" class="btn btn-xs btn-info" onclick="OpenModalItem()" type="button">Agregar Item</button>
+                                        <button id="btn_agregaritem" style="margin-bottom:10px;margin-top:5px" class="btn btn-xs btn-info" onclick="OpenModalItem()" type="button">Agregar Item</button>
                                     </div>
                                 </div>
                                 <div class="table-responsive">
@@ -459,10 +445,14 @@
                                 <p>Tipo  Documento: <select style="height: 20px" id="IdTipoDocumentoRef" class="form-control input-sm" tabindex="0"></select> </p>
                                 <hr style="margin: 0px 0px 5px 0px"/> 
                                 <p>Serie y Numero:  <input id="SerieNumeroRef" type="text" class="form-control huser-20" tabindex="16" > </p>
-                                 <hr style="margin: 0px 0px 5px 0px"/> 
-                                </div>
+                                <hr style="margin: 0px 0px 5px 0px"/> 
+                                <p>Cuadrilla: <select style="height: 20px" id="IdCuadrilla" class="form-control input-sm" tabindex="0"><option value="0">SELECCIONE CUADRILLAS </option></select> </p>
+                                <hr style="margin: 0px 0px 5px 0px"/>
+                                    <p>EntregadoA: <select style="height: 20px" id="EntregadoA" class="form-control input-sm" tabindex="0"><option value="0">SELECCIONE </option></select> </p>
 
-                                
+                                </div>
+                                <hr style="margin: 0px 0px 5px 0px"/> 
+                       
                          
                             </div>
                             
@@ -568,14 +558,14 @@
                                     <div class='form-group-sm'>
                                         <label for="cboGrupoUnidadMedida" class="control-label col-sm-2 left-align">Grupo Unidad</label>
                                         <div class="col-sm-4">
-                                            <select id="cboGrupoUnidadMedida" class="form-control input-sm" tabindex="2" style="height:26px" onchange="CargarDefinicionxGrupo()"></select>
+                                            <select id="cboGrupoUnidadMedida" class="form-control input-sm" tabindex="2" style="height:26px" onchange="CargarDefinicionxGrupo()" disabled></select>
                                         </div>
                                     </div>
 
                                     <div class='form-group-sm'>
                                         <label for="cboMedidaItem" class="control-label col-sm-2 left-align">Medida</label>
                                         <div class="col-sm-4">
-                                            <select id="cboMedidaItem" class="form-control input-sm" tabindex="2" style="height:26px" onchange="ObtenerDatosDefinicion()"></select>
+                                            <select id="cboMedidaItem" class="form-control input-sm" tabindex="2" style="height:26px" onchange="ObtenerDatosDefinicion()" disabled></select>
                                         </div>
                                     </div>
                                 </div>
@@ -594,7 +584,7 @@
                                     <div class='form-group-sm'>
                                         <label for="txtPrecioUnitarioItem" class="control-label col-sm-2 left-align">Precio Unitario</label>
                                         <div class="col-sm-4">
-                                            <input id="txtPrecioUnitarioItemOriginal" type="text" class="form-control input-sm">
+                                            <input id="txtPrecioUnitarioItemOriginal" type="hidden" class="form-control input-sm">
                                             <input id="txtPrecioUnitarioItem" type="text" class="form-control input-sm" tabindex="4" >
                                         </div>
                                     </div>
@@ -612,7 +602,7 @@
                                     <div class='form-group-sm'>
                                         <label for="txtCantidadItem" class="control-label col-sm-2 left-align">Cantidad</label>
                                         <div class="col-sm-4">
-                                            <input id="txtCantidadItem" max="5" type="number" class="form-control input-sm" tabindex="6" onkeyup="ValidarDecimalesCantidades('txtCantidadItem')">
+                                            <input id="txtCantidadItem" max="5" type="number" class="form-control input-sm" tabindex="6" onkeyup="ValidarDecimalesCantidades('txtCantidadItem');validarStock()">
                                         </div>
                                     </div>
 

@@ -153,7 +153,7 @@
                                 <div class='form-group-sm'>
                                     <label for="txtFechaDocumento" class="control-label col-sm-2 left-align">Fecha Documento</label>
                                     <div class="col-sm-4">
-                                        <input id="txtFechaDocumento" value="@DateTime.Now.ToString("yyyy-MM-dd")" type="date" class="form-control input-sm" tabindex="10" >
+                                        <input id="txtFechaDocumento" value="@DateTime.Now.ToString("yyyy-MM-dd")" onchange="ValidarMonedaBase()" type="date" class="form-control input-sm" tabindex="10">
                                     </div>
                                 </div>
 
@@ -198,7 +198,7 @@
                                     @*<label for="cboMoneda" class="control-label col-sm-2 left-align">Tipo de Cambio</label>*@
                                     <label for="cboMoneda" class="control-label col-sm-2 left-align">Moneda</label>
                                     <div class="col-sm-4">
-                                        <select id="cboMoneda" type="text" class="form-control input-sm" tabindex="3" onchange="ValidarMonedaBase()" disabled></select>
+                                        <select id="cboMoneda" type="text" class="form-control input-sm" tabindex="3" onchange="ValidarMonedaBase()" ></select>
                                     </div>
                                 </div>
 
@@ -312,7 +312,7 @@
 
                                 <div class='form-group-sm'>
                                     <div class="col-sm-4">
-                                        <button style="margin-bottom:10px;margin-top:5px" class="btn btn-xs btn-info" onclick="OpenModalItem()" type="button">Agregar Item</button>
+                                        <button style="margin-bottom:10px;margin-top:5px" class="btn btn-xs btn-info" id="btn_agregaritem" onclick="OpenModalItem()" type="button">Agregar Item</button>
                                     </div>
                                 </div>
                                 <div class="table-responsive">
@@ -606,7 +606,7 @@
                                     <div class='form-group-sm'>
                                         <label for="cboGrupoUnidadMedida" class="control-label col-sm-2 left-align">Grupo Unidad</label>
                                         <div class="col-sm-4">
-                                            <select id="cboGrupoUnidadMedida" class="form-control input-sm" tabindex="2" style="height:26px" onchange="CargarDefinicionxGrupo()"></select>
+                                            <select id="cboGrupoUnidadMedida" class="form-control input-sm" tabindex="2" style="height:26px" onchange="CargarDefinicionxGrupo()" disabled></select>
                                         </div>
                                     </div>
 

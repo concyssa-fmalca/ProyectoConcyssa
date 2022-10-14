@@ -311,7 +311,8 @@ function ModalNuevo() {
     $("#cboPrioridad").val(2);
     $("#cboClaseArticulo").prop("disabled", false);
     AbrirModal("modal-form");
-    $("#cboMoneda").prop("disabled", true);
+    disabledmodal(false);
+    $("#btnExtorno").hide();
     //setearValor_ComboRenderizado("cboCodigoArticulo");
 }
 
@@ -420,6 +421,7 @@ function EliminarAnexo(Id, dato) {
 let contador = 0;
 
 function AgregarLinea() {
+    let stockproducto = $("#txtStockAlmacenItem").val();
     let IdItem = $("#txtIdItem").val();
     let CodigoItem = $("#txtCodigoItem").val();
     let MedidaItem = $("#cboMedidaItem").val();
@@ -510,7 +512,7 @@ function AgregarLinea() {
     //<select class="form-control select2" id="cboCodigoArticulo" name="cboCodigoArticulo[]">
     //    <option value="0">Seleccione</option>
     //</select>
-    tr += `<tr>
+    tr += `<tr  id="tritem` + contador +`">
             <td><input input style="display:none;" class="form-control" type="text" value="0" id="txtIdSolicitudRQDetalle" name="txtIdSolicitudRQDetalle[]"/></td>
             <td input style="display:none;">
             <input  class="form-control" type="text" id="txtIdArticulo`+ contador + `" name="txtIdArticulo[]" />
@@ -518,7 +520,7 @@ function AgregarLinea() {
             </td>
             <td><input class="form-control" type="text" id="txtDescripcionArticulo`+ contador + `" name="txtDescripcionArticulo[]"/></td>
             <td>
-            <select class="form-control" id="cboUnidadMedida`+ contador + `" name="cboUnidadMedida[]">`;
+            <select class="form-control" id="cboUnidadMedida`+ contador + `" name="cboUnidadMedida[]" disabled>`;
     tr += `  <option value="0">Seleccione</option>`;
     for (var i = 0; i < UnidadMedida.length; i++) {
         tr += `  <option value="` + UnidadMedida[i].IdDefinicionGrupo + `">` + UnidadMedida[i].DescUnidadMedidaAlt + `</option>`;
@@ -536,7 +538,12 @@ function AgregarLinea() {
     tr += `</select>
             </td>
             <td input style="display:none;"><input class="form-control TipoCambioDeCabecera" type="number" name="txtTipoCambio[]" id="txtTipoCambioDetalle`+ contador + `" disabled></td>
-            <td><input class="form-control"  type="number" name="txtCantidadNecesaria[]" value="0" id="txtCantidadNecesaria`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)"></td>
+            <td>
+                
+                <input class="form-control"  type="number" name="txtCantidadNecesaria[]" value="0" id="txtCantidadNecesaria`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)">
+                <input class="form-control"  type="hidden" name="txtstockproducto[]" value="`+ stockproducto +`" id="txtstockproducto`+ contador + `" >
+
+            </td>
             <td><input class="form-control" type="number" name="txtPrecioInfo[]" value="0" id="txtPrecioInfo`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)"></td>
             <td input style="display:none;">
             <select class="form-control ImpuestoCabecera" name="cboIndicadorImpuesto[]" id="cboIndicadorImpuestoDetalle`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)">`;
@@ -577,7 +584,7 @@ function AgregarLinea() {
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td ><input class="form-control" type="text" value="" id="txtReferencia`+ contador + `" name="txtReferencia[]"></td>
-            <td><button class="btn btn-xs btn-danger borrar">-</button></td>
+            <td><button class="btn btn-xs btn-danger borrar" onclick="borrartditem(`+ contador +`)">-</button></td>
           <tr>`;
 
     $("#tabla").find('tbody').append(tr);
@@ -619,6 +626,26 @@ function AgregarLinea() {
 //function LimpiarDatosModalItems() {
 
 //}
+
+function disabledmodal(valorbolean) {
+    $("#IdBase").prop('disabled', valorbolean);
+    $("#IdObra").prop('disabled', valorbolean);
+    $("#cboAlmacen").prop('disabled', valorbolean);
+    $("#cboCentroCosto").prop('disabled', valorbolean);
+    $("#cboMoneda").prop('disabled', valorbolean);
+    $("#cboSerie").prop('disabled', valorbolean);
+    $("#txtFechaDocumento").prop('disabled', valorbolean);
+    $("#txtFechaContabilizacion").prop('disabled', valorbolean);
+    $("#cboTipoDocumentoOperacion").prop('disabled', valorbolean);
+    $("#IdTipoDocumentoRef").prop('disabled', valorbolean);
+    $("#SerieNumeroRef").prop('disabled', valorbolean);
+    $("#IdCuadrilla").prop('disabled', valorbolean);
+    $("#IdResponsable").prop('disabled', valorbolean);
+    $("#txtComentarios").prop('disabled', valorbolean)
+    $("#btn_agregaritem").prop('disabled', valorbolean)
+    $("#EntregadoA").prop('disabled', valorbolean)
+
+}
 
 function listarEmpleados() {
     $.ajax({
@@ -1040,13 +1067,19 @@ function ValidarMonedaBase() {
 
 
     let Moneda = $("#cboMoneda").val();
-    $.post("ObtenerTipoCambio", { 'Moneda': Moneda }, function (data, status) {
+    //$.post("ObtenerTipoCambio", { 'Moneda': Moneda }, function (data, status) {
+    //    let dato = JSON.parse(data);
+    //    //console.log(dato);
+    //    $("#txtTipoCambio").val(dato[0].Rate);
+
+    //});
+    let Fecha = $("#txtFechaDocumento").val();
+    $.post("ObtenerTipoCambio", { 'Moneda': Moneda, 'Fecha': Fecha }, function (data, status) {
         let dato = JSON.parse(data);
-        //console.log(dato);
-        $("#txtTipoCambio").val(dato[0].Rate);
+        console.log(dato);
+        $("#txtTipoCambio").val(dato.venta);
 
     });
-
 
     let varTipoCambio = $("#txtTipoCambio").val();
     $(".TipoCambioDeCabecera").val(varTipoCambio).change();
@@ -1374,7 +1407,8 @@ function ObtenerDatosxID(IdMovimiento) {
 
     $("#lblTituloModal").html("Editar Salida");
     AbrirModal("modal-form");
-
+    disabledmodal(true);
+    $("#btnExtorno").show();
 
 
 
@@ -1411,6 +1445,7 @@ function ObtenerDatosxID(IdMovimiento) {
 
             $("#CreatedAt").html(movimiento.CreatedAt.replace("T", " "));
             $("#NombUsuario").html(movimiento.NombUsuario);
+            $("#txtComentarios").html(movimiento.Comentario)
             //agrega detalle
             let tr = '';
 
@@ -1439,10 +1474,20 @@ function ObtenerDatosxID(IdMovimiento) {
 
 function CalcularTotalDetalle(contador) {
 
+    let stockdetalleproducto = $("#txtstockproducto" + contador).val();
+    let varCantidadNecesaria = $("#txtCantidadNecesaria" + contador).val();
+    console.log(stockdetalleproducto + '<' + varCantidadNecesaria)
+    if (parseFloat(stockdetalleproducto) < parseFloat(varCantidadNecesaria)) {
+        swal("Informacion!", "La Cantidad Supera al stock" + stockdetalleproducto);
+        $("#txtCantidadNecesaria" + contador).val(stockdetalleproducto).change();
+        return true;
+    }
+
+
     let varIndicadorImppuesto = $("#cboIndicadorImpuestoDetalle" + contador).val();
     let varPorcentaje = $('option:selected', "#cboIndicadorImpuestoDetalle" + contador).attr("impuesto");
 
-    let varCantidadNecesaria = $("#txtCantidadNecesaria" + contador).val();
+    
     let varPrecioInfo = $("#txtPrecioInfo" + contador).val();
 
     let subtotal = varCantidadNecesaria * varPrecioInfo;
@@ -1544,7 +1589,7 @@ function AgregarLineaDetalle(contador, detalle) {
     tr += `</select>
         </td>
         <td>
-            <input class="form-control" type="number" name="txtCantidadNecesaria[]" value="`+ detalle.Cantidad + `" id="txtCantidadNecesaria` + contador + `" onkeyup="CalcularTotalDetalle(` + contador + `)">
+            <input class="form-control" type="number" name="txtCantidadNecesaria[]" value="`+ detalle.Cantidad + `" id="txtCantidadNecesaria` + contador + `" onkeyup="CalcularTotalDetalle(` + contador + `)" disabled>
         </td>
         <td>
             <input class="form-control" type="number" name="txtPrecioInfo[]" value="`+ detalle.PrecioUnidadTotal + `" id="txtPrecioInfo` + contador + `" onkeyup="CalcularTotalDetalle(` + contador + `)" disabled>
@@ -1565,7 +1610,7 @@ function AgregarLineaDetalle(contador, detalle) {
     tr += `</select>
         </td>
         <td>
-            <input class="form-control" type="text" style="width:100px" value="" disabled>
+            <input class="form-control" type="text" style="width:100px" value="`+ detalle.Referencia +`" disabled>
         </td>
         <td>
             <button type="button" class="btn-sm btn btn-danger" disabled> - </button>   
@@ -1842,11 +1887,12 @@ function SeleccionarItemListado() {
         } else {
             let datos = JSON.parse(data);
             console.log(datos);
-            $("#cboGrupoUnidadMedida").val(0).change();
+            $("#cboGrupoUnidadMedida").val(datos[0].IdGrupoUnidadMedida).change();
+            $("#cboMedidaItem").val(datos[0].IdUnidadMedidaInv);
             $("#txtCodigoItem").val(datos[0].Codigo);
             $("#txtIdItem").val(datos[0].IdArticulo);
             $("#txtDescripcionItem").val(datos[0].Descripcion1);
-            $("#cboMedidaItem").val(datos[0].IdUnidadMedida);
+       
             $("#txtPrecioUnitarioItem").val(datos[0].UltimoPrecioCompra);
            
             
@@ -1890,6 +1936,15 @@ function CerrarModalListadoProyecto() {
     tableProyecto.destroy();
 }
 
+
+function validarStock() {
+    let stockalmacen = $("#txtStockAlmacenItem").val();
+    let txtCantidadItem = $("#txtCantidadItem").val();
+    if (parseFloat(stockalmacen) < parseFloat(txtCantidadItem)) {
+        swal("Informacion!", "La Cantidad Supera al stock" + stockalmacen);
+        $("#txtCantidadItem").val(stockalmacen);
+    }
+}
 
 
 function SeleccionarCentroCostoListado() {
@@ -2117,4 +2172,9 @@ function ObtenerDatosDefinicion() {
         let datos = JSON.parse(data);
         $("#txtPrecioUnitarioItem").val($("#txtPrecioUnitarioItemOriginal").val() * datos.CantidadAlt);
     });
+}
+
+function borrartditem(contador) {
+    $("#tritem" + contador).remove()
+    CalcularTotales();
 }

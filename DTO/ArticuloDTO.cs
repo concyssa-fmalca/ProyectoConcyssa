@@ -33,7 +33,7 @@ namespace DTO
 
         public decimal Stock { get; set; }
         public int IdGrupoUnidadMedida { get; set; }
-        public int IdUnidadMedidaInv { get; set; }
+        public int IdUnidadMedidaInv { get; set; } //IDDEFINICIONGRUPO
 
         //Opcional
         public decimal PrecioPromedio { get; set; }

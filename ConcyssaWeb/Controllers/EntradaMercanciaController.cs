@@ -2,6 +2,8 @@
 using DTO;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Net;
+using System;
 
 namespace ConcyssaWeb.Controllers
 {
@@ -151,6 +153,11 @@ namespace ConcyssaWeb.Controllers
         public string UpdateInsertMovimiento(MovimientoDTO oMovimientoDTO)
         {
             string mensaje_error = "";
+            if (oMovimientoDTO.IdMoneda==1)
+            {
+                oMovimientoDTO.TipoCambio = 1;
+            }
+            //oMovimientoDTO.TipoCambio=0
             int IdSociedad = Convert.ToInt32((String.IsNullOrEmpty(oMovimientoDTO.IdSociedad.ToString())) ? Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad")) : oMovimientoDTO.IdSociedad);
             int IdUsuario = Convert.ToInt32((String.IsNullOrEmpty(oMovimientoDTO.IdUsuario.ToString())) ? Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad")) : oMovimientoDTO.IdUsuario);
 
@@ -270,6 +277,58 @@ namespace ConcyssaWeb.Controllers
             {
                 return mensaje_error;
             }
+        }
+
+        public string ObtenerTipoCambio(string Moneda,string Fecha)
+        {
+            string mensaje_error;
+            string valida = "";
+            string Resultado = "1";
+
+            if (Moneda=="1")
+            {
+                Resultado= "1";
+            }
+            else
+            {
+                WebResponse webResponse;
+                HttpWebRequest request;
+                Uri uri;
+                string response;
+                try
+                {
+                   
+                    string cadenaUri = "https://api.apis.net.pe/v1/tipo-cambio-sunat?fecha="+ Fecha;
+                    uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
+                    request = (HttpWebRequest)WebRequest.Create(uri);
+                    request.ContentType = "application/json";
+                    webResponse = request.GetResponse();
+                    Stream webStream = webResponse.GetResponseStream();
+                    StreamReader responseReader = new StreamReader(webStream);
+                    response = responseReader.ReadToEnd();
+                    Resultado = response;
+                    var ff = JsonConvert.DeserializeObject(response);
+                    var ddd = "ee";
+                }
+                catch (WebException e)
+                {
+                    using (WebResponse responses = e.Response)
+                    {
+                        HttpWebResponse httpResponse = (HttpWebResponse)responses;
+                        using (Stream data = responses.GetResponseStream())
+                        using (var reader = new StreamReader(data))
+                        {
+                            mensaje_error = reader.ReadToEnd();
+
+                        }
+                    }
+
+                    string err = e.ToString();
+                }
+            }
+        
+            return Resultado;
+
         }
     }
 }

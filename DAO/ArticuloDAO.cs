@@ -41,6 +41,9 @@ namespace DAO
                         oArticuloDTO.UnidadMedida = (drd["UnidadMedida"].ToString());
                         oArticuloDTO.Stock = Convert.ToDecimal(drd["Stock"].ToString());
                         oArticuloDTO.PrecioPromedio = Convert.ToDecimal(drd["Precio"].ToString());
+                        oArticuloDTO.IdGrupoUnidadMedida = Convert.ToInt32(drd["IdGrupoUnidadMedida"].ToString());
+                        oArticuloDTO.IdUnidadMedidaInv = Convert.ToInt32(drd["IdUnidadMedidaInv"].ToString());
+
                         lstArticuloDTO.Add(oArticuloDTO);
                     }
                     drd.Close();

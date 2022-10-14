@@ -325,7 +325,8 @@ function ConsultaServidor(url) {
 
 
 function ModalNuevo() {
-    
+
+    disabledmodal(false);
     $("#lblTituloModal").html("Nuevo Ingreso");
     let seguiradelante = 'false';
     seguiradelante = CargarBasesObraAlmacenSegunAsignado();
@@ -334,7 +335,7 @@ function ModalNuevo() {
         swal("Informacion!", "No tiene acceso a ninguna base, comunicarse con su administrador");
         return true;
     }
-    
+    $("#btnExtorno").hide()
     CargarCentroCosto();
     listarEmpleados();
     ObtenerTiposDocumentos()
@@ -682,8 +683,10 @@ function AgregarLinea() {
 //}
 
 function borrartditem(contador) {
-    $("#tritem"+contador).remove()
+    $("#tritem" + contador).remove()
+    CalcularTotales();
 }
+
 
 
 function CargarSeries() {
@@ -1084,13 +1087,13 @@ function ValidarMonedaBase() {
     });
     $(".MonedaDeCabecera").val(varMoneda).change();
 
-
-
     let Moneda = $("#cboMoneda").val();
-    $.post("ObtenerTipoCambio", { 'Moneda': Moneda }, function (data, status) {
+
+    let Fecha = $("#txtFechaDocumento").val();
+    $.post("ObtenerTipoCambio", { 'Moneda': Moneda, 'Fecha': Fecha }, function (data, status) {
         let dato = JSON.parse(data);
-        //console.log(dato);
-        $("#txtTipoCambio").val(dato[0].Rate);
+        console.log(dato);
+        $("#txtTipoCambio").val(dato.venta);
 
     });
 
@@ -1352,8 +1355,11 @@ function GuardarSolicitud() {
                     'success'
                 )
                 //swal("Exito!", "Proceso Realizado Correctamente", "success")
+                CerrarModal()
+                ModalNuevo()
                 table.destroy();
                 ConsultaServidor("../Movimientos/ObtenerMovimientosIngresos");
+                
 
             } else {
                 Swal.fire(
@@ -1399,6 +1405,7 @@ function limpiarDatos() {
 
 
 function ObtenerDatosxID(IdMovimiento) {
+    $("#btnExtorno").show();
     $("#txtId").val(IdMovimiento);
     CargarCentroCosto();
     listarEmpleados();
@@ -1447,7 +1454,9 @@ function ObtenerDatosxID(IdMovimiento) {
             $("#IdBase").val(movimiento.IdBase).change();
             $("#IdObra").val(movimiento.IdObra).change();
             $("#cboAlmacen").val(movimiento.IdAlmacen);
-         
+            $("#txtComentarios").html(movimiento.Comentario)
+            $("#txtNumeracion").val(movimiento.Correlativo);
+            $("#txtTipoCambio").val(movimiento.TipoCambio);
             $("#CreatedAt").html(movimiento.CreatedAt.replace("T", " "));
             $("#NombUsuario").html(movimiento.NombUsuario);
             
@@ -1463,19 +1472,43 @@ function ObtenerDatosxID(IdMovimiento) {
                 $("#cboImpuesto").val(Detalle[0].IdIndicadorImpuesto);
             }
 
-
-            let DetalleAnexo = solicitudes[0].DetallesAnexo;
-            for (var i = 0; i < DetalleAnexo.length; i++) {
-                AgregarLineaDetalleAnexo(DetalleAnexo[i].IdSolicitudRQAnexos, DetalleAnexo[i].Nombre)
-            }
+            //if (validadJson(solicitudes[0].DetallesAnexo)) {
+            //     let DetalleAnexo = solicitudes[0].DetallesAnexo;
+            //for (var i = 0; i < DetalleAnexo.length; i++) {
+            //    AgregarLineaDetalleAnexo(DetalleAnexo[i].IdSolicitudRQAnexos, DetalleAnexo[i].Nombre)
+            //}
+            //}
+           
 
 
         }
-
     });
+
+    /*DISABLE*/
+    disabledmodal(true)
+
+    /*DISABLE*/
 
 }
 
+
+function disabledmodal(valorbolean) {
+    $("#IdBase").prop('disabled', valorbolean);
+    $("#IdObra").prop('disabled', valorbolean);
+    $("#cboAlmacen").prop('disabled', valorbolean);
+    $("#cboCentroCosto").prop('disabled', valorbolean);
+    $("#cboMoneda").prop('disabled', valorbolean);
+    $("#cboSerie").prop('disabled', valorbolean);
+    $("#txtFechaDocumento").prop('disabled', valorbolean);
+    $("#txtFechaContabilizacion").prop('disabled', valorbolean);
+    $("#cboTipoDocumentoOperacion").prop('disabled', valorbolean);
+    $("#IdTipoDocumentoRef").prop('disabled', valorbolean);
+    $("#SerieNumeroRef").prop('disabled', valorbolean);
+    $("#IdCuadrilla").prop('disabled', valorbolean);
+    $("#IdResponsable").prop('disabled', valorbolean);
+    $("#txtComentarios").prop('disabled', valorbolean)
+    $("#btn_agregaritem").prop('disabled', valorbolean)
+}
 
 function CalcularTotalDetalle(contador) {
 
@@ -1585,7 +1618,7 @@ function AgregarLineaDetalle(contador, detalle) {
         tr += `</select>
         </td>
         <td>
-            <input class="form-control" type="text" name="txtCantidadNecesaria[]" value="`+ formatNumber( detalle.Cantidad.toFixed(DecimalesCantidades) )+ `" id="txtCantidadNecesaria` + contador + `" onkeyup="CalcularTotalDetalle(` + contador + `)">
+            <input class="form-control" type="text" name="txtCantidadNecesaria[]" value="`+ formatNumber( detalle.Cantidad.toFixed(DecimalesCantidades) )+ `" id="txtCantidadNecesaria` + contador + `" onkeyup="CalcularTotalDetalle(` + contador + `)" disabled>
         </td>
         <td>
             <input class="form-control" type="text" name="txtPrecioInfo[]" value="`+ formatNumber( detalle.PrecioUnidadTotal.toFixed(DecimalesPrecios)) + `" id="txtPrecioInfo` + contador + `" onkeyup="CalcularTotalDetalle(` + contador + `)" disabled>
@@ -1606,7 +1639,7 @@ function AgregarLineaDetalle(contador, detalle) {
             tr += `</select>
         </td>
         <td>
-            <input class="form-control" type="text" style="width:100px" value="" disabled>
+            <input class="form-control" type="text" style="width:100px" value="`+ detalle.Referencia +`" disabled>
         </td>
         <td>
             <button type="button" class="btn-sm btn btn-danger" disabled> - </button>   
@@ -1633,6 +1666,7 @@ function EliminarDetalle(IdSolicitudRQDetalle, dato) {
             } else {
                 swal("Exito!", "Item Eliminado", "success")
                 $(dato).closest('tr').remove();
+                CalcularTotales()
             }
 
         });
@@ -1877,12 +1911,13 @@ function SeleccionarItemListado() {
             tableItems.destroy();
         } else {
             let datos = JSON.parse(data);
-            $("#cboGrupoUnidadMedida").val(0).change();
-
+            console.log(1);
+            $("#cboGrupoUnidadMedida").val(datos[0].IdGrupoUnidadMedida).change();
+            $("#cboMedidaItem").val(datos[0].IdUnidadMedidaInv);
+            $("#cboGrupoUnidadMedida").prop('disabled', true);
             $("#txtCodigoItem").val(datos[0].Codigo);
             $("#txtIdItem").val(datos[0].IdArticulo);
             $("#txtDescripcionItem").val(datos[0].Descripcion1);
-            $("#cboMedidaItem").val(datos[0].IdUnidadMedida);
             $("#txtPrecioUnitarioItem").val(datos[0].UltimoPrecioCompra);
             $("#txtStockAlmacenItem").val(datos[0].Stock);
             
@@ -2061,8 +2096,11 @@ function GenerarExtorno() {
                             'success'
                         )
                         //swal("Exito!", "Proceso Realizado Correctamente", "success")
-                        table.destroy();
+                        CerrarModal()
+                        ModalNuevo()
+                        
                         ConsultaServidor("../Movimientos/ObtenerMovimientosIngresos");
+                       
 
                     } else {
                         Swal.fire(

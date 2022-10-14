@@ -485,7 +485,9 @@ namespace DAO
                         oMovimientoDTO.IdUsuario = Convert.ToInt32((String.IsNullOrEmpty(drd["IdUsuario"].ToString())) ? "0" : drd["IdUsuario"].ToString());
                         oMovimientoDTO.CreatedAt = Convert.ToDateTime((String.IsNullOrEmpty(drd["CreatedAt"].ToString())) ? "2022-08-01" : drd["CreatedAt"].ToString());
                         oMovimientoDTO.NombUsuario = (drd["NombUsuario"].ToString());
-            
+                        oMovimientoDTO.Comentario = (drd["Comentario"].ToString());
+
+
 
                     }
                     drd.Close();
@@ -552,6 +554,8 @@ namespace DAO
                         oMovimientoDetalleDTO.IdCentroCosto = Convert.ToInt32(dr2["IdCentroCosto"].ToString());
                         oMovimientoDetalleDTO.IdAfectacionIgv = Convert.ToInt32(dr2["IdAfectacionIgv"].ToString());
                         oMovimientoDetalleDTO.Descuento = Convert.ToDecimal(dr2["Descuento"].ToString());
+                        oMovimientoDetalleDTO.Referencia = (dr2["Referencia"].ToString());
+
                         oMovimientoDTO.detalles[posicion] = oMovimientoDetalleDTO;
                         posicion = posicion + 1;
                     }
