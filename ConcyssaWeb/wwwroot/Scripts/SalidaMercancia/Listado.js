@@ -275,7 +275,7 @@ function ModalNuevo() {
 
     $("#lblTituloModal").html("Nueva Salida");
 
-
+    disabledmodal(false);
     let seguiradelante = 'false';
     seguiradelante = CargarBasesObraAlmacenSegunAsignado();
     if (seguiradelante == 'false') {
@@ -311,7 +311,7 @@ function ModalNuevo() {
     $("#cboPrioridad").val(2);
     $("#cboClaseArticulo").prop("disabled", false);
     AbrirModal("modal-form");
-    disabledmodal(false);
+    
     $("#btnExtorno").hide();
     //setearValor_ComboRenderizado("cboCodigoArticulo");
 }
@@ -1345,8 +1345,11 @@ function GuardarSolicitud() {
                     'success'
                 )
                 //swal("Exito!", "Proceso Realizado Correctamente", "success")
+                CerrarModal();
+                ModalNuevo();
                 table.destroy();
                 ConsultaServidor("../Movimientos/ObtenerMovimientosSalida");
+               
 
             } else {
                 Swal.fire(
@@ -1408,6 +1411,7 @@ function ObtenerDatosxID(IdMovimiento) {
     $("#lblTituloModal").html("Editar Salida");
     AbrirModal("modal-form");
     disabledmodal(true);
+
     $("#btnExtorno").show();
 
 
