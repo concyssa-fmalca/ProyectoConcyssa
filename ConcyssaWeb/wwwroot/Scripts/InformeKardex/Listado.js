@@ -37,7 +37,13 @@ window.onload = function () {
 
     console.log('ddddddddddddddddddddd');
     CargarArticulos();
-    CargarAlmacen();
+    CargarAlmacen();    
+    $("#IdArticulo").select2();
+    $("#IdAlmacen").select2();
+
+    
+
+
 };
 
 
@@ -65,7 +71,7 @@ function llenarComboArticulo(lista, idCombo, primerItem) {
     var campos;
     for (var i = 0; i < nRegistros; i++) {
 
-        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdArticulo + "'>" + lista[i].Descripcion1.toUpperCase() + "</option>"; }
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdArticulo + "'>" + lista[i].Codigo.toUpperCase() +' - ' + lista[i].Descripcion1.toUpperCase() + "</option>"; }
         else { }
     }
     var cbo = document.getElementById(idCombo);
@@ -132,8 +138,8 @@ function ListarDatatableKardex(url,IdArticulo, IdAlmacen, FechaInicio, FechaTerm
 
             tr += '<tr>' +
                 '<td>' + (i + 1) + '</td>' +
-                '<td>' + division[i].DescArticulo.toUpperCase() + '</td>' +
-                '<td>' + division[i].FechaRegistro.split('T')[0] + '</td>';
+             
+                '<td>' + division[i].FechaRegistro+ '</td>';
             if (division[i].DetalleOPDN != 0) {
                 tr += '<td>ENTREGA MERCANCIA</td>';
 
@@ -153,7 +159,9 @@ function ListarDatatableKardex(url,IdArticulo, IdAlmacen, FechaInicio, FechaTerm
                 
                 '<td>' + formatNumber(division[i].PrecioPromedio) + '</td>'+
                 '<td>' + formatNumber(Math.abs(division[i].PrecioPromedio * division[i].Saldo)) + '</td>' +
-                '<td>' + division[i].NombUsuario + '</td>' +
+                 '<td>' + division[i].NombUsuario + '</td>' +
+                '<td>' + division[i].Comentario + '</td>' +
+
             '</tr>';
         }
 

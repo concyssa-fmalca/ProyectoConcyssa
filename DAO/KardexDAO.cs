@@ -52,6 +52,8 @@ namespace DAO
                         oKardexDTO.TipoTransaccion = (drd["TipoTransaccion"].ToString());
                         oKardexDTO.DescUnidadMedidaBase = (drd["DescUnidadMedidaBase"].ToString());
                         oKardexDTO.NombUsuario = (drd["NombUsuario"].ToString());
+                        oKardexDTO.Comentario = (drd["Comentario"].ToString());
+
 
 
                         lstKardexDTO.Add(oKardexDTO);

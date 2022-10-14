@@ -154,7 +154,7 @@
                                 <div class='form-group-sm'>
                                     <label for="txtFechaDocumento" class="control-label col-sm-2 left-align">Fecha Documento</label>
                                     <div class="col-sm-4">
-                                        <input id="txtFechaDocumento" value="@DateTime.Now.ToString("yyyy-MM-dd")" type="date" class="form-control input-sm" tabindex="10">
+                                        <input id="txtFechaDocumento" value="@DateTime.Now.ToString("yyyy-MM-dd")" type="date" class="form-control input-sm" tabindex="10" onchange="ValidarMonedaBase()">
                                     </div>
                                 </div>
 
@@ -199,7 +199,7 @@
                                     @*<label for="cboMoneda" class="control-label col-sm-2 left-align">Tipo de Cambio</label>*@
                                     <label for="cboMoneda" class="control-label col-sm-2 left-align">Moneda</label>
                                     <div class="col-sm-4">
-                                        <select id="cboMoneda" type="text" class="form-control input-sm" tabindex="3" onchange="ValidarMonedaBase()" disabled></select>
+                                        <select id="cboMoneda" type="text" class="form-control input-sm" tabindex="3" onchange="ValidarMonedaBase()"></select>
                                     </div>
                                 </div>
 
@@ -351,7 +351,7 @@
 
                                 <div class='form-group-sm'>
                                     <div class="col-sm-4">
-                                        <button style="margin-bottom:10px;margin-top:5px" class="btn btn-xs btn-info" onclick="OpenModalItem()" type="button">Agregar Item</button>
+                                        <button id="btn_agregaritem" style="margin-bottom:10px;margin-top:5px" class="btn btn-xs btn-info" onclick="OpenModalItem()" type="button">Agregar Item</button>
                                     </div>
                                 </div>
                                 <div class="table-responsive">
@@ -530,13 +530,10 @@
                                         </select>
                                     </p>
                                     <hr style="margin: 0px 0px 5px 0px" />
-
-                                    <p>
-                                        Forma de Pago:
-                                        <select style="height: 20px" id="IdCondicionPago" type="text" class="form-control input-sm" tabindex="0">
-                                            <option value="0"> - Condicion Pago - </option>
-                                        </select>
-                                    </p>
+                                    <select style="height: 20px;display:none" id="IdCondicionPago" type="text" class="form-control input-sm" tabindex="0">
+                                            <option value="1"> - Condicion Pago - </option>
+                                     </select>
+                                   
                                     <hr style="margin: 0px 0px 5px 0px" />
 
 
@@ -671,7 +668,7 @@
                                     <div class='form-group-sm'>
                                         <label for="cboGrupoUnidadMedida" class="control-label col-sm-2 left-align">Grupo Unidad</label>
                                         <div class="col-sm-4">
-                                            <select id="cboGrupoUnidadMedida" class="form-control input-sm" tabindex="2" style="height:26px" onchange="CargarDefinicionxGrupo()"></select>
+                                            <select id="cboGrupoUnidadMedida" class="form-control input-sm" tabindex="2" style="height:26px" onchange="CargarDefinicionxGrupo()" disabled></select>
                                         </div>
                                     </div>
 

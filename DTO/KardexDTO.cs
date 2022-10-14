@@ -36,5 +36,7 @@ namespace DTO
 
         public string NombUsuario { get; set; }
 
+        public string Comentario { get; set; }
+
     }
 }

@@ -108,6 +108,11 @@ namespace ConcyssaWeb.Controllers
             {
                 IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             }
+
+            if (oOpdnDTO.IdMoneda == 1)
+            {
+                oOpdnDTO.TipoCambio = 1;
+            }
             //int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             //int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
 
