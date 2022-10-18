@@ -1986,3 +1986,12 @@ function ObtenerDatosDefinicion() {
         $("#txtPrecioUnitarioItem").val($("#txtPrecioUnitarioItemOriginal").val() * datos.CantidadAlt);
     });
 }
+
+function ValidarIgual() {
+    let IdAlmacenDestino = $("#IdAlmacenDestino").val();
+    let IdAlmacenOrigen = $("#cboAlmacen").val();
+    if (IdAlmacenOrigen == IdAlmacenDestino) {
+        swal("Informacion!", "Seleccione un almacen diferente al Origen");
+        $("#IdAlmacenDestino").val(0)
+    }
+}

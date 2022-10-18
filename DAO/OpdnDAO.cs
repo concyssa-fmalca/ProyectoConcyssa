@@ -57,6 +57,9 @@ namespace DAO
                         oOpdnDTO.IdObra = Convert.ToInt32(drd["IdObra"].ToString());
                         oOpdnDTO.IdBase = Convert.ToInt32(drd["IdBase"].ToString());
                         oOpdnDTO.IdProveedor = Convert.ToInt32(drd["IdProveedor"].ToString());
+                        oOpdnDTO.IdTipoDocumentoRef = Convert.ToInt32(drd["IdTipoDocumentoRef"].ToString());
+                        oOpdnDTO.NumSerieTipoDocumentoRef = (drd["NumSerieTipoDocumentoRef"].ToString());
+
 
 
                     }
@@ -244,6 +247,8 @@ namespace DAO
                         oOPDNDetalle.NombImpuesto = (drd["NombImpuesto"].ToString());
                         oOPDNDetalle.IdGrupoUnidadMedida = Convert.ToInt32(drd["IdGrupoUnidadMedida"].ToString());
                         oOPDNDetalle.CantidadUsada = Convert.ToDecimal(drd["CantidadUsada"].ToString());
+                        oOPDNDetalle.Referencia = (drd["Referencia"].ToString());
+
 
 
                         lstOPDNDetalle.Add(oOPDNDetalle);

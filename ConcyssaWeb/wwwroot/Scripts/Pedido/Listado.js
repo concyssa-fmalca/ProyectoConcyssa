@@ -263,11 +263,14 @@ function ListarBasesxUsuario() {
 
 function ObtenerObraxIdBase() {
     let IdBase = $("#IdBase").val();
-    $.ajaxSetup({ async: false });
-    $.post("/Obra/ObtenerObraxIdBase", { 'IdBase': IdBase }, function (data, status) {
-        let obra = JSON.parse(data);
-        llenarComboObra(obra, "IdObra", "Seleccione")
-    });
+    if (IdBase!=0) {
+        $.ajaxSetup({ async: false });
+        $.post("/Obra/ObtenerObraxIdBase", { 'IdBase': IdBase }, function (data, status) {
+            let obra = JSON.parse(data);
+            llenarComboObra(obra, "IdObra", "Seleccione")
+        });
+    }
+    
 }
 
 
@@ -294,19 +297,28 @@ window.onload = function () {
 
 
 function ModalNuevo() {
+    disabledmodal(false);
     $("#div_tabla_listadorequerimiento_items").hide();
     $("#div_tabla_listado_items").show();
     $("#btnVerItemModal2").hide();
     $("#btnVerItemModal1").show();
-    ListarBasesxUsuario();
-    CargarBase()
     CargarPedido();
     CargarSeries();
     CargarProveedor();
     CargarMoneda();
     CargarCondicionPago();
     $("#lblTituloModal").html("Pedido");
+    let seguiradelante = 'false';
+    seguiradelante = CargarBasesObraAlmacenSegunAsignado();
+
+    if (seguiradelante == 'false') {
+        swal("Informacion!", "No tiene acceso a ninguna base, comunicarse con su administrador");
+        return true;
+    }
+    
     AbrirModal("modal-form");
+    
+    return true;
 }
 
 function CerrarModal() {
@@ -583,11 +595,12 @@ function SeleccionarItemListado() {
         } else {
             let datos = JSON.parse(data);
             console.log(datos);
-            $("#cboGrupoUnidadMedida").val(0).change();
+            $("#cboGrupoUnidadMedida").val(datos[0].IdGrupoUnidadMedida).change();
+            $("#cboMedidaItem").val(datos[0].IdUnidadMedidaInv);
             $("#txtCodigoItem").val(datos[0].Codigo);
             $("#txtIdItem").val(datos[0].IdArticulo);
             $("#txtDescripcionItem").val(datos[0].Descripcion1);
-            $("#cboMedidaItem").val(datos[0].IdUnidadMedida);
+      
             $("#txtPrecioUnitarioItem").val(datos[0].UltimoPrecioCompra);
             $("#txtStockAlmacenItem").val(datos[0].Stock);
             $("#txtPrecioUnitarioItem").val(datos[0].PrecioPromedio)
@@ -1197,12 +1210,16 @@ function GuardarPedido() {
             });
         },
         success: function (data) {
-            if (data == 1) {
+            if (data > 0) {
                 Swal.fire(
                     'Correcto',
                     'Proceso Realizado Correctamente',
                     'success'
                 )
+                
+                CerrarModal();
+                ObtenerDatosxID(data);
+
             } else {
                 Swal.fire(
                     'Error!',
@@ -1228,8 +1245,7 @@ function ObtenerDatosxID(id) {
     $("#div_tabla_listado_items").show();
     $("#btnVerItemModal2").hide();
     $("#btnVerItemModal1").show();
-    ListarBasesxUsuario();
-    CargarBase()
+    CargarBase();
     CargarPedido();
     CargarSeries();
     CargarProveedor();
@@ -1242,7 +1258,7 @@ function ObtenerDatosxID(id) {
         'IdPedido': id,
     }, function (data, status) {
         let pedido = JSON.parse(data);
-        ;
+     
         $("#IdBase").val(pedido.IdBase).change();
         $("#IdObra").val(pedido.IdObra).change();
         $("#IdAlmacen").val(pedido.IdAlmacen)
@@ -1251,7 +1267,8 @@ function ObtenerDatosxID(id) {
         $("#IdTipoPedido").val(pedido.IdTipoPedido)
         $("#LugarEntrega").val(pedido.LugarEntrega)
         $("#IdCondicionPago").val(pedido.IdCondicionPago)
-
+        $("#txtNumeracion").val(pedido.Correlativo)
+        
 
         for (var p = 0; p < pedido.detalles.length; p++) {
 
@@ -1328,11 +1345,11 @@ function ObtenerDatosxID(id) {
                 <input input style="display:none;" class="form-control" type="text" value="0" id="txtIdSolicitudRQDetalle" name="txtIdSolicitudRQDetalle[]"/></td>
             <td input style="display:none;">
             <input  class="form-control" type="text" id="txtIdArticulo`+ contador + `" name="txtIdArticulo[]" />
-            <input class="form-control" type="text" id="txtCodigoArticulo`+ contador + `" name="txtCodigoArticulo[]" />
+            <input class="form-control" type="text" id="txtCodigoArticulo`+ contador + `" name="txtCodigoArticulo[]" disabled />
             </td>
-            <td><input class="form-control" type="text" id="txtDescripcionArticulo`+ contador + `" name="txtDescripcionArticulo[]"/></td>
+            <td><input class="form-control" type="text" id="txtDescripcionArticulo`+ contador + `" name="txtDescripcionArticulo[]" disabled /></td>
             <td>
-            <select class="form-control" id="cboUnidadMedida`+ contador + `" name="cboUnidadMedida[]">`;
+            <select class="form-control" id="cboUnidadMedida`+ contador + `" name="cboUnidadMedida[]" disabled>`;
             tr += `  <option value="0">Seleccione</option>`;
             for (var i = 0; i < UnidadMedida.length; i++) {
                 tr += `  <option value="` + UnidadMedida[i].IdDefinicionGrupo + `">` + UnidadMedida[i].DescUnidadMedidaAlt + `</option>`;
@@ -1350,19 +1367,19 @@ function ObtenerDatosxID(id) {
             tr += `</select>
             </td>
             <td input style="display:none;"><input class="form-control TipoCambioDeCabecera" type="number" name="txtTipoCambio[]" id="txtTipoCambioDetalle`+ contador + `" disabled></td>
-            <td><input class="form-control"  type="number" name="txtCantidadNecesaria[]" value="0" id="txtCantidadNecesaria`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)"></td>
-            <td><input class="form-control" type="number" name="txtPrecioInfo[]" value="0" id="txtPrecioInfo`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)"></td>
+            <td><input class="form-control"  type="number" name="txtCantidadNecesaria[]" value="0" id="txtCantidadNecesaria`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled></td>
+            <td><input class="form-control" type="number" name="txtPrecioInfo[]" value="0" id="txtPrecioInfo`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled></td>
             <td input>
-            <select class="form-control ImpuestoCabecera" name="cboIndicadorImpuestoDetalle[]" id="cboIndicadorImpuestoDetalle`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)">`;
+            <select class="form-control ImpuestoCabecera" name="cboIndicadorImpuestoDetalle[]" id="cboIndicadorImpuestoDetalle`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled>`;
             tr += `  <option impuesto="0" value="0">Seleccione</option>`;
             for (var i = 0; i < IndicadorImpuesto.length; i++) {
-                tr += `  <option impuesto="` + IndicadorImpuesto[i].Porcentaje + `" value="` + IndicadorImpuesto[i].IdIndicadorImpuesto + `">` + IndicadorImpuesto[i].Descripcion + `</option>`;
+                tr += `  <option impuesto="` + IndicadorImpuesto[i].Porcentaje + `" value="` + IndicadorImpuesto[i].IdIndicadorImpuesto + `" disabled>` + IndicadorImpuesto[i].Descripcion + `</option>`;
             }
             tr += `</select>
             </td>
-            <td><input class="form-control changeTotal" type="number" style="width:100px" name="txtItemTotal[]" id="txtItemTotal`+ contador + `" onchange="CalcularTotales()"></td>
+            <td><input class="form-control changeTotal" type="number" style="width:100px" name="txtItemTotal[]" id="txtItemTotal`+ contador + `" onchange="CalcularTotales()" disabled></td>
             <td style="display:none">
-            <select class="form-control" style="width:100px" id="cboAlmacen`+ contador + `" name="cboAlmacen[]">`;
+            <select class="form-control" style="width:100px" id="cboAlmacen`+ contador + `" name="cboAlmacen[]" disabled>`;
             tr += `  <option value="0">Seleccione</option>`;
             for (var i = 0; i < Almacen.length; i++) {
                 tr += `  <option value="` + Almacen[i].IdAlmacen + `">` + Almacen[i].Descripcion + `</option>`;
@@ -1390,7 +1407,7 @@ function ObtenerDatosxID(id) {
             tr += `
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
-            <td ><input class="form-control" type="text" value="" id="txtReferencia`+ contador + `" name="txtReferencia[]"></td>
+            <td ><input class="form-control" type="text" value="" id="txtReferencia`+ contador + `" name="txtReferencia[]" disabled></td>
             <td><button class="btn btn-xs btn-danger borrar">-</button></td>
           <tr>`;
 
@@ -1431,6 +1448,7 @@ function ObtenerDatosxID(id) {
         }
 
     });
+    disabledmodal(true);
 }
 
 function mostrarproductosaprobados() {
@@ -2087,4 +2105,120 @@ function GuardarAsignarProveedorProducto() {
     $.post("ActualizarProveedorPrecio", { 'IdProveedor': IdProveedor, 'precionacional': precionacional, 'precioextranjero': precioextranjero, 'idproducto': idproducto, 'IdDetalleRq': IdDetalleRq }, function (data, status) {
         listarItemAprobados();
     });
+}
+
+
+function CargarBasesObraAlmacenSegunAsignado() {
+    let respuesta = 'false';
+    $.ajaxSetup({ async: false });
+    $.post("/Usuario/ObtenerBaseAlmacenxIdUsuarioSession", function (data, status) {
+        if (validadJson(data)) {
+            let datos = JSON.parse(data);
+            console.log(datos[0]);
+            contadorBase = datos[0].CountBase;
+            contadorObra = datos[0].CountObra;
+            contadorAlmacen = datos[0].CountAlmacen;
+            AbrirModal("modal-form");
+            CargarBase();
+            if (contadorBase == 1 && contadorObra == 1 && contadorAlmacen == 1) {
+                $.ajaxSetup({ async: false });
+                console.log(1)
+                $("#IdBase").val(datos[0].IdBase).change();
+                console.log(2)
+                $("#IdObra").val(datos[0].IdObra).change();
+                console.log(3)
+                $("#IdAlmacen").val(datos[0].IdAlmacen).change();
+                $("#IdBase").prop('disabled', true);
+                $("#IdObra").prop('disabled', true);
+                $("#IdAlmacen").prop('disabled', true);
+
+            }
+            if (contadorBase == 1 && contadorObra == 1 && contadorAlmacen != 1) {
+                $.ajaxSetup({ async: false });
+                $("#IdBase").val(datos[0].IdBase).change();
+                $("#IdObra").val(datos[0].IdObra).change();
+                $("#IdAlmacen").val(datos[0].IdAlmacen).change();
+                $("#IdBase").prop('disabled', true);
+                $("#IdObra").prop('disabled', true);
+            }
+
+            if (contadorBase == 1 && contadorObra != 1 && contadorAlmacen != 1) {
+                $.ajaxSetup({ async: false });
+                $("#IdBase").val(datos[0].IdBase).change();
+                $("#IdObra").val(datos[0].IdObra).change();
+                $("#IdAlmacen").val(datos[0].IdAlmacen).change();
+                $("#IdBase").prop('disabled', true);
+            }
+            if (contadorBase != 1 && contadorObra != 1 && contadorAlmacen != 1) {
+                $.ajaxSetup({ async: false });
+                $("#IdBase").val(datos[0].IdBase).change();
+                $("#IdObra").val(datos[0].IdObra).change();
+                $("#cboAlmacen").val(datos[0].IdAlmacen).change();
+            }
+
+
+            respuesta = 'true';
+        } else {
+            respuesta = 'false';
+        }
+    });
+    return respuesta;
+}
+
+function limpiarDatos() {
+    $("#IdBase").val(0);
+    $("#IdObra").val(0);
+    $("#IdAlmacen").val(0);
+    $("#IdSerie").val(0);
+    $("#IdProveedor").val(0);
+    $("#Direccion").html('');
+    $("#Telefono").val('');
+    $("#IdTipoPedido").val(0);
+    $("#LugarEntrega").val('');
+    $("#SerieNumeroRef").val('');
+    $("#IdCondicionPago").val(0);
+    $("#tbody_detalle").html('');
+    $()
+}
+
+function disabledmodal(valorbolean) {
+    $("#IdBase").prop('disabled', valorbolean);
+    $("#IdObra").prop('disabled', valorbolean);
+    $("#IdAlmacen").prop('disabled', valorbolean);
+    $("#IdSerie").prop('disabled', valorbolean);
+    $("#IdProveedor").prop('disabled', valorbolean);
+    $("#Direccion").prop('disabled', valorbolean);
+    $("#Telefono").prop('disabled', valorbolean);
+    $("#IdTipoPedido").prop('disabled', valorbolean);
+    $("#LugarEntrega").prop('disabled', valorbolean);
+    $("#SerieNumeroRef").prop('disabled', valorbolean);
+    $("#SerieNumeroRef").prop('disabled', valorbolean);
+    $("#IdCondicionPago").prop('disabled', valorbolean);
+    $("#FechaEntrega").prop('disabled', valorbolean);
+    $("#txtComentarios").prop('disabled', valorbolean);
+    $("#txtFechaDocumento").prop('disabled', valorbolean);
+    $("#txtFechaContabilizacion").prop('disabled', valorbolean);
+
+    
+    if (valorbolean) {
+        $("#btnGrabar").hide()
+        $("#btnExtorno").show();
+        //$("#total_editar").show();
+        //$("#total_nuevo").hide();
+        $("#btnNuevo").show();
+
+    } else {
+        $("#btnExtorno").hide();
+        //$("#total_editar").hide();
+        //$("#total_nuevo").show();
+        $("#btnGrabar").show();
+        $("#btnNuevo").hide();
+    }
+}
+
+
+function nuevo() {
+    CerrarModal();
+    CalcularTotales();
+    ModalNuevo();
 }

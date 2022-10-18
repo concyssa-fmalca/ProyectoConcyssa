@@ -955,6 +955,7 @@
                                 <table class="table display" id="tabla_listado_pedidos" style="width:100%">
                                     <thead>
                                         <tr>
+                                            <th></th>
                                             <th>#</th>
                                             <th>Numero Pedido</th>
                                             <th>Proveedor</th>
@@ -970,7 +971,7 @@
 
                     </div>
                     <div class="modal-footer">
-                        
+                        <button type="button" id="btn_checkSeleccionadosPedido" class="btn btn-danger pull-right" style="background-color:#005457;" onclick="AgregarSeleccionadoPedido()">Agregar Seleccionados</button>
                         <button type="button" class="btn btn-danger pull-right" style="background-color:orange;" data-dismiss="modal">Cerrar</button>
                     </div>
                 </div>
@@ -996,8 +997,11 @@
                                 <table class="table display" id="tabla_listado_entregas" style="width:100%">
                                     <thead>
                                         <tr>
+                                            <th></th>
                                             <th>#</th>
-                                            <th>Numero Pedido</th>
+                                            <th>Fecha</th>
+                                            <th>N° Entrega</th>
+                                            <th>Serie y Guia</th>
                                             <th>Proveedor</th>
                                             <th>Monto Total</th>
                                             @*<th>Accion</th>*@
@@ -1011,7 +1015,7 @@
 
                     </div>
                     <div class="modal-footer">
-                        
+                        <button type="button" id="btn_checkSeleccionados" class="btn btn-danger pull-right" style="background-color:#005457;" onclick="AgregarSeleccionadOPDN()">Agregar Seleccionados</button>
                         <button type="button" class="btn btn-danger pull-right" style="background-color:orange;" data-dismiss="modal">Cerrar</button>
                     </div>
                 </div>

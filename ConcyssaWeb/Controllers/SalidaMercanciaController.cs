@@ -60,7 +60,7 @@ namespace ConcyssaWeb.Controllers
             {
                 if (respuesta > 0)
                 {
-                    return "1";
+                    return respuesta.ToString();
                 }
                 else
                 {

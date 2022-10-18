@@ -487,6 +487,7 @@
                     <div class='form-group-sm'>
 
                         <button type="button" id="btnGrabar" onclick="GuardarPedido()" class="btn btn-primary pull-right plu">Grabar</button>
+                        <button type="button" id="btnNuevo" onclick="nuevo()" class="btn btn-primary pull-right plu">Nuevo</button>
                         <button type="button" id="btnCancelar" onclick="CerrarModal()" class="btn btn-danger pull-right" style="background-color:orange;">Cancelar</button>
                     </div>
                 </div>
@@ -575,7 +576,7 @@
                                     <div class='form-group-sm'>
                                         <label for="cboGrupoUnidadMedida" class="control-label col-sm-2 left-align">Grupo Unidad</label>
                                         <div class="col-sm-4">
-                                            <select id="cboGrupoUnidadMedida" class="form-control input-sm" tabindex="2" style="height:26px" onchange="CargarDefinicionxGrupo()"></select>
+                                            <select id="cboGrupoUnidadMedida" class="form-control input-sm" tabindex="2" style="height:26px" onchange="CargarDefinicionxGrupo()" disabled></select>
                                         </div>
                                     </div>
 

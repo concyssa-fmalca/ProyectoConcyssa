@@ -564,7 +564,7 @@
                 <div class="col-sm-6">
                     <div class='form-group-sm'>
                         <!-- Single button -->
-                        <div class="btn btn-group dropup pull-right plu">
+                        <div class="btn btn-group dropup pull-right plu" id="div_copiarde">
                             <button type="button" class="btn btn-info pull-right plu">COPIAR DE</button>
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="caret"></span>
@@ -575,7 +575,7 @@
                             </ul>
                         </div>
 
-                    
+                        <button type="button" id="btnNuevo" onclick="nuevo()" class="btn btn-primary pull-right plu">Nuevo</button>
                         <button type="button" id="btnGrabar" onclick="GuardarSolicitud()" class="btn btn-primary pull-right plu">Grabar</button>
                         <button type="button" id="btnCancelar" onclick="CerrarModal()" class="btn btn-danger pull-right" style="background-color:orange;">Cancelar</button>
                     </div>
@@ -957,6 +957,7 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
+                                             <th>Check</th>
                                             <th>Numero Pedido</th>
                                             <th>Proveedor</th>
                                             <th>Monto Total</th>
@@ -971,6 +972,7 @@
 
                     </div>
                     <div class="modal-footer">
+                        <button type="button" id="btn_checkSeleccionados" class="btn btn-danger pull-right" style="background-color:#005457;" onclick="AgregarSeleccionadoPedido()">Agregar Seleccionados</button>
                         
                         <button type="button" class="btn btn-danger pull-right" style="background-color:orange;" data-dismiss="modal">Cerrar</button>
                     </div>

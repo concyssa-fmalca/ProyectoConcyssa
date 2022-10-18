@@ -413,6 +413,15 @@ function ConsultaServidor(url) {
 function ModalNuevo() {
     $("#IdPedido").val(0);
     $("#IdOPDN").val(0);
+    disabledmodal(false)
+    let seguiradelante = 'false';
+    seguiradelante = CargarBasesObraAlmacenSegunAsignado();
+
+    if (seguiradelante == 'false') {
+        swal("Informacion!", "No tiene acceso a ninguna base, comunicarse con su administrador");
+        return true;
+    }
+
 
 
     $("#lblTituloModal").html("Nueva Factura Proveedor");
@@ -420,7 +429,7 @@ function ModalNuevo() {
     listarEmpleados();
     ObtenerTiposDocumentos()
     //CargarAlmacen()
-    CargarBase()
+
     CargarTipoDocumentoOperacion()
     ObtenerCuadrillas()
     CargarSeries();
@@ -447,9 +456,7 @@ function ModalNuevo() {
     $("#NombUsuario").html("");
     $("#CreatedAt").html("");
     $("#SerieNumeroRef").val("");
-    $("#IdBase").val(0).change();
     AbrirModal("modal-form");
-    ListarBasesxUsuario();
     CargarProveedor();
     CargarCondicionPago();
     //setearValor_ComboRenderizado("cboCodigoArticulo");
@@ -2249,28 +2256,49 @@ function listarentregadt() {
             // {"className": "text-center", "targets": "_all"},
 
             {
-                targets: 0,
+                targets: 1,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     return meta.row + 1
                 },
             },
             {
-                targets: 1,
+                targets: 0,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.NombSerie + '-' + full.Correlativo
+                    return `<input type="checkbox" id="checkIdOpdn` + full.IdOPDN + `" value="` + full.IdOPDN + `" IdProveedor="` + full.IdProveedor + `" onchange="ValidacionesCheckOPDN()" class="checkIdOpdn"> <label for="cbox2"></label>`
                 },
             },
             {
                 targets: 2,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.NombProveedor
+                    return full.FechaDocumento.split("T")[0].toString()
                 },
             },
             {
                 targets: 3,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.Referencia
+                },
+            },
+            {
+                targets: 4,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.NombSerie + '-' + full.Correlativo
+                },
+            },
+            {
+                targets: 5,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.NombProveedor
+                },
+            },
+            {
+                targets: 6,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     return full.Total
@@ -2328,25 +2356,33 @@ function listarpedidosdt() {
                 targets: 0,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return meta.row + 1
+                    return `
+                        <input type="checkbox" id="CheckIdPedido`+ full.IdPedido + `" value="` + full.IdPedido + `" IdProveedor="` + full.IdProveedor + `" onchange="ValidacionesCheckPedido()" class="checkIdPedidos"> <label for="cbox2"></label>`
                 },
             },
             {
                 targets: 1,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.NombSerie + '-' + full.Correlativo
+                    return meta.row + 1
                 },
             },
             {
                 targets: 2,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.NombreProveedor.toUpperCase()
+                    return full.NombSerie + '-' + full.Correlativo
                 },
             },
             {
                 targets: 3,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.NombreProveedor.toUpperCase()
+                },
+            },
+            {
+                targets: 4,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     return full.total_venta
@@ -2378,15 +2414,32 @@ function listarpedidosdt() {
 
 function AgregarPedidoToEntradaMercancia(data) {
     $("#IdPedido").val(data['IdPedido']);
+    if ($("#IdOPDN").val() != 0) {
+        swal("Informacion!", "Solo puede agregar Entrega de Mercancia!");
+        $("#IdPedido").val(0)
+        return;
+    }
+
     $("#IdBase").val(data['IdBase']).change();
     $("#IdObra").val(data['IdObra']).change();
     $("#cboAlmacen").val(data['IdAlmacen']).change();
+    let serieynumero = data['NombSerie'] + '-' + data['Correlativo'];
     $.ajaxSetup({ async: false });
     $.post("/Pedido/ObtenerPedidoDetalle", { 'IdPedido': data['IdPedido'] }, function (data, status) {
         let datos = JSON.parse(data);
+        let pasarsiguiente = 0;
         for (var k = 0; k < datos.length; k++) {
-            console.log(datos[k]);
-
+            
+            $("input[name='txtIdOrigen[]']").each(function (indice, elemento) {
+                if (datos[k]['IdPedidoDetalle'] == ($(elemento).val())) {
+                    swal("Informacion!", "Hay un producto que ya se cargo previamente!");
+                    pasarsiguiente++;
+                    return;
+                }
+            });
+            if (pasarsiguiente > 0) {
+                return;
+            }
             /*AGREGAR LINEA*/
             let IdItem = datos[k]['IdArticulo'];
             let CodigoItem = "xxx";
@@ -2593,7 +2646,7 @@ function AgregarPedidoToEntradaMercancia(data) {
 
 
             $("#cboCentroCostos" + contador).val(CentroCostoItem);
-            $("#txtReferencia" + contador).val(ReferenciaItem);
+            $("#txtReferencia" + contador).val('BASADO EN PEDIDOS: '+serieynumero);
 
             LimpiarModalItem();
         }
@@ -2612,16 +2665,35 @@ function AgregarOPNDDetalle(data) {
     $("#IdOPDN").val(data['IdOPDN']);
     $("#IdBase").val(data['IdBase']).change();
 
+    if ($("#IdPedido").val() != 0 ) {
+        swal("Informacion!", "Solo puede agregar Pedido!");
+        $("#IdOPDN").val(0);
+        return;
+    }
+
+
+
     $("#IdObra").val(data['IdObra']).change();
     $("#cboAlmacen").val(data['IdAlmacen']).change();
     $("#IdProveedor").val(data['IdProveedor']).change();
     $("#IdCondicionPago").val(data['IdCondicionPago']);
+    let serieycorrelativo = data['NombSerie'] + '-'+data['Correlativo'];
 
     $.ajaxSetup({ async: false });
     $.post("/EntradaMercancia/ObtenerOPDNDetalle", { 'IdOPDN': data['IdOPDN'] }, function (data, status) {
         let datos = JSON.parse(data);
         for (var k = 0; k < datos.length; k++) {
-
+            let pasarsiguiente = 0;
+            $("input[name='txtIdOrigen[]']").each(function (indice, elemento) {
+                if (datos[k]['IdOPDNDetalle'] == ($(elemento).val())) {
+                    swal("Informacion!", "Hay un producto que ya se cargo previamente!");
+                    pasarsiguiente++;
+                    return;
+                }
+            });
+            if (pasarsiguiente > 0) {
+                return;
+            }
 
             /*AGREGAR LINEA*/
             let IdItem = datos[k]['IdArticulo'];
@@ -2795,7 +2867,7 @@ function AgregarOPNDDetalle(data) {
             tr += `
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
-            <td ><input class="form-control" type="text" value="" id="txtReferencia`+ contador + `" name="txtReferencia[]"></td>
+            <td> <input class="form-control" type="text" value="BASADO EN LA ENTREGA `+ serieycorrelativo +`" id="txtReferencia`+ contador + `" name="txtReferencia[]"></td>
             <td><button class="btn btn-xs btn-danger borrar" onclick="borrartditem(`+ contador + `)">-</button></td>
           </tr>`;
 
@@ -2830,7 +2902,7 @@ function AgregarOPNDDetalle(data) {
 
 
             $("#cboCentroCostos" + contador).val(CentroCostoItem);
-            $("#txtReferencia" + contador).val(ReferenciaItem);
+
 
             LimpiarModalItem();
         }
@@ -3056,3 +3128,214 @@ function ObtenerDatosxIDOPCH(IdOpch) {
     });
 
 }
+
+function ValidacionesCheckOPDN() {
+    let checkSeleccionados = 0;
+    let IdProveedor = 0;
+    let sumaproveedor = 0;
+    $('.checkIdOpdn').each(function () {
+        if (this.checked) {
+            checkSeleccionados++
+            sumaproveedor += parseInt($(this).attr('IdProveedor'));
+            IdProveedor = parseInt($(this).attr('IdProveedor'));
+        }
+    });
+    if (!((checkSeleccionados * IdProveedor) == sumaproveedor)) {
+        swal("Error!", "Seleccione el Mismo Proveedor")
+        $("#btn_checkSeleccionados").hide();
+        return;
+    }
+
+    if (checkSeleccionados > 0) {
+        $("#btn_checkSeleccionados").show();
+    } else {
+        $("#btn_checkSeleccionados").hide();
+    }
+}
+
+function AgregarSeleccionadOPDN() {
+    let checkSeleccionados = 0;
+    let IdProveedor = 0;
+    let sumaproveedor = 0;
+    $('.checkIdOpdn').each(function () {
+        if (this.checked) {
+
+            checkSeleccionados++
+            sumaproveedor += parseInt($(this).attr('IdProveedor'));
+            IdProveedor = parseInt($(this).attr('IdProveedor'));
+        }
+    });
+    if (!((checkSeleccionados * IdProveedor) == sumaproveedor)) {
+        swal("Error!", "Seleccione el Mismo Proveedor")
+        $("#btn_checkSeleccionados").hide();
+        return;
+    }
+
+    if (checkSeleccionados > 0) {
+        let numerospedidos = "";
+        $('.checkIdOpdn').each(function () {
+            if (this.checked) {
+                var data = tableentrega.row($("#" + ($(this).val()))).data();
+      
+                AgregarOPNDDetalle(data)
+                numerospedidos += data['NombSerie'] + '-' + data['Correlativo'] + ' / ';
+            }
+        });
+
+        $("#txtComentarios").html('BASADOS EN LAS ENTREGAS ' + numerospedidos)
+        $('#ModalListadoEntrega').modal('hide');
+        tableentrega.ajax.reload()
+    }
+}
+
+function ValidacionesCheckPedido() {
+    let checkSeleccionados = 0;
+    let IdProveedor = 0;
+    let sumaproveedor = 0;
+    $('.checkIdPedidos').each(function () {
+        if (this.checked) {
+
+            checkSeleccionados++
+            sumaproveedor += parseInt($(this).attr('IdProveedor'));
+            IdProveedor = parseInt($(this).attr('IdProveedor'));
+        }
+    });
+    if (!((checkSeleccionados * IdProveedor) == sumaproveedor)) {
+        swal("Error!", "Seleccione el Mismo Proveedor")
+        $("#btn_checkSeleccionadosPedido").hide();
+        return;
+    }
+
+    if (checkSeleccionados > 0) {
+        $("#btn_checkSeleccionadosPedido").show();
+    } else {
+        $("#btn_checkSeleccionadosPedido").hide();
+    }
+}
+
+function AgregarSeleccionadoPedido() {
+    let checkSeleccionados = 0;
+    let IdProveedor = 0;
+    let sumaproveedor = 0;
+    $('.checkIdPedidos').each(function () {
+        if (this.checked) {
+
+            checkSeleccionados++
+            sumaproveedor += parseInt($(this).attr('IdProveedor'));
+            IdProveedor = parseInt($(this).attr('IdProveedor'));
+        }
+    });
+    if (!((checkSeleccionados * IdProveedor) == sumaproveedor)) {
+        swal("Error!", "Seleccione el Mismo Proveedor")
+        $("#btn_checkSeleccionadosPedido").hide();
+        return;
+    }
+
+    if (checkSeleccionados > 0) {
+        let numerospedidos = "";
+        $('.checkIdPedidos').each(function () {
+            if (this.checked) {
+                var data = tablepedido.row($("#" + ($(this).val()))).data();
+          
+                AgregarPedidoToEntradaMercancia(data)
+                numerospedidos += data['NombSerie'] + '-' + data['Correlativo'] + ' / ';
+            }
+        });
+
+        $("#txtComentarios").html('BASADOS EN LOS PEDIDOS ' + numerospedidos)
+        $('#ModalListadoPedido').modal('hide');
+        tablepedido.ajax.reload()
+    }
+}
+
+function disabledmodal(valorbolean) {
+    $("#IdBase").prop('disabled', valorbolean);
+    $("#IdObra").prop('disabled', valorbolean);
+    $("#cboAlmacen").prop('disabled', valorbolean);
+    $("#cboCentroCosto").prop('disabled', valorbolean);
+    $("#cboMoneda").prop('disabled', valorbolean);
+    $("#cboSerie").prop('disabled', valorbolean);
+    $("#txtFechaDocumento").prop('disabled', valorbolean);
+    $("#txtFechaContabilizacion").prop('disabled', valorbolean);
+    $("#cboTipoDocumentoOperacion").prop('disabled', valorbolean);
+    $("#IdTipoDocumentoRef").prop('disabled', valorbolean);
+    $("#SerieNumeroRef").prop('disabled', valorbolean);
+    $("#IdCuadrilla").prop('disabled', valorbolean);
+    $("#IdResponsable").prop('disabled', valorbolean);
+    $("#txtComentarios").prop('disabled', valorbolean)
+    $("#btn_agregaritem").prop('disabled', valorbolean)
+    $("#IdProveedor").prop('disabled', valorbolean)
+    $("#Direccion").prop('disabled', valorbolean)
+    $("#FechaEntrega").prop('disabled', valorbolean)
+
+    if (valorbolean) {
+        $("#btnGrabar").hide()
+        $("#div_copiarde").hide()
+
+
+
+        $("#btnNuevo").show();
+
+    } else {
+        $("#btnGrabar").show();
+        $("#div_copiarde").show()
+        $("#btnNuevo").hide();
+    }
+}
+
+
+function CargarBasesObraAlmacenSegunAsignado() {
+    let respuesta = 'false';
+    $.ajaxSetup({ async: false });
+    $.post("/Usuario/ObtenerBaseAlmacenxIdUsuarioSession", function (data, status) {
+        if (validadJson(data)) {
+            let datos = JSON.parse(data);
+            console.log(datos[0]);
+            contadorBase = datos[0].CountBase;
+            contadorObra = datos[0].CountObra;
+            contadorAlmacen = datos[0].CountAlmacen;
+            AbrirModal("modal-form");
+            CargarBase();
+            if (contadorBase == 1 && contadorObra == 1 && contadorAlmacen == 1) {
+                $.ajaxSetup({ async: false });
+                $("#IdBase").val(datos[0].IdBase).change();
+                $("#IdObra").val(datos[0].IdObra).change();
+                $("#cboAlmacen").val(datos[0].IdAlmacen).change();
+                $("#IdBase").prop('disabled', true);
+                $("#IdObra").prop('disabled', true);
+                $("#cboAlmacen").prop('disabled', true);
+
+            }
+            if (contadorBase == 1 && contadorObra == 1 && contadorAlmacen != 1) {
+                $.ajaxSetup({ async: false });
+                $("#IdBase").val(datos[0].IdBase).change();
+                $("#IdObra").val(datos[0].IdObra).change();
+                $("#cboAlmacen").val(datos[0].IdAlmacen).change();
+                $("#IdBase").prop('disabled', true);
+                $("#IdObra").prop('disabled', true);
+            }
+
+            if (contadorBase == 1 && contadorObra != 1 && contadorAlmacen != 1) {
+                $.ajaxSetup({ async: false });
+                $("#IdBase").val(datos[0].IdBase).change();
+                $("#IdObra").val(datos[0].IdObra).change();
+                $("#cboAlmacen").val(datos[0].IdAlmacen).change();
+                $("#IdBase").prop('disabled', true);
+            }
+            if (contadorBase != 1 && contadorObra != 1 && contadorAlmacen != 1) {
+                $.ajaxSetup({ async: false });
+                $("#IdBase").val(datos[0].IdBase).change();
+                $("#IdObra").val(datos[0].IdObra).change();
+                $("#cboAlmacen").val(datos[0].IdAlmacen).change();
+            }
+
+
+            respuesta = 'true';
+        } else {
+            respuesta = 'false';
+        }
+    });
+    return respuesta;
+}
+
+

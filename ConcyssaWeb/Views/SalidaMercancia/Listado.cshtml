@@ -401,7 +401,7 @@
                             </div>
 
 
-                            <div class="row">
+                            <div class="row" id="total_nuevo">
                                 <div class='form-group-sm'>
                                     <label for="txtTotal" class="control-label col-sm-2 left-align"></label>
                                     <div class="col-sm-4">
@@ -412,6 +412,21 @@
                                     <label for="txtTotal" class="control-label col-sm-2 left-align">Total</label>
                                     <div class="col-sm-4">
                                         <input id="txtTotal" type="number" class="form-control input-sm" tabindex="16" disabled>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row" id="total_editar">
+                                <div class='form-group-sm'>
+                                    <label for="txtTotal" class="control-label col-sm-2 left-align"></label>
+                                    <div class="col-sm-4">
+                                        @*<input id="txtTotal" type="number" class="form-control input-sm" tabindex="16">*@
+                                    </div>
+                                </div>
+                                <div class='form-group-sm'>
+                                    <label for="txtTotal" class="control-label col-sm-2 left-align">Total</label>
+                                    <div class="col-sm-4">
+                                        <input id="txtTotal_editar" type="text" class="form-control input-sm" tabindex="16" disabled>
                                     </div>
                                 </div>
                             </div>
@@ -474,6 +489,7 @@
                     <div class='form-group-sm'>
                         <button type="button" id="btnExtorno" onclick="GenerarExtorno()" class="btn btn-primary pull-right plu">Extorno</button>
                         <button type="button" id="btnGrabar" onclick="GuardarSolicitud()" class="btn btn-primary pull-right plu">Grabar</button>
+                        <button type="button" id="btnNuevo" onclick="nuevo()" class="btn btn-primary pull-right plu">Nuevo</button>
                         <button type="button" id="btnCancelar" onclick="CerrarModal()" class="btn btn-danger pull-right" style="background-color:orange;">Cancelar</button>
                     </div>
                 </div>

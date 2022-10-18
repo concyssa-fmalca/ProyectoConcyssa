@@ -1107,21 +1107,21 @@ function ValidarMonedaBase() {
 
 function ObtenerNumeracion() {
 
-    let varSerie = $("#cboSerie").val();
+    //let varSerie = $("#cboSerie").val();
 
-    $.post("/Serie/ValidarNumeracionSerieSolicitudRQ", { 'IdSerie': varSerie }, function (data, status) {
-        if (data == 'sin datos') {
-            $.post("/Serie/ObtenerDatosxID", { 'IdSerie': varSerie }, function (data, status) {
-                let valores = JSON.parse(data);
-                $("#txtNumeracion").val(valores[0].NumeroInicial);
-            });
-        } else {
-            let values = JSON.parse(data);
-            let Numero = Number(values[0].NumeroInicial);
-            $("#txtNumeracion").val(Numero + 1);
+    //$.post("/Serie/ValidarNumeracionSerieSolicitudRQ", { 'IdSerie': varSerie }, function (data, status) {
+    //    if (data == 'sin datos') {
+    //        $.post("/Serie/ObtenerDatosxID", { 'IdSerie': varSerie }, function (data, status) {
+    //            let valores = JSON.parse(data);
+    //            $("#txtNumeracion").val(valores[0].NumeroInicial);
+    //        });
+    //    } else {
+    //        let values = JSON.parse(data);
+    //        let Numero = Number(values[0].NumeroInicial);
+    //        $("#txtNumeracion").val(Numero + 1);
 
-        }
-    });
+    //    }
+    //});
 
 }
 
@@ -1350,15 +1350,15 @@ function GuardarSolicitud() {
             });
         },
         success: function (data) {
-            if (data == 1) {
+            if (data> 0) {
                 Swal.fire(
                     'Correcto',
                     'Proceso Realizado Correctamente',
                     'success'
                 )
                 //swal("Exito!", "Proceso Realizado Correctamente", "success")
-                CerrarModal()
-                ModalNuevo()
+                CerrarModal();
+                ObtenerDatosxID(data);
                 table.destroy();
                 ConsultaServidor("../Movimientos/ObtenerMovimientosIngresos");
                 
@@ -1510,6 +1510,20 @@ function disabledmodal(valorbolean) {
     $("#IdResponsable").prop('disabled', valorbolean);
     $("#txtComentarios").prop('disabled', valorbolean)
     $("#btn_agregaritem").prop('disabled', valorbolean)
+    if (valorbolean) {
+        $("#btnGrabar").hide()
+        $("#btnExtorno").show();
+        //$("#total_editar").show();
+        //$("#total_nuevo").hide();
+        $("#btnNuevo").show();
+
+    } else {
+        $("#btnExtorno").hide();
+        //$("#total_editar").hide();
+        //$("#total_nuevo").show();
+        $("#btnGrabar").show();
+        $("#btnNuevo").hide();
+    }
 }
 
 function CalcularTotalDetalle(contador) {
@@ -2180,4 +2194,9 @@ function CargarBasesObraAlmacenSegunAsignado() {
         }
     });
     return respuesta;
+}
+
+function nuevo() {
+    CerrarModal();
+    ModalNuevo();
 }

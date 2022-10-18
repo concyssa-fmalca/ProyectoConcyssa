@@ -251,7 +251,7 @@ function ConsultaServidor(url) {
                 '<td>' + movimientos[i].FechaDocumento.split('T')[0] + '</td>' +
                 '<td>' + movimientos[i].NombTipoDocumentoOperacion.toUpperCase() + '</td>' +
                 '<td>' + movimientos[i].NombSerie.toUpperCase() + '-' + movimientos[i].Correlativo + '</td>' +
-                '<td>' + movimientos[i].Total + '</td>' +
+                '<td>' + formatNumberDecimales(movimientos[i].Total,3) + '</td>' +
                 '<td>' + movimientos[i].DescCuadrilla + '</td>' +
             /*    '<td>' + movimientos[i].NombObra + '</td>' +*/
 
@@ -312,7 +312,7 @@ function ModalNuevo() {
     $("#cboClaseArticulo").prop("disabled", false);
     AbrirModal("modal-form");
     
-    $("#btnExtorno").hide();
+   
     //setearValor_ComboRenderizado("cboCodigoArticulo");
 }
 
@@ -644,6 +644,21 @@ function disabledmodal(valorbolean) {
     $("#txtComentarios").prop('disabled', valorbolean)
     $("#btn_agregaritem").prop('disabled', valorbolean)
     $("#EntregadoA").prop('disabled', valorbolean)
+
+    if (valorbolean) {
+        $("#btnGrabar").hide()
+        $("#btnExtorno").show();
+        $("#total_editar").show();
+        $("#total_nuevo").hide();
+        $("#btnNuevo").show();
+
+    } else {
+        $("#btnExtorno").hide();
+        $("#total_editar").hide();
+        $("#total_nuevo").show();
+        $("#btnGrabar").show();
+        $("#btnNuevo").hide();
+    }
 
 }
 
@@ -1340,15 +1355,17 @@ function GuardarSolicitud() {
             });
         },
         success: function (data) {
-            if (data == 1) {
+            if (data > 0) {
                 Swal.fire(
                     'Correcto',
                     'Proceso Realizado Correctamente',
                     'success'
                 )
                 //swal("Exito!", "Proceso Realizado Correctamente", "success")
+                //CerrarModal();
+                //ModalNuevo();
                 CerrarModal();
-                ModalNuevo();
+                ObtenerDatosxID(data);
                 table.destroy();
                 ConsultaServidor("../Movimientos/ObtenerMovimientosSalida");
                
@@ -1408,13 +1425,13 @@ function ObtenerDatosxID(IdMovimiento) {
     CargarSeries();
     CargarSeries();
     CargarMoneda();
-
+    
 
     $("#lblTituloModal").html("Editar Salida");
     AbrirModal("modal-form");
     disabledmodal(true);
 
-    $("#btnExtorno").show();
+
 
 
 
@@ -1437,7 +1454,7 @@ function ObtenerDatosxID(IdMovimiento) {
             $("#TipoCambio").val(movimiento.TipoCambio);
             $("#txtTotalAntesDescuento").val(movimiento.SubTotal)
             $("#txtImpuesto").val(movimiento.Impuesto)
-            $("#txtTotal").val(movimiento.Total)
+            $("#txtTotal").val(formatNumberDecimales(movimiento.Total,3))
             $("#IdCuadrilla").val(movimiento.IdCuadrilla)
             $("#IdResponsable").val(movimiento.IdResponsable)
             $("#cboCentroCosto").val(movimiento.IdCentroCosto)
@@ -1452,6 +1469,9 @@ function ObtenerDatosxID(IdMovimiento) {
             $("#CreatedAt").html(movimiento.CreatedAt.replace("T", " "));
             $("#NombUsuario").html(movimiento.NombUsuario);
             $("#txtComentarios").html(movimiento.Comentario)
+            $("#txtTotal_editar").val(formatNumberDecimales(movimiento.Total, 2))
+            $("#txtNumeracion").val(movimiento.Correlativo)
+            $("#txtTipoCambio").val(formatNumberDecimales(movimiento.TipoCambio, 2));
             //agrega detalle
             let tr = '';
 
@@ -1595,13 +1615,13 @@ function AgregarLineaDetalle(contador, detalle) {
     tr += `</select>
         </td>
         <td>
-            <input class="form-control" type="number" name="txtCantidadNecesaria[]" value="`+ detalle.Cantidad + `" id="txtCantidadNecesaria` + contador + `" onkeyup="CalcularTotalDetalle(` + contador + `)" disabled>
+            <input class="form-control" type="text" name="txtCantidadNecesaria[]" value="`+ formatNumberDecimales(detalle.Cantidad,1) + `" id="txtCantidadNecesaria` + contador + `" onkeyup="CalcularTotalDetalle(` + contador + `)" disabled>
         </td>
         <td>
-            <input class="form-control" type="number" name="txtPrecioInfo[]" value="`+ detalle.PrecioUnidadTotal + `" id="txtPrecioInfo` + contador + `" onkeyup="CalcularTotalDetalle(` + contador + `)" disabled>
+            <input class="form-control" type="text" name="txtPrecioInfo[]" value="`+ formatNumberDecimales(detalle.PrecioUnidadTotal,2) + `" id="txtPrecioInfo` + contador + `" onkeyup="CalcularTotalDetalle(` + contador + `)" disabled>
         </td>
         <td>
-            <input class="form-control changeTotal" type="number" style="width:100px" value="`+ detalle.Total + `" name="txtItemTotal[]" id="txtItemTotal` + contador + `" onchange="CalcularTotales()" disabled>
+            <input class="form-control changeTotal" type="text" style="width:100px" value="`+ formatNumberDecimales(detalle.Total,3) + `" name="txtItemTotal[]" id="txtItemTotal` + contador + `" onchange="CalcularTotales()" disabled>
         </td>
         <td style="display:none">
             <select class="form-control" style="width:100px" id="cboAlmacen`+ contador + `" name="cboAlmacen[]" disabled>`;
@@ -2183,4 +2203,10 @@ function ObtenerDatosDefinicion() {
 function borrartditem(contador) {
     $("#tritem" + contador).remove()
     CalcularTotales();
+}
+
+
+function nuevo() {
+    CerrarModal();
+    ModalNuevo();
 }
