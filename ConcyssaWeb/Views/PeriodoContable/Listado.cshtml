@@ -1,0 +1,215 @@
+﻿@{
+    ViewBag.Title = "Listado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" style="height:93%;">
+    <div class="panel">
+        <div class="container-fluid">
+            <div class="topbar-left col-xs-6">
+                <h3>Periodos Contables</h3>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="col-xs-6">
+                <div class="topbar-left col-xs-6">
+                    <h4 style="font-size:1.2em;">Total de Registros: <span id="spnTotalRegistros"></span></h4>
+                </div>
+            </div>
+            <div class="col-xs-6 right">
+                <button class="btn btn-sm btn-primary pull-right plu" data-target="modal1" onclick="ModalNuevo()" style="margin-left:10px;">Nuevo</button>
+                @*<button class="btn btn-sm  btn-success pull-right plu" id="btnPdf" style="margin-left:10px;">Descargar PDF</button>
+                <button class="btn btn-sm btn-info pull-right plu" id="btnExcel" style="margin-left:10px;">Descargar Excel</button>*@
+            </div>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="container-fluid">
+            <table id="table_periodocontable" class="table" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Codigo Periodo</th>
+                        <th>Nombre Periodo</th>
+                        <th>Status Periodo</th>
+                        <th>Fecha Contabilizacion DESDE</th>
+                        <th>Fecha Contabilizacion HASTA</th>
+                        <th>ACCIONES</th>
+
+                    </tr>
+                </thead>
+                <tbody id=""></tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div id="modal-form" class="popup-sm allcp-form mfp-with-anim mfp-hide">
+        <div class="panel">
+            <div class="panel-heading">
+                <h5 id='lblTituloModal'></h5>
+            </div>
+            <div class="panel-body ">
+                <div class='col s12 m12 '>
+                    <div class='container-fluid'>
+                        <input id='IdPeriodoContable' name="IdPeriodoContable" type='hidden' class="form-control input-sm">
+                        <div class='form-horizontal'>
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='txtCodigo' class="control-label col-sm-4 left-align">Codigo de Periodo</label>
+                                    <div class="col-sm-8">
+                                        <input id='CodigoPeriodo' name="CodigoPeriodo" type='text' class="form-control input-sm" tabindex="1">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='NombrePeriodo' class="control-label col-sm-4 left-align">Nombre de Periodo</label>
+                                    <div class="col-sm-8">
+                                        <input id='NombrePeriodo' name="NombrePeriodo" type='text' class="form-control input-sm" tabindex="2">
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='SubPeriodo' class="control-label col-sm-4 left-align">Sub Periodo</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control select-sm" id="SubPeriodo" name="SubPeriodo">
+                                            <option value="1">EJERCICIO</option>
+                                            <option value="2">TRIMESTRES</option>
+                                            <option value="3">MESES</option>
+                                            <option value="4">DIAS</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='IdIndicadorPeriodo' class="control-label col-sm-4 left-align">Periodo</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control select-sm" id="IdIndicadorPeriodo" name="IdIndicadorPeriodo">
+                                            <option value="0">SELECCIONE PERIODO</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='StatusPeriodo' class="control-label col-sm-4 left-align">Status del Periodo</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control select-sm" id="StatusPeriodo" name="StatusPeriodo">
+                                            <option value="0">SELECCIONE STATUS PERIODO</option>
+                                            <option value="1">DESBLOQUEADOS</option>
+                                            <option value="2">DESBLOQUEADOS EXCEPTOS VENTAS</option>
+                                            <option value="3">CIERRE DEL PERIODO</option>
+                                            <option value="4">BLOQUEADO</option>
+
+
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <br />    
+                            <p>Fechas:</p>       
+                            <div class="row">
+                                <div class="form-group-sm">
+                                    <label for="IdBase" class="control-label col-sm-3 left-align">Fecha Contabilizacion</label>
+                                    <div class="col-sm-3">
+                                        <input type="date" id="FechaContabilizacionI" class="form-control input-sm"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group-sm">
+                                    <label for="IdObra" class="control-label col-sm-3 left-align">HASTA</label>
+                                    <div class="col-sm-3">
+                                        <input type="date" id="FechaContabilizacionF" class="form-control input-sm" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group-sm">
+                                    <label for="IdBase" class="control-label col-sm-3 left-align">Fecha Vencimiento</label>
+                                    <div class="col-sm-3">
+                                        <input type="date" id="FechaVencimientoI" class="form-control input-sm"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group-sm">
+                                    <label for="IdObra" class="control-label col-sm-3 left-align">HASTA</label>
+                                    <div class="col-sm-3">
+                                        <input type="date" id="FechaVencimientoF" class="form-control input-sm" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group-sm">
+                                    <label for="IdBase" class="control-label col-sm-3 left-align">Fecha Documento</label>
+                                    <div class="col-sm-3">
+                                        <input type="date" id="FechaDocumentoI" class="form-control input-sm" />
+                                    </div>
+                                </div>
+
+                                <div class="form-group-sm">
+                                    <label for="IdObra" class="control-label col-sm-3 left-align">HASTA</label>
+                                    <div class="col-sm-3">
+                                        <input type="date" id="FechaDocumentoF" class="form-control input-sm" />
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='NombrePeriodo' class="control-label col-sm-4 left-align">Inicio del Ejercicio</label>
+                                    <div class="col-sm-8">
+                                        <input id='InicioEjercicio' name="InicioEjercicio" type='date' class="form-control input-sm" tabindex="2">
+                                    </div>
+                                </div>
+                            </div>
+
+                            
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='Ejercicio' class="control-label col-sm-4 left-align">Ejercicio</label>
+                                    <div class="col-sm-8">
+                                        <input id='Ejercicio' name="Ejercicio" type='text' class="form-control input-sm" tabindex="2">
+                                    </div>
+                                </div>
+                            </div>
+
+                           
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer text-right">
+                <div class="row">
+                    <button type="button" id="btnGrabar" onclick="Guardar()" class="btn btn-primary pull-right plu">Grabar</button>
+                    <button type="button" id="btnCancelar" class="btn btn-danger pull-right" style="background-color:orange;" onclick="closePopup();">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+
+<script src="~/Scripts/PeriodoContable/Listado.js"></script>
+<script src="~/Scripts/General.js"></script>
+<script src="~/js/pdf/jspdf.min.js"></script>
+<script src="~/js/pdf/faker.min.js"></script>
+<script src="~/js/pdf/jspdf.plugin.autotable.src.js"></script>
+
+

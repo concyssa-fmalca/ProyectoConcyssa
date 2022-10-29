@@ -1,4 +1,5 @@
 ﻿let table = '';
+let tablekardex;
 function ObtenerConfiguracionDecimales() {
     $.post("/ConfiguracionDecimales/ObtenerConfiguracionDecimales", function (data, status) {
 
@@ -109,7 +110,8 @@ function BuscarKardex() {
         FechaTermino = '2050-01-01'
     }
    
-    ListarDatatableKardex('ListarKardex',IdArticulo,IdAlmacen,FechaInicio, FechaTermino)
+    //ListarDatatableKardex('ListarKardex',IdArticulo,IdAlmacen,FechaInicio, FechaTermino)
+    ListarDatatableKardexDT('ListarKardexDT', IdArticulo, IdAlmacen, FechaInicio, FechaTermino)
 }
 
 
@@ -172,6 +174,170 @@ function ListarDatatableKardex(url,IdArticulo, IdAlmacen, FechaInicio, FechaTerm
 
     });
 
+}
+
+
+
+function ListarDatatableKardexDT(url, IdArticulo, IdAlmacen, FechaInicio, FechaTermino) {
+    tablekardex = $('#table_id').dataTable({
+        language: lenguaje_data,
+        responsive: true,
+        ajax: {
+            url: url,
+            type: 'POST',
+            data: {
+                'IdArticulo': IdArticulo,
+                'IdAlmacen': IdAlmacen,
+                'FechaInicio': FechaInicio,
+                'FechaTermino': FechaTermino,
+                pagination: {
+                    perpage: 50,
+                },
+            },
+        },
+
+        columnDefs: [
+            // {"className": "text-center", "targets": "_all"},
+            //{
+            //    targets: -1,
+            //    orderable: false,
+            //    render: function (data, type, full, meta) {
+
+            //        return 0
+            //    },
+            //},
+            {
+                targets: 0,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return meta.row + 1
+                },
+            },
+            {
+                targets: 1,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.Modulo
+                },
+            },
+            {
+                targets: 2,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.FechaRegistro
+                },
+            },
+            {
+                targets: 3,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.TipoTransaccion
+                },
+            },
+            {
+                targets: 4,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.DescSerie.toUpperCase() + `-` + full.Correlativo
+                },
+            },
+            {
+                targets: 5,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return '-'
+                },
+            },
+            {
+                targets: 6,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.FechaDocumento.split('T')[0]
+                },
+            },
+            {
+                targets: 7,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.DescUnidadMedidaBase
+                },
+            },
+            {
+                targets: 8,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return formatNumber(full.CantidadBase)
+                },
+            },
+            {
+                targets: 9,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return formatNumber(full.PrecioRegistro)
+                },
+            },
+            {
+                targets: 10,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return formatNumber((full.CantidadBase * full.PrecioPromedio))
+                },
+            },
+            {
+                targets: 11,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.Saldo
+                },
+            },
+            {
+                targets: 12,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.PrecioPromedio
+                },
+            },
+            {
+                targets: 13,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return formatNumber(Math.abs(full.PrecioPromedio * full.Saldo))
+                },
+            },
+            {
+                targets: 14,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.NombUsuario
+                },
+            },
+            {
+                targets: 15,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.Comentario
+                },
+            }
+        ],
+        "bDestroy": true
+    }).DataTable();
+
+    //$('#tabla_listado_pedidos tbody').on('dblclick', 'tr', function () {
+    //    var data = tablepedido.row(this).data();
+    //    console.log(data);
+    //    if (ultimaFila != null) {
+    //        ultimaFila.css('background-color', colorOriginal)
+    //    }
+    //    colorOriginal = $("#" + data["DT_RowId"]).css('background-color');
+    //    $("#" + data["DT_RowId"]).css('background-color', '#dde5ed');
+    //    ultimaFila = $("#" + data["DT_RowId"]);
+    //    AgregarPedidoToEntradaMercancia(data);
+    //    $('#ModalListadoPedido').modal('hide');
+    //    tablepedido.ajax.reload()
+    //    //$("#tbody_detalle").find('tbody').empty();
+    //    //AgregarItemTranferir(((table.row(this).index()) + 1), data["IdArticulo"], data["Descripcion"], (data["CantidadEnviada"] - data["CantidadTranferida"]), data["Stock"]);
+
+    //});
 }
 
 

@@ -52,6 +52,10 @@ namespace DTO
         public decimal total_venta { get; set; }
         public decimal CantidadDisponible { get; set; }
 
+        public string NombUsuario { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public IList<AnexoDTO> AnexoDetalle { get; set; }
+
 
     }
     public class PedidoDetalleDTO
@@ -108,6 +112,8 @@ namespace DTO
         public string NombRequerido { get; set; }
         public string NombArticulo { get; set; }
         public int IdArticulo { get; set; }
+
+
 
     }
 }

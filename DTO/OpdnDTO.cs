@@ -72,6 +72,7 @@
         public int IdProveedor { get; set; }
         public int IdCondicionPago { get; set; }
         public string NombProveedor { get; set; }
+        public IList<AnexoDTO> AnexoDetalle { get; set; }
 
     }
 
@@ -122,6 +123,8 @@
         public int IdOrigen { get; set; }
 
         public decimal CantidadUsada { get; set; }
+        public decimal CantidadDevolucion { get; set; }
+
 
 
     }

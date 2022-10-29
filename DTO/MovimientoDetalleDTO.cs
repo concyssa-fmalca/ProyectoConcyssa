@@ -34,5 +34,16 @@ namespace DTO
         public decimal CantidadBase { get; set; }
         public int IdAlmacenDestino { get; set; }
         public string Referencia { get; set; }
+
+        public string CodigoArticulo { get; set; } = "";
+        public string TipoUnidadMedida { get; set; } = "";
+
+        public string TablaOrigen { get; set; } = "";
+        public int IdOrigen { get; set; } = 0;
+
+        public decimal CantidadNotaCredito { get; set; }
+
+        public int IdGrupoUnidadMedida { get; set; }
+
     }
 }

@@ -398,5 +398,39 @@ function formatNumberDecimales(num, tipodecimal) {
     
 }
 
+// function ValidarFechaContabilizacionxDocumento(IdSerie, IdDocumento, Fecha, Orden) {
+//    let respuesta;
+//    var xhr = new XMLHttpRequest();
+//    xhr.withCredentials = true;
+//    //$.ajaxSetup({ async: false });
+//    xhr.addEventListener("readystatechange", function () {
+//        if (this.readyState === 4) {
+//            if (validadJsonGeneral(this.responseText)) {
+//                return respuesta = JSON.parse(this.responseText);
+
+//            } else {
+//                return respuesta
+//            } 
+    
+//        }
+//    });
+//    xhr.open("GET", "/Serie/ObtenerDatosSerieValidacion?IdSerie=" + IdSerie + "&IdDocumento=" + IdDocumento + "&Orden=" + Orden + "&fecha=" + Fecha);
+//    xhr.send();
+
+//}
+
+
+
+
+
+function validadJsonGeneral(json) {
+    try {
+        object = JSON.parse(json);
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
 
 ObtenerConfiguracionDecimales();

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<DespatchAdvice xmlns="urn:oasis:names:specification:ubl:schema:xsd:DespatchAdvice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:udt="urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2" xmlns:ccts="urn:un:unece:uncefact:documentation:2" xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2" xmlns:qdt="urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <ext:UBLExtensions>
+    <ext:UBLExtension>
+      <ext:ExtensionContent><ds:Signature Id="SignAndesSystemsEIRL">
+  <ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+    <ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+  <ds:Reference URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>j8AZonnuu52fGYLoWEJiCU19akg=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue>KgPBr5+L3TPvZ5YFwzQlasnjZSRKBAYqiiefzVamHr5IVnSznhq2zUrPD9LXmvkxGdrdKrsK8EqZhmB8QOPa/eXN+xW3mY0aL2M5HB70IwVS9HqjzRIi/T9CJviHJ0GKTohqYtDh5uM9nB1lfewCSENi6aX6OeuZkCxKS46YhGJySwoAzmNNWPZEUQLA2HMwV4V+w0msEI6DGCdRovh5ZMRi+AUOGyjCfHQYx6s9l3pEQAWhmVxj4sP9QkaiBDwzTp9+FMbVLF/5eQ3SniH4zSPZ6lIc5PjtAe0EvEl2SSJH4z5whmQwREwmSpB/k9i05L4xM0MytFlAIKH1qYEJSA==</ds:SignatureValue>
+<ds:KeyInfo><ds:X509Data><ds:X509Certificate>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</ds:X509Certificate></ds:X509Data></ds:KeyInfo></ds:Signature></ext:ExtensionContent>
+    </ext:UBLExtension>
+  </ext:UBLExtensions>
+  <cbc:UBLVersionID>2.1</cbc:UBLVersionID>
+  <cbc:CustomizationID schemeAgencyName="PE:SUNAT">1.0</cbc:CustomizationID>
+  <cbc:ID>T001-15</cbc:ID>
+  <cbc:IssueDate>2022-10-25</cbc:IssueDate>
+  <cbc:IssueTime>10:46:52</cbc:IssueTime>
+  <cbc:DespatchAdviceTypeCode>09</cbc:DespatchAdviceTypeCode>
+  <cac:Signature>
+    <cbc:ID>SF20100370426</cbc:ID>
+    <cac:SignatoryParty>
+      <cac:PartyIdentification>
+        <cbc:ID>20100370426</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyName>
+        <cbc:Name><![CDATA[CONCYSSA S A]]></cbc:Name>
+      </cac:PartyName>
+    </cac:SignatoryParty>
+    <cac:DigitalSignatureAttachment>
+      <cac:ExternalReference>
+        <cbc:URI>SIGN20100370426</cbc:URI>
+      </cac:ExternalReference>
+    </cac:DigitalSignatureAttachment>
+  </cac:Signature>
+  <cac:DespatchSupplierParty>
+    <cbc:CustomerAssignedAccountID schemeID="6">20100370426</cbc:CustomerAssignedAccountID>
+    <cac:Party>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName><![CDATA[CONCYSSA S A]]></cbc:RegistrationName>
+      </cac:PartyLegalEntity>
+    </cac:Party>
+  </cac:DespatchSupplierParty>
+  <cac:DeliveryCustomerParty>
+    <cbc:CustomerAssignedAccountID schemeID="6">20178825110</cbc:CustomerAssignedAccountID>
+    <cac:Party>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName><![CDATA[SOCIEDAD DE BENEFICENCIA DE ICA]]></cbc:RegistrationName>
+      </cac:PartyLegalEntity>
+    </cac:Party>
+  </cac:DeliveryCustomerParty>
+  <cac:Shipment>
+    <cbc:ID>1</cbc:ID>
+    <cbc:HandlingCode><![CDATA[14]]></cbc:HandlingCode>
+    <cbc:Information><![CDATA[VENTA SUJETA A CONFIRMACION DEL COMPRADOR]]></cbc:Information>
+    <cbc:GrossWeightMeasure unitCode="KGM">1.00</cbc:GrossWeightMeasure>
+    <cbc:SplitConsignmentIndicator>false</cbc:SplitConsignmentIndicator>
+    <cac:ShipmentStage>
+      <cbc:TransportModeCode>01</cbc:TransportModeCode>
+      <cac:TransitPeriod>
+        <cbc:StartDate>2022-10-25</cbc:StartDate>
+      </cac:TransitPeriod>
+      <cac:CarrierParty>
+        <cac:PartyIdentification>
+          <cbc:ID schemeID="6">20178825110</cbc:ID>
+        </cac:PartyIdentification>
+        <cac:PartyName>
+          <cbc:Name><![CDATA[SOCIEDAD DE BENEFICENCIA DE ICA]]></cbc:Name>
+        </cac:PartyName>
+      </cac:CarrierParty>
+      <cac:TransportMeans>
+        <cac:RoadTransport>
+          <cbc:LicensePlateID>015-856</cbc:LicensePlateID>
+        </cac:RoadTransport>
+      </cac:TransportMeans>
+      <cac:DriverPerson>
+        <cbc:ID schemeID="1">70345522</cbc:ID>
+      </cac:DriverPerson>
+    </cac:ShipmentStage>
+    <cac:Delivery>
+      <cac:DeliveryAddress>
+        <cbc:ID>070101</cbc:ID>
+        <cbc:StreetName><![CDATA[PUNTO DE PARTIDA]]></cbc:StreetName>
+      </cac:DeliveryAddress>
+    </cac:Delivery>
+    <cac:OriginAddress>
+      <cbc:ID>070102</cbc:ID>
+      <cbc:StreetName><![CDATA[PUNTO DE LLEGADA]]></cbc:StreetName>
+    </cac:OriginAddress>
+    <cac:FirstArrivalPortLocation>
+      <cbc:ID>PUERTO</cbc:ID>
+    </cac:FirstArrivalPortLocation>
+  </cac:Shipment>
+  <cac:DespatchLine>
+    <cbc:ID>1</cbc:ID>
+    <cbc:DeliveredQuantity unitCode="UND">1.00000</cbc:DeliveredQuantity>
+    <cac:OrderLineReference>
+      <cbc:LineID>1</cbc:LineID>
+    </cac:OrderLineReference>
+    <cac:Item>
+      <cbc:Description><![CDATA[CODO BRIDADO 200MM X 90º PN-10]]></cbc:Description>
+      <cbc:Name><![CDATA[CODO BRIDADO 200MM X 90º PN-10]]></cbc:Name>
+      <cac:SellersItemIdentification>
+        <cbc:ID><![CDATA[101535]]></cbc:ID>
+      </cac:SellersItemIdentification>
+    </cac:Item>
+  </cac:DespatchLine>
+</DespatchAdvice>

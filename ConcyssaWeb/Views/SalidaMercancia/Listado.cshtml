@@ -171,14 +171,14 @@
                                 <div class='form-group-sm'>
                                     <label for="cboSerie" class="control-label col-sm-2 left-align">Serie</label>
                                     <div class="col-sm-4">
-                                        <select id="cboSerie" class="form-control input-sm" tabindex="0" onchange="ObtenerNumeracion()"></select>
+                                        <select id="cboSerie" class="form-control input-sm" tabindex="0" onchange="validarseriescontable()"></select>
                                     </div>
                                 </div>
 
                                 <div class='form-group-sm'>
                                     <label for="txtFechaContabilizacion" class="control-label col-sm-2 left-align">Fecha Contabilizacion</label>
                                     <div class="col-sm-4">
-                                        <input id="txtFechaContabilizacion" value="@DateTime.Now.ToString("yyyy-MM-dd")" type="date" class="form-control input-sm" tabindex="6">
+                                        <input id="txtFechaContabilizacion" value="@DateTime.Now.ToString("yyyy-MM-dd")" type="date" class="form-control input-sm" onchange="validarseriescontable()" tabindex="6">
                                     </div>
                                 </div>
 
@@ -465,6 +465,25 @@
                                 <hr style="margin: 0px 0px 5px 0px"/>
                                     <p>EntregadoA: <select style="height: 20px" id="EntregadoA" class="form-control input-sm" tabindex="0"><option value="0">SELECCIONE </option></select> </p>
 
+                                    @*GUIA REMISION*@
+                                     <hr style="margin: 0px 0px 5px 0px"/>
+                                    <p>DESTINATARIO: <select style="height: 20px" id="IdDestinatario" class="form-control input-sm" tabindex="0"><option value="0">SELECCIONE </option></select> </p>
+                                    <hr style="margin: 0px 0px 5px 0px"/>
+                                    <p>MOTIVO TRASLADO: <select style="height: 20px" id="IdMotivoTraslado" class="form-control input-sm" tabindex="0"><option value="0">SELECCIONE </option></select> </p>
+
+                                    <hr style="margin: 0px 0px 5px 0px"/>
+                                    <p>RUC TRANSPORTISTA: <select style="height: 20px" id="IdTransportista" class="form-control input-sm" tabindex="0"><option value="0">SELECCIONE </option></select> </p>
+
+                                    <hr style="margin: 0px 0px 5px 0px"/>
+                                    <p>PLACA VEHICULO:<input id="PlacaVehiculo" type="text" class="form-control huser-20" tabindex="16" > </p>
+                                    <hr style="margin: 0px 0px 5px 0px"/>
+                                    <p>DNI CONDUCTOR: <input id="NumIdentidadConductor" type="text" class="form-control huser-20" tabindex="16" ></p>
+                                    <hr style="margin: 0px 0px 5px 0px"/>
+                                    <p>Peso: <input id="Peso" type="text" class="form-control huser-20" tabindex="16" ></p>
+                                    <hr style="margin: 0px 0px 5px 0px"/>
+                                    <p>Bulto: <input id="Bulto" type="text" class="form-control huser-20" tabindex="16"></p>
+
+
                                 </div>
                                 <hr style="margin: 0px 0px 5px 0px"/> 
                        
@@ -487,7 +506,19 @@
 
                 <div class="col-sm-6">
                     <div class='form-group-sm'>
+                        <!-- Single button -->
+                        <div class="btn btn-group dropup pull-right plu" id="div_copiarde">
+                            <button type="button" class="btn btn-info pull-right plu">COPIAR DE</button>
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li onclick="AbrirModalEntregas()">Entrega Mercaderia</li>
+                            </ul>
+                        </div>
                         <button type="button" id="btnExtorno" onclick="GenerarExtorno()" class="btn btn-primary pull-right plu">Extorno</button>
+                        <button type="button" id="btnGenerarGuia" onclick="GenerarGuia()" class="btn btn-primary pull-right plu">Generar Guia</button>
                         <button type="button" id="btnGrabar" onclick="GuardarSolicitud()" class="btn btn-primary pull-right plu">Grabar</button>
                         <button type="button" id="btnNuevo" onclick="nuevo()" class="btn btn-primary pull-right plu">Nuevo</button>
                         <button type="button" id="btnCancelar" onclick="CerrarModal()" class="btn btn-danger pull-right" style="background-color:orange;">Cancelar</button>
@@ -843,7 +874,48 @@
         </div>
     </div>
 
+    <div class="modal fade" data-backdrop="static"
+         data-keyboard="false" id="ModalListadoEntrega" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered allcp-form modal-lg" style="margin-top:120px" role="document">
+            <div class="modal-content">
 
+
+                <div class="panel" style="margin-bottom:0px">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="lblTituloModalItem">Listado Entregas</h5>
+                    </div>
+                    <div class="panel-body ">
+                        <div class='col s12 m12 '>
+                            <div class='container-fluid'>
+                                @*<div class="table-responsive">*@
+                                <table class="table display" id="tabla_listado_entregas" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>#</th>
+                                            <th>Fecha</th>
+                                            <th>N° Entrega</th>
+                                            <th>Serie y Guia</th>
+                                            <th>Proveedor</th>
+                                            <th>Monto Total</th>
+                                            @*<th>Accion</th>*@
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbody_listado_pedidos"></tbody>
+                                </table>
+                                @*</div>*@
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="btn_checkSeleccionados" class="btn btn-danger pull-right" style="background-color:#005457;" onclick="AgregarSeleccionadOPDN()">Agregar Seleccionados</button>
+                        <button type="button" class="btn btn-danger pull-right" style="background-color:orange;" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 

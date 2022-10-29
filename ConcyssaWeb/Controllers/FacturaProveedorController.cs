@@ -42,6 +42,30 @@ namespace ConcyssaWeb.Controllers
         }
 
 
+        public string ListarOPCHDTModal(string EstadoOPCH = "ABIERTO")
+        {
+            string mensaje_error = "";
+            OpchDAO oOpchDAO = new OpchDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            DataTableDTO oDataTableDTO = new DataTableDTO();
+            List<OpchDTO> lstOpchDTO = oOpchDAO.ObtenerOPCHxEstadoModal(IdSociedad, ref mensaje_error, EstadoOPCH);
+            if (lstOpchDTO.Count >= 0 && mensaje_error.Length == 0)
+            {
+                oDataTableDTO.sEcho = 1;
+                oDataTableDTO.iTotalDisplayRecords = lstOpchDTO.Count;
+                oDataTableDTO.iTotalRecords = lstOpchDTO.Count;
+                oDataTableDTO.aaData = (lstOpchDTO);
+                //return oDataTableDTO;
+                return JsonConvert.SerializeObject(oDataTableDTO);
+
+            }
+            else
+            {
+                return mensaje_error;
+
+            }
+        }
+
         public string ObtenerOPCHDetalle(int IdOPCH)
         {
             string mensaje_error = "";
@@ -101,6 +125,16 @@ namespace ConcyssaWeb.Controllers
                 }
                 oOpchDAO.UpdateTotalesOPCH(respuesta, ref mensaje_error);
 
+                for (int i = 0; i < oOpchDTO.AnexoDetalle.Count; i++)
+                {
+                    oOpchDTO.AnexoDetalle[i].ruta = "/Anexos/" + oOpchDTO.AnexoDetalle[i].NombreArchivo;
+                    oOpchDTO.AnexoDetalle[i].IdSociedad = oOpchDTO.IdSociedad;
+                    oOpchDTO.AnexoDetalle[i].Tabla = "Opch";
+                    oOpchDTO.AnexoDetalle[i].IdTabla = respuesta;
+
+                    oMovimimientoDAO.InsertAnexoMovimiento(oOpchDTO.AnexoDetalle[i], ref mensaje_error);
+                }
+
 
             }
 
@@ -112,7 +146,7 @@ namespace ConcyssaWeb.Controllers
             {
                 if (respuesta > 0)
                 {
-                    return "1";
+                    return respuesta.ToString();
                 }
                 else
                 {
@@ -135,6 +169,15 @@ namespace ConcyssaWeb.Controllers
                 {
                     oOpchDTO.detalles[i] = lstOPCHDetalle[i];
                 }
+
+                List<AnexoDTO> lstAnexoDTO = new List<AnexoDTO>();
+                lstAnexoDTO = oOpchDAO.ObtenerAnexoOpch(IdOpch, ref mensaje_error);
+                oOpchDTO.AnexoDetalle = new AnexoDTO[lstAnexoDTO.Count()];
+                for (int i = 0; i < lstAnexoDTO.Count; i++)
+                {
+                    oOpchDTO.AnexoDetalle[i] = lstAnexoDTO[i];
+                }
+
                 return JsonConvert.SerializeObject(oOpchDTO);
             }
             else
@@ -143,5 +186,40 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
+        public string GuardarFile(IFormFile file)
+        {
+            List<string> Archivos = new List<string>();
+            if (file != null && file.Length > 0)
+            {
+                try
+                {
+                    string dir = "wwwroot/Anexos/" + file.FileName;
+                    if (Directory.Exists(dir))
+                    {
+                        ViewBag.Message = "Archivo ya existe";
+                    }
+                    else
+                    {
+                        string filePath = Path.Combine(dir, Path.GetFileName(file.FileName));
+                        using (Stream fileStream = new FileStream(dir, FileMode.Create, FileAccess.Write))
+                        {
+                            file.CopyTo(fileStream);
+                            Archivos.Add(file.FileName);
+                        }
+
+                        ViewBag.Message = "Anexo guardado correctamente";
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.Message = "Error:" + ex.Message.ToString();
+                    throw;
+                }
+            }
+            return JsonConvert.SerializeObject(Archivos);
+        }
+
+        
     }
 }

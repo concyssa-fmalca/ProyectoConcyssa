@@ -178,14 +178,14 @@
                                 <div class='form-group-sm'>
                                     <label for="cboSerie" class="control-label col-sm-2 left-align">Serie</label>
                                     <div class="col-sm-4">
-                                        <select id="IdSerie" class="form-control input-sm" tabindex="0" onchange="ObtenerNumeracion()"></select>
+                                        <select id="IdSerie" class="form-control input-sm" tabindex="0" onchange="validarseriescontable()"></select>
                                     </div>
                                 </div>
 
                                 <div class='form-group-sm'>
                                     <label for="txtFechaContabilizacion" class="control-label col-sm-2 left-align">Fecha Contabilizacion</label>
                                     <div class="col-sm-4">
-                                        <input id="txtFechaContabilizacion" value="@DateTime.Now.ToString("yyyy-MM-dd")" type="date" class="form-control input-sm" tabindex="6">
+                                        <input id="txtFechaContabilizacion" value="@DateTime.Now.ToString("yyyy-MM-dd")" type="date" class="form-control input-sm" onchange="validarseriescontable()" tabindex="6">
                                     </div>
                                 </div>
 
@@ -276,7 +276,7 @@
 
                                 <div class='form-group-sm'>
                                     <div class="col-sm-4">
-                                        <button style="margin-bottom:10px;margin-top:5px" class="btn btn-xs btn-info" onclick="OpenModalItem()" type="button">Agregar Item</button>
+                                        <button id="btn_agregaritem" style="margin-bottom:10px;margin-top:5px" class="btn btn-xs btn-info" onclick="OpenModalItem()" type="button">Agregar Item</button>
                                     </div>
                                 </div>
                                 <div class="table-responsive">
@@ -320,7 +320,7 @@
                                 {
                                     <div class="row">
                                         <div class=''>
-                                            !important               <div class="col-sm-8">
+                                            <div class="col-sm-8">
                                                 @*<label for="file">Subir Anexos</label>*@
                                                 <input type="file" name="file" id="file" class="form-control" />
                                             </div>
@@ -357,7 +357,6 @@
 
                                     </div>
                                 }
-
                             </div>
 
                             <br />
@@ -438,8 +437,8 @@
 
                                     <hr style="margin: 6px" />
                                     <p>Lugar Entrega:<input id="LugarEntrega" type="text" class="form-control huser-20" tabindex="16"> </p>
-                                    <hr style="margin: 0px 0px 5px 0px" />
-                                    <p>Elaborado Por:  <input id="SerieNumeroRef" type="text" class="form-control huser-20" tabindex="16"> </p>
+                                   @* <hr style="margin: 0px 0px 5px 0px" />*@
+                                    <p style="display:none">Elaborado Por:  <input id="SerieNumeroRef" type="text" class="form-control huser-20" tabindex="16"> </p>
                                     <hr style="margin: 0px 0px 5px 0px" />
 
                                     <p>

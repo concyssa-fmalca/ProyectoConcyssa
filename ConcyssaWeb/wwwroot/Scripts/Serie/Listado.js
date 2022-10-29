@@ -1,53 +1,12 @@
 ﻿let table = '';
-
+let contador = 0;
+let table_series;
 
 window.onload = function () {
     var url = "ObtenerSeries";
     //ConsultaServidor(url);
     ObtenerSeriesDT();
 };
-
-
-function ConsultaServidor(url) {
-
-    $.post(url, function (data, status) {
-
-        var errorEmpresa = validarEmpresa(data);
-        if (errorEmpresa) {
-            return;
-        }
-
-        //console.log(data);
-        if (data == "error") {
-            table = $("#table_id").DataTable(lenguaje);
-            return;
-        }
-
-        let tr = '';
-
-        let series = JSON.parse(data);
-        let total_series = series.length;
-
-        for (var i = 0; i < series.length; i++) {
-
-            tr += '<tr>' +
-                '<td>' + (i + 1) + '</td>' +
-                '<td>' + series[i].Serie.toUpperCase() + '</td>' +
-                '<td>' + series[i].NumeroInicial + '</td>' +
-                '<td>' + series[i].NumeroFinal + '</td>' +
-                '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + series[i].IdSerie + ')"></button>' +
-                '<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + series[i].IdSerie + ')"></button></td >' +
-                '</tr>';
-        }
-
-        $("#tbody_Series").html(tr);
-        $("#spnTotalRegistros").html(total_series);
-
-        table = $("#table_id").DataTable(lenguaje);
-
-    });
-
-}
 
 
 
@@ -102,41 +61,153 @@ function GuardarSerie() {
     });
 }
 
-function ObtenerDatosxID(varIdSerie) {
-    $("#lblTituloModal").html("Editar Serie");
+//function ObtenerDatosxID(varIdSerie) {
+//    $("#lblTituloModal").html("Editar Serie");
+//    AbrirModal("modal-form");
+
+//    //console.log(varIdUsuario);
+
+//    $.post('ObtenerDatosxID', {
+//        'IdSerie': varIdSerie,
+//    }, function (data, status) {
+//        var errorEmpresa = validarEmpresa(data);
+//        if (errorEmpresa) {
+//            return;
+//        }
+
+
+//        if (data == "Error") {
+//            swal("Error!", "Ocurrio un error")
+//            limpiarDatos();
+//        } else {
+//            let serie = JSON.parse(data);
+//            //console.log(usuarios);
+//            $("#txtId").val(serie[0].IdSerie);
+//            $("#txtSerie").val(serie[0].Serie);
+//            $("#Documento").val(serie[0].Documento)
+//            $("#txtNumeroInicial").val(serie[0].NumeroInicial);
+//            $("#txtNumeroFinal").val(serie[0].NumeroFinal);
+//            if (serie[0].Estado) {
+//                $("#chkActivo").prop('checked', true);
+//            }
+
+//        }
+
+//    });
+
+//}
+
+
+function ObtenerDatosxIDNew(varIdDocumento) {
+    $("#lblTituloModal").html("SERIES");
+    $("#IdDocumentoModal").val(varIdDocumento);
     AbrirModal("modal-form");
 
     //console.log(varIdUsuario);
 
-    $.post('ObtenerDatosxID', {
-        'IdSerie': varIdSerie,
-    }, function (data, status) {
-        var errorEmpresa = validarEmpresa(data);
-        if (errorEmpresa) {
-            return;
-        }
+    table_series = $('#table_serienew').dataTable({
+        language: lenguaje_data,
+        responsive: true,
+        ajax: {
+            url: 'ObtenerSeriesxIdDocumento',
+            type: 'POST',
+            data: {
+                'IdDocumento': varIdDocumento,
+                pagination: {
+                    
+                    perpage: 50,
+                },
+            },
+        },
 
+        columnDefs: [
+            { "className": "text-center", "targets": "_all" },
+            {
+                targets: -1,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    let button = `<button class="btn btn-info  fa fa-pencil btn-xs" onclick="guardar(1,` + full.IdSerie + `)"></button><button class="btn btn-danger btn-xs fa fa-trash" onclick="eliminar()"></button>`;
+                    `<button class="btn btn-danger btn-xs fa fa-trash" onclick="eliminar(` + full.IdSerie + `)"></button>`;
+                    return button;
 
-        if (data == "Error") {
-            swal("Error!", "Ocurrio un error")
-            limpiarDatos();
-        } else {
-            let serie = JSON.parse(data);
-            //console.log(usuarios);
-            $("#txtId").val(serie[0].IdSerie);
-            $("#txtSerie").val(serie[0].Serie);
-            $("#Documento").val(serie[0].Documento)
-            $("#txtNumeroInicial").val(serie[0].NumeroInicial);
-            $("#txtNumeroFinal").val(serie[0].NumeroFinal);
-            if (serie[0].Estado) {
-                $("#chkActivo").prop('checked', true);
+                },
+            },
+            {
+                targets: 0,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return meta.row + 1
+                },
+            },
+            {
+                targets: 1,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.Serie
+                },
+            },
+            {
+                targets: 2,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.NumeroInicial
+                },
+            },
+            {
+                targets: 3,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.NumeroFinal
+                },
+            },
+            {
+                targets: 4,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    if (full.IsArticulo) {
+                        return `<input class="form-control input-sm" id="IsArticulo`+full.IdSerie+`" type="checkbox" checked>`
+                    } else {
+                        return `<input class="form-control input-sm" id="IsArticulo` + full.IdSerie +`" type="checkbox">`
+                    }
+                },
+            },
+            {
+                targets: 5,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    if (full.IsServicio) {
+                        return `<input class="form-control input-sm" id="IsServicio` + full.IdSerie +`" type="checkbox" checked>`
+                    } else {
+                        return `<input class="form-control input-sm" id="IsServicio` + full.IdSerie +`" type="checkbox">`
+                    }
+                   
+                },
+            },
+            {
+                targets: 6,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.NombIndicadorPeriodo
+                },
+            },
+            {
+                targets: 7,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    if (full.Estado) {
+                        return `<input class="form-control input-sm" id="Estado` + full.IdSerie +`"   type="checkbox" checked>`
+                    } else {
+                        return `<input class="form-control input-sm" id="Estado` + full.IdSerie +`"  type="checkbox">`
+                    }
+                },
             }
 
-        }
-
-    });
+        ],
+        "bDestroy": true
+    }).DataTable();
 
 }
+
 
 function eliminar(varIdSerie) {
 
@@ -200,7 +271,7 @@ function ObtenerSeriesDT() {
         language: lenguaje_data,
         responsive: true,
         ajax: {
-            url: 'ObtenerSeriesDT',
+            url: 'ObtenerSeriesDTNew',
             type: 'POST',
             data: {
                 pagination: {
@@ -215,7 +286,7 @@ function ObtenerSeriesDT() {
                 targets: -1,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    let button = `<button class="btn btn-info  fa fa-pencil btn-xs" onclick="ObtenerDatosxID(` + full.IdSerie + `)"></button><button class="btn btn-danger btn-xs fa fa-trash" onclick="eliminar(` + full.IdSerie + `)"></button>`;
+                    let button = `<button class="btn btn-info  fa fa-pencil btn-xs" onclick="ObtenerDatosxIDNew(` + full.IdDocumento + `)"></button><button class="btn btn-danger btn-xs fa fa-trash" onclick="eliminar(` + full.IdSerie + `)"></button>`;
                     //`<button class="btn btn-danger btn-xs fa fa-trash" onclick="eliminar(` + full[i].IdSerie + `)"></button>`;
                     return button;
                         
@@ -232,48 +303,14 @@ function ObtenerSeriesDT() {
                 targets: 1,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    let texto = "";
-                    switch (full.Documento) {
-                        case 1:
-                            texto="ENTRADA MERCANCIA"
-                            // code block
-                            break;
-                        case 2:
-                            texto = "SALIDA MERCANCIA"
-                            // code block
-                            break;
-                        case 3:
-                            texto = "TRANFERENCIA MERCANCIA"
-                            // code block
-                            break;
-                        case 4:
-                            texto = "PEDIDO"
-                            // code block
-                            break;
-                        case 5:
-                            texto = "ENTREGA MERCANCIA"
-                            // code block
-                            break;
-                        case 6:
-                            texto = "FACTURA PROVEEDOR"
-                            // code block
-                            break;
-                        case 7:
-                            texto = "-"
-                            // code block
-                            break;
-                        default:
-                            texto="SIN RELACION"
-                        // code block
-                    }
-                    return texto
+                    return full.NombDocumento
                 },
             },
             {
                 targets: 2,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.Serie
+                    return full.SerieDefecto
                 },
             },
             {
@@ -294,4 +331,110 @@ function ObtenerSeriesDT() {
         ],
         "bDestroy": true
     }).DataTable();
+}
+
+function addtrserie() {
+    let tr = "";
+    tr = `
+    <tr id="tr`+ contador +`">    
+        <td>-</td>
+        <td> <input class="form-control input-sm" value="" id="serietr`+contador+`"/> </td>
+        <td> <input class="form-control input-sm" value="" id="numeroitr`+ contador +`"/> </td>
+        <td> <input class="form-control input-sm" value="" id="numeroftr`+ contador +`"/> </td>
+        <td> <input class="form-control input-sm" type="checkbox" id="articulo`+contador+`" value=""> </td>
+        <td> <input class="form-control input-sm" type="checkbox" id="servicio`+ contador +`"> </td>
+         <td> <select class="form-control" id="IdIndicadorPeriodo`+contador+`"> <option value="0">SELECCIONE PERIODO</option> </select> </td>
+         <td> <input class="form-control input-sm" type="checkbox" id="estado`+ contador +`" checked> </td>
+        <td>
+            <button style="margin:0px 0px 0px 0px;" class="btn btn-danger" onclick="removetr(`+ contador +`)"> - </button> 
+            <button style="margin:0px 0px 0px 0px;"class="btn btn-success" onclick="guardar(0,`+ contador +`)"> + </button>
+        </td>
+    </tr>`
+
+    
+    $("#table_serienew tbody").append(tr);
+    listarindicadorperiodo(contador);
+    contador++
+   
+}
+
+function listarindicadorperiodo(idcontador) {
+    $.ajaxSetup({ async: false });
+    $.post("/IndicadorPeriodo/ObtenerIndicadorPeriodo", function (data, status) {
+        let datos = JSON.parse(data);
+        let option = `<option value="0">SELECCIONE PERIODO</option>`;
+        for (var i = 0; i < datos.length; i++) {
+            option += `<option value="` + datos[i].IdIndicadorPeriodo + `">` + datos[i].Indicador + `</option>`;
+        }
+        $("#IdIndicadorPeriodo" + idcontador).html(option);
+    });
+}
+
+function removetr(idcontador) {
+    $("#tr" + idcontador).remove()
+}
+
+
+function guardar(bd, id) {
+    let IdSerie = 0;
+    let Serie = "";
+    let NumeroInicial;
+    let NumeroFinal;
+    let Estado=false;
+    let Documento;
+    let IsArticulo=false;
+    let IsServicio=false;
+    let IdIndicadorPeriodo;
+    Documento = $("#IdDocumentoModal").val();
+
+    if (bd == 1) {
+        IdSerie = id;
+        if ($('#IsArticulo'+id).prop('checked')) {
+            IsArticulo = true;
+        }
+        if ($('#IsServicio' + id).prop('checked')) {
+            IsServicio = true;
+        }
+        if ($('#Estado' + id).prop('checked')) {
+            Estado = true;
+        }
+    } else {
+        IdSerie = 0;
+        Serie = $("#serietr" + id).val();
+        NumeroInicial = $("#numeroitr" + id).val();
+        NumeroFinal = $("#numeroftr" + id).val();
+        if ($("#articulo" + id).prop('checked')) {
+            IsArticulo = true;
+        }
+        if ($("#servicio" + id).prop('checked')) {
+            IsServicio = true;
+        }
+        if ($("#estado" + id).prop('checked')) {
+            Estado = true;
+        }
+        IdIndicadorPeriodo = $("#IdIndicadorPeriodo" + id).val();
+    }
+
+    $.post('UpdateInsertSerie', {
+        'IdSerie': IdSerie,
+        'Serie': Serie,
+        'NumeroInicial': NumeroInicial,
+        'NumeroFinal': NumeroFinal,
+        'Estado': Estado,
+        'IsArticulo': IsArticulo,
+        'IsServicio': IsServicio,
+        'IdPeriodo': IdIndicadorPeriodo,
+        'Documento': Documento
+    }, function (data, status) {
+        if (data>0) {
+            swal("Exito!", "Proceso Realizado Correctamente", "success")
+            limpiarDatos();
+        } else {
+            swal("Error!", "Ocurrio un Error")
+            limpiarDatos();
+        }
+        ObtenerSeriesDT()
+        closePopup();
+    });
+
 }

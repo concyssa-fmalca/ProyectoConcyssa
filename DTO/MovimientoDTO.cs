@@ -8,6 +8,7 @@ namespace DTO
 {
     public class MovimientoDTO
     {
+        public int DT_RowId { get; set; }
         public int IdMovimiento { get; set; }
         public int IdTipoDocumento { get; set; }
 
@@ -47,6 +48,8 @@ namespace DTO
 
         public IList<MovimientoDetalleDTO> detalles  { get; set; }
 
+        public IList<AnexoDTO> AnexoDetalle { get; set; }
+
 
 
         //Campos Adicionales
@@ -72,6 +75,28 @@ namespace DTO
         public string NombAlmacen { get; set; }
         public string DescCuadrilla { get; set; }
         public string NombObra { get; set; }
+
+        public int IdDestinatario { get; set; }=0;
+        public int IdMotivoTraslado { get; set; } = 0;
+        public int IdTransportista { get; set; } = 0;
+        public string PlacaVehiculo { get; set; } = "";
+        public string NumIdentidadConductor { get; set; } = "";
+        public decimal Peso { get; set; } = 0;
+        public decimal Bulto { get; set; } = 0;
+
+        public string NumDocumentoDestinatario { get; set; } = "";
+        public string NombDestinatario { get; set; } = "";
+        public string NumDocumentoTransportista { get; set; } = "";
+        public string NombTransportista { get; set; } = "";
+
+        public string CodigoMotivoTrasladoSunat { get; set; } = "";
+        public string DescripcionMotivoTrasladoSunat { get; set; } = "";
+
+
+
+
+
+
 
     }
 }

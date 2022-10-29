@@ -65,6 +65,62 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
+        public string ObtenerSeriesDTNew()
+        {
+            string valida = "";
+            valida = validarEmpresaActual();
+            if (valida != "")
+            {
+                return valida;
+            }
+
+
+            SerieDAO oSerieDAO = new SerieDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            List<SerieDTO> lstSerieDTO = oSerieDAO.ObtenerSeriesNEW(IdSociedad.ToString());
+            DataTableDTO oDataTableDTO = new DataTableDTO();
+            if (lstSerieDTO.Count > 0)
+            {
+                oDataTableDTO.sEcho = 1;
+                oDataTableDTO.iTotalDisplayRecords = lstSerieDTO.Count;
+                oDataTableDTO.iTotalRecords = lstSerieDTO.Count;
+                oDataTableDTO.aaData = (lstSerieDTO);
+                return JsonConvert.SerializeObject(oDataTableDTO);
+    
+            }
+            else
+            {
+                return "error";
+            }
+        }
+
+        public string ObtenerSeriesxIdDocumento(int IdDocumento)
+        {
+            string valida = "";
+            valida = validarEmpresaActual();
+            if (valida != "")
+            {
+                return valida;
+            }
+
+            SerieDAO oSerieDAO = new SerieDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            List<SerieDTO> lstSerieDTO = oSerieDAO.ObtenerSeriesxIdDocumento(IdSociedad,IdDocumento);
+            DataTableDTO oDataTableDTO = new DataTableDTO();
+            if (lstSerieDTO.Count > 0)
+            {
+                oDataTableDTO.sEcho = 1;
+                oDataTableDTO.iTotalDisplayRecords = lstSerieDTO.Count;
+                oDataTableDTO.iTotalRecords = lstSerieDTO.Count;
+                oDataTableDTO.aaData = (lstSerieDTO);
+                return JsonConvert.SerializeObject(oDataTableDTO);
+            }
+            else
+            {
+                return "error";
+            }
+        }
+
         public int UpdateInsertSerie(SerieDTO SerieDTO)
         {
             int valida = 0;
@@ -183,6 +239,21 @@ namespace ConcyssaWeb.Controllers
             return rpta;
         }
 
+
+        public string ObtenerDatosSerieValidacion(int IdSerie,int IdDocumento,int Orden,string fecha)
+        {
+            SerieDAO oSerieDAO = new SerieDAO();
+            SerieDTO oSerieDTO = new SerieDTO();
+            oSerieDTO = oSerieDAO.ObtenerDatosSerieValidacion(IdSerie, IdDocumento, Orden, fecha);
+            PeriodoDAO oPeriodoDAO =new PeriodoDAO();
+            List<PeriodoContableFechaDTO> lstPeriodoContableFechaDTO = new List<PeriodoContableFechaDTO>();
+            lstPeriodoContableFechaDTO=oPeriodoDAO.ObtenerPeriodoContableFechaValidacion(oSerieDTO.IdPeriodo, fecha, Orden);
+
+            oSerieDTO.FechaRelacion=lstPeriodoContableFechaDTO;
+
+
+            return JsonConvert.SerializeObject(oSerieDTO);
+        }
 
 
 

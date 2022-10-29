@@ -1,8 +1,11 @@
 ﻿using DAO;
 using DTO;
+using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Linq;
 using System.Net;
+
 
 namespace ConcyssaWeb.Controllers
 {
@@ -48,6 +51,16 @@ namespace ConcyssaWeb.Controllers
                 {
                     oMovimientoDTO.detalles[i].IdMovimiento = respuesta;
                     int respuesta1 = oMovimimientoDAO.InsertUpdateMovimientoDetalle(oMovimientoDTO.detalles[i], ref mensaje_error);
+                }
+
+                for (int i = 0; i < oMovimientoDTO.AnexoDetalle.Count; i++)
+                {
+                    oMovimientoDTO.AnexoDetalle[i].ruta = "/Anexos/" + oMovimientoDTO.AnexoDetalle[i].NombreArchivo;
+                    oMovimientoDTO.AnexoDetalle[i].IdSociedad = oMovimientoDTO.IdSociedad;
+                    oMovimientoDTO.AnexoDetalle[i].Tabla = "Movimiento";
+                    oMovimientoDTO.AnexoDetalle[i].IdTabla = respuesta;
+
+                    oMovimimientoDAO.InsertAnexoMovimiento(oMovimientoDTO.AnexoDetalle[i], ref mensaje_error);
                 }
 
             }
@@ -157,10 +170,66 @@ namespace ConcyssaWeb.Controllers
                     string err = e.ToString();
                 }
             }
-
             return Resultado;
+        }
+
+
+        public string ListarSalidaModalDT(int IdAlmacen)
+        {
+            string mensaje_error = "";
+            DataTableDTO oDataTableDTO = new DataTableDTO();
+            MovimientoDAO oMovimientoDAO = new MovimientoDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            List<MovimientoDTO> oMovimientoDTO = oMovimientoDAO.ObtenerMovimientosSalidaModal(IdSociedad, IdAlmacen, ref mensaje_error);
+            if (mensaje_error.ToString().Length == 0)
+            {
+                oDataTableDTO.sEcho = 1;
+                oDataTableDTO.iTotalDisplayRecords = oMovimientoDTO.Count;
+                oDataTableDTO.iTotalRecords = oMovimientoDTO.Count;
+                oDataTableDTO.aaData = (oMovimientoDTO);
+                return JsonConvert.SerializeObject(oDataTableDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
 
         }
+
+        public string GuardarFile(IFormFile file)
+        {
+            List<string> Archivos = new List<string>();
+            if (file != null && file.Length > 0)
+            {
+                try
+                {
+                    string dir = "wwwroot/Anexos/" + file.FileName;
+                    if (Directory.Exists(dir))
+                    {
+                        ViewBag.Message = "Archivo ya existe";
+                    }
+                    else
+                    {
+                        string filePath = Path.Combine(dir, Path.GetFileName(file.FileName));
+                        using (Stream fileStream = new FileStream(dir, FileMode.Create, FileAccess.Write))
+                        {
+                            file.CopyTo(fileStream);
+                            Archivos.Add(file.FileName);
+                        }
+                      
+                        ViewBag.Message = "Anexo guardado correctamente";
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.Message = "Error:" + ex.Message.ToString();
+                    throw;
+                }
+            }
+            return JsonConvert.SerializeObject(Archivos);
+        }
+
 
 
     }

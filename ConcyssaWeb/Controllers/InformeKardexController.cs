@@ -31,6 +31,31 @@ namespace ConcyssaWeb.Controllers
         }
 
 
+        public string ListarKardexDT(int IdArticulo, int IdAlmacen, DateTime FechaInicio, DateTime FechaTermino)
+        
+        {
+            string mensaje_error = "";
+            KardexDAO oKardexDAO = new KardexDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            DataTableDTO oDataTableDTO = new DataTableDTO();
+            List<KardexDTO> lstKardexDTO = oKardexDAO.ObtenerKardex(IdSociedad, IdArticulo, IdAlmacen, FechaInicio, FechaTermino, ref mensaje_error);
+            if (lstKardexDTO.Count > 0)
+            {
+                oDataTableDTO.sEcho = 1;
+                oDataTableDTO.iTotalDisplayRecords = lstKardexDTO.Count;
+                oDataTableDTO.iTotalRecords = lstKardexDTO.Count;
+                oDataTableDTO.aaData = (lstKardexDTO);
+                //return oDataTableDTO;
+                return JsonConvert.SerializeObject(oDataTableDTO);
+                //return JsonConvert.SerializeObject(lstKardexDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+            return "error";
+        }
+
 
     }
 }

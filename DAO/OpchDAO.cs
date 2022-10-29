@@ -63,6 +63,25 @@ namespace DAO
                         oOpchDTO.IdObra = Convert.ToInt32(drd["IdObra"].ToString());
                         oOpchDTO.IdBase = Convert.ToInt32(drd["IdBase"].ToString());
                         oOpchDTO.IdProveedor = Convert.ToInt32(drd["IdProveedor"].ToString());
+                        oOpchDTO.IdTipoDocumentoRef = Convert.ToInt32(drd["IdTipoDocumentoRef"].ToString());
+                        oOpchDTO.NumSerieTipoDocumentoRef = (drd["NumSerieTipoDocumentoRef"].ToString());
+                        oOpchDTO.IdCuadrilla = Convert.ToInt32(drd["IdCuadrilla"].ToString());
+                        oOpchDTO.IdResponsable = Convert.ToInt32(drd["IdResponsable"].ToString());
+                        oOpchDTO.idCondicionPago = Convert.ToInt32(drd["idCondicionPago"].ToString());
+                        oOpchDTO.NombUsuario = (drd["NombUsuario"].ToString());
+                        oOpchDTO.CreatedAt = Convert.ToDateTime(drd["CreatedAt"].ToString());
+
+
+
+
+
+
+
+
+
+
+
+
 
                     }
                     drd.Close();
@@ -142,6 +161,88 @@ namespace DAO
             return lstOPCHDTO;
         }
 
+        public List<OpchDTO> ObtenerOPCHxEstadoModal(int IdSociedad, ref string mensaje_error, string EstadoOPCH)
+        {
+            List<OpchDTO> lstOPCHDTO = new List<OpchDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarOPCHxEstadoModal", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
+                    da.SelectCommand.Parameters.AddWithValue("@EstadoOPCH", EstadoOPCH);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        OpchDTO oOpchDTO = new OpchDTO();
+                        oOpchDTO.DT_RowId = Convert.ToInt32(drd["IdOPCH"].ToString());
+                        oOpchDTO.IdOPCH = Convert.ToInt32(drd["IdOPCH"].ToString());
+                        oOpchDTO.IdTipoDocumento = Convert.ToInt32(drd["IdTipoDocumento"].ToString());
+                        oOpchDTO.ObjType = (drd["ObjType"].ToString());
+                        oOpchDTO.IdMoneda = Convert.ToInt32(drd["IdMoneda"].ToString());
+                        oOpchDTO.CodMoneda = (drd["CodMoneda"].ToString());
+                        oOpchDTO.TipoCambio = Convert.ToDecimal(drd["TipoCambio"].ToString());
+                        oOpchDTO.IdCliente = Convert.ToInt32(drd["IdCliente"].ToString());
+                        oOpchDTO.FechaContabilizacion = Convert.ToDateTime(drd["FechaContabilizacion"].ToString());
+                        oOpchDTO.FechaDocumento = Convert.ToDateTime(drd["FechaDocumento"].ToString());
+                        oOpchDTO.FechaVencimiento = Convert.ToDateTime(drd["FechaVencimiento"].ToString());
+                        oOpchDTO.IdListaPrecios = Convert.ToInt32(drd["IdListaPrecios"].ToString());
+                        oOpchDTO.Referencia = (drd["Referencia"].ToString());
+                        oOpchDTO.Comentario = (drd["Comentario"].ToString());
+                        oOpchDTO.DocEntrySap = Convert.ToInt32(drd["DocEntrySap"].ToString());
+                        oOpchDTO.DocNumSap = (drd["DocNumSap"].ToString());
+                        oOpchDTO.IdCentroCosto = Convert.ToInt32(drd["IdCentroCosto"].ToString());
+                        oOpchDTO.SubTotal = Convert.ToDecimal(drd["SubTotal"].ToString());
+                        oOpchDTO.Impuesto = Convert.ToDecimal(drd["Impuesto"].ToString());
+                        oOpchDTO.IdTipoAfectacionIgv = Convert.ToInt32(drd["IdTipoAfectacionIgv"].ToString());
+                        oOpchDTO.Total = Convert.ToDecimal(drd["Total"].ToString());
+                        oOpchDTO.IdAlmacen = Convert.ToInt32(drd["IdAlmacen"].ToString());
+                        oOpchDTO.IdSerie = Convert.ToInt32(drd["IdSerie"].ToString());
+                        oOpchDTO.Correlativo = Convert.ToInt32(drd["Correlativo"].ToString());
+                        oOpchDTO.IdSociedad = Convert.ToInt32(drd["IdSociedad"].ToString());
+                        oOpchDTO.NombTipoDocumentoOperacion = (drd["NombTipoDocumentoOperacion"].ToString());
+                        oOpchDTO.NombSerie = (drd["NombSerie"].ToString());
+                        oOpchDTO.Estado = Convert.ToBoolean(drd["Estado"].ToString());
+                        oOpchDTO.DescCuadrilla = (drd["DescCuadrilla"].ToString());
+                        oOpchDTO.NombAlmacen = (drd["NombAlmacen"].ToString());
+                        oOpchDTO.NombObra = (drd["NombObra"].ToString());
+                        oOpchDTO.IdAlmacen = Convert.ToInt32(drd["IdAlmacen"].ToString());
+                        oOpchDTO.IdObra = Convert.ToInt32(drd["IdObra"].ToString());
+                        oOpchDTO.IdBase = Convert.ToInt32(drd["IdBase"].ToString());
+                        oOpchDTO.IdProveedor = Convert.ToInt32(drd["IdProveedor"].ToString());
+                        oOpchDTO.IdCuadrilla = Convert.ToInt32(drd["IdCuadrilla"].ToString());
+                        oOpchDTO.IdTipoDocumentoRef = Convert.ToInt32(drd["IdTipoDocumentoRef"].ToString());
+                        oOpchDTO.IdResponsable = Convert.ToInt32(drd["IdResponsable"].ToString());
+                        oOpchDTO.NumSerieTipoDocumentoRef = (drd["NumSerieTipoDocumentoRef"].ToString());
+
+
+                        
+
+
+
+
+
+
+
+
+
+
+
+                        lstOPCHDTO.Add(oOpchDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstOPCHDTO;
+        }
 
         public List<OPCHDetalle> ObtenerDetalleOpch(int IdOPCH, ref string mensaje_error)
         {
@@ -178,6 +279,14 @@ namespace DAO
                         oOPCHDetalle.CodImpuesto = (drd["CodImpuesto"].ToString());
                         oOPCHDetalle.NombImpuesto = (drd["NombImpuesto"].ToString());
                         oOPCHDetalle.IdGrupoUnidadMedida = Convert.ToInt32(drd["IdGrupoUnidadMedida"].ToString());
+                        oOPCHDetalle.PrecioUnidadBase = Convert.ToDecimal(drd["PrecioUnidadBase"].ToString());
+
+                        
+
+
+
+                        oOPCHDetalle.CantidadNotaCredito = Convert.ToInt32((String.IsNullOrEmpty(drd["CantidadNotaCredito"].ToString())) ? "0" : drd["CantidadNotaCredito"].ToString());
+
                         lstOPCHDetalle.Add(oOPCHDetalle);
                     }
                     drd.Close();
@@ -222,6 +331,44 @@ namespace DAO
                     }
                 }
             }
+        }
+
+
+        public List<AnexoDTO> ObtenerAnexoOpch(int IdOpch, ref string mensaje_error)
+        {
+            List<AnexoDTO> lstAnexoDTO = new List<AnexoDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerAnexosOpchxIdOpch", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdOpch", IdOpch);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        AnexoDTO oAnexoDTO = new AnexoDTO();
+                        oAnexoDTO.IdAnexo = Convert.ToInt32(drd["IdAnexo"].ToString());
+                        oAnexoDTO.ruta = (drd["ruta"].ToString());
+                        oAnexoDTO.IdSociedad = Convert.ToInt32(drd["IdSociedad"].ToString());
+                        oAnexoDTO.Tabla = (drd["Tabla"].ToString());
+                        oAnexoDTO.IdTabla = Convert.ToInt32(drd["IdTabla"].ToString());
+                        oAnexoDTO.NombreArchivo = (drd["NombreArchivo"].ToString());
+                        lstAnexoDTO.Add(oAnexoDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+                return lstAnexoDTO;
+            }
+
+
         }
 
 

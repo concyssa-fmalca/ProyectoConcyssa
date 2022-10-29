@@ -65,6 +65,7 @@ namespace ConcyssaWeb.Controllers
             oPedidoDTO.IdSociedad = IdSociedad;
             oPedidoDTO.IdUsuario = IdUsuario;
             PedidoDAO oPedidoDAO = new PedidoDAO();
+            MovimientoDAO oMovimientoDAO = new MovimientoDAO();
             int respuesta = oPedidoDAO.UpdateInsertPedido(oPedidoDTO, ref mensaje_error);
             if (mensaje_error.Length > 0)
             {
@@ -76,6 +77,17 @@ namespace ConcyssaWeb.Controllers
                 {
                     oPedidoDTO.detalles[i].IdPedido = respuesta;
                     int respuesta1 = oPedidoDAO.InsertUpdatePedidoDetalle(oPedidoDTO.detalles[i], ref mensaje_error);
+                }
+
+               
+                for (int i = 0; i < oPedidoDTO.AnexoDetalle.Count; i++)
+                {
+                    oPedidoDTO.AnexoDetalle[i].ruta = "/Anexos/" + oPedidoDTO.AnexoDetalle[i].NombreArchivo;
+                    oPedidoDTO.AnexoDetalle[i].IdSociedad = oPedidoDTO.IdSociedad;
+                    oPedidoDTO.AnexoDetalle[i].Tabla = "Pedido";
+                    oPedidoDTO.AnexoDetalle[i].IdTabla = respuesta;
+
+                    oMovimientoDAO.InsertAnexoMovimiento(oPedidoDTO.AnexoDetalle[i], ref mensaje_error);
                 }
 
                 oPedidoDAO.UpdateTotalesPedido(respuesta, ref mensaje_error);
@@ -272,6 +284,40 @@ namespace ConcyssaWeb.Controllers
             PedidoDAO oPedidoDAO = new PedidoDAO();
             lstAsignadoPedidoRequeridoDTO = oPedidoDAO.ListarProductosAsignadosxProveedorDetalle(IdProveedor, ref mensaje_error);
             return JsonConvert.SerializeObject(lstAsignadoPedidoRequeridoDTO);
+        }
+
+        public string GuardarFile(IFormFile file)
+        {
+            List<string> Archivos = new List<string>();
+            if (file != null && file.Length > 0)
+            {
+                try
+                {
+                    string dir = "wwwroot/Anexos/" + file.FileName;
+                    if (Directory.Exists(dir))
+                    {
+                        ViewBag.Message = "Archivo ya existe";
+                    }
+                    else
+                    {
+                        string filePath = Path.Combine(dir, Path.GetFileName(file.FileName));
+                        using (Stream fileStream = new FileStream(dir, FileMode.Create, FileAccess.Write))
+                        {
+                            file.CopyTo(fileStream);
+                            Archivos.Add(file.FileName);
+                        }
+
+                        ViewBag.Message = "Anexo guardado correctamente";
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.Message = "Error:" + ex.Message.ToString();
+                    throw;
+                }
+            }
+            return JsonConvert.SerializeObject(Archivos);
         }
 
 

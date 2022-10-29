@@ -258,7 +258,7 @@ function ConsultaServidor(url) {
 
 
 function ModalNuevo() {
-
+    disabledmodal(false);
     $("#lblTituloModal").html("Nuevo Transferencia");
     let seguiradelante = 'false';
     seguiradelante = CargarBasesObraAlmacenSegunAsignado();
@@ -297,6 +297,9 @@ function ModalNuevo() {
     $("#IdTipoProducto").prop("disabled", false);
     AbrirModal("modal-form");
     //setearValor_ComboRenderizado("cboCodigoArticulo");
+    CargarMotivoTraslado();
+    CargarProveedor();
+    ObtenerTiposDocumentos();
 }
 
 
@@ -692,11 +695,11 @@ function CargarSolicitante(identificar) {
 }
 
 function CargarSucursales() {
-    $.ajaxSetup({ async: false });
-    $.post("/Sucursal/ObtenerSucursales", function (data, status) {
-        let sucursales = JSON.parse(data);
-        llenarComboSucursal(sucursales, "cboSucursal", "Seleccione")
-    });
+    //$.ajaxSetup({ async: false });
+    //$.post("/Sucursal/ObtenerSucursales", function (data, status) {
+    //    let sucursales = JSON.parse(data);
+    //    llenarComboSucursal(sucursales, "cboSucursal", "Seleccione")
+    //});
 }
 
 function CargarDepartamentos() {
@@ -1196,7 +1199,20 @@ function GuardarSolicitud() {
             'Total': Total,
             'IdTipoProducto': IdTipoProducto,
             'IdAlmacenDestino': IdAlmacenDestino,
-            'IdCuadrilla': IdCuadrilla
+            'IdCuadrilla': IdCuadrilla,
+
+
+            'IdTipoDocumentoRef': $("#IdTipoDocumentoRef").val(),
+            'NumSerieTipoDocumentoRef': $("#SerieNumeroRef").val(),
+            'IdDestinatario': $("#IdDestinatario").val(),
+            'IdMotivoTraslado': $("#IdMotivoTraslado").val(),
+            'IdTransportista': $("#IdTransportista").val(),
+            'PlacaVehiculo': $("#PlacaVehiculo").val(),
+            'NumIdentidadConductor': $("#NumIdentidadConductor").val(),
+            'Peso': $("#Peso").val(),
+            'Bulto': $("#Bulto").val()
+
+
             //end cabecera
 
             //DETALLE
@@ -1308,6 +1324,11 @@ function limpiarDatos() {
 
 
 function ObtenerDatosxID(IdMovimiento) {
+    $("#txtId").val(IdMovimiento)
+    CargarMotivoTraslado();
+    CargarProveedor();
+    ObtenerTiposDocumentos();
+
     CargarCentroCosto();
     CargarAlmacen();
     CargarTipoDocumentoOperacion();
@@ -1344,6 +1365,40 @@ function ObtenerDatosxID(IdMovimiento) {
             $("#txtImpuesto").val(movimiento.Impuesto)
             $("#txtTotal").val(movimiento.Total)
 
+            
+            
+            $("#IdTipoDocumentoRef").val(movimiento.IdTipoDocumentoRef)
+            $("#SerieNumeroRef").val(movimiento.NumSerieTipoDocumentoRef)
+
+
+            $("#IdDestinatario").val(movimiento.IdDestinatario).change()
+            $("#IdMotivoTraslado").val(movimiento.IdMotivoTraslado).change()
+            $("#IdTransportista").val(movimiento.IdTransportista).change()
+            $("#PlacaVehiculo").val(movimiento.PlacaVehiculo)
+            $("#NumIdentidadConductor").val(movimiento.NumIdentidadConductor)
+            $("#Peso").val(movimiento.Peso)
+            $("#Bulto").val(movimiento.Bulto)
+
+            //AnexoDetalle
+            //AnxoDetalle
+            let AnexoDetalle = movimiento.AnexoDetalle;
+            let trAnexo = '';
+            for (var k = 0; k < AnexoDetalle.length; k++) {
+                trAnexo += `
+                <tr>
+                   
+                    <td>
+                       `+ AnexoDetalle[k].NombreArchivo + `
+                    </td>
+                    <td>
+                       <a target="_blank" href="`+ AnexoDetalle[k].ruta + `"> Descargar </a>
+                    </td>
+                    <td><button class="btn btn-xs btn-danger" onclick="EliminarAnexo(`+ AnexoDetalle[k].IdAnexo + `,this)">-</button></td>
+                </tr>`;
+            }
+            $("#tabla_files").find('tbody').append(trAnexo);
+
+
             //agrega detalle
             let tr = '';
 
@@ -1356,16 +1411,16 @@ function ObtenerDatosxID(IdMovimiento) {
             }
 
 
-            let DetalleAnexo = solicitudes[0].DetallesAnexo;
-            for (var i = 0; i < DetalleAnexo.length; i++) {
-                AgregarLineaDetalleAnexo(DetalleAnexo[i].IdSolicitudRQAnexos, DetalleAnexo[i].Nombre)
-            }
+            //let DetalleAnexo = solicitudes[0].DetallesAnexo;
+            //for (var i = 0; i < DetalleAnexo.length; i++) {
+            //    AgregarLineaDetalleAnexo(DetalleAnexo[i].IdSolicitudRQAnexos, DetalleAnexo[i].Nombre)
+            //}
 
 
         }
 
     });
-
+    disabledmodal(true);
 }
 
 
@@ -1994,4 +2049,221 @@ function ValidarIgual() {
         swal("Informacion!", "Seleccione un almacen diferente al Origen");
         $("#IdAlmacenDestino").val(0)
     }
+}
+
+
+function validarseriescontable() {
+    let IdSerie = $("#cboSerie").val();
+    let IdDocumento = 1;
+    let Fecha = $("#txtFechaContabilizacion").val();
+    let Orden = 1;
+    let datosrespuesta;
+    let estado = 0;
+    datosrespuesta = ValidarFechaContabilizacionxDocumentoM(IdSerie, IdDocumento, Fecha, Orden);
+
+    if (datosrespuesta.FechaRelacion.length == 0) {
+        swal("Informacion!", "No  se encuentra Fecha de Contabilizacion Activa");
+        return true;
+    }
+
+    if (datosrespuesta.FechaRelacion.length > 0) {
+        for (var i = 0; i < datosrespuesta.FechaRelacion.length; i++) {
+            console.log(datosrespuesta.FechaRelacion[i]);
+            if (datosrespuesta.FechaRelacion[i].StatusPeriodo == 1) {
+                estado = 1;
+            }
+        }
+
+    }
+
+    if (estado == 0) {
+        swal("Informacion!", "No se encuentra Fecha de contabilizacion,verificar periodo contable");
+        return true;
+    }
+
+}
+
+
+function ValidarFechaContabilizacionxDocumentoM(IdSerie, IdDocumento, Fecha, Orden) {
+    let respustavalidacion;
+    $.ajaxSetup({ async: false });
+    $.post("/Serie/ObtenerDatosSerieValidacion", { IdSerie, IdDocumento, Fecha, Orden }, function (data, status) {
+        if (validadJson(data)) {
+            respustavalidacion = JSON.parse(data);
+        } else {
+            respustavalidacion
+        }
+    });
+    return respustavalidacion;
+}
+
+
+function CargarMotivoTraslado() {
+    $.ajaxSetup({ async: false });
+    $.post("/EntradaMercancia/ObtenerMotivoTraslado", function (data, status) {
+        if (validadJson(data)) {
+            let datos = JSON.parse(data);
+            let option = "";
+            option = `<option value="0">SELECCIONE MOTIVO TRASLADO</option>`
+            for (var i = 0; i < datos.length; i++) {
+                option += `<option value="` + datos[i].IdMotivoTraslado + `">` + datos[i].CodigoSunat + '-' + datos[i].Descripcion + `</option>`
+            }
+            $("#IdMotivoTraslado").html(option);
+            $("#IdMotivoTraslado").select2();
+        } else {
+
+        }
+    });
+}
+
+function CargarProveedor() {
+    $.post("/Proveedor/ObtenerProveedores", function (data, status) {
+        Proveedor = JSON.parse(data);
+        let option = `<option value="0">SELECCIONE PROVEEDOR</option>`;
+        console.log(Proveedor);
+        for (var i = 0; i < Proveedor.length; i++) {
+            option += `<option value="` + Proveedor[i].IdProveedor + `">` + Proveedor[i].NumeroDocumento + `-` + Proveedor[i].RazonSocial + `</option>`
+        }
+
+        $("#IdTransportista").html(option);
+        $("#IdDestinatario").html(option);
+        $("#IdTransportista").select2();
+        $("#IdDestinatario").select2();
+
+    });
+}
+
+function GenerarGuia() {
+
+    let IdMovimiento = $("#txtId").val();
+    Swal.fire({
+        title: 'DESEA GENERAR GUIA?',
+        text: "Desea generar guia electronica",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si Generar Guia Electronica!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: "/Movimientos/GenerarGuia",
+                type: "POST",
+                async: true,
+                data: {
+                    'IdMovimiento': IdMovimiento
+                },
+                beforeSend: function () {
+                    Swal.fire({
+                        title: "Cargando...",
+                        text: "Por favor espere",
+                        showConfirmButton: false,
+                        allowOutsideClick: false
+                    });
+                },
+                success: function (data) {
+                    let respuetaguia = JSON.parse(data);
+                    console.log(respuetaguia);
+                    Swal.fire(
+                        'Correcto',
+                        respuetaguia.Message,
+                        'success'
+                    )
+
+                    CerrarModal();
+                    ObtenerDatosxID(IdMovimiento);
+
+
+                    //if (data == 1) {
+                    //    Swal.fire(
+                    //        'Correcto',
+                    //        'Proceso Realizado Correctamente',
+                    //        'success'
+                    //    )
+                    //    //swal("Exito!", "Proceso Realizado Correctamente", "success")
+                    //    table.destroy();
+
+
+                    //} else {
+                    //    Swal.fire(
+                    //        'Error!',
+                    //        'Ocurrio un Error!',
+                    //        'error'
+                    //    )
+
+                    //}
+
+
+                }
+            }).fail(function () {
+                Swal.fire(
+                    'Error!',
+                    'Comunicarse con el Area Soporte: smarcode@smartcode.pe !',
+                    'error'
+                )
+            });
+        }
+    })
+}
+
+
+
+function ObtenerTiposDocumentos() {
+    $.ajaxSetup({ async: false });
+    $.post("/TiposDocumentos/ObtenerTiposDocumentos", { 'estado': 1 }, function (data, status) {
+        let tiposdocumentos = JSON.parse(data);
+        llenarTiposDocumentos(tiposdocumentos, "IdTipoDocumentoRef", "Seleccione")
+    });
+}
+
+function llenarTiposDocumentos(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdTipoDocumento + "'>" + lista[i].Descripcion.toUpperCase() + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+}
+
+
+
+function disabledmodal(valorbolean) {
+    $("#IdBase").prop('disabled', valorbolean);
+    $("#IdObra").prop('disabled', valorbolean);
+    $("#cboAlmacen").prop('disabled', valorbolean);
+    $("#cboCentroCosto").prop('disabled', valorbolean);
+    $("#cboMoneda").prop('disabled', valorbolean);
+    $("#cboSerie").prop('disabled', valorbolean);
+    $("#txtFechaDocumento").prop('disabled', valorbolean);
+    $("#txtFechaContabilizacion").prop('disabled', valorbolean);
+    $("#cboTipoDocumentoOperacion").prop('disabled', valorbolean);
+    $("#IdTipoDocumentoRef").prop('disabled', valorbolean);
+    $("#SerieNumeroRef").prop('disabled', valorbolean);
+    $("#IdCuadrilla").prop('disabled', valorbolean);
+    $("#IdResponsable").prop('disabled', valorbolean);
+    $("#txtComentarios").prop('disabled', valorbolean)
+    $("#btn_agregaritem").prop('disabled', valorbolean)
+    $("#EntregadoA").prop('disabled', valorbolean)
+
+    if (valorbolean) {
+        $("#btnGrabar").hide()
+        $("#btnExtorno").show();
+        $("#total_editar").show();
+        $("#total_nuevo").hide();
+        $("#btnNuevo").show();
+
+    } else {
+        $("#btnExtorno").hide();
+        $("#total_editar").hide();
+        $("#total_nuevo").show();
+        $("#btnGrabar").show();
+        $("#btnNuevo").hide();
+    }
+
 }

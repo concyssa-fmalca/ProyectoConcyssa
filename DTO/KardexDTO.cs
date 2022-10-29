@@ -38,5 +38,7 @@ namespace DTO
 
         public string Comentario { get; set; }
 
+        public string Modulo { get; set; } = "";
+
     }
 }

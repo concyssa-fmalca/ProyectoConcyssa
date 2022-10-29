@@ -59,6 +59,9 @@ namespace DAO
                         oOpdnDTO.IdProveedor = Convert.ToInt32(drd["IdProveedor"].ToString());
                         oOpdnDTO.IdTipoDocumentoRef = Convert.ToInt32(drd["IdTipoDocumentoRef"].ToString());
                         oOpdnDTO.NumSerieTipoDocumentoRef = (drd["NumSerieTipoDocumentoRef"].ToString());
+                        oOpdnDTO.NombUsuario = (drd["NombUsuario"].ToString());
+                        oOpdnDTO.CreatedAt = Convert.ToDateTime(drd["CreatedAt"].ToString());
+
 
 
 
@@ -248,6 +251,63 @@ namespace DAO
                         oOPDNDetalle.IdGrupoUnidadMedida = Convert.ToInt32(drd["IdGrupoUnidadMedida"].ToString());
                         oOPDNDetalle.CantidadUsada = Convert.ToDecimal(drd["CantidadUsada"].ToString());
                         oOPDNDetalle.Referencia = (drd["Referencia"].ToString());
+                        oOPDNDetalle.CantidadDevolucion = Convert.ToDecimal((String.IsNullOrEmpty(drd["CantidadDevolucion"].ToString())) ? "0" : drd["CantidadDevolucion"].ToString());
+
+
+                        
+
+                        lstOPDNDetalle.Add(oOPDNDetalle);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+                return lstOPDNDetalle;
+            }
+
+        }
+        public List<OPDNDetalle> ObtenerDetalleOpdnModal(int IdOpdn, ref string mensaje_error)
+        {
+            List<OPDNDetalle> lstOPDNDetalle = new List<OPDNDetalle>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarOpdnDetalleModal", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdOpdn", IdOpdn);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        OPDNDetalle oOPDNDetalle = new OPDNDetalle();
+                        oOPDNDetalle.DT_RowId = Convert.ToInt32(drd["IdOPDNDetalle"].ToString());
+                        oOPDNDetalle.IdOPDN = Convert.ToInt32(drd["IdOPDN"].ToString());
+                        oOPDNDetalle.IdOPDNDetalle = Convert.ToInt32(drd["IdOPDNDetalle"].ToString());
+                        oOPDNDetalle.DescripcionArticulo = (drd["DescripcionArticulo"].ToString());
+
+                        oOPDNDetalle.IdArticulo = Convert.ToInt32(drd["IdArticulo"].ToString());
+                        oOPDNDetalle.IdGrupoUnidadMedida = Convert.ToInt32(drd["IdGrupoUnidadMedida"].ToString());
+                        oOPDNDetalle.IdDefinicionGrupoUnidad = Convert.ToInt32(drd["IdDefinicionGrupoUnidad"].ToString());
+                        oOPDNDetalle.Cantidad = Convert.ToDecimal(drd["Cantidad"].ToString());
+                        oOPDNDetalle.valor_unitario = Convert.ToDecimal(drd["valor_unitario"].ToString());
+                        oOPDNDetalle.precio_unitario = Convert.ToDecimal(drd["precio_unitario"].ToString());
+                        oOPDNDetalle.total_base_igv = Convert.ToDecimal(drd["total_base_igv"].ToString());
+                        oOPDNDetalle.porcentaje_igv = Convert.ToDecimal(drd["porcentaje_igv"].ToString());
+                        oOPDNDetalle.total_igv = Convert.ToDecimal(drd["total_igv"].ToString());
+                        oOPDNDetalle.total_impuestos = Convert.ToDecimal(drd["total_impuestos"].ToString());
+                        oOPDNDetalle.total_valor_item = Convert.ToDecimal(drd["total_valor_item"].ToString());
+                        oOPDNDetalle.total_item = Convert.ToDecimal(drd["total_item"].ToString());
+                        oOPDNDetalle.IdIndicadorImpuesto = Convert.ToInt32(drd["IdIndicadorImpuesto"].ToString());
+                        oOPDNDetalle.CodImpuesto = (drd["CodImpuesto"].ToString());
+                        oOPDNDetalle.NombImpuesto = (drd["NombImpuesto"].ToString());
+                        oOPDNDetalle.IdGrupoUnidadMedida = Convert.ToInt32(drd["IdGrupoUnidadMedida"].ToString());
+                        oOPDNDetalle.CantidadUsada = Convert.ToDecimal(drd["CantidadUsada"].ToString());
+                        oOPDNDetalle.Referencia = (drd["Referencia"].ToString());
 
 
 
@@ -266,6 +326,7 @@ namespace DAO
 
         }
 
+        
 
 
         public int UpdateTotalesOPDN(int IdOPDN, ref string mensaje_error)
@@ -297,6 +358,46 @@ namespace DAO
             }
         }
 
+
+
+
+
+        public List<AnexoDTO> ObtenerAnexoOpdn(int IdOpdn, ref string mensaje_error)
+        {
+            List<AnexoDTO> lstAnexoDTO = new List<AnexoDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerAnexosOpdnxIdOpdn", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdOpdn", IdOpdn);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        AnexoDTO oAnexoDTO = new AnexoDTO();
+                        oAnexoDTO.IdAnexo = Convert.ToInt32(drd["IdAnexo"].ToString());
+                        oAnexoDTO.ruta = (drd["ruta"].ToString());
+                        oAnexoDTO.IdSociedad = Convert.ToInt32(drd["IdSociedad"].ToString());
+                        oAnexoDTO.Tabla = (drd["Tabla"].ToString());
+                        oAnexoDTO.IdTabla = Convert.ToInt32(drd["IdTabla"].ToString());
+                        oAnexoDTO.NombreArchivo = (drd["NombreArchivo"].ToString());
+                        lstAnexoDTO.Add(oAnexoDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+                return lstAnexoDTO;
+            }
+
+        
+        }
 
     }
 }

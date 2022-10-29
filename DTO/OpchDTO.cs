@@ -77,6 +77,8 @@ namespace DTO
         public int IdProveedor { get; set; }
         public int idCondicionPago {get;set;}
 
+        public IList<AnexoDTO> AnexoDetalle { get; set; }
+
     }
 
     public class OPCHDetalle
@@ -126,6 +128,8 @@ namespace DTO
         public int IdOrigen { get; set; }
 
         public decimal CantidadUsada { get; set; }
+        public decimal CantidadNotaCredito { get; set; }
+
 
 
     }

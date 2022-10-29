@@ -46,7 +46,7 @@
 
 
     <!-- Modal -->
-    <div id="modal-form" class="popup-sm allcp-form mfp-with-anim mfp-hide">
+    @*<div id="modal-form" class="popup-sm allcp-form mfp-with-anim mfp-hide">
         <div class="panel">
             <div class="panel-heading">
                 <h5 id='lblTituloModal'></h5>
@@ -113,6 +113,46 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer text-right">
+                <div class="row">
+                    <button type="button" id="btnGrabar" onclick="GuardarSerie()" class="btn btn-primary pull-right plu">Grabar</button>
+                    <button type="button" id="btnCancelar" class="btn btn-danger pull-right" style="background-color:orange;" onclick="closePopup();">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>*@
+
+    <div id="modal-form" class="popup-xl allcp-form mfp-with-anim mfp-hide">
+        <div class="panel">
+            <div class="panel-heading">
+                <h5 id='lblTituloModal'></h5>
+            </div>
+            <div class="panel-body ">
+                <div class='col s12 m12 '>
+                    <div class='container-fluid'>
+                        <input id='IdDocumentoModal' name="IdDocumentoModal" type='hidden' class="form-control input-sm">
+                        <div class='form-horizontal'>
+                            <table class="display table" id="table_serienew">
+                                <thead>
+                                    <tr>
+                                        <th> <button class="btn btn-info" onclick="addtrserie()">+</button> </th>
+                                        <th>Serie</th>
+                                        <th>Numero Inicial</th>
+                                        <th>Numero Final</th>
+                                        <th>Articulo</th>
+                                        <th>Servicio</th>
+                                        <th>Periodo</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
                         </div>
 
                     </div>

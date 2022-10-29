@@ -123,7 +123,8 @@ namespace DAO
                         oPedidoDTO.NombTipoPedido = (drd["NombTipoPedido"].ToString());
                         oPedidoDTO.IdBase = Convert.ToInt32(drd["IdBase"].ToString());
                         oPedidoDTO.IdObra = Convert.ToInt32(drd["IdObra"].ToString());
-                        oPedidoDTO.total_venta = Convert.ToDecimal(drd["total_venta"].ToString());
+                       
+                        oPedidoDTO.total_venta = Convert.ToDecimal((String.IsNullOrEmpty(drd["total_venta"].ToString())) ? "0" : drd["total_venta"].ToString());
                         oPedidoDTO.CantidadDisponible = Convert.ToDecimal(drd["CantidadDisponible"].ToString());
 
                         lstPedidoDTO.Add(oPedidoDTO);
@@ -616,6 +617,15 @@ namespace DAO
                         oPedidoDTO.IdCondicionPago = Convert.ToInt32(drd["IdCondicionPago"].ToString());
                         oPedidoDTO.IdObra = Convert.ToInt32(drd["IdObra"].ToString());
                         oPedidoDTO.IdBase = Convert.ToInt32(drd["IdBase"].ToString());
+                        oPedidoDTO.total_igv = Convert.ToDecimal(drd["total_igv"].ToString());
+                        oPedidoDTO.total_valor = Convert.ToDecimal(drd["total_valor"].ToString());
+                        oPedidoDTO.total_venta = Convert.ToDecimal(drd["total_venta"].ToString());
+                        oPedidoDTO.NombUsuario = (drd["NombUsuario"].ToString());
+                        oPedidoDTO.CreatedAt = Convert.ToDateTime(drd["NombUsuario"].ToString());
+
+
+
+
 
 
 
@@ -690,6 +700,8 @@ namespace DAO
                         oPedidoDetalleDTO.CodImpuesto = (dr2["CodImpuesto"].ToString());
                         oPedidoDetalleDTO.NombImpuesto = (dr2["NombImpuesto"].ToString());
                         oPedidoDetalleDTO.IdGrupoUnidadMedida = Convert.ToInt32(dr2["IdGrupoUnidadMedida"].ToString());
+                        oPedidoDetalleDTO.Referencia = (dr2["Referencia"].ToString());
+
 
                         oPedidoDTO.detalles[posicion] = oPedidoDetalleDTO;
                         posicion = posicion + 1;
@@ -700,9 +712,64 @@ namespace DAO
                 {
                 }
                 #endregion
-
-                return oPedidoDTO;
+                
             }
+
+            #region AnexoDetalle
+            Int32 filasdetalleAnexo = 0;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerAnexosPedidoxIdPedido", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdPedido", IdPedido);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader dr1 = da.SelectCommand.ExecuteReader();
+                    while (dr1.Read())
+                    {
+                        filasdetalleAnexo++;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error += ex.Message.ToString();
+                }
+            }
+            oPedidoDTO.AnexoDetalle = new AnexoDTO[filasdetalleAnexo];
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerAnexosPedidoxIdPedido", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdPedido", IdPedido);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader dr2 = da.SelectCommand.ExecuteReader();
+                    Int32 posicion = 0;
+                    while (dr2.Read())
+                    {
+                        AnexoDTO oAnexoDTO = new AnexoDTO();
+                        oAnexoDTO.IdAnexo = Convert.ToInt32(dr2["IdAnexo"].ToString());
+                        oAnexoDTO.ruta = (dr2["ruta"].ToString());
+                        oAnexoDTO.IdSociedad = Convert.ToInt32(dr2["IdSociedad"].ToString());
+                        oAnexoDTO.Tabla = (dr2["Tabla"].ToString());
+                        oAnexoDTO.IdTabla = Convert.ToInt32(dr2["IdTabla"].ToString());
+                        oAnexoDTO.NombreArchivo = (dr2["NombreArchivo"].ToString());
+                        oPedidoDTO.AnexoDetalle[posicion] = oAnexoDTO;
+                        posicion = posicion + 1;
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            #endregion
+
+            return oPedidoDTO;
+
+
 
         }
 

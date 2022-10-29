@@ -53,6 +53,8 @@ namespace DAO
                         oKardexDTO.DescUnidadMedidaBase = (drd["DescUnidadMedidaBase"].ToString());
                         oKardexDTO.NombUsuario = (drd["NombUsuario"].ToString());
                         oKardexDTO.Comentario = (drd["Comentario"].ToString());
+                        oKardexDTO.Modulo = (drd["Modulo"].ToString());
+
 
 
 

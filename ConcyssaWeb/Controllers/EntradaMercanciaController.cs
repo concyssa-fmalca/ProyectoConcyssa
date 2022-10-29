@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net;
 using System;
+using FE;
+
 
 namespace ConcyssaWeb.Controllers
 {
@@ -38,7 +40,7 @@ namespace ConcyssaWeb.Controllers
                 return JsonConvert.SerializeObject(oDataTableDTO);
 
             }
-                        
+
             return mensaje_error;
         }
 
@@ -87,7 +89,31 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
-        
+
+        //public string ObtenerOPDNDetalleModal(int IdOPDN)
+        //{
+        //    string mensaje_error = "";
+        //    OpdnDAO oOpdnDAO = new OpdnDAO();
+        //    int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+        //    DataTableDTO oDataTableDTO = new DataTableDTO();
+        //    List<OPDNDetalle> lstOPDNDetalle = oOpdnDAO.ObtenerDetalleOpdnModal(IdOPDN, ref mensaje_error);
+        //    if (lstOPDNDetalle.Count > 0)
+        //    {
+        //        //oDataTableDTO.sEcho = 1;
+        //        //oDataTableDTO.iTotalDisplayRecords = lstOPDNDetalle.Count;
+        //        //oDataTableDTO.iTotalRecords = lstOPDNDetalle.Count;
+        //        //oDataTableDTO.aaData = (lstOPDNDetalle);
+        //        //return oDataTableDTO;
+        //        return JsonConvert.SerializeObject(lstOPDNDetalle);
+
+        //    }
+        //    else
+        //    {
+        //        return mensaje_error;
+
+        //    }
+        //}
+
 
 
 
@@ -132,6 +158,19 @@ namespace ConcyssaWeb.Controllers
                     oOpdnDTO.detalles[i].IdOPDN = respuesta;
                     int respuesta1 = oMovimimientoDAO.InsertUpdateOPDNDetalle(oOpdnDTO.detalles[i], ref mensaje_error);
                 }
+
+                for (int i = 0; i < oOpdnDTO.AnexoDetalle.Count; i++)
+                {
+                    oOpdnDTO.AnexoDetalle[i].ruta = "/Anexos/" + oOpdnDTO.AnexoDetalle[i].NombreArchivo;
+                    oOpdnDTO.AnexoDetalle[i].IdSociedad = oOpdnDTO.IdSociedad;
+                    oOpdnDTO.AnexoDetalle[i].Tabla = "Opdn";
+                    oOpdnDTO.AnexoDetalle[i].IdTabla = respuesta;
+
+                    oMovimimientoDAO.InsertAnexoMovimiento(oOpdnDTO.AnexoDetalle[i], ref mensaje_error);
+                }
+
+
+
                 oOpdnDAO.UpdateTotalesOPDN(respuesta, ref mensaje_error);
                 
 
@@ -194,6 +233,16 @@ namespace ConcyssaWeb.Controllers
                 {
                     oMovimientoDTO.detalles[i].IdMovimiento = respuesta;
                     int respuesta1 = oMovimimientoDAO.InsertUpdateMovimientoDetalle(oMovimientoDTO.detalles[i], ref mensaje_error);
+                }
+
+                for (int i = 0; i < oMovimientoDTO.AnexoDetalle.Count; i++)
+                {
+                    oMovimientoDTO.AnexoDetalle[i].ruta = "/Anexos/" + oMovimientoDTO.AnexoDetalle[i].NombreArchivo;
+                    oMovimientoDTO.AnexoDetalle[i].IdSociedad = oMovimientoDTO.IdSociedad;
+                    oMovimientoDTO.AnexoDetalle[i].Tabla = "Movimiento";
+                    oMovimientoDTO.AnexoDetalle[i].IdTabla = respuesta;
+
+                    oMovimimientoDAO.InsertAnexoMovimiento(oMovimientoDTO.AnexoDetalle[i], ref mensaje_error);
                 }
 
             }
@@ -271,12 +320,18 @@ namespace ConcyssaWeb.Controllers
                 for (int i = 0; i < lstOPDNDetalle.Count; i++)
                 {
                     oOpdnDTO.detalles[i] = lstOPDNDetalle[i];
-
-
                 }
 
 
+                List<AnexoDTO> lstAnexoDTO = new List<AnexoDTO>();
+                lstAnexoDTO = oOpdnDAO.ObtenerAnexoOpdn(IdOPDN, ref mensaje_error);
+                oOpdnDTO.AnexoDetalle = new AnexoDTO[lstAnexoDTO.Count()];
+                for (int i = 0; i < lstAnexoDTO.Count; i++)
+                {
+                    oOpdnDTO.AnexoDetalle[i] = lstAnexoDTO[i];
+                }
                 return JsonConvert.SerializeObject(oOpdnDTO);
+                
             }
             else
             {
@@ -334,6 +389,169 @@ namespace ConcyssaWeb.Controllers
         
             return Resultado;
 
+        }
+
+        public string GenerarGuiaElectronica()
+        {
+            APIGuiaRemisionSunat oAPIGuiaRemisionSunat = new APIGuiaRemisionSunat();
+            GRSunatDTO oGRSunatDTO = new GRSunatDTO();
+            oAPIGuiaRemisionSunat.SendGuiaRemision(oGRSunatDTO);
+
+            return "";
+        }
+
+        public string ObtenerMotivoTraslado()
+        {
+            string mensaje_error = "";
+            MotivoTrasladoDAO oMotivoTrasladoDAO = new MotivoTrasladoDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            DataTableDTO oDataTableDTO = new DataTableDTO();
+            List<MotivoTrasladoDTO> lstMotivoTrasladoDTO = oMotivoTrasladoDAO.ObtenerMotivoTraslado(IdSociedad,ref mensaje_error);
+            if (lstMotivoTrasladoDTO.Count >= 0 && mensaje_error.Length == 0)
+            {
+                //return oDataTableDTO;
+                return JsonConvert.SerializeObject(lstMotivoTrasladoDTO);
+
+            }
+            return mensaje_error;
+        }
+
+
+        public string GuardarFile(IFormFile file)
+        {
+            List<string> Archivos = new List<string>();
+            if (file != null && file.Length > 0)
+            {
+                try
+                {
+                    string dir = "wwwroot/Anexos/" + file.FileName;
+                    if (Directory.Exists(dir))
+                    {
+                        ViewBag.Message = "Archivo ya existe";
+                    }
+                    else
+                    {
+                        string filePath = Path.Combine(dir, Path.GetFileName(file.FileName));
+                        using (Stream fileStream = new FileStream(dir, FileMode.Create, FileAccess.Write))
+                        {
+                            file.CopyTo(fileStream);
+                            Archivos.Add(file.FileName);
+                        }
+
+                        ViewBag.Message = "Anexo guardado correctamente";
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.Message = "Error:" + ex.Message.ToString();
+                    throw;
+                }
+            }
+            return JsonConvert.SerializeObject(Archivos);
+        }
+
+
+        public string GenerarReporte(string NombreReporte, string Formato, int Id)
+        {
+            WebResponse webResponse;
+            HttpWebRequest request;
+            Uri uri;
+            string cadenaUri;
+            string requestData;
+            string response;
+            string mensaje_error;
+            WebServiceDTO oWebServiceDTO = new WebServiceDTO();
+            oWebServiceDTO.Formato = Formato;
+            oWebServiceDTO.NombreReporte = NombreReporte;
+            oWebServiceDTO.Id = Id;
+            requestData = JsonConvert.SerializeObject(oWebServiceDTO);
+
+
+            try
+            {
+                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&Id=" + Id;
+                cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReportCrystal";
+                uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
+                request = (HttpWebRequest)WebRequest.Create(uri);
+
+                request.Method = "POST";
+                //request.ContentType = "application/json;charset=utf-8";
+                request.ContentType = "application/x-www-form-urlencoded";
+
+                StreamWriter requestWriter = new StreamWriter(request.GetRequestStream(), System.Text.Encoding.ASCII);
+
+                requestWriter.Write(strNew);
+
+
+                requestWriter.Close();
+
+
+
+                webResponse = request.GetResponse();
+                Stream webStream = webResponse.GetResponseStream();
+                StreamReader responseReader = new StreamReader(webStream);
+                response = responseReader.ReadToEnd();
+                var Resultado = response;
+                //var json = JsonConvert.SerializeXmlNode(Resultado, Formatting.None, true);
+                //var dd = JsonConvert.SerializeObject(Resultado); 
+                var respuesta = JsonConvert.DeserializeXmlNode(response);
+
+            }
+            catch (WebException e)
+            {
+                using (WebResponse responses = e.Response)
+                {
+                    HttpWebResponse httpResponse = (HttpWebResponse)responses;
+                    using (Stream data = responses.GetResponseStream())
+                    using (var reader = new StreamReader(data))
+                    {
+                        mensaje_error = reader.ReadToEnd();
+
+                    }
+                }
+
+                string err = e.ToString();
+            }
+
+
+
+            //WebResponse webResponse;
+            //HttpWebRequest request;
+            //Uri uri;
+            //string response;
+            //try
+            //{
+
+            //    string cadenaUri = "https://api.apis.net.pe/v1/tipo-cambio-sunat?fecha=" + Fecha;
+            //    uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
+            //    request = (HttpWebRequest)WebRequest.Create(uri);
+            //    request.ContentType = "application/json";
+            //    webResponse = request.GetResponse();
+            //    Stream webStream = webResponse.GetResponseStream();
+            //    StreamReader responseReader = new StreamReader(webStream);
+            //    response = responseReader.ReadToEnd();
+            //    Resultado = response;
+            //    var ff = JsonConvert.DeserializeObject(response);
+            //    var ddd = "ee";
+            //}
+            //catch (WebException e)
+            //{
+            //    using (WebResponse responses = e.Response)
+            //    {
+            //        HttpWebResponse httpResponse = (HttpWebResponse)responses;
+            //        using (Stream data = responses.GetResponseStream())
+            //        using (var reader = new StreamReader(data))
+            //        {
+            //            mensaje_error = reader.ReadToEnd();
+
+            //        }
+            //    }
+
+            //    string err = e.ToString();
+            //}
+
+            return "";
         }
     }
 }

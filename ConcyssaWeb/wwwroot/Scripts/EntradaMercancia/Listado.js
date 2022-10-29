@@ -310,6 +310,7 @@ function ConsultaServidor(url) {
                 '<td>' + movimientos[i].NombObra + '</td>' +
                 '<td>' + movimientos[i].NombAlmacen + '</td>' +
                 '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + movimientos[i].IdMovimiento + ')"></button>' +
+                '<button class="btn btn-primary" onclick="GenerarReporte(' + movimientos[i].IdMovimiento + ')">R</button>'+
                 //'<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + solicitudes[i].IdSolicitudRQ + ')"></button></td >' +
                 '</tr>';
         }
@@ -368,6 +369,9 @@ function ModalNuevo() {
     $("#NombUsuario").html("");
     $("#CreatedAt").html("");
     $("#SerieNumeroRef").val("");
+
+
+    validarseriescontable();
     
 }
 
@@ -409,7 +413,7 @@ function AgregarLineaAnexo(Nombre) {
                <input  class="form-control" type="hidden" value="`+ Nombre + `" id="txtNombreAnexo" name="txtNombreAnexo[]"/>
             </td>
             <td>
-               <a href="/SolicitudRQ/Download?ImageName=`+ Nombre + `" >Descargar</a>
+               <a href="/Anexos/`+ Nombre + `" target="_blank" >Descargar</a>
             </td>
             <td><button class="btn btn-xs btn-danger borrar">-</button></td>
             </tr>`;
@@ -774,11 +778,11 @@ function CargarSolicitante(identificar) {
 }
 
 function CargarSucursales() {
-    $.ajaxSetup({ async: false });
-    $.post("/Sucursal/ObtenerSucursales", function (data, status) {
-        let sucursales = JSON.parse(data);
-        llenarComboSucursal(sucursales, "cboSucursal", "Seleccione")
-    });
+    //$.ajaxSetup({ async: false });
+    //$.post("/Sucursal/ObtenerSucursales", function (data, status) {
+    //    let sucursales = JSON.parse(data);
+    //    llenarComboSucursal(sucursales, "cboSucursal", "Seleccione")
+    //});
 }
 
 function CargarDepartamentos() {
@@ -832,7 +836,7 @@ function llenarComboSerie(lista, idCombo, primerItem) {
     var nCampos;
     var campos;
     for (var i = 0; i < nRegistros; i++) {
-        if (lista[i].Documento==1) {
+        if (lista[i].Documento == 1 && lista[i].Estado) {
             if (lista.length > 0) { contenido += "<option value='" + lista[i].IdSerie + "'>" + lista[i].Serie + "</option>"; }
             else { }
         }
@@ -1267,6 +1271,18 @@ function GuardarSolicitud() {
         
     }
 
+    //AnexoDetalle
+    let arrayTxtNombreAnexo = new Array();
+    $("input[name='txtNombreAnexo[]']").each(function (indice, elemento) {
+        arrayTxtNombreAnexo.push($(elemento).val());
+    });
+
+    let AnexoDetalle = [];
+    for (var i = 0; i < arrayTxtNombreAnexo.length; i++) {
+        AnexoDetalle.push({
+            'NombreArchivo': arrayTxtNombreAnexo[i]
+        });
+    }
     
 
     $.ajax({
@@ -1274,7 +1290,8 @@ function GuardarSolicitud() {
         type: "POST",
         async: true,
         data: {
-             detalles,
+            detalles,
+            AnexoDetalle,
             //cabecera
             'IdAlmacen': IdAlmacen,
             'IdTipoDocumento': IdTipoDocumento,
@@ -1464,7 +1481,6 @@ function ObtenerDatosxID(IdMovimiento) {
             
             //agrega detalle
             let tr = '';
-
             let Detalle = movimiento.detalles;
             $("#total_items").html(Detalle.length)
             console.log(Detalle);
@@ -1473,6 +1489,25 @@ function ObtenerDatosxID(IdMovimiento) {
                 AgregarLineaDetalle(i, Detalle[i]);
                 $("#cboImpuesto").val(Detalle[0].IdIndicadorImpuesto);
             }
+
+
+            //AnxoDetalle
+            let AnexoDetalle = movimiento.AnexoDetalle;
+            let trAnexo = '';
+            for (var k = 0; k < AnexoDetalle.length; k++) {
+                trAnexo += `
+                <tr>
+                   
+                    <td>
+                       `+ AnexoDetalle[k].NombreArchivo + `
+                    </td>
+                    <td>
+                       <a target="_blank" href="`+ AnexoDetalle[k].ruta + `"> Descargar </a>
+                    </td>
+                    <td><button class="btn btn-xs btn-danger" onclick="EliminarAnexo(`+ AnexoDetalle[k].IdAnexo + `,this)">-</button></td>
+                </tr>`;
+            }
+            $("#tabla_files").find('tbody').append(trAnexo);
 
             //if (validadJson(solicitudes[0].DetallesAnexo)) {
             //     let DetalleAnexo = solicitudes[0].DetallesAnexo;
@@ -2199,4 +2234,56 @@ function CargarBasesObraAlmacenSegunAsignado() {
 function nuevo() {
     CerrarModal();
     ModalNuevo();
+}
+
+function validarseriescontable() {
+    let IdSerie = $("#cboSerie").val();
+    let IdDocumento = 1;
+    let Fecha = $("#txtFechaContabilizacion").val();
+    let Orden = 1;
+    let datosrespuesta;
+    let estado = 0;
+    datosrespuesta = ValidarFechaContabilizacionxDocumentoM(IdSerie, IdDocumento, Fecha, Orden);
+
+    if (datosrespuesta.FechaRelacion.length==0) {
+        swal("Informacion!", "No  se encuentra Fecha de Contabilizacion Activa");
+        return true;
+    }
+
+    if (datosrespuesta.FechaRelacion.length > 0) {
+        for (var i = 0; i < datosrespuesta.FechaRelacion.length; i++) {
+            console.log(datosrespuesta.FechaRelacion[i]);
+            if (datosrespuesta.FechaRelacion[i].StatusPeriodo==1) {
+                estado = 1;
+            }
+        }
+       
+    }
+
+    if (estado==0) {
+        swal("Informacion!", "No se encuentra Fecha de contabilizacion,verificar periodo contable");
+        return true;
+    }
+   
+}
+
+
+function ValidarFechaContabilizacionxDocumentoM(IdSerie, IdDocumento, Fecha, Orden) {
+    let respustavalidacion;
+    $.ajaxSetup({ async: false });
+    $.post("/Serie/ObtenerDatosSerieValidacion", { IdSerie, IdDocumento, Fecha, Orden }, function (data, status) {
+        if (validadJson(data)) {
+            respustavalidacion = JSON.parse(data);
+        } else {
+            respustavalidacion
+        }
+    });
+    return respustavalidacion;
+}
+
+function GenerarReporte(id) {
+    $.ajaxSetup({ async: false });
+    $.post("GenerarReporte", { 'NombreReporte': 'EntradaMercancia', 'Formato': 'PDF', 'Id': id }, function (data, status) {
+        console.log('dddddddddddd')
+    });
 }

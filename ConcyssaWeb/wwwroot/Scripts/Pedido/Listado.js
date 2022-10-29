@@ -293,7 +293,47 @@ function llenarComboObra(lista, idCombo, primerItem) {
 
 window.onload = function () {
     listarPedidoDt();
+
+    $("#SubirAnexos").on("submit", function (e) {
+        e.preventDefault();
+        var formData = new FormData($("#SubirAnexos")[0]);
+        $.ajax({
+            url: "GuardarFile",
+            type: "POST",
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (datos) {
+                let data = JSON.parse(datos);
+                console.log(data);
+                if (data.length > 0) {
+                    AgregarLineaAnexo(data[0]);
+                }
+
+            }
+        });
+    });
 };
+
+function AgregarLineaAnexo(Nombre) {
+
+    let tr = '';
+    tr += `<tr>
+            <td style="display:none"><input  class="form-control" type="text" value="0" id="txtIdSolicitudRQAnexo" name="txtIdSolicitudRQAnexo[]"/></td>
+            <td>
+               `+ Nombre + `
+               <input  class="form-control" type="hidden" value="`+ Nombre + `" id="txtNombreAnexo" name="txtNombreAnexo[]"/>
+            </td>
+            <td>
+               <a href="/Anexos/`+ Nombre + `" target="_blank" >Descargar</a>
+            </td>
+            <td><button class="btn btn-xs btn-danger borrar">-</button></td>
+            </tr>`;
+
+    $("#tabla_files").find('tbody').append(tr);
+
+}
 
 
 function ModalNuevo() {
@@ -694,6 +734,7 @@ function llenarComboDefinicionGrupoUnidadItem(lista, idCombo, primerItem) {
 
 let contador = 0;
 function AgregarLinea() {
+
     let IdItem = $("#txtIdItem").val();
     let CodigoItem = $("#txtCodigoItem").val();
     let MedidaItem = $("#cboMedidaItem").val();
@@ -743,6 +784,11 @@ function AgregarLinea() {
     }
     if (ValidartProducto == 0) {
         swal("Informacion!", "Debe Seleccionar Producto!");
+        return;
+    }
+   
+    if (CantidadItem <0) {
+        swal("Informacion!", "La cantidad del producto debe ser positiva!");
         return;
     }
 
@@ -1145,6 +1191,19 @@ function GuardarPedido() {
     });
     //END CAMPOS NUEVOS
 
+    //AnexoDetalle
+    let arrayTxtNombreAnexo = new Array();
+    $("input[name='txtNombreAnexo[]']").each(function (indice, elemento) {
+        arrayTxtNombreAnexo.push($(elemento).val());
+    });
+
+    let AnexoDetalle = [];
+    for (var i = 0; i < arrayTxtNombreAnexo.length; i++) {
+        AnexoDetalle.push({
+            'NombreArchivo': arrayTxtNombreAnexo[i]
+        });
+    }
+
     let detalles = [];
     if (arrayIdArticulo.length == arrayIdUnidadMedida.length && arrayCantidadNecesaria.length == arrayPrecioInfo.length) {
 
@@ -1182,6 +1241,7 @@ function GuardarPedido() {
         async: true,
         data: {
             detalles,
+            AnexoDetalle,
             //cabecera
             'IdAlmacen': IdAlmacen,
             'Serie': $("#IdSerie").val(),
@@ -1253,12 +1313,12 @@ function ObtenerDatosxID(id) {
     CargarCondicionPago();
     $("#lblTituloModal").html("Editar Pedido");
     AbrirModal("modal-form");
-
+  
     $.post('/Pedido/ObtenerDatosxID', {
         'IdPedido': id,
     }, function (data, status) {
         let pedido = JSON.parse(data);
-     
+        console.log(pedido);
         $("#IdBase").val(pedido.IdBase).change();
         $("#IdObra").val(pedido.IdObra).change();
         $("#IdAlmacen").val(pedido.IdAlmacen)
@@ -1268,11 +1328,35 @@ function ObtenerDatosxID(id) {
         $("#LugarEntrega").val(pedido.LugarEntrega)
         $("#IdCondicionPago").val(pedido.IdCondicionPago)
         $("#txtNumeracion").val(pedido.Correlativo)
-        
+        $("#NombUsuario").html(pedido.NombUsuario)
+        $("#total_items").html(pedido.detalles.length)
+        $("#CreatedAt").html(pedido.CreatedAt)
 
+
+        //AnxoDetalle
+        let AnexoDetalle = pedido.AnexoDetalle;
+        let trAnexo = '';
+        for (var k = 0; k < AnexoDetalle.length; k++) {
+            trAnexo += `
+                <tr>
+                   
+                    <td>
+                       `+ AnexoDetalle[k].NombreArchivo + `
+                    </td>
+                    <td>
+                       <a target="_blank" href="`+ AnexoDetalle[k].ruta + `"> Descargar </a>
+                    </td>
+                    <td><button class="btn btn-xs btn-danger" onclick="EliminarAnexo(`+ AnexoDetalle[k].IdAnexo + `,this)">-</button></td>
+                </tr>`;
+        }
+        $("#tabla_files").find('tbody').append(trAnexo);
+        
+        
+        
+        
         for (var p = 0; p < pedido.detalles.length; p++) {
 
-            console.log(pedido.detalles[p].IdArticulo)
+            console.log(pedido.detalles[p])
             let IdItem = pedido.detalles[p].IdArticulo;
             let CodigoItem = pedido.detalles[p].IdArticulo;
             let MedidaItem = pedido.detalles[p].IdDefinicion;
@@ -1286,7 +1370,7 @@ function ObtenerDatosxID(id) {
             let PrioridadItem = 0;
             let IdGrupoUnidadMedida = pedido.detalles[p].IdGrupoUnidadMedida;
             let IdIndicadorImpuesto = pedido.detalles[p].IdIndicadorImpuesto;
-
+           
             //txtReferenciaItem
 
             var today = new Date();
@@ -1367,8 +1451,8 @@ function ObtenerDatosxID(id) {
             tr += `</select>
             </td>
             <td input style="display:none;"><input class="form-control TipoCambioDeCabecera" type="number" name="txtTipoCambio[]" id="txtTipoCambioDetalle`+ contador + `" disabled></td>
-            <td><input class="form-control"  type="number" name="txtCantidadNecesaria[]" value="0" id="txtCantidadNecesaria`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled></td>
-            <td><input class="form-control" type="number" name="txtPrecioInfo[]" value="0" id="txtPrecioInfo`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled></td>
+            <td><input class="form-control"  type="text" name="txtCantidadNecesaria[]" value="0" id="txtCantidadNecesaria`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled></td>
+            <td><input class="form-control" type="text" name="txtPrecioInfo[]" value="0" id="txtPrecioInfo`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled></td>
             <td input>
             <select class="form-control ImpuestoCabecera" name="cboIndicadorImpuestoDetalle[]" id="cboIndicadorImpuestoDetalle`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled>`;
             tr += `  <option impuesto="0" value="0">Seleccione</option>`;
@@ -1377,7 +1461,7 @@ function ObtenerDatosxID(id) {
             }
             tr += `</select>
             </td>
-            <td><input class="form-control changeTotal" type="number" style="width:100px" name="txtItemTotal[]" id="txtItemTotal`+ contador + `" onchange="CalcularTotales()" disabled></td>
+            <td><input class="form-control changeTotal" type="text" style="width:100px" name="txtItemTotal[]" id="txtItemTotal`+ contador + `" onchange="CalcularTotales()" disabled></td>
             <td style="display:none">
             <select class="form-control" style="width:100px" id="cboAlmacen`+ contador + `" name="cboAlmacen[]" disabled>`;
             tr += `  <option value="0">Seleccione</option>`;
@@ -1429,22 +1513,29 @@ function ObtenerDatosxID(id) {
             }
 
 
-
             $("#txtIdArticulo" + contador).val(IdItem);
             $("#txtCodigoArticulo" + contador).val(CodigoItem);
             $("#txtDescripcionArticulo" + contador).val(DescripcionItem);
             $("#cboUnidadMedida" + contador).val(MedidaItem);
-            $("#txtCantidadNecesaria" + contador).val(CantidadItem).change();
-            $("#txtPrecioInfo" + contador).val(PrecioUnitarioItem).change();
+            $("#txtCantidadNecesaria" + contador).val(formatNumberDecimales(CantidadItem,1)).change();
+            $("#txtPrecioInfo" + contador).val(formatNumberDecimales(PrecioUnitarioItem,2));
+      
+            $("#cboIndicadorImpuestoDetalle" + contador).val(IdIndicadorImpuesto);
+            $("#txtItemTotal" + contador).val(formatNumberDecimales(pedido.detalles[p].total_item, 2));
+
             $("#cboProyecto" + contador).val(ProyectoItem);
             $("#cboAlmacen" + contador).val(AlmacenItem);
             $("#cboPrioridadDetalle" + contador).val(PrioridadItem);
 
-            $("#cboIndicadorImpuestoDetalle" + contador).val(IdIndicadorImpuesto).change();
+            
 
             $("#cboCentroCostos" + contador).val(CentroCostoItem);
             $("#txtReferencia" + contador).val(ReferenciaItem);
-            CalcularTotalDetalle(contador);
+
+            $("#txtTotalAntesDescuento").val(formatNumberDecimales(pedido.total_valor, 2))
+            $("#txtImpuesto").val(formatNumberDecimales(pedido.total_igv, 2))
+            $("#txtTotal").val(formatNumberDecimales(pedido.total_venta, 2))
+    
         }
 
     });
@@ -1769,6 +1860,17 @@ function AgregarLinea() {
         return;
     }
 
+    if (CantidadItem<0) {
+        swal("Informacion!", "La cantidad del produto debe mayor a 0!");
+        return;
+    }
+
+    if ($("#IdIndicadorImpuesto").val() ==0) {
+        swal("Informacion!", "Debe selecionar un indicador de impuesto!");
+        return;
+    }
+
+    
     //validaciones
     $.ajaxSetup({ async: false });
     $.post("/GrupoUnidadMedida/ObtenerDefinicionUnidadMedidaxGrupo", { 'IdGrupoUnidadMedida': IdGrupoUnidadMedida }, function (data, status) {
@@ -2199,9 +2301,10 @@ function disabledmodal(valorbolean) {
     $("#txtFechaDocumento").prop('disabled', valorbolean);
     $("#txtFechaContabilizacion").prop('disabled', valorbolean);
 
-    
+    $("#btn_agregaritem").prop('disabled', valorbolean);
     if (valorbolean) {
         $("#btnGrabar").hide()
+      
         $("#btnExtorno").show();
         //$("#total_editar").show();
         //$("#total_nuevo").hide();
@@ -2221,4 +2324,66 @@ function nuevo() {
     CerrarModal();
     CalcularTotales();
     ModalNuevo();
+}
+
+
+function validarseriescontable() {
+    let IdSerie = $("#cboSerie").val();
+    let IdDocumento = 1;
+    let Fecha = $("#txtFechaContabilizacion").val();
+    let Orden = 1;
+    let datosrespuesta;
+    let estado = 0;
+    datosrespuesta = ValidarFechaContabilizacionxDocumentoM(IdSerie, IdDocumento, Fecha, Orden);
+
+    if (datosrespuesta.FechaRelacion.length == 0) {
+        swal("Informacion!", "No  se encuentra Fecha de Contabilizacion Activa");
+        return true;
+    }
+
+    if (datosrespuesta.FechaRelacion.length > 0) {
+        for (var i = 0; i < datosrespuesta.FechaRelacion.length; i++) {
+            console.log(datosrespuesta.FechaRelacion[i]);
+            if (datosrespuesta.FechaRelacion[i].StatusPeriodo == 1) {
+                estado = 1;
+            }
+        }
+
+    }
+
+    if (estado == 0) {
+        swal("Informacion!", "No se encuentra Fecha de contabilizacion,verificar periodo contable");
+        return true;
+    }
+
+}
+
+
+function ValidarFechaContabilizacionxDocumentoM(IdSerie, IdDocumento, Fecha, Orden) {
+    let respustavalidacion;
+    $.ajaxSetup({ async: false });
+    $.post("/Serie/ObtenerDatosSerieValidacion", { IdSerie, IdDocumento, Fecha, Orden }, function (data, status) {
+        if (validadJson(data)) {
+            respustavalidacion = JSON.parse(data);
+        } else {
+            respustavalidacion
+        }
+    });
+    return respustavalidacion;
+}
+
+
+
+function openContenido(evt, Name) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(Name).style.display = "block";
+    evt.currentTarget.className += " active";
 }

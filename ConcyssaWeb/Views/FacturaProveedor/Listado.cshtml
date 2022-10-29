@@ -175,14 +175,14 @@
                                 <div class='form-group-sm'>
                                     <label for="cboSerie" class="control-label col-sm-2 left-align">Serie</label>
                                     <div class="col-sm-4">
-                                        <select id="cboSerie" class="form-control input-sm" tabindex="0" onchange="ObtenerNumeracion()"></select>
+                                        <select id="cboSerie" class="form-control input-sm" tabindex="0" onchange="validarseriescontable()"></select>
                                     </div>
                                 </div>
 
                                 <div class='form-group-sm'>
                                     <label for="txtFechaContabilizacion" class="control-label col-sm-2 left-align">Fecha Contabilizacion</label>
                                     <div class="col-sm-4">
-                                        <input id="txtFechaContabilizacion" value="@DateTime.Now.ToString("yyyy-MM-dd")" type="date" class="form-control input-sm" tabindex="6">
+                                        <input id="txtFechaContabilizacion" value="@DateTime.Now.ToString("yyyy-MM-dd")" type="date" class="form-control input-sm" tabindex="6" onchange="validarseriescontable()">
                                     </div>
                                 </div>
 
@@ -559,10 +559,10 @@
                     <p style="margin: 0px 0px 0px 0px">FECHA DE  CREACION: <span id="CreatedAt"></span> </p>
                 </div>
 
-                <div class="col-sm-6">
+                <div class="col-sm-6" >
                     <div class='form-group-sm'>
                         <!-- Single button -->
-                        <div class="btn btn-group dropup pull-right plu">
+                        <div class="btn btn-group dropup pull-right plu" id="div_copiarde">
                             <button type="button" class="btn btn-info pull-right plu">COPIAR DE</button>
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="caret"></span>
@@ -667,7 +667,7 @@
                                     <div class='form-group-sm'>
                                         <label for="cboGrupoUnidadMedida" class="control-label col-sm-2 left-align">Grupo Unidad</label>
                                         <div class="col-sm-4">
-                                            <select id="cboGrupoUnidadMedida" class="form-control input-sm" tabindex="2" style="height:26px" onchange="CargarDefinicionxGrupo()"></select>
+                                            <select id="cboGrupoUnidadMedida" class="form-control input-sm" tabindex="2" style="height:26px" onchange="CargarDefinicionxGrupo()" disabled></select>
                                         </div>
                                     </div>
 
@@ -701,9 +701,9 @@
                                 <div class="row">
 
                                     <div class='form-group-sm'>
-                                        <label for="txtStockAlmacenItem" class="control-label col-sm-2 left-align">Stock en Almacen</label>
+                                        <label for="IdIndicadorImpuesto" class="control-label col-sm-2 left-align">Indicador Impuesto</label>
                                         <div class="col-sm-4">
-                                            <input id="txtStockAlmacenItem" type="text" class="form-control input-sm" tabindex="5" disabled>
+                                            <select id="IdIndicadorImpuesto" class="form-control input-sm" tabindex="2" style="height:26px"></select>
                                         </div>
                                     </div>
 
@@ -711,6 +711,18 @@
                                         <label for="txtCantidadItem" class="control-label col-sm-2 left-align">Cantidad</label>
                                         <div class="col-sm-4">
                                             <input id="txtCantidadItem" max="5" type="number" class="form-control input-sm" tabindex="6" onkeyup="ValidarDecimalesCantidades('txtCantidadItem')">
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class='form-group-sm'>
+                                        <label for="txtStockAlmacenItem" class="control-label col-sm-2 left-align">Stock en Almacen</label>
+                                        <div class="col-sm-4">
+                                            <input id="txtStockAlmacenItem" type="text" class="form-control input-sm" tabindex="5" disabled>
                                         </div>
                                     </div>
 

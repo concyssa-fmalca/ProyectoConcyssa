@@ -493,7 +493,7 @@ function AgregarLineaAnexo(Nombre) {
                <input  class="form-control" type="hidden" value="`+ Nombre + `" id="txtNombreAnexo" name="txtNombreAnexo[]"/>
             </td>
             <td>
-               <a href="/SolicitudRQ/Download?ImageName=`+ Nombre + `" >Descargar</a>
+               <a href="/Anexos/`+ Nombre + `" target="_blank" >Descargar</a>
             </td>
             <td><button class="btn btn-xs btn-danger borrar">-</button></td>
             </tr>`;
@@ -561,6 +561,7 @@ function EliminarAnexo(Id, dato) {
 let contador = 0;
 
 function AgregarLinea() {
+
     let IdItem = $("#txtIdItem").val();
     let CodigoItem = $("#txtCodigoItem").val();
     let MedidaItem = $("#cboMedidaItem").val();
@@ -615,6 +616,20 @@ function AgregarLinea() {
         swal("Informacion!", "Debe Seleccionar Producto!");
         return;
     }
+
+    if (ValidarCantidad<=0) {
+        swal("Informacion!", "La Cantidad debe ser mayor a 0!");
+        return;
+    }
+
+    if ($("#txtPrecioUnitarioItem").val() <= 0) {
+        swal("Informacion!", "El precio debe ser mayor a 0!");
+        return;
+    }
+
+    
+
+    
 
     //validaciones
     $.ajaxSetup({ async: false });
@@ -1451,6 +1466,20 @@ function GuardarSolicitud() {
 
     }
 
+    //AnexoDetalle
+    let arrayTxtNombreAnexo = new Array();
+    $("input[name='txtNombreAnexo[]']").each(function (indice, elemento) {
+        arrayTxtNombreAnexo.push($(elemento).val());
+    });
+
+    let AnexoDetalle = [];
+    for (var i = 0; i < arrayTxtNombreAnexo.length; i++) {
+        AnexoDetalle.push({
+            'NombreArchivo': arrayTxtNombreAnexo[i]
+        });
+    }
+
+
 
 
     $.ajax({
@@ -1459,6 +1488,7 @@ function GuardarSolicitud() {
         async: true,
         data: {
             detalles,
+            AnexoDetalle,
             //cabecera
             'IdAlmacen': IdAlmacen,
             'IdTipoDocumento': IdTipoDocumento,
@@ -1561,8 +1591,7 @@ function ObtenerDatosxIDOPDN(IdOPDN) {
     CargarMoneda();
     CargarProveedor();
     CargarImpuestos();
-
-
+   
 
 
     $("#lblTituloModal").html("Editar Ingreso");
@@ -1610,7 +1639,24 @@ function ObtenerDatosxIDOPDN(IdOPDN) {
             $("#IdCuadrilla").val(movimiento.IdCuadrilla)
             $("#IdResponsable").val(movimiento.IdResponsable)
 
-            
+
+            //AnxoDetalle
+            let AnexoDetalle = movimiento.AnexoDetalle;
+            let trAnexo = '';
+            for (var k = 0; k < AnexoDetalle.length; k++) {
+                trAnexo += `
+                <tr>
+                   
+                    <td>
+                       `+ AnexoDetalle[k].NombreArchivo + `
+                    </td>
+                    <td>
+                       <a target="_blank" href="`+ AnexoDetalle[k].ruta + `"> Descargar </a>
+                    </td>
+                    <td><button class="btn btn-xs btn-danger" onclick="EliminarAnexo(`+ AnexoDetalle[k].IdAnexo + `,this)">-</button></td>
+                </tr>`;
+            }
+            $("#tabla_files").find('tbody').append(trAnexo);
             
             
             //agrega detalle
@@ -2468,6 +2514,10 @@ function AgregarPedidoToEntradaMercancia(data) {
             if (pasarsiguiente > 0) {
                 return;
             }
+
+            if ((datos[k]['Cantidad'] - datos[k]['CantidadObtenida'])==0) {
+                return;
+            }
             /*AGREGAR LINEA*/
             let IdItem = datos[k]['IdArticulo'];
             let CodigoItem = "xxx";
@@ -2943,4 +2993,57 @@ function AgregarSeleccionadoPedido() {
 function nuevo() {
     CerrarModal();
     ModalNuevo();
+}
+
+
+
+function validarseriescontable() {
+    let IdSerie = $("#cboSerie").val();
+    let IdDocumento = 1;
+    let Fecha = $("#txtFechaContabilizacion").val();
+    let Orden = 1;
+    let datosrespuesta;
+    let estado = 0;
+    datosrespuesta = ValidarFechaContabilizacionxDocumentoM(IdSerie, IdDocumento, Fecha, Orden);
+
+    if (datosrespuesta.FechaRelacion.length == 0) {
+        swal("Informacion!", "No  se encuentra Fecha de Contabilizacion Activa");
+        return true;
+    }
+
+    if (datosrespuesta.FechaRelacion.length > 0) {
+        for (var i = 0; i < datosrespuesta.FechaRelacion.length; i++) {
+            console.log(datosrespuesta.FechaRelacion[i]);
+            if (datosrespuesta.FechaRelacion[i].StatusPeriodo == 1) {
+                estado = 1;
+            }
+        }
+
+    }
+
+    if (estado == 0) {
+        swal("Informacion!", "No se encuentra Fecha de contabilizacion,verificar periodo contable");
+        return true;
+    }
+
+}
+
+
+function ValidarFechaContabilizacionxDocumentoM(IdSerie, IdDocumento, Fecha, Orden) {
+    let respustavalidacion;
+    $.ajaxSetup({ async: false });
+    $.post("/Serie/ObtenerDatosSerieValidacion", { IdSerie, IdDocumento, Fecha, Orden }, function (data, status) {
+        if (validadJson(data)) {
+            respustavalidacion = JSON.parse(data);
+        } else {
+            respustavalidacion
+        }
+    });
+    return respustavalidacion;
+}
+
+function enviarguia() {
+    $.post("/EntradaMercancia/GenerarGuiaElectronica", function (data, status) {
+        console.log("ddd");
+    });
 }
