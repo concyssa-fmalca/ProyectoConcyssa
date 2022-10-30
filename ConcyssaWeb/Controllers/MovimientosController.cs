@@ -147,6 +147,29 @@ namespace ConcyssaWeb.Controllers
 
         }
 
+        public string ObtenerMovimientosIngresosDT(int Estado = 3)
+        {
+            string mensaje_error = "";
+            MovimientoDAO oMovimientoDAO = new MovimientoDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            List<MovimientoDTO> oMovimientoDTO = oMovimientoDAO.ObtenerMovimientosIngresos(IdSociedad, ref mensaje_error, Estado);
+            DataTableDTO oDataTableDTO = new DataTableDTO();
+            if (mensaje_error.ToString().Length == 0)
+            {
+                oDataTableDTO.sEcho = 1;
+                oDataTableDTO.iTotalDisplayRecords = oMovimientoDTO.Count;
+                oDataTableDTO.iTotalRecords = oMovimientoDTO.Count;
+                oDataTableDTO.aaData = (oMovimientoDTO);
+                //return oDataTableDTO;
+                return JsonConvert.SerializeObject(oDataTableDTO);
+                //return JsonConvert.SerializeObject(oMovimientoDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
+
 
 
 

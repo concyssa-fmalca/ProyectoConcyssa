@@ -1,4 +1,5 @@
-﻿let table = '';
+﻿
+let table = '';
 let tablekardex;
 function ObtenerConfiguracionDecimales() {
     $.post("/ConfiguracionDecimales/ObtenerConfiguracionDecimales", function (data, status) {
@@ -280,7 +281,7 @@ function ListarDatatableKardexDT(url, IdArticulo, IdAlmacen, FechaInicio, FechaT
                 targets: 10,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return formatNumber((full.CantidadBase * full.PrecioPromedio))
+                    return formatNumber((full.CantidadBase * full.PrecioRegistro))
                 },
             },
             {

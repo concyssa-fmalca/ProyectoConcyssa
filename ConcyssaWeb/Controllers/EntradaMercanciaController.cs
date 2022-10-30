@@ -499,7 +499,7 @@ namespace ConcyssaWeb.Controllers
                 var Resultado = response;
                 //var json = JsonConvert.SerializeXmlNode(Resultado, Formatting.None, true);
                 //var dd = JsonConvert.SerializeObject(Resultado); 
-                var respuesta = JsonConvert.DeserializeXmlNode(response);
+                var respuesta = JsonConvert.DeserializeXmlNode(response.ToString());
 
             }
             catch (WebException e)

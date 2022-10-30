@@ -251,7 +251,8 @@ window.onload = function () {
     var url = "../Movimientos/ObtenerMovimientosIngresos";
    
     ObtenerConfiguracionDecimales();
-    ConsultaServidor(url);
+    //ConsultaServidor(url);
+    listarIngresosDT();
 
     $("#SubirAnexos").on("submit", function (e) {
         e.preventDefault();
@@ -2287,3 +2288,94 @@ function GenerarReporte(id) {
         console.log('dddddddddddd')
     });
 }
+
+
+function listarIngresosDT() {
+    tableingresos = $('#table_id').dataTable({
+        language: lenguaje_data,
+        responsive: true,
+        ajax: {
+            url: '../Movimientos/ObtenerMovimientosIngresosDT',
+            type: 'POST',
+            data: {
+
+                pagination: {
+                    perpage: 50,
+                },
+            },
+        },
+
+        columnDefs: [
+            // {"className": "text-center", "targets": "_all"},
+            {
+          
+                targets: -1,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return `<button class= "btn btn-primary fa fa-pencil btn-xs" onclick = "ObtenerDatosxID(` + full.IdMovimiento + `)"></button>
+                        <button class="btn btn-primary btn-xs" onclick="GenerarReporte(` + full.IdMovimiento + `)">R</button>`
+                },
+            },
+            {
+                targets: 0,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return meta.row + 1
+                },
+            },
+            {
+                targets: 1,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.FechaDocumento.split('T')[0]
+                },
+            },
+            {
+                targets: 2,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return 'FACTURA PROVEEDOR'
+                },
+            },
+            {
+                targets: 3,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.NombSerie.toUpperCase() + '-' + full.Correlativo
+                },
+            },
+            {
+                targets: 4,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return formatNumber(full.Total) 
+                },
+            },
+            {
+                targets: 5,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.DescCuadrilla
+                },
+            },
+            {
+                targets: 6,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.NombObra
+                },
+            },
+            {
+                targets: 7,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.NombAlmacen
+                },
+            }
+
+
+        ],
+        "bDestroy": true
+    }).DataTable();
+}
+
