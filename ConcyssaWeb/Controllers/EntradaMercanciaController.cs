@@ -5,7 +5,10 @@ using Newtonsoft.Json;
 using System.Net;
 using System;
 using FE;
-
+using System.Xml;
+using System.Xml.Serialization;
+using System.Web.Helpers;
+using System.Runtime.Intrinsics.X86;
 
 namespace ConcyssaWeb.Controllers
 {
@@ -463,6 +466,7 @@ namespace ConcyssaWeb.Controllers
 
         public string GenerarReporte(string NombreReporte, string Formato, int Id)
         {
+            RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
             HttpWebRequest request;
             Uri uri;
@@ -488,6 +492,7 @@ namespace ConcyssaWeb.Controllers
                 //request.ContentType = "application/json;charset=utf-8";
                 request.ContentType = "application/x-www-form-urlencoded";
 
+
                 StreamWriter requestWriter = new StreamWriter(request.GetRequestStream(), System.Text.Encoding.ASCII);
 
                 requestWriter.Write(strNew);
@@ -501,11 +506,19 @@ namespace ConcyssaWeb.Controllers
                 Stream webStream = webResponse.GetResponseStream();
                 StreamReader responseReader = new StreamReader(webStream);
                 response = responseReader.ReadToEnd();
-                var Resultado = response;
-                //var json = JsonConvert.SerializeXmlNode(Resultado, Formatting.None, true);
-                //var dd = JsonConvert.SerializeObject(Resultado); 
-                var respuesta = JsonConvert.DeserializeXmlNode(response.ToString());
 
+                //var Resultado = response;
+                //XmlSerializer xmlSerializer = new XmlSerializer(response);
+                var rr = 33;
+                XmlDocument xDoc = new XmlDocument();
+                xDoc.LoadXml(response);
+                var dd = "";
+
+                oRespuestaDTO.Result = xDoc.ChildNodes[1].ChildNodes[0].InnerText;
+                oRespuestaDTO.Mensaje = xDoc.ChildNodes[1].ChildNodes[1].InnerText;
+                oRespuestaDTO.Base64ArchivoPDF = xDoc.ChildNodes[1].ChildNodes[2].InnerText;
+
+                return JsonConvert.SerializeObject(oRespuestaDTO);
             }
             catch (WebException e)
             {

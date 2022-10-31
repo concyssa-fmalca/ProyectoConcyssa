@@ -2302,7 +2302,19 @@ function ValidarFechaContabilizacionxDocumentoM(IdSerie, IdDocumento, Fecha, Ord
 function GenerarReporte(id) {
     $.ajaxSetup({ async: false });
     $.post("GenerarReporte", { 'NombreReporte': 'EntradaMercancia', 'Formato': 'PDF', 'Id': id }, function (data, status) {
-        console.log('dddddddddddd')
+        let datos;
+        if (validadJson(data)) {
+            let datobase64;
+            datobase64 = "data:application/octet-stream;base64,"
+            datos = JSON.parse(data);
+            datobase64+=datos.Base64ArchivoPDF;
+            $("#reporteRPT").attr("download", 'Reporte.' + "pdf");
+            $("#reporteRPT").attr("href", datobase64);
+            $("#reporteRPT")[0].click();
+
+        } else {
+            respustavalidacion
+        }
     });
 }
 

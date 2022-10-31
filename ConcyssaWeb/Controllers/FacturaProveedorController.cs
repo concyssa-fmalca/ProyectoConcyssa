@@ -124,16 +124,19 @@ namespace ConcyssaWeb.Controllers
                     int respuesta1 = oMovimimientoDAO.InsertUpdateOPCHDetalle(oOpchDTO.detalles[i], ref mensaje_error);
                 }
                 oOpchDAO.UpdateTotalesOPCH(respuesta, ref mensaje_error);
-
-                for (int i = 0; i < oOpchDTO.AnexoDetalle.Count; i++)
+                if (oOpchDTO.AnexoDetalle!=null)
                 {
-                    oOpchDTO.AnexoDetalle[i].ruta = "/Anexos/" + oOpchDTO.AnexoDetalle[i].NombreArchivo;
-                    oOpchDTO.AnexoDetalle[i].IdSociedad = oOpchDTO.IdSociedad;
-                    oOpchDTO.AnexoDetalle[i].Tabla = "Opch";
-                    oOpchDTO.AnexoDetalle[i].IdTabla = respuesta;
+                    for (int i = 0; i < oOpchDTO.AnexoDetalle.Count; i++)
+                    {
+                        oOpchDTO.AnexoDetalle[i].ruta = "/Anexos/" + oOpchDTO.AnexoDetalle[i].NombreArchivo;
+                        oOpchDTO.AnexoDetalle[i].IdSociedad = oOpchDTO.IdSociedad;
+                        oOpchDTO.AnexoDetalle[i].Tabla = "Opch";
+                        oOpchDTO.AnexoDetalle[i].IdTabla = respuesta;
 
-                    oMovimimientoDAO.InsertAnexoMovimiento(oOpchDTO.AnexoDetalle[i], ref mensaje_error);
+                        oMovimimientoDAO.InsertAnexoMovimiento(oOpchDTO.AnexoDetalle[i], ref mensaje_error);
+                    }
                 }
+                
 
 
             }

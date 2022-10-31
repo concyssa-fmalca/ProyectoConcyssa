@@ -78,17 +78,20 @@ namespace ConcyssaWeb.Controllers
                     oPedidoDTO.detalles[i].IdPedido = respuesta;
                     int respuesta1 = oPedidoDAO.InsertUpdatePedidoDetalle(oPedidoDTO.detalles[i], ref mensaje_error);
                 }
-
-               
-                for (int i = 0; i < oPedidoDTO.AnexoDetalle.Count; i++)
+                if (oPedidoDTO.AnexoDetalle!=null)
                 {
-                    oPedidoDTO.AnexoDetalle[i].ruta = "/Anexos/" + oPedidoDTO.AnexoDetalle[i].NombreArchivo;
-                    oPedidoDTO.AnexoDetalle[i].IdSociedad = oPedidoDTO.IdSociedad;
-                    oPedidoDTO.AnexoDetalle[i].Tabla = "Pedido";
-                    oPedidoDTO.AnexoDetalle[i].IdTabla = respuesta;
+                    for (int i = 0; i < oPedidoDTO.AnexoDetalle.Count; i++)
+                    {
+                        oPedidoDTO.AnexoDetalle[i].ruta = "/Anexos/" + oPedidoDTO.AnexoDetalle[i].NombreArchivo;
+                        oPedidoDTO.AnexoDetalle[i].IdSociedad = oPedidoDTO.IdSociedad;
+                        oPedidoDTO.AnexoDetalle[i].Tabla = "Pedido";
+                        oPedidoDTO.AnexoDetalle[i].IdTabla = respuesta;
 
-                    oMovimientoDAO.InsertAnexoMovimiento(oPedidoDTO.AnexoDetalle[i], ref mensaje_error);
+                        oMovimientoDAO.InsertAnexoMovimiento(oPedidoDTO.AnexoDetalle[i], ref mensaje_error);
+                    }
                 }
+               
+                
 
                 oPedidoDAO.UpdateTotalesPedido(respuesta, ref mensaje_error);
 
