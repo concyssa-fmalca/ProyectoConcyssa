@@ -478,6 +478,8 @@ function AgregarLinea() {
         return;
     }
 
+
+
     //validaciones
     $.ajaxSetup({ async: false });
     $.post("/GrupoUnidadMedida/ObtenerDefinicionUnidadMedidaxGrupo", { 'IdGrupoUnidadMedida': IdGrupoUnidadMedida }, function (data, status) {
