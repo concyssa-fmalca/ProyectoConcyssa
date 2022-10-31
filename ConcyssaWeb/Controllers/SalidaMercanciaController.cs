@@ -52,16 +52,19 @@ namespace ConcyssaWeb.Controllers
                     oMovimientoDTO.detalles[i].IdMovimiento = respuesta;
                     int respuesta1 = oMovimimientoDAO.InsertUpdateMovimientoDetalle(oMovimientoDTO.detalles[i], ref mensaje_error);
                 }
-
-                for (int i = 0; i < oMovimientoDTO.AnexoDetalle.Count; i++)
+                if (oMovimientoDTO.AnexoDetalle != null)
                 {
-                    oMovimientoDTO.AnexoDetalle[i].ruta = "/Anexos/" + oMovimientoDTO.AnexoDetalle[i].NombreArchivo;
-                    oMovimientoDTO.AnexoDetalle[i].IdSociedad = oMovimientoDTO.IdSociedad;
-                    oMovimientoDTO.AnexoDetalle[i].Tabla = "Movimiento";
-                    oMovimientoDTO.AnexoDetalle[i].IdTabla = respuesta;
+                    for (int i = 0; i < oMovimientoDTO.AnexoDetalle.Count; i++)
+                    {
+                        oMovimientoDTO.AnexoDetalle[i].ruta = "/Anexos/" + oMovimientoDTO.AnexoDetalle[i].NombreArchivo;
+                        oMovimientoDTO.AnexoDetalle[i].IdSociedad = oMovimientoDTO.IdSociedad;
+                        oMovimientoDTO.AnexoDetalle[i].Tabla = "Movimiento";
+                        oMovimientoDTO.AnexoDetalle[i].IdTabla = respuesta;
 
-                    oMovimimientoDAO.InsertAnexoMovimiento(oMovimientoDTO.AnexoDetalle[i], ref mensaje_error);
+                        oMovimimientoDAO.InsertAnexoMovimiento(oMovimientoDTO.AnexoDetalle[i], ref mensaje_error);
+                    }
                 }
+                 
 
             }
 
