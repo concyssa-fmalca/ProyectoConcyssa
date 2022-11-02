@@ -465,7 +465,7 @@ function AgregarLinea() {
     let ValidartProducto = $("#cboMedidaItem").val();
     let ValidarCantidad = $("#txtCantidadItem").val();
     console.log(ValidarCantidad);
-    if (ValidarCantidad == "" || ValidarCantidad == null || ValidarCantidad == "0") {
+    if (ValidarCantidad == "" || ValidarCantidad == null || ValidarCantidad == "0" || !$.isNumeric(ValidarCantidad)) {
         swal("Informacion!", "Debe Especificar Cantidad!");
         return;
     }

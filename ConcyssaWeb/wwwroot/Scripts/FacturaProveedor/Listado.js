@@ -606,16 +606,30 @@ function AgregarLinea() {
     let ValidartCentroCosto = $("#cboCentroCostoItem").val();
     let ValidartProducto = $("#cboMedidaItem").val();
     let ValidarCantidad = $("#txtCantidadItem").val();
+    let ValidarPrecio = $("#txtPrecioUnitarioItem").val();
+    let ValidarImpuesto = $("#IdIndicadorImpuesto").val();
     console.log(ValidarCantidad);
     if (CodigoItem.length == 0) {
         swal("Informacion!", "Debe Especificar Un Producto!");
         return;
     }
 
-    if (ValidarCantidad == "" || ValidarCantidad == null || ValidarCantidad == "0") {
+    if (ValidarCantidad == "" || ValidarCantidad == null || ValidarCantidad == "0" || !$.isNumeric(ValidarCantidad)) {
         swal("Informacion!", "Debe Especificar Cantidad!");
         return;
     }
+
+    if (ValidarPrecio == "" || ValidarPrecio == null || ValidarPrecio == "0" || !$.isNumeric(ValidarPrecio)) {
+        swal("Informacion!", "Debe Especificar Precio!");
+        return;
+    }
+
+    
+    if (ValidarImpuesto == 0) {
+        swal("Informacion!", "Debe Seleccionar Indicador de Impuesto!");
+        return;
+    }
+
     if (ValidartCentroCosto == 0) {
         swal("Informacion!", "Debe Seleccionar Centro de Costo!");
         return;
@@ -708,7 +722,7 @@ function AgregarLinea() {
             </td>
             <td input style="display:none;"><input class="form-control TipoCambioDeCabecera" type="number" name="txtTipoCambio[]" id="txtTipoCambioDetalle`+ contador + `" disabled></td>
             <td><input class="form-control"  type="number" name="txtCantidadNecesaria[]" value="0" id="txtCantidadNecesaria`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)"></td>
-            <td><input class="form-control" type="number" name="txtPrecioInfo[]" value="0" id="txtPrecioInfo`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)"></td>
+            <td><input class="form-control" type="number" name="txtPrecioInfo[]" value="0" id="txtPrecioInfo`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled></td>
             <td input>
             <select class="form-control ImpuestoCabecera" name="cboIndicadorImpuestoDetalle[]" id="cboIndicadorImpuestoDetalle`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)">`;
     tr += `  <option impuesto="0" value="0">Seleccione</option>`;
@@ -717,7 +731,7 @@ function AgregarLinea() {
     }
     tr += `</select>
             </td>
-            <td><input class="form-control changeTotal" type="number" style="width:100px" name="txtItemTotal[]" id="txtItemTotal`+ contador + `" onchange="CalcularTotales()"></td>
+            <td><input class="form-control changeTotal" type="number" style="width:100px" name="txtItemTotal[]" id="txtItemTotal`+ contador + `" onchange="CalcularTotales()" disabled></td>
             <td style="display:none">
             <select class="form-control" style="width:100px" id="cboAlmacen`+ contador + `" name="cboAlmacen[]">`;
     tr += `  <option value="0">Seleccione</option>`;

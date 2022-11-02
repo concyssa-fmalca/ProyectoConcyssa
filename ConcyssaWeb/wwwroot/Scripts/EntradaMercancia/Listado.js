@@ -525,13 +525,13 @@ function AgregarLinea() {
         return;
     }
 
-    if (ValidarCantidad == "" || ValidarCantidad == null || ValidarCantidad == "0") {
+    if (ValidarCantidad == "" || ValidarCantidad == null || ValidarCantidad == "0" || !$.isNumeric(ValidarCantidad) ) {
         swal("Informacion!", "Debe Especificar Cantidad!");
         return;
     }
 
-    if (ValidarPrecioItem == "" || ValidarPrecioItem == null || ValidarPrecioItem == "0") {
-        swal("Informacion!", "Debe Especificar Cantidad!");
+    if (ValidarPrecioItem == "" || ValidarPrecioItem == null || ValidarPrecioItem == "0" || !$.isNumeric(ValidarPrecioItem)) {
+        swal("Informacion!", "Debe Especificar Precio!");
         return;
     }
 

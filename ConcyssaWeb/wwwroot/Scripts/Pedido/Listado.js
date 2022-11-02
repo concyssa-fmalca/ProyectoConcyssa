@@ -773,8 +773,15 @@ function AgregarLinea() {
     let ValidartCentroCosto = $("#cboCentroCostoItem").val();
     let ValidartProducto = $("#cboMedidaItem").val();
     let ValidarCantidad = $("#txtCantidadItem").val();
+    let ValidarPrecioItem = $("#txtPrecioUnitarioItem").val();
+
     console.log(ValidarCantidad);
     if (ValidarCantidad == "" || ValidarCantidad == null || ValidarCantidad == "0") {
+        swal("Informacion!", "Debe Especificar Cantidad!");
+        return;
+    }
+
+    if (ValidarPrecioItem == "" || ValidarPrecioItem == null || ValidarPrecioItem == "0") {
         swal("Informacion!", "Debe Especificar Cantidad!");
         return;
     }
@@ -791,6 +798,17 @@ function AgregarLinea() {
         swal("Informacion!", "La cantidad del producto debe ser positiva!");
         return;
     }
+    if ($("#txtPrecioUnitarioItem").val() <= 0) {
+        swal("Informacion!", "El precio debe ser positivo");
+        return;
+    }
+
+    if ($("#txtCantidadItem").val() <= 0) {
+        swal("Informacion!", "La cantidad ser positivo");
+        return;
+    }
+
+
 
     //validaciones
     $.ajaxSetup({ async: false });
@@ -858,10 +876,10 @@ function AgregarLinea() {
     tr += `</select>
             </td>
             <td input style="display:none;"><input class="form-control TipoCambioDeCabecera" type="number" name="txtTipoCambio[]" id="txtTipoCambioDetalle`+ contador + `" disabled></td>
-            <td><input class="form-control"  type="number" name="txtCantidadNecesaria[]" value="0" id="txtCantidadNecesaria`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)"></td>
-            <td><input class="form-control" type="number" name="txtPrecioInfo[]" value="0" id="txtPrecioInfo`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)"></td>
+            <td><input class="form-control"  type="number" name="txtCantidadNecesaria[]" value="0" id="txtCantidadNecesaria`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled></td>
+            <td><input class="form-control" type="number" name="txtPrecioInfo[]" value="0" id="txtPrecioInfo`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled></td>
             <td input>
-            <select class="form-control ImpuestoCabecera" name="cboIndicadorImpuestoDetalle[]" id="cboIndicadorImpuestoDetalle`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)">`;
+            <select class="form-control ImpuestoCabecera" name="cboIndicadorImpuestoDetalle[]" id="cboIndicadorImpuestoDetalle`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled>`;
     tr += `  <option impuesto="0" value="0">Seleccione</option>`;
     for (var i = 0; i < IndicadorImpuesto.length; i++) {
         tr += `  <option impuesto="` + IndicadorImpuesto[i].Porcentaje + `" value="` + IndicadorImpuesto[i].IdIndicadorImpuesto + `">` + IndicadorImpuesto[i].Descripcion + `</option>`;
@@ -1846,9 +1864,15 @@ function AgregarLinea() {
     let ValidartCentroCosto = $("#cboCentroCostoItem").val();
     let ValidartProducto = $("#cboMedidaItem").val();
     let ValidarCantidad = $("#txtCantidadItem").val();
+    let ValidarPrecio = $("#txtPrecioUnitarioItem").val();
     console.log(ValidarCantidad);
-    if (ValidarCantidad == "" || ValidarCantidad == null || ValidarCantidad == "0") {
+    if (ValidarCantidad == "" || ValidarCantidad == null || ValidarCantidad == "0" || !$.isNumeric(ValidarCantidad)) {
         swal("Informacion!", "Debe Especificar Cantidad!");
+        return;
+    }
+
+    if (ValidarPrecio == "" || ValidarPrecio == null || ValidarPrecio == "0" || !$.isNumeric(ValidarPrecio)) {
+        swal("Informacion!", "Debe Especificar Precio!");
         return;
     }
     if (ValidartCentroCosto == 0) {
@@ -1937,17 +1961,17 @@ function AgregarLinea() {
     tr += `</select>
             </td>
             <td input style="display:none;"><input class="form-control TipoCambioDeCabecera" type="number" name="txtTipoCambio[]" id="txtTipoCambioDetalle`+ contador + `" disabled></td>
-            <td><input class="form-control"  type="number" name="txtCantidadNecesaria[]" value="0" id="txtCantidadNecesaria`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)"></td>
-            <td><input class="form-control" type="number" name="txtPrecioInfo[]" value="0" id="txtPrecioInfo`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)"></td>
+            <td><input class="form-control"  type="number" name="txtCantidadNecesaria[]" value="0" id="txtCantidadNecesaria`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled></td>
+            <td><input class="form-control" type="number" name="txtPrecioInfo[]" value="0" id="txtPrecioInfo`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled></td>
             <td input>
-            <select class="form-control ImpuestoCabecera" name="cboIndicadorImpuestoDetalle[]" id="cboIndicadorImpuestoDetalle`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)">`;
+            <select class="form-control ImpuestoCabecera" name="cboIndicadorImpuestoDetalle[]" id="cboIndicadorImpuestoDetalle`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled>`;
     tr += `  <option impuesto="0" value="0">Seleccione</option>`;
     for (var i = 0; i < IndicadorImpuesto.length; i++) {
         tr += `  <option impuesto="` + IndicadorImpuesto[i].Porcentaje + `" value="` + IndicadorImpuesto[i].IdIndicadorImpuesto + `">` + IndicadorImpuesto[i].Descripcion + `</option>`;
     }
     tr += `</select>
             </td>
-            <td><input class="form-control changeTotal" type="number" style="width:100px" name="txtItemTotal[]" id="txtItemTotal`+ contador + `" onchange="CalcularTotales()"></td>
+            <td><input class="form-control changeTotal" type="number" style="width:100px" name="txtItemTotal[]" id="txtItemTotal`+ contador + `" onchange="CalcularTotales()" disabled></td>
             <td style="display:none">
             <select class="form-control" style="width:100px" id="cboAlmacen`+ contador + `" name="cboAlmacen[]">`;
     tr += `  <option value="0">Seleccione</option>`;
