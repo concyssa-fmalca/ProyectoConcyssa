@@ -1368,7 +1368,7 @@ function GuardarSolicitud() {
     $("select[name='cboUnidadMedida[]']").each(function (indice, elemento) {
         arrayIdUnidadMedida.push($(elemento).val());
     });
-
+    let cantidadError=0;
     let arrayCantidadNecesaria = new Array();
     $("input[name='txtCantidadNecesaria[]']").each(function (indice, elemento) {
         arrayCantidadNecesaria.push($(elemento).val());
