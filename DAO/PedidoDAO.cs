@@ -57,7 +57,8 @@ namespace DAO
                         oPedidoDTO.NombMoneda = (drd["NombMoneda"].ToString());
                         oPedidoDTO.NombTipoPedido = (drd["NombTipoPedido"].ToString());
                         oPedidoDTO.NombSerie = (drd["NombSerie"].ToString());
-                        oPedidoDTO.total_venta = Convert.ToDecimal(drd["total_venta"].ToString());
+                        
+                        oPedidoDTO.total_venta = Convert.ToDecimal((String.IsNullOrEmpty(drd["total_venta"].ToString())) ? "0" : drd["total_venta"].ToString());
 
 
                         lstPedidoDTO.Add(oPedidoDTO);

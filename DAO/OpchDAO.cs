@@ -285,7 +285,7 @@ namespace DAO
 
 
 
-                        oOPCHDetalle.CantidadNotaCredito = Convert.ToInt32((String.IsNullOrEmpty(drd["CantidadNotaCredito"].ToString())) ? "0" : drd["CantidadNotaCredito"].ToString());
+                        oOPCHDetalle.CantidadNotaCredito = Convert.ToDecimal((String.IsNullOrEmpty(drd["CantidadNotaCredito"].ToString())) ? "0" : drd["CantidadNotaCredito"].ToString());
 
                         lstOPCHDetalle.Add(oOPCHDetalle);
                     }
