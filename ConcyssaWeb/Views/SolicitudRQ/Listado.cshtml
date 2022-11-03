@@ -1,4 +1,9 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Http
+@using Karambolo.AspNetCore.Bundling.ViewHelpers
+@addTagHelper *, Karambolo.AspNetCore.Bundling
+@inject IHttpContextAccessor Accessor
+
+@{
     ViewBag.Title = "Listado";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -290,8 +295,8 @@
                                     <label for="cboEmpleado" class="control-label col-sm-2 left-align">Solicitante</label>
                                     <div class="col-sm-4">
                                         <select id="cboEmpleado" class="form-control input-sm" tabindex="5" disabled>
-                                            @*<option value="@base.Session["idUsuario"].ToString()" selected>@base.Session["/*NombUsuario*/"].ToString()</option>*@
-                                            <option value="1" selected>NOMBUSUARIO</option>
+                                            <option value="@Accessor.HttpContext.Session.GetInt32("IdUsuario").ToString()" selected>@Accessor.HttpContext.Session.GetString("NombUsuario").ToString()</option>
+                                            @*<option value="1" selected>NOMBUSUARIO</option>*@
 
                                         </select>
                                     </div>
