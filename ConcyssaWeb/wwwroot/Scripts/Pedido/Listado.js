@@ -74,8 +74,8 @@ function listarPedidoDt() {
                 orderable: false,
                 render: function (data, type, full, meta) {
 
-                    return `<button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(` + full.IdPedido + `)"></button>
-                            <button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(` + full.IdPedido + `)"></button>`
+                    return `<button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(` + full.IdPedido + `)"></button>`
+                          /*  <button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(` + full.IdPedido + `)"></button>`*/
                 },
             },
             {
