@@ -200,7 +200,7 @@ namespace ConcyssaWeb.Controllers
                                             {
                                                 var UsersDeEtapa = oUsuarioDAO.ObtenerDatosxID(ResultadoEtapa[0].Detalles[k].IdUsuario, ref mensaje_error);
                                                 var Solicitante = oUsuarioDAO.ObtenerDatosxID(solicitudRQDTO.IdSolicitante, ref mensaje_error);
-                                                EnviarCorreo(UsersDeEtapa[0].Correo, Solicitante[0].Nombre, solicitudRQDTO.Serie, solicitudRQDTO.Numero, Resultado[0].Mensaje);
+                                                //EnviarCorreo(UsersDeEtapa[0].Correo, Solicitante[0].Nombre, solicitudRQDTO.Serie, solicitudRQDTO.Numero, Resultado[0].Mensaje);
                                                 EnviarCorreo("jhuniors.ramos@smartcode.pe", Solicitante[0].Nombre, solicitudRQDTO.Serie, solicitudRQDTO.Numero, Resultado[0].Mensaje);
 
                                             }
@@ -232,6 +232,22 @@ namespace ConcyssaWeb.Controllers
 
             if (resultado[0] != 0)
             {
+                if (solicitudRQDTO.AnexoDetalle != null)
+                {
+                    MovimientoDAO oMovimientoDAO = new MovimientoDAO();
+                    string mensaje_error="";
+                    for (int i = 0; i < solicitudRQDTO.AnexoDetalle.Count; i++)
+                    {
+                        solicitudRQDTO.AnexoDetalle[i].ruta = "/Anexos/" + solicitudRQDTO.AnexoDetalle[i].NombreArchivo;
+                        solicitudRQDTO.AnexoDetalle[i].IdSociedad = IdSociedad;
+                        solicitudRQDTO.AnexoDetalle[i].Tabla = "SolicitudRQ";
+                        solicitudRQDTO.AnexoDetalle[i].IdTabla = resultado[1];
+
+                        oMovimientoDAO.InsertAnexoMovimiento(solicitudRQDTO.AnexoDetalle[i], ref mensaje_error);
+                    }
+                }
+
+
                 resultado[0] = 1;
             }
 
@@ -577,5 +593,40 @@ namespace ConcyssaWeb.Controllers
             }
             return rpta;
         }
+
+        public string GuardarFile(IFormFile file)
+        {
+            List<string> Archivos = new List<string>();
+            if (file != null && file.Length > 0)
+            {
+                try
+                {
+                    string dir = "wwwroot/Anexos/" + file.FileName;
+                    if (Directory.Exists(dir))
+                    {
+                        ViewBag.Message = "Archivo ya existe";
+                    }
+                    else
+                    {
+                        string filePath = Path.Combine(dir, Path.GetFileName(file.FileName));
+                        using (Stream fileStream = new FileStream(dir, FileMode.Create, FileAccess.Write))
+                        {
+                            file.CopyTo(fileStream);
+                            Archivos.Add(file.FileName);
+                        }
+
+                        ViewBag.Message = "Anexo guardado correctamente";
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.Message = "Error:" + ex.Message.ToString();
+                    throw;
+                }
+            }
+            return JsonConvert.SerializeObject(Archivos);
+        }
+
     }
 }

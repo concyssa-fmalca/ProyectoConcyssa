@@ -431,7 +431,6 @@ function OpenModalItem() {
 
 
 }
-
 function AgregarLineaAnexo(Nombre) {
 
     let tr = '';
@@ -442,7 +441,7 @@ function AgregarLineaAnexo(Nombre) {
                <input  class="form-control" type="hidden" value="`+ Nombre + `" id="txtNombreAnexo" name="txtNombreAnexo[]"/>
             </td>
             <td>
-               <a href="/SolicitudRQ/Download?ImageName=`+ Nombre + `" >Descargar</a>
+               <a href="/Anexos/`+ Nombre + `" target="_blank" >Descargar</a>
             </td>
             <td><button class="btn btn-xs btn-danger borrar">-</button></td>
             </tr>`;
@@ -912,15 +911,15 @@ function CargarSolicitante(identificar) {
 //}
 
 function CargarDepartamentos() {
-    $.ajaxSetup({ async: false });
-    $.post("/Departamento/ObtenerDepartamentos", function (data, status) {
-        var errorEmpresa = validarEmpresa(data);
-        if (errorEmpresa) {
-            return;
-        }
-        let departamentos = JSON.parse(data);
-        llenarComboDepartamento(departamentos, "cboDepartamento", "Seleccione")
-    });
+    //$.ajaxSetup({ async: false });
+    //$.post("/Departamento/ObtenerDepartamentos", function (data, status) {
+    //    var errorEmpresa = validarEmpresa(data);
+    //    if (errorEmpresa) {
+    //        return;
+    //    }
+    //    let departamentos = JSON.parse(data);
+    //    llenarComboDepartamento(departamentos, "cboDepartamento", "Seleccione")
+    //});
 }
 
 function CargarMoneda() {
@@ -1555,9 +1554,18 @@ function GuardarSolicitud() {
     //    });
 
 
+    //AnexoDetalle
+    let arrayTxtNombreAnexo = new Array();
+    $("input[name='txtNombreAnexo[]']").each(function (indice, elemento) {
+        arrayTxtNombreAnexo.push($(elemento).val());
+    });
 
-
-
+    let AnexoDetalle = [];
+    for (var i = 0; i < arrayTxtNombreAnexo.length; i++) {
+        AnexoDetalle.push({
+            'NombreArchivo': arrayTxtNombreAnexo[i]
+        });
+    }
 
 
 
@@ -1609,7 +1617,7 @@ function GuardarSolicitud() {
             'Referencia': arrayReferencia,
             'IdSolicitudRQDetalle': arrayIdSolicitudDetalle,
             'EstadoDetalle': arrayEstadoDetalle,
-            'DetalleAnexo': arrayGeneralAnexo
+            'AnexoDetalle': AnexoDetalle
         },
         beforeSend: function () {
             Swal.fire({
@@ -1756,7 +1764,7 @@ function ObtenerDatosxID(IdSolicitudRQ) {
             var fecha1 = fechaSplit1[0] + "-" + fechaSplit1[1] + "-" + fechaSplit1[2];
             $("#txtFechaValidoHasta").val(fecha1);
 
-            $("#cboDepartamento").val(solicitudes[0].IdDepartamento);
+            //$("#cboDepartamento").val(solicitudes[0].IdDepartamento);
 
             var fechaSplit2 = (solicitudes[0].FechaDocumento.substring(0, 10)).split("-");
             var fecha2 = fechaSplit2[0] + "-" + fechaSplit2[1] + "-" + fechaSplit2[2];

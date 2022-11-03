@@ -795,7 +795,7 @@ function AgregarLineaDetalle(IdDetalle, Numero, DescripcionServicio, IdClaseArti
             <td><input class="form-control" type="number" name="txtCantidadNecesaria[]" value="`+ CantidadNecesaria + `" id="txtCantidadNecesaria` + contador + `" onkeyup="CalcularTotalDetalle(` + contador + `)"></td>
             <td><input class="form-control" type="number" name="txtPrecioInfo[]" value="`+ PrecioInfo + `" id="txtPrecioInfo` + contador + `" onkeyup="CalcularTotalDetalle(` + contador + `)" ></td>
             <td><input class="form-control changeTotal" type="number" style="width:100px" value="`+ ItemTotal + `" name="txtItemTotal[]" id="txtItemTotal` + contador + `"  disabled></td>
-            <td>
+            <td style="display:none">
             <select style="display:none" class="form-control" name="cboCentroCostos[]" disabled>`;
     tr += `  <option value="0">Seleccione</option>`;
     //for (var i = 0; i < CentroCosto.length; i++) {

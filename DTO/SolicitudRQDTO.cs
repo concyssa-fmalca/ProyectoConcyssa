@@ -37,7 +37,7 @@ namespace DTO
         public string DetalleEstado { get; set; }
 
         public IList<SolicitudDetalleDTO> Detalle;
-
+        public IList<AnexoDTO> AnexoDetalle { get; set; }
         public List<SolicitudRQAnexos> DetalleAnexo { get; set; }
         public IList<SolicitudRQAnexos> DetallesAnexo;
     }
