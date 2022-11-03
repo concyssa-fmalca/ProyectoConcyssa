@@ -2306,11 +2306,11 @@ function BuscarCodigoProducto(stock) {
                                 tr += '<td>' + items[i].Stock + '</td>';
                                 tr += '<td>' + items[i].NombUnidadMedida + '</td>';
                             }
-                            if (items[i].PathImage != "") {
-                                tr += '<td><a target="_blank" href="/SolicitudRQ/DownloadImagen?ImageName=' + items[i].PathImage + '">Ver</a></td>';
-                            } else {
-                                tr += '<td><a>-</a></td>';
-                            }
+                            //if (items[i].PathImage != "") {
+                            //    tr += '<td><a target="_blank" href="/SolicitudRQ/DownloadImagen?ImageName=' + items[i].PathImage + '">Ver</a></td>';
+                            //} else {
+                            //    tr += '<td><a>-</a></td>';
+                            //}
 
                             tr += '</tr>';
 
