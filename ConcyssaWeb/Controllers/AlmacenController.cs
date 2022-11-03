@@ -32,6 +32,26 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
+        public string ObtenerAlmacenes(int estado = 3)
+        {
+            string mensaje_error = "";
+            AlmacenDAO oAlmacenDAO = new AlmacenDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            DataTableDTO oDataTableDTO = new DataTableDTO();
+            List<AlmacenDTO> lstAlmacenDTO = oAlmacenDAO.ObtenerAlmacen(IdSociedad, ref mensaje_error, estado);
+            if (lstAlmacenDTO.Count > 0)
+            {
+
+                //return oDataTableDTO;
+                return JsonConvert.SerializeObject(lstAlmacenDTO);
+
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
+
         public string ObtenerAlmacenDT(int estado = 3)
         {
             string mensaje_error = "";

@@ -287,7 +287,7 @@ function llenarComboCreadores(lista, idCombo, primerItem) {
 }
 
 function ModalNuevo() {
-
+    $("#btnGrabar").show();
     $("#lblTituloModal").html("Nueva Solicitud");
     let seguiradelante = 'false';
     seguiradelante = CargarBasesObraAlmacenSegunAsignado();
@@ -468,7 +468,6 @@ function AgregarLineaDetalleAnexo(Id, Nombre) {
     $("#tabla_files").find('tbody').append(tr);
 
 }
-
 
 function openContenido(evt, Name) {
     var i, tabcontent, tablinks;
@@ -1707,7 +1706,19 @@ function ObtenerDatosxID(IdSolicitudRQ) {
 
 
 
+
+
     AbrirModal("modal-form");
+
+
+    //$("#lblTituloModal").html("Nueva Solicitud");
+    let seguiradelante = 'false';
+    seguiradelante = CargarBasesObraAlmacenSegunAsignado();
+
+    if (seguiradelante == 'false') {
+        swal("Informacion!", "No tiene acceso a ninguna base, comunicarse con su administrador");
+        return true;
+    }
 
 
     $.post('ObtenerDatosxID', {
@@ -1737,9 +1748,9 @@ function ObtenerDatosxID(IdSolicitudRQ) {
             //console.log(solicitudes);
 
             CargarSeries();
-            CargarSolicitante(0);
-            CargarSucursales();
-            CargarDepartamentos();
+            //CargarSolicitante(0);
+            //CargarSucursales();
+            //CargarDepartamentos();
             CargarMoneda();
             CargarImpuestos();
 
@@ -1788,21 +1799,34 @@ function ObtenerDatosxID(IdSolicitudRQ) {
             console.log("Detalle");
             for (var i = 0; i < Detalle.length; i++) {
 
-                AgregarLineaDetalle(Detalle[i].Descripcion, solicitudes[0].Numero, solicitudes[0].Estado, i, Detalle[i].Prioridad, Detalle[i].IdArticulo, Detalle[i].IdSolicitudRQDetalle, Detalle[i].IdUnidadMedida, Detalle[i].IdIndicadorImpuesto, Detalle[i].IdAlmacen, Detalle[i].IdProveedor, Detalle[i].IdLineaNegocio, Detalle[i].IdCentroCostos, Detalle[i].IdProyecto, Detalle[i].IdItemMoneda, Detalle[i].ItemTipoCambio, Detalle[i].CantidadNecesaria.toFixed(DecimalesCantidades), Detalle[i].PrecioInfo.toFixed(DecimalesPrecios), Detalle[i].ItemTotal.toFixed(DecimalesImportes), Detalle[i].NumeroFabricacion, Detalle[i].NumeroSerie, Detalle[i].FechaNecesaria, Detalle[i].Referencia, Detalle[i].DescripcionItem, Detalle[i].EstadoDetalle);
+                AgregarLineaDetalle(Detalle[i],Detalle[i].Descripcion, solicitudes[0].Numero, solicitudes[0].Estado, i, Detalle[i].Prioridad, Detalle[i].IdArticulo, Detalle[i].IdSolicitudRQDetalle, Detalle[i].IdUnidadMedida, Detalle[i].IdIndicadorImpuesto, Detalle[i].IdAlmacen, Detalle[i].IdProveedor, Detalle[i].IdLineaNegocio, Detalle[i].IdCentroCostos, Detalle[i].IdProyecto, Detalle[i].IdItemMoneda, Detalle[i].ItemTipoCambio, Detalle[i].CantidadNecesaria.toFixed(DecimalesCantidades), Detalle[i].PrecioInfo.toFixed(DecimalesPrecios), Detalle[i].ItemTotal.toFixed(DecimalesImportes), Detalle[i].NumeroFabricacion, Detalle[i].NumeroSerie, Detalle[i].FechaNecesaria, Detalle[i].Referencia, Detalle[i].DescripcionItem, Detalle[i].EstadoDetalle);
                 $("#cboImpuesto").val(Detalle[0].IdIndicadorImpuesto);
             }
 
 
-            let DetalleAnexo = solicitudes[0].DetallesAnexo;
-            for (var i = 0; i < DetalleAnexo.length; i++) {
-                AgregarLineaDetalleAnexo(DetalleAnexo[i].IdSolicitudRQAnexos, DetalleAnexo[i].Nombre)
+            //AnxoDetalle
+            let AnexoDetalle = solicitudes[0].AnexoDetalle;
+            let trAnexo = '';
+            for (var k = 0; k < AnexoDetalle.length; k++) {
+                trAnexo += `
+                <tr>
+                   
+                    <td>
+                       `+ AnexoDetalle[k].NombreArchivo + `
+                    </td>
+                    <td>
+                       <a target="_blank" href="`+ AnexoDetalle[k].ruta + `"> Descargar </a>
+                    </td>
+                    <td><button class="btn btn-xs btn-danger" onclick="EliminarAnexo(`+ AnexoDetalle[k].IdAnexo + `,this)">-</button></td>
+                </tr>`;
             }
+            $("#tabla_files").find('tbody').append(trAnexo);
 
 
         }
 
     });
-
+    $("#btnGrabar").hide();
 }
 
 
@@ -1871,8 +1895,8 @@ function CalcularTotales() {
 }
 
 
-function AgregarLineaDetalle(DescripcionServicio, Numero, EstadoCabecera, contador, Prioridad, IdArticulo, IdSolicitudRQDetalle, IdUnidadMedida, IdIndicadorImpuesto, IdAlmacen, IdProveedor, IdLineaNegocio, IdCentroCosto, IdProyecto, IdMoneda, ItemTipoCambio, CantidadNecesaria, PrecioInfo, ItemTotal, NumeroFabricacion, NumeroSerie, FechaNecesaria, Referencia, DescripcionItem, EstadoDetalle) {
-
+function AgregarLineaDetalle(datos,DescripcionServicio, Numero, EstadoCabecera, contador, Prioridad, IdArticulo, IdSolicitudRQDetalle, IdUnidadMedida, IdIndicadorImpuesto, IdAlmacen, IdProveedor, IdLineaNegocio, IdCentroCosto, IdProyecto, IdMoneda, ItemTipoCambio, CantidadNecesaria, PrecioInfo, ItemTotal, NumeroFabricacion, NumeroSerie, FechaNecesaria, Referencia, DescripcionItem, EstadoDetalle) {
+    console.log(datos);
     let UnidadMedida;
     let IndicadorImpuesto;
     let Almacen;
@@ -1959,33 +1983,33 @@ function AgregarLineaDetalle(DescripcionServicio, Numero, EstadoCabecera, contad
 
 
     let TipoItem = $("#cboClaseArticulo").val();
-    if (TipoItem == 2) {
+    //if (TipoItem == 2) {
 
-        DescripcionItem = DescripcionServicio;
+    //    DescripcionItem = DescripcionServicio;
 
-    } else if (TipoItem == 3) {
+    //} else if (TipoItem == 3) {
 
-        DescripcionItem = DescripcionServicio;
+    //    DescripcionItem = DescripcionServicio;
 
-    } else {
-        $.post('/Articulo/ObtenerArticuloxCodigoDescripcion', {
-            'Codigo': IdArticulo,
-            'TipoItem': TipoItem
-        }, function (data, status) {
+    //} else {
+    //    $.post('/Articulo/ObtenerArticuloxCodigoDescripcion', {
+    //        'Codigo': IdArticulo,
+    //        'TipoItem': TipoItem
+    //    }, function (data, status) {
 
-            var errorEmpresa = validarEmpresa(data);
-            if (errorEmpresa) {
-                return;
-            }
+    //        var errorEmpresa = validarEmpresa(data);
+    //        if (errorEmpresa) {
+    //            return;
+    //        }
 
-            let articulos = JSON.parse(data);
-            console.log("articulos");
-            console.log(articulos);
-            console.log("articulos");
-            DescripcionItem = articulos[0].Descripcion1;
-            //console.log(DescripcionItem);
-        });
-    }
+    //        let articulos = JSON.parse(data);
+    //        console.log("articulos");
+    //        console.log(articulos);
+    //        console.log("articulos");
+    //        DescripcionItem = articulos[0].Descripcion1;
+    //        //console.log(DescripcionItem);
+    //    });
+    //}
 
 
 
@@ -2003,7 +2027,7 @@ function AgregarLineaDetalle(DescripcionServicio, Numero, EstadoCabecera, contad
             <input class="form-control" type="text" value="" id="txtCodigoArticulo" name="txtCodigoArticulo[]"/>
             </td>
 
-            <td>`;
+            <td style="display:none">`;
     if (EstadoCabecera == 1) {
         tr += `<button class="btn btn-xs btn-danger"  onclick="EliminarDetalle(` + IdSolicitudRQDetalle + `,this)"><img src="/assets/img/fa_trash.png" height ="15" width="15" /></button>`;
     }
@@ -2011,9 +2035,9 @@ function AgregarLineaDetalle(DescripcionServicio, Numero, EstadoCabecera, contad
 
     tr += `<button class="btn btn-xs btn-warning" onclick="BuscarHistorial('` + Numero + `','` + IdArticulo + `','` + IdAlmacen + `',` + TipoItem + `)">H</button>
             </td>
-
-            <td><input class="form-control" type="text" value="`+ IdArticulo + `" id="txtIdArticulo" name="txtIdArticulo[]" disabled/></td>
-            <td><textarea class="form-control" value="`+ DescripcionItem + `" type="text" id="txtDescripcionArticulo" name="txtDescripcionArticulo[]" disabled>` + DescripcionItem + `</textarea></td>
+<td></td>
+            <td><input class="form-control" type="text" value="`+ datos.CodArticulo + `" id="txtIdArticulo" name="txtIdArticulo[]" disabled/></td>
+            <td><textarea class="form-control" value="`+ datos.Descripcion + `" type="text" id="txtDescripcionArticulo" name="txtDescripcionArticulo[]" disabled>` + datos.Descripcion + `</textarea></td>
             <td>
             <select class="form-control" name="cboUnidadMedida[]" disabled>`;
     tr += `  <option value="0">Seleccione</option>`;
@@ -2071,13 +2095,13 @@ function AgregarLineaDetalle(DescripcionServicio, Numero, EstadoCabecera, contad
             </td>
             <td><input class="form-control changeTotal" type="number" value="`+ ItemTotal + `" name="txtItemTotal[]" id="txtItemTotal` + contador + `" onchange="CalcularTotales()" disabled></td>
             <td>
-            <select class="form-control"  name="cboAlmacen[]">`;
+            <select class="form-control"  name="cboAlmacen[]" disabled>`;
     tr += `  <option value="0">Seleccione</option>`;
     for (var i = 0; i < Almacen.length; i++) {
         if (Almacen[i].IdAlmacen == IdAlmacen) {
-            tr += `  <option value="` + Almacen[i].IdAlmacen + `" selected>` + Almacen[i].IdAlmacen + `</option>`;
+            tr += `  <option value="` + Almacen[i].IdAlmacen + `" selected>` + Almacen[i].Descripcion + `</option>`;
         } else {
-            tr += `  <option value="` + Almacen[i].IdAlmacen + `">` + Almacen[i].IdAlmacen + `</option>`;
+            tr += `  <option value="` + Almacen[i].IdAlmacen + `">` + Almacen[i].Descripcion + `</option>`;
         }
     }
     tr += `</select>
@@ -2098,43 +2122,43 @@ function AgregarLineaDetalle(DescripcionServicio, Numero, EstadoCabecera, contad
             <td style="display:none"><input class="form-control" type="text" value="`+ NumeroSerie + `" name="txtNumeroSerie[]"></td>
             <td style="display:none">
             <select class="form-control" name="cboLineaNegocio[]">`;
-    tr += `  <option value="0">Seleccione</option>`;
-    for (var i = 0; i < LineaNegocio.length; i++) {
-        if (LineaNegocio[i].IdLineaNegocio == IdLineaNegocio) {
-            tr += `  <option value="` + LineaNegocio[i].IdLineaNegocio + `" selected>` + LineaNegocio[i].Descripcion + `</option>`;
-        } else {
-            tr += `  <option value="` + LineaNegocio[i].IdLineaNegocio + `">` + LineaNegocio[i].Descripcion + `</option>`;
-        }
-    }
+    //tr += `  <option value="0">Seleccione</option>`;
+    //for (var i = 0; i < LineaNegocio.length; i++) {
+    //    if (LineaNegocio[i].IdLineaNegocio == IdLineaNegocio) {
+    //        tr += `  <option value="` + LineaNegocio[i].IdLineaNegocio + `" selected>` + LineaNegocio[i].Descripcion + `</option>`;
+    //    } else {
+    //        tr += `  <option value="` + LineaNegocio[i].IdLineaNegocio + `">` + LineaNegocio[i].Descripcion + `</option>`;
+    //    }
+    //}
     tr += `</select>
             </td>
-            <td>
+            <td style="display:none">
             <select class="form-control" name="cboCentroCostos[]">`;
     tr += `  <option value="0">Seleccione</option>`;
-    for (var i = 0; i < CentroCosto.length; i++) {
-        if (CentroCosto[i].IdCentroCosto == IdCentroCosto) {
-            tr += `  <option value="` + CentroCosto[i].IdCentroCosto + `" selected>` + CentroCosto[i].IdCentroCosto + `</option>`;
-        } else {
-            tr += `  <option value="` + CentroCosto[i].IdCentroCosto + `">` + CentroCosto[i].IdCentroCosto + `</option>`;
-        }
-    }
+    //for (var i = 0; i < CentroCosto.length; i++) {
+    //    if (CentroCosto[i].IdCentroCosto == IdCentroCosto) {
+    //        tr += `  <option value="` + CentroCosto[i].IdCentroCosto + `" selected>` + CentroCosto[i].IdCentroCosto + `</option>`;
+    //    } else {
+    //        tr += `  <option value="` + CentroCosto[i].IdCentroCosto + `">` + CentroCosto[i].IdCentroCosto + `</option>`;
+    //    }
+    //}
     tr += `</select>
             </td>
-            <td>
+            <td style="display:none">
             <select class="form-control" name="cboProyecto[]">`;
     tr += `  <option value="0">Seleccione</option>`;
-    for (var i = 0; i < Proyecto.length; i++) {
-        if (Proyecto[i].IdProyecto == IdProyecto) {
-            tr += `  <option value="` + Proyecto[i].IdProyecto + `" selected>` + Proyecto[i].IdProyecto + `</option>`;
-        } else {
-            tr += `  <option value="` + Proyecto[i].IdProyecto + `">` + Proyecto[i].IdProyecto + `</option>`;
-        }
-    }
+    //for (var i = 0; i < Proyecto.length; i++) {
+    //    if (Proyecto[i].IdProyecto == IdProyecto) {
+    //        tr += `  <option value="` + Proyecto[i].IdProyecto + `" selected>` + Proyecto[i].IdProyecto + `</option>`;
+    //    } else {
+    //        tr += `  <option value="` + Proyecto[i].IdProyecto + `">` + Proyecto[i].IdProyecto + `</option>`;
+    //    }
+    //}
     tr += `</select>
             </td>
             <td style="display:none"><input class="form-control" type="text" value="0" disabled></td>
             <td style="display:none"><input class="form-control" type="text" value="0" disabled></td>
-            <td ><textarea class="form-control" type="text" value="`+ Referencia + `"  name="txtReferencia[]">` + Referencia + `</textarea></td>
+            <td ><textarea class="form-control" type="text" value="`+ Referencia + `"  name="txtReferencia[]" disabled>` + Referencia + `</textarea></td>
             <td style="display:none;"><input class="form-control" type="text" value="`+ EstadoDetalle + `"  name="txtEstadoDetalle[]"></td>
             
           </tr>`;

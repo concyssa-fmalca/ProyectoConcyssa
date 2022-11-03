@@ -487,6 +487,8 @@ namespace DAO
                     {
                         SolicitudDetalleDTO oSolicitudRQDetalleDTO = new SolicitudDetalleDTO();
                         oSolicitudRQDetalleDTO.IdSolicitudRQDetalle = int.Parse(drd["Id"].ToString());
+                        oSolicitudRQDetalleDTO.CodArticulo = (drd["CodArticulo"].ToString());
+
                         oSolicitudRQDetalleDTO.IdSolicitudCabecera = int.Parse(drd["IdSolicitud"].ToString());
                         oSolicitudRQDetalleDTO.IdArticulo = drd["IdArticulo"].ToString();
                         oSolicitudRQDetalleDTO.Descripcion = drd["Descripcion"].ToString();
@@ -538,7 +540,7 @@ namespace DAO
                 try
                 {
                     cn.Open();
-                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarSolicitudAnexosRQxID", cn);
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerAnexosSolicitudRQxId", cn);
                     da.SelectCommand.Parameters.AddWithValue("@IdSolicitudRQ", IdSolicitudRQ);
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
                     SqlDataReader dr1 = da.SelectCommand.ExecuteReader();
@@ -552,26 +554,27 @@ namespace DAO
                 }
             }
 
-            oSolicitudRQDTO.DetallesAnexo = new SolicitudRQAnexos[filasdetalleAnexo];
+            oSolicitudRQDTO.AnexoDetalle = new AnexoDTO[filasdetalleAnexo];
             using (SqlConnection cn = new Conexion().conectar())
             {
                 try
                 {
                     cn.Open();
-                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarSolicitudAnexosRQxID", cn);
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerAnexosSolicitudRQxId", cn);
                     da.SelectCommand.Parameters.AddWithValue("@IdSolicitudRQ", IdSolicitudRQ);
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
                     SqlDataReader drd = da.SelectCommand.ExecuteReader();
                     Int32 posicion = 0;
                     while (drd.Read())
                     {
-                        SolicitudRQAnexos oSolicitudRQAnexos = new SolicitudRQAnexos();
-                        oSolicitudRQAnexos.IdSolicitudRQAnexos = int.Parse(drd["Id"].ToString());
-                        oSolicitudRQAnexos.IdSolicitud = int.Parse(drd["IdSolicitud"].ToString());
-                        oSolicitudRQAnexos.Nombre = drd["Nombre"].ToString();
-                        oSolicitudRQAnexos.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
-
-                        oSolicitudRQDTO.DetallesAnexo[posicion] = oSolicitudRQAnexos;
+                        AnexoDTO oAnexoDTO = new AnexoDTO();
+                        oAnexoDTO.IdAnexo = Convert.ToInt32(drd["IdAnexo"].ToString());
+                        oAnexoDTO.ruta = (drd["ruta"].ToString());
+                        oAnexoDTO.IdSociedad = Convert.ToInt32(drd["IdSociedad"].ToString());
+                        oAnexoDTO.Tabla = (drd["Tabla"].ToString());
+                        oAnexoDTO.IdTabla = Convert.ToInt32(drd["IdTabla"].ToString());
+                        oAnexoDTO.NombreArchivo = (drd["NombreArchivo"].ToString());
+                        oSolicitudRQDTO.AnexoDetalle[posicion] = oAnexoDTO;
                         posicion = posicion + 1;
                     }
 

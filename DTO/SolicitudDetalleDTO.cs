@@ -45,5 +45,8 @@ namespace DTO
         public int IdDetalle { get; set; }
 
         public int AprobadoAnterior { get; set; }
+
+        public string CodArticulo { get; set; }
+
     }
 }
