@@ -551,11 +551,23 @@ function AgregarLinea() {
     let ValidartCentroCosto = $("#cboCentroCostoItem").val();
     let ValidartProducto = $("#txtCodigoItem").val();
     let ValidarCantidad = $("#txtCantidadItem").val();
+    let ValidarPrecio = $("#txtPrecioUnitarioItem").val();
+
+    
+
     console.log(ValidarCantidad);
-    if (ValidarCantidad == "" || ValidarCantidad == null || ValidarCantidad == "0") {
+    if (ValidarCantidad == "" || ValidarCantidad == null || ValidarCantidad == "0" || !$.isNumeric(ValidarCantidad)) {
         swal("Informacion!", "Debe Especificar Cantidad!");
         return;
     }
+
+
+    if (ValidarPrecio == "" || ValidarPrecio == null || ValidarPrecio == "0" || !$.isNumeric(ValidarPrecio)) {
+        swal("Informacion!", "Debe Especificar Precio!");
+        return;
+    }
+
+
     if (ValidartCentroCosto == 0) {
         swal("Informacion!", "Debe Seleccionar Centro de Costo!");
         return;
@@ -564,6 +576,17 @@ function AgregarLinea() {
         swal("Informacion!", "Debe Seleccionar Producto!");
         return;
     }
+
+    if (ValidarCantidad<=0) {
+        swal("Informacion!", "Cantidad mayor a 0!");
+        return;
+    }
+
+    if (ValidarPrecio <= 0) {
+        swal("Informacion!", "Precio mayor a 0!");
+        return;
+    }
+
 
 
     //trae el cc especificados en la configuracion
@@ -751,7 +774,7 @@ function AgregarLinea() {
    
     tr += `</select>
             </td>
-            <td>
+            <td style="display:none">
             <select class="form-control" id="cboCentroCostos`+ contador + `" name="cboCentroCostos[]">`;
     tr += `  <option value="0">Seleccione</option>`;
     //for (var i = 0; i < CentroCosto.length; i++) {
@@ -759,7 +782,7 @@ function AgregarLinea() {
     //}
     tr += `</select>
             </td>
-            <td>
+            <td  style="display:none">
             <select class="form-control" id="cboProyecto`+ contador + `" name="cboProyecto[]">`;
     tr += `  <option value="0">Seleccione</option>`;
     //for (var i = 0; i < Proyecto.length; i++) {
@@ -2201,7 +2224,7 @@ function BuscarCodigoProducto(stock) {
 
         tableItems.destroy();
 
-        $.post("/Articulo/ObtenerArticulosConStock",
+        $.post("/Articulo/ObtenerArticulosConStockSolicitud",
             { 'Almacen': Almacen, 'Stock': stock, 'TipoItem': TipoItem, 'TipoProducto': $("#IdTipoProducto").val() },
             function (data, status) {
 

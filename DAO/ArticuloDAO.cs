@@ -145,7 +145,7 @@ namespace DAO
                 try
                 {
                     cn.Open();
-                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerArticuloxIdArticuloRequerimiento", cn);
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerArticuloxIdArticuloRequerimientoNew", cn);
                     da.SelectCommand.Parameters.AddWithValue("@IdArticulo", IdArticulo);
                     da.SelectCommand.Parameters.AddWithValue("@IdAlmacen", IdAlmacen);
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
