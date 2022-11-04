@@ -180,6 +180,9 @@ namespace ConcyssaWeb.Controllers
             {
                 var IdInsert = resultado[1];
 
+                SolicitudRQDAO oSerieDAO = new SolicitudRQDAO();
+                List<SolicitudRQDTO> lstSolicitudRQDTO = oSerieDAO.ObtenerDatosxID(IdInsert);
+                solicitudRQDTO.Numero = lstSolicitudRQDTO[0].Numero;
                 ModeloAutorizacionDAO oModeloAutorizacionDAO = new ModeloAutorizacionDAO();
                 SolicitudRQModeloDAO oSolicitudRQModeloDAO = new SolicitudRQModeloDAO();
                 EtapaAutorizacionDAO oEtapaAutorizacionDAO = new EtapaAutorizacionDAO();
@@ -304,9 +307,9 @@ namespace ConcyssaWeb.Controllers
                 //    "</body>";
 
                 string msge = "";
-                string from = "mail.mineratitan@gmail.com";
+                string from = "concyssa.smc@gmail.com";
                 string correo = from;
-                string password = "itjgiwuyjxuvdzfb";
+                string password = "tlbvngkvjcetzunr";
                 string displayName = "SMC - Proceso de Autorizacion";
                 MailMessage mail = new MailMessage();
                 mail.From = new MailAddress(from, displayName);
