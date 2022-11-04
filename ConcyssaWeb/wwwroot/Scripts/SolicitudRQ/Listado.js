@@ -10,7 +10,9 @@ let DecimalesPorcentajes = 0;
 
 
 function seleccionarAlmacenItem() {
+    
     $("#cboAlmacenItem").val($("#cboAlmacen").val());
+   
 }
 
 function validadJson(json) {
@@ -320,6 +322,7 @@ function ModalNuevo() {
 
 function OpenModalItem() {
 
+    
     $('#checkstock').prop('checked', true);
     $("#btnBuscarListadoProyecto").prop('disabled', true); //bloquea boton de modal buscar proyectos
 
@@ -356,7 +359,7 @@ function OpenModalItem() {
         CargarUnidadMedidaItem();
         CargarProyectos();
         CargarCentroCostos();
-        CargarAlmacen();
+
 
 
         $('#checkstock').on('click', function () {

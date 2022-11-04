@@ -69,6 +69,35 @@ namespace DAO
         }
 
 
+        public Decimal ObtenerSolicitudesRQDetallePrecio(int IdSolicitudRqDetalle)
+        {
+            Decimal precio = 0;
+            //SolicitudRQDetalleDTO oSolicitudRQDetalleDTO = new SolicitudRQDetalleDTO();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerSolicitudesRQDetalle", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSolicitudRqDetalle", IdSolicitudRqDetalle);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        precio=(Convert.ToDecimal(drd["PrecioInfo"].ToString()));
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            return precio;
+        }
+
+
 
         public List<int> UpdateInsertSolicitud(SolicitudRQDTO oSolicitudRQDTO, SolicitudRQDetalleDTO oSolicitudRQDetalleDTO, string IdSociedad)
         {

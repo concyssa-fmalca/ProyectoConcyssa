@@ -94,6 +94,31 @@ namespace ConcyssaWeb.Controllers
         }
 
 
+        public string ObtenerDatosRqDetallexID(int IdDetalleRq)
+        {
+            //return "ddd";
+            string valida = "";
+            valida = validarEmpresaActual();
+            if (valida != "")
+            {
+                return valida;
+            }
+
+
+            SolicitudRQDAO oSolicitudRQDAO = new SolicitudRQDAO();
+            Decimal precio = oSolicitudRQDAO.ObtenerSolicitudesRQDetallePrecio(IdDetalleRq);
+            return precio.ToString(); 
+            //if (oSolicitudRQDetalleDTO !=null)
+            //{
+            //    return JsonConvert.SerializeObject(oSolicitudRQDetalleDTO);
+            //}
+            //else
+            //{
+            //    return "error";
+            //}
+
+        }
+
 
         public int EliminarDetalleSolicitud(int IdSolicitudRQDetalle)
         {

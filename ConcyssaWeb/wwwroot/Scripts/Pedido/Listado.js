@@ -2144,6 +2144,10 @@ function listarItemAprobados() {
 function ObtenerStockxIdDetalleSolicitudRQ(IdDetalle) {
     $.ajaxSetup({ async: false });
     $.post("ObtenerStockxIdDetalleSolicitudRQ", { 'IdDetalleRQ': IdDetalle }, function (data, status) {
+        if (!validadJson(data)) {
+            $("#tabla_aprobados_stock tbody").html('');
+            return true;
+        }
         let datos = JSON.parse(data);
 
         let tr = "";
@@ -2214,6 +2218,7 @@ function validadJson(json) {
 
 function agregarProvedoraProductoxSeparado() {
     $("#modalasignarproveedor").modal();
+    ObtenerPrecioRQDetalle();
     $.ajaxSetup({ async: false });
     $.post("/Proveedor/ObtenerProveedores", { estado: 1 }, function (data, status) {
         let proveedores = JSON.parse(data);
@@ -2221,7 +2226,22 @@ function agregarProvedoraProductoxSeparado() {
     });
 }
 
+function ObtenerPrecioRQDetalle() {
+    let IdDetalleRq = $('input:radio[name=rdSeleccionado]:checked').val();
+    $.post("/SolicitudRQ/ObtenerDatosRqDetallexID", { 'IdDetalleRq': IdDetalleRq }, function (data, status) {
+        $("#PrecioAsignar").val(data)
+   
+    });
+ 
+}
+
 function GuardarAsignarProveedorProducto() {
+    let ValidarPrecio = $("#PrecioAsignar").val();
+    if (ValidarPrecio == "" || ValidarPrecio == null || ValidarPrecio == "0" || !$.isNumeric(ValidarPrecio)) {
+        swal("Informacion!", "Debe Especificar Precio!");
+        return;
+    }
+
     let IdProveedor = $("#IdProveedorAsignar").val();
     let precionacional = $("#PrecioAsignar").val();
     let precioextranjero = 0;
