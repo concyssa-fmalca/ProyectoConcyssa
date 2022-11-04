@@ -673,7 +673,7 @@ namespace ConcyssaWeb.Controllers
                                         <td class='content-block aligncenter'
                                             style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: center; margin: 0; padding: 0 0 20px;'
                                             align='center' valign='top'>
-                                            <a href='https://smartcode.pe/'
+                                            <a href='http://192.168.0.209/'
                                                style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; color: #02c0ce; text-decoration: underline; margin: 0;'>IR a Nuestra Pagina</a>
                                         </td>
                                     </tr>
