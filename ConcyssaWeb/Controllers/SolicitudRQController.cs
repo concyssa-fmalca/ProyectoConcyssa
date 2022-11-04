@@ -226,7 +226,7 @@ namespace ConcyssaWeb.Controllers
                                                 var UsersDeEtapa = oUsuarioDAO.ObtenerDatosxID(ResultadoEtapa[0].Detalles[k].IdUsuario, ref mensaje_error);
                                                 var Solicitante = oUsuarioDAO.ObtenerDatosxID(solicitudRQDTO.IdSolicitante, ref mensaje_error);
                                                 EnviarCorreo(UsersDeEtapa[0].Correo, Solicitante[0].Nombre, solicitudRQDTO.Serie, solicitudRQDTO.Numero, Resultado[0].Mensaje);
-                                                EnviarCorreo("jhuniors.ramos@smartcode.pe", Solicitante[0].Nombre, solicitudRQDTO.Serie, solicitudRQDTO.Numero, Resultado[0].Mensaje);
+                                                //EnviarCorreo("jhuniors.ramos@smartcode.pe", Solicitante[0].Nombre, solicitudRQDTO.Serie, solicitudRQDTO.Numero, Resultado[0].Mensaje);
 
                                             }
                                             //enviar correo
@@ -287,36 +287,48 @@ namespace ConcyssaWeb.Controllers
         //public void EnviarCorreo()
         {
             string body;
+            try
+            {
 
-            //body = TemplateEmail();
-            body = TemplateEmail(Serie, Numero, Solicitante, Condicion);
-            //body = "<body>" +
-            //    "<h2>Se creo una nueva Solicitud</h2>" +
-            //    "<h4>Detalles de Solicitud:</h4>" +
-            //    "<span>N° Solicitud: " + Serie + "-" + Numero + "</span>" +
-            //    "<br/><span>Solicitante: "+ Solicitante + "</span>" +
-            //    "<br/><span>Condicion: "+Condicion+"</span>" +
-            //    "<br/><span>Url: http://localhost:58025 </span>" +
-            //    "</body>";
 
-            string msge = "";
-            string from = "mail.mineratitan@gmail.com";
-            string correo = from;
-            string password = "itjgiwuyjxuvdzfb";
-            string displayName = "SMC - Proceso de Autorizacion";
-            MailMessage mail = new MailMessage();
-            mail.From = new MailAddress(from, displayName);
-            mail.To.Add(Correo);
 
-            mail.Subject = "Autorizacion";
-            mail.Body = body + "</body></html>";
+                //body = TemplateEmail();
+                body = TemplateEmail(Serie, Numero, Solicitante, Condicion);
+                //body = "<body>" +
+                //    "<h2>Se creo una nueva Solicitud</h2>" +
+                //    "<h4>Detalles de Solicitud:</h4>" +
+                //    "<span>N° Solicitud: " + Serie + "-" + Numero + "</span>" +
+                //    "<br/><span>Solicitante: "+ Solicitante + "</span>" +
+                //    "<br/><span>Condicion: "+Condicion+"</span>" +
+                //    "<br/><span>Url: http://localhost:58025 </span>" +
+                //    "</body>";
 
-            mail.IsBodyHtml = true;
-            SmtpClient client = new SmtpClient("smtp.gmail.com", 587); //Aquí debes sustituir tu servidor SMTP y el puerto
-            client.Credentials = new NetworkCredential(from, password);
-            client.EnableSsl = true;//En caso de que tu servidor de correo no utilice cifrado SSL,poner en false
-            client.Send(mail);
+                string msge = "";
+                string from = "mail.mineratitan@gmail.com";
+                string correo = from;
+                string password = "itjgiwuyjxuvdzfb";
+                string displayName = "SMC - Proceso de Autorizacion";
+                MailMessage mail = new MailMessage();
+                mail.From = new MailAddress(from, displayName);
+                
+                mail.To.Add(Correo);
 
+                MailAddress copy = new MailAddress("jhuniors.ramos@smartcode.pe");
+                mail.CC.Add(copy);
+                mail.Subject = "Autorizacion";
+                mail.Body = body + "</body></html>";
+
+                mail.IsBodyHtml = true;
+                SmtpClient client = new SmtpClient("smtp.gmail.com", 587); //Aquí debes sustituir tu servidor SMTP y el puerto
+                client.Credentials = new NetworkCredential(from, password);
+                client.EnableSsl = true;//En caso de que tu servidor de correo no utilice cifrado SSL,poner en false
+                client.Send(mail);
+            }
+            catch (Exception)
+            {
+
+                var dd = "";
+            }
 
 
         }
