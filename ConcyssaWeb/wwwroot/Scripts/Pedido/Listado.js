@@ -850,7 +850,7 @@ function AgregarLinea() {
     //<select class="form-control select2" id="cboCodigoArticulo" name="cboCodigoArticulo[]">
     //    <option value="0">Seleccione</option>
     //</select>
-    tr += `<tr>
+    tr += `<tr id="trcontador2` + contador +`">
             <td><input input style="display:none;" class="form-control" type="text" value="0" id="txtIdSolicitudRQDetalle" name="txtIdSolicitudRQDetalle[]"/></td>
             <td input style="display:none;">
             <input  class="form-control" type="text" id="txtIdArticulo`+ contador + `" name="txtIdArticulo[]" />
@@ -917,7 +917,7 @@ function AgregarLinea() {
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td ><input class="form-control" type="text" value="" id="txtReferencia`+ contador + `" name="txtReferencia[]"></td>
-            <td><button class="btn btn-xs btn-danger borrar">-</button></td>
+            <td><button class="btn btn-xs btn-danger borrar" onclick="eliminartr2(`+contador+`)">-</button></td>
           <tr>`;
 
     $("#tabla").find('tbody').append(tr);
@@ -955,6 +955,10 @@ function AgregarLinea() {
     $("#txtReferencia" + contador).val(ReferenciaItem);
     CalcularTotalDetalle(contador);
     LimpiarModalItem();
+}
+
+function eliminartr2(count) {
+    $("#trcontador2" + count).remove();
 }
 
 function ValidarDecimalesCantidades(input) {
@@ -1440,7 +1444,7 @@ function ObtenerDatosxID(id) {
             //<select class="form-control select2" id="cboCodigoArticulo" name="cboCodigoArticulo[]">
             //    <option value="0">Seleccione</option>
             //</select>
-            tr += `<tr>
+            tr += `<tr id="contador` + contador +`">
             <td>
                 <input type="hidden" name="DescOrigen[]" value="0"/>
                 <input type="hidden" name="IdOrigen[]" value="0"/>
@@ -1510,7 +1514,7 @@ function ObtenerDatosxID(id) {
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td ><input class="form-control" type="text" value="" id="txtReferencia`+ contador + `" name="txtReferencia[]" disabled></td>
-            <td><button class="btn btn-xs btn-danger borrar">-</button></td>
+            <td><button class="btn btn-xs btn-danger borrar" onclick="eliminartrpedidos(`+contador+`)">-</button></td>
           <tr>`;
 
             $("#tabla").find('tbody').append(tr);
@@ -1561,13 +1565,17 @@ function ObtenerDatosxID(id) {
 }
 
 function mostrarproductosaprobados() {
-    $("#ModalProductosAprobados").modal();
+    $("#ModalProductosAprobados").modal('show');
     listarItemAprobados();
 }
 
 function mostrarParaGenerar() {
     $("#ModalOrdenAgrupadaporProductoAprobador").modal();
     listarProductosAsignadosRQAgrupados();
+}
+
+function eliminartrpedidos(count) {
+    $("#contador" + count).remove();
 }
 
 
@@ -1712,7 +1720,7 @@ function ObtenerDatosProveedorXRQ(IdProveedor, dataa) {
             //<select class="form-control select2" id="cboCodigoArticulo" name="cboCodigoArticulo[]">
             //    <option value="0">Seleccione</option>
             //</select>
-            tr += `<tr>
+            tr += `<tr id="eliminartr3`+contador+`">
             <td>
                 <input type="hidden" name="DescOrigen[]" value="RQ"/>
                 <input type="hidden" name="IdOrigen[]" value="`+ datos[p].IdAsignadoPedidoRequerimiento + `"/>
@@ -1783,7 +1791,7 @@ function ObtenerDatosProveedorXRQ(IdProveedor, dataa) {
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td ><input class="form-control" type="text" value="" id="txtReferencia`+ contador + `" name="txtReferencia[]"></td>
-            <td><button class="btn btn-xs btn-danger borrar">-</button></td>
+            <td><button class="btn btn-xs btn-danger borrar" onclick="eliminartr3(`+contador+`)">-</button></td>
           <tr>`;
 
             $("#tabla").find('tbody').append(tr);
@@ -1825,6 +1833,10 @@ function ObtenerDatosProveedorXRQ(IdProveedor, dataa) {
     });
 }
 
+
+function eliminartr3(count) {
+    $("#eliminartr3" + count).remove();
+}
 function AgregarLinea() {
     let IdItem = $("#txtIdItem").val();
     let CodigoItem = $("#txtCodigoItem").val();
@@ -2251,6 +2263,7 @@ function GuardarAsignarProveedorProducto() {
     $.post("ActualizarProveedorPrecio", { 'IdProveedor': IdProveedor, 'precionacional': precionacional, 'precioextranjero': precioextranjero, 'idproducto': idproducto, 'IdDetalleRq': IdDetalleRq }, function (data, status) {
         listarItemAprobados();
     });
+    $("#modalasignarproveedor").modal('hide');
 }
 
 
