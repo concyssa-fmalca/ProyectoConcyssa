@@ -2814,7 +2814,7 @@ function listaropdnDT() {
                 targets: 4,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.Total
+                    return formatNumberDecimales(full.Total,2)
                 },
             },
             {

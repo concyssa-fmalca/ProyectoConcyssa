@@ -138,7 +138,7 @@ function listarPedidoDt() {
                 targets: 8,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.total_venta
+                    return formatNumberDecimales(full.total_venta,2)
                 },
             }
 

@@ -144,7 +144,7 @@ function ConsultaServidor(url) {
                 '<td>' + solicitudes[i].TipoArticulo.toUpperCase() + '</td>' +
                 '<td>' + solicitudes[i].Moneda.toUpperCase() + '</td>' +
                 //'<td>' + solicitudes[i].Impuesto.toUpperCase() + '</td>' +
-                '<td>' + solicitudes[i].Total.toFixed(DecimalesImportes) + '</td>' +
+                '<td>' + formatNumberDecimales(solicitudes[i].Total,2) + '</td>' +
                 '<td>' + solicitudes[i].Prioridad.toUpperCase() + '</td>' +
                 '<td>' + solicitudes[i].Estado.toUpperCase() + '</td>';
 
