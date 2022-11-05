@@ -48,5 +48,10 @@ namespace DTO
 
         public string CodArticulo { get; set; }
 
+        public string NombAlmacen { get; set; } = "";
+        public string NombBase { get; set; } = "";
+        public string NombObra { get; set; } = "";
+
+
     }
 }

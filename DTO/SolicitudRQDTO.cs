@@ -35,6 +35,9 @@ namespace DTO
         public int Estado { get; set; }
         public int Prioridad { get; set; }
         public string DetalleEstado { get; set; }
+        public string NombObra { get; set; } = "";
+        public string NombBase { get; set; } = "";
+        public string NombAlmacen { get; set; } = "";
 
         public IList<SolicitudDetalleDTO> Detalle;
         public IList<AnexoDTO> AnexoDetalle { get; set; }

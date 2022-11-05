@@ -471,6 +471,11 @@ namespace DAO
                         oSolicitudRQDTO.Estado = int.Parse(drd["Estado"].ToString());
                         oSolicitudRQDTO.DetalleEstado = drd["DetalleEstado"].ToString();
                         oSolicitudRQDTO.Prioridad = int.Parse(drd["Prioridad"].ToString());
+
+                        //oSolicitudRQDTO.NombObra = (drd["NombObra"].ToString());
+                        //oSolicitudRQDTO.NombBase = (drd["NombBase"].ToString());
+                        //oSolicitudRQDTO.NombAlmacen = (drd["NombAlmacen"].ToString());
+
                         //lstSolicitudRQDTO.Add(oSolicitudRQDTO);
                     }
                     drd.Close();
@@ -548,6 +553,10 @@ namespace DAO
                         oSolicitudRQDetalleDTO.TotalDespacho = decimal.Parse(drd["TotalDespacho"].ToString());
 
                         oSolicitudRQDetalleDTO.IdDetalle = int.Parse(drd["IdDetalle"].ToString());
+                        oSolicitudRQDetalleDTO.NombAlmacen = (drd["NombAlmacen"].ToString());
+                        oSolicitudRQDetalleDTO.NombObra = (drd["NombObra"].ToString());
+                        oSolicitudRQDetalleDTO.NombBase = (drd["NombBase"].ToString());
+
                         //oSolicitudRQDetalleDTO.DescripcionItem = drd["DescripcionItem"].ToString();
                         //lstSolicitudRQDTO.Add(oSolicitudRQDTO.Detalle.Add(oSolicitudRQDetalleDTO));
                         oSolicitudRQDTO.Detalle[posicion] = oSolicitudRQDetalleDTO;

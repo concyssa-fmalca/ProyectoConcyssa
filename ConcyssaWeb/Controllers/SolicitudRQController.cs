@@ -182,7 +182,7 @@ namespace ConcyssaWeb.Controllers
 
                 SolicitudRQDAO oSerieDAO = new SolicitudRQDAO();
                 List<SolicitudRQDTO> lstSolicitudRQDTO = oSerieDAO.ObtenerDatosxID(IdInsert);
-                solicitudRQDTO.Numero = lstSolicitudRQDTO[0].Numero;
+                solicitudRQDTO = lstSolicitudRQDTO[0];
                 ModeloAutorizacionDAO oModeloAutorizacionDAO = new ModeloAutorizacionDAO();
                 SolicitudRQModeloDAO oSolicitudRQModeloDAO = new SolicitudRQModeloDAO();
                 EtapaAutorizacionDAO oEtapaAutorizacionDAO = new EtapaAutorizacionDAO();
@@ -228,7 +228,7 @@ namespace ConcyssaWeb.Controllers
                                             {
                                                 var UsersDeEtapa = oUsuarioDAO.ObtenerDatosxID(ResultadoEtapa[0].Detalles[k].IdUsuario, ref mensaje_error);
                                                 var Solicitante = oUsuarioDAO.ObtenerDatosxID(solicitudRQDTO.IdSolicitante, ref mensaje_error);
-                                                EnviarCorreo(UsersDeEtapa[0].Correo, Solicitante[0].Nombre, solicitudRQDTO.Serie, solicitudRQDTO.Numero, Resultado[0].Mensaje);
+                                                EnviarCorreo(UsersDeEtapa[0].Correo, Solicitante[0].Nombre, solicitudRQDTO.Serie, solicitudRQDTO.Numero, Resultado[0].Mensaje, solicitudRQDTO);
                                                 //EnviarCorreo("jhuniors.ramos@smartcode.pe", Solicitante[0].Nombre, solicitudRQDTO.Serie, solicitudRQDTO.Numero, Resultado[0].Mensaje);
 
                                             }
@@ -286,7 +286,7 @@ namespace ConcyssaWeb.Controllers
 
 
 
-        public void EnviarCorreo(string Correo, string Solicitante, string Serie, int Numero, string Condicion)
+        public void EnviarCorreo(string Correo, string Solicitante, string Serie, int Numero, string Condicion, SolicitudRQDTO oSolicitudRQDTO=null)
         //public void EnviarCorreo()
         {
             string body;
@@ -296,7 +296,7 @@ namespace ConcyssaWeb.Controllers
 
 
                 //body = TemplateEmail();
-                body = TemplateEmail(Serie, Numero, Solicitante, Condicion);
+                body = TemplateEmail(Serie, Numero, Solicitante, Condicion, oSolicitudRQDTO);
                 //body = "<body>" +
                 //    "<h2>Se creo una nueva Solicitud</h2>" +
                 //    "<h4>Detalles de Solicitud:</h4>" +
@@ -310,7 +310,7 @@ namespace ConcyssaWeb.Controllers
                 string from = "concyssa.smc@gmail.com";
                 string correo = from;
                 string password = "tlbvngkvjcetzunr";
-                string displayName = "SMC - Proceso de Autorizacion";
+                string displayName = "SGC-WEB";
                 MailMessage mail = new MailMessage();
                 mail.From = new MailAddress(from, displayName);
                 
@@ -318,7 +318,15 @@ namespace ConcyssaWeb.Controllers
 
                 MailAddress copy = new MailAddress("jhuniors.ramos@smartcode.pe");
                 mail.CC.Add(copy);
-                mail.Subject = "Autorizacion";
+                if (oSolicitudRQDTO != null)
+                {
+                    mail.Subject = "[Solicitud de aprobacion] " + oSolicitudRQDTO.Serie + "-" + oSolicitudRQDTO.Numero + " / " + oSolicitudRQDTO.Detalle[0].NombObra+" - "+oSolicitudRQDTO.Solicitante;
+                }
+                else
+                {
+                    mail.Subject = "Autorizacion "+ Solicitante+ " "+ Serie+"-"+Numero;
+                }
+                
                 mail.Body = body + "</body></html>";
 
                 mail.IsBodyHtml = true;
@@ -422,7 +430,7 @@ namespace ConcyssaWeb.Controllers
         //    return JsonConvert.SerializeObject(items);
         //}
 
-        public string TemplateEmail(string Serie, int Numero, string Solicitante, string Condicion)
+        public string TemplateEmail(string Serie, int Numero, string Solicitante, string Condicion, SolicitudRQDTO oSolicitudRQDTO = null)
         {
             string bodyhtml;
             bodyhtml = @"
@@ -483,6 +491,12 @@ namespace ConcyssaWeb.Controllers
                                                         valign='top'><b>DETALLES:</b>
                                                     </td>
                                                 </tr>
+                                                <tr style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;'>
+                                                    <td style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 5px 0;'
+                                                        valign='top'><b>Obra: " + oSolicitudRQDTO.Detalle[0].NombObra + @"</b>
+                                                    </td>
+                                                </tr>
+
                                                 <tr style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;'>
                                                     <td style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 5px 0;'
                                                         valign='top'><b>N° Solicitud: " + Serie + "-" + Numero + @"</b>
