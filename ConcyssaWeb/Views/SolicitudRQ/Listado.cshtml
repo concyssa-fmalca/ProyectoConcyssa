@@ -119,9 +119,13 @@
 
 
                             <option value="1">Pendiente de Aprobacion</option>
-                            <option value="2">Aprobado Completo</option>
-                            <option value="3">Aprobado Parcial</option>
-                            @*<option value="8">Cerrado Parcial</option>*@
+                            <option value="2">Cerrado</option>
+                            <option value="3">Rechazado</option>
+                            <option value="4">Aprobado</option>
+                            <option value="5">Aprobado Parcial</option>
+                            <option value="6">En Proceso </option>
+
+
                             <option value="0">Todos</option>
                         </select>
                     </div>
@@ -879,6 +883,48 @@
                                                 <th>Descripcion</th>
                                                 <th>Cantidad</th>
                                                 <th>Cantidad Pendiente</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger pull-right" style="background-color:orange;" data-dismiss="modal" onclick="CerrarModalHistorial()">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal EStados-->
+    <div class="modal fade" data-backdrop="static"
+         data-keyboard="false" id="ModalHistorialEstados" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered allcp-form" style="margin-top:120px" role="document">
+            <div class="modal-content">
+
+
+                <div class="panel" style="margin-bottom:0px">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="lblTituloModalItem">Historial Estados</h5>
+                    </div>
+                    <div class="panel-body ">
+                        <div class='col s12 m12 '>
+                            <div class='container-fluid'>
+
+
+                                <div class="" id="div_modelos_aprobaciones">
+                                    <table class="table" id="tabla_modal_estado">
+                                        <thead>
+                                            <tr>
+                                                <th>Nomb. Producto</th>
+                                                <th>Num Aprobacion</th>
+                                                <th>Estados</th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>

@@ -15,5 +15,7 @@ namespace DTO
         public int Aprobaciones { get; set; }
         public int Rechazos { get; set; }
         public int IdSociedad { get; set; }
+
+        public IList<SolicitudRQModeloAprobacionesDTO> ListModeloAprobacionesDTO;
     }
 }

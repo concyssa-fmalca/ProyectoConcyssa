@@ -43,6 +43,9 @@ namespace DTO
         public IList<AnexoDTO> AnexoDetalle { get; set; }
         public List<SolicitudRQAnexos> DetalleAnexo { get; set; }
         public IList<SolicitudRQAnexos> DetallesAnexo;
+
+        public IList<SolicitudRQModeloDTO> ListSolicitudRqModelo;
+
     }
 
 

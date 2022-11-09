@@ -230,7 +230,9 @@ function ConsultaServidor(url) {
                 tr += '<td>BAJA</td>';
             }
 
-            tr += '<td>' + solicitudes[i].DetalleEstado.toUpperCase() + '</td>';
+            //tr += '<td>' + solicitudes[i].DetalleEstado.toUpperCase() + '</td>';
+            tr += '<td> <button class="btn btn-sm-red" onclick="modalHistorialEstado(' + solicitudes[i].IdSolicitudRQ +')">E</button> </td>';
+
 
             var fechaSplit = (solicitudes[i].FechaDocumento.substring(0, 10)).split("-");
             //var fecha = fechaSplit[0] + "/" + fechaSplit[1] + "/" + fechaSplit[2];
@@ -3280,4 +3282,43 @@ function CargarBasesObraAlmacenSegunAsignado() {
 function borrartr(id) {
     $("#" + id).remove();
     CalcularTotales();
+}
+
+function modalHistorialEstado(IdSolicitudRQ) {
+    $("#ModalHistorialEstados").modal();
+    $("#div_modelos_aprobaciones").html('');
+    let tablee = "";
+    $.post("DatosSolicitudModeloAprobaciones",{ 'IdSolicitudRQ':IdSolicitudRQ }, function (data, status) {
+        let datos = JSON.parse(data);
+        console.log(datos.ListSolicitudRqModelo);
+
+        if (datos.ListSolicitudRqModelo.length > 0) {
+            for (var i = 0; i < datos.ListSolicitudRqModelo.length; i++) {
+                tablee += ` <p>ETAPA:`+(i+1)+` </p>
+                        <table class="table" id="tabla_modal_estado">
+                                        <thead>
+                                            <tr>
+                                                <th>Nomb. Producto</th>
+                                                <th>Aprobacion</th>
+                                            </tr>
+                                        </thead>
+                                    <tbody>`;
+                if (datos.ListSolicitudRqModelo[i].ListModeloAprobacionesDTO.length > 0) {
+                    console.log(datos.ListSolicitudRqModelo[i].ListModeloAprobacionesDTO)
+
+                    for (var j = 0; j < datos.ListSolicitudRqModelo[i].ListModeloAprobacionesDTO.length; j++) {
+                        tablee += `<tr>
+                            <td>`+ datos.ListSolicitudRqModelo[i].ListModeloAprobacionesDTO[j].NombArticulo+`</td>
+                           <td>`+ datos.ListSolicitudRqModelo[i].ListModeloAprobacionesDTO[j].NombEstado +`</td>
+                            </tr>`;
+                    }
+                }
+                tablee += `</tbody></table>`;
+                tablee += `</br>`;
+            }
+
+        }
+        $("#div_modelos_aprobaciones").html(tablee);
+        console.log(datos.ListSolicitudRqModelo);
+    })
 }

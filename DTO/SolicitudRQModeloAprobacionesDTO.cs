@@ -22,5 +22,8 @@ namespace DTO
         public int Estado { get; set; }
 
         public int IdDetalle { get; set; }
+
+        public string NombArticulo { get; set; }
+        public string NombEstado { get; set; }
     }
 }

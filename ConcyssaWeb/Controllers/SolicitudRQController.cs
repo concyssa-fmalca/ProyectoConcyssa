@@ -682,5 +682,21 @@ namespace ConcyssaWeb.Controllers
             return JsonConvert.SerializeObject(Archivos);
         }
 
+        public string DatosSolicitudModeloAprobaciones(int IdSolicitudRQ)
+        {
+            SolicitudRQDTO oSolicitudRQDTO = new SolicitudRQDTO();
+            SolicitudRQDAO oSolicitudRQDAO = new SolicitudRQDAO();
+            oSolicitudRQDTO=oSolicitudRQDAO.DatosSolicitudRq(IdSolicitudRQ);
+            if (oSolicitudRQDTO!=null)
+            {
+                return JsonConvert.SerializeObject(oSolicitudRQDTO);
+            }
+            else
+            {
+                return "Error";
+            }
+            
+        }
+
     }
 }
