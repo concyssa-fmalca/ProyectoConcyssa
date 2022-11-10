@@ -295,7 +295,7 @@ function ListarDatatableKardexDT(url, IdArticulo, IdAlmacen, FechaInicio, FechaT
                 targets: 12,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.PrecioPromedio
+                    return formatNumberDecimales(full.PrecioPromedio,2)
                 },
             },
             {
