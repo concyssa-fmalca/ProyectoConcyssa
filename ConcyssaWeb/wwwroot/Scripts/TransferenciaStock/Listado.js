@@ -243,6 +243,7 @@ function ConsultaServidor(url) {
                 '<td>' + movimientos[i].Estado + '</td>' +
 
                 '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + movimientos[i].IdMovimiento + ')"></button>' +
+                '<button class="btn btn-primary" onclick="GenerarReporte(' + movimientos[i].IdMovimiento + ')">R</button>' +
                 //'<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + solicitudes[i].IdSolicitudRQ + ')"></button></td >' +
                 '</tr>';
         }
@@ -2266,4 +2267,23 @@ function disabledmodal(valorbolean) {
         $("#btnNuevo").hide();
     }
 
+}
+
+function GenerarReporte(id) {
+    $.ajaxSetup({ async: false });
+    $.post("/EntradaMercancia/GenerarReporte", { 'NombreReporte': 'TransferenciaMercancia', 'Formato': 'PDF', 'Id': id }, function (data, status) {
+        let datos;
+        if (validadJson(data)) {
+            let datobase64;
+            datobase64 = "data:application/octet-stream;base64,"
+            datos = JSON.parse(data);
+            datobase64 += datos.Base64ArchivoPDF;
+            $("#reporteRPT").attr("download", 'Reporte.' + "pdf");
+            $("#reporteRPT").attr("href", datobase64);
+            $("#reporteRPT")[0].click();
+
+        } else {
+            respustavalidacion
+        }
+    });
 }

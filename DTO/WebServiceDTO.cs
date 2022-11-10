@@ -11,5 +11,9 @@ namespace DTO
         public string NombreReporte;
         public string Formato;
         public int Id;
+        public int IdArticulo;
+        public int IdAlmacen;
+        public DateTime FechaInicio;
+        public DateTime FechaTermino;
     }
 }

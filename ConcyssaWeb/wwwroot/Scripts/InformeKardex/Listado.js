@@ -496,3 +496,44 @@ function limpiarDatos() {
 
 
 
+
+function ReporteKardex() {
+    let IdArticulo = $("#IdArticulo").val();
+    let IdAlmacen = $("#IdAlmacen").val();
+    let FechaInicio = $("#FechaInicio").val();
+    let FechaTermino = $("#FechaTermino").val();
+    if (FechaInicio == '') {
+        FechaInicio = '2022-01-01'
+    }
+
+    if (FechaTermino == '') {
+        FechaTermino = '2050-01-01'
+    }
+
+    $.ajaxSetup({ async: false });
+    $.post("GenerarReporte", {
+        'NombreReporte': 'Kardex', 'Formato': 'PDF', 'IdArticulo': IdArticulo,'IdAlmacen': IdAlmacen,'FechaInicio': FechaInicio,'FechaTermino': FechaTermino }, function (data, status) {
+        let datos;
+        if (validadJson(data)) {
+            let datobase64;
+            datobase64 = "data:application/octet-stream;base64,"
+            datos = JSON.parse(data);
+            datobase64 += datos.Base64ArchivoPDF;
+            $("#reporteRPT").attr("download", 'Reporte.' + "pdf");
+            $("#reporteRPT").attr("href", datobase64);
+            $("#reporteRPT")[0].click();
+
+        } else {
+            respustavalidacion
+        }
+    });
+}
+
+function validadJson(json) {
+    try {
+        object = JSON.parse(json);
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
