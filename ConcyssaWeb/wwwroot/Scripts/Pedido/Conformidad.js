@@ -29,15 +29,15 @@ function listarPedidoDtConfirmidad() {
 
         columnDefs: [
             // {"className": "text-center", "targets": "_all"},
-            {
-                targets: -1,
-                orderable: false,
-                render: function (data, type, full, meta) {
-                    return 0
-                    /*return `<button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(` + full.IdPedido + `)"></button>`*/
-                    /*  <button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(` + full.IdPedido + `)"></button>`*/
-                },
-            },
+            //{
+            //    targets: -1,
+            //    orderable: false,
+            //    render: function (data, type, full, meta) {
+            //        return 0
+            //        /*return `<button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(` + full.IdPedido + `)"></button>`*/
+            //        /*  <button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(` + full.IdPedido + `)"></button>`*/
+            //    },
+            //},
             {
                 targets: 0,
                 orderable: false,
@@ -167,7 +167,7 @@ function abrirModalPedidoConformidad(data) {
                     <td>`+ pedido.detalles[i].DescripcionArticulo + `</td>
                     <td>`+ pedido.detalles[i].Cantidad + `</td>
                     <td>`+ pedido.detalles[i].precio_unitario + `</td>`;
-            if (pedido.detalles[i].IdMoneda == 1) {
+            if (pedido.IdMoneda == 1) {
                 tabletr += `<td>Soles</td>`;
             } else {
                 tabletr += `<td>Dolares</td>`;

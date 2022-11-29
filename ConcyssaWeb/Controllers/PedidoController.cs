@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Data.SqlClient;
 using System.Data;
+using System.Net.Mail;
+using System.Net;
+using System.Net.NetworkInformation;
 
 namespace ConcyssaWeb.Controllers
 {
@@ -15,6 +18,11 @@ namespace ConcyssaWeb.Controllers
         }
 
         public IActionResult Conformidad()
+        {
+            return View();
+        }
+
+        public IActionResult CorreoProveedor()
         {
             return View();
         }
@@ -147,6 +155,37 @@ namespace ConcyssaWeb.Controllers
             return mensaje_error;
         }
 
+
+        
+        public string ObtenerPedidoDTCorreoProveedor(int EnvioCorreo = 0, int Proveedor=0)
+        {
+            string mensaje_error = "";
+            PedidoDAO oPedidoDAO = new PedidoDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            DataTableDTO oDataTableDTO = new DataTableDTO();
+            List<PedidoDTO> lstPedidoDTO = oPedidoDAO.ObtenerPedidoDTCorreoProveedor(IdSociedad, EnvioCorreo, Proveedor, ref mensaje_error);
+            if (lstPedidoDTO.Count > 0)
+            {
+                oDataTableDTO.sEcho = 1;
+                oDataTableDTO.iTotalDisplayRecords = lstPedidoDTO.Count;
+                oDataTableDTO.iTotalRecords = lstPedidoDTO.Count;
+                oDataTableDTO.aaData = (lstPedidoDTO);
+                //return oDataTableDTO;
+                return JsonConvert.SerializeObject(oDataTableDTO);
+
+            }
+            else
+            {
+                oDataTableDTO.sEcho = 1;
+                oDataTableDTO.iTotalDisplayRecords = lstPedidoDTO.Count;
+                oDataTableDTO.iTotalRecords = lstPedidoDTO.Count;
+                oDataTableDTO.aaData = (lstPedidoDTO);
+                //return oDataTableDTO;
+                return JsonConvert.SerializeObject(oDataTableDTO);
+
+            }
+            return mensaje_error;
+        }
 
 
 
@@ -365,6 +404,76 @@ namespace ConcyssaWeb.Controllers
                 }
             }
             return JsonConvert.SerializeObject(Archivos);
+        }
+
+        public string EnviarCorreoPedido(IList<IdpedidoDTO> detalles)
+        {
+            if (detalles.Count()>0)
+            {
+                for (int i = 0; i < detalles.Count(); i++)
+                {
+                    EnviarCorreoxPedido(detalles[i].IdPedido);
+                }
+            }
+            return "";
+        }
+
+        public int EnviarCorreoxPedido(int IdPedido)
+        {
+            string html =@"";
+            string mensaje_error = "";
+            PedidoDAO oPedidoDAO = new PedidoDAO();
+            PedidoDTO oPedidoDTO = new PedidoDTO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+
+            oPedidoDTO = oPedidoDAO.ObtenerPedidoxId(IdPedido, ref mensaje_error);
+            string body;
+            body = "BASE PRUBAS";
+
+            //body = "<body>" +
+            //    "<h2>Se "+Estado+" una Solicitud</h2>" +
+            //    "<h4>Detalles de Solicitud:</h4>" +
+            //    "<span>N° Solicitud: " + Serie + "-" + Numero + "</span>" +
+            //    "<br/><span>Solicitante: " + Solicitante + "</span>" +
+            //    "</body>";
+
+            string msge = "";
+            string from = "concyssa.smc@gmail.com";
+            string correo = from;
+            string password = "tlbvngkvjcetzunr";
+            string displayName = "SMC - ENVIO ORDEN COMPRA";
+            MailMessage mail = new MailMessage();
+            mail.From = new MailAddress(from, displayName);
+            mail.To.Add(oPedidoDTO.EmailProveedor);
+
+            mail.Subject = "CONCYSSA - ENVIO ORDEN COMPRA";
+            mail.Body = body;
+
+            mail.IsBodyHtml = true;
+            SmtpClient client = new SmtpClient("smtp.gmail.com", 587); //Aquí debes sustituir tu servidor SMTP y el puerto
+            client.Credentials = new NetworkCredential(from, password);
+            client.EnableSsl = true;//En caso de que tu servidor de correo no utilice cifrado SSL,poner en false
+            //string path = "C:\\inetpub\\wwwroot\\Binario\\Anexos\\" + pathPDF + ".pdf";
+            //string path = "C:\\Users\\soporte.sap\\source\\repos\\SMC_AddonRequerimientos\\SMC_AddonRequerimientos\\Anexos\\" + pathPDF + ".pdf";
+            //bool result = System.IO.File.Exists(path);
+            //if (result == true)
+            //{ }
+            //else
+            //{
+            //    //GenerarPDF(IdSolicitud.ToString());
+            //}
+
+            ////Attachment archivo = new Attachment("C:\\inetpub\\wwwroot\\Binario\\Anexos\\" + pathPDF + ".pdf");
+            //Attachment archivo = new Attachment("C:\\Users\\soporte.sap\\source\\repos\\SMC_AddonRequerimientos\\SMC_AddonRequerimientos\\Anexos\\" + pathPDF + ".pdf");
+            //mail.Attachments.Add(archivo);
+
+            client.Send(mail);
+
+
+            oPedidoDAO.UpdateEnvioCorreoPedido(IdPedido, ref mensaje_error);
+
+
+            return 0;
         }
 
 

@@ -71,6 +71,68 @@ namespace DAO
             return lstPedidoDTO;
         }
 
+        
+        public List<PedidoDTO> ObtenerPedidoDTCorreoProveedor(int IdSociedad, int EnvioCorreo, int Proveedor, ref string mensaje_error)
+        {
+            List<PedidoDTO> lstPedidoDTO = new List<PedidoDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarPedidoCorreoProveedor", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
+                    da.SelectCommand.Parameters.AddWithValue("@EnvioCorreo", EnvioCorreo);
+                    da.SelectCommand.Parameters.AddWithValue("@Proveedor", Proveedor);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        PedidoDTO oPedidoDTO = new PedidoDTO();
+                        oPedidoDTO.IdPedido = Convert.ToInt32(drd["IdPedido"].ToString());
+                        oPedidoDTO.IdAlmacen = Convert.ToInt32(drd["IdAlmacen"].ToString());
+                        oPedidoDTO.IdSociedad = Convert.ToInt32(drd["IdSociedad"].ToString());
+                        oPedidoDTO.IdProveedor = Convert.ToInt32(drd["IdProveedor"].ToString());
+                        oPedidoDTO.Direccion = (drd["Direccion"].ToString());
+                        oPedidoDTO.Telefono = (drd["Telefono"].ToString());
+                        oPedidoDTO.FechaEntrega = Convert.ToDateTime(drd["FechaEntrega"].ToString());
+                        oPedidoDTO.FechaDocumento = Convert.ToDateTime(drd["FechaDocumento"].ToString());
+                        oPedidoDTO.FechaContabilizacion = Convert.ToDateTime(drd["FechaContabilizacion"].ToString());
+                        oPedidoDTO.IdTipoPedido = Convert.ToInt32(drd["IdTipoPedido"].ToString());
+                        oPedidoDTO.LugarEntrega = (drd["LugarEntrega"].ToString());
+                        oPedidoDTO.IdCondicionPago = Convert.ToInt32(drd["IdCondicionPago"].ToString());
+                        oPedidoDTO.ElaboradoPor = Convert.ToInt32(drd["ElaboradoPor"].ToString());
+                        oPedidoDTO.IdUsuario = Convert.ToInt32(drd["IdUsuario"].ToString());
+                        oPedidoDTO.IdMoneda = Convert.ToInt32(drd["IdMoneda"].ToString());
+                        oPedidoDTO.Observacion = (drd["Observacion"].ToString());
+                        oPedidoDTO.Serie = Convert.ToInt32(drd["Serie"].ToString());
+                        oPedidoDTO.Correlativo = Convert.ToInt32(drd["Correlativo"].ToString());
+                        oPedidoDTO.TipoCambio = Convert.ToDecimal(drd["TipoCambio"].ToString());
+                        oPedidoDTO.NombAlmacen = (drd["NombAlmacen"].ToString());
+                        oPedidoDTO.NombBase = (drd["NombBase"].ToString());
+                        oPedidoDTO.NombObra = (drd["NombObra"].ToString());
+                        oPedidoDTO.NumProveedor = (drd["NumProveedor"].ToString());
+                        oPedidoDTO.NombreProveedor = (drd["NombreProveedor"].ToString());
+                        oPedidoDTO.NombMoneda = (drd["NombMoneda"].ToString());
+                        oPedidoDTO.NombTipoPedido = (drd["NombTipoPedido"].ToString());
+                        oPedidoDTO.NombSerie = (drd["NombSerie"].ToString());
+                        oPedidoDTO.Conformidad = Convert.ToInt32((String.IsNullOrEmpty(drd["Conformidad"].ToString())) ? 0 : drd["Conformidad"].ToString());
+                        oPedidoDTO.total_venta = Convert.ToDecimal((String.IsNullOrEmpty(drd["total_venta"].ToString())) ? "0" : drd["total_venta"].ToString());
+
+
+                        lstPedidoDTO.Add(oPedidoDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstPedidoDTO;
+        }
         public List<PedidoDTO> ObtenerPedido(int IdSociedad, ref string mensaje_error, int Estado = 3)
         {
             List<PedidoDTO> lstPedidoDTO = new List<PedidoDTO>();
@@ -683,7 +745,10 @@ namespace DAO
                         oPedidoDTO.NombCondicionPago = (drd["NombCondicionPago"].ToString());
                         oPedidoDTO.Conformidad = Convert.ToInt32(drd["Conformidad"].ToString());
                         oPedidoDTO.ComentarioConformidad = ((String.IsNullOrEmpty(drd["ComentarioConformidad"].ToString()) ? "" : drd["ComentarioConformidad"].ToString()));
+                        oPedidoDTO.EmailProveedor = ((String.IsNullOrEmpty(drd["EmailProveedor"].ToString()) ? "" : drd["EmailProveedor"].ToString()));
 
+
+                        
 
 
                     }
@@ -886,6 +951,38 @@ namespace DAO
 
 
 
+            }
+        }
+
+
+
+        public int UpdateEnvioCorreoPedido(int IdPedido,ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_UpdateEnvioPedido]", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdPedido", IdPedido);
+                        int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+
+                }
             }
         }
 

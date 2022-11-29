@@ -66,20 +66,39 @@
     <div class="panel">
         <div class="container-fluid">
             <div class="topbar-left col-xs-6">
-                <h3>Pedido</h3>
+                <h3>Conformidad Pedido</h3>
             </div>
         </div>
         <div class="container-fluid">
             <div class="col-xs-6">
-                <div class="topbar-left col-xs-6">
-                    <h4 style="font-size:1.2em;">Total de Registros: <span id="spnTotalRegistros"></span></h4>
+                <div class="topbar-left col-xs-12">
+                    <div class="row">
+                        <div class='form-group-sm'>
+                            <label for="TipoAlmacen" class="control-label col-sm-4 left-align">Tipo Almacen</label>
+                            <div class="col-sm-3">
+                                <select id="TipoAlmacen" class="form-control input-sm" tabindex="0" onchange="listarPedidoDtConfirmidad()">
+                                    <option value="1">Materiales</option>
+                                    <option value="2">Auxiliares</option>
+                                </select>
+
+                            </div>
+                        </div>
+
+                        <div class='form-group-sm'>
+                            <label for="Conformidad" class="control-label col-sm-2 rigth-align">Estado</label>
+                            <div class="col-sm-3">
+                                <select id="Conformidad" class="form-control input-sm" tabindex="0" onchange="listarPedidoDtConfirmidad()">
+                                    <option value="0">Pendiente</option>
+                                    <option value="1">Aprobado</option>
+                                    <option value="2">Observado</option>
+                                    <option value="3">Rechazado</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-xs-6 right">
-                <button class="btn btn-sm btn-primary pull-right plu" data-target="modal1" onclick="ModalNuevo()" style="margin-left:10px;">Nuevo</button>
-                @*<button class="btn btn-sm  btn-success pull-right plu" id="btnPdf" style="margin-left:10px;">Descargar PDF</button>
-                <button class="btn btn-sm btn-info pull-right plu" id="btnExcel" style="margin-left:10px;">Descargar Excel</button>*@
-            </div>
+
         </div>
     </div>
     <div class="panel">
@@ -113,361 +132,86 @@
                 <div class='col s12 m12 '>
                     <div class='container-fluid row'>
 
-                        <div class='form-horizontal col-9 col-sm-9'>
+                        <div class='form-horizontal col-12 col-sm-12'>
                             <div class="form-group-sm" style="display:none;">
                                 <input placeholder='' id='txtId' type='text' style="display:none;">
                                 @*<input placeholder='' id='txtEstado' type='text' style="display:none;">*@
                             </div>
 
-                            <div class="row" style="text-align: center">
-                                <div class='form-group-sm'>
-                                    <button class="btn btn-sm btn-warning" onclick="mostrarproductosaprobados()">MOSTRAR PRODUCTOS APROBADOS</button>
-                                    <br />
-                                    <button class="btn btn-sm btn-success" onclick="mostrarParaGenerar()">Generar Orden Segun Productos Aprobados</button>
-                                </div>
-                            </div>
-
-                            <br />
-                            <br />
-
                             <div class="row">
                                 <div class='form-group-sm'>
-                                    <label for="IdBase" class="control-label col-sm-2 left-align">Base</label>
-                                    <div class="col-sm-4">
-                                        <select id="IdBase" class="form-control input-sm" tabindex="0" onchange="ObtenerObraxIdBase()"></select>
+                                    <label for="IdBase" class="control-label col-sm-1 left-align">N° Pedido</label>
+                                    <div class="col-sm-2">
+                                        <input class="form-control input-sm" id="npedido" disabled />
                                     </div>
                                 </div>
 
                                 <div class='form-group-sm'>
-                                    <label for="IdObra" class="control-label col-sm-2 left-align">Obra</label>
-                                    <div class="col-sm-4">
-                                        <select id="IdObra" class="form-control input-sm" tabindex="0" onchange="ObtenerAlmacenxIdObra()"></select>
+                                    <label for="nombproveedor" class="control-label col-sm-1 left-align">Proveedor</label>
+                                    <div class="col-sm-3">
+                                        <input class="form-control input-sm" id="nombproveedor" disabled />
+                                    </div>
+                                </div>
+                                <div class='form-group-sm'>
+                                    <label for="fechapedido" class="control-label col-sm-1 left-align">Fecha Pedido</label>
+                                    <div class="col-sm-3">
+                                        <input class="form-control input-sm" id="fechapedido" disabled />
                                     </div>
                                 </div>
                             </div>
 
                             <div class="row">
                                 <div class='form-group-sm'>
-                                    <label for="cboAlmacen" class="control-label col-sm-2 left-align">Almacen</label>
-                                    <div class="col-sm-4">
-                                        <select id="IdAlmacen" class="form-control input-sm" tabindex="0" onchange="CambiarAlmacenItem()"></select>
+                                    <label for="almacen" class="control-label col-sm-1 left-align">Almacen</label>
+                                    <div class="col-sm-2">
+                                        <input class="form-control input-sm" id="almacen" disabled />
                                     </div>
                                 </div>
 
                                 <div class='form-group-sm'>
-                                    <label for="txtFechaDocumento" class="control-label col-sm-2 left-align">Fecha Documento</label>
-                                    <div class="col-sm-4">
-                                        <input id="txtFechaDocumento" value="@DateTime.Now.ToString("yyyy-MM-dd")" type="date" class="form-control input-sm" tabindex="10">
-                                    </div>
-                                </div>
+                                    <label for="ConformidadModal" class="control-label col-sm-1 left-align">Estado</label>
+                                    <div class="col-sm-3">
 
-                                @* <div class='form-group-sm'>
-                                <label for="cboTipoDocumentoOperacion" class="control-label col-sm-2 left-align">Tipo Documento</label>
-                                <div class="col-sm-4">
-                                <select id="cboTipoDocumentoOperacion" class="form-control input-sm" tabindex="0"></select>
-                                </div>
-                                </div>*@
-                            </div>
-
-
-
-
-                            <div class="row">
-                                <div class='form-group-sm'>
-                                    <label for="cboSerie" class="control-label col-sm-2 left-align">Serie</label>
-                                    <div class="col-sm-4">
-                                        <select id="IdSerie" class="form-control input-sm" tabindex="0" onchange="validarseriescontable()"></select>
-                                    </div>
-                                </div>
-
-                                <div class='form-group-sm'>
-                                    <label for="txtFechaContabilizacion" class="control-label col-sm-2 left-align">Fecha Contabilizacion</label>
-                                    <div class="col-sm-4">
-                                        <input id="txtFechaContabilizacion" value="@DateTime.Now.ToString("yyyy-MM-dd")" type="date" class="form-control input-sm" onchange="validarseriescontable()" tabindex="6">
-                                    </div>
-                                </div>
-
-
-                            </div>
-
-                            <div class="row">
-                                <div class='form-group-sm'>
-                                    <label for="txtNumeracion" class="control-label col-sm-2 left-align">Numeracion</label>
-                                    <div class="col-sm-4">
-                                        <input id="txtNumeracion" type="text" class="form-control input-sm" tabindex="2" disabled>
-                                    </div>
-                                </div>
-
-                                <div class='form-group-sm'>
-                                    <label for="cboMoneda" class="control-label col-sm-2 left-align">Moneda</label>
-                                    <div class="col-sm-4">
-                                        <select id="cboMoneda" type="text" class="form-control input-sm" tabindex="3" onchange="ValidarMonedaBase()" disabled></select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <hr style="margin:6px" />
-
-                            <div class="row">
-                                <div class='form-group-sm'>
-                                    <label for="txtNumeracion" class="control-label col-sm-2 left-align">Proveedor</label>
-                                    <div class="col-sm-10">
-                                        <select id="IdProveedor" type="text" class="form-control input-sm" tabindex="3" onchange="ObtenerProveedorxId()"></select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class='form-group-sm'>
-                                    <label for="Direccion" class="control-label col-sm-2 left-align">Direccion</label>
-                                    <div class="col-sm-10">
-                                        <textarea class="" id="Direccion" style="width:100%"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class='form-group-sm'>
-                                    <label for="Telefono" class="control-label col-sm-2 left-align">Telefono</label>
-                                    <div class="col-sm-4">
-                                        <input id="Telefono" type="text" class="form-control input-sm" tabindex="2">
-                                    </div>
-                                </div>
-
-                                <div class='form-group-sm'>
-                                    <label for="FechaEntrega" class="control-label col-sm-2 left-align">Fecha Entrega</label>
-                                    <div class="col-sm-4">
-                                        <input id="FechaEntrega" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control input-sm" tabindex="2">
-                                    </div>
-                                </div>
-                            </div>
-                            <br />
-
-                            <div class="tab">
-                                <button class="tablinks active" onclick="openContenido(event, 'Contenido')">Contenido</button>
-                                <button class="tablinks" onclick="openContenido(event, 'Anexos')">Anexos</button>
-
-                            </div>
-
-                            <div id="Contenido" class="tabcontent" style="display: block;">
-                                <div class='form-group-sm'>
-                                    <div class="col-sm-4">
-                                        <select class="form-control" id="cboClaseArticulo" style="margin-bottom:10px;margin-top:5px">
-                                            <option value="0">Seleccione</option>
-                                            <option value="1">Producto</option>
-                                            <option value="2">Servicio</option>
-                                            <option value="3">Activo</option>
+                                        <select id="ConformidadModal" class="form-control input-sm" tabindex="0" onchange="listarPedidoDtConfirmidad()">
+                                            <option value="0">Pendiente</option>
+                                            <option value="1">Aprobado</option>
+                                            <option value="2">Observado</option>
+                                            <option value="3">Rechazado</option>
                                         </select>
+
                                     </div>
                                 </div>
-
                                 <div class='form-group-sm'>
-                                    <div class="col-sm-4">
-                                        <select class="form-control" id="IdTipoProducto" style="margin-bottom:10px;margin-top:5px">
-                                            <option value="0">Seleccione</option>
-                                            <option value="1">MATERIALES</option>
-                                            <option value="2">AUXILIARES</option>
-                                        </select>
+                                    <label for="fechapedido" class="control-label col-sm-1 left-align">Comentario</label>
+                                    <div class="col-sm-3">
+                                        <textarea class="form-control input-sm" rows="5" id="comentarioconformidad"></textarea> 
                                     </div>
-                                </div>
-
-
-                                <div class='form-group-sm'>
-                                    <div class="col-sm-4">
-                                        <button id="btn_agregaritem" style="margin-bottom:10px;margin-top:5px" class="btn btn-xs btn-info" onclick="OpenModalItem()" type="button">Agregar Item</button>
-                                    </div>
-                                </div>
-                                <div class="table-responsive">
-                                    <table class="table" id="tabla" style="width:100%">
-                                        <thead>
-                                            <tr>
-                                                <th style="width:5px;display:block"><button style="display:none" class="btn btn-xs btn-info" onclick="AgregarLinea()" type="button">+</button></th>
-                                                @*<th style="display:none">Numero de Articulo</th>*@
-                                                <th>Descripcion de Articulo</th>
-                                                <th>Unid. Medida</th>
-                                                @*<th>Prioridad de Item</th>*@
-                                                @*<th style="display:none">Fecha Necesaria</th>
-                                                <th style="display:none">Moneda</th>
-                                                <th style="display:none">Tipo Cambio</th>*@
-                                                <th style="width:140px;display:block">Cantidad</th>
-                                                <th>Precio Unitario</th>
-                                                <th>Indicador de Impuestos</th>
-                                                <th>Total</th>
-                                                <th style="display:none">Almacen</th>
-                                                @*<th style="display:none">Proveedor</th>
-                                                <th style="display:none">Numero de Fabricacion</th>
-                                                <th style="display:none">Numero de Serie</th>
-                                                <th style="display:none">Linea de Negocio</th>*@
-                                                @*<th>Centro Costos</th>*@
-                                                @*<th>Proyecto</th>*@
-                                                @*<th style="display:none">Cantidad</th>
-                                                <th style="display:none">En Pedido</th>*@
-                                                <th>Referencia</th>
-                                                <th>Accion</th>
-
-                                            </tr>
-                                        </thead>
-                                        <tbody id="tbody_detalle"></tbody>
-                                    </table>
                                 </div>
                             </div>
 
-                            <div id="Anexos" class="tabcontent">
-
-                                @using (Html.BeginForm("GuardarFile", "SolicitudRQ", FormMethod.Post, new { id = "SubirAnexos", enctype = "multipart/form-data" }))
-                                {
-                                    <div class="row">
-                                        <div class=''>
-                                            <div class="col-sm-8">
-                                                @*<label for="file">Subir Anexos</label>*@
-                                                <input type="file" name="file" id="file" class="form-control" />
-                                            </div>
-                                        </div>
-                                        <div class='form-group-sm'>
-                                            <div class="col-sm-4">
-                                                @*<label for="file">Subir Anexos</label>*@
-                                                <input type="submit" value="Subir Archivo" class="btn btn-primary" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <br />
-                                    @ViewBag.Message
-                                    <br />
-                                    <div class="table-responsive">
-                                        <table class="table" id="tabla_files">
-                                            <thead>
-                                                <tr>
-                                                    <th>Nombre</th>
-                                                    <th>Descargar</th>
-                                                    <th>Accion</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody></tbody>
-
-                                            @*@for (var i = 0; i <= Model.Count - 1; i++)
-                                        {
+                            <div class="row">
+                                <table class="table table-bordered">
+                                    <thead>
                                         <tr>
-                                        <td>@Model[i].ToString()</td>
-                                        <td>@Html.ActionLink("Download", "Download", new { ImageName = Model[i].ToString() })</td>
+                                            <th>Codigo</th>
+                                            <th>Producto</th>
+                                            <th>Cantidad</th>
+                                            <th>Precio</th>
+                                            <th>Moneda</th>
+                                            <th>Total</th>
+                                            <th>Pago</th>
+                                            <th>Comentario</th>
+                                            <th>Comentario Conformidad</th>
                                         </tr>
-                                        }*@
-                                        </table>
+                                    </thead>
+                                    <tbody id="tbody_pedidomodal"></tbody>
+                                </table>
 
-                                    </div>
-                                }
-                            </div>
-
-                            <br />
-                            <div class="row">
-                                <div class='form-group-sm'>
-                                    <div class="col-sm-6">
-                                    </div>
-                                    @*<label for="cboTitular" class="control-label col-sm-2 left-align">Titular</label>
-                                    <div class="col-sm-4">
-                                    <select id="cboTitular" class="form-control input-sm" tabindex="11"></select>
-                                    </div>*@
-                                </div>
-
-
-
-                                <div class='form-group-sm'>
-                                    <label for="txtTotalAntesDescuento" class="control-label col-sm-2 left-align">Sub Total</label>
-                                    <div class="col-sm-4">
-                                        <input id="txtTotalAntesDescuento" type="text" class="form-control input-sm" tabindex="12" disabled>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class='form-group-sm'>
-                                    <div class="col-sm-6">
-                                    </div>
-                                </div>
-
-                                <div class='form-group-sm'>
-                                    <label for="txtImpuesto" class="control-label col-sm-2 left-align">Impuesto</label>
-                                    <div class="col-sm-4">
-                                        <input id="txtImpuesto" type="text" class="form-control input-sm" tabindex="15" disabled>
-                                    </div>
-                                </div>
-                            </div>
-
-
-                            <div class="row">
-                                <div class='form-group-sm'>
-                                    <label for="txtTotal" class="control-label col-sm-2 left-align"></label>
-                                    <div class="col-sm-4">
-                                        @*<input id="txtTotal" type="number" class="form-control input-sm" tabindex="16">*@
-                                    </div>
-                                </div>
-                                <div class='form-group-sm'>
-                                    <label for="txtTotal" class="control-label col-sm-2 left-align">Total</label>
-                                    <div class="col-sm-4">
-                                        <input id="txtTotal" type="text" class="form-control input-sm" tabindex="16" disabled>
-                                    </div>
-                                </div>
-                            </div>
-                            <br />
-                            <div class="row">
-                                <div class='form-group-sm'>
-                                    <label for="txtComentarios" class="control-label col-sm-2 left-align">Comentarios</label>
-                                    <div class="col-sm-10">
-                                        @*<input id="txtComentarios" type="date" class="form-control input-sm" tabindex="14">*@
-                                        <textarea class="form-control" id="txtComentarios" name="txtComentarios" rows="25" cols="30" tabindex="14"></textarea>
-                                    </div>
-                                </div>
                             </div>
 
 
                         </div>
 
-                        <div class='form-horizontal col-3 col-sm-3'>
-
-                            <div class="row" id="global" style="font-size:10px">
-                                <div class='container-fluid' id="mensajes">
-                                    <label for="cboSerie" class="control-label col-sm-2 center-align">T.Pedido</label>
-                                    <br />
-                                    <select style="height: 20px" id="IdTipoPedido" class="form-control input-sm" tabindex="0"></select>
-                                    @*<select style="height: 20px" id="cboSerie" class="form-control" tabindex="0" onchange="ObtenerNumeracion()"></select>*@
-                                    @* <div class="col-sm-10">
-                                    <select style="height: 20px" id="cboSerie" class="form-control" tabindex="0" onchange="ObtenerNumeracion()"></select>
-                                    </div>*@
-
-                                    <hr style="margin: 6px" />
-                                    <p>Lugar Entrega:<input id="LugarEntrega" type="text" class="form-control huser-20" tabindex="16"> </p>
-                                   @* <hr style="margin: 0px 0px 5px 0px" />*@
-                                    <p style="display:none">Elaborado Por:  <input id="SerieNumeroRef" type="text" class="form-control huser-20" tabindex="16"> </p>
-                                    <hr style="margin: 0px 0px 5px 0px" />
-
-                                    <p>
-                                        Forma de Pago:
-                                        <select style="height: 20px" id="IdCondicionPago" type="text" class="form-control input-sm" tabindex="0">
-                                            <option value="0"> - Condicion Pago - </option>
-                                        </select>
-                                    </p>
-                                    <hr style="margin: 0px 0px 5px 0px" />
-
-                                    <p style="display:none">
-                                        Lugar de Entrega:
-                                        <select style="height: 20px" id="IdResponsable" type="text" class="form-control input-sm" tabindex="0">
-                                            <option value="0">SELECCIONE Responsable </option>
-                                        </select>
-                                    </p>
-                                    <hr style="margin: 0px 0px 5px 0px" />
-
-
-
-                                    @*<p>Ref1  <input id="txtTotal" type="number" class="form-control huser-20" tabindex="16" > </p>
-                                    <hr style="margin: 0px 0px 5px 0px"/>
-                                    <p>Ref1  <input id="txtTotal" type="number" class="form-control huser-20" tabindex="16" > </p>*@
-
-                                </div>
-
-
-
-                            </div>
-
-                        </div>
                     </div>
                 </div>
             </div>

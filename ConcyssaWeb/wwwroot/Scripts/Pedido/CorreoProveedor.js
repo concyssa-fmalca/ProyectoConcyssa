@@ -2,6 +2,131 @@
 let tablepedido = '';
 let tableitemsaprobados;
 let tableProductosAprobadosRQ;
+
+function selccionaroquitar() {
+    let contadorcheck = 0;
+    $("input[name='checkcorreo[]']:checked").each(function () {
+        contadorcheck++;
+        console.log("Checkbox " + $(this).prop("id") + " (" + $(this).val() + ") Seleccionado");
+    });
+
+    if (contadorcheck > 0) {
+        $("input[name='checkcorreo[]']").each(function () {
+            $(this).removeAttr("checked");
+            $("#btnEnviarCorreo").hide()
+        });
+
+    } else {
+        $("input[name='checkcorreo[]']").each(function () {
+            $(this).prop("checked", true);
+            $("#btnEnviarCorreo").show()
+        });
+    }
+}
+
+function stylebutton() {
+    let contadorcheck = 0;
+    $("input[name='checkcorreo[]']:checked").each(function () {
+        contadorcheck++;
+        console.log("Checkbox " + $(this).prop("id") + " (" + $(this).val() + ") Seleccionado");
+    });
+    if (contadorcheck > 0) {
+        $("#btnEnviarCorreo").show()
+    } else {
+        $("#btnEnviarCorreo").hide()
+
+    }
+}
+
+function CargarProveedorCorreo() {
+    $.ajaxSetup({ async: false });
+    $.post("/Proveedor/ObtenerProveedores", { estado: 1 }, function (data, status) {
+        let proveedores = JSON.parse(data);
+        llenarComboProveedor(proveedores, "Proveedor", "Seleccione")
+        $("#Proveedor").select2()    
+    });
+}
+
+function EnviarCorreo() {
+    let arrayIdPedido = new Array();
+    $("input[name='checkcorreo[]']:checked").each(function () {
+        arrayIdPedido.push(parseInt($(this).val()))
+    });
+    console.log(arrayIdPedido);
+
+
+    if (arrayIdPedido.length > 0) {
+        let detalles=[]
+        for (var i = 0; i < arrayIdPedido.length; i++) {
+            detalles.push({
+                'IdPedido': arrayIdPedido[i]
+            });
+        }
+
+        $.ajax({
+            url: "EnviarCorreoPedido",
+            type: "POST",
+            async: true,
+            data: {
+                detalles
+
+            },
+            beforeSend: function () {
+                Swal.fire({
+                    title: "Cargando...",
+                    text: "Por favor espere",
+                    showConfirmButton: false,
+                    allowOutsideClick: false
+                });
+            },
+            success: function (data) {
+                if (data >= 0) {
+                    Swal.fire(
+                        'Correcto',
+                        'Proceso Realizado Correctamente',
+                        'success'
+                    )
+
+                  
+
+                } else {
+                    Swal.fire(
+                        'Error!',
+                        'Ocurrio un Error!',
+                        'error'
+                    )
+
+                }
+           
+
+            }
+        }).fail(function () {
+            Swal.fire(
+                'Error!',
+                'Comunicarse con el Area Soporte: smarcode@smartcode.pe !',
+                'error'
+            )
+        });
+
+
+    }
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
 function CargarMoneda() {
     $.ajaxSetup({ async: false });
     $.post("/Moneda/ObtenerMonedas", function (data, status) {
@@ -51,16 +176,20 @@ function llenarComboMoneda(lista, idCombo, primerItem) {
 }
 
 
-function listarPedidoDt() {
+function listarPedidoDtCorreo() {
+    let EnvioCorreo = $("#EnvioCorreo").val();
+    let Proveedor = $("#Proveedor").val();
 
+    
     table = $('#table_id').dataTable({
         language: lenguaje_data,
         responsive: true,
         ajax: {
-            url: 'ObtenerPedidoDT',
+            url: 'ObtenerPedidoDTCorreoProveedor',
             type: 'POST',
             data: {
-
+                EnvioCorreo: EnvioCorreo,
+                Proveedor: Proveedor,
                 pagination: {
                     perpage: 50,
                 },
@@ -82,7 +211,8 @@ function listarPedidoDt() {
                 targets: 0,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return meta.row + 1
+                    //return meta.row + 1
+                    return `<input onchange="stylebutton()" class="checkcorreo" name="checkcorreo[]" type="checkbox" id="cbox` + full.IdPedido + `" value="` + full.IdPedido +`"> `
                 },
             },
             {
@@ -176,6 +306,7 @@ function validadJson(json) {
 function CambiarAlmacenItem() {
     $("#cboAlmacenItem").val($("#IdAlmacen").val());
 }
+
 
 
 
@@ -308,7 +439,9 @@ function llenarComboObra(lista, idCombo, primerItem) {
 
 
 window.onload = function () {
-    listarPedidoDt();
+    $("#btnEnviarCorreo").hide()
+    CargarProveedorCorreo();
+    listarPedidoDtCorreo();
 
     $("#SubirAnexos").on("submit", function (e) {
         e.preventDefault();

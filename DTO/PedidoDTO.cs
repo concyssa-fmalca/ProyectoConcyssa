@@ -60,7 +60,7 @@ namespace DTO
         public string ComentarioConformidad { get; set; }
 
         public string NombCondicionPago { get; set; }
-
+        public string EmailProveedor { get; set; }
 
     }
     public class PedidoDetalleDTO
@@ -133,8 +133,18 @@ namespace DTO
     {
        public int IdPedidoDetalle { get; set;}
         public string ComentarioConformidadDetalle { get; set; } = "";
-
-
     }
+
+    public class IdPedidosDTO
+    {
+        public IList<IdpedidoDTO> detalles { get; set; }
+    }
+
+    public class IdpedidoDTO
+    {
+        public int IdPedido { get; set; }
+        
+    }
+
 
 }
