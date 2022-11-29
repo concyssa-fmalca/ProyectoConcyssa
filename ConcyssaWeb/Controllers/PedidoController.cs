@@ -14,6 +14,11 @@ namespace ConcyssaWeb.Controllers
             return View();
         }
 
+        public IActionResult Conformidad()
+        {
+            return View();
+        }
+
         public string ObtenerPedidosEntregaLDT(string EstadoPedido = "ABIERTO")
         {
             string mensaje_error = "";
@@ -113,6 +118,37 @@ namespace ConcyssaWeb.Controllers
                 }
             }
         }
+
+        public string ObtenerPedidoDTConfirmidad(int Conformidad = 0)
+        {
+            string mensaje_error = "";
+            PedidoDAO oPedidoDAO = new PedidoDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            DataTableDTO oDataTableDTO = new DataTableDTO();
+            List<PedidoDTO> lstPedidoDTO = oPedidoDAO.ObtenerPedidoxEstadoConformidad(IdSociedad, ref mensaje_error, Conformidad);
+            if (lstPedidoDTO.Count > 0)
+            {
+                oDataTableDTO.sEcho = 1;
+                oDataTableDTO.iTotalDisplayRecords = lstPedidoDTO.Count;
+                oDataTableDTO.iTotalRecords = lstPedidoDTO.Count;
+                oDataTableDTO.aaData = (lstPedidoDTO);
+                return JsonConvert.SerializeObject(oDataTableDTO);
+
+            }
+            else
+            {
+                oDataTableDTO.sEcho = 1;
+                oDataTableDTO.iTotalDisplayRecords = lstPedidoDTO.Count;
+                oDataTableDTO.iTotalRecords = lstPedidoDTO.Count;
+                oDataTableDTO.aaData = (lstPedidoDTO);
+                return JsonConvert.SerializeObject(oDataTableDTO);
+
+            }
+            return mensaje_error;
+        }
+
+
+
 
         public string ObtenerPedidoDT(int estado = 3)
         {
@@ -287,6 +323,14 @@ namespace ConcyssaWeb.Controllers
             PedidoDAO oPedidoDAO = new PedidoDAO();
             lstAsignadoPedidoRequeridoDTO = oPedidoDAO.ListarProductosAsignadosxProveedorDetalle(IdProveedor, ref mensaje_error);
             return JsonConvert.SerializeObject(lstAsignadoPedidoRequeridoDTO);
+        }
+
+        public string updatedInsertConformidadPedido(ConformidadPedidoDTO oConformidadPedidoDTO)
+        {
+            PedidoDAO oPedidoDAO = new PedidoDAO();
+            string mensaje_error = "";
+            int respuesta = oPedidoDAO.UpdateInsertPedidoConformidadPedido(oConformidadPedidoDTO, ref mensaje_error);
+            return respuesta.ToString();
         }
 
         public string GuardarFile(IFormFile file)

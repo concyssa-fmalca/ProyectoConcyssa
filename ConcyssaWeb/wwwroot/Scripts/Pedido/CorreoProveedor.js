@@ -75,7 +75,7 @@ function listarPedidoDt() {
                 render: function (data, type, full, meta) {
 
                     return `<button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(` + full.IdPedido + `)"></button>`
-                          /*  <button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(` + full.IdPedido + `)"></button>`*/
+                    /*  <button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(` + full.IdPedido + `)"></button>`*/
                 },
             },
             {
@@ -138,7 +138,7 @@ function listarPedidoDt() {
                 targets: 8,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return formatNumberDecimales(full.total_venta,2)
+                    return formatNumberDecimales(full.total_venta, 2)
                 },
             },
             {
@@ -150,11 +150,11 @@ function listarPedidoDt() {
                     } else {
                         if (full.Conformidad == 1) {
                             return "Confirmado"
-                        } else{
+                        } else {
                             return "Rechazado"
                         }
                     }
-                   
+
                 },
             }
 
@@ -279,14 +279,14 @@ function ListarBasesxUsuario() {
 
 function ObtenerObraxIdBase() {
     let IdBase = $("#IdBase").val();
-    if (IdBase!=0) {
+    if (IdBase != 0) {
         $.ajaxSetup({ async: false });
         $.post("/Obra/ObtenerObraxIdBase", { 'IdBase': IdBase }, function (data, status) {
             let obra = JSON.parse(data);
             llenarComboObra(obra, "IdObra", "Seleccione")
         });
     }
-    
+
 }
 
 
@@ -371,9 +371,9 @@ function ModalNuevo() {
         swal("Informacion!", "No tiene acceso a ninguna base, comunicarse con su administrador");
         return true;
     }
-    
+
     AbrirModal("modal-form");
-    
+
     return true;
 }
 
@@ -400,11 +400,11 @@ function llenarComboSerie(lista, idCombo, primerItem) {
     var nCampos;
     var campos;
     for (var i = 0; i < nRegistros; i++) {
-        if (lista[i].Documento ==4) {
+        if (lista[i].Documento == 4) {
             if (lista.length > 0) { contenido += "<option value='" + lista[i].IdSerie + "'>" + lista[i].Serie + "</option>"; }
             else { }
         }
-        
+
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
@@ -656,7 +656,7 @@ function SeleccionarItemListado() {
             $("#txtCodigoItem").val(datos[0].Codigo);
             $("#txtIdItem").val(datos[0].IdArticulo);
             $("#txtDescripcionItem").val(datos[0].Descripcion1);
-      
+
             $("#txtPrecioUnitarioItem").val(datos[0].UltimoPrecioCompra);
             $("#txtStockAlmacenItem").val(datos[0].Stock);
             $("#txtPrecioUnitarioItem").val(datos[0].PrecioPromedio)
@@ -809,8 +809,8 @@ function AgregarLinea() {
         swal("Informacion!", "Debe Seleccionar Producto!");
         return;
     }
-   
-    if (CantidadItem <0) {
+
+    if (CantidadItem < 0) {
         swal("Informacion!", "La cantidad del producto debe ser positiva!");
         return;
     }
@@ -866,7 +866,7 @@ function AgregarLinea() {
     //<select class="form-control select2" id="cboCodigoArticulo" name="cboCodigoArticulo[]">
     //    <option value="0">Seleccione</option>
     //</select>
-    tr += `<tr id="trcontador2` + contador +`">
+    tr += `<tr id="trcontador2` + contador + `">
             <td><input input style="display:none;" class="form-control" type="text" value="0" id="txtIdSolicitudRQDetalle" name="txtIdSolicitudRQDetalle[]"/></td>
             <td input style="display:none;">
             <input  class="form-control" type="text" id="txtIdArticulo`+ contador + `" name="txtIdArticulo[]" />
@@ -933,7 +933,7 @@ function AgregarLinea() {
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td ><input class="form-control" type="text" value="" id="txtReferencia`+ contador + `" name="txtReferencia[]"></td>
-            <td><button class="btn btn-xs btn-danger borrar" onclick="eliminartr2(`+contador+`)">-</button></td>
+            <td><button class="btn btn-xs btn-danger borrar" onclick="eliminartr2(`+ contador + `)">-</button></td>
           <tr>`;
 
     $("#tabla").find('tbody').append(tr);
@@ -1314,7 +1314,7 @@ function GuardarPedido() {
                     'Proceso Realizado Correctamente',
                     'success'
                 )
-                
+
                 CerrarModal();
                 ObtenerDatosxID(data);
 
@@ -1351,7 +1351,7 @@ function ObtenerDatosxID(id) {
     CargarCondicionPago();
     $("#lblTituloModal").html("Editar Pedido");
     AbrirModal("modal-form");
-  
+
     $.post('/Pedido/ObtenerDatosxID', {
         'IdPedido': id,
     }, function (data, status) {
@@ -1388,10 +1388,10 @@ function ObtenerDatosxID(id) {
                 </tr>`;
         }
         $("#tabla_files").find('tbody').append(trAnexo);
-        
-        
-        
-        
+
+
+
+
         for (var p = 0; p < pedido.detalles.length; p++) {
 
             console.log(pedido.detalles[p])
@@ -1408,7 +1408,7 @@ function ObtenerDatosxID(id) {
             let PrioridadItem = 0;
             let IdGrupoUnidadMedida = pedido.detalles[p].IdGrupoUnidadMedida;
             let IdIndicadorImpuesto = pedido.detalles[p].IdIndicadorImpuesto;
-           
+
             //txtReferenciaItem
 
             var today = new Date();
@@ -1460,7 +1460,7 @@ function ObtenerDatosxID(id) {
             //<select class="form-control select2" id="cboCodigoArticulo" name="cboCodigoArticulo[]">
             //    <option value="0">Seleccione</option>
             //</select>
-            tr += `<tr id="contador` + contador +`">
+            tr += `<tr id="contador` + contador + `">
             <td>
                 <input type="hidden" name="DescOrigen[]" value="0"/>
                 <input type="hidden" name="IdOrigen[]" value="0"/>
@@ -1530,7 +1530,7 @@ function ObtenerDatosxID(id) {
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td ><input class="form-control" type="text" value="" id="txtReferencia`+ contador + `" name="txtReferencia[]" disabled></td>
-            <td><button class="btn btn-xs btn-danger borrar" onclick="eliminartrpedidos(`+contador+`)">-</button></td>
+            <td><button class="btn btn-xs btn-danger borrar" onclick="eliminartrpedidos(`+ contador + `)">-</button></td>
           <tr>`;
 
             $("#tabla").find('tbody').append(tr);
@@ -1555,9 +1555,9 @@ function ObtenerDatosxID(id) {
             $("#txtCodigoArticulo" + contador).val(CodigoItem);
             $("#txtDescripcionArticulo" + contador).val(DescripcionItem);
             $("#cboUnidadMedida" + contador).val(MedidaItem);
-            $("#txtCantidadNecesaria" + contador).val(formatNumberDecimales(CantidadItem,1)).change();
-            $("#txtPrecioInfo" + contador).val(formatNumberDecimales(PrecioUnitarioItem,2));
-      
+            $("#txtCantidadNecesaria" + contador).val(formatNumberDecimales(CantidadItem, 1)).change();
+            $("#txtPrecioInfo" + contador).val(formatNumberDecimales(PrecioUnitarioItem, 2));
+
             $("#cboIndicadorImpuestoDetalle" + contador).val(IdIndicadorImpuesto);
             $("#txtItemTotal" + contador).val(formatNumberDecimales(pedido.detalles[p].total_item, 2));
 
@@ -1565,7 +1565,7 @@ function ObtenerDatosxID(id) {
             $("#cboAlmacen" + contador).val(AlmacenItem);
             $("#cboPrioridadDetalle" + contador).val(PrioridadItem);
 
-            
+
 
             $("#cboCentroCostos" + contador).val(CentroCostoItem);
             $("#txtReferencia" + contador).val(ReferenciaItem);
@@ -1573,7 +1573,7 @@ function ObtenerDatosxID(id) {
             $("#txtTotalAntesDescuento").val(formatNumberDecimales(pedido.total_valor, 2))
             $("#txtImpuesto").val(formatNumberDecimales(pedido.total_igv, 2))
             $("#txtTotal").val(formatNumberDecimales(pedido.total_venta, 2))
-    
+
         }
 
     });
@@ -1736,7 +1736,7 @@ function ObtenerDatosProveedorXRQ(IdProveedor, dataa) {
             //<select class="form-control select2" id="cboCodigoArticulo" name="cboCodigoArticulo[]">
             //    <option value="0">Seleccione</option>
             //</select>
-            tr += `<tr id="eliminartr3`+contador+`">
+            tr += `<tr id="eliminartr3` + contador + `">
             <td>
                 <input type="hidden" name="DescOrigen[]" value="RQ"/>
                 <input type="hidden" name="IdOrigen[]" value="`+ datos[p].IdAsignadoPedidoRequerimiento + `"/>
@@ -1807,7 +1807,7 @@ function ObtenerDatosProveedorXRQ(IdProveedor, dataa) {
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td ><input class="form-control" type="text" value="" id="txtReferencia`+ contador + `" name="txtReferencia[]"></td>
-            <td><button class="btn btn-xs btn-danger borrar" onclick="eliminartr3(`+contador+`)">-</button></td>
+            <td><button class="btn btn-xs btn-danger borrar" onclick="eliminartr3(`+ contador + `)">-</button></td>
           <tr>`;
 
             $("#tabla").find('tbody').append(tr);
@@ -1912,17 +1912,17 @@ function AgregarLinea() {
         return;
     }
 
-    if (CantidadItem<0) {
+    if (CantidadItem < 0) {
         swal("Informacion!", "La cantidad del produto debe mayor a 0!");
         return;
     }
 
-    if ($("#IdIndicadorImpuesto").val() ==0) {
+    if ($("#IdIndicadorImpuesto").val() == 0) {
         swal("Informacion!", "Debe selecionar un indicador de impuesto!");
         return;
     }
 
-    
+
     //validaciones
     $.ajaxSetup({ async: false });
     $.post("/GrupoUnidadMedida/ObtenerDefinicionUnidadMedidaxGrupo", { 'IdGrupoUnidadMedida': IdGrupoUnidadMedida }, function (data, status) {
@@ -2258,9 +2258,9 @@ function ObtenerPrecioRQDetalle() {
     let IdDetalleRq = $('input:radio[name=rdSeleccionado]:checked').val();
     $.post("/SolicitudRQ/ObtenerDatosRqDetallexID", { 'IdDetalleRq': IdDetalleRq }, function (data, status) {
         $("#PrecioAsignar").val(data)
-   
+
     });
- 
+
 }
 
 function GuardarAsignarProveedorProducto() {
@@ -2377,7 +2377,7 @@ function disabledmodal(valorbolean) {
     $("#btn_agregaritem").prop('disabled', valorbolean);
     if (valorbolean) {
         $("#btnGrabar").hide()
-      
+
         $("#btnExtorno").show();
         //$("#total_editar").show();
         //$("#total_nuevo").hide();

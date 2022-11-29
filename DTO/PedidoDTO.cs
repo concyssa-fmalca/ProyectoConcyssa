@@ -56,6 +56,11 @@ namespace DTO
         public DateTime CreatedAt { get; set; }
         public IList<AnexoDTO> AnexoDetalle { get; set; }
 
+        public int Conformidad { get; set; }
+        public string ComentarioConformidad { get; set; }
+
+        public string NombCondicionPago { get; set; }
+
 
     }
     public class PedidoDetalleDTO
@@ -86,6 +91,8 @@ namespace DTO
         public string DescOrigen { get; set; }
 
         public int IdOrigen { get; set; }
+        public string CodigoProducto { get; set; }
+        public string ComentarioConformidad { get; set; } = "";
 
     }
 
@@ -112,8 +119,22 @@ namespace DTO
         public string NombRequerido { get; set; }
         public string NombArticulo { get; set; }
         public int IdArticulo { get; set; }
+    }
 
+    public class ConformidadPedidoDTO {
+        public int IdPedido { get; set; }
+        public int Conformidad { get; set; }
+        public string ComentarioConformidad { get; set; } = "";
+
+        public IList<ConformidadPedidoDetalleDTO> detalles { get; set; }
+    }
+
+    public class ConformidadPedidoDetalleDTO
+    {
+       public int IdPedidoDetalle { get; set;}
+        public string ComentarioConformidadDetalle { get; set; } = "";
 
 
     }
+
 }
