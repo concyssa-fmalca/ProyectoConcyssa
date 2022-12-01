@@ -2214,7 +2214,8 @@ function ObtenerProveedoresPrecioxProducto(IdArticulo, IdDetalleRq) {
                         ` + datos[i].RazonSocial + `</td>
                 <td> <input class="form-control" id="precionacional`+ datos[i].IdProveedor + `" value="` + datos[i].PrecioNacional + `"/></td>
                 <td> <input class="form-control" id="precioextranjero`+ datos[i].IdProveedor + `" value="` + datos[i].PrecioExtranjero + `"/></td>
-                <td> <button class="btn btn-info" onclick="AsignarProveedorPrecio(`+ datos[i].IdProveedor + `)">ASIGNAR</button></td>
+                <td> <textarea class="form-control" id="comentario`+ datos[i].IdProveedor + `" rows="3"></textarea> </td>
+<td> <button class="btn btn-info" onclick="AsignarProveedorPrecio(`+ datos[i].IdProveedor + `)">ASIGNAR</button></td>
             </tr>`;
         }
         console.log(tr);
