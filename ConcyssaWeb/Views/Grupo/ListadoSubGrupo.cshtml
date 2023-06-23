@@ -24,11 +24,31 @@
         </div>
     </div>
     <div class="panel">
+        <div class="row mx-auto">
+            <div class="form-group-sm">
+                <label class="control-label col-sm-1 left-align" style="font-size:1.5rem;padding-left:20px">Obra: </label>
+                <div class="col-sm-3">
+                    <select onchange="listarGrupoFiltro()"  id="IdObrafiltro" class="form-control input-sm">
+                        <option>Seleccione</option>
+                    </select>
+                </div>
+                <label class="control-label col-sm-1 left-align" style="font-size:1.5rem;padding-left:20px">Grupo: </label>
+                <div class="col-sm-3">
+                    <select id="IdGrupoFiltro" class="form-control input-sm">
+                        <option>Seleccione</option>
+                    </select>
+                </div>
+                <div class="col-sm-3 mb-3" style="margin-top:-8px">
+                    <button class="btn-primary btn" onclick="ConsultaServidor()">Buscar</button>
+                </div>
+            </div>
+        </div>
         <div class="container-fluid">
             <table id="table_id" class="table" style="width:100%">
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>Obra</th>
                         <th>Grupo</th>
                         <th>Codigo</th>
                         <th>Descripcion</th>
@@ -54,9 +74,23 @@
                         <div class='form-horizontal'>
                             <div class="row">
                                 <div class='form-group-sm'>
+                                    <label for='IdObra' class="control-label col-sm-4 left-align">Obra</label>
+                                    <div class="col-sm-8">
+                                        <select onchange="listargrupos()" id="IdObra" name="IdObra" class="form-control input-sm" tabindex="1">
+                                            <option value="0">SELECCIONE OBRA</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+                            <div class="row">
+                                <div class='form-group-sm'>
                                     <label for='IdGrupo' class="control-label col-sm-4 left-align">Grupo</label>
                                     <div class="col-sm-8">
-                                        <select id="IdGrupo" name="IdGrupo" class="form-control input-sm" tabindex="1">
+                                        <select onchange="colorcarCodigo()" id="IdGrupo" name="IdGrupo" class="form-control input-sm" tabindex="1">
                                             <option value="0">SELECCIONE GRUPO</option> 
                                         </select>
                                     </div>

@@ -474,7 +474,7 @@ namespace DAO
 
 
 
-        public List<ModeloAutorizacionDTO> VerificarExisteModeloSolicitud(int IdSociedad)
+        public List<ModeloAutorizacionDTO> VerificarExisteModeloSolicitud(int IdSociedad,int IdDocumento)
         {
             List<ModeloAutorizacionDTO> lstModeloAutorizacionDTO = new List<ModeloAutorizacionDTO>();
             using (SqlConnection cn = new Conexion().conectar())
@@ -484,6 +484,7 @@ namespace DAO
                     cn.Open();
                     SqlDataAdapter da = new SqlDataAdapter("SMC_VerificarExisteModeloSolicitud", cn);
                     da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
+                    da.SelectCommand.Parameters.AddWithValue("@IdDocumento", IdDocumento);
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
                     SqlDataReader drd = da.SelectCommand.ExecuteReader();
                     while (drd.Read())
@@ -752,7 +753,7 @@ namespace DAO
 
 
 
-        public List<ResultadoCondicionDTO> ObtenerResultadoCondicion(string Procedimiento, int IdSolicitud)
+        public List<ResultadoCondicionDTO> ObtenerResultadoCondicion(string Procedimiento, int IdSolicitud,int IdDocumento)
         {
             List<ResultadoCondicionDTO> lstResultadoCondicionDTO = new List<ResultadoCondicionDTO>();
             using (SqlConnection cn = new Conexion().conectar())
@@ -763,6 +764,7 @@ namespace DAO
                     SqlDataAdapter da = new SqlDataAdapter(Procedimiento, cn);
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
                     da.SelectCommand.Parameters.AddWithValue("@IdSolicitud", IdSolicitud);
+                    da.SelectCommand.Parameters.AddWithValue("@IdDocumento", IdDocumento);
                     da.SelectCommand.Parameters.Add("@resultado", SqlDbType.Int).Direction = ParameterDirection.Output;
                     da.SelectCommand.Parameters.Add("@message", SqlDbType.VarChar, 50).Direction = ParameterDirection.Output;
 
@@ -787,6 +789,37 @@ namespace DAO
             }
             return lstResultadoCondicionDTO;
         }
+
+
+        
+        public int EliminarModeloAutorizacion(int IdModeloAutorizacion)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_EliminarModeloAutorizacion", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdModeloAutorizacion", IdModeloAutorizacion);
+                        int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        return -1;
+                    }
+                }
+            }
+        }
+
 
 
 

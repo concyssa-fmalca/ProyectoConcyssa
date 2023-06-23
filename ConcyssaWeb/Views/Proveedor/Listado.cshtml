@@ -137,13 +137,13 @@
                             </div>
                             <div class="row">
                                 <div class='form-group-sm'>
-                                    <label for="txtCodigo" class="control-label col-sm-2 left-align">Codigo Cliente</label>
+                                    <label for="txtCodigo" class="control-label col-sm-2 left-align" style="font-weight:600;text-decoration: underline;">Codigo Proveedor</label>
                                     <div class="col-sm-4">
-                                        <input id="txtCodigo" type="text" class="form-control input-sm" tabindex="0">
+                                        <input id="txtCodigo" type="text" class="form-control input-sm" tabindex="0" disabled readonly>
                                     </div>
                                 </div>
                                 <div class='form-group-sm'>
-                                    <label for="cboTipoPersona" class="control-label col-sm-2 left-align">Tipo Persona</label>
+                                    <label for="cboTipoPersona" class="control-label col-sm-2 left-align" style="font-weight:600;text-decoration: underline;">Tipo Persona</label>
                                     <div class="col-sm-4">
                                         <select id="cboTipoPersona" class="form-control input-sm" tabindex="1"></select>
                                     </div>
@@ -151,15 +151,15 @@
                             </div>
                             <div class="row">
                                 <div class='form-group-sm'>
-                                    <label for="cboTipoDocumento" class="control-label col-sm-2 left-align">Tipo de Documento</label>
+                                    <label for="cboTipoDocumento" class="control-label col-sm-2 left-align" style="font-weight:600;text-decoration: underline;">Tipo de Documento</label>
                                     <div class="col-sm-4">
                                         <select id="cboTipoDocumento" class="form-control input-sm" tabindex="2" onchange="ValidarBotonBuscar()"></select>
                                     </div>
                                 </div>
                                 <div class='form-group-sm' id="divDocumento">
-                                    <label for="txtNroDocumento" class="control-label col-sm-1 left-align">N°</label><label id="lblDocumento" class="control-label col-sm-1 left-align">Documento</label>
+                                    <label for="txtNroDocumento" class="control-label col-sm-1 left-align" style="font-weight:600;text-decoration: underline;">N°</label><label id="lblDocumento" class="control-label col-sm-1 left-align" style="font-weight:600;text-decoration: underline;">Documento</label>
                                     <div class="col-sm-4">
-                                        <input id="txtNroDocumento" type="text" class="form-control input-sm" tabindex="3" onkeypress="soloEnteros(event, this);" maxlength="11">
+                                        <input id="txtNroDocumento" type="text" onchange="CrearCodigo()" class="form-control input-sm" tabindex="3" onkeypress="soloEnteros(event, this);" maxlength="11">
                                     </div>
                                 </div>
                             </div>
@@ -197,7 +197,7 @@
                         </div>
                         <div class="row">
                             <div class='form-group-sm'>
-                                <label for="txtRazonSocial" id="lblRazonSocial" class="control-label col-sm-2 left-align">Razon Social</label>
+                                <label  for="txtRazonSocial" id="lblRazonSocial" class="control-label col-sm-2 left-align" style="font-weight:600;text-decoration: underline;">Razon Social</label>
                                 <div class="col-sm-4">
                                     <input id="txtRazonSocial" type="text" class="form-control input-sm" tabindex="4">
                                 </div>
@@ -220,7 +220,7 @@
 
                         <div class="row">
                             <div class='form-group-sm'>
-                                <label for="txtDireccionFiscal" class="control-label col-sm-2 left-align">Direccion del Domicilio fiscal</label>
+                                <label for="txtDireccionFiscal" class="control-label col-sm-2 left-align" style="font-weight:600;text-decoration: underline;">Direccion del Domicilio fiscal</label>
                                 <div class="col-sm-10">
                                     <input placeholder="" id="txtDireccionFiscal" type="text" class="form-control input-sm" tabindex="5">
                                 </div>
@@ -254,7 +254,7 @@
                                 </div>
                             </div>
                             <div class='form-group-sm'>
-                                <label for="txtTlf1" class="control-label col-sm-2 left-align">Teléfono 1</label>
+                                <label for="txtTlf1" class="control-label col-sm-2 left-align" style="font-weight:600;text-decoration: underline;">Teléfono 1</label>
                                 <div class="col-sm-2">
                                     <input placeholder="" onkeypress="return isNumberKey(event, this);" id="txtTlf1" type="text" class="form-control input-sm" tabindex="10">
                                 </div>
@@ -287,7 +287,7 @@
                         </div>
                         <div class="row">
                             <div class='form-group-sm'>
-                                <label for="cboCondicionPago" class="control-label col-sm-2 left-align">Condicion Pago</label>
+                                <label for="cboCondicionPago" class="control-label col-sm-2 left-align" style="font-weight:600;text-decoration: underline;">Condicion Pago</label>
                                 <div class="col-sm-4">
                                     <select id="cboCondicionPago" class="form-control input-sm" tabindex="13"></select>
                                 </div>
@@ -301,7 +301,7 @@
                         </div>
                         <div class="row">
                             <div class='form-group-sm'>
-                                <label for="txtEmail" class="control-label col-sm-2 left-align">Email</label>
+                                <label for="txtEmail" class="control-label col-sm-2 left-align" style="font-weight:600;text-decoration: underline;">Email</label>
                                 <div class="col-sm-3">
                                     <input id="txtEmail" type="text" class="form-control input-sm" tabindex="15">
                                 </div>
@@ -343,9 +343,15 @@
                         </div>
                         <div class="row">
                             <div class='form-group-sm'>
-                                <label for="txtFechaIngreso" class="control-label col-sm-2 left-align">Fecha Ingreso</label>
+                                <label for="txtFechaIngreso" class="control-label col-sm-2 left-align" style="font-weight:600;text-decoration: underline;">Fecha Ingreso</label>
                                 <div class="col-sm-2">
                                     <input id="txtFechaIngreso" type="date" class="form-control date input-sm" tabindex="21">
+                                </div>
+                            </div>
+                            <div class='form-group-sm'>
+                                <label for="txtDiasEntrega" class="control-label col-sm-1 left-align" style="font-weight:600;text-decoration: underline;">Dias Entrega</label>
+                                <div class="col-sm-2">
+                                    <input id="txtDiasEntrega" type="number" class="form-control date input-sm" tabindex="22">
                                 </div>
                             </div>
                             @*<div class='form-group-sm'>
@@ -369,6 +375,55 @@
                                 </div>
                             </div>
                         </div>
+
+
+                        <div id="Anexos" class="tabcontent" >
+
+                            @using (Html.BeginForm("GuardarFile", "Proveedor", FormMethod.Post, new { id = "SubirAnexos", enctype = "multipart/form-data" }))
+                            {
+                                <div class="row">
+                                    <div class=''>
+                                        <div class="col-sm-8" style="padding-left:20px">
+                                            @*<label for="file">Subir Anexos</label>*@
+                                            <input type="file" name="file" id="file" class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class='form-group-sm'>
+                                        <div class="col-sm-4">
+                                            @*<label for="file">Subir Anexos</label>*@
+                                            <input type="submit" value="Subir Archivo" class="btn btn-primary" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                                @ViewBag.Message
+                                <br />
+                                <div class="table-responsive">
+                                    <table class="table" id="tabla_files">
+                                        <thead>
+                                            <tr>
+                                                <th>Nombre</th>
+                                                <th>Descargar</th>
+                                                  <th>Accion</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+
+                                        @*@for (var i = 0; i <= Model.Count - 1; i++)
+                                    {
+                                    <tr>
+                                    <td>@Model[i].ToString()</td>
+                                    <td>@Html.ActionLink("Download", "Download", new { ImageName = Model[i].ToString() })</td>
+                                    </tr>
+                                    }*@
+                                    </table>
+
+                                </div>
+                            }
+                        </div>
+
+
+
                     </div>
                 </div>
             </div>

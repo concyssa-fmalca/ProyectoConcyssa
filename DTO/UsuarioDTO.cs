@@ -29,6 +29,10 @@ namespace DTO
         public int IdDepartamento { get; set; }
         public string NombreDepartamento { get; set; }
         public string Correo { get; set; }
+        public int AprobarGiro { get; set; }
+        public string NombBase { get; set; }
+
+        
     }
 
     public class UsuarioBaseAlmacenDTO{

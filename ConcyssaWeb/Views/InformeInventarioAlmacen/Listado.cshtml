@@ -20,17 +20,25 @@
 
             </div>
             *@
-            <div class="row">
-            
-                <div class="col-sm-1"></div>
-                <div class='form-group-sm'>
-                    <label for="txtPrecioUnitarioItem" class="control-label col-sm-1 left-right">Almacen</label>
-                    <div class="col-sm-3">
-                        <select id="IdAlmacen" class="form-control input-sm" tabindex="0" onchange="ObtenerStockxAlmacen()"></select>
-                    </div>
+            <div class="col-xs-12 right">
+                <label class="col-sm-1" for="cboBaseFiltro">Base</label>
+                <div class="col-sm-3">
+                    <select class="form-control" id="cboBaseFiltro" onchange="ObtenerObraxIdBase()"></select>
                 </div>
             </div>
-
+            <div class="col-xs-12 right">
+                <label class="col-sm-1" for="cboObraFiltro">Obra</label>
+                <div class="col-sm-3">
+                    <select class="form-control" id="cboObraFiltro" onchange="ObtenerAlmacenxIdObra()"></select>
+                </div>
+            </div>
+            <div class="col-xs-12 right">
+                <label class="col-sm-1" for="cboObraFiltro">Almacén</label>
+                <div class="col-sm-3">
+                    <select class="form-control" id="cboAlmacenFiltro"></select>
+                </div>
+                <button class="btn btn-primary" style="margin-top:3px" onclick="ObtenerStockxAlmacen()">Buscar</button>
+            </div>
       
 
         </div>

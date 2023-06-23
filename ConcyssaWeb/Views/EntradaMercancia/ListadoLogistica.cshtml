@@ -83,6 +83,13 @@
                 @*<button class="btn btn-sm  btn-success pull-right plu" id="btnPdf" style="margin-left:10px;">Descargar PDF</button>
                 <button class="btn btn-sm btn-info pull-right plu" id="btnExcel" style="margin-left:10px;">Descargar Excel</button>*@
             </div>
+             <div class="col-xs-12 right">
+                 <label class="col-sm-1" for="cboObraFiltro">Base</label>
+                 <div class="col-sm-3">
+                     <select class="form-control" id="cboObraFiltro"></select>
+                 </div>
+                <button class="btn btn-primary" style="margin-top:3px" onclick="listaropdnDT()">Buscar</button>
+            </div>
         </div>
     </div>
     <div class="panel">
@@ -94,7 +101,11 @@
                         <th>#</th>
                         <th>Fecha Documento</th>
                         <th>Tipo Documento</th>
+                        <th>Proveedor</th>
+                        <th>Numero de Entrega</th>
                         <th>Serie y Numero</th>
+
+                        @*<th>Moneda</th>*@
                         <th>Total</th>
                         @*<th>Cuadrilla</th>*@
                         <th>Obra</th>
@@ -131,7 +142,7 @@
                                 <div class='form-group-sm'>
                                     <label for="IdBase" class="control-label col-sm-2 left-align">Base</label>
                                     <div class="col-sm-4">
-                                        <select id="IdBase" class="form-control input-sm" tabindex="0" onchange="ObtenerObraxIdBase()"></select>
+                                        <select id="IdBase" class="form-control input-sm" tabindex="0" onchange="ObtenerObraxIdBase();LimpiarAlmacen()"></select>
                                     </div>
                                 </div>
 
@@ -258,10 +269,10 @@
                                 </select>
                                 </div>
                                 </div>*@
-                                <div class='form-group-sm'>
+                                <div class='form-group-sm' style="display:none">
                                     <label for="cboCentroCosto" class="control-label col-sm-2 left-align">Centro de Costo</label>
                                     <div class="col-sm-4">
-                                        <select id="cboCentroCosto" class="form-control input-sm" tabindex="0"></select>
+                                        <select id="cboCentroCosto" class="form-control input-sm" tabindex="0" disabled></select>
                                     </div>
                                 </div>
 
@@ -351,15 +362,17 @@
 
                                 <div class='form-group-sm'>
                                     <div class="col-sm-4">
-                                        <button id="btn_agregaritem" style="margin-bottom:10px;margin-top:5px" class="btn btn-xs btn-info" onclick="OpenModalItem()" type="button">Agregar Item</button>
+                                        <button id="btn_agregaritem" disabled style="margin-bottom:10px;margin-top:5px" class="btn btn-xs btn-info" onclick="OpenModalItem()" type="button">Agregar Item</button>
                                     </div>
                                 </div>
                                 <div class="table-responsive">
                                     <table class="table" id="tabla" style="width:100%">
                                         <thead>
                                             <tr>
-                                                <th style="width:5px;display:block"><button style="display:none" class="btn btn-xs btn-info" onclick="AgregarLinea()" type="button">+</button></th>
+                                                <th style="width:5px;display:none"><button style="display:none" class="btn btn-xs btn-info" onclick="AgregarLinea()" type="button">+</button></th>
                                                 @*<th style="display:none">Numero de Articulo</th>*@
+                                                <th>#</th>
+                                                <th>Codigo Articulo</th>
                                                 <th>Descripcion de Articulo</th>
                                                 <th>Unid. Medida</th>
                                                 @*<th>Prioridad de Item</th>*@
@@ -367,6 +380,7 @@
                                                 <th style="display:none">Moneda</th>
                                                 <th style="display:none">Tipo Cambio</th>*@
                                                 <th style="width:140px;display:block">Cantidad</th>
+                                                <th style="width:140px">Cantidad Pedida</th>
                                                 <th>Precio Unitario</th>
                                                 <th>Indicador de Impuestos</th>
                                                 <th>Total</th>
@@ -958,9 +972,13 @@
                                         <tr>
                                             <th>#</th>
                                              <th>Check</th>
+                                              <th>Obra</th>
                                             <th>Numero Pedido</th>
+                                            <th>Tipo</th>
                                             <th>Proveedor</th>
+                                            <th>Moneda</th>
                                             <th>Monto Total</th>
+                                             <th>Fecha</th>
                                             @*<th>Accion</th>*@
                                         </tr>
                                     </thead>

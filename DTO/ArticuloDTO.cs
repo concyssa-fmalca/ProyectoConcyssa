@@ -42,4 +42,20 @@ namespace DTO
         public decimal UltimoPrecioCompra { get; set; }
         public int IdProveedor { get; set; }
     }
+
+    public class ArticuloPrecioProveedorDTO
+    {
+        public int IdArticuloProveedor { get; set; }
+        public int IdArticulo { get; set; }
+        public int IdProveedor { get; set; }
+        public decimal PrecioSoles { get; set; }
+        public decimal PrecioDolares { get; set; }
+        public int IdCondicionPago { get; set; }
+        public int numeroentrega { get; set; }
+        public int IdSociedad { get; set; }
+        public string Proveedor { get; set; }
+        public string CondicionPago { get; set; }
+
+
+    }
 }

@@ -75,7 +75,14 @@
                 <input type="text" id="IdPerfil" value="IDPERFIL" style="display:none;" />
                 <input type="text" id="artIdSociedad" value="1" style="display:none" />
                 @*<button class="btn btn-sm  btn-success pull-right plu" id="btnPdf" style="margin-left:10px;">Descargar PDF</button>
-                    <button class="btn btn-sm btn-info pull-right plu" id="btnExcel" style="margin-left:10px;">Descargar Excel</button>*@
+                <button class="btn btn-sm btn-info pull-right plu" id="btnExcel" style="margin-left:10px;">Descargar Excel</button>*@
+            </div>
+             <div class="col-xs-12 right">
+                 <label class="col-sm-1" for="cboObraFiltro">Base</label>
+                 <div class="col-sm-3">
+                     <select class="form-control" id="cboObraFiltro"></select>
+                 </div>
+                @*<button class="btn btn-primary" style="margin-top:3px" onclick="consultaservidor()">Buscar</button>*@
             </div>
         </div>
     </div>
@@ -85,17 +92,17 @@
             <div class="panel" style="background-color:#effafc">
                 <div class="row">
 
-
-                   @* @if (base.Session["idPerfil"].ToString() == "2" || base.Session["idPerfil"].ToString() == "5" || base.Session["idPerfil"].ToString() == "6")
+                    <input style="display:none" id="IdPerfilSesion" type="text" value="@Accessor.HttpContext.Session.GetInt32("IdPerfil")" disabled></input>
+                    @* @if (base.Session["idPerfil"].ToString() == "2" || base.Session["idPerfil"].ToString() == "5" || base.Session["idPerfil"].ToString() == "6")
                     {
 
                     }
                     else
                     {*@
-                        <label for="CboIdSolicitante" class="control-label col-sm-1 left-align" style="color:black;margin-top:5px">Solicitante</label>
-                        <div class="col-sm-2">
-                            <select id="CboIdSolicitante" class="form-control"></select>
-                        </div>
+                    <label for="CboIdSolicitante" class="control-label col-sm-1 left-align" style="color:black;margin-top:5px;display:none">Solicitante</label>
+                    <div class="col-sm-2" style="display:none">
+                        <select id="CboIdSolicitante" class="form-control"></select>
+                    </div>
                     @*}*@
 
 
@@ -113,18 +120,9 @@
                     <div class="col-sm-2">
                         <input type="text" id="FechaFinal" class="form-control" autocomplete="off" placeholder="@fechafin" />
                     </div>
-                    <label for="Estado" class="control-label col-sm-1 left-align" style="color:black;margin-top:5px">Estado</label>
-                    <div class="col-sm-2">
+                    <label hidden for="Estado" class="control-label col-sm-1 left-align" style="color:black;margin-top:5px">Estado</label>
+                    <div hidden class="col-sm-2">
                         <select class="form-control" id="Estado">
-
-
-                            <option value="1">Pendiente de Aprobacion</option>
-                            <option value="2">Cerrado</option>
-                            <option value="3">Rechazado</option>
-                            <option value="4">Aprobado</option>
-                            <option value="5">Aprobado Parcial</option>
-                            <option value="6">En Proceso </option>
-
 
                             <option value="0">Todos</option>
                         </select>
@@ -141,25 +139,26 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>N° Solicitud</th>
+                            <th>N° RQ</th>
                             <th>Solicitante</th>
-                            <th>Area Solicitante</th>
+                            <th>Obra</th>
+                            @*<th>Area Solicitante</th>*@
                             @*<th>Serie</th>*@
                             @*<th>Numero</th>*@
                             <th>Tipo</th>
-                            <th>Moneda</th>
+                            @*<th>Moneda</th>*@
                             @*<th>Neto</th>*@
-                            <th>Total</th>
+                            @* <th>Total</th>*@
                             <th>Prioridad</th>
                             <th>Estado</th>
                             <th>Fecha Documento</th>
-                            <th>Valido Hasta</th>
-                            <th>PDF</th>
+@*                            <th>Valido Hasta</th>*@
+                            @*<th>PDF</th>*@
                             <th>Accion</th>
                             @*<th>Historial</th>*@
                             @*@if (base.Session["IdPerfil"].ToString() == "1" || base.Session["IdPerfil"].ToString() == "5")
-        {*@
-                            <th>Cerrar</th>
+                            {*@
+                            <th>Cancelar</th>
                             @*  }*@
 
                         </tr>
@@ -190,7 +189,7 @@
                                 <div class='form-group-sm'>
                                     <label for="IdBase" class="control-label col-sm-2 left-align">Base</label>
                                     <div class="col-sm-4">
-                                        <select id="IdBase" class="form-control input-sm" tabindex="0" onchange="ObtenerObraxIdBase()"></select>
+                                        <select id="IdBase" class="form-control input-sm" tabindex="0" onchange="ObtenerObraxIdBase();LimpiarAlmacen()"></select>
                                     </div>
                                 </div>
 
@@ -214,16 +213,16 @@
                                 <div class='form-group-sm'>
                                     <label for="cboSerie" class="control-label col-sm-2 left-align">Serie</label>
                                     <div class="col-sm-4">
-                                        <select id="cboSerie" class="form-control input-sm" tabindex="0" onchange="ObtenerNumeracion()" disabled></select>
+                                        <select id="cboSerie" class="form-control input-sm" tabindex="0" onchange="ObtenerNumeracion()"></select>
                                     </div>
                                 </div>
-                               @* <div class='form-group-sm' style="display:none">
-                                    <label for="txtEstado" class="control-label col-sm-2 left-align">Estado</label>
-                                    <div class="col-sm-4">
-                                        <input id="txtEstado" type="text" class="form-control input-sm" tabindex="1" value="1" disabled>
-                                    </div>
+                                @* <div class='form-group-sm' style="display:none">
+                                <label for="txtEstado" class="control-label col-sm-2 left-align">Estado</label>
+                                <div class="col-sm-4">
+                                <input id="txtEstado" type="text" class="form-control input-sm" tabindex="1" value="1" disabled>
+                                </div>
                                 </div>*@
-                                 <input id="txtEstado" type="hidden" class="form-control input-sm" tabindex="1" value="1" disabled>
+                                <input id="txtEstado" type="hidden" class="form-control input-sm" tabindex="1" value="1" disabled>
                             </div>
 
                             <div class="row">
@@ -245,14 +244,14 @@
                                     </div>
                                 </div>
 
-                                
+
 
                             </div>
 
 
                             <div class="row">
 
-                                <div class='form-group-sm'>
+                                <div class='form-group-sm' style="display:none">
                                     @*<label for="cboMoneda" class="control-label col-sm-2 left-align">Tipo de Cambio</label>*@
                                     <label for="cboMoneda" class="control-label col-sm-2 left-align">Moneda</label>
                                     <div class="col-sm-4">
@@ -265,7 +264,7 @@
 
 
 
-                                <div class='form-group-sm'>
+                                <div class='form-group-sm' style="display:none">
                                     <label for="cboImpuesto" class="control-label col-sm-2 left-align">Impuestos</label>
                                     <div class="col-sm-4">
                                         <select id="cboImpuesto" class="form-control input-sm" tabindex="6" onchange="SetImpuestoDetalle()"></select>
@@ -312,7 +311,7 @@
                                             var nuevaFecha = fechaActual.AddDays(15);
                                             var fecha = nuevaFecha.ToString("yyyy-MM-dd");
 
-                                            <input id="txtFechaValidoHasta" value="@fecha" type="date" class="form-control input-sm" tabindex="8" disabled>
+                                                <input id="txtFechaValidoHasta" value="@fecha" type="date" class="form-control input-sm" tabindex="8" disabled>
                                         }
                                     </div>
                                 </div>
@@ -348,7 +347,7 @@
                             <div id="Contenido" class="tabcontent" style="display: block;">
                                 <div class='form-group-sm'>
                                     <div class="col-sm-4">
-                                        <select class="form-control" id="cboClaseArticulo" style="margin-bottom:10px;margin-top:5px">
+                                        <select class="form-control" id="cboClaseArticulo" style="margin-bottom:10px;margin-top:5px" onchange="CambiarClaseArticulo()">
                                             <option value="0">Seleccione</option>
                                             <option value="1">Producto</option>
                                             <option value="2">Servicio</option>
@@ -368,7 +367,7 @@
                                 </div>
                                 <div class='form-group-sm'>
                                     <div class="col-sm-4">
-                                        <button style="margin-bottom:10px;margin-top:5px" class="btn btn-xs btn-info" onclick="OpenModalItem()" type="button">Agregar Item</button>
+                                        <button id="OpenModalItem" style="margin-bottom:10px;margin-top:5px" class="btn btn-xs btn-info" onclick="OpenModalItem()" type="button">Agregar Item</button>
                                     </div>
                                 </div>
                                 <div class="table-responsive">
@@ -377,26 +376,31 @@
                                             <tr>
                                                 <th style="display:none"><button style="display:none" class="btn btn-xs btn-info" onclick="AgregarLinea()" type="button">+</button></th>
                                                 <th>Accion</th>
+                                                <th class="HabilitarVisualizacion" style="display:none">Nro OC/OS</th>
+                                                <th class="HabilitarVisualizacion" style="display:none">Fecha</th>
+                                                <th class="HabilitarVisualizacion" style="display:none">Estado de la OC</th>
+                                                
                                                 <th style="min-width:130px">Item</th>
                                                 <th style="min-width:320px">Descripcion de Articulo</th>
                                                 <th style="min-width:100px">UM</th>
                                                 <th style="min-width:100px">Prioridad</th>
                                                 @*<th style="display:none">Fecha Necesaria</th>
-                                                    <th style="display:none">Moneda</th>
-                                                    <th style="display:none">Tipo Cambio</th>*@
-                                                <th style="min-width:80px">Cantidad</th>
-                                                <th style="min-width:80px">Precio</th>
+                                                <th style="display:none">Moneda</th>
+                                                <th style="display:none">Tipo Cambio</th>*@
+                                                <th style="min-width:80px">Cantidad Solicitada</th>
+                                                <th style="min-width:80px">Cantidad Aprobada</th>
+                                                <th style="min-width:80px;display:none">Precio</th>
                                                 @*<th style="display:none">Indicador de Impuestos</th>*@
-                                                <th style="min-width:80px">Total</th>
+                                                <th style="min-width:80px;display:none">Total</th>
                                                 <th style="min-width:140px">Almacen</th>
                                                 @*<th style="display:none">Proveedor</th>
-                                                    <th style="display:none">Numero de Fabricacion</th>
-                                                    <th style="display:none">Numero de Serie</th>
-                                                    <th style="display:none">Linea de Negocio</th>*@
-                                                <th style="min-width:90px;display:none" >Centro Costos</th>
+                                                <th style="display:none">Numero de Fabricacion</th>
+                                                <th style="display:none">Numero de Serie</th>
+                                                <th style="display:none">Linea de Negocio</th>*@
+                                                <th style="min-width:90px;display:none">Centro Costos</th>
                                                 <th style="min-width:130px;display:none">Proyecto</th>
                                                 @*<th style="display:none">Cantidad</th>
-                                                    <th style="display:none">En Pedido</th>*@
+                                                <th style="display:none">En Pedido</th>*@
                                                 <th style="min-width:200px">Comentario</th>
 
 
@@ -440,12 +444,12 @@
                                             <tbody></tbody>
 
                                             @*@for (var i = 0; i <= Model.Count - 1; i++)
-                                                {
-                                                    <tr>
-                                                        <td>@Model[i].ToString()</td>
-                                                        <td>@Html.ActionLink("Download", "Download", new { ImageName = Model[i].ToString() })</td>
-                                                    </tr>
-                                                }*@
+                                        {
+                                        <tr>
+                                        <td>@Model[i].ToString()</td>
+                                        <td>@Html.ActionLink("Download", "Download", new { ImageName = Model[i].ToString() })</td>
+                                        </tr>
+                                        }*@
                                         </table>
 
                                     </div>
@@ -471,29 +475,29 @@
                                 </div>
 
                                 @*<div class='form-group-sm'>
-                                        <label for="txtTotalAntesDescuento" class="control-label col-sm-2 left-align">Sub Total</label>
-                                        <div class="col-sm-4">
-                                            <input id="txtTotalAntesDescuento" type="number" class="form-control input-sm" tabindex="12" disabled>
-                                        </div>
-                                    </div>*@
+                                <label for="txtTotalAntesDescuento" class="control-label col-sm-2 left-align">Sub Total</label>
+                                <div class="col-sm-4">
+                                <input id="txtTotalAntesDescuento" type="number" class="form-control input-sm" tabindex="12" disabled>
+                                </div>
+                                </div>*@
                             </div>
 
                             @*<div class="row">
-                                    <div class='form-group-sm'>
-                                        <div class="col-sm-6">
-                                        </div>
-                                    </div>
+                            <div class='form-group-sm'>
+                            <div class="col-sm-6">
+                            </div>
+                            </div>
 
-                                    <div class='form-group-sm'>
-                                        <label for="txtImpuesto" class="control-label col-sm-2 left-align">Impuesto</label>
-                                        <div class="col-sm-4">
-                                            <input id="txtImpuesto" type="number" class="form-control input-sm" tabindex="15" disabled>
-                                        </div>
-                                    </div>
-                                </div>*@
+                            <div class='form-group-sm'>
+                            <label for="txtImpuesto" class="control-label col-sm-2 left-align">Impuesto</label>
+                            <div class="col-sm-4">
+                            <input id="txtImpuesto" type="number" class="form-control input-sm" tabindex="15" disabled>
+                            </div>
+                            </div>
+                            </div>*@
 
 
-                            <div class="row">
+                            <div class="row" style="display:none">
                                 <div class='form-group-sm'>
                                     <label for="txtTotal" class="control-label col-sm-2 left-align"></label>
                                     <div class="col-sm-4">
@@ -579,11 +583,11 @@
                                         </div>
                                     </div>
                                     @*<div class='form-group-sm'>
-                                            <label for="txtMedidaItem" class="control-label col-sm-2 left-align">Medida</label>
-                                            <div class="col-sm-4">
-                                                <input id="txtMedidaItem" type="text" class="form-control input-sm" tabindex="2">
-                                            </div>
-                                        </div>*@
+                                    <label for="txtMedidaItem" class="control-label col-sm-2 left-align">Medida</label>
+                                    <div class="col-sm-4">
+                                    <input id="txtMedidaItem" type="text" class="form-control input-sm" tabindex="2">
+                                    </div>
+                                    </div>*@
 
                                     <div class='form-group-sm'>
                                         <label for="cboMedidaItem" class="control-label col-sm-2 left-align">Medida</label>
@@ -599,27 +603,12 @@
 
                                     <div class='form-group-sm'>
                                         <label for="txtDescripcionItem" class="control-label col-sm-2 left-align">Descripcion</label>
-                                        <div class="col-sm-4">
-                                            <textarea id="txtDescripcionItem" type="text" class="form-control input-sm" tabindex="3" disabled></textarea>
+                                        <div class="col-sm-10">
+                                            <textarea id="txtDescripcionItem" type="text" class="form-control input-sm" tabindex="3" disabled style="height:50px"></textarea>
                                         </div>
                                     </div>
-
-                                    <div class='form-group-sm'>
-                                        <label for="txtPrecioUnitarioItem" class="control-label col-sm-2 left-align">Precio Unitario</label>
-                                        <div class="col-sm-4">
-                                            <input id="txtPrecioUnitarioItem" type="text" class="form-control input-sm" tabindex="4" >
-                                        </div>
-                                    </div>
-
                                 </div>
                                 <div class="row">
-
-                                    <div class='form-group-sm'>
-                                        <label for="txtStockAlmacenItem" class="control-label col-sm-2 left-align">Stock en Almacen</label>
-                                        <div class="col-sm-4">
-                                            <input id="txtStockAlmacenItem" type="text" class="form-control input-sm" tabindex="5" disabled>
-                                        </div>
-                                    </div>
 
                                     <div class='form-group-sm'>
                                         <label for="txtCantidadItem" class="control-label col-sm-2 left-align">Cantidad</label>
@@ -627,9 +616,24 @@
                                             <input id="txtCantidadItem" max="5" type="number" class="form-control input-sm" tabindex="6" onkeyup="ValidarDecimalesCantidades('txtCantidadItem')">
                                         </div>
                                     </div>
+                                      <div class='form-group-sm'>
+                                        <label id="lblStockItem" for="txtStockAlmacenItem" class="control-label col-sm-2 left-align">Stock en Almacen</label>
+                                        <div class="col-sm-4">
+                                            <input id="txtStockAlmacenItem" type="text" class="form-control input-sm" tabindex="5" disabled>
+                                        </div>
+                                    </div>
+
+                                    <div class='form-group-sm d-none' style="display:none">
+                                        <label for="txtPrecioUnitarioItem" class="control-label col-sm-2 left-align">Precio Unitario</label>
+                                        <div class="col-sm-4">
+                                            <input id="txtPrecioUnitarioItem" type="text" class="form-control input-sm" value="1" tabindex="4" disabled>
+                                        </div>
+                                    </div>
+
 
 
                                 </div>
+                          
 
 
                                 <div class="row" style="display:none">

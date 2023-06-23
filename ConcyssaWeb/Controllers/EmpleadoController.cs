@@ -70,5 +70,49 @@ namespace ConcyssaWeb.Controllers
             return resultado;
         }
 
+
+        public string ObtenerEmpleadosxIdCuadrilla(int IdCuadrilla)
+        {
+            EmpleadoDAO oEmpleadoDAO = new EmpleadoDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            List<EmpleadoDTO> lstEmpleadoDTO = oEmpleadoDAO.ObtenerEmpleadosxIdCuadrilla(IdCuadrilla);
+            if (lstEmpleadoDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstEmpleadoDTO);
+            }
+            else
+            {
+                return "error";
+            }
+        }
+        public string ObtenerEmpleadosPorUsuarioBase()
+        {
+            EmpleadoDAO oEmpleadoDAO = new EmpleadoDAO();
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            List<EmpleadoDTO> lstEmpleadoDTO = oEmpleadoDAO.ObtenerEmpleadosPorUsuarioBase(IdUsuario);
+            if (lstEmpleadoDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstEmpleadoDTO);
+            }
+            else
+            {
+                return "error";
+            }
+        }
+        public string ObtenerCapatazXCuadrilla(int IdCuadrilla)
+        {
+            EmpleadoDAO oEmpleadoDAO = new EmpleadoDAO();
+      
+            List<EmpleadoDTO> lstEmpleadoDTO = oEmpleadoDAO.ObtenerCapatazXCuadrilla(IdCuadrilla);
+            if (lstEmpleadoDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstEmpleadoDTO);
+            }
+            else
+            {
+                return "error";
+            }
+        }
+
     }
 }

@@ -19,7 +19,7 @@
             <div class="col-xs-6 right">
                 <button class="btn btn-sm  btn-primary pull-right plu" data-target="modal1" onclick="ModalNuevo()" style="margin-left:10px;">Nuevo</button>
                 @*<button class="btn btn-sm  btn-success pull-right plu" id="btnPdf" style="margin-left:10px;">Descargar PDF</button>
-                    <button class="btn btn-sm btn-info pull-right plu" id="btnExcel" style="margin-left:10px;">Descargar Excel</button>*@
+                <button class="btn btn-sm btn-info pull-right plu" id="btnExcel" style="margin-left:10px;">Descargar Excel</button>*@
             </div>
         </div>
     </div>
@@ -30,8 +30,11 @@
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>Código</th>
                         <th>Documento</th>
                         <th>Razon Social</th>
+                        <th>Base</th>
+                        <th>Cargo</th>
                         <th>Mas</th>
                     </tr>
                 </thead>
@@ -44,81 +47,74 @@
 
     <!-- Modal -->
     @*<div id="modal-form" class="popup-sm allcp-form mfp-with-anim mfp-hide">
-            <div class="panel">
-                <div class="panel-heading">
-                    <h5 id='lblTituloModal'></h5>
-                </div>
-                <div class="panel-body ">
-                    <div class='col s12 m12 '>
-                        <div class='container-fluid'>
-                            <input id='txtId' name="txtId" type='hidden' class="form-control input-sm">
-                            <div class='form-horizontal'>
-                                <div class="row">
-                                    <div class='form-group-sm'>
-                                        <label for='txtDocumento' class="control-label col-sm-4 left-align">Documento</label>
-                                        <div class="col-sm-8">
-                                            <input id='txtDocumento' name="txtDocumento" type='text' class="form-control input-sm" tabindex="1">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class='form-group-sm'>
-                                        <label for='txtNombres' class="control-label col-sm-4 left-align">Nombres</label>
-                                        <div class="col-sm-8">
-                                            <input id='txtNombres' name="txtNombres" type='text' class="form-control input-sm" tabindex="2">
-                                        </div>
-                                    </div>
-                                </div>
+    <div class="panel">
+    <div class="panel-heading">
+    <h5 id='lblTituloModal'></h5>
+    </div>
+    <div class="panel-body ">
+    <div class='col s12 m12 '>
+    <div class='container-fluid'>
+    <input id='txtId' name="txtId" type='hidden' class="form-control input-sm">
+    <div class='form-horizontal'>
+    <div class="row">
+    <div class='form-group-sm'>
+    <label for='txtDocumento' class="control-label col-sm-4 left-align">Documento</label>
+    <div class="col-sm-8">
+    <input id='txtDocumento' name="txtDocumento" type='text' class="form-control input-sm" tabindex="1">
+    </div>
+    </div>
+    </div>
+    <div class="row">
+    <div class='form-group-sm'>
+    <label for='txtNombres' class="control-label col-sm-4 left-align">Nombres</label>
+    <div class="col-sm-8">
+    <input id='txtNombres' name="txtNombres" type='text' class="form-control input-sm" tabindex="2">
+    </div>
+    </div>
+    </div>
 
-                                <div class="row">
-                                    <div class='form-group-sm'>
-                                        <label for='txtApellidos' class="control-label col-sm-4 left-align">Apellidos</label>
-                                        <div class="col-sm-8">
-                                            <input id='txtApellidos' name="txtApellidos" type='text' class="form-control input-sm" tabindex="3">
-                                        </div>
-                                    </div>
-                                </div>
+    <div class="row">
+    <div class='form-group-sm'>
+    <label for='txtApellidos' class="control-label col-sm-4 left-align">Apellidos</label>
+    <div class="col-sm-8">
+    <input id='txtApellidos' name="txtApellidos" type='text' class="form-control input-sm" tabindex="3">
+    </div>
+    </div>
+    </div>
 
-                                <div class="row">
-                                    <div class='form-group-sm'>
-                                        <label for='txtDireccion' class="control-label col-sm-4 left-align">Direccion</label>
-                                        <div class="col-sm-8">
-                                            <input id='txtDireccion' name="txtDireccion" type='text' class="form-control input-sm" tabindex="4">
-                                        </div>
-                                    </div>
-                                </div>
+    <div class="row">
+    <div class='form-group-sm'>
+    <label for='txtDireccion' class="control-label col-sm-4 left-align">Direccion</label>
+    <div class="col-sm-8">
+    <input id='txtDireccion' name="txtDireccion" type='text' class="form-control input-sm" tabindex="4">
+    </div>
+    </div>
+    </div>
 
-                                <div class="row">
-                                    <div class='form-group-sm'>
-                                        <label for='txtTelefono' class="control-label col-sm-4 left-align">Telefono</label>
-                                        <div class="col-sm-8">
-                                            <input id='txtTelefono' name="txtTelefono" type='text' class="form-control input-sm" tabindex="5">
-                                        </div>
-                                    </div>
-                                </div>
+    
 
-                                <div class="row">
-                                    <div class='form-group-sm col-sm-4'></div>
-                                    <div class='form-group-sm'>
-                                        <div class="checkbox-custom col-xs-6">
-                                            <input type="checkbox" id="chkActivo" />
-                                            <label for="chkActivo">Activo</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+    <div class="row">
+    <div class='form-group-sm col-sm-4'></div>
+    <div class='form-group-sm'>
+    <div class="checkbox-custom col-xs-6">
+    <input type="checkbox" id="chkActivo" />
+    <label for="chkActivo">Activo</label>
+    </div>
+    </div>
+    </div>
+    </div>
 
-                        </div>
-                    </div>
-                </div>
-                <div class="panel-footer text-right">
-                    <div class="row">
-                        <button type="button" id="btnGrabar" onclick="GuardarEmpleado()" class="btn btn-primary pull-right plu">Grabar</button>
-                        <button type="button" id="btnCancelar" class="btn btn-danger pull-right" style="background-color:orange;" onclick="closePopup();">Cancelar</button>
-                    </div>
-                </div>
-            </div>
-        </div>*@
+    </div>
+    </div>
+    </div>
+    <div class="panel-footer text-right">
+    <div class="row">
+    <button type="button" id="btnGrabar" onclick="GuardarEmpleado()" class="btn btn-primary pull-right plu">Grabar</button>
+    <button type="button" id="btnCancelar" class="btn btn-danger pull-right" style="background-color:orange;" onclick="closePopup();">Cancelar</button>
+    </div>
+    </div>
+    </div>
+    </div>*@
 
     <div id="modal-form" class="popup-lg allcp-form mfp-with-anim mfp-hide">
         <div class="panel">
@@ -134,7 +130,7 @@
                             </div>
                             <div class="row">
                                 <div class='form-group-sm'>
-                                    <label for="txtCodigo" class="control-label col-sm-2 left-align">Codigo Cliente</label>
+                                    <label for="txtCodigo" class="control-label col-sm-2 left-align">Codigo Empleado</label>
                                     <div class="col-sm-4">
                                         <input id="txtCodigo" type="text" class="form-control input-sm" tabindex="1">
                                     </div>
@@ -160,183 +156,198 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class='form-group-sm'>
-                                <label for="" class="control-label col-sm-2 left-align">Buscar</label>
-                                <div class="col-sm-1">
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    @*  <label for="" class="control-label col-sm-2 left-align">Buscar</label>*@
+                                    @*  <div class="col-sm-1">
                                     <button type="button" id="btnBuscarReniec" onclick="Buscar(1);" class="btn btn-info btn-xs">Buscar</button>
+                                    </div>*@
+                                    <div class="col-sm-1">
+                                        <input type="text" maxlength="4" id="txtCaptchaReniec" class="form-control input-sm" style="text-transform:uppercase; display:none;" />
+                                    </div>
+                                    <div class="col-sm-1" id="imgCaptchaReniec" style="height:14px;">
+                                    </div>
+                                    <div class="col-sm-1" style="height:14px;">
+                                        <span id="lblMensajeReniec" style="font-size:10px;line-height:12px;"></span>
+                                    </div>
+                                </div>
+                                @*<div class='form-group-sm'>
+                                <label for="" class="control-label col-sm-2 left-align">Buscar en SUNAT</label>
+                                <div class="col-sm-1">
+                                <button type="submit" id="btnBuscar" onclick="Buscar(2);" class="btn btn-info btn-xs">Buscar</button>
                                 </div>
                                 <div class="col-sm-1">
-                                    <input type="text" maxlength="4" id="txtCaptchaReniec" class="form-control input-sm" style="text-transform:uppercase; display:none;"  />
+                                <input type="text" maxlength="4" id="txtCaptcha" class="form-control input-sm" style="text-transform:uppercase; display:none;" tabindex="5" />
                                 </div>
-                                <div class="col-sm-1" id="imgCaptchaReniec" style="height:14px;">
+                                <div class="col-sm-1" id="imgCaptcha" style="height:14px;">
 
                                 </div>
                                 <div class="col-sm-1" style="height:14px;">
-                                    <span id="lblMensajeReniec" style="font-size:10px;line-height:12px;"></span>
                                 </div>
-                            </div>
-                            @*<div class='form-group-sm'>
-                                    <label for="" class="control-label col-sm-2 left-align">Buscar en SUNAT</label>
-                                    <div class="col-sm-1">
-                                        <button type="submit" id="btnBuscar" onclick="Buscar(2);" class="btn btn-info btn-xs">Buscar</button>
-                                    </div>
-                                    <div class="col-sm-1">
-                                        <input type="text" maxlength="4" id="txtCaptcha" class="form-control input-sm" style="text-transform:uppercase; display:none;" tabindex="5" />
-                                    </div>
-                                    <div class="col-sm-1" id="imgCaptcha" style="height:14px;">
-
-                                    </div>
-                                    <div class="col-sm-1" style="height:14px;">
-                                    </div>
                                 </div>*@
-                        </div>
-                        <div class="row">
-                            <div class='form-group-sm'>
-                                <label for="txtRazonSocial" id="lblRazonSocial" class="control-label col-sm-2 left-align">Razon Social</label>
-                                <div class="col-sm-4">
-                                    <input id="txtRazonSocial" type="text" class="form-control input-sm" tabindex="5">
+                            </div>
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for="txtRazonSocial" id="lblRazonSocial" class="control-label col-sm-2 left-align">Razon Social</label>
+                                    <div class="col-sm-4">
+                                        <input id="txtRazonSocial" type="text" class="form-control input-sm" tabindex="5">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
+                            @* <div class="row">
                             <div class='form-group-sm'>
-                                <label for="txtEstadoContribuyente" class="control-label col-sm-2 left-align">Estado de Contribuyente</label>
-                                <div class="col-sm-4">
-                                    <input id="txtEstadoContribuyente" type="text" class="form-control input-sm" tabindex="6">
-                                </div>
+                            <label for="txtEstadoContribuyente" class="control-label col-sm-2 left-align">Estado de Contribuyente</label>
+                            <div class="col-sm-4">
+                            <input id="txtEstadoContribuyente" type="text" class="form-control input-sm" tabindex="6">
+                            </div>
                             </div>
                             <div class='form-group-sm'>
-                                <label for="txtCondicionContribuyente" class="control-label col-sm-2 left-align">Condicion de Contribuyente</label>
-                                <div class="col-sm-4">
-                                    <input id="txtCondicionContribuyente" type="text" class="form-control input-sm" tabindex="7">
-                                </div>
+                            <label for="txtCondicionContribuyente" class="control-label col-sm-2 left-align">Condicion de Contribuyente</label>
+                            <div class="col-sm-4">
+                            <input id="txtCondicionContribuyente" type="text" class="form-control input-sm" tabindex="7">
                             </div>
-                        </div>
+                            </div>
+                            </div>
 
-                        <div class="row">
+                            <div class="row">
                             <div class='form-group-sm'>
-                                <label for="txtDireccionFiscal" class="control-label col-sm-2 left-align">Direccion del Domicilio fiscal</label>
-                                <div class="col-sm-10">
-                                    <input placeholder="" id="txtDireccionFiscal" type="text" class="form-control input-sm" tabindex="8">
-                                </div>
+                            <label for="txtDireccionFiscal" class="control-label col-sm-2 left-align">Direccion del Domicilio fiscal</label>
+                            <div class="col-sm-10">
+                            <input placeholder="" id="txtDireccionFiscal" type="text" class="form-control input-sm" tabindex="8">
                             </div>
-                        </div>
-                        <div class="row">
+                            </div>
+                            </div>
+                            <div class="row">*@
                             @*<div class='form-group-sm'>
-                                    <label for="cboZona" class="control-label col-sm-2 left-align">Zona</label>
-                                    <div class="col-sm-2">
-                                        <select id="cboZona" class="form-control input-sm" tabindex="6"></select>
-                                    </div>
-                                </div>*@
-                            <div class='form-group-sm'>
-                                <label for="cboDepartamento" class="control-label col-sm-2 left-align">Departamento</label>
-                                <div class="col-sm-2">
-                                    <select id="cboDepartamento" class="form-control input-sm" tabindex="9" onchange=" CargarProvincias()"></select>
-                                </div>
+                            <label for="cboZona" class="control-label col-sm-2 left-align">Zona</label>
+                            <div class="col-sm-2">
+                            <select id="cboZona" class="form-control input-sm" tabindex="6"></select>
+                            </div>
+                            </div>*@
+                            @*<div class='form-group-sm'>
+                            <label for="cboDepartamento" class="control-label col-sm-2 left-align">Departamento</label>
+                            <div class="col-sm-2">
+                            <select id="cboDepartamento" class="form-control input-sm" tabindex="9" onchange=" CargarProvincias()"></select>
+                            </div>
                             </div>
                             <div class='form-group-sm'>
-                                <label for="cboProvincia" class="control-label col-sm-2 left-align">Provincia</label>
-                                <div class="col-sm-2">
-                                    <select id="cboProvincia" class="form-control input-sm" tabindex="10" onchange="CargarDistritos()"></select>
-                                </div>
+                            <label for="cboProvincia" class="control-label col-sm-2 left-align">Provincia</label>
+                            <div class="col-sm-2">
+                            <select id="cboProvincia" class="form-control input-sm" tabindex="10" onchange="CargarDistritos()"></select>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class='form-group-sm'>
-                                <label for="cboDistrito" class="control-label col-sm-2 left-align">Distrito</label>
-                                <div class="col-sm-2">
-                                    <select id="cboDistrito" class="form-control input-sm" tabindex="11"></select>
-                                </div>
                             </div>
+                            </div>
+                            <div class="row">
                             <div class='form-group-sm'>
-                                <label for="txtTlf1" class="control-label col-sm-2 left-align">Teléfono 1</label>
-                                <div class="col-sm-2">
-                                    <input placeholder="" onkeypress="return isNumberKey(event, this);" id="txtTlf1" type="text" class="form-control input-sm" tabindex="12">
-                                </div>
+                            <label for="cboDistrito" class="control-label col-sm-2 left-align">Distrito</label>
+                            <div class="col-sm-2">
+                            <select id="cboDistrito" class="form-control input-sm" tabindex="11"></select>
+                            </div>
                             </div>
                             <div class='form-group-sm'>
-                                <label for="txtPais" class="control-label col-sm-2 left-align">Pais</label>
-                                <div class="col-sm-2">
-                                    <select id="cboPais" class="form-control input-sm" tabindex="13"></select>
-                                </div>
+                            <label for="txtTlf1" class="control-label col-sm-2 left-align">Teléfono 1</label>
+                            <div class="col-sm-2">
+                            <input placeholder="" onkeypress="return isNumberKey(event, this);" id="txtTlf1" type="text" class="form-control input-sm" tabindex="12">
                             </div>
-                        </div>
-                        <div class="row">
+                            </div>
                             <div class='form-group-sm'>
-                                <div style="display:none;">
-                                    <label for="txtDireccion1" class="control-label col-sm-2 left-align">Direccion 1</label>
-                                    <div class="col-sm-10">
-                                        <input placeholder="" id="txtDireccion1" type="text" class="form-control input-sm" tabindex="14">
-                                    </div>
-                                </div>
+                            <label for="txtPais" class="control-label col-sm-2 left-align">Pais</label>
+                            <div class="col-sm-2">
+                            <select id="cboPais" class="form-control input-sm" tabindex="13"></select>
+                            </div>
+                            </div>
+                            </div>
+                            <div class="row">
+                            <div class='form-group-sm'>
+                            <div style="display:none;">
+                            <label for="txtDireccion1" class="control-label col-sm-2 left-align">Direccion 1</label>
+                            <div class="col-sm-10">
+                            <input placeholder="" id="txtDireccion1" type="text" class="form-control input-sm" tabindex="14">
+                            </div>
+                            </div>
 
-                                <label for="txtComprobantesElectronicos" class="control-label col-sm-2 left-align">Comprobantes Electrónicos</label>
-                                <div class="col-sm-7">
-                                    <input placeholder="" id="txtComprobantesElectronicos" type="text" maxlength="100" class="form-control input-sm" tabindex="15">
-                                </div>
-                                <label for="txtAfiliadoPLE" class="control-label col-sm-2 left-align">Afiliado al PLE desde</label>
-                                <div class="col-sm-1">
-                                    <input placeholder="" id="txtAfiliadoPLE" type="text" maxlength="10" class="form-control input-sm" tabindex="16">
-                                </div>
+                            <label for="txtComprobantesElectronicos" class="control-label col-sm-2 left-align">Comprobantes Electrónicos</label>
+                            <div class="col-sm-7">
+                            <input placeholder="" id="txtComprobantesElectronicos" type="text" maxlength="100" class="form-control input-sm" tabindex="15">
                             </div>
+                            <label for="txtAfiliadoPLE" class="control-label col-sm-2 left-align">Afiliado al PLE desde</label>
+                            <div class="col-sm-1">
+                            <input placeholder="" id="txtAfiliadoPLE" type="text" maxlength="10" class="form-control input-sm" tabindex="16">
+                            </div>
+                            </div>
+                            </div>
+                            <div class="row">
+                            <div class='form-group-sm'>
+                            <label for="cboCondicionPago" class="control-label col-sm-2 left-align">Condicion Pago</label>
+                            <div class="col-sm-4">
+                            <select id="cboCondicionPago" class="form-control input-sm" tabindex="17"></select>
+                            </div>
+                            </div>
+                            <div class='form-group-sm'>
+                            <label for="txtLineaCredito" class="control-label col-sm-2 left-align">Linea Credito</label>
+                            <div class="col-sm-4">
+                            <input id="txtLineaCredito" type="text" class="form-control input-sm" tabindex="18">
+                            </div>
+                            </div>
+                            </div>
+                            <div class="row">
+                            <div class='form-group-sm'>
+                            <label for="txtEmail" class="control-label col-sm-2 left-align">Email</label>
+                            <div class="col-sm-3">
+                            <input id="txtEmail" type="text" class="form-control input-sm" tabindex="19">
+                            </div>
+                            </div>
+                            <div class='form-group-sm'>
+                            <label for="txtWeb" class="control-label col-sm-1 left-align">Web</label>
+                            <div class="col-sm-3">
+                            <input id="txtWeb" type="text" class="form-control input-sm" tabindex="20">
+                            </div>
+                            </div>
+                            <div class='form-group-sm'>
+                            <label for="txtFax" class="control-label col-sm-1 left-align">Fax</label>
+                            <div class="col-sm-2">
+                            <input id="txtFax" type="text" class="form-control input-sm" tabindex="21">
+                            </div>
+                            </div>
+                            </div>
+                            <div class="row">
+                            <div class='form-group-sm'>
+                            <label for="txtNombreContacto" class="control-label col-sm-2 left-align">Nombre Contacto</label>
+                            <div class="col-sm-8">
+                            <input id="txtNombreContacto" type="text" class="form-control input-sm" tabindex="22">
+                            </div>
+                            </div>
+                            </div>
+                            <div class="row">
+                            <div class='form-group-sm'>
+                            <label for="txtTlfContacto" class="control-label col-sm-2 left-align">Teléfono Contacto</label>
+                            <div class="col-sm-3">
+                            <input id="txtTlfContacto" type="text" class="form-control input-sm" tabindex="23">
+                            </div>
+                            </div>*@
+
                         </div>
                         <div class="row">
-                            <div class='form-group-sm'>
-                                <label for="cboCondicionPago" class="control-label col-sm-2 left-align">Condicion Pago</label>
-                                <div class="col-sm-4">
-                                    <select id="cboCondicionPago" class="form-control input-sm" tabindex="17"></select>
-                                </div>
-                            </div>
-                            <div class='form-group-sm'>
-                                <label for="txtLineaCredito" class="control-label col-sm-2 left-align">Linea Credito</label>
-                                <div class="col-sm-4">
-                                    <input id="txtLineaCredito" type="text" class="form-control input-sm" tabindex="18">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class='form-group-sm'>
-                                <label for="txtEmail" class="control-label col-sm-2 left-align">Email</label>
-                                <div class="col-sm-3">
-                                    <input id="txtEmail" type="text" class="form-control input-sm" tabindex="19">
-                                </div>
-                            </div>
-                            <div class='form-group-sm'>
-                                <label for="txtWeb" class="control-label col-sm-1 left-align">Web</label>
-                                <div class="col-sm-3">
-                                    <input id="txtWeb" type="text" class="form-control input-sm" tabindex="20">
-                                </div>
-                            </div>
-                            <div class='form-group-sm'>
-                                <label for="txtFax" class="control-label col-sm-1 left-align">Fax</label>
-                                <div class="col-sm-2">
-                                    <input id="txtFax" type="text" class="form-control input-sm" tabindex="21">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class='form-group-sm'>
-                                <label for="txtNombreContacto" class="control-label col-sm-2 left-align">Nombre Contacto</label>
-                                <div class="col-sm-8">
-                                    <input id="txtNombreContacto" type="text" class="form-control input-sm" tabindex="22">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class='form-group-sm'>
-                                <label for="txtTlfContacto" class="control-label col-sm-2 left-align">Teléfono Contacto</label>
-                                <div class="col-sm-3">
-                                    <input id="txtTlfContacto" type="text" class="form-control input-sm" tabindex="23">
-                                </div>
-                            </div>
                             <div class='form-group-sm'>
                                 <label for="txtEmailContacto" class="control-label col-sm-2 left-align">Email Contacto</label>
-                                <div class="col-sm-5">
+                                <div class="col-sm-4">
                                     <input id="txtEmailContacto" type="text" class="form-control input-sm" tabindex="24">
                                 </div>
                             </div>
+                            <div class='form-group-sm'>
+                                <label for='txtTelefono' class="control-label col-sm-2 left-align">Telefono</label>
+                                <div class="col-sm-4">
+                                    <input id='txtTelefono' name="txtTelefono" type='text' class="form-control input-sm" tabindex="5">
+                                </div>
+                            </div>
+                            
+                            @*<div class='form-group-sm'>
+                            <div class="checkbox-custom col-xs-4">
+                            <input type="checkbox" id="chkEmpleado" />
+                            <label for="chkEmpleado">Empleado</label>
+                            </div>
+                            </div>*@
+                           
                         </div>
                         <div class="row">
                             <div class='form-group-sm'>
@@ -345,24 +356,34 @@
                                     <input id="txtFechaIngreso" type="date" class="form-control date input-sm" tabindex="25">
                                 </div>
                             </div>
-                            @*<div class='form-group-sm'>
-                                    <div class="checkbox-custom col-xs-4">
-                                        <input type="checkbox" id="chkEmpleado" />
-                                        <label for="chkEmpleado">Empleado</label>
-                                    </div>
-                                </div>*@
-                            <div class='form-group-sm'>
-                                <div class="checkbox-custom col-xs-4">
-                                    <input type="checkbox" id="chkActivo" />
-                                    <label for="chkActivo">Activo</label>
-                                </div>
-                            </div>
                         </div>
                         <div class="row">
                             <div class='form-group-sm'>
                                 <label for="txtObservacion" class="control-label col-sm-2 left-align">Observacion</label>
                                 <div class="col-sm-10">
                                     <input id="txtObservacion" type="text" class="form-control input-sm" tabindex="26">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class='form-group-sm'>
+                                <label for="cboDepartamento" class="control-label col-sm-2 left-align">Base</label>
+                                <div class="col-sm-4">
+                                    <select id="cboBase" class="form-control input-sm" tabindex="9"></select>
+                                </div>
+                            </div>
+                            <div class='form-group-sm'>
+                                <label for="cboCargo" class="control-label col-sm-2 left-align">Cargo</label>
+                                <div class="col-sm-4">
+                                    <select id="cboCargo" class="form-control input-sm" tabindex="10"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">                     
+                            <div class='form-group-sm'>
+                                <div class="checkbox-custom col-xs-4">
+                                    <input type="checkbox" id="chkActivo" />
+                                    <label for="chkActivo">Activo</label>
                                 </div>
                             </div>
                         </div>

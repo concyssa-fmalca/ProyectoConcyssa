@@ -13,5 +13,9 @@ namespace DTO
         public decimal PrecioNacional { get; set; }
         public decimal PrecioExtranjero { get; set; }
         public string DescripcionArticulo { get; set; }
+        public int Cantidad { get; set; }
+        public DateTime Fecha { get; set; }
+        public string? Obra { get; set; }
+        public string? Serie { get; set; }
     }
 }

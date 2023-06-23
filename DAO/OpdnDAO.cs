@@ -33,6 +33,7 @@ namespace DAO
                         oOpdnDTO.FechaContabilizacion = Convert.ToDateTime(drd["FechaContabilizacion"].ToString());
                         oOpdnDTO.FechaDocumento = Convert.ToDateTime(drd["FechaDocumento"].ToString());
                         oOpdnDTO.FechaVencimiento = Convert.ToDateTime(drd["FechaVencimiento"].ToString());
+                        oOpdnDTO.FechaEntrega = Convert.ToDateTime(drd["FechaEntrega1"].ToString());
                         oOpdnDTO.IdListaPrecios = Convert.ToInt32(drd["IdListaPrecios"].ToString());
                         oOpdnDTO.Referencia = (drd["Referencia"].ToString());
                         oOpdnDTO.Comentario = (drd["Comentario"].ToString());
@@ -79,7 +80,7 @@ namespace DAO
         }
 
 
-        public List<OpdnDTO> ObtenerOPDNxEstado(int IdSociedad, ref string mensaje_error, string EstadoOPDN)
+        public List<OpdnDTO> ObtenerOPDNxEstado(int IdBase,int IdSociedad, ref string mensaje_error, string EstadoOPDN, int IdUsuario=0)
         {
             List<OpdnDTO> lstOPDNDTO = new List<OpdnDTO>();
             using (SqlConnection cn = new Conexion().conectar())
@@ -88,8 +89,11 @@ namespace DAO
                 {
                     cn.Open();
                     SqlDataAdapter da = new SqlDataAdapter("SMC_ListarOPDNxEstado", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdBase", IdBase);
                     da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
                     da.SelectCommand.Parameters.AddWithValue("@EstadoOPDN", EstadoOPDN);
+                    da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
+
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
                     SqlDataReader drd = da.SelectCommand.ExecuteReader();
                     while (drd.Read())
@@ -129,7 +133,8 @@ namespace DAO
                         oOpdnDTO.IdAlmacen = Convert.ToInt32(drd["IdAlmacen"].ToString());
                         oOpdnDTO.IdObra = Convert.ToInt32(drd["IdObra"].ToString());
                         oOpdnDTO.IdBase = Convert.ToInt32(drd["IdBase"].ToString());
-
+                        oOpdnDTO.NombProveedor = (drd["NombProveedor"].ToString());
+                        oOpdnDTO.NumSerieTipoDocumentoRef = drd["NumSerieTipoDocumentoRef"].ToString();
 
                         lstOPDNDTO.Add(oOpdnDTO);
                     }
@@ -145,7 +150,7 @@ namespace DAO
             return lstOPDNDTO;
         }
 
-        public List<OpdnDTO> ListarOPDNDTModalOPCH(int IdSociedad, ref string mensaje_error, string EstadoOPDN)
+        public List<OpdnDTO> ListarOPDNDTModalOPCH(int IdSociedad, ref string mensaje_error, string EstadoOPDN,int IdUsuario=0)
         {
             List<OpdnDTO> lstOPDNDTO = new List<OpdnDTO>();
             using (SqlConnection cn = new Conexion().conectar())
@@ -156,6 +161,8 @@ namespace DAO
                     SqlDataAdapter da = new SqlDataAdapter("SMC_ListarOPDNDTModalOPCH", cn);
                     da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
                     da.SelectCommand.Parameters.AddWithValue("@EstadoOPDN", EstadoOPDN);
+                    da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
+
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
                     SqlDataReader drd = da.SelectCommand.ExecuteReader();
                     while (drd.Read())
@@ -199,6 +206,7 @@ namespace DAO
                         oOpdnDTO.IdProveedor = Convert.ToInt32(drd["IdProveedor"].ToString());
                         oOpdnDTO.IdCondicionPago = Convert.ToInt32(drd["IdCondicionPago"].ToString());
                         oOpdnDTO.NombProveedor = (drd["NombProveedor"].ToString());
+                        oOpdnDTO.NumSerieTipoDocumentoRef = drd["NumSerieTipoDocumentoRef"].ToString();
                         lstOPDNDTO.Add(oOpdnDTO);
                     }
                     drd.Close();
@@ -237,6 +245,7 @@ namespace DAO
                         oOPDNDetalle.IdGrupoUnidadMedida = Convert.ToInt32(drd["IdGrupoUnidadMedida"].ToString());
                         oOPDNDetalle.IdDefinicionGrupoUnidad = Convert.ToInt32(drd["IdDefinicionGrupoUnidad"].ToString());
                         oOPDNDetalle.Cantidad = Convert.ToDecimal(drd["Cantidad"].ToString());
+                        oOPDNDetalle.CantidadDePedido = Convert.ToDecimal(drd["CantidadDePedido"].ToString());
                         oOPDNDetalle.valor_unitario = Convert.ToDecimal(drd["valor_unitario"].ToString());
                         oOPDNDetalle.precio_unitario = Convert.ToDecimal(drd["precio_unitario"].ToString());
                         oOPDNDetalle.total_base_igv = Convert.ToDecimal(drd["total_base_igv"].ToString());
@@ -252,9 +261,9 @@ namespace DAO
                         oOPDNDetalle.CantidadUsada = Convert.ToDecimal(drd["CantidadUsada"].ToString());
                         oOPDNDetalle.Referencia = (drd["Referencia"].ToString());
                         oOPDNDetalle.CantidadDevolucion = Convert.ToDecimal((String.IsNullOrEmpty(drd["CantidadDevolucion"].ToString())) ? "0" : drd["CantidadDevolucion"].ToString());
+                        oOPDNDetalle.CodigoArticulo = (drd["CodigoArticulo"].ToString());
 
 
-                        
 
                         lstOPDNDetalle.Add(oOPDNDetalle);
                     }

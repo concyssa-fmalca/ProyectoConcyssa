@@ -3,7 +3,7 @@ let tablecatalogo;
 //let table2 = $("#table_catalogoobra").DataTable(lenguaje);;
 
 window.onload = function () {
-    var url = "ObtenerObra";
+    var url = "ObtenerObraxIdUsuarioSessionSinBase";
     ConsultaServidor(url);
     listarBase();
     listarTipoObra();
@@ -101,19 +101,32 @@ function ConsultaServidor(url) {
         let total_obra = obra.length;
 
         for (var i = 0; i < obra.length; i++) {
-            tr += '<tr>' +
-                '<td>' + (i + 1) + '</td>' +
-                '<td>' + obra[i].Codigo.toUpperCase() + '</td>' +
-                '<td>' + obra[i].Descripcion.toUpperCase() + '</td>' +
-                '<td>' + obra[i].DescripcionCorta.toUpperCase() + '</td>' +
-                '<td>' + obra[i].DescripcionBase.toUpperCase() + '</td>' +
-                '<td>'+
-                    '<button class="btn btn-primary fa fa-pencil btn-xs" onclick = "ObtenerDatosxID(' + obra[i].IdObra + ')" ></button > ' +
-                    '<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + obra[i].IdObra + ')"></button>' +
+            if ($("#IdPerfilSesion").val() == 1) {
+                tr += '<tr>' +
+                    '<td>' + (i + 1) + '</td>' +
+                    '<td>' + obra[i].Codigo.toUpperCase() + '</td>' +
+                    '<td>' + obra[i].Descripcion.toUpperCase() + '</td>' +
+                    '<td>' + obra[i].DescripcionCorta.toUpperCase() + '</td>' +
+                    '<td>' + obra[i].DescripcionBase.toUpperCase() + '</td>' +
+                    '<td>' +
+                        '<button class="btn btn-primary fa fa-pencil btn-xs" onclick = "ObtenerDatosxID(' + obra[i].IdObra + ')" ></button > ' +
+                        '<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + obra[i].IdObra + ')"></button>' +
+                        '<button class="btn btn-danger btn-xs" onclick="uicatalogoproducto(' + obra[i].IdObra + ')">C</button>' +
+                        //'<button class="btn btn-danger btn-xs" onclick="descargarcatatalogo(' + obra[i].IdObra + ')">D</button>' + 
+                    '</td >' +
+                    '</tr>';
+            } else {
+                tr += '<tr>' +
+                    '<td>' + (i + 1) + '</td>' +
+                    '<td>' + obra[i].Codigo.toUpperCase() + '</td>' +
+                    '<td>' + obra[i].Descripcion.toUpperCase() + '</td>' +
+                    '<td>' + obra[i].DescripcionCorta.toUpperCase() + '</td>' +
+                    '<td>' + obra[i].DescripcionBase.toUpperCase() + '</td>' +
+                    '<td>' +
                     '<button class="btn btn-danger btn-xs" onclick="uicatalogoproducto(' + obra[i].IdObra + ')">C</button>' +
-                    //'<button class="btn btn-danger btn-xs" onclick="descargarcatatalogo(' + obra[i].IdObra + ')">D</button>' + 
-                '</td >' +
-                '</tr>';
+                    '</td >' +
+                    '</tr>';
+             }
         }
 
         $("#tbody_obra").html(tr);

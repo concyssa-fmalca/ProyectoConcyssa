@@ -32,6 +32,28 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
+
+        public string ObtenerAlmacenxIdUsuario(int estado = 3)
+        {
+            string mensaje_error = "";
+            AlmacenDAO oAlmacenDAO = new AlmacenDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            DataTableDTO oDataTableDTO = new DataTableDTO();
+            List<AlmacenDTO> lstAlmacenDTO = oAlmacenDAO.ObtenerAlmacenxIdUsuario(IdSociedad, IdUsuario, ref mensaje_error, estado);
+            if (lstAlmacenDTO.Count > 0)
+            {
+
+                //return oDataTableDTO;
+                return JsonConvert.SerializeObject(lstAlmacenDTO);
+
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
+
         public string ObtenerAlmacenes(int estado = 3)
         {
             string mensaje_error = "";
@@ -57,6 +79,7 @@ namespace ConcyssaWeb.Controllers
             string mensaje_error = "";
             AlmacenDAO oAlmacenDAO = new AlmacenDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            
             DataTableDTO oDataTableDTO = new DataTableDTO();
             List<AlmacenDTO> lstAlmacenDTO = oAlmacenDAO.ObtenerAlmacen(IdSociedad, ref mensaje_error, estado);
             if (lstAlmacenDTO.Count > 0)

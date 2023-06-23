@@ -74,6 +74,7 @@
                 <div class="topbar-left col-xs-12">
                     <div class="row">
                         <div class='form-group-sm'>
+                            <input type="hidden" id="IdPedido" value="0"/>
                             <label for="TipoAlmacen" class="control-label col-sm-4 left-align">Tipo Almacen</label>
                             <div class="col-sm-3">
                                 <select id="TipoAlmacen" class="form-control input-sm" tabindex="0" onchange="listarPedidoDtConfirmidad()">
@@ -103,6 +104,8 @@
     </div>
     <div class="panel">
         <div class="container-fluid">
+            <p style="font-size:9px">(*)PARA SELECCIONAR UN REGISTRO TENDRA QUE REALIZAR 2 CLICK EN LA FILA DEL REGISTRO QUE DESEA EDITAR</p>
+
             <table id="table_id" class="table" style="width:100%">
                 <thead>
                     <tr>
@@ -110,10 +113,11 @@
                         <th>Proveedor</th>
                         <th>Numeracion</th>
                         <th>Base</th>
-                        <th>Almacen</th>
+                        <th>Obra</th>
                         <th>Fecha</th>
                         <th>Total</th>
                         <th>Estado</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="tbody_pedido"></tbody>
@@ -172,7 +176,7 @@
                                     <label for="ConformidadModal" class="control-label col-sm-1 left-align">Estado</label>
                                     <div class="col-sm-3">
 
-                                        <select id="ConformidadModal" class="form-control input-sm" tabindex="0" onchange="listarPedidoDtConfirmidad()">
+                                        <select id="ConformidadModal" class="form-control input-sm" tabindex="0">
                                             <option value="0">Pendiente</option>
                                             <option value="1">Aprobado</option>
                                             <option value="2">Observado</option>
@@ -227,8 +231,8 @@
                 <div class="col-sm-6">
                     <div class='form-group-sm'>
 
-                        <button type="button" id="btnGrabar" onclick="GuardarPedido()" class="btn btn-primary pull-right plu">Grabar</button>
-                        <button type="button" id="btnNuevo" onclick="nuevo()" class="btn btn-primary pull-right plu">Nuevo</button>
+                        <button type="button" id="btnGrabar" onclick="GuardarPedidoConformidad()" class="btn btn-primary pull-right plu">Grabar</button>
+                        <button style="display:none" type="button" id="btnNuevo" onclick="nuevo()" class="btn btn-primary pull-right plu">Nuevo</button>
                         <button type="button" id="btnCancelar" onclick="CerrarModal()" class="btn btn-danger pull-right" style="background-color:orange;">Cancelar</button>
                     </div>
                 </div>

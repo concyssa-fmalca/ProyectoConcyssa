@@ -4,6 +4,12 @@ let GDecimalesImportes;
 let GDecimalesPrecios;
 let GDecimalesPorcentajes;
 
+
+function eventDefault(event) {
+
+    event.preventDefault();
+}
+
 function ObtenerConfiguracionDecimales() {
     //$.post("/ConfiguracionDecimales/ObtenerConfiguracionDecimales", function (data, status) {
 
@@ -58,7 +64,9 @@ let lenguaje = {
 
     },
     //scrollX: true,
-    responsive: true
+    responsive: true,
+    'bDestroy' : true
+
 };
 
 let lenguaje_data = {
@@ -145,8 +153,8 @@ function formatNumberDecimales(num, tipodecimal) {
                 sign = (num == (num = Math.abs(num)));
                 num = Math.floor(num * 100 + 0.50000000001);
                 cents = num % 100;
-                console.log(num)
-                console.log(cents)
+                //console.log(num)
+                //console.log(cents)
                 num = Math.floor(num / 100).toString();
                 if (cents < 10)
                     cents = "0" + cents;
@@ -170,8 +178,8 @@ function formatNumberDecimales(num, tipodecimal) {
                         
                         partedecimal = numerooriginal.toString().split(".")[1];
                         //5-3
-                        alert(partedecimal.length)
-                        alert(GDecimalesCantidades)
+                        //alert(partedecimal.length)
+                        //alert(GDecimalesCantidades)
                         if (partedecimal.length < GDecimalesCantidades) {
                             let textoconcatenar = "";
                             for (var i = 0; i < (GDecimalesCantidades - partedecimal.length); i++) {
@@ -180,9 +188,9 @@ function formatNumberDecimales(num, tipodecimal) {
                            
                           
                             cents = partedecimal + textoconcatenar
-                            console.log('*******')
-                            console.log(cents)
-                            console.log('*******')
+                            //console.log('*******')
+                            //console.log(cents)
+                            //console.log('*******')
                         } else {
                             cents = partedecimal.substring(0, GDecimalesCantidades)
                           
@@ -193,7 +201,7 @@ function formatNumberDecimales(num, tipodecimal) {
                 } else {
                     cents=00
                 }
-                console.log(cents);
+                //console.log(cents);
                 //cents = num % 100;
                 num = Math.floor(num / 100).toString();
                 //if (cents < 10)
@@ -213,8 +221,8 @@ function formatNumberDecimales(num, tipodecimal) {
                 sign = (num == (num = Math.abs(num)));
                 num = Math.floor(num * 100 + 0.50000000001);
                 cents = num % 100;
-                console.log(num)
-                console.log(cents)
+                //console.log(num)
+                //console.log(cents)
                 num = Math.floor(num / 100).toString();
                 if (cents < 10)
                     cents = "0" + cents;
@@ -233,7 +241,7 @@ function formatNumberDecimales(num, tipodecimal) {
 
 
                 if (!isNaN(num)) {
-                    alert(numerooriginal % 1);
+                    //alert(numerooriginal % 1);
                     if (!(numerooriginal % 1 == 0)) {
                         console.log(numerooriginal.toString())
                         partedecimal = numerooriginal.toString().split(".")[1];
@@ -296,7 +304,7 @@ function formatNumberDecimales(num, tipodecimal) {
 
 
                 if (!isNaN(num)) {
-                    alert(numerooriginal % 1);
+                    //alert(numerooriginal % 1);
                     if (!(numerooriginal % 1 == 0)) {
                         console.log(numerooriginal.toString())
                         partedecimal = numerooriginal.toString().split(".")[1];
@@ -359,7 +367,7 @@ function formatNumberDecimales(num, tipodecimal) {
 
 
                 if (!isNaN(num)) {
-                    alert(numerooriginal % 1);
+                    //alert(numerooriginal % 1);
                     if (!(numerooriginal % 1 == 0)) {
                         console.log(numerooriginal.toString())
                         partedecimal = numerooriginal.toString().split(".")[1];
@@ -434,3 +442,50 @@ function validadJsonGeneral(json) {
 
 
 ObtenerConfiguracionDecimales();
+
+
+function quitarFormato(number) {
+    return Number(StringReplace(number, ',', ''));
+}
+
+
+function SinFormato(number) {
+    //alert(number);
+    return number.replace(",","");
+}
+
+
+function StringReplace(text, oldText, newText, flags) {
+    var r = text;
+    if (oldText instanceof Array) for (var i = 0; i < oldText.length; i++) r = r.replace(new RegExp(oldText[i], flags || 'g'), newText);
+    else r = r.replace(new RegExp(oldText, flags || 'g'), newText);
+    return r;
+}
+function FormatMiles(num) {
+    var a = num.toString().split('.');
+    a[0] = a[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return a.join(".");
+}
+function KeyPressNumber(control) {
+    var a = control;
+
+    a.keydown(function (e) {
+        var p = +e.which,
+            q = (p > 47 && p < 58)
+                || (p > 95 && p < 106)
+                || (p > 36 && p < 41)
+                || ((p == 110 || p == 190) && a.val().toString().indexOf('.') == -1)
+                || p == 8 || p == 46;
+
+        if (!q) e.preventDefault();
+    });
+
+    a.keyup(function (e) {
+
+        var p = StringReplace(a.val(), ',', '');
+        p = FormatMiles(p)
+
+        a.val(p);
+        //CalcularTotales();
+    });
+}

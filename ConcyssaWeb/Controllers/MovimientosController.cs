@@ -30,13 +30,13 @@ namespace ConcyssaWeb.Controllers
                 return mensaje_error;
             }
         }
-
-        public string ObtenerMovimientosIngresos(int Estado=3)
+        public string ObtenerDatosxIdMovimientoOLD(int IdMovimiento)
         {
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             string mensaje_error = "";
             MovimientoDAO oMovimientoDAO = new MovimientoDAO();
-            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List <MovimientoDTO> oMovimientoDTO = oMovimientoDAO.ObtenerMovimientosIngresos(IdSociedad, ref mensaje_error, Estado);
+            MovimientoDTO oMovimientoDTO = oMovimientoDAO.ObtenerMovimientosDetallexIdMovimientoOLD(IdMovimiento, ref mensaje_error);
+            oMovimientoDTO.existeObraDestinoUsuario = oMovimientoDAO.ValidarExisteObraxIdUsuario(IdUsuario, oMovimientoDTO.IdObraDestino, ref mensaje_error);
             if (mensaje_error.ToString().Length == 0)
             {
                 return JsonConvert.SerializeObject(oMovimientoDTO);
@@ -47,12 +47,12 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
-        public string ObtenerMovimientosTranferencias(int Estado = 3)
+        public string ObtenerMovimientosIngresos(int IdBase, int Estado=3)
         {
             string mensaje_error = "";
             MovimientoDAO oMovimientoDAO = new MovimientoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<MovimientoDTO> oMovimientoDTO = oMovimientoDAO.ObtenerMovimientosTransferencias(IdSociedad, ref mensaje_error, Estado);
+            List <MovimientoDTO> oMovimientoDTO = oMovimientoDAO.ObtenerMovimientosIngresos(IdBase,IdSociedad, ref mensaje_error, Estado);
             if (mensaje_error.ToString().Length == 0)
             {
                 return JsonConvert.SerializeObject(oMovimientoDTO);
@@ -63,12 +63,49 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
-        public string ObtenerMovimientosSalida(int Estado = 3)
+        public string ObtenerMovimientosTranferencias(int IdBase,int Estado = 3)
         {
             string mensaje_error = "";
             MovimientoDAO oMovimientoDAO = new MovimientoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<MovimientoDTO> oMovimientoDTO = oMovimientoDAO.ObtenerMovimientosSalida(IdSociedad, ref mensaje_error, Estado);
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            List<MovimientoDTO> oMovimientoDTO = oMovimientoDAO.ObtenerMovimientosTransferencias(IdBase,IdSociedad, IdUsuario, ref mensaje_error, Estado);
+            if (mensaje_error.ToString().Length == 0)
+            {
+                return JsonConvert.SerializeObject(oMovimientoDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
+
+
+        public string ObtenerMovimientosTranferenciasFinal(int IdObraDestino)
+        {
+            string mensaje_error = "";
+            MovimientoDAO oMovimientoDAO = new MovimientoDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            List<MovimientoTranferenciaFinal> oMovimientoDTO = oMovimientoDAO.ObtenerMovimientosTransferenciasFinal(IdObraDestino,IdSociedad, IdUsuario, ref mensaje_error);
+            if (mensaje_error.ToString().Length == 0)
+            {
+                return JsonConvert.SerializeObject(oMovimientoDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
+
+
+        public string ObtenerMovimientosSalida(int IdBase,int Estado = 3)
+        {
+            string mensaje_error = "";
+            MovimientoDAO oMovimientoDAO = new MovimientoDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            List<MovimientoDTO> oMovimientoDTO = oMovimientoDAO.ObtenerMovimientosSalida(IdBase,IdSociedad, ref mensaje_error, Estado, IdUsuario);
             if (mensaje_error.ToString().Length == 0)
             {
                 return JsonConvert.SerializeObject(oMovimientoDTO);
@@ -147,12 +184,13 @@ namespace ConcyssaWeb.Controllers
 
         }
 
-        public string ObtenerMovimientosIngresosDT(int Estado = 3)
+        public string ObtenerMovimientosIngresosDT(int IdBase,int Estado = 3)
         {
             string mensaje_error = "";
             MovimientoDAO oMovimientoDAO = new MovimientoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<MovimientoDTO> oMovimientoDTO = oMovimientoDAO.ObtenerMovimientosIngresos(IdSociedad, ref mensaje_error, Estado);
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            List<MovimientoDTO> oMovimientoDTO = oMovimientoDAO.ObtenerMovimientosIngresos(IdBase,IdSociedad, ref mensaje_error, Estado,IdUsuario);
             DataTableDTO oDataTableDTO = new DataTableDTO();
             if (mensaje_error.ToString().Length == 0)
             {
@@ -171,6 +209,17 @@ namespace ConcyssaWeb.Controllers
         }
 
 
+
+        public string ValidarExtorno(int IdMovimiento)
+        {
+            string Valida = "0";
+            string mensaje_error = "";
+            MovimientoDAO oMovimientoDAO = new MovimientoDAO();
+            Valida = oMovimientoDAO.ValidaExtorno(IdMovimiento, ref mensaje_error);
+        
+            return Valida;
+
+        }
 
 
 

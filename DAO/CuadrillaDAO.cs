@@ -172,6 +172,48 @@ namespace DAO
             }
         }
 
+        public List<CuadrillaDTO> ObtenerCuadrillaxIdObra(int IdObra, ref string mensaje_error)
+        {
+            List<CuadrillaDTO> lstCuadrillaDTO = new List<CuadrillaDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarCuadrillaxIdObra", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdObra", IdObra);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        CuadrillaDTO oCuadrillaDTO = new CuadrillaDTO();
+                        oCuadrillaDTO.IdCuadrilla = int.Parse(drd["IdCuadrilla"].ToString());
+                        oCuadrillaDTO.IdObra = Convert.ToInt32(drd["IdObra"].ToString());
+                        oCuadrillaDTO.IdGrupo = Convert.ToInt32(drd["IdGrupo"].ToString());
+                        oCuadrillaDTO.IdSubGrupo = Convert.ToInt32(drd["IdSubGrupo"].ToString());
+                        oCuadrillaDTO.Codigo = (drd["Codigo"].ToString());
+                        oCuadrillaDTO.Descripcion = (drd["Descripcion"].ToString());
+                        oCuadrillaDTO.IdCapataz = Convert.ToInt32(drd["IdCapataz"].ToString());
+                        oCuadrillaDTO.IdSupervisor = Convert.ToInt32(drd["IdSupervisor"].ToString());
+                        oCuadrillaDTO.IdArea = Convert.ToInt32(drd["IdArea"].ToString());
+                        oCuadrillaDTO.IdSociedad = Convert.ToInt32(drd["IdSociedad"].ToString());
+                        oCuadrillaDTO.Estado = Convert.ToBoolean(drd["Estado"].ToString());
+                        oCuadrillaDTO.EsTercero = Convert.ToBoolean(drd["EsTercero"].ToString());
+
+                        lstCuadrillaDTO.Add(oCuadrillaDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstCuadrillaDTO;
+        }
+
 
     }
 }

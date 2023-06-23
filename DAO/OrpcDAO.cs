@@ -60,7 +60,8 @@ namespace DAO
                         oOrpcDTO.NumSerieTipoDocumentoRef = (drd["NumSerieTipoDocumentoRef"].ToString());
                         oOrpcDTO.IdCuadrilla = Convert.ToInt32(drd["IdCuadrilla"].ToString());
                         oOrpcDTO.IdResponsable = Convert.ToInt32(drd["IdResponsable"].ToString());
-                        oOrpcDTO.idCondicionPago = Convert.ToInt32(drd["idCondicionPago"].ToString());
+                        oOrpcDTO.idCondicionPago = Convert.ToInt32(drd["IdCondicionPago"].ToString());
+                        oOrpcDTO.IdGlosaContable = Convert.ToInt32(drd["IdGlosaContable"].ToString());
                         oOrpcDTO.NombUsuario = (drd["NombUsuario"].ToString());
                         oOrpcDTO.CreatedAt = Convert.ToDateTime(drd["CreatedAt"].ToString());
 
@@ -76,7 +77,7 @@ namespace DAO
             }
             return oOrpcDTO;
         }
-        public List<OrpcDTO> ObtenerORPCxEstado(int IdSociedad, ref string mensaje_error, string EstadoORPC)
+        public List<OrpcDTO> ObtenerORPCxEstado(int IdBase,int IdSociedad, ref string mensaje_error, string EstadoORPC,int IdUsuario=0)
         {
             List<OrpcDTO> lstOrpcDTO = new List<OrpcDTO>();
             using (SqlConnection cn = new Conexion().conectar())
@@ -87,6 +88,9 @@ namespace DAO
                     SqlDataAdapter da = new SqlDataAdapter("SMC_ListarORPCxEstado", cn);
                     da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
                     da.SelectCommand.Parameters.AddWithValue("@EstadoORPC", EstadoORPC);
+                    da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
+                    da.SelectCommand.Parameters.AddWithValue("@IdBase", IdBase);
+
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
                     SqlDataReader drd = da.SelectCommand.ExecuteReader();
                     while (drd.Read())
@@ -126,6 +130,10 @@ namespace DAO
                         oOrpcDTO.IdAlmacen = Convert.ToInt32(drd["IdAlmacen"].ToString());
                         oOrpcDTO.IdObra = Convert.ToInt32(drd["IdObra"].ToString());
                         oOrpcDTO.IdBase = Convert.ToInt32(drd["IdBase"].ToString());
+                        oOrpcDTO.NombUsuario = (drd["NombUsuario"].ToString());
+                        oOrpcDTO.NombProveedor = (drd["NombProveedor"].ToString());
+                        oOrpcDTO.NumProveedor = (drd["NumProveedor"].ToString());
+
 
 
                         lstOrpcDTO.Add(oOrpcDTO);
@@ -178,6 +186,7 @@ namespace DAO
                         oORPCDetalle.CodImpuesto = (drd["CodImpuesto"].ToString());
                         oORPCDetalle.NombImpuesto = (drd["NombImpuesto"].ToString());
                         oORPCDetalle.IdGrupoUnidadMedida = Convert.ToInt32(drd["IdGrupoUnidadMedida"].ToString());
+                        oORPCDetalle.CodigoArticulo = drd["CodigoArticulo"].ToString();
                         lstORPCDetalle.Add(oORPCDetalle);
                     }
                     drd.Close();

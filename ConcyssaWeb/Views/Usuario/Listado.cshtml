@@ -29,7 +29,7 @@
                 @*<button class="btn btn-sm  btn-success pull-right plu" id="btnPdf" style="margin-left:10px;">Descargar PDF</button>
                 <button class="btn btn-sm btn-info pull-right plu" id="btnExcel" style="margin-left:10px;">Descargar Excel</button>*@
             </div>
-        </div>
+displaydiv>
     </div>
     <div class="panel">
         <div class="container-fluid">
@@ -139,6 +139,14 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='cboAbrobar' class="control-label col-sm-4 left-align">Aprobar giros</label>
+                                    <div class="col-sm-8">
+                                        <select id="cboAbrobar" name="cboAbrobar" class="form-control input-sm" tabindex="6"></select>
+                                    </div>
+                                </div>
+                            </div>
 
                             <div class="row">
                                 <div class='form-group-sm col-sm-4'></div>
@@ -181,12 +189,15 @@
             </div>
             <div class="panel-body ">
                 <div class='col s12 m12 '>
+                    <div class="col-sm-12">
+                        <button class="pull-right plu btn btn-info" onclick="addtrAlmacenBase()">Agregar Obra</button>
+                    </div>
                     <div class='container-fluid'>
                         <input id='txtIdUsuarioAlmacenBase' name="txtIdUsuarioAlmacenBase" type='hidden' class="form-control input-sm">
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th scope="col">#<button class="btn btn-info" onclick="addtrAlmacenBase()">+</button> </th>
+                                    <th scope="col"># </th>
                                     <th scope="col">BASE</th>
                                     <th scope="col">OBRA</th>
                                     <th scope="col">ALMACEN</th>
@@ -203,7 +214,7 @@
             </div>
             <div class="panel-footer text-right">
                 <div class="row">
-                    <button type="button" id="btnGrabar" onclick="GuardarUsuario()" class="btn btn-primary pull-right plu">Grabar</button>
+                    <button style="display:none" type="button" id="btnGrabar" onclick="GuardarUsuario()" class="btn btn-primary pull-right plu">Grabar</button>
                     <button type="button" id="btnCancelar" class="btn btn-danger pull-right" style="background-color:orange;" onclick="closePopup();">Cancelar</button>
                 </div>
             </div>

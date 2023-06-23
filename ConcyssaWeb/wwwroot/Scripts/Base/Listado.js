@@ -4,6 +4,7 @@
 window.onload = function () {
     var url = "ObtenerBase";
     ConsultaServidor(url);
+    CargarDivision();
 };
 
 
@@ -29,6 +30,7 @@ function ConsultaServidor(url) {
                 '<td>' + (i + 1) + '</td>' +
                 '<td>' + base[i].Codigo.toUpperCase() + '</td>' +
                 '<td>' + base[i].Descripcion.toUpperCase() + '</td>' +
+                '<td>' + base[i].Division.toUpperCase() + '</td>' +
                 '<td><button  style="margin-top:0px !important;margin-bottom:0px !important;" class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + base[i].IdBase + ')"></button>' +
                 '<button style="margin-top:0px !important;margin-bottom:0px !important;" class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + base[i].IdBase + ')"></button></td >' +
                 '</tr>';
@@ -58,6 +60,7 @@ function GuardarBase() {
     let varIdBase = $("#txtId").val();
     let varCodigo = $("#txtCodigo").val();
     let varDescripcion = $("#txtDescripcion").val();
+    let varDivision = $("#cboDivision").val();
     let varEstado = false;
 
     if ($('#chkActivo')[0].checked) {
@@ -68,7 +71,8 @@ function GuardarBase() {
         'IdBase': varIdBase,
         'Codigo': varCodigo,
         'Descripcion': varDescripcion,
-        'Estado': varEstado
+        'Estado': varEstado,
+        'IdDivision': varDivision
     }, function (data, status) {
 
         if (data == 1) {
@@ -104,6 +108,7 @@ function ObtenerDatosxID(varIdBase) {
             $("#txtId").val(base[0].IdBase);
             $("#txtCodigo").val(base[0].Codigo);
             $("#txtDescripcion").val(base[0].Descripcion);
+            $("#cboDivision").val(base[0].IdDivision);
             if (base[0].Estado) {
                 $("#chkActivo").prop('checked', true);
             }
@@ -135,12 +140,35 @@ function eliminar(varIdBase) {
     }, function () { });
 
 }
+function CargarDivision() {
+    $.ajaxSetup({ async: false });
+    $.post("/Division/ObtenerDivision", { 'estado': 1 }, function (data, status) {
+        let tipoRegistros = JSON.parse(data);
+        llenarComboDivision(tipoRegistros, "cboDivision", "Seleccione")
+    });
+}
 
+
+function llenarComboDivision(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdDivision + "'>" + lista[i].Descripcion + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+}
 
 function limpiarDatos() {
     $("#txtId").val("");
     $("#txtCodigo").val("");
     $("#txtDescripcion").val("");
+    $("#cboDivision").val("");
     $("#chkActivo").prop('checked', false);
 }
 

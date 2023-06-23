@@ -1,4 +1,5 @@
-﻿using DTO;
+﻿using DAO.helpers;
+using DTO;
 using System.Data;
 using System.Data.SqlClient;
 using System.Transactions;
@@ -36,8 +37,9 @@ namespace DAO
                         oUsuarioDTO.SapPassword = drd["SapPassword"].ToString();
                         oUsuarioDTO.Estado = Convert.ToBoolean(drd["Estado"].ToString());
                         oUsuarioDTO.MovimientoInventario = Convert.ToBoolean(drd["MovimientoInventario"].ToString());
+                        oUsuarioDTO.NombBase = drd["NombBase"].ToString();
 
-                        
+
 
                         lstUsuarioDTO.Add(oUsuarioDTO);
                     }
@@ -152,6 +154,7 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@MovimientoInventario", oUsuarioDTO.MovimientoInventario);
                         da.SelectCommand.Parameters.AddWithValue("@Correo", oUsuarioDTO.Correo);
                         da.SelectCommand.Parameters.AddWithValue("@IdDepartamento", oUsuarioDTO.IdDepartamento);
+                        da.SelectCommand.Parameters.AddWithValue("@AprobarGiro", oUsuarioDTO.AprobarGiro);
 
 
                         int rpta = da.SelectCommand.ExecuteNonQuery();
@@ -197,6 +200,7 @@ namespace DAO
                         oUsuarioDTO.SapUsuario = drd["SapUsuario"].ToString();
                         oUsuarioDTO.SapPassword = drd["SapPassword"].ToString();
                         oUsuarioDTO.Correo = drd["Correo"].ToString();
+                        oUsuarioDTO.AprobarGiro = HelperDao.conversionInt(drd,"AprobarGiro");
                         oUsuarioDTO.IdDepartamento =Convert.ToInt32((String.IsNullOrEmpty(drd["IdDepartamento"].ToString())) ? "0" : drd["IdDepartamento"].ToString());
 
 

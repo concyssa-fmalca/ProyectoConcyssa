@@ -180,7 +180,7 @@ namespace DAO
                         oPeriodoContableDTO.IdUsuario = Convert.ToInt32(drd["IdUsuario"].ToString());
                         oPeriodoContableDTO.CreatedAt = Convert.ToDateTime(drd["CreatedAt"].ToString());
                         oPeriodoContableDTO.Eliminado = Convert.ToBoolean(drd["Eliminado"].ToString());
-                        oPeriodoContableDTO.FechaContabilizacionI = Convert.ToDateTime(drd["FechaContabilizacionI"].ToString());
+                        oPeriodoContableDTO.FechaContabilizacionI =  Convert.ToDateTime(drd["FechaContabilizacionI"].ToString());
                         oPeriodoContableDTO.FechaContabilizacionF = Convert.ToDateTime(drd["FechaContabilizacionF"].ToString());
 
                         lstPeriodoContableDTO.Add(oPeriodoContableDTO);

@@ -15,7 +15,10 @@
         public int IdObra { get; set; }
         public string NombObra {get;set;}
         public string NombProveedor { get; set; }
+        public int IdProveedor { get; set; }
         public string NumeroSolicitud { get; set; }
+        public DateTime Fecha { get; set; }
+        public string Referencia { get; set; }
 
 
 

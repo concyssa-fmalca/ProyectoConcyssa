@@ -1,4 +1,14 @@
-﻿@{
+﻿
+@using Microsoft.AspNetCore.Http
+@using Karambolo.AspNetCore.Bundling.ViewHelpers
+@addTagHelper *, Karambolo.AspNetCore.Bundling
+@inject IHttpContextAccessor Accessor
+@{
+    Layout = null;
+}
+@using DTO;
+
+@{
     ViewBag.Title = "Listado";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -67,47 +77,42 @@
                         <div class='form-horizontal'>
 
                             <div class="row pl30 pr30">
-                                <div class="col-lg-4 col-sm-4 ">
+                                <div class="col-sm-12">
                                     <div class="form-group-sm" style="display:none;">
                                         <input placeholder='' id='txtId' type='text' style="display:none;">
                                     </div>
                                     <div class="row">
                                         <div class='form-group-sm'>
-                                            <label for='txtCodigo' class="control-label col-sm-4 left-align">Codigo</label>
-                                            <div class="col-sm-8">
-                                                <input id='txtCodigo' placeholder="Ingrese Codigo" type='text' class="form-control input-sm" tabindex="1">
+                                            <label for='txtCodigo' class="control-label col-sm-1 left-align" style="padding-left:20px">Codigo</label>
+                                            <div class="col-sm-2" style="padding-left:53px">
+                                                <input id='txtCodigo' placeholder="Automatico" type='text' class="form-control input-sm" tabindex="1" disabled>
+                                            </div>
+                                        </div>
+                                        <div class='form-group-sm'>
+                                            <label for='cboIdUnidadMedida' class="control-label col-sm-1 left-align">CODIGO CUBSO</label>
+                                            <div class="col-sm-7">
+                                                <label class="col-sm-12">
+                                                    <select id="cboIdCodigoUbso" class="form-control input-sm" tabindex="5"></select>
+
+                                                    <i class="arrow"></i>
+                                                </label>
                                             </div>
                                         </div>
                                     </div>
                                     <select id="cboIdUnidadMedida" name="cboIdUnidadMedida" tabindex="3" style="display:none"></select>
-                                  @*  <div class="row">
-                                        <div class='form-group-sm'>
-                                            <label for='cboIdUnidadMedida' class="control-label col-sm-4 left-align">Unidad Medida</label>
-                                            <div class="col-sm-8">
-                                                <label class="field select">
-                                                    
-                                                    <i class="arrow"></i>
-                                                </label>
-                                            </div>
-                                        </div>
+                                    @*  <div class="row">
+                                    <div class='form-group-sm'>
+                                    <label for='cboIdUnidadMedida' class="control-label col-sm-4 left-align">Unidad Medida</label>
+                                    <div class="col-sm-8">
+                                    <label class="field select">
+
+                                    <i class="arrow"></i>
+                                    </label>
                                     </div>
-*@
-
-                                    <div class="row">
-                                        <div class='form-group-sm'>
-                                            <label for='cboIdUnidadMedida' class="control-label col-sm-4 left-align">CODIGO CUBSO</label>
-                                            <div class="col-sm-8">
-                                                <label class="field select">
-                                                    <select id="cboIdCodigoUbso" class="form-control input-sm" tabindex="5"></select>
-                                               
-                                                    <i class="arrow"></i>
-                                                </label>
-                                            </div>
-                                        </div>
                                     </div>
-
-
-
+                                    </div>
+                                    *@
+                            
 
                                     @*      <div class="row">
                                     <div class='form-group-sm'>
@@ -150,16 +155,16 @@
                                     </div>
                                 </div>
                                 @*<div class="col-lg-8 col-sm-8 pl20">
-                                    <div class="row">
-                                        <div class='form-group-sm'>
-                                            <label for='cboIdCodigoUbso' class="control-label col-sm-4 left-align">Codigo UBSO</label>
-                                            <div class="col-md-8">
-                                                <label classnu="field select">
-                                                    
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div class="row">
+                                <div class='form-group-sm'>
+                                <label for='cboIdCodigoUbso' class="control-label col-sm-4 left-align">Codigo UBSO</label>
+                                <div class="col-md-8">
+                                <label classnu="field select">
+
+                                </label>
+                                </div>
+                                </div>
+                                </div>
 
 
 
@@ -168,12 +173,12 @@
 
                                 </div>*@
                             </div>
-                                <div class="row pl30 pr30">
+                            <div class="row pl30 pr30">
                                 <div class="row">
 
                                     <div class='form-group-sm'>
                                         <div class="checkbox-custom col-xs-6">
-                                            <input type="checkbox" id="chkArticulo" name="c1" tabindex="6" />
+                                            <input type="checkbox" id="chkArticulo" name="c1" tabindex="6"/>
                                             <label for="chkArticulo">Articulo inventario</label>
                                         </div>
                                     </div>
@@ -183,6 +188,7 @@
                                             <input type="checkbox" id="chkArticuloVenta" name="c2" tabindex="7" />
                                             <label for="chkArticuloVenta">Articulo Venta</label>
                                         </div>
+                                        <input id="ArtIdPerfil" hidden value="@Accessor.HttpContext.Session.GetInt32("IdPerfil").ToString()" />
                                     </div>
 
                                     <div class='form-group-sm '>
@@ -208,7 +214,7 @@
                                     </div>
                                 </div>
                                 <br />
-                                
+
 
 
                             </div>
@@ -229,15 +235,68 @@
                                     <li>
                                         <a href="#tab15_4" data-toggle="tab">Datos Inventario</a>
                                     </li>
+
+                                    <li>
+                                        <a href="#tab15_5" data-toggle="tab">Articulo Por Proveedor</a>
+                                    </li>
                                 </ul>
                                 <div class="tab-content pl15 pr15 ">
+                                    <div id="tab15_5" class="tab-pane">
+                                        <div class="container">
+                                                <div class="row">
+                                                <div class="col-xs-2">
+                                                    Proveedor:
+                                                     <select id="IdProveedor" class="form-control input-sm" style="width:100%" tabindex="0"></select>
+                                                    
+                                                </div>
+                                                <div class="col-xs-2">
+                                                    Precio Soles:
+                                                    <input type="text" id="PrecioSoles" class="form-control" placeholder="Precio Soles">
+                                                </div>
+
+                                                <div class="col-xs-2">
+                                                    Precio Dolares:
+                                                    <input type="text" id="PrecioDolares" class="form-control" placeholder="Precio Dolares">
+                                                </div>
+                                                <div class="col-xs-2">
+                                                    Condicion de Pago:
+                                                    <select id="IdCondicionPagoProveedor" class="form-control input-sm" style="width:100%" tabindex="0"></select>
+                                                </div>
+                                                <div class="col-xs-2">
+                                                    Numero de Entrega:
+                                                    <input type="text" id="numeroentrega" class="form-control" placeholder="Numero Entrega">
+                                                </div>
+
+                                                <div class="col-xs-2">
+                                                  
+                                                    <button class="btn btn-sm btn-success" onclick="addprecioproductoproveedor()">+</button>
+                                                </div>
+                                         </div>
+                                        </div>
+                                        <br />
+
+
+                                        <div class="row">
+                                            <table class="table table-bordered text-center">
+                                                <thead>
+                                          
+                                                <th>Proveedor</th>
+                                                <th>Soles</th>
+                                                <th>Dolares</th>
+                                                <th>Condicion Pago</th>
+                                                <th>Numero de Dias Enrega</th>
+                                                <th>Opciones</th>
+                                                </thead>
+                                                <tbody id="tbody_tabledetalle_precioproveedor"></tbody>
+                                            </table>
+
+
+                                        </div>
+                                    </div>
                                     <div id="tab15_1" class="tab-pane active">
                                         <div class="row">
                                             <div class="col-lg-4 pl20 pr40">
                                                 <div class="row">
-
-
-
 
                                                     <div class='form-group-sm'>
                                                         <label for='cboClaseArticulo' class="control-label col-sm-4 left-align">Art. Gestionado por:</label>
@@ -259,10 +318,10 @@
                                             </div>
 
 
-                                      
 
 
-                                             <input id='txtComentario' type='hidden' class="form-control input-sm" tabindex="15_2">
+
+                                            <input id='txtComentario' type='hidden' class="form-control input-sm" tabindex="15_2">
 
                                             <div class="col-lg-8  pl20 pr20">
 
@@ -271,34 +330,34 @@
                                                         <label for='txtDescripcion' class="control-label col-sm-4 left-align">Proveedor Por Defecto </label>
                                                         <div class="col-sm-7">
                                                             <select id="txtProveedor" class="form-control" name="txtProveedor" tabindex="1"></select>
-                                                           
+
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <div style="display:none">
-                                                 <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="1" tabindex="15_3">Activo
-                                                  <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="0" tabindex="15_4">Inactico
+                                                <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="1" tabindex="15_3">Activo
+                                                <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="0" tabindex="15_4">Inactico
                                             </div>
-                                           @* <div class="col-lg-4  pl20 pr20" style="display:none">
-                                                <div class="row">
+                                            @* <div class="col-lg-4  pl20 pr20" style="display:none">
+                                            <div class="row">
 
-                                                    <div class='form-group-sm col-sm-3'>
-                                                        <label class="radio-inline mr10">
-                                                           
-                                                        </label>
-                                                    </div>
+                                            <div class='form-group-sm col-sm-3'>
+                                            <label class="radio-inline mr10">
 
-                                                    <div class='form-group-sm  col-sm-3'>
-                                                        <label class="radio-inline mr10">
-                                                           
-                                                        </label>
-                                                    </div>
+                                            </label>
+                                            </div>
+
+                                            <div class='form-group-sm  col-sm-3'>
+                                            <label class="radio-inline mr10">
+
+                                            </label>
+                                            </div>
 
 
 
-                                                </div>
+                                            </div>
                                             </div>*@
                                         </div>
                                     </div>

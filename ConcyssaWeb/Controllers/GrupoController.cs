@@ -18,12 +18,12 @@ namespace ConcyssaWeb.Controllers
         }
 
 
-        public string ObtenerSubGrupo(int estado = 3)
+        public string ObtenerSubGrupo(int IdGrupo,int estado = 3)
         {
             string mensaje_error = "";
             GrupoDAO oGrupoDAO = new GrupoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<SubGrupoDTO> lstGrupoDTO = oGrupoDAO.ObtenerSubGrupo(IdSociedad, ref mensaje_error, estado);
+            List<SubGrupoDTO> lstGrupoDTO = oGrupoDAO.ObtenerSubGrupo(IdSociedad,IdGrupo, ref mensaje_error, estado);
             if (lstGrupoDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstGrupoDTO);
@@ -40,6 +40,36 @@ namespace ConcyssaWeb.Controllers
             GrupoDAO oGrupoDAO = new GrupoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             List<GrupoDTO> lstGrupoDTO = oGrupoDAO.ObtenerGrupo(IdSociedad, ref mensaje_error, estado);
+            if (lstGrupoDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstGrupoDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
+        public string ObtenerGrupoxObra(int IdObra)
+        {
+            string mensaje_error = "";
+            GrupoDAO oGrupoDAO = new GrupoDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            List<GrupoDTO> lstGrupoDTO = oGrupoDAO.ObtenerGrupoxObra(IdObra, ref mensaje_error);
+            if (lstGrupoDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstGrupoDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
+        public string ObtenerGrupoxID(int IdGrupo)
+        {
+            string mensaje_error = "";
+            GrupoDAO oGrupoDAO = new GrupoDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdGrupo"));
+            List<GrupoDTO> lstGrupoDTO = oGrupoDAO.ObtenerGrupoxId(IdGrupo, ref mensaje_error);
             if (lstGrupoDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstGrupoDTO);
@@ -162,6 +192,21 @@ namespace ConcyssaWeb.Controllers
             string mensaje_error = "";
             GrupoDAO oGrupoDAO = new GrupoDAO();
             List<SubGrupoDTO> lstSubGrupoDTO = oGrupoDAO.ObtenerSubGruposxIdGrupo(IdGrupo, ref mensaje_error);
+
+            if (lstSubGrupoDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstSubGrupoDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
+        public string ObtenerSubGrupoxID(int IdSubGrupo)
+        {
+            string mensaje_error = "";
+            GrupoDAO oGrupoDAO = new GrupoDAO();
+            List<SubGrupoDTO> lstSubGrupoDTO = oGrupoDAO.ObtenerSubGrupoxID(IdSubGrupo, ref mensaje_error);
 
             if (lstSubGrupoDTO.Count > 0)
             {

@@ -45,5 +45,7 @@ namespace DTO
 
         public int IdGrupoUnidadMedida { get; set; }
 
+
+        public int ValidarIngresoSalidaOAmbos { get; set; }
     }
 }

@@ -94,6 +94,8 @@ namespace DTO
         public string CodigoProducto { get; set; }
         public string ComentarioConformidad { get; set; } = "";
 
+        public int IdSolicitud { get; set; }
+        public string SerieNumero { get; set; }
     }
 
     public class AsignadoPedidoRequeridoDTO
@@ -105,6 +107,7 @@ namespace DTO
         public int IdUnidadMedida { get; set; }
         public int IdGrupoUnidadMedida { get; set; }
         public decimal Precio { get; set; }
+        public decimal PrecioExtrangero { get; set; }
         public int IdProveedor { get; set; }
         public int FechaAsignado { get; set; }
 
@@ -119,6 +122,17 @@ namespace DTO
         public string NombRequerido { get; set; }
         public string NombArticulo { get; set; }
         public int IdArticulo { get; set; }
+        public string? DireccionObra { get; set; }
+
+        public string TipoItem { get; set; }
+
+        public int IdCondicionPago { get; set; }
+
+        public string CodigoArticulo { get; set; }
+        public string SerieCorrelativo { get; set; }
+
+        public int IdSolicitud { get; set; }
+
     }
 
     public class ConformidadPedidoDTO {

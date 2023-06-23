@@ -67,6 +67,7 @@
         <div class="container-fluid">
             <div class="topbar-left col-xs-6">
                 <h3>Pedido</h3>
+                <a id="reporteRPT" style="display:none"></a>
             </div>
         </div>
         <div class="container-fluid">
@@ -88,13 +89,14 @@
                 <thead>
                     <tr>
                         <th>#</th>
+                         <th>Fecha</th>
                         <th>Obra</th>
-                        <th>Almacen</th>
+                        
                         <th>Proveedor</th>
                         <th>Moneda</th>
                         <th>N° Pedido</th>
-                        <th>Tipo Documento</th>
-                        <th>Lugar Entrega</th>
+                       
+                        
                         <th>Total</th>
                         <th>Estado</th>
                         <th>Opciones</th>
@@ -112,7 +114,7 @@
             <div class="panel-heading">
                 <h5 id='lblTituloModal'></h5>
             </div>
-            <div class="panel-body ">
+            <div class="panel-body pedidos">
                 <div class='col s12 m12 '>
                     <div class='container-fluid row'>
 
@@ -123,9 +125,9 @@
                             </div>
 
                             <div class="row" style="text-align: center">
-                                <div class='form-group-sm'>
+                                <div class='form-group-sm acciones_pedido'>
                                     <button class="btn btn-sm btn-warning" onclick="mostrarproductosaprobados()">MOSTRAR PRODUCTOS APROBADOS</button>
-                                    <br />
+                                    
                                     <button class="btn btn-sm btn-success" onclick="mostrarParaGenerar()">Generar Orden Segun Productos Aprobados</button>
                                 </div>
                             </div>
@@ -179,7 +181,7 @@
                                 <div class='form-group-sm'>
                                     <label for="cboSerie" class="control-label col-sm-2 left-align">Serie</label>
                                     <div class="col-sm-4">
-                                        <select id="IdSerie" class="form-control input-sm" tabindex="0" onchange="validarseriescontable()"></select>
+                                        <select id="IdSerie" class="form-control input-sm" tabindex="0" onchange="validarseriescontable()" disabled></select>
                                     </div>
                                 </div>
 
@@ -204,18 +206,28 @@
                                 <div class='form-group-sm'>
                                     <label for="cboMoneda" class="control-label col-sm-2 left-align">Moneda</label>
                                     <div class="col-sm-4">
-                                        <select id="cboMoneda" type="text" class="form-control input-sm" tabindex="3" onchange="ValidarMonedaBase()" disabled></select>
+                                        <select id="cboMoneda" type="text" class="form-control input-sm" tabindex="3" onchange="ValidarMonedaBase()" ></select>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for="txtTipoCambio" class="control-label col-sm-2 left-align">TipoCambio</label>
+                                    <div class="col-sm-4">
+                                        <input id="txtTipoCambio" type="text" class="form-control input-sm" tabindex="2" disabled>
+                                    </div>
+                                </div>
+
+                               
                             </div>
 
                             <hr style="margin:6px" />
 
                             <div class="row">
                                 <div class='form-group-sm'>
-                                    <label for="txtNumeracion" class="control-label col-sm-2 left-align">Proveedor</label>
+                                    <label for="txtNumeracion" class="control-label col-sm-2 left-align" >Proveedor</label>
                                     <div class="col-sm-10">
-                                        <select id="IdProveedor" type="text" class="form-control input-sm" tabindex="3" onchange="ObtenerProveedorxId()"></select>
+                                        <select id="IdProveedor" type="text" class="form-control input-sm select2" tabindex="3" onchange="ObtenerProveedorxId()"></select>
                                     </div>
                                 </div>
                             </div>
@@ -255,7 +267,7 @@
                             <div id="Contenido" class="tabcontent" style="display: block;">
                                 <div class='form-group-sm'>
                                     <div class="col-sm-4">
-                                        <select class="form-control" id="cboClaseArticulo" style="margin-bottom:10px;margin-top:5px">
+                                        <select class="form-control" id="cboClaseArticulo" style="margin-bottom:10px;margin-top:5px" onchange="CambiarClaseArticulo()">
                                             <option value="0">Seleccione</option>
                                             <option value="1">Producto</option>
                                             <option value="2">Servicio</option>
@@ -277,22 +289,25 @@
 
                                 <div class='form-group-sm'>
                                     <div class="col-sm-4">
-                                        <button id="btn_agregaritem" style="margin-bottom:10px;margin-top:5px" class="btn btn-xs btn-info" onclick="OpenModalItem()" type="button">Agregar Item</button>
+                                        <button id="btn_agregaritem" style="margin-bottom:10px;margin-top:5px;display:none" class="btn btn-xs btn-info" onclick="OpenModalItem()" type="button">Agregar Item</button>
                                     </div>
                                 </div>
                                 <div class="table-responsive">
                                     <table class="table" id="tabla" style="width:100%">
                                         <thead>
                                             <tr>
-                                                <th style="width:5px;display:block"><button style="display:none" class="btn btn-xs btn-info" onclick="AgregarLinea()" type="button">+</button></th>
+                                                <th>#</th>
+                                                <th>Codigo Articulo</th>
+                                                <th>Num. Solicitud</th>
+                                                <th style="width:5px;display:none"><button style="display:none" class="btn btn-xs btn-info" onclick="AgregarLinea()" type="button">+</button></th>
                                                 @*<th style="display:none">Numero de Articulo</th>*@
-                                                <th>Descripcion de Articulo</th>
+                                                <th style="width:300px;display:block">Descripcion de Articulo</th>
                                                 <th>Unid. Medida</th>
                                                 @*<th>Prioridad de Item</th>*@
                                                 @*<th style="display:none">Fecha Necesaria</th>
                                                 <th style="display:none">Moneda</th>
                                                 <th style="display:none">Tipo Cambio</th>*@
-                                                <th style="width:140px;display:block">Cantidad</th>
+                                                <th style="width:80px;display:block">Cantidad</th>
                                                 <th>Precio Unitario</th>
                                                 <th>Indicador de Impuestos</th>
                                                 <th>Total</th>
@@ -342,7 +357,7 @@
                                                 <tr>
                                                     <th>Nombre</th>
                                                     <th>Descargar</th>
-                                                    <th>Accion</th>
+                                                   @* <th>Accion</th>*@
                                                 </tr>
                                             </thead>
                                             <tbody></tbody>
@@ -430,14 +445,14 @@
                                 <div class='container-fluid' id="mensajes">
                                     <label for="cboSerie" class="control-label col-sm-2 center-align">T.Pedido</label>
                                     <br />
-                                    <select style="height: 20px" id="IdTipoPedido" class="form-control input-sm" tabindex="0"></select>
+                                    <select style="height: 20px" id="IdTipoPedido" class="form-control input-sm" tabindex="0" onchange="TipoPedidoOrden()"></select>
                                     @*<select style="height: 20px" id="cboSerie" class="form-control" tabindex="0" onchange="ObtenerNumeracion()"></select>*@
                                     @* <div class="col-sm-10">
                                     <select style="height: 20px" id="cboSerie" class="form-control" tabindex="0" onchange="ObtenerNumeracion()"></select>
                                     </div>*@
 
                                     <hr style="margin: 6px" />
-                                    <p>Lugar Entrega:<input id="LugarEntrega" type="text" class="form-control huser-20" tabindex="16"> </p>
+                                    <p>Lugar Entrega:<textarea id="LugarEntrega" type="text" class="form-control huser-20" tabindex="16"></textarea> </p>
                                    @* <hr style="margin: 0px 0px 5px 0px" />*@
                                     <p style="display:none">Elaborado Por:  <input id="SerieNumeroRef" type="text" class="form-control huser-20" tabindex="16"> </p>
                                     <hr style="margin: 0px 0px 5px 0px" />
@@ -477,7 +492,7 @@
         </div>
         <div class="panel-footer">
             <div class="row">
-                <div class="col-sm-6" style="color: red;font-weight: bold">
+                <div class="col-sm-6 resumen" style="color: red;font-weight: bold">
                     <p style="margin: 0px 0px 0px 0px">TOTAL DE ITEMS:  <span id="total_items"></span> </p>
                     <p style="margin: 0px 0px 0px 0px">USUARIO: <span id="NombUsuario"></span> </p>
                     <p style="margin: 0px 0px 0px 0px">FECHA DE  CREACION: <span id="CreatedAt"></span> </p>
@@ -753,7 +768,7 @@
     @*MODAL PRODCTOS APROBADOS*@
     <div class="modal fade" data-backdrop="static"
          data-keyboard="false" id="ModalProductosAprobados" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-lg allcp-form" style="margin-top:120px;width:95% !important" role="document">
+        <div class="modal-dialog modal-lg allcp-form" style="margin-top:20px;width:95% !important" role="document">
             <div class="modal-content">
 
 
@@ -770,11 +785,15 @@
                                             <thead>
                                                 <tr>
                                                     <th scope="col">#</th>
-                                                    <th scope="col">N° Solicitud</th>
-                                                    <th scope="col">OBRA</th>
+                                                    <th scope="col">Obra</th>
+                                                    <th scope="col">N° Requermiento</th>
+                                                    <th scope="col">Fecha</th>
+                                                    
+                                                    
                                                     <th scope="col">Producto</th>
                                                     <th scope="col">Unidad Medida</th>
                                                     <th scope="col">Cantidad</th>
+                                                    <th scope="col">Comentarios</th>
                                                     <th scope="col">Proveedor</th>
                                                 </tr>
                                             </thead>
@@ -792,7 +811,7 @@
                         <div class='col s12 m12'>
                             <div class='container-fluid'>
                                 <div class="row">
-                                    <div class="col-sm-6 s6 m6">
+                                    <div class="col-sm-7 s8 m8">
                                         <h5>Proveedor Producto <button class="btn btn-sm btn-info" onclick="agregarProvedoraProductoxSeparado()">Agregar</button> </h5>
                                         <div class="table-responsive">
                                             <table class="table" id="tabla_proveedor_aprobados">
@@ -801,6 +820,7 @@
                                                         <th scope="col">Proveedor</th>
                                                         <th scope="col">Precio NAC</th>
                                                         <th scope="col">Precio EXT</th>
+                                                        <th scope="col">Comentario</th>
                                                         <th scope="col">Accion</th>
                                                     </tr>
                                                 </thead>
@@ -810,16 +830,16 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-sm-6 s6 m6">
+                                    <div class="col-sm-4 s4 m4">
                                         <h5 style="color:red">Stock Actual</h5>
                                         <div class="table-responsive">
                                             <table class="table" id="tabla_aprobados_stock">
                                                 <thead>
                                                     <tr>
+                                                        
                                                         <th scope="col">Obra</th>
                                                         <th scope="col">Almacen</th>
-                                                        <th scope="col">Producto</th>
-                                                        <th scope="col">Stock</th>
+                                                       <th scope="col">Stock</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody> </tbody>
@@ -838,7 +858,7 @@
                                     <h4>Ultimas Compras</h4>
                                     <div class="col-sm-12">
                                         <div class="table-responsive">
-                                            <table class="table" id="tabla_listado_itemsaprobados">
+                                            <table class="table" id="tabla_listado_ultimasventas">
                                                 <thead>
                                                     <tr>
                                                         <th scope="col">Proveedor</th>
@@ -849,7 +869,7 @@
                                                         <th scope="col">Obra</th>
                                                     </tr>
                                                 </thead>
-
+                                                  <tbody> </tbody>
                                             </table>
                                         </div>
                                     </div>
@@ -885,6 +905,7 @@
                     <div class="panel-body ">
                         <div class='col s12 m12 '>
                             <div class='container-fluid'>
+                                <p style="font-size:9px">(*)PARA SELECCIONAR UN REGISTRO TENDRA QUE REALIZAR 2 CLICK EN LA FILA DEL REGISTRO QUE DESEA GENERAR EL PEDIDO</p>
                                 <div class="row">
                                     <div class="table-responsive">
                                         <table class="table display" id="tabla_listado_productosaprobadosrq" style="width:100%  !important;">
@@ -892,10 +913,11 @@
                                                 <tr>
                                                     <th scope="col">#</th>
                                                     <th scope="col">Obra</th>
+                                                    <th scope="col">Tipo Item</th>
                                                     <th scope="col">Base</th>
                                                     <th scope="col">Almacen</th>
                                                     <th scope="col">Proveedor</th>
-                                                    <th scope="col">Accciones</th>
+                                                    @*<th scope="col">Accciones</th>*@
                                                 </tr>
                                             </thead>
                                             <tbody></tbody>
@@ -921,11 +943,11 @@
     @*MODAL PARA ASIGANR AL PROVEEDOR SI NO TIENE DATO*@
     <div class="modal fade" data-backdrop="static"
          data-keyboard="false" id="modalasignarproveedor" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered allcp-form" style="margin-top:120px" role="document">
+        <div class="modal-dialog modal-dialog-centered allcp-form"  role="document">
             <div class="modal-content">
 
 
-                <div class="panel" style="margin-bottom:0px">
+                <div class="panel" >
                     <div class="modal-header">
                         <h5 class="modal-title" id="lblTituloModalItem">
                             Asignar proveedor
@@ -934,9 +956,9 @@
                     <div class="panel-body ">
                         <div class="row">
                             <div class='form-group-sm'>
-                                <label for="IdProveedorAsignar" class="control-label col-sm-2 left-align">Proveedor</label>
+                                <label for="IdProveedorAsignar" class="control-label col-sm-4 left-align">Proveedor</label>
                                 <div class="col-sm-8">
-                                    <select id="IdProveedorAsignar" class="form-control input-sm" tabindex="0"></select>
+                                    <select id="IdProveedorAsignar" class="form-control input-sm" tabindex="0" onchange="BuscarCondicionPago();ObtenerDiasEntrega()"></select>
                                 </div>
                             </div>
 
@@ -945,17 +967,52 @@
 
                         <div class="row">
                             <div class='form-group-sm'>
-                                <label for="PrecioAsignar" class="control-label col-sm-2 left-align">Precio</label>
+                                <label for="PrecioAsignar" class="control-label col-sm-4 left-align">Precio Soles</label>
                                 <div class="col-sm-8">
                                     <input id="PrecioAsignar" class="form-control" value="0" />
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class='form-group-sm'>
+                                <label for="PrecioMonedaExtrangera" class="control-label col-sm-4 left-align">Precio Dolares </label>
+                                <div class="col-sm-8">
+                                    <input id="PrecioMonedaExtrangera" class="form-control" value="0" />
+                                </div>
+                            </div>
+                        </div>
+                         <div class="row">
+                            <div class='form-group-sm'>
+                                <label for="IdCondicionPagoProveedor" class="control-label col-sm-4 left-align">Codicion de Pago </label>
+                                <div class="col-sm-8">                                  
+                                     <select disabled id="IdCondicionPagoProveedor" class="form-control input-sm"  tabindex="0"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class='form-group-sm'>
+                                <label for="numeroentrega" class="control-label col-sm-4 left-align">Numero de Entrega: </label>
+                                <div class="col-sm-8">
+                                    <input id="numeroentrega" class="form-control" value="0" />
+                                </div>
+                            </div>
+                        </div>
+
+                        @*<div class="row">
+                            <div class='form-group-sm'>
+                                <label for="ComentarioPrecio" class="control-label col-sm-2 left-align">Comentario</label>
+                                <div class="col-sm-8">
+                                    <textarea class="" id="ComentarioPrecio" style="width:100%"></textarea>
+                        
+                                </div>
+                            </div>
+                        </div>*@
 
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary pull-right plu" onclick="GuardarAsignarProveedorProducto()">Aceptar</button>
-                        <button type="button" class="btn btn-danger pull-right" style="background-color:orange;" data-dismiss="modal" onclick="CerrarModalListadoItems()">Cerrar</button>
+                        <button type="button" class="btn btn-primary pull-right plu" onclick="addprecioproductoproveedor()">Aceptar</button>
+                        <button type="button" class="btn btn-danger pull-right"  data-dismiss="modal" style="background-color:orange;" onclick="CerrarModalListadoItems()">Cerrar</button>
+                        
                     </div>
                 </div>
             </div>
@@ -963,6 +1020,9 @@
     </div>
 
 </div>
+
+
+
 
 
 <script src="~/Scripts/Pedido/Listado.js"></script>

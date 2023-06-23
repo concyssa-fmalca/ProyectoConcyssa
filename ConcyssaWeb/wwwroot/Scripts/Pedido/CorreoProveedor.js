@@ -86,7 +86,7 @@ function EnviarCorreo() {
                         'Proceso Realizado Correctamente',
                         'success'
                     )
-
+                    listarPedidoDtCorreo()
                   
 
                 } else {
@@ -203,7 +203,7 @@ function listarPedidoDtCorreo() {
                 orderable: false,
                 render: function (data, type, full, meta) {
 
-                    return `<button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(` + full.IdPedido + `)"></button>`
+                    return `<button class="btn btn-danger editar fa fa-edit btn-xs" onclick="ObtenerDatosxID(` + full.IdPedido + `)"></button>`
                     /*  <button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(` + full.IdPedido + `)"></button>`*/
                 },
             },
@@ -219,46 +219,47 @@ function listarPedidoDtCorreo() {
                 targets: 1,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.NombObra
+                    return full.FechaDocumento.split('T')[0]
                 },
             },
             {
                 targets: 2,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.NombAlmacen
+                    return full.NombObra
                 },
             },
             {
                 targets: 3,
                 orderable: false,
                 render: function (data, type, full, meta) {
+                    return full.NombAlmacen
+                },
+            },
+            {
+                targets:4,
+                orderable: false,
+                render: function (data, type, full, meta) {
                     return full.NombreProveedor
                 },
             },
             {
-                targets: 4,
+                targets:5,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     return full.NombMoneda
                 },
             },
             {
-                targets: 5,
+                targets: 6,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     return full.NombSerie + '-' + full.Correlativo
                 },
             },
+           
             {
-                targets: 6,
-                orderable: false,
-                render: function (data, type, full, meta) {
-                    return full.NombTipoPedido
-                },
-            },
-            {
-                targets: 7,
+                targets:7,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     return full.LugarEntrega
@@ -272,7 +273,7 @@ function listarPedidoDtCorreo() {
                 },
             },
             {
-                targets: 9,
+                targets:9,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     if (full.Conformidad == 0) {
@@ -286,6 +287,14 @@ function listarPedidoDtCorreo() {
                     }
 
                 },
+            },
+            {
+                targets:10,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return `<button class="btn btn-sm btn-danger reporte  fa fa-file-pdf-o" onclick="GenerarReporte(` + full.IdPedido +`)"></button>`
+
+                },
             }
 
         ],
@@ -294,6 +303,25 @@ function listarPedidoDtCorreo() {
 
 }
 
+
+function GenerarReporte(id) {
+    $.ajaxSetup({ async: false });
+    $.post("GenerarReporte", { 'NombreReporte': 'OrdenCompra', 'Formato': 'PDF', 'Id': id }, function (data, status) {
+        let datos;
+        if (validadJson(data)) {
+            let datobase64;
+            datobase64 = "data:application/octet-stream;base64,"
+            datos = JSON.parse(data);
+            //datobase64 += datos.Base64ArchivoPDF;
+            //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
+            //$("#reporteRPT").attr("href", datobase64);
+            //$("#reporteRPT")[0].click();
+            verBase64PDF(datos)
+        } else {
+            respustavalidacion
+        }
+    });
+}
 function validadJson(json) {
     try {
         object = JSON.parse(json);
@@ -477,7 +505,7 @@ function AgregarLineaAnexo(Nombre) {
             <td>
                <a href="/Anexos/`+ Nombre + `" target="_blank" >Descargar</a>
             </td>
-            <td><button class="btn btn-xs btn-danger borrar">-</button></td>
+            <td><button class="btn btn-xs btn-danger borrar fa fa-trash"></button></td>
             </tr>`;
 
     $("#tabla_files").find('tbody').append(tr);
@@ -1066,7 +1094,7 @@ function AgregarLinea() {
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td ><input class="form-control" type="text" value="" id="txtReferencia`+ contador + `" name="txtReferencia[]"></td>
-            <td><button class="btn btn-xs btn-danger borrar" onclick="eliminartr2(`+ contador + `)">-</button></td>
+            <td><button class="btn btn-xs btn-danger borrar fa fa-trash" onclick="eliminartr2(`+ contador + `)"></button></td>
           <tr>`;
 
     $("#tabla").find('tbody').append(tr);
@@ -1482,6 +1510,7 @@ function ObtenerDatosxID(id) {
     CargarProveedor();
     CargarMoneda();
     CargarCondicionPago();
+
     $("#lblTituloModal").html("Editar Pedido");
     AbrirModal("modal-form");
 
@@ -1517,7 +1546,7 @@ function ObtenerDatosxID(id) {
                     <td>
                        <a target="_blank" href="`+ AnexoDetalle[k].ruta + `"> Descargar </a>
                     </td>
-                    <td><button class="btn btn-xs btn-danger" onclick="EliminarAnexo(`+ AnexoDetalle[k].IdAnexo + `,this)">-</button></td>
+                    <td><button class="btn btn-xs btn-danger borrar fa fa-trash" onclick="EliminarAnexo(`+ AnexoDetalle[k].IdAnexo + `,this)"></button></td>
                 </tr>`;
         }
         $("#tabla_files").find('tbody').append(trAnexo);
@@ -1663,7 +1692,7 @@ function ObtenerDatosxID(id) {
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td ><input class="form-control" type="text" value="" id="txtReferencia`+ contador + `" name="txtReferencia[]" disabled></td>
-            <td><button class="btn btn-xs btn-danger borrar" onclick="eliminartrpedidos(`+ contador + `)">-</button></td>
+            <td><button class="btn btn-xs btn-danger borrar fa fa-trash" onclick="eliminartrpedidos(`+ contador + `)"></button></td>
           <tr>`;
 
             $("#tabla").find('tbody').append(tr);
@@ -1940,7 +1969,7 @@ function ObtenerDatosProveedorXRQ(IdProveedor, dataa) {
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td ><input class="form-control" type="text" value="" id="txtReferencia`+ contador + `" name="txtReferencia[]"></td>
-            <td><button class="btn btn-xs btn-danger borrar" onclick="eliminartr3(`+ contador + `)">-</button></td>
+            <td><button class="btn btn-xs btn-danger borrar fa fa-trash" onclick="eliminartr3(`+ contador + `)">-</button></td>
           <tr>`;
 
             $("#tabla").find('tbody').append(tr);
@@ -2592,4 +2621,33 @@ function openContenido(evt, Name) {
     }
     document.getElementById(Name).style.display = "block";
     evt.currentTarget.className += " active";
+}
+
+
+function verBase64PDF(datos) {
+    //var b64 = "JVBERi0xLjcNCiWhs8XXDQoxIDAgb2JqDQo8PC9QYWdlcyAyIDAgUiAvVHlwZS9DYXRhbG9nPj4NCmVuZG9iag0KMiAwIG9iag0KPDwvQ291bnQgMS9LaWRzWyA0IDAgUiBdL1R5cGUvUGFnZXM+Pg0KZW5kb2JqDQozIDAgb2JqDQo8PC9DcmVhdGlvbkRhdGUoRDoyMDIyMDkyODE2NDAzMCkvQ3JlYXRvcihQREZpdW0pL1Byb2R1Y2VyKFBERml1bSk+Pg0KZW5kb2JqDQo0IDAgb2JqDQo8PC9Db250ZW50cyA1IDAgUiAvTWVkaWFCb3hbIDAgMCA2MTIgNzkyXS9QYXJlbnQgMiAwIFIgL1Jlc291cmNlczw8L0ZvbnQ8PC9GMSA2IDAgUiA+Pi9Qcm9jU2V0IDcgMCBSID4+L1R5cGUvUGFnZT4+DQplbmRvYmoNCjUgMCBvYmoNCjw8L0ZpbHRlci9GbGF0ZURlY29kZS9MZW5ndGggMzExPj5zdHJlYW0NCnicvZPNasMwEITvBr/DHFtot7LiH/mYtMmhECjU9C5i2VGw5WDJpfTpayckhUCDSqGSDjsHfcPOshzPYbAowoBhun0dBg+rCIzxDEUVBklGsyxhyDgnLhhDUYbBDeZ41e2+UXh5WmGlx+IWxS4MlsWRdmRE7MBIc+LJ+DUVglImToxiqy3GJ2Fb2TQoVdsZ63rpdGdA+7JCNZHvvdhpTBmLT+zdYB2qrsdgFbSB2yq86d4NssFabbbS6I2FG1zXa9lYwrrrFZz6cIS5KdFO0sc24ZQl/GR7AfCRPiZckIjPuf0K/5P0sY1SEnl6tbfFmJ+p7/A5HR9zH18WUx6fR/nnVr1zTnJOec79cvbhjQUT/z63ZNzZaHZ9bhdy+a7MQRMeO+O0GVSJcQn3slbgIKJv3y8shB6ADQplbmRzdHJlYW0NCmVuZG9iag0KNiAwIG9iag0KPDwvQmFzZUZvbnQvSGVsdmV0aWNhL0VuY29kaW5nL1dpbkFuc2lFbmNvZGluZy9OYW1lL0YxL1N1YnR5cGUvVHlwZTEvVHlwZS9Gb250Pj4NCmVuZG9iag0KNyAwIG9iag0KWy9QREYvVGV4dF0NCmVuZG9iag0KeHJlZg0KMCA4DQowMDAwMDAwMDAwIDY1NTM1IGYNCjAwMDAwMDAwMTcgMDAwMDAgbg0KMDAwMDAwMDA2NiAwMDAwMCBuDQowMDAwMDAwMTIyIDAwMDAwIG4NCjAwMDAwMDAyMDkgMDAwMDAgbg0KMDAwMDAwMDM0MyAwMDAwMCBuDQowMDAwMDAwNzI2IDAwMDAwIG4NCjAwMDAwMDA4MjUgMDAwMDAgbg0KdHJhaWxlcg0KPDwNCi9Sb290IDEgMCBSDQovSW5mbyAzIDAgUg0KL1NpemUgOC9JRFs8NEY2MkQwQTkwNDlFOUM1N0NGQzRCODEzRTVCNjhDNUI+PDRGNjJEMEE5MDQ5RTlDNTdDRkM0QjgxM0U1QjY4QzVCPl0+Pg0Kc3RhcnR4cmVmDQo4NTUNCiUlRU9GDQo=";
+    var b64 = datos.Base64ArchivoPDF;
+    // aquí convierto el base64 en caracteres
+    var characters = atob(b64);
+    // aquí convierto todo a un array de bytes usando el codigo de cada caracter:
+    var bytes = new Array(characters.length);
+    for (var i = 0; i < characters.length; i++) {
+        bytes[i] = characters.charCodeAt(i);
+    }
+    // en este punto ya tengo un array de bytes,
+    // (supongo que es algo similar a lo que te llega de respuesta)
+    // el siguiente paso sería convertir este array en un typed array
+    // para construir el blob correctamente:
+    var chunk = new Uint8Array(bytes);
+
+    // se construye el blob con el mime type respectivo
+    var blob = new Blob([chunk], {
+        type: 'application/pdf'
+    });
+
+    // se crea un object url con el blob para usarlo:
+    var url = URL.createObjectURL(blob);
+
+    // y de esta manera simplemente lo abro en una nueva ventana:
+    window.open(url, '_blank');
 }

@@ -92,7 +92,49 @@ namespace DAO
             }
             return lstObraDTO;
         }
-        
+        public List<ObraDTO> ObtenerObraFiltroBase(int IdBase,int IdSociedad, ref string mensaje_error, int Estado = 3)
+        {
+            List<ObraDTO> lstObraDTO = new List<ObraDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarObraFiltroBase", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
+                    da.SelectCommand.Parameters.AddWithValue("@Estado", Estado);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        ObraDTO oObraDTO = new ObraDTO();
+                        oObraDTO.IdObra = int.Parse(drd["IdObra"].ToString());
+                        oObraDTO.IdBase = int.Parse(drd["IdBase"].ToString());
+                        oObraDTO.IdTipoObra = int.Parse(drd["IdTipoObra"].ToString());
+                        oObraDTO.IdDivision = int.Parse(drd["IdDivision"].ToString());
+                        oObraDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
+                        oObraDTO.Codigo = (drd["Codigo"].ToString());
+                        oObraDTO.Descripcion = (drd["Descripcion"].ToString());
+                        oObraDTO.DescripcionCorta = (drd["DescripcionCorta"].ToString());
+                        oObraDTO.ContratoMantenimiento = bool.Parse(drd["ContratoMantenimiento"].ToString());
+                        oObraDTO.VisibleInternet = bool.Parse(drd["VisibleInternet"].ToString());
+                        oObraDTO.Estado = bool.Parse(drd["Estado"].ToString());
+                        oObraDTO.Eliminado = bool.Parse(drd["Eliminado"].ToString());
+                        oObraDTO.DescripcionBase = (drd["DescripcionBase"].ToString());
+                        lstObraDTO.Add(oObraDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstObraDTO;
+        }
+
         public List<ObraDTO> ObtenerObraxIdBase(int IdBase, ref string mensaje_error)
         {
             List<ObraDTO> lstObraDTO = new List<ObraDTO>();
@@ -287,5 +329,136 @@ namespace DAO
                 }
             }
         }
+
+
+        public List<ObraDTO> ObtenerObraxIdUsuario(int IdPerfil,int IdBase,int IdUsuario, ref string mensaje_error)
+        {
+            List<ObraDTO> lstObraDTO = new List<ObraDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarObrasxIdUsuariov2", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
+                    da.SelectCommand.Parameters.AddWithValue("@IdBase", IdBase);
+                    da.SelectCommand.Parameters.AddWithValue("@IdPerfil", IdPerfil);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        ObraDTO oObraDTO = new ObraDTO();
+                        oObraDTO.IdObra = int.Parse(drd["IdObra"].ToString());
+                        oObraDTO.IdBase = int.Parse(drd["IdBase"].ToString());
+                        oObraDTO.IdTipoObra = int.Parse(drd["IdTipoObra"].ToString());
+                        oObraDTO.IdDivision = int.Parse(drd["IdDivision"].ToString());
+                        oObraDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
+                        oObraDTO.Codigo = (drd["Codigo"].ToString());
+                        oObraDTO.Descripcion = (drd["Descripcion"].ToString());
+                        oObraDTO.DescripcionCorta = (drd["DescripcionCorta"].ToString());
+                        oObraDTO.ContratoMantenimiento = bool.Parse(drd["ContratoMantenimiento"].ToString());
+                        oObraDTO.VisibleInternet = bool.Parse(drd["VisibleInternet"].ToString());
+                        oObraDTO.Estado = bool.Parse(drd["Estado"].ToString());
+                        oObraDTO.Eliminado = bool.Parse(drd["Eliminado"].ToString());
+
+                        lstObraDTO.Add(oObraDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstObraDTO;
+        }
+        public List<ObraDTO> ObtenerObraxIdUsuarioSinBase(int IdPerfil, int IdUsuario, ref string mensaje_error)
+        {
+            List<ObraDTO> lstObraDTO = new List<ObraDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarObrasxIdUsuarioSinBase", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
+                    da.SelectCommand.Parameters.AddWithValue("@IdPerfil", IdPerfil);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        ObraDTO oObraDTO = new ObraDTO();
+                        oObraDTO.IdObra = int.Parse(drd["IdObra"].ToString());
+                        oObraDTO.IdBase = int.Parse(drd["IdBase"].ToString());
+                        oObraDTO.IdTipoObra = int.Parse(drd["IdTipoObra"].ToString());
+                        oObraDTO.IdDivision = int.Parse(drd["IdDivision"].ToString());
+                        oObraDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
+                        oObraDTO.Codigo = (drd["Codigo"].ToString());
+                        oObraDTO.Descripcion = (drd["Descripcion"].ToString());
+                        oObraDTO.DescripcionCorta = (drd["DescripcionCorta"].ToString());
+                        oObraDTO.ContratoMantenimiento = bool.Parse(drd["ContratoMantenimiento"].ToString());
+                        oObraDTO.VisibleInternet = bool.Parse(drd["VisibleInternet"].ToString());
+                        oObraDTO.Estado = bool.Parse(drd["Estado"].ToString());
+                        oObraDTO.Eliminado = bool.Parse(drd["Eliminado"].ToString());
+                        oObraDTO.DescripcionBase = (drd["DescripcionBase"].ToString());
+
+                        lstObraDTO.Add(oObraDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstObraDTO;
+        }
+        public List<ObraDTO> ObtenerObraxIdUsuarioFiltro(int IdPerfil,int IdUsuario, ref string mensaje_error)
+        {
+            List<ObraDTO> lstObraDTO = new List<ObraDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarObrasxIdUsuarioFiltro", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
+                    da.SelectCommand.Parameters.AddWithValue("@IdPerfil", IdPerfil);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        ObraDTO oObraDTO = new ObraDTO();
+                        oObraDTO.IdObra = int.Parse(drd["IdObra"].ToString());
+                        oObraDTO.IdBase = int.Parse(drd["IdBase"].ToString());
+                        oObraDTO.IdTipoObra = int.Parse(drd["IdTipoObra"].ToString());
+                        oObraDTO.IdDivision = int.Parse(drd["IdDivision"].ToString());
+                        oObraDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
+                        oObraDTO.Codigo = (drd["Codigo"].ToString());
+                        oObraDTO.Descripcion = (drd["Descripcion"].ToString());
+                        oObraDTO.DescripcionCorta = (drd["DescripcionCorta"].ToString());
+                        oObraDTO.ContratoMantenimiento = bool.Parse(drd["ContratoMantenimiento"].ToString());
+                        oObraDTO.VisibleInternet = bool.Parse(drd["VisibleInternet"].ToString());
+                        oObraDTO.Estado = bool.Parse(drd["Estado"].ToString());
+                        oObraDTO.Eliminado = bool.Parse(drd["Eliminado"].ToString());
+
+                        lstObraDTO.Add(oObraDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstObraDTO;
+        }
     }
+
 }

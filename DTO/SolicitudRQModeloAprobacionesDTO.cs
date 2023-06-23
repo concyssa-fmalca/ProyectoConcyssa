@@ -13,6 +13,7 @@ namespace DTO
         public int IdSolicitud { get; set; }
         public int IdSolicitudModelo { get; set; }
         public int IdAutorizador { get; set; }
+        public string Autorizador { get; set; }
         public string IdArticulo { get; set; }
         public DateTime FechaAprobacion { get; set; }
         public int Accion { get; set; }

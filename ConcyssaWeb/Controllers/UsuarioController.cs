@@ -65,13 +65,53 @@ namespace ConcyssaWeb.Controllers
             //{
             //    return valida;
             //}
-
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             UsuarioDAO oUsuarioDAO = new UsuarioDAO();
             List<UsuarioDTO> lstUsuarioDTO = oUsuarioDAO.ObtenerUsuariosAutorizadores(IdSociedad.ToString());
             if (lstUsuarioDTO.Count > 0)
             {
-                return JsonConvert.SerializeObject(lstUsuarioDTO);
+                List<UsuarioDTO> olstUsuarioDTO = new List<UsuarioDTO>();
+                for (int i = 0; i < lstUsuarioDTO.Count; i++)
+                {
+                    if (lstUsuarioDTO[i].IdUsuario== IdUsuario)
+                    {
+                        olstUsuarioDTO.Add(lstUsuarioDTO[i]);
+                    }
+                   
+                }
+                return JsonConvert.SerializeObject(olstUsuarioDTO);
+            }
+            else
+            {
+                return "error";
+            }
+
+        }
+
+        public string ObtenerUsuariosAutorizadoresEtapa()
+        {
+            //string valida = "";
+            //valida = validarEmpresaActual();
+            //if (valida != "")
+            //{
+            //    return valida;
+            //}
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            UsuarioDAO oUsuarioDAO = new UsuarioDAO();
+            List<UsuarioDTO> lstUsuarioDTO = oUsuarioDAO.ObtenerUsuariosAutorizadores(IdSociedad.ToString());
+            if (lstUsuarioDTO.Count > 0)
+            {
+                List<UsuarioDTO> olstUsuarioDTO = new List<UsuarioDTO>();
+                for (int i = 0; i < lstUsuarioDTO.Count; i++)
+                {
+                    
+                        olstUsuarioDTO.Add(lstUsuarioDTO[i]);
+                   
+
+                }
+                return JsonConvert.SerializeObject(olstUsuarioDTO);
             }
             else
             {

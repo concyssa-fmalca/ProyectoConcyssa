@@ -3,7 +3,49 @@
 window.onload = function () {
     var url = "ObtenerProveedores";
     ConsultaServidor(url);
+
+    $("#SubirAnexos").on("submit", function (e) {
+        e.preventDefault();
+        var formData = new FormData($("#SubirAnexos")[0]);
+        $.ajax({
+            url: "GuardarFile",
+            type: "POST",
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (datos) {
+                let data = JSON.parse(datos);
+                //console.log(data);
+                if (data.length > 0) {
+                    AgregarLineaAnexo(data[0]);
+                }
+
+            }
+        });
+    });
 };
+
+
+function AgregarLineaAnexo(Nombre) {
+
+    let tr = '';
+    tr += `<tr>
+            <td style="display:none"><input  class="form-control" type="text" value="0" id="txtIdSolicitudRQAnexo" name="txtIdSolicitudRQAnexo[]"/></td>
+            <td>
+               `+ Nombre + `
+               <input  class="form-control" type="hidden" value="`+ Nombre + `" id="txtNombreAnexo" name="txtNombreAnexo[]"/>
+            </td>
+            <td>
+               <a href="/Anexos/`+ Nombre + `" target="_blank" >Descargar</a>
+            </td>
+            <td><button type="button" class="btn btn-xs btn-danger borrar fa fa-trash"></button></td>
+            </tr>`;
+
+    $("#tabla_files").find('tbody').append(tr);
+
+}
+
 
 
 function ConsultaServidor(url) {
@@ -90,14 +132,27 @@ function GuardarProveedor() {
     let varDistrito = $("#cboDistrito").val();
     let varPais = $("#cboPais").val();
     let varCondicionPago = $("#cboCondicionPago").val();
+    let varDiasEntrega = $("#txtDiasEntrega").val();
     let varTipo = 2; // proveedor
     let varEstado = false;
 
     if ($('#chkActivo')[0].checked) {
         varEstado = true;
     }
+    let arrayTxtNombreAnexo = new Array();
+    $("input[name='txtNombreAnexo[]']").each(function (indice, elemento) {
+        arrayTxtNombreAnexo.push($(elemento).val());
+    });
+
+    let AnexoDetalle = [];
+    for (var i = 0; i < arrayTxtNombreAnexo.length; i++) {
+        AnexoDetalle.push({
+            'NombreArchivo': arrayTxtNombreAnexo[i]
+        });
+    }
 
     $.post('UpdateInsertProveedor', {
+        AnexoDetalle,
         'IdProveedor': varIdProveedor,
         'CodigoCliente': varCodigo,
         'TipoPersona': varTipoPersona,
@@ -125,10 +180,11 @@ function GuardarProveedor() {
         'FechaIngreso': varFechaIngreso,
         'Observacion': varObservacion,
         'Tipo': varTipo,
-        'Estado': varEstado
+        'Estado': varEstado,
+        'DiasEntrega' : varDiasEntrega
     }, function (data, status) {
 
-        if (data == 1) {
+        if (data !== 0) {
             swal("Exito!", "Proceso Realizado Correctamente", "success")
             table.destroy();
             ConsultaServidor("ObtenerProveedores");
@@ -147,7 +203,7 @@ function ObtenerDatosxID(varIdProveedor) {
 
     //console.log(varIdUsuario);
 
-    $.post('ObtenerDatosxID', {
+    $.post('ObtenerDatosxIDNuevo', {
         'IdProveedor': varIdProveedor,
     }, function (data, status) {
 
@@ -156,65 +212,82 @@ function ObtenerDatosxID(varIdProveedor) {
             limpiarDatos();
         } else {
             let proveedores = JSON.parse(data);
+            console.log(proveedores)
             //console.log(usuarios);
-            $("#txtId").val(proveedores[0].IdProveedor);
-            $("#txtCodigo").val(proveedores[0].CodigoCliente);
+            $("#txtId").val(proveedores.IdProveedor);
+            $("#txtCodigo").val(proveedores.CodigoCliente);
 
             CargarTipoPersona();
-            $("#cboTipoPersona").val(proveedores[0].TipoPersona);
+            $("#cboTipoPersona").val(proveedores.TipoPersona);
 
             CargarTipoDocumento();
-            $("#cboTipoDocumento").val(proveedores[0].TipoDocumento);
+            $("#cboTipoDocumento").val(proveedores.TipoDocumento);
 
-            $("#txtNroDocumento").val(proveedores[0].NumeroDocumento);
-            $("#txtRazonSocial").val(proveedores[0].RazonSocial);
-            $("#txtEstadoContribuyente").val(proveedores[0].EstadoContribuyente);
-            $("#txtCondicionContribuyente").val(proveedores[0].CondicionContribuyente);
-            $("#txtDireccionFiscal").val(proveedores[0].DireccionFiscal);
-            $("#txtTlf1").val(proveedores[0].Telefono);
-            $("#txtComprobantesElectronicos").val(proveedores[0].ComprobantesElectronicos);
-            $("#txtAfiliadoPLE").val(proveedores[0].AfiliadoPLE);
-            $("#txtLineaCredito").val(proveedores[0].LineaCredito);
-            $("#txtEmail").val(proveedores[0].Email);
-            $("#txtWeb").val(proveedores[0].Web);
-            $("#txtFax").val(proveedores[0].Fax);
-            $("#txtNombreContacto").val(proveedores[0].NombreContacto);
-            $("#txtTlfContacto").val(proveedores[0].TelefonoContacto);
-            $("#txtEmailContacto").val(proveedores[0].EmailContacto);
+            $("#txtNroDocumento").val(proveedores.NumeroDocumento);
+            $("#txtRazonSocial").val(proveedores.RazonSocial);
+            $("#txtEstadoContribuyente").val(proveedores.EstadoContribuyente);
+            $("#txtCondicionContribuyente").val(proveedores.CondicionContribuyente);
+            $("#txtDireccionFiscal").val(proveedores.DireccionFiscal);
+            $("#txtTlf1").val(proveedores.Telefono);
+            $("#txtComprobantesElectronicos").val(proveedores.ComprobantesElectronicos);
+            $("#txtAfiliadoPLE").val(proveedores.AfiliadoPLE);
+            $("#txtLineaCredito").val(proveedores.LineaCredito);
+            $("#txtEmail").val(proveedores.Email);
+            $("#txtWeb").val(proveedores.Web);
+            $("#txtFax").val(proveedores.Fax);
+            $("#txtNombreContacto").val(proveedores.NombreContacto);
+            $("#txtTlfContacto").val(proveedores.TelefonoContacto);
+            $("#txtEmailContacto").val(proveedores.EmailContacto);
+            $("#txtDiasEntrega").val(proveedores.DiasEntrega);
 
-            var fechaSplit = (proveedores[0].FechaIngreso.substring(0, 10)).split("-");
+            var fechaSplit = (proveedores.FechaIngreso.substring(0, 10)).split("-");
             var fecha = fechaSplit[0] + "-" + fechaSplit[1] + "-" + fechaSplit[2];
             //console.log(fecha);
 
             $("#txtFechaIngreso").val(fecha);
-            $("#txtObservacion").val(proveedores[0].Observacion);
+            $("#txtObservacion").val(proveedores.Observacion);
+            //AnxoDetalle
+            let AnexoDetalle = proveedores.AnexoDetalle;
+            let trAnexo = '';
+            for (var k = 0; k < AnexoDetalle.length; k++) {
+                trAnexo += `
+                <tr id="`+ AnexoDetalle[k].IdAnexo + `">
+                    <td>
+                       `+ AnexoDetalle[k].NombreArchivo + `
+                    </td>
+                    <td>
+                       <a target="_blank" href="`+ AnexoDetalle[k].ruta + `"> Descargar </a>
+                    </td>
+                    <td><button type="button" class="btn btn-xs btn-danger borrar fa fa-trash" onclick="EliminarAnexo(`+ AnexoDetalle[k].IdAnexo + `)"></button></td>
+                </tr>`;
+            }
+            $("#tabla_files").find('tbody').append(trAnexo);
 
 
 
-
-            if (proveedores[0].Departamento.length > 0) {
+            if (proveedores.Departamento.length > 0) {
                 CargarDepartamentos();
-                $("#cboDepartamento").val(proveedores[0].Departamento);
+                $("#cboDepartamento").val(proveedores.Departamento);
             }
-            if (proveedores[0].Provincia.length > 0) {
+            if (proveedores.Provincia.length > 0) {
                 CargarProvincias();
-                $("#cboProvincia").val(proveedores[0].Provincia);
+                $("#cboProvincia").val(proveedores.Provincia);
             }
-            if (proveedores[0].Distrito.length > 0) {
+            if (proveedores.Distrito.length > 0) {
                 CargarDistritos();
-                $("#cboDistrito").val(proveedores[0].Distrito);
+                $("#cboDistrito").val(proveedores.Distrito);
             }
-            if (proveedores[0].Pais.length > 0) {
+            if (proveedores.Pais.length > 0) {
                 CargarPaises();
-                $("#cboPais").val(proveedores[0].Pais);
+                $("#cboPais").val(proveedores.Pais);
             }
-            if (proveedores[0].CondicionPago.length > 0) {
+            //if (proveedores.CondicionPago.length > 0) {
                 CargarCondicionPago();
-                $("#cboCondicionPago").val(proveedores[0].CondicionPago);
-            }
+                $("#cboCondicionPago").val(proveedores.CondicionPago);
+            //}
 
 
-            if (proveedores[0].Estado) {
+            if (proveedores.Estado) {
                 $("#chkActivo").prop('checked', true);
             }
 
@@ -222,6 +295,22 @@ function ObtenerDatosxID(varIdProveedor) {
 
     });
 
+}
+function EliminarAnexo(idRow) {
+    alertify.confirm('Confirmar', '¿Desea eliminar este Anexo?', function () {
+        $.post("EliminarAnexo", { 'IdAnexo': idRow }, function (data) {
+
+            if (data == 0) {
+                swal("Error!", "Ocurrio un Error")
+                limpiarDatos();
+            } else {
+                swal("Exito!", "Anexo Eliminado", "success")
+                $("#" + idRow).remove();
+            }
+
+        });
+
+    }, function () { });
 }
 
 function eliminar(varIdProveedor) {
@@ -410,7 +499,7 @@ function llenarComboTipoDocumento(lista, idCombo, primerItem) {
 
 function llenarComboCondicionPago(lista, idCombo, primerItem) {
     var contenido = "";
-    if (primerItem != null) contenido = "<option value=''>" + primerItem + "</option>";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
     var nRegistros = lista.length;
     var nCampos;
     var campos;
@@ -518,4 +607,10 @@ function limpiarDatos() {
     var f = new Date();
     fecha = f.getFullYear() + '-' + pad(f.getMonth(), 2) + '-' + f.getDate();
     $("#txtFechaIngreso").val(fecha)
+    $("#tabla_files").find('tbody').empty();
+}
+
+function CrearCodigo()
+{
+    $("#txtCodigo").val("P" + $("#txtNroDocumento").val())
 }

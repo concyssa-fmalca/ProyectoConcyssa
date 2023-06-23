@@ -4,7 +4,8 @@ let DecimalesPrecios = 0;
 let DecimalesCantidades = 0;
 let DecimalesPorcentajes = 0;
 var ultimaFila = null;
-var colorOriginal;
+var ultimaFilaRequerimiento = null;
+var colorOriginal = null;
 
 window.onload = function () {
     var url = "ObtenerSolicitudesxAutorizar";
@@ -49,6 +50,10 @@ function llenarComboAutorizadores(lista, idCombo, primerItem) {
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
+    if (nRegistros == 1) {
+        $("#" + idCombo).val(lista[nRegistros - 1].IdUsuario);
+        BuscarPorFechas();
+    }
 }
 
 function ConsultaServidor(url) {
@@ -78,7 +83,7 @@ function ConsultaServidor(url) {
         //FechaFinal = "01-01-2025";
     }
 
-    if (Estado == 1) {
+    if (Estado == 0) {
         $("#IdAprobarTodo").prop("disabled", false);
         $("#IdRechazarTodo").prop("disabled", false);
         $("#IdGuardarAuto").prop("disabled", false);
@@ -108,85 +113,122 @@ function ConsultaServidor(url) {
 
         let solicitudes = JSON.parse(data);
         let total_solicitudes = solicitudes.length;
+        let contador = 0;
 
+        console.log("gaaa");
         console.log(solicitudes);
+        
+
 
         for (var i = 0; i < solicitudes.length; i++) {
+            contador++;
 
-            if (Estado == 1) {
-                let respuesta = validarsipuedeaprobar(solicitudes[i].IdSolicitud, solicitudes[i].IdEtapa);
-                if (respuesta == false) {
-                    tr += '<tr style="display:none" id="solicitud' + solicitudes[i].IdSolicitud + '" onclick="FilaSeleccionada(' + "'" + solicitudes[i].NumeroSolicitud + "'" + ',' + solicitudes[i].IdSolicitud + ',' + solicitudes[i].UsuarioAprobador + ',' + solicitudes[i].IdSolicitudModelo + ',' + solicitudes[i].IdEtapa + ',' + solicitudes[i].IdClaseArticulo + ')">';
-                } else {
-                    tr += '<tr id="solicitud' + solicitudes[i].IdSolicitud + '" onclick="FilaSeleccionada(' + "'" + solicitudes[i].NumeroSolicitud + "'" + ',' + solicitudes[i].IdSolicitud + ',' + solicitudes[i].UsuarioAprobador + ',' + solicitudes[i].IdSolicitudModelo + ',' + solicitudes[i].IdEtapa + ',' + solicitudes[i].IdClaseArticulo + ')">';
+
+
+
+            tr += `<tr id="requerimiento` + solicitudes[i].IdSolicitudRQDetalle + `">`;
+
+            tr += `<td>` + solicitudes[i].Serie + '-'  + solicitudes[i].NumeroPedido + `</td>`;
+            tr += `<td>` + solicitudes[i].FechaDocumento.split("T")[0] + `</td>`;
+            tr += `<td>` + solicitudes[i].NombUsuario + `</td>`;
+            tr += `<td>
+                <input  class="form-control" type="hidden" value="`+ solicitudes[i].IdSolicitudRQDetalle + `" id="txtIdSolicitudRQDetalle" name="txtIdSolicitudRQDetalle[]"/>
+                <input  class="form-control" type="hidden" value="`+ solicitudes[i].IdUsuario + `" id="txtUsuarioAprobador" name="txtUsuarioAprobador[]"/>
+                <input  class="form-control" type="hidden" value="`+ solicitudes[i].IdSolicitudRQModelo + `" id="txtIdSolicitudModelo" name="txtIdSolicitudModelo[]"/>
+                <input  class="form-control" type="hidden" value="`+ solicitudes[i].IdSolicitud + `" id="txtIdSolicitudRQ" name="txtIdSolicitudRQ[]"/>
+                <input class="form-control" type="hidden" value="`+ solicitudes[i].IdArticulo + `" id="txtIdArticulo" name="txtIdArticulo[]" disabled/>
+                
+                <input class="form-control" type="hidden" value="`+ solicitudes[i].PrecioInfo + `" name="txtPrecioInfo[]"  id="txtPrecioInfo` + contador + `" onkeyup="CalcularTotalDetalle(` + contador + `)" >
+                <input  class="form-control" type="hidden" value="`+ solicitudes[i].IdSolicitudRQDetalle + `" id="txtIdDetalle" name="txtIdDetalle[]"/>
+
+            ` + solicitudes[i].ObraDescripcion + `</td>`;
+    
+
+            if (solicitudes[i].IdClaseArticulo == 2) {
+                tr += `<td>Servicio</td>`;
+            } else {
+                switch (solicitudes[i].IdTipoProducto) {
+                    case 1:
+                        tr += `<td>Materiales</td>`;
+                        break;
+                    case 2:
+                        tr += `<td>Auxiliares</td>`;
+                        break;
+                    default:
+                        tr += `<td>Materiales</td>`;
+                        break;
                 }
+            }
+          
+
+
+
+           
+            tr += `<td>` + solicitudes[i].NombreArticulo + `</td>`;
+            tr += `<td><input class="form-control" type="numeric" value="` + solicitudes[i].CantidadNecesaria + `" name="txtCantidadNecesaria[]"  id="txtCantidadNecesaria` + contador + `" onkeyup="CalcularTotalDetalle(` + contador + `)" ></td>`;
+            tr += `<td>` + solicitudes[i].Referencia + `</td>`;
+            tr += `<td>`;
+
+            if (solicitudes[i].Accion == 0) {
+                tr += ` <select class="form-control EstadoItem" name="cboEstadoItem[]">
+                <option value="0">Pendiente</option>
+                <option value="1">Rechazado</option>
+                <option value="2">Aprobado</option>`;
             } else {
-                tr += '<tr id="solicitud' + solicitudes[i].IdSolicitud + '" onclick="FilaSeleccionada(' + "'" + solicitudes[i].NumeroSolicitud + "'" + ',' + solicitudes[i].IdSolicitud + ',' + solicitudes[i].UsuarioAprobador + ',' + solicitudes[i].IdSolicitudModelo + ',' + solicitudes[i].IdEtapa + ',' + solicitudes[i].IdClaseArticulo + ')">';
+                switch (solicitudes[i].Accion) {
+                    case 1:
+                        tr += "Rechazado";
+                        break;
+                    case 2:
+                        tr += "Aceptado";
+                        break;
+                }
             }
 
-
-
-
-
-            tr += '<td>';
-            if (solicitudes[i].Estado == "Aprobado" || solicitudes[i].FechaAprobacion != "") {
-                tr += '<i class="fa fa-check" aria-hidden="true"></i>';
-            } else if (solicitudes[i].Estado == "Rechazado") {
-                tr += '<i class="fa fa-times" aria-hidden="true"></i>';
-            } else {
-                tr += '<input style="display:none" type = "checkbox" class="checkbox_inputs" name = "checkbox_inputs" id = "checkbox' + solicitudes[i].IdSolicitud + '" value = "' + solicitudes[i].IdSolicitud + '" IdAutorizador = "' + solicitudes[i].UsuarioAprobador + '" IdSolicitudModelo = "' + solicitudes[i].IdSolicitudModelo + '" />';
-            }
-            tr += '</td > ' +
-                '<td>' + solicitudes[i].NumeroSolicitud + '</td>' +
-                '<td>' + solicitudes[i].NombEtapa.toUpperCase() + '</td>' +
-                '<td>' + solicitudes[i].Solicitante.toUpperCase() + '</td>' +
-                '<td>' + solicitudes[i].Area.toUpperCase() + '</td>' +
-                '<td>' + solicitudes[i].TipoArticulo.toUpperCase() + '</td>' +
-                '<td>' + solicitudes[i].Moneda.toUpperCase() + '</td>' +
-                //'<td>' + solicitudes[i].Impuesto.toUpperCase() + '</td>' +
-                '<td>' + formatNumberDecimales(solicitudes[i].Total,2) + '</td>' +
-                '<td>' + solicitudes[i].Prioridad.toUpperCase() + '</td>' +
-                '<td> <button class="btn btn-sm-red" onclick="modalHistorialEstado(' + solicitudes[i].IdSolicitud +')">E</button> </td>';
-
-            var fechaSplit = (solicitudes[i].FechaCreacion.substring(0, 10)).split("-");
-            //var fecha = fechaSplit[0] + "/" + fechaSplit[1] + "/" + fechaSplit[2];
-            var fecha = fechaSplit[2] + "/" + fechaSplit[1] + "/" + fechaSplit[0];
-            tr += '<td>' + fecha + '</td>';
-
-            var fechaSplitvalidohasta = (solicitudes[i].FechaValidoHasta.substring(0, 10)).split("-");
-            //var fechavalidohasta = fechaSplitvalidohasta[0] + "/" + fechaSplitvalidohasta[1] + "/" + fechaSplitvalidohasta[2];
-            var fechavalidohasta = fechaSplitvalidohasta[2] + "/" + fechaSplitvalidohasta[1] + "/" + fechaSplitvalidohasta[0];
-            tr += '<td>' + fechavalidohasta + '</td>';
-            //if (solicitudes[i].FechaAprobacion == "") {
-            //    tr += '<td>-</td>';
-            //} else {
-            //    tr += '<td>' + solicitudes[i].FechaAprobacion + '</td>';
-            //}
-
-            tr += //'<td><button class="btn btn-primary btn-xs" onclick="ObtenerDatosxID(' + "'" + solicitudes[i].NumeroSolicitud + "'" + ',' + solicitudes[i].IdSolicitud + ',' + solicitudes[i].UsuarioAprobador + ',' + solicitudes[i].IdSolicitudModelo + ',' + solicitudes[i].IdEtapa + ',' + solicitudes[i].IdClaseArticulo +')"><img src="/assets/img/fa_eyes.png" height ="15" width="15" /></button>' +
-                //'<button class="btn btn-info btn-xs  fa fa-file" onclick="GenerarPDF(' + solicitudes[i].IdSolicitudRQ + ')"></button></td >' +
-                '<td><a href="/SolicitudRQAutorizacion/GenerarPDF?Id=' + solicitudes[i].IdSolicitud + '" target=”_blank” class="btn btn-primary btn-xs"><img src="/assets/img/fa_pdf.png" height ="15" width="15" /></a></td>';
-            tr += '<td><button onclick="ModalAnexos(' + solicitudes[i].IdSolicitud + ')" class="btn btn-primary btn-xs"><img src="/assets/img/fa_folder.png" height ="15" width="15" /></button></td>';
-
-            if (solicitudes[i].Estado == "Aprobado") {
-                tr += '<td><button onclick="PasarPendiente(' + solicitudes[i].IdSolicitud + ')" class="btn btn-primary btn-xs"><img src="/assets/img/fa_retro.png" height ="15" width="15" /></button></td>';
-            } else {
-                tr += '<td><button class="btn btn-primary btn-xs" disabled><img src="/assets/img/fa_retro.png" height ="15" width="15" /></button></td>';
-            }
-
-
+            tr += `</td>`;
             tr += '</tr>';
         }
 
         $("#tbody_SolicitudAutorizacion").html(tr);
         $("#spnTotalRegistros").html(total_solicitudes);
 
+        lenguaje.order = [];
         table = $("#table_id").DataTable(lenguaje);
+
+        $('#table_id tbody').unbind("dblclick");
+
+        $('#table_id tbody').on('dblclick', 'tr', function (key) {
+            var data = table.row(this).data();
+
+
+            let re = data[3];
+            let htmlObject = $(re);
+            console.log(htmlObject)
+            let varIdArticulo = +htmlObject[8].value;//input#txtIdArticulo.form-
+            let varIdDetalle = +htmlObject[12].value;//input#txtIdDetalle.form-
+            if (ultimaFilaRequerimiento != null) {
+                $("#requerimiento" + ultimaFilaRequerimiento).css({ "background-color": colorOriginal, "color": "#7f828f" });
+                ultimaFilaRequerimiento = varIdDetalle;
+            }
+            else {
+                ultimaFilaRequerimiento = varIdDetalle;
+                colorOriginal = "transparent";
+            }
+
+
+            $("#requerimiento" + varIdDetalle).css({ "background-color": "var(--color-segundario)", "color": "white" });
+
+            ObtenerStockxIdDetalleSolicitudRQ(varIdDetalle)
+            ObtenerPrecioxProductoUltimasVentas(varIdArticulo, varIdDetalle)
+
+            document.getElementById("tabla_aprobados_stock").focus();
+
+        });
 
     });
 
     let SolicitudSeleccionada = $("#SolicitudSeleccionadaIdSolicitud").val();
-    console.log(SolicitudSeleccionada);
+
     if (SolicitudSeleccionada != "" || SolicitudSeleccionada != null) {
         //$('#table_id').on('click', 'tr', function () {
 
@@ -370,11 +412,7 @@ function GuardarDetallesAutorizar() {
     //return;
 
     let solicitudRQModeloAprobacionesDTO = ArrayGeneral;
-    //console.log(ArrayGeneral);
-
-
-
-
+    console.log(solicitudRQModeloAprobacionesDTO);
     $.ajax({
         url: "UpdateInsertModeloAprobaciones",
         type: "POST",
@@ -547,7 +585,7 @@ function ObtenerDatosxID(NumeroSolicitud, IdSolicitudRQ, UsuarioAprobador, IdSol
             } else {
 
                 let solicitudes = JSON.parse(data);
-                console.log(solicitudes);
+
                 let Detalle = solicitudes[0].Detalle;
 
                 for (var i = 0; i < Detalle.length; i++) {
@@ -594,10 +632,6 @@ function ObtenerDatosxID(NumeroSolicitud, IdSolicitudRQ, UsuarioAprobador, IdSol
 
 function AgregarLineaDetalle(IdDetalle, Numero, DescripcionServicio, IdClaseArticulo, Prioridad, contador, EstadoDisabled, EstadoItemAutorizado, IdSolicitudRQ, UsuarioAprobador, IdSolicitudModelo, IdArticulo, IdSolicitudRQDetalle, IdUnidadMedida, IdIndicadorImpuesto, IdAlmacen, IdProveedor, IdLineaNegocio, IdCentroCosto, IdProyecto, IdMoneda, ItemTipoCambio, CantidadNecesaria, PrecioInfo, ItemTotal, NumeroFabricacion, NumeroSerie, FechaNecesaria, Referencia, DescripcionItem, AprobadoAnterior = 1) {
 
-    console.log("detal");
-    console.log(IdDetalle);
-
-    console.log("detal");
 
     let UnidadMedida;
     let IndicadorImpuesto;
@@ -905,7 +939,7 @@ function AprobarTodo() {
     $(".EstadoItem").val(2);
 }
 function RechazarTodo() {
-    $(".EstadoItem").val(3);
+    $(".EstadoItem").val(1);
 }
 //function AgregarLineaDetalleAnexo(Id, Nombre) {
 
@@ -1410,4 +1444,74 @@ function modalHistorialEstado(IdSolicitudRQ) {
         $("#div_modelos_aprobaciones").html(tablee);
         console.log(datos.ListSolicitudRqModelo);
     })
+}
+
+
+function validadJson(json) {
+    try {
+        object = JSON.parse(json);
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
+
+function ObtenerStockxIdDetalleSolicitudRQ(IdDetalle) {
+    $.ajaxSetup({ async: false });
+    $.post("/Pedido/ObtenerStockxIdDetalleSolicitudRQ", { 'IdDetalleRQ': IdDetalle }, function (data, status) {
+        if (!validadJson(data)) {
+            $("#tabla_aprobados_stock tbody").html('');
+            return true;
+        }
+        let datos = JSON.parse(data);
+
+        let tr = "";
+        for (var i = 0; i < datos.length; i++) {
+            tr += `<tr>
+            <td>`+ datos[i].NombObra + `</td>
+                <td>`+ datos[i].NombAlmacen + `</td>
+                <td>`+ datos[i].Stock + `</td>
+               
+                
+            </tr>`;
+        }
+
+        $("#tabla_aprobados_stock tbody").html(tr);
+    });
+}
+
+
+
+function ObtenerPrecioxProductoUltimasVentas(IdArticulo, IdDetalleRq) {
+
+    $.ajaxSetup({ async: false });
+    $.post("/Pedido/ObtenerPrecioxProductoUltimasVentas", { 'IdArticulo': IdArticulo }, function (data, status) {
+        let tr = "";
+        if (!validadJson(data)) {
+            tr += `<tr>
+                <td colspan="4">NO HAY DATOS </td>
+            </tr>`;
+            $("#tabla_listado_ultimasventas tbody").html(tr);
+            return true;
+        }
+        let datos = JSON.parse(data);
+
+        for (var i = 0; i < datos.length; i++) {
+            tr += `<tr>
+                <td>
+                        <input type="hidden" id="idproducto`+ datos[i].IdProveedor + `" value="` + IdArticulo + `" /> 
+                        <input type="hidden" id="IdDetalleRq`+ datos[i].IdProveedor + `" value="` + IdDetalleRq + `" />
+                        ` + datos[i].RazonSocial + `</td>
+                <td> <input class="form-control" disabled id="precionacional`+ datos[i].IdProveedor + `" value="` + datos[i].PrecioNacional + `"/></td>
+                <td> <input class="form-control" disabled id="precioextranjero`+ datos[i].IdProveedor + `" value="` + datos[i].PrecioExtranjero + `"/></td>
+                <td> <input class="form-control" disabled id="cantidad`+ datos[i].IdProveedor + `" value="` + datos[i].Cantidad + `"/></td>
+                <td> <input class="form-control" disabled id="cantidad`+ datos[i].IdProveedor + `" value="` + datos[i].Fecha + `"/></td>
+                <td> <input class="form-control" disabled id="cantidad`+ datos[i].IdProveedor + `" value="` + datos[i].Obra + `"/></td>
+                
+            </tr>`;
+        }
+        console.log(tr);
+        $("#tabla_listado_ultimasventas tbody").html(tr);
+    });
 }

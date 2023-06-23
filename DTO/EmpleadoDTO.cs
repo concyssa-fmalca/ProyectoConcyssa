@@ -8,6 +8,8 @@ namespace DTO
 {
     public class EmpleadoDTO
     {
+        public string Base { get; set; }
+        public string Cargo { get; set; }
         public int IdEmpleado { get; set; }
 #pragma warning disable CS8618 // El elemento propiedad "CodigoCliente" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declarar el elemento propiedad como que admite un valor NULL.
         public string CodigoCliente { get; set; }
@@ -70,5 +72,7 @@ namespace DTO
 #pragma warning restore CS8618 // El elemento propiedad "Observacion" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declarar el elemento propiedad como que admite un valor NULL.
         public bool Estado { get; set; }
         public int Tipo { get; set; }
+        public int IdBase { get; set; }
+        public int IdCargo { get; set; }
     }
 }

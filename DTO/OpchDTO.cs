@@ -37,6 +37,7 @@ namespace DTO
         public int IdCentroCosto { get; set; }
         public decimal SubTotal { get; set; }
         public decimal Impuesto { get; set; }
+        public decimal Redondeo { get; set; }
         public int IdTipoAfectacionIgv { get; set; }
         public decimal Total { get; set; }
         public int IdAlmacen { get; set; }
@@ -76,6 +77,10 @@ namespace DTO
         public string NombObra { get; set; }
         public int IdProveedor { get; set; }
         public int idCondicionPago {get;set;}
+        public int IdTipoRegistro {get;set;}
+        public int IdSemana {get;set;}
+        public int IdGlosaContable {get;set;}
+        public string Moneda {get;set;}
 
         public IList<AnexoDTO> AnexoDetalle { get; set; }
 
@@ -129,7 +134,7 @@ namespace DTO
 
         public decimal CantidadUsada { get; set; }
         public decimal CantidadNotaCredito { get; set; }
-
+        public string CodigoArticulo { get; set; }
 
 
     }

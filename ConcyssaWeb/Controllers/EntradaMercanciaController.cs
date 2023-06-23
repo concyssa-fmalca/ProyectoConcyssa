@@ -26,13 +26,15 @@ namespace ConcyssaWeb.Controllers
         {
             return View();
         }
-        public string ListarOPDNDT(string EstadoOPDN = "ABIERTO")
+        public string ListarOPDNDT(int IdBase, string EstadoOPDN = "ABIERTO")
         {
             string mensaje_error = "";
             OpdnDAO oOpdnDAO = new OpdnDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+
             DataTableDTO oDataTableDTO = new DataTableDTO();
-            List<OpdnDTO> lstOpdnDTO = oOpdnDAO.ObtenerOPDNxEstado(IdSociedad, ref mensaje_error, EstadoOPDN);
+            List<OpdnDTO> lstOpdnDTO = oOpdnDAO.ObtenerOPDNxEstado(IdBase, IdSociedad, ref mensaje_error, EstadoOPDN,IdUsuario);
             if (lstOpdnDTO.Count >= 0 && mensaje_error.Length==0)
             {
                 oDataTableDTO.sEcho = 1;
@@ -52,8 +54,10 @@ namespace ConcyssaWeb.Controllers
             string mensaje_error = "";
             OpdnDAO oOpdnDAO = new OpdnDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+
             DataTableDTO oDataTableDTO = new DataTableDTO();
-            List<OpdnDTO> lstOpdnDTO = oOpdnDAO.ListarOPDNDTModalOPCH(IdSociedad, ref mensaje_error, EstadoOPDN);
+            List<OpdnDTO> lstOpdnDTO = oOpdnDAO.ListarOPDNDTModalOPCH(IdSociedad, ref mensaje_error, EstadoOPDN, IdUsuario);
             if (lstOpdnDTO.Count >= 0 && mensaje_error.Length == 0)
             {
                 oDataTableDTO.sEcho = 1;
@@ -203,7 +207,7 @@ namespace ConcyssaWeb.Controllers
 
 
         public string UpdateInsertMovimiento(MovimientoDTO oMovimientoDTO)
-        {
+         {
             string mensaje_error = "";
             if (oMovimientoDTO.IdMoneda==1)
             {
@@ -240,7 +244,8 @@ namespace ConcyssaWeb.Controllers
                 for (int i = 0; i < oMovimientoDTO.detalles.Count; i++)
                 {
                     oMovimientoDTO.detalles[i].IdMovimiento = respuesta;
-                    int respuesta1 = oMovimimientoDAO.InsertUpdateMovimientoDetalle(oMovimientoDTO.detalles[i], ref mensaje_error);
+                    oMovimientoDTO.detalles[i].IdMovimientoDetalle = 0;
+                    int respuesta1 = oMovimimientoDAO.InsertUpdateMovimientoDetalle(oMovimientoDTO.detalles[i],0 ,ref mensaje_error);
                 }
 
                 if (oMovimientoDTO.AnexoDetalle!=null)
@@ -307,7 +312,7 @@ namespace ConcyssaWeb.Controllers
                 oSalidaMercanciaController.UpdateInsertMovimiento(oMovimientoDTO);
 
 
-                return "ddd";
+                return "1";
 
             }
             else
@@ -484,7 +489,8 @@ namespace ConcyssaWeb.Controllers
             try
             {
                 string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&Id=" + Id;
-                cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReportCrystal";
+                cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReportCrystal";
+                //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReportCrystal";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
                 request = (HttpWebRequest)WebRequest.Create(uri);
 

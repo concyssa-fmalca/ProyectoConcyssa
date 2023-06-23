@@ -47,6 +47,7 @@ namespace DAO
                         oOpchDTO.IdCentroCosto = Convert.ToInt32(drd["IdCentroCosto"].ToString());
                         oOpchDTO.SubTotal = Convert.ToDecimal(drd["SubTotal"].ToString());
                         oOpchDTO.Impuesto = Convert.ToDecimal(drd["Impuesto"].ToString());
+                        oOpchDTO.Redondeo = Convert.ToDecimal(drd["Redondeo"].ToString());
                         oOpchDTO.IdTipoAfectacionIgv = Convert.ToInt32(drd["IdTipoAfectacionIgv"].ToString());
                         oOpchDTO.Total = Convert.ToDecimal(drd["Total"].ToString());
                         oOpchDTO.IdAlmacen = Convert.ToInt32(drd["IdAlmacen"].ToString());
@@ -68,19 +69,11 @@ namespace DAO
                         oOpchDTO.IdCuadrilla = Convert.ToInt32(drd["IdCuadrilla"].ToString());
                         oOpchDTO.IdResponsable = Convert.ToInt32(drd["IdResponsable"].ToString());
                         oOpchDTO.idCondicionPago = Convert.ToInt32(drd["idCondicionPago"].ToString());
+                        oOpchDTO.IdSemana = Convert.ToInt32(drd["IdSemana"].ToString());
+                        oOpchDTO.IdTipoRegistro = Convert.ToInt32(drd["IdTipoRegistro"].ToString());
+                        oOpchDTO.IdGlosaContable = Convert.ToInt32(drd["IdGlosaContable"].ToString());
                         oOpchDTO.NombUsuario = (drd["NombUsuario"].ToString());
                         oOpchDTO.CreatedAt = Convert.ToDateTime(drd["CreatedAt"].ToString());
-
-
-
-
-
-
-
-
-
-
-
 
 
                     }
@@ -95,7 +88,7 @@ namespace DAO
             }
             return oOpchDTO;
         }
-        public List<OpchDTO> ObtenerOPCHxEstado(int IdSociedad, ref string mensaje_error, string EstadoOPCH)
+        public List<OpchDTO> ObtenerOPCHxEstado(int IdBase,int IdSociedad, ref string mensaje_error, string EstadoOPCH,int IdUsuario=0)
         {
             List<OpchDTO> lstOPCHDTO = new List<OpchDTO>();
             using (SqlConnection cn = new Conexion().conectar())
@@ -106,6 +99,9 @@ namespace DAO
                     SqlDataAdapter da = new SqlDataAdapter("SMC_ListarOPCHxEstado", cn);
                     da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
                     da.SelectCommand.Parameters.AddWithValue("@EstadoOPCH", EstadoOPCH);
+                    da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
+                    da.SelectCommand.Parameters.AddWithValue("@IdBase", IdBase);
+
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
                     SqlDataReader drd = da.SelectCommand.ExecuteReader();
                     while (drd.Read())
@@ -145,7 +141,9 @@ namespace DAO
                         oOpchDTO.IdAlmacen = Convert.ToInt32(drd["IdAlmacen"].ToString());
                         oOpchDTO.IdObra = Convert.ToInt32(drd["IdObra"].ToString());
                         oOpchDTO.IdBase = Convert.ToInt32(drd["IdBase"].ToString());
-
+                        oOpchDTO.Moneda = (drd["Moneda"].ToString());
+                        oOpchDTO.NombUsuario = (drd["NombUsuario"].ToString());
+                        oOpchDTO.NumSerieTipoDocumentoRef = drd["NumSerieTipoDocumentoRef"].ToString();
 
                         lstOPCHDTO.Add(oOpchDTO);
                     }
@@ -161,7 +159,7 @@ namespace DAO
             return lstOPCHDTO;
         }
 
-        public List<OpchDTO> ObtenerOPCHxEstadoModal(int IdSociedad, ref string mensaje_error, string EstadoOPCH)
+        public List<OpchDTO> ObtenerOPCHxEstadoModal(int IdSociedad, ref string mensaje_error, string EstadoOPCH,int IdUsuario=0)
         {
             List<OpchDTO> lstOPCHDTO = new List<OpchDTO>();
             using (SqlConnection cn = new Conexion().conectar())
@@ -172,6 +170,8 @@ namespace DAO
                     SqlDataAdapter da = new SqlDataAdapter("SMC_ListarOPCHxEstadoModal", cn);
                     da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
                     da.SelectCommand.Parameters.AddWithValue("@EstadoOPCH", EstadoOPCH);
+                    da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
+
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
                     SqlDataReader drd = da.SelectCommand.ExecuteReader();
                     while (drd.Read())
@@ -280,8 +280,8 @@ namespace DAO
                         oOPCHDetalle.NombImpuesto = (drd["NombImpuesto"].ToString());
                         oOPCHDetalle.IdGrupoUnidadMedida = Convert.ToInt32(drd["IdGrupoUnidadMedida"].ToString());
                         oOPCHDetalle.PrecioUnidadBase = Convert.ToDecimal(drd["PrecioUnidadBase"].ToString());
+                        oOPCHDetalle.CodigoArticulo = (drd["CodigoArticulo"].ToString());
 
-                        
 
 
 

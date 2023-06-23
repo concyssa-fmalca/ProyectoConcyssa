@@ -17,6 +17,7 @@ namespace DTO
         public string CodUnidadMedida { get; set; }
         public DateTime FechaNecesaria { get; set; }
         public decimal CantidadNecesaria { get; set; }
+        public decimal CantidadSolicitada { get; set; }
         public decimal CantidadProcesar { get; set; }
         public decimal PrecioInfo { get; set; }
         public int IdIndicadorImpuesto { get; set; }
@@ -52,6 +53,12 @@ namespace DTO
         public string NombBase { get; set; } = "";
         public string NombObra { get; set; } = "";
 
+        public int IdTipoProducto { get; set; } = 1;
+
+
+        public string SeriePedido { get; set; }
+        public DateTime FechaDocumentoPedido { get; set; }
+        public string ConformidadPedido { get; set; }
 
     }
 }

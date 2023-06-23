@@ -56,10 +56,10 @@ function ConsultaServidor(url) {
 function GuardarModeloAutorizacion() {
 
 
-    if (!$('#chkSolicitudCompra').prop('checked')) {
-        swal("Info!", "Debe Seleccionar Documento")
-        return;
-    }
+    //if (!$('#chkSolicitudCompra').prop('checked')) {
+    //    swal("Info!", "Debe Seleccionar Documento")
+    //    return;
+    //}
 
 
     let varIdModeloAutorizacion = $("#txtId").val();
@@ -109,10 +109,17 @@ function GuardarModeloAutorizacion() {
     let arrayGeneralDocumento = new Array();
     let varIdModeloAutorizacionDocumento = $("#txtIdModeloAutorizacionDocumento").val();
     let varcheckSolicitudCompra = 0;
+    let varcheckSolicitudGiro = 0;
     if ($('#chkSolicitudCompra')[0].checked) {
         varcheckSolicitudCompra = 1;
+        arrayGeneralDocumento.push({ 'IdModeloAutorizacionDocumento': varIdModeloAutorizacionDocumento, 'IdDocumento': varcheckSolicitudCompra });
     }
-    arrayGeneralDocumento.push({ 'IdModeloAutorizacionDocumento': varIdModeloAutorizacionDocumento, 'IdDocumento': varcheckSolicitudCompra });
+
+    if ($('#chkSolicitudGiro')[0].checked) {
+        varcheckSolicitudGiro = 2;
+        arrayGeneralDocumento.push({ 'IdModeloAutorizacionDocumento': varIdModeloAutorizacionDocumento, 'IdDocumento': varcheckSolicitudGiro });
+    }
+   
     //documento
 
 
@@ -149,6 +156,7 @@ function GuardarModeloAutorizacion() {
 
         if (data == 1) {
             swal("Exito!", "Proceso Realizado Correctamente", "success")
+            CerrarModal()
             table.destroy();
             ConsultaServidor("ObtenerModeloAutorizacion");
             limpiarDatos();
@@ -305,6 +313,12 @@ function AgregarLineaDocumentos() {
                   <input type="checkbox" id="chkSolicitudCompra" />
                   <label for="chkSolicitudCompra">Solicitud de Compra</label>
               </div>
+
+                <div class="checkbox-custom col-xs-6">
+                  <input type="checkbox" id="chkSolicitudGiro" />
+                  <label for="chkSolicitudGiro">Solicitud de Giro</label>
+              </div>
+
             </td>
             </tr>`;
 
@@ -441,6 +455,12 @@ function AgregarLineaDetalleDocumentos(contador, IdModeloAutorizacionDocumento, 
                   <input type="checkbox" id="chkSolicitudCompra" />
                   <label for="chkSolicitudCompra">Solicitud de Compra</label>
               </div>
+                
+            <div class="checkbox-custom col-xs-6">
+                  <input type="checkbox" id="chkSolicitudGiro" />
+                  <label for="chkSolicitudGiro">Solicitud de Giro</label>
+              </div>
+
             </td>
             </tr>`;
 
@@ -448,6 +468,10 @@ function AgregarLineaDetalleDocumentos(contador, IdModeloAutorizacionDocumento, 
 
     if (IdDocumento == 1) {
         $('#chkSolicitudCompra').prop('checked', true);
+    }
+
+    if (IdDocumento == 2) {
+        $('#chkSolicitudGiro').prop('checked', true);
     }
 
 }
@@ -650,7 +674,6 @@ function EliminarModeloAutorizacionDetalleCondicion(IdModeloAutorizacionCondicio
 
 
 
-
 function validarEmpresa(rpta) {
     if (rpta == "SinBD") {   //Sin Session
         window.location.href = "/";
@@ -667,3 +690,21 @@ function validarEmpresaUpdateInsert(rpta) {
     return false;
 }
 
+
+function eliminar(IdModelo) {
+    alertify.confirm('Confirmar', '¿Desea eliminar el Modelo de Autrizacion?', function () {
+
+        $.post("EliminarModeloAutorizacion", { 'IdModeloAutorizacion': IdModelo }, function (data, status) {
+
+            if (data == "0") {
+                swal("Error!", "No se puede eliminar modelo de autorizacion")
+            } else {
+                swal("Exito!", "Se elimino correctamente");
+                table.destroy();
+                ConsultaServidor("ObtenerModeloAutorizacion");
+                limpiarDatos();
+            }
+        });
+
+    }, function () { });
+}

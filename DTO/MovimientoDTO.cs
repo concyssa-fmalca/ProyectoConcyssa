@@ -8,6 +8,7 @@ namespace DTO
 {
     public class MovimientoDTO
     {
+        public int existeObraDestinoUsuario { get; set; }
         public int DT_RowId { get; set; }
         public int IdMovimiento { get; set; }
         public int IdTipoDocumento { get; set; }
@@ -44,6 +45,7 @@ namespace DTO
         public int IdSociedad { get; set; }
         public bool Estado { get; set; }
         public bool Eliminado { get; set; }
+        public int IdDocExtorno { get; set; }
 
 
         public IList<MovimientoDetalleDTO> detalles  { get; set; }
@@ -67,7 +69,7 @@ namespace DTO
 
         public int IdBase { get; set; }
         public int IdObra { get; set; }
-
+        public int IdObraDestino { get; set; }
         public int IdUsuario { get; set; }
         public DateTime CreatedAt { get; set; }
         public string NombUsuario { get; set; }
@@ -93,10 +95,28 @@ namespace DTO
         public string DescripcionMotivoTrasladoSunat { get; set; } = "";
 
 
+        public int ValidarIngresoSalidaOAmbos { get; set; }
 
-
-
-
-
+        public int TranferenciaDirecta { get; set; }
+        public string NombMoneda { get; set; }
     }
+
+
+    public class MovimientoTranferenciaFinal
+    {
+        public int IdMovimiento { get; set; }
+        public string AlmacenInicial { get; set; }
+        public string AlmacenDestino { get; set; }
+        public DateTime FechaDocumento { get; set; }
+        public string Moneda { get; set; }
+        public string Cuadrilla { get; set; }
+        public string UsuarioCreador { get; set; }
+        public string SerieCorrelativo { get; set; }
+        public string Guia { get; set; }
+        public string NomObraOrigen { get; set; }
+        public string NomObraDestino { get; set; }
+    }
+
+
+
 }

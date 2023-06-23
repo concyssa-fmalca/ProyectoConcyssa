@@ -4,8 +4,29 @@ let contadorAlmacen = 0;
 let contarclick = 0;
 var ultimaFila = null;
 var colorOriginal;
+let table;
+let tableItems = '';
+let tableProyecto = '';
+let tableCentroCosto = '';
+let tableAlmacen = '';
+let DecimalesImportes = 0;
+let DecimalesPrecios = 0;
+let DecimalesCantidades = 0;
+let DecimalesPorcentajes = 0;
 
-function ObtenerConfiguracionDecimales() {
+
+//function ObtenerConfiguracionDecimales() {
+//    $.post("/ConfiguracionDecimales/ObtenerConfiguracionDecimales", function (data, status) {
+
+//        let datos = JSON.parse(data);
+//        DecimalesCantidades = datos[0].Cantidades;
+//        DecimalesImportes = datos[0].Importes;
+//        DecimalesPrecios = datos[0].Precios;
+//        DecimalesPorcentajes = datos[0].Porcentajes;
+//        console.log("PRECIOS "+DecimalesPrecios)
+//    });
+//}
+function getDecimales() {
     $.post("/ConfiguracionDecimales/ObtenerConfiguracionDecimales", function (data, status) {
 
         let datos = JSON.parse(data);
@@ -13,6 +34,7 @@ function ObtenerConfiguracionDecimales() {
         DecimalesImportes = datos[0].Importes;
         DecimalesPrecios = datos[0].Precios;
         DecimalesPorcentajes = datos[0].Porcentajes;
+        console.log("PRECIOS " + DecimalesPrecios)
     });
 }
 
@@ -31,15 +53,7 @@ function ListarBasesxUsuario() {
     });
 }
 
-let table = '';
-let tableItems = '';
-let tableProyecto = '';
-let tableCentroCosto = '';
-let tableAlmacen = '';
-let DecimalesImportes = 0;
-let DecimalesPrecios = 0;
-let DecimalesCantidades = 0;
-let DecimalesPorcentajes = 0;
+
 
 
 
@@ -62,7 +76,7 @@ function llenarComboCuadrilla(lista, idCombo, primerItem) {
     var campos;
     for (var i = 0; i < nRegistros; i++) {
 
-        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdCuadrilla + "'>" + lista[i].Descripcion.toUpperCase() + "</option>"; }
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdCuadrilla + "'>" + lista[i].IdCuadrilla + " - " + lista[i].Descripcion.toUpperCase() + "</option>"; }
         else { }
     }
     var cbo = document.getElementById(idCombo);
@@ -80,12 +94,25 @@ function ObtenerAlmacenxIdObra() {
         llenarComboAlmacen(almacen, "cboAlmacen", "Seleccione")
         llenarComboAlmacen(almacen, "cboAlmacenItem", "Seleccione")
     });
+    $("#cboAlmacen").prop("selectedIndex", 1)
+    $("#cboAlmacenItem").prop("selectedIndex", 1)
+    ObtenerCuadrillasxIdObra(IdObra)
 }
+
+function ObtenerCuadrillasxIdObra(IdObra) {
+
+    $.ajaxSetup({ async: false });
+    $.post("/Cuadrilla/ObtenerCuadrillaxIdObra", { 'IdObra': IdObra }, function (data, status) {
+        let cuadrilla = JSON.parse(data);
+        llenarComboCuadrilla(cuadrilla, "IdCuadrilla", "Seleccione")
+    });
+}
+
 
 function ObtenerObraxIdBase() {
     let IdBase = $("#IdBase").val();
     $.ajaxSetup({ async: false });
-    $.post("/Obra/ObtenerObraxIdBase", { 'IdBase': IdBase }, function (data, status) {
+    $.post("/Obra/ObtenerObraxIdUsuarioSession", { 'IdBase': IdBase }, function (data, status) {
         let obra = JSON.parse(data);
         $("#IdObra").html();
         llenarComboObra(obra, "IdObra", "Seleccione")
@@ -130,12 +157,13 @@ function llenarTiposDocumentos(lista, idCombo, primerItem) {
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
+    $("#IdTipoDocumentoRef").val(14)
 }
 
 
 function CargarBase() {
     $.ajaxSetup({ async: false });
-    $.post("/Base/ObtenerBase", function (data, status) {
+    $.post("/Base/ObtenerBasexIdUsuario", function (data, status) {
         let base = JSON.parse(data);
         llenarComboBase(base, "IdBase", "Seleccione")
     });
@@ -189,6 +217,7 @@ function llenarComboCentroCosto(lista, idCombo, primerItem) {
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
+    $("#cboCentroCosto").val(7)
 }
 /*END USANDO */
 
@@ -198,11 +227,10 @@ function llenarComboCentroCosto(lista, idCombo, primerItem) {
 
 
 window.onload = function () {
-    var url = "../Movimientos/ObtenerMovimientosSalida";
-
-    ObtenerConfiguracionDecimales();
-    ConsultaServidor(url);
-
+    CargarBaseFiltro()
+    $("#EntregadoA").select2()
+    //ObtenerConfiguracionDecimales();
+    getDecimales();
     $("#SubirAnexos").on("submit", function (e) {
         e.preventDefault();
         var formData = new FormData($("#SubirAnexos")[0]);
@@ -224,52 +252,85 @@ window.onload = function () {
         });
     });
 };
+function CargarBaseFiltro() {
+    $.ajaxSetup({ async: false });
+    $.post("/Base/ObtenerBasexIdUsuario", function (data, status) {
+        let base = JSON.parse(data);
+        llenarComboBaseFiltro(base, "cboObraFiltro")
+
+    });
+
+}
+
+function llenarComboBaseFiltro(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdBase + "'>" + lista[i].Descripcion.toUpperCase() + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+    $("#cboObraFiltro").val($("#cboObraFiltro option:first").val());
+    ConsultaServidor()
+
+}
 
 
 
 
 
-
-function ConsultaServidor(url) {
-    $.post(url, function (data, status) {
+function ConsultaServidor() {
+    let varIdBaseFiltro = $("#cboObraFiltro").val()
+    $.post("../Movimientos/ObtenerMovimientosSalida", { 'IdBase': varIdBaseFiltro }, function (data, status) {
 
         //console.log(data);
         if (data == "error") {
             table = $("#table_id").DataTable(lenguaje);
+            console.log("ERRRORR")
             return;
         }
 
         let tr = '';
-
+        $("#tbody_Solicitudes").html(tr);
         let movimientos = JSON.parse(data);
         let total_solicitudes = movimientos.length;
         console.log("cabecera");
         console.log(movimientos);
+            for (var i = 0; i < movimientos.length; i++) {
+                tr += '<tr>' +
+                    '<td>' + (i + 1) + '</td>' +
+                    '<td>' + movimientos[i].FechaDocumento.split('T')[0] + '</td>' +
+                    '<td>' + movimientos[i].NombUsuario + '</td>' +
+                    '<td>' + movimientos[i].NombTipoDocumentoOperacion.toUpperCase() + '</td>' +
+                    '<td>' + movimientos[i].NombSerie.toUpperCase() + '-' + movimientos[i].Correlativo + '</td>' +
+                    '<td>' + movimientos[i].NombMoneda + '</td>' +
 
-        for (var i = 0; i < movimientos.length; i++) {
+                    '<td>' + formatNumberDecimales(movimientos[i].Total, 3) + '</td>' +
+                    '<td>' + movimientos[i].DescCuadrilla + '</td>' +
+                    /*    '<td>' + movimientos[i].NombObra + '</td>' +*/
 
+                    '<td>' + movimientos[i].NombAlmacen + '</td>' +
+                    '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + movimientos[i].IdMovimiento + ')"></button>' +
+                    '<button class="btn btn-primary" onclick="GenerarReporte(' + movimientos[i].IdMovimiento + ',' + movimientos[i].IdDocExtorno + ')">R</button></td>' +
+                    //'<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + solicitudes[i].IdSolicitudRQ + ')"></button></td >' +
+                    '</tr>';
+            }
+        
+        if (table) {
+            table.destroy();
 
-            tr += '<tr>' +
-                '<td>' + (i + 1) + '</td>' +
-                '<td>' + movimientos[i].FechaDocumento.split('T')[0] + '</td>' +
-                '<td>' + movimientos[i].NombTipoDocumentoOperacion.toUpperCase() + '</td>' +
-                '<td>' + movimientos[i].NombSerie.toUpperCase() + '-' + movimientos[i].Correlativo + '</td>' +
-                '<td>' + formatNumberDecimales(movimientos[i].Total,3) + '</td>' +
-                '<td>' + movimientos[i].DescCuadrilla + '</td>' +
-            /*    '<td>' + movimientos[i].NombObra + '</td>' +*/
-
-                '<td>' + movimientos[i].NombAlmacen + '</td>' +
-                '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + movimientos[i].IdMovimiento + ')"></button>' +
-                '<button class="btn btn-primary" onclick="GenerarReporte(' + movimientos[i].IdMovimiento + ')">R</button>' +
-                //'<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + solicitudes[i].IdSolicitudRQ + ')"></button></td >' +
-                '</tr>';
-        }
-
+        } 
         $("#tbody_Solicitudes").html(tr);
         $("#spnTotalRegistros").html(total_solicitudes);
-
+       
+        
         table = $("#table_id").DataTable(lenguaje);
-
+      
     });
 
 }
@@ -290,8 +351,8 @@ function ModalNuevo() {
 
 
     ObtenerTiposDocumentos();
-    listarEmpleados();
-    ObtenerCuadrillas();
+    //listarEmpleados();
+    //ObtenerCuadrillas();
     CargarCentroCosto();
     CargarTipoDocumentoOperacion()
     CargarSeries();
@@ -309,22 +370,33 @@ function ModalNuevo() {
 
     CargarImpuestos();
     $("#cboImpuesto").val(2).change();
-    $("#cboSerie").val(1).change();
+    //$("#cboSerie").val(1).change();
 
     $("#cboMoneda").val(1);
     $("#cboPrioridad").val(2);
     $("#cboClaseArticulo").prop("disabled", false);
     AbrirModal("modal-form");
-    
-   
+
+
+    $("#IdCuadrilla").select2();
+
     //setearValor_ComboRenderizado("cboCodigoArticulo");
     validarseriescontable();
     CargarMotivoTraslado();
     CargarProveedor();
+    $("#cboTipoDocumentoOperacion").val(332).change();
+    $("#IdTipoDocumentoRef").val(14).change();
+
 }
 
 
 function OpenModalItem() {
+    if ($("#IdTipoProducto").val() == 0) {
+        swal("Informacion!", "Debe Seleccionar Tipo de Articulo!");
+        return;
+    }
+
+
     //Cuando se abre agregar Item
     let ClaseArticulo = $("#cboClaseArticulo").val();
     let Moneda = $("#cboMoneda").val();
@@ -381,7 +453,7 @@ function AgregarLineaDetalleAnexo(Id, Nombre) {
             <td>
                <a href="/SolicitudRQ/Download?ImageName=`+ Nombre + `" >Descargar</a>
             </td>
-            <td><button class="btn btn-xs btn-danger" onclick="EliminarAnexo(`+ Id + `,this)">-</button></td>
+            <td><button class="btn btn-xs btn-danger borrar fa fa-trash" onclick="EliminarAnexo(`+ Id + `,this)"></button></td>
             </tr>`;
 
     $("#tabla_files").find('tbody').append(tr);
@@ -521,8 +593,9 @@ function AgregarLinea() {
     //<select class="form-control select2" id="cboCodigoArticulo" name="cboCodigoArticulo[]">
     //    <option value="0">Seleccione</option>
     //</select>
-    tr += `<tr  id="tritem` + contador +`">
-            <td><input input style="display:none;" class="form-control" type="text" value="0" id="txtIdSolicitudRQDetalle" name="txtIdSolicitudRQDetalle[]"/></td>
+    tr += `<tr  id="tritem` + contador + `">
+   
+            <td style="display:none;"><input input style="display:none;" class="form-control" type="text" value="0" id="txtIdSolicitudRQDetalle" name="txtIdSolicitudRQDetalle[]"/></td>
             <td input style="display:none;">
             <input  class="form-control" type="text" id="txtIdArticulo`+ contador + `" name="txtIdArticulo[]" />
             <input class="form-control" type="text" id="txtCodigoArticulo`+ contador + `" name="txtCodigoArticulo[]" />
@@ -532,6 +605,7 @@ function AgregarLinea() {
 
 
             </td>
+ <td>`+ CodigoItem + `</td>
             <td><input class="form-control" type="text" id="txtDescripcionArticulo`+ contador + `" name="txtDescripcionArticulo[]"/></td>
             <td>
             <select class="form-control" id="cboUnidadMedida`+ contador + `" name="cboUnidadMedida[]" disabled>`;
@@ -598,8 +672,8 @@ function AgregarLinea() {
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td ><input class="form-control" type="text" value="" id="txtReferencia`+ contador + `" name="txtReferencia[]"></td>
-            <td><button class="btn btn-xs btn-danger borrar" onclick="borrartditem(`+ contador +`)">-</button></td>
-          <tr>`;
+            <td><button class="btn btn-xs btn-danger borrar fa fa-trash" onclick="borrartditem(`+ contador + `)"></button></td>
+          </tr>`;
 
     $("#tabla").find('tbody').append(tr);
 
@@ -634,6 +708,7 @@ function AgregarLinea() {
     $("#txtReferencia" + contador).val(ReferenciaItem);
 
     LimpiarModalItem();
+    NumeracionDinamica();
 }
 
 
@@ -661,7 +736,7 @@ function disabledmodal(valorbolean) {
 
     if (valorbolean) {
         $("#btnGrabar").hide()
-        
+
         $("#btnGenerarGuia").show();
 
         $("#btnExtorno").show();
@@ -846,15 +921,18 @@ function llenarComboSerie(lista, idCombo, primerItem) {
     var nRegistros = lista.length;
     var nCampos;
     var campos;
+    let ultimoindice = 0;
     for (var i = 0; i < nRegistros; i++) {
-        if (lista[i].Documento==2) {
-            if (lista.length > 0) { contenido += "<option value='" + lista[i].IdSerie + "'>" + lista[i].Serie + "</option>"; }
+        if (lista[i].Documento == 2) {
+            if (lista.length > 0) { contenido += "<option value='" + lista[i].IdSerie + "'>" + lista[i].Serie + "</option>"; ultimoindice = i; }
             else { }
         }
-       
+
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
+
+    $("#" + idCombo).val(lista[ultimoindice].IdSerie).change()
 }
 
 function llenarComboImpuesto(lista, idCombo, primerItem) {
@@ -1036,11 +1114,11 @@ function llenarComboTipoDocumentoOperacion(lista, idCombo, primerItem) {
     var nCampos;
     var campos;
     for (var i = 0; i < nRegistros; i++) {
-        if (lista[i].Tabla=='OIGE') {
+        if (lista[i].Tabla == 'OIGE') {
             if (lista.length > 0) { contenido += "<option value='" + lista[i].IdTipoDocumento + "'>" + lista[i].Descripcion + "</option>"; }
         }
-        
-        
+
+
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
@@ -1048,15 +1126,15 @@ function llenarComboTipoDocumentoOperacion(lista, idCombo, primerItem) {
 
 
 
-llenarComboTipoDocumentoOperacion
-$(document).on('click', '.borrar', function (event) {
-    event.preventDefault();
-    $(this).closest('tr').remove();
+//llenarComboTipoDocumentoOperacion
+//$(document).on('click', '.borrar', function (event) {
+//    event.preventDefault();
+//    $(this).closest('tr').remove();
 
-    let filas = $("#tabla").find('tbody tr').length;
-    console.log("filas");
-    console.log(filas);
-});
+//    let filas = $("#tabla").find('tbody tr').length;
+//    console.log("filas");
+//    console.log(filas);
+//});
 
 
 
@@ -1065,6 +1143,7 @@ function CerrarModal() {
     $("#tabla_files").find('tbody').empty();
     $.magnificPopup.close();
     limpiarDatos();
+    $("#IdTipoProducto").prop("disabled",false)
 }
 
 
@@ -1243,7 +1322,7 @@ function GuardarSolicitud() {
         arrayTxtNombreAnexo.push($(elemento).val());
     });
 
-    
+
 
 
 
@@ -1268,7 +1347,7 @@ function GuardarSolicitud() {
     //END Cabecera
 
     //Validaciones
-    if ($("#cboTipoDocumentoOperacion").val()==0 ) {
+    if ($("#cboTipoDocumentoOperacion").val() == 0) {
         Swal.fire(
             'Error!',
             'Complete el campo de Tipo de Movimiento',
@@ -1276,7 +1355,7 @@ function GuardarSolicitud() {
         )
         return;
     }
-    
+
     //End Validaciones
 
 
@@ -1313,14 +1392,14 @@ function GuardarSolicitud() {
     }
 
     //AnexoDetalle
-    let AnexoDetalle=[];
+    let AnexoDetalle = [];
     for (var i = 0; i < arrayTxtNombreAnexo.length; i++) {
         AnexoDetalle.push({
             'NombreArchivo': arrayTxtNombreAnexo[i]
         });
     }
 
-    
+
     $.ajax({
         url: "UpdateInsertMovimiento",
         type: "POST",
@@ -1422,10 +1501,9 @@ function GuardarSolicitud() {
                 //ModalNuevo();
                 CerrarModal();
                 ObtenerDatosxID(data);
-             
                 table.destroy();
-                ConsultaServidor("../Movimientos/ObtenerMovimientosSalida");
-               
+                ConsultaServidor();
+
 
             } else {
                 Swal.fire(
@@ -1496,7 +1574,7 @@ function ObtenerDatosxID(IdMovimiento) {
 
 
 
-    $.post('../Movimientos/ObtenerDatosxIdMovimiento', {
+    $.post('../Movimientos/ObtenerDatosxIdMovimientoOLD', {
         'IdMovimiento': IdMovimiento,
     }, function (data, status) {
 
@@ -1514,10 +1592,9 @@ function ObtenerDatosxID(IdMovimiento) {
             $("#TipoCambio").val(movimiento.TipoCambio);
             $("#txtTotalAntesDescuento").val(movimiento.SubTotal)
             $("#txtImpuesto").val(movimiento.Impuesto)
-            $("#txtTotal").val(formatNumberDecimales(movimiento.Total,3))
-            $("#IdCuadrilla").val(movimiento.IdCuadrilla)
-            $("#IdResponsable").val(movimiento.IdResponsable)
-            $("#cboCentroCosto").val(movimiento.IdCentroCosto)
+            $("#txtTotal").val(formatNumberDecimales(movimiento.Total, 3))
+
+            $("#cboCentroCosto").val(7)
             $("#cboTipoDocumentoOperacion").val(movimiento.IdTipoDocumento)
             $("#IdTipoDocumentoRef").val(movimiento.IdTipoDocumentoRef)
             $("#SerieNumeroRef").val(movimiento.NumSerieTipoDocumentoRef)
@@ -1541,14 +1618,17 @@ function ObtenerDatosxID(IdMovimiento) {
             $("#NumIdentidadConductor").val(movimiento.NumIdentidadConductor)
             $("#Peso").val(movimiento.Peso)
             $("#Bulto").val(movimiento.Bulto)
+            $("#IdCuadrilla").val(movimiento.IdCuadrilla).change();
+            $("#IdResponsable").val(movimiento.IdResponsable)
+            $("#EntregadoA").val(movimiento.EntregadoA)
 
 
             //AnxoDetalle
             let AnexoDetalle = movimiento.AnexoDetalle;
             let trAnexo = '';
-            
 
-            
+
+
 
 
             for (var k = 0; k < AnexoDetalle.length; k++) {
@@ -1556,12 +1636,12 @@ function ObtenerDatosxID(IdMovimiento) {
                 <tr>
                    
                     <td>
-                       `+ AnexoDetalle[k].NombreArchivo+ `
+                       `+ AnexoDetalle[k].NombreArchivo + `
                     </td>
                     <td>
-                       <a target="_blank" href="`+AnexoDetalle[k].ruta+`"> Descargar </a>
+                       <a target="_blank" href="`+ AnexoDetalle[k].ruta + `"> Descargar </a>
                     </td>
-                    <td><button class="btn btn-xs btn-danger" onclick="EliminarAnexo(`+ AnexoDetalle[k].IdAnexo + `,this)">-</button></td>
+                    <td><button class="btn btn-xs btn-danger borrar fa fa-trash" onclick="EliminarAnexo(`+ AnexoDetalle[k].IdAnexo + `,this)"></button></td>
                 </tr>`;
             }
             $("#tabla_files").find('tbody').append(trAnexo);
@@ -1588,6 +1668,7 @@ function ObtenerDatosxID(IdMovimiento) {
         }
 
     });
+    OcultarCampos()
 
 }
 
@@ -1607,7 +1688,7 @@ function CalcularTotalDetalle(contador) {
     let varIndicadorImppuesto = $("#cboIndicadorImpuestoDetalle" + contador).val();
     let varPorcentaje = $('option:selected', "#cboIndicadorImpuestoDetalle" + contador).attr("impuesto");
 
-    
+
     let varPrecioInfo = $("#txtPrecioInfo" + contador).val();
 
     let subtotal = varCantidadNecesaria * varPrecioInfo;
@@ -1690,9 +1771,9 @@ function AgregarLineaDetalle(contador, detalle) {
     });
 
     tr = `<tr>
-        <td>
-          <input class="form-control" type="text" value="`+ (contador + 1) + `" disabled />
-        </td>
+        <td>`+ detalle.CodigoArticulo + `</td>
+        <td>`+ detalle.CodigoArticulo + `</td>
+
         <td>
           <input class="form-control" type="text"  id="txtCodigoArticulo`+ contador + `" name="txtCodigoArticulo[]" value="` + detalle.DescripcionArticulo + `" disabled/>
         </td>
@@ -1709,13 +1790,13 @@ function AgregarLineaDetalle(contador, detalle) {
     tr += `</select>
         </td>
         <td>
-            <input class="form-control" type="text" name="txtCantidadNecesaria[]" value="`+ formatNumberDecimales(detalle.Cantidad,1) + `" id="txtCantidadNecesaria` + contador + `" onkeyup="CalcularTotalDetalle(` + contador + `)" disabled>
+            <input class="form-control" type="text" name="txtCantidadNecesaria[]" value="`+ formatNumberDecimales(detalle.Cantidad, 1) + `" id="txtCantidadNecesaria` + contador + `" onkeyup="CalcularTotalDetalle(` + contador + `)" disabled>
         </td>
         <td>
-            <input class="form-control" type="text" name="txtPrecioInfo[]" value="`+ formatNumberDecimales(detalle.PrecioUnidadTotal,2) + `" id="txtPrecioInfo` + contador + `" onkeyup="CalcularTotalDetalle(` + contador + `)" disabled>
+            <input class="form-control" type="text" name="txtPrecioInfo[]" value="`+ formatNumberDecimales(detalle.PrecioUnidadTotal, 2) + `" id="txtPrecioInfo` + contador + `" onkeyup="CalcularTotalDetalle(` + contador + `)" disabled>
         </td>
         <td>
-            <input class="form-control changeTotal" type="text" style="width:100px" value="`+ formatNumberDecimales(detalle.Total,3) + `" name="txtItemTotal[]" id="txtItemTotal` + contador + `" onchange="CalcularTotales()" disabled>
+            <input class="form-control changeTotal" type="text" style="width:100px" value="`+ formatNumberDecimales(detalle.Total, 3) + `" name="txtItemTotal[]" id="txtItemTotal` + contador + `" onchange="CalcularTotales()" disabled>
         </td>
         <td style="display:none">
             <select class="form-control" style="width:100px" id="cboAlmacen`+ contador + `" name="cboAlmacen[]" disabled>`;
@@ -1730,17 +1811,17 @@ function AgregarLineaDetalle(contador, detalle) {
     tr += `</select>
         </td>
         <td>
-            <input class="form-control" type="text" style="width:100px" value="`+ detalle.Referencia +`" disabled>
+            <input class="form-control" type="text" style="width:100px" value="`+ detalle.Referencia + `" disabled>
         </td>
         <td>
-            <button type="button" class="btn-sm btn btn-danger" disabled> - </button>   
+            <button type="button" class="btn-sm btn btn-danger borrar fa fa-trash" disabled></button>   
          </td>
     </tr>`
 
     $("#tabla").find('tbody').append(tr);
     //$("#cboPrioridadDetalle" + contador).val(Prioridad);
 
-
+    NumeracionDinamica();
 
 
 }
@@ -1800,7 +1881,7 @@ function BuscarCodigoProducto() {
 
     $("#ModalListadoItem").modal();
 
-    $.post("/Articulo/ListarArticulosCatalogoxSociedadxAlmacenStockxIdTipoProducto", { 'IdTipoProducto':IdTipoProducto,'IdAlmacen': IdAlmacen, 'Estado': 1, }, function (data, status) {
+    $.post("/Articulo/ListarArticulosCatalogoxSociedadxAlmacenStockxIdTipoProducto", { 'IdTipoProducto': IdTipoProducto, 'IdAlmacen': IdAlmacen, 'Estado': 1, }, function (data, status) {
 
         if (data == "error") {
             swal("Informacion!", "No se encontro Articulo")
@@ -1821,18 +1902,18 @@ function BuscarCodigoProducto() {
                         '</tr>';
                 }
             }
-                    
-                //} else {
-                //    if (TipoItem == 2 && items[i].Inventario == false) {
-                        //tr += '<tr>' +
-                        //    '<td><input type="radio" clase="" id="rdSeleccionado' + items[i].Codigo + '"  name="rdSeleccionado"  value = "' + items[i].Codigo + '" ></td>' +
-                        //    '<td>' + items[i].Codigo + '</td>' +
-                        //    '<td>' + items[i].Descripcion1 + '</td>' +
-                        //    '<td>' + items[i].Stock + '</td>' +
-                        //    '<td>' + items[i].UnidadMedida + '</td>' +
-                        //    '</tr>';
-                //    }
-                //}
+
+            //} else {
+            //    if (TipoItem == 2 && items[i].Inventario == false) {
+            //tr += '<tr>' +
+            //    '<td><input type="radio" clase="" id="rdSeleccionado' + items[i].Codigo + '"  name="rdSeleccionado"  value = "' + items[i].Codigo + '" ></td>' +
+            //    '<td>' + items[i].Codigo + '</td>' +
+            //    '<td>' + items[i].Descripcion1 + '</td>' +
+            //    '<td>' + items[i].Stock + '</td>' +
+            //    '<td>' + items[i].UnidadMedida + '</td>' +
+            //    '</tr>';
+            //    }
+            //}
 
             //}
 
@@ -1950,8 +2031,12 @@ function BuscarCodigoProducto() {
 function BuscarListadoAlmacen() {
     console.log('BuscarListadoAlmacen');
 
+    let IdObra = $("#IdObra").val();
+    console.log(IdObra);
+
     $("#ModalListadoAlmacen").modal();
-    $.post("../Almacen/ObtenerAlmacen", function (data, status) {
+    //$.post("../Almacen/ObtenerAlmacen", function (data, status) {
+    $.post("../Almacen/ObtenerAlmacenxIdObra", { 'IdObra': IdObra }, function (data, status) {
 
         if (data == "error") {
             swal("Info!", "No se encontro Almacen")
@@ -2012,12 +2097,12 @@ function SeleccionarItemListado() {
             $("#txtCodigoItem").val(datos[0].Codigo);
             $("#txtIdItem").val(datos[0].IdArticulo);
             $("#txtDescripcionItem").val(datos[0].Descripcion1);
-       
-            $("#txtPrecioUnitarioItem").val(datos[0].UltimoPrecioCompra);
-           
-            
+
+            $("#txtPrecioUnitarioItem").val((datos[0].UltimoPrecioCompra).toFixed(DecimalesPrecios));
+
+
             $("#txtStockAlmacenItem").val(datos[0].Stock);
-            $("#txtPrecioUnitarioItem").val(datos[0].PrecioPromedio)
+            $("#txtPrecioUnitarioItem").val((datos[0].PrecioPromedio).toFixed(DecimalesPrecios))
             $("#txtPrecioUnitarioItemOriginal").val(datos[0].PrecioPromedio);
             $("#txtPrecioUnitarioItem").prop("disabled", true);
 
@@ -2117,18 +2202,18 @@ function CerrarModalListadoAlmacen() {
     tableAlmacen.destroy();
 }
 
-function ObtenerConfiguracionDecimales() {
+//function ObtenerConfiguracionDecimales() {
 
-    $.post("/ConfiguracionDecimales/ObtenerConfiguracionDecimales", function (data, status) {
+//    $.post("/ConfiguracionDecimales/ObtenerConfiguracionDecimales", function (data, status) {
 
-        let datos = JSON.parse(data);
-        DecimalesCantidades = datos[0].Cantidades;
-        DecimalesImportes = datos[0].Importes;
-        DecimalesPrecios = datos[0].Precios;
-        DecimalesPorcentajes = datos[0].Porcentajes;
+//        let datos = JSON.parse(data);
+//        DecimalesCantidades = datos[0].Cantidades;
+//        DecimalesImportes = datos[0].Importes;
+//        DecimalesPrecios = datos[0].Precios;
+//        DecimalesPorcentajes = datos[0].Porcentajes;
 
-    });
-}
+//    });
+//}
 
 
 
@@ -2183,6 +2268,32 @@ function GenerarExtorno() {
         confirmButtonText: 'Si Generar!'
     }).then((result) => {
         if (result.isConfirmed) {
+
+            var parar = 0;
+            $.post("/Movimientos/ValidarExtorno", { 'IdMovimiento': IdMovimiento }, function (data, status) {
+
+                var datos = data.split("|");
+                console.log(datos);
+
+                if (Number(datos[0]) > 0) {
+                    Swal.fire(
+                        'Error!',
+                        'Este documento ya ha sido extornado! ' + datos[1],
+                        'error'
+                    )
+                    parar++;
+                }
+                
+      
+            });
+
+            if (parar > 0) {
+                return;
+            }
+           
+
+
+
             $.ajax({
                 url: "GenerarSalidaExtorno",
                 type: "POST",
@@ -2207,7 +2318,7 @@ function GenerarExtorno() {
                         )
                         //swal("Exito!", "Proceso Realizado Correctamente", "success")
                         table.destroy();
-                        ConsultaServidor("../Movimientos/ObtenerMovimientosIngresos");
+                        ConsultaServidor();
 
                     } else {
                         Swal.fire(
@@ -2287,16 +2398,17 @@ function CargarBasesObraAlmacenSegunAsignado() {
 }
 
 function ObtenerDatosDefinicion() {
-    let IdDefinicionGrupo=$("#cboMedidaItem").val();
+    let IdDefinicionGrupo = $("#cboMedidaItem").val();
     $.post("/GrupoUnidadMedida/ObtenerDefinicionUnidadMedidaxIdDefinicionGrupo", { 'IdDefinicionGrupo': IdDefinicionGrupo }, function (data, status) {
         let datos = JSON.parse(data);
-        $("#txtPrecioUnitarioItem").val($("#txtPrecioUnitarioItemOriginal").val() * datos.CantidadAlt);
+        $("#txtPrecioUnitarioItem").val(($("#txtPrecioUnitarioItemOriginal").val() * datos.CantidadAlt).toFixed(DecimalesPrecios));
     });
 }
 
 function borrartditem(contador) {
     $("#tritem" + contador).remove()
     CalcularTotales();
+    NumeracionDinamica();
 }
 
 
@@ -2357,14 +2469,14 @@ function CargarMotivoTraslado() {
         if (validadJson(data)) {
             let datos = JSON.parse(data);
             let option = "";
-            option= `<option value="0">SELECCIONE MOTIVO TRASLADO</option>`
+            option = `<option value="0">SELECCIONE MOTIVO TRASLADO</option>`
             for (var i = 0; i < datos.length; i++) {
-                option += `<option value="` + datos[i].IdMotivoTraslado + `">` + datos[i].CodigoSunat + '-' + datos[i].Descripcion +`</option>`
+                option += `<option value="` + datos[i].IdMotivoTraslado + `">` + datos[i].CodigoSunat + '-' + datos[i].Descripcion + `</option>`
             }
             $("#IdMotivoTraslado").html(option);
             $("#IdMotivoTraslado").select2();
         } else {
-            
+
         }
     });
 }
@@ -2375,14 +2487,14 @@ function CargarProveedor() {
         let option = `<option value="0">SELECCIONE PROVEEDOR</option>`;
         console.log(Proveedor);
         for (var i = 0; i < Proveedor.length; i++) {
-            option += `<option value="` + Proveedor[i].IdProveedor + `">` + Proveedor[i].NumeroDocumento + `-` + Proveedor[i].RazonSocial +`</option>`
+            option += `<option value="` + Proveedor[i].IdProveedor + `">` + Proveedor[i].NumeroDocumento + `-` + Proveedor[i].RazonSocial + `</option>`
         }
 
         $("#IdTransportista").html(option);
         $("#IdDestinatario").html(option);
         $("#IdTransportista").select2();
         $("#IdDestinatario").select2();
-        
+
     });
 }
 
@@ -2434,7 +2546,7 @@ function GenerarGuia() {
                     //    )
                     //    //swal("Exito!", "Proceso Realizado Correctamente", "success")
                     //    table.destroy();
-                  
+
 
                     //} else {
                     //    Swal.fire(
@@ -2786,7 +2898,7 @@ function AgregarOPNDDetalle(data) {
             <td> <input class="form-control" type="text" value="BASADO EN LA ENTREGA `+ serieycorrelativo + `" id="txtReferencia` + contador + `" name="txtReferencia[]"></td>
             <td><button class="btn btn-xs btn-danger borrar" onclick="borrartditem(`+ contador + `)">-</button></td>
           </tr>`;
-          
+
             $("#tabla").find('tbody').append(tr);
 
 
@@ -2843,24 +2955,137 @@ function CalculaCantidadMaxima(conta) {
     }
 }
 
+function OcultarCampos() {
+    if ($("#IdTipoDocumentoRef").val() == 1) {
+        console.log("mostrars")
+        $(".ocultate").show()
+    } else {
+        console.log("ocultars")
+        $(".ocultate").hide()
+    }
+
+}
 
 
 
-function GenerarReporte(id) {
+function GenerarReporte(id, idextorno) {
+    if (idextorno == 1) {
+        console.log("extornado")
+        $.ajaxSetup({ async: false });
+        $.post("/EntradaMercancia/GenerarReporte", { 'NombreReporte': 'SalidaMercanciaExtornado', 'Formato': 'PDF', 'Id': id }, function (data, status) {
+            let datos;
+            if (validadJson(data)) {
+                let datobase64;
+                datobase64 = "data:application/octet-stream;base64,"
+                datos = JSON.parse(data);
+                //datobase64 += datos.Base64ArchivoPDF;
+                //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
+                //$("#reporteRPT").attr("href", datobase64);
+                //$("#reporteRPT")[0].click();
+                verBase64PDF(datos)
+            } else {
+                respustavalidacion
+            }
+        });
+    }
+    else {
+        $.ajaxSetup({ async: false });
+        $.post("/EntradaMercancia/GenerarReporte", { 'NombreReporte': 'SalidaMercancia', 'Formato': 'PDF', 'Id': id }, function (data, status) {
+            let datos;
+            if (validadJson(data)) {
+                let datobase64;
+                datobase64 = "data:application/octet-stream;base64,"
+                datos = JSON.parse(data);
+                //datobase64 += datos.Base64ArchivoPDF;
+                //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
+                //$("#reporteRPT").attr("href", datobase64);
+                //$("#reporteRPT")[0].click();
+                verBase64PDF(datos)
+            } else {
+                respustavalidacion
+            }
+        });
+    }
+}
+
+
+function ObtenerEmpleadosxIdCuadrilla() {
+
+    let IdCuadrilla = $("#IdCuadrilla").val();
     $.ajaxSetup({ async: false });
-    $.post("/EntradaMercancia/GenerarReporte", { 'NombreReporte': 'SalidaMercancia', 'Formato': 'PDF', 'Id': id }, function (data, status) {
-        let datos;
-        if (validadJson(data)) {
-            let datobase64;
-            datobase64 = "data:application/octet-stream;base64,"
-            datos = JSON.parse(data);
-            datobase64 += datos.Base64ArchivoPDF;
-            $("#reporteRPT").attr("download", 'Reporte.' + "pdf");
-            $("#reporteRPT").attr("href", datobase64);
-            $("#reporteRPT")[0].click();
-
-        } else {
-            respustavalidacion
-        }
+    $.post("/Empleado/ObtenerEmpleadosPorUsuarioBase", function (data, status) {
+        let empleados = JSON.parse(data);
+        llenarComboEmpleados(empleados, "EntregadoA", "Seleccione")
     });
 }
+
+function llenarComboEmpleados(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    console.log("Empleados: "+lista.length)
+    var nCampos;
+    var campos;
+    let ultimoindice = 0;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdEmpleado + "'>" + lista[i].RazonSocial.toUpperCase() + "</option>"; ultimoindice = i }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+    $("#" + idCombo).val(lista[ultimoindice].IdEmpleado).change();
+    ObtenerCapataz()
+}
+function ObtenerCapataz() {
+    let IdCuadrilla = $("#IdCuadrilla").val();
+    //setTimeout(() => {
+    $.post("/Empleado/ObtenerCapatazXCuadrilla", { 'IdCuadrilla': IdCuadrilla }, function (data, status) {
+        let capataz = JSON.parse(data);
+        $("#EntregadoA").select2("val", capataz[0].IdEmpleado);
+    })
+    /*  }, 1000);*/
+
+
+}
+
+
+function NumeracionDinamica() {
+    var i = 1;
+    $('#tabla > tbody  > tr').each(function (e) {
+        $(this)[0].cells[0].outerHTML = '<td>' + i + '</td>';
+        i++;
+    });
+}
+
+function verBase64PDF(datos) {
+    //var b64 = "JVBERi0xLjcNCiWhs8XXDQoxIDAgb2JqDQo8PC9QYWdlcyAyIDAgUiAvVHlwZS9DYXRhbG9nPj4NCmVuZG9iag0KMiAwIG9iag0KPDwvQ291bnQgMS9LaWRzWyA0IDAgUiBdL1R5cGUvUGFnZXM+Pg0KZW5kb2JqDQozIDAgb2JqDQo8PC9DcmVhdGlvbkRhdGUoRDoyMDIyMDkyODE2NDAzMCkvQ3JlYXRvcihQREZpdW0pL1Byb2R1Y2VyKFBERml1bSk+Pg0KZW5kb2JqDQo0IDAgb2JqDQo8PC9Db250ZW50cyA1IDAgUiAvTWVkaWFCb3hbIDAgMCA2MTIgNzkyXS9QYXJlbnQgMiAwIFIgL1Jlc291cmNlczw8L0ZvbnQ8PC9GMSA2IDAgUiA+Pi9Qcm9jU2V0IDcgMCBSID4+L1R5cGUvUGFnZT4+DQplbmRvYmoNCjUgMCBvYmoNCjw8L0ZpbHRlci9GbGF0ZURlY29kZS9MZW5ndGggMzExPj5zdHJlYW0NCnicvZPNasMwEITvBr/DHFtot7LiH/mYtMmhECjU9C5i2VGw5WDJpfTpayckhUCDSqGSDjsHfcPOshzPYbAowoBhun0dBg+rCIzxDEUVBklGsyxhyDgnLhhDUYbBDeZ41e2+UXh5WmGlx+IWxS4MlsWRdmRE7MBIc+LJ+DUVglImToxiqy3GJ2Fb2TQoVdsZ63rpdGdA+7JCNZHvvdhpTBmLT+zdYB2qrsdgFbSB2yq86d4NssFabbbS6I2FG1zXa9lYwrrrFZz6cIS5KdFO0sc24ZQl/GR7AfCRPiZckIjPuf0K/5P0sY1SEnl6tbfFmJ+p7/A5HR9zH18WUx6fR/nnVr1zTnJOec79cvbhjQUT/z63ZNzZaHZ9bhdy+a7MQRMeO+O0GVSJcQn3slbgIKJv3y8shB6ADQplbmRzdHJlYW0NCmVuZG9iag0KNiAwIG9iag0KPDwvQmFzZUZvbnQvSGVsdmV0aWNhL0VuY29kaW5nL1dpbkFuc2lFbmNvZGluZy9OYW1lL0YxL1N1YnR5cGUvVHlwZTEvVHlwZS9Gb250Pj4NCmVuZG9iag0KNyAwIG9iag0KWy9QREYvVGV4dF0NCmVuZG9iag0KeHJlZg0KMCA4DQowMDAwMDAwMDAwIDY1NTM1IGYNCjAwMDAwMDAwMTcgMDAwMDAgbg0KMDAwMDAwMDA2NiAwMDAwMCBuDQowMDAwMDAwMTIyIDAwMDAwIG4NCjAwMDAwMDAyMDkgMDAwMDAgbg0KMDAwMDAwMDM0MyAwMDAwMCBuDQowMDAwMDAwNzI2IDAwMDAwIG4NCjAwMDAwMDA4MjUgMDAwMDAgbg0KdHJhaWxlcg0KPDwNCi9Sb290IDEgMCBSDQovSW5mbyAzIDAgUg0KL1NpemUgOC9JRFs8NEY2MkQwQTkwNDlFOUM1N0NGQzRCODEzRTVCNjhDNUI+PDRGNjJEMEE5MDQ5RTlDNTdDRkM0QjgxM0U1QjY4QzVCPl0+Pg0Kc3RhcnR4cmVmDQo4NTUNCiUlRU9GDQo=";
+    var b64 = datos.Base64ArchivoPDF;
+    // aquí convierto el base64 en caracteres
+    var characters = atob(b64);
+    // aquí convierto todo a un array de bytes usando el codigo de cada caracter:
+    var bytes = new Array(characters.length);
+    for (var i = 0; i < characters.length; i++) {
+        bytes[i] = characters.charCodeAt(i);
+    }
+    // en este punto ya tengo un array de bytes,
+    // (supongo que es algo similar a lo que te llega de respuesta)
+    // el siguiente paso sería convertir este array en un typed array
+    // para construir el blob correctamente:
+    var chunk = new Uint8Array(bytes);
+
+    // se construye el blob con el mime type respectivo
+    var blob = new Blob([chunk], {
+        type: 'application/pdf'
+    });
+
+    // se crea un object url con el blob para usarlo:
+    var url = URL.createObjectURL(blob);
+
+    // y de esta manera simplemente lo abro en una nueva ventana:
+    window.open(url, '_blank');
+}
+function LimpiarAlmacen() {
+    $("#cboAlmacen").prop("selectedIndex", 0)
+}
+

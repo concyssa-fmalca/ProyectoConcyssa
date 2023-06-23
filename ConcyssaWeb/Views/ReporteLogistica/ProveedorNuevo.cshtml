@@ -1,0 +1,40 @@
+﻿@{
+    ViewBag.Title = "PRoveedorNuevo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" style="height:93%;">
+
+    <div class="panel">
+        <div class="container-fluid">
+            <div class="topbar-left col-xs-6">
+
+
+                <h3>Proveedor Nuevo</h3>
+            </div>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="container-fluid">
+
+            <a id="reporteRPT" style="display:none"></a>
+            <div class="panel-footer text-right">
+                <div class="row">
+                    <input class="form-control input-sm" placeholder="Ingrese Año" id="IdAnio" />
+                    <button type="button" id="btnReporte" class="btn btn-primary pull-centers plu" onclick="GenerarReporteProveedorNuevo()">Generar Reporte</button>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script src="~/Scripts/ReporteLogistica/ProveedorNuevo.js"></script>
+<script src="~/Scripts/General.js"></script>
+<script src="~/js/pdf/jspdf.min.js"></script>
+<script src="~/js/pdf/faker.min.js"></script>
+<script src="~/js/pdf/jspdf.plugin.autotable.src.js"></script>
+
+

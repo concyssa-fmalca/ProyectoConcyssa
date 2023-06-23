@@ -22,7 +22,14 @@ function configurarBoton() {
 
     var btnAplicar = document.getElementById("btnAplicar"),
         cboRol = document.getElementById("cboRol");
+
+    
+
+
     btnAplicar.onclick = function () {
+
+
+
         if (cboRol.value != -1) {
             var ch = document.getElementsByName("permiso"),
                 cl = document.getElementsByName("lectura"),
@@ -48,7 +55,7 @@ function configurarBoton() {
             cnt = cnt.substring(0, cnt.length - 1)
             console.log(cnt.split("¬"));
             //enviarServidor("grabarAcceso", "post", mostrarRpta, cnt);
-            enviarServidor("grabarAcceso", "post", mostrarRpta, cnt);
+            enviarServidor1("grabarAcceso", "post", mostrarRpta, cnt);
         }
     }
     cboRol.onchange = function () {
@@ -149,7 +156,34 @@ function enviarServidor(url, tipo, metodo, frm) {
         }
     }
     xhr.send(frm);
+
 }
+
+function enviarServidor1(url, tipo, metodo, frm) {
+
+    $.post(url, { datos: frm }, function (data, status) {
+        console.log(data);
+        if (data == 1) {
+            swal({
+                title: "Exito",
+                text: "Accesos Grabados",
+                type: "success",
+                showCancelButton: false
+            });
+        } else {
+            swal({
+                title: "Error",
+                text: "Error al procesar información",
+                type: "error",
+                showCancelButton: false
+            });
+        }
+
+    });
+
+}
+
+
 function llenarCombo(lst, id, item) {
 
     var nrgs = lst.length, cmps, cnt = "";

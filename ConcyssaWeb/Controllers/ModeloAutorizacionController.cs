@@ -172,6 +172,28 @@ namespace ConcyssaWeb.Controllers
             return rpta;
         }
 
+        
+        public int EliminarModeloAutorizacion(int IdModeloAutorizacion)
+        {
+            int valida = 0;
+            valida = validarEmpresaActualUpdateInsert();
+            if (valida != 0)
+            {
+                return valida;
+            }
+
+
+            ModeloAutorizacionDAO oModeloAutorizacionDAO = new ModeloAutorizacionDAO();
+            int resultado = oModeloAutorizacionDAO.EliminarModeloAutorizacion(IdModeloAutorizacion);
+            if (resultado == 0)
+            {
+                resultado = 1;
+            }
+
+            return resultado;
+        }
+
+
 
     }
 }

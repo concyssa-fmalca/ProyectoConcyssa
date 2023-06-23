@@ -18,6 +18,6 @@ namespace DTO
         public string NombArticulo { get; set; }
         public string NombAlmacen { get; set; }
         public string Codigo { get; set; }
-
+        public string NombObra { get; set; }
     }
 }

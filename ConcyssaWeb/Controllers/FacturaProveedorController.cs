@@ -2,6 +2,7 @@
 using DTO;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Net;
 
 namespace ConcyssaWeb.Controllers
 {
@@ -17,13 +18,15 @@ namespace ConcyssaWeb.Controllers
             return View();
         }
 
-        public string ListarOPCHDT(string EstadoOPCH = "ABIERTO")
+        public string ListarOPCHDT(int IdBase,string EstadoOPCH = "ABIERTO")
         {
             string mensaje_error = "";
             OpchDAO oOpchDAO = new OpchDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+
             DataTableDTO oDataTableDTO = new DataTableDTO();
-            List<OpchDTO> lstOpchDTO = oOpchDAO.ObtenerOPCHxEstado(IdSociedad, ref mensaje_error, EstadoOPCH);
+            List<OpchDTO> lstOpchDTO = oOpchDAO.ObtenerOPCHxEstado(IdBase,IdSociedad, ref mensaje_error, EstadoOPCH, IdUsuario);
             if (lstOpchDTO.Count >= 0 && mensaje_error.Length==0)
             {
                 oDataTableDTO.sEcho = 1;
@@ -47,8 +50,9 @@ namespace ConcyssaWeb.Controllers
             string mensaje_error = "";
             OpchDAO oOpchDAO = new OpchDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             DataTableDTO oDataTableDTO = new DataTableDTO();
-            List<OpchDTO> lstOpchDTO = oOpchDAO.ObtenerOPCHxEstadoModal(IdSociedad, ref mensaje_error, EstadoOPCH);
+            List<OpchDTO> lstOpchDTO = oOpchDAO.ObtenerOPCHxEstadoModal(IdSociedad, ref mensaje_error, EstadoOPCH, IdUsuario);
             if (lstOpchDTO.Count >= 0 && mensaje_error.Length == 0)
             {
                 oDataTableDTO.sEcho = 1;
@@ -222,7 +226,58 @@ namespace ConcyssaWeb.Controllers
             }
             return JsonConvert.SerializeObject(Archivos);
         }
+        public string ObtenerTipoCambio(string Moneda, string Fecha)
+        {
+            string mensaje_error;
+            string valida = "";
+            string Resultado = "1";
 
-        
+            if (Moneda == "1")
+            {
+                Resultado = "1";
+            }
+            else
+            {
+                WebResponse webResponse;
+                HttpWebRequest request;
+                Uri uri;
+                string response;
+                try
+                {
+
+                    string cadenaUri = "https://api.apis.net.pe/v1/tipo-cambio-sunat?fecha=" + Fecha;
+                    uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
+                    request = (HttpWebRequest)WebRequest.Create(uri);
+                    request.ContentType = "application/json";
+                    webResponse = request.GetResponse();
+                    Stream webStream = webResponse.GetResponseStream();
+                    StreamReader responseReader = new StreamReader(webStream);
+                    response = responseReader.ReadToEnd();
+                    Resultado = response;
+                    var ff = JsonConvert.DeserializeObject(response);
+                    var ddd = "ee";
+                }
+                catch (WebException e)
+                {
+                    using (WebResponse responses = e.Response)
+                    {
+                        HttpWebResponse httpResponse = (HttpWebResponse)responses;
+                        using (Stream data = responses.GetResponseStream())
+                        using (var reader = new StreamReader(data))
+                        {
+                            mensaje_error = reader.ReadToEnd();
+
+                        }
+                    }
+
+                    string err = e.ToString();
+                }
+            }
+
+            return Resultado;
+
+        }
+
+
     }
 }

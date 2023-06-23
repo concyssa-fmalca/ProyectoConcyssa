@@ -58,6 +58,24 @@ namespace ConcyssaWeb.Controllers
 
         }
 
+
+        public string ObtenerCondicionxProveedor(int IdProveedor)
+        {
+            CondicionPagoDAO oCondicionPagoDAO = new CondicionPagoDAO();
+            List<CondicionPagoDTO> lstCondicionPagoDTO = oCondicionPagoDAO.ObtenerCondicionxProveedor(IdProveedor);
+
+            if (lstCondicionPagoDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstCondicionPagoDTO);
+            }
+            else
+            {
+                return "error";
+            }
+
+        }
+
+
         public int EliminarCondicionPago(int IdCondicionPago)
         {
             CondicionPagoDAO oCondicionPagoDAO = new CondicionPagoDAO();

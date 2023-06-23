@@ -4,6 +4,7 @@ let contartr = 0;
 window.onload = function () {
     var url = "ObtenerUsuarios";
     ConsultaServidor(url);
+    CargarEstadosGiro();
 };
 
 
@@ -54,6 +55,7 @@ function ModalNuevo() {
     AbrirModal("modal-form");
     CargarPerfiles();
     CargarSociedades();
+    CargarEstadosGiro();
     CargarDepartamentos();
 }
 
@@ -107,6 +109,19 @@ function CargarSociedades() {
     });
 
 }
+function CargarEstadosGiro() {
+
+    $.post("/Estados/ObtenerEstados", { Modulo: 2 }, function (data, status) {
+
+        let sociedades = JSON.parse(data);
+        llenarComboEstados(sociedades, "cboAbrobar", "NINGUNO")
+
+    });
+
+}
+
+
+
 
 function llenarComboPerfil(lista, idCombo, primerItem) {
     var contenido = "";
@@ -139,6 +154,23 @@ function llenarComboSociedad(lista, idCombo, primerItem) {
 }
 
 
+function llenarComboEstados(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].Id + "'>" + lista[i].Descripcion + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+
+    $("#"+idCombo).val(0)
+}
+
 
 function GuardarUsuario() {
 
@@ -148,6 +180,7 @@ function GuardarUsuario() {
     let varContraseña = $("#txtContraseña").val();
     let varPerfil = $("#cboPerfil").val();
     let varSociedad = $("#cboSociedad").val();
+    let varAbrobar = $("#cboAbrobar").val();
     let varEstado = false;
     let MovimientoInventario = false;
 
@@ -175,6 +208,7 @@ function GuardarUsuario() {
         'SapUsuario': varUsuarioSAP,
         'SapPassword': varContrasenaSAP,
         'IdDepartamento': varDepartamento,
+        'AprobarGiro': varAbrobar,
         'Correo': varCorreo
     }, function (data, status) {
 
@@ -216,6 +250,7 @@ function ObtenerDatosxID(varIdUsuario) {
             $("#txtContrasenaSap").val(usuarios[0].SapPassword);
             $("#txtCorreo").val(usuarios[0].Correo);
             $("#cboDepartamento").val(usuarios[0].IdDepartamento);
+            $("#cboAbrobar").val(usuarios[0].AprobarGiro);
             if (usuarios[0].Estado) {
                 $("#chkActivo").prop('checked', true);
             }
@@ -335,8 +370,12 @@ function listartablealmacenbase(IdUsuario) {
                 <td><select id="ab_IdAlmacen`+ contartr + `" class="form-control input-sm">
                     </select></td>
                 <td>
-                    <button class="btn btn-info"  onclick="savealmacenbase(`+ contartr + `,` + basealmacenes[i].IdUsuarioBase + `)">+</button>
-                    <button class="btn btn-danger" onclick="eliminartralmacenbase(`+ basealmacenes[i].IdUsuarioBase + `,` + contartr +`)">-</button>
+                    <div class="btn-group" role="group" aria-label="..." style="inline-size: max-content !important; ">
+                        <button style="margin-top:0px !important;margin-bottom:0px !important;" class="btn btn-info btn-xs fa"   onclick="savealmacenbase(`+ contartr + `,` + basealmacenes[i].IdUsuarioBase + `)">Guardar</button>
+                        <button style="background-color:red;margin-top:0px !important;margin-bottom:0px !important;" class="btn btn-danger btn-xs fa fa-trash" onclick="eliminartralmacenbase(`+ basealmacenes[i].IdUsuarioBase + `,` + contartr +`)"></button>
+                    </div>
+
+                    
                 </td>
             </tr>`;
             $("#table_base_almacen").append(tr);
@@ -464,8 +503,10 @@ function addtrAlmacenBase() {
                 <td><select id="ab_IdAlmacen`+ contartr + `" class="form-control input-sm">
                     </select></td>
                 <td>
-                    <button class="btn btn-info" onclick="savealmacenbase(`+ contartr +`,0)">GUARDAR</button>
-                    <button class="btn btn-danger" onclick="eliminartralmacenbase(0,`+ contartr +`)">-</button>
+                    <div class="btn-group" role="group" aria-label="..." style="inline-size: max-content !important; ">
+                        <button style="margin-top:0px !important;margin-bottom:0px !important;" class="btn btn-info btn-xs" onclick="savealmacenbase(`+ contartr +`,0)">GUARDAR</button>
+                        <button style="background-color:red;margin-top:0px !important;margin-bottom:0px !important;" class="btn btn-danger btn-xs" onclick="eliminartralmacenbase(0,`+ contartr +`)">X</button>
+                    </div>
                 </td>
             </tr>`;
     $("#table_base_almacen").append(tr);

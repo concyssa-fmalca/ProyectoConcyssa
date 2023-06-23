@@ -223,7 +223,7 @@ function AgregarLinea() {
         Departamentos = JSON.parse(data);
     });
 
-    $.post("/Usuario/ObtenerUsuariosAutorizadores", function (data, status) {
+    $.post("/Usuario/ObtenerUsuariosAutorizadoresEtapa", function (data, status) {
         var errorEmpresa = validarEmpresa(data);
         if (errorEmpresa) {
             return;
@@ -304,7 +304,7 @@ function AgregarLineaDetalle(contador, IdEtapaAutorizacionDetalle, IdUsuario, Id
         Departamentos = JSON.parse(data);
     });
 
-    $.post("/Usuario/ObtenerUsuariosAutorizadores", function (data, status) {
+    $.post("/Usuario/ObtenerUsuariosAutorizadoresEtapa", function (data, status) {
         var errorEmpresa = validarEmpresa(data);
         if (errorEmpresa) {
             return;

@@ -50,6 +50,8 @@ namespace ConcyssaWeb.Controllers
                     HttpContext.Session.SetInt32("Estado", Convert.ToInt32(oUsuarioDTO.Estado));
                     HttpContext.Session.SetString("NombreSociedad", oUsuarioDTO.NombreSociedad);
                     HttpContext.Session.SetString("NumeroDocumento", oUsuarioDTO.NumeroDocumento);
+                    HttpContext.Session.SetString("NombBase", oUsuarioDTO.NombBase);
+
                     return true;
                 }
                 else

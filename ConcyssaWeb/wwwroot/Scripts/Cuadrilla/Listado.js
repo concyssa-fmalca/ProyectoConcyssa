@@ -2,18 +2,16 @@
 
 
 window.onload = function () {
-    var url = "ObtenerCuadrilla";
-    ConsultaServidor(url);
     listarObra();
-    listarGrupo();
+    listarObraFiltro()
     listarArea();
     listarEmpleados();
 };
 
 
-function ConsultaServidor(url) {
-
-    $.post(url, function (data, status) {
+function ConsultaServidor() {
+    let varIdObra = $("#cboObras").val()
+    $.post("ObtenerCuadrillaxIdObra", {'IdObra': varIdObra }, function (data, status) {
 
         //console.log(data);
         if (data == "error") {
@@ -113,7 +111,6 @@ function GuardarCuadrilla() {
 function ObtenerDatosxID(varIdCuadrilla) {
     $("#lblTituloModal").html("Editar Cuadrilla");
     AbrirModal("modal-form");
-
     //console.log(varIdUsuario);
 
     $.post('ObtenerDatosxID', {
@@ -126,10 +123,19 @@ function ObtenerDatosxID(varIdCuadrilla) {
         } else {
             let cuadrilla = JSON.parse(data);
             //console.log(usuarios);
-            $("#txtId").val(cuadrilla[0].IdCuadrilla);
+            $("#txtId").val(cuadrilla[0].IdCuadrilla);    
             $("#IdObra").val(cuadrilla[0].IdObra);
-            $("#IdGrupo").val(cuadrilla[0].IdGrupo).change();
-            $("#IdSubGrupo").val(cuadrilla[0].IdSubGrupo);
+            listarGrupo()
+            setTimeout(() => {
+                $("#IdGrupo").val(cuadrilla[0].IdGrupo).change();
+            }, 50);
+            listarSubGrupoxIdGrupo()
+            setTimeout(() => {
+                $("#IdSubGrupo").val(cuadrilla[0].IdSubGrupo);
+            }, 100);
+           
+   
+
             $("#txtCodigo").val(cuadrilla[0].Codigo);
             $("#txtDescripcion").val(cuadrilla[0].Descripcion);
             $("#IdCapataz").val(cuadrilla[0].IdCapataz);
@@ -155,7 +161,7 @@ function ObtenerDatosxID(varIdCuadrilla) {
 
 function listarObra() {
     $.ajax({
-        url: "../Obra/ObtenerObra",
+        url: "../Obra/ObtenerObraxIdUsuarioSessionFiltro",
         type: "GET",
         contentType: "application/json",
         dataType: "json",
@@ -170,17 +176,16 @@ function listarObra() {
             if (datos.length > 0) {
 
                 for (var i = 0; i < datos.length; i++) {
-                    options += `<option value="` + datos[i].IdObra + `">` + datos[i].Descripcion + `</option>`;
+                    options += `<option value="` + datos[i].IdObra + `">` + datos[i].Codigo +" - "+ datos[i].Descripcion + `</option>`;
                 }
                 $("#IdObra").html(options);
             }
         }
     });
 }
-
-function listarGrupo() {
+function listarObraFiltro() {
     $.ajax({
-        url: "../Grupo/ObtenerGrupo",
+        url: "../Obra/ObtenerObraxIdUsuarioSessionFiltro",
         type: "GET",
         contentType: "application/json",
         dataType: "json",
@@ -190,12 +195,37 @@ function listarGrupo() {
         cache: false,
         contentType: false,
         success: function (datos) {
+            $("#cboObras").html('');
+            let options = `<option value="0">Seleccione</option>`;
+            if (datos.length > 0) {
+
+                for (var i = 0; i < datos.length; i++) {
+                    options += `<option value="` + datos[i].IdObra + `">` + datos[i].Codigo + " - " + datos[i].Descripcion + `</option>`;
+                }
+                $("#cboObras").html(options);
+            }
+        }
+    });
+}
+
+function listarGrupo() {
+    $.ajax({
+        url: "../Grupo/ObtenerGrupoxObra",
+        type: "GET",
+        contentType: "application/json",
+        dataType: "json",
+        data: {
+            'IdObra': $("#IdObra").val()
+        },
+        cache: false,
+        contentType: false,
+        success: function (datos) {
             $("#IdGrupo").html('');
             let options = `<option value="0">Seleccione</option>`;
             if (datos.length > 0) {
 
                 for (var i = 0; i < datos.length; i++) {
-                    options += `<option value="` + datos[i].IdGrupo + `">` + datos[i].Descripcion + `</option>`;
+                    options += `<option value="` + datos[i].IdGrupo + `">` + datos[i].Codigo + " - " + datos[i].Descripcion + `</option>`;
                 }
                 $("#IdGrupo").html(options);
             }
@@ -223,7 +253,7 @@ function listarSubGrupoxIdGrupo() {
             if (datos.length > 0) {
 
                 for (var i = 0; i < datos.length; i++) {
-                    options += `<option value="` + datos[i].IdGrupo + `">` + datos[i].Descripcion + `</option>`;
+                    options += `<option value="` + datos[i].IdSubGrupo + `">` + datos[i].Codigo + " - " + datos[i].Descripcion + `</option>`;
                 }
                 $("#IdSubGrupo").html(options);
             }
@@ -324,6 +354,22 @@ function limpiarDatos() {
     $("#IdSupervisor").val(0);
     $("#IdArea").val(0);
     
+}
+function colocarCodigo() {
+    console.log($("#IdSubGrupo").val())
+    $.post('../Grupo/ObtenerSubGrupoxID', {
+        'IdSubGrupo': $("#IdSubGrupo").val(),
+    }, function (data, status) {
+
+        if (data == "Error") {
+            swal("Error!", "Ocurrio un error")
+            limpiarDatos();
+        } else {
+            let grupo = JSON.parse(data);
+            $("#txtCodigo").val(grupo[0].Codigo);
+        }
+
+    });
 }
 
 

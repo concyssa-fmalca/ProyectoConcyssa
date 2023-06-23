@@ -34,6 +34,8 @@ namespace DAO
                         oBaseDTO.Descripcion = drd["Descripcion"].ToString();
                         oBaseDTO.Estado = bool.Parse(drd["Estado"].ToString());
                         oBaseDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
+                        oBaseDTO.IdDivision = int.Parse(drd["IdDivision"].ToString());
+                        oBaseDTO.Division = (drd["Division"].ToString());
                         lstBaseDTO.Add(oBaseDTO);
                     }
                     drd.Close();
@@ -70,6 +72,7 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@Estado", oBaseDTO.Estado);
                         da.SelectCommand.Parameters.AddWithValue("@UsuarioCreacion", IdUsuario);
                         da.SelectCommand.Parameters.AddWithValue("@UsuarioActualizacion", IdUsuario);
+                        da.SelectCommand.Parameters.AddWithValue("@IdDivision", oBaseDTO.IdDivision);
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
                         return rpta;
@@ -103,6 +106,8 @@ namespace DAO
                         oBaseDTO.Codigo = drd["Codigo"].ToString();
                         oBaseDTO.Descripcion = drd["Descripcion"].ToString();
                         oBaseDTO.Estado = bool.Parse(drd["Estado"].ToString());
+                        oBaseDTO.IdDivision = int.Parse(drd["IdDivision"].ToString());
+                        
                         lstBaseDTO.Add(oBaseDTO);
                     }
                     drd.Close();
@@ -145,6 +150,42 @@ namespace DAO
                     }
                 }
             }
+        }
+
+
+        public List<BaseDTO> ObtenerBasexIdUsuario(int IdPerfil,int IdUsuario, ref string mensaje_error, int Estado = 3)
+        {
+            List<BaseDTO> lstBaseDTO = new List<BaseDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarBasesxIdUsuarioV2", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
+                    da.SelectCommand.Parameters.AddWithValue("@IdPerfil", IdPerfil);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        BaseDTO oBaseDTO = new BaseDTO();
+                        oBaseDTO.IdBase = int.Parse(drd["IdBase"].ToString());
+                        oBaseDTO.Codigo = drd["Codigo"].ToString();
+                        oBaseDTO.Descripcion = drd["Descripcion"].ToString();
+                        oBaseDTO.Estado = bool.Parse(drd["Estado"].ToString());
+                        oBaseDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
+                        lstBaseDTO.Add(oBaseDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstBaseDTO;
         }
     }
 }

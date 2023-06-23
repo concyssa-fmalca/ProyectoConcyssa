@@ -17,6 +17,7 @@
         public DateTime FechaContabilizacion { get; set; }
         public DateTime FechaDocumento { get; set; }
         public DateTime FechaVencimiento { get; set; }
+        public DateTime FechaEntrega { get; set; }
         public int IdListaPrecios { get; set; }
 
         public string Referencia { get; set; }
@@ -85,6 +86,8 @@
         public string DescripcionArticulo { get; set; }
         public int IdAlmacen { get; set; }
         public decimal Cantidad { get; set; }
+
+        public decimal CantidadDePedido { get; set; }
         public decimal Igv { get; set; }
         public decimal PrecioUnidadBase { get; set; }
         public decimal PrecioUnidadTotal { get; set; }
@@ -125,7 +128,7 @@
         public decimal CantidadUsada { get; set; }
         public decimal CantidadDevolucion { get; set; }
 
-
+        public string CodigoArticulo { get; set; }
 
     }
 }

@@ -37,6 +37,38 @@ namespace DAO
             return puedeentrar;
         }
 
+
+
+        public int ValidarSipuedeAprobarDetalle(int IdSolicitudRQ, int IdEtapa,int IdDetalle)
+        {
+            int puedeentrar = 0;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ValidarSipuedeAprobar1", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSolicitud", IdSolicitudRQ);
+                    da.SelectCommand.Parameters.AddWithValue("@IdEtapa", IdEtapa);
+                    da.SelectCommand.Parameters.AddWithValue("@IdDetalle", IdDetalle);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        puedeentrar = int.Parse(drd["puedeentrar"].ToString());
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            return puedeentrar;
+        }
+
+
         public List<SolicitudRQAutorizacionDTO> ObtenerSolicitudesxAutorizar(string IdUsuario, string IdSociedad, string FechaInicio, string FechaFinal, int Estado)
         {
             List<SolicitudRQAutorizacionDTO> lstSolicitudRQAutorizacionDTO = new List<SolicitudRQAutorizacionDTO>();
@@ -94,6 +126,73 @@ namespace DAO
             return lstSolicitudRQAutorizacionDTO;
         }
 
+
+        
+        public List<DetalleSolicitudRqAprobacionDTO> ObtenerSolicitudesxAutorizarDetalle(string IdUsuario, string IdSociedad, string FechaInicio, string FechaFinal, int Estado)
+        {
+            List<DetalleSolicitudRqAprobacionDTO> lstDetalleSolicitudRqAprobacionDTO = new List<DetalleSolicitudRqAprobacionDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    int aprobar = 0;
+                    cn.Open();
+                    //SqlDataAdapter da = new SqlDataAdapter("SMC_ListarSolicitudesxAutorizar", cn);
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarPedidosDetalleAutorizar", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdUsuario", int.Parse(IdUsuario));
+                    da.SelectCommand.Parameters.AddWithValue("@IdSociedad", int.Parse(IdSociedad));
+                    da.SelectCommand.Parameters.AddWithValue("@FechaInicio", FechaInicio);
+                    da.SelectCommand.Parameters.AddWithValue("@FechaFinal", FechaFinal);
+                    //da.SelectCommand.Parameters.AddWithValue("@Estado", Estado);
+                    da.SelectCommand.Parameters.AddWithValue("@EstadoPR", Estado);
+
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        aprobar = 0;
+                        aprobar = ValidarSipuedeAprobarDetalle(Convert.ToInt32(drd["IdSolicitud"].ToString()), Convert.ToInt32(drd["IdEtapa"].ToString()), Convert.ToInt32(drd["IdSolicitudRQDetalle"].ToString()));
+                        if (aprobar==1)
+                        {
+                            DetalleSolicitudRqAprobacionDTO oDetalleSolicitudRqAprobacionDTO = new DetalleSolicitudRqAprobacionDTO();
+                            oDetalleSolicitudRqAprobacionDTO.IdArticulo = Convert.ToInt32(drd["IdArticulo"].ToString());
+                            oDetalleSolicitudRqAprobacionDTO.PrecioInfo = Convert.ToDecimal(drd["PrecioInfo"].ToString());
+                            oDetalleSolicitudRqAprobacionDTO.IdSolicitud = Convert.ToInt32(drd["IdSolicitud"].ToString());
+                            oDetalleSolicitudRqAprobacionDTO.NumeroPedido = (drd["Numero"].ToString());
+
+                            oDetalleSolicitudRqAprobacionDTO.NumeroPedido = (drd["Numero"].ToString());
+                            oDetalleSolicitudRqAprobacionDTO.ObraDescripcion = (drd["ObraDescripcion"].ToString());
+                            oDetalleSolicitudRqAprobacionDTO.TipoProducto = (drd["TipoProducto"].ToString());
+                            oDetalleSolicitudRqAprobacionDTO.IdClaseArticulo = Convert.ToInt32(drd["IdClaseArticulo"].ToString());
+                            oDetalleSolicitudRqAprobacionDTO.CodigoArticulo = (drd["CodigoArticulo"].ToString());
+                            oDetalleSolicitudRqAprobacionDTO.NombreArticulo = (drd["Descripcion1"].ToString());
+                            oDetalleSolicitudRqAprobacionDTO.Numero = Convert.ToInt32(drd["Numero"].ToString());
+                            oDetalleSolicitudRqAprobacionDTO.CantidadNecesaria = Convert.ToDecimal(drd["CantidadNecesaria"].ToString());
+                            oDetalleSolicitudRqAprobacionDTO.Accion = Convert.ToInt32(drd["Accion"].ToString());
+                            oDetalleSolicitudRqAprobacionDTO.IdSolicitudRQModelo = Convert.ToInt32(drd["IdSolicitudRQModelo"].ToString());
+                            oDetalleSolicitudRqAprobacionDTO.IdSolicitudRQDetalle = Convert.ToInt32((drd["IdSolicitudRQDetalle"].ToString()));
+                            oDetalleSolicitudRqAprobacionDTO.FechaDocumento = Convert.ToDateTime(drd["FechaDocumento"].ToString());
+                            oDetalleSolicitudRqAprobacionDTO.IdUsuario = Convert.ToInt32(IdUsuario);
+                            oDetalleSolicitudRqAprobacionDTO.IdTipoProducto = Convert.ToInt32(drd["IdTipoProducto"].ToString());
+                            oDetalleSolicitudRqAprobacionDTO.NombUsuario = (drd["NombUsuario"].ToString());
+                            oDetalleSolicitudRqAprobacionDTO.Serie = (drd["Serie"].ToString());
+                            oDetalleSolicitudRqAprobacionDTO.Referencia = drd["Referencia"].ToString();
+
+
+                            lstDetalleSolicitudRqAprobacionDTO.Add(oDetalleSolicitudRqAprobacionDTO);
+                        }
+                       
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            return lstDetalleSolicitudRqAprobacionDTO;
+        }
 
 
         public int PasarPendiente(int IdSolicitud)

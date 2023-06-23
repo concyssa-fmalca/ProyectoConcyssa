@@ -2,15 +2,37 @@
 
 
 window.onload = function () {
-    var url = "ObtenerGrupo";
-    ConsultaServidor(url);
-    listarObras();
+    listarObraFiltro()
 };
 
+function listarObraFiltro() {
+    $.ajax({
+        url: "/Obra/ObtenerObraxIdUsuarioSessionFiltro",
+        type: "GET",
+        contentType: "application/json",
+        dataType: "json",
+        data: {
+            'estado': 1
+        },
+        cache: false,
+        contentType: false,
+        success: function (datos) {
+            $("#IdObra").html('');
+            let options = `<option value="0">Seleccione</option>`;
+            if (datos.length > 0) {
+
+                for (var i = 0; i < datos.length; i++) {
+                    options += `<option value="` + datos[i].IdObra + `">` + datos[i].Descripcion + `</option>`;
+                }
+                $("#IdObrafiltro").html(options);
+            }
+        }
+    });
+}
 
 function listarObras() {
     $.ajax({
-        url: "/Obra/ObtenerObra",
+        url: "/Obra/ObtenerObraxIdUsuarioSessionFiltro",
         type: "GET",
         contentType: "application/json",
         dataType: "json",
@@ -34,13 +56,14 @@ function listarObras() {
 }
 
 
-function ConsultaServidor(url) {
-    
-    $.post(url, function (data, status) {
+function ConsultaServidor() {
 
+    var url = "ObtenerGrupoxObra"
+    $.post(url, { 'IdObra': $("#IdObrafiltro").val() }, function (data, status) {
         //console.log(data);
         if (data == "error") {
             table = $("#table_id").DataTable(lenguaje);
+            console.log("sssssssssssssss");
             return;
         }
 
@@ -49,22 +72,29 @@ function ConsultaServidor(url) {
         let grupo = JSON.parse(data);
         let total_grupo = grupo.length;
 
+        
+
         for (var i = 0; i < grupo.length; i++) {
             tr += '<tr>' +
                 '<td>' + (i + 1) + '</td>' +
+                '<td>' + grupo[i].DescripcionObra.toUpperCase() + '</td>' +
                 '<td>' + grupo[i].Codigo.toUpperCase() + '</td>' +
+               
                 '<td>' + grupo[i].Descripcion.toUpperCase() + '</td>' +
                 '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + grupo[i].IdGrupo + ')"></button>' +
                 '<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + grupo[i].IdGrupo + ')"></button>' +
-                '</td > ' +
+                '</td> ' +
                 '</tr>';
+        }
+
+        if (table) {
+            table.destroy();
         }
 
         $("#tbody_grupo").html(tr);
         $("#spnTotalRegistros").html(total_grupo);
 
         table = $("#table_id").DataTable(lenguaje);
-
     });
 
 }
@@ -73,6 +103,7 @@ function ConsultaServidor(url) {
 
 
 function ModalNuevo() {
+    listarObras();
     $("#chkActivo").prop('checked', true);
     $("#lblTituloModal").html("Nueva Grupo");
     AbrirModal("modal-form");

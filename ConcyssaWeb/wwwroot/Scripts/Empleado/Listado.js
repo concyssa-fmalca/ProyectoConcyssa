@@ -23,8 +23,11 @@ function ConsultaServidor(url) {
 
             tr += '<tr>' +
                 '<td>' + (i + 1) + '</td>' +
+                '<td>' + empleados[i].CodigoCliente.toUpperCase() + '</td>' +
                 '<td>' + empleados[i].NumeroDocumento.toUpperCase() + '</td>' +
                 '<td>' + empleados[i].RazonSocial.toUpperCase() + '</td>' +
+                '<td>' + empleados[i].Base.toUpperCase() + '</td>' +
+                '<td>' + empleados[i].Cargo.toUpperCase() + '</td>' +
                 '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + empleados[i].IdEmpleado + ')"></button>' +
                 '<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + empleados[i].IdEmpleado + ')"></button></td >' +
                 '</tr>';
@@ -41,9 +44,10 @@ function ConsultaServidor(url) {
 
 
 function ModalNuevo() {
+    CargarBase();
     $("#chkActivo").prop('checked', true);
     var f = new Date();
-    fecha = f.getFullYear() + '-' + pad(f.getMonth(),2) +  '-' + f.getDate();
+    fecha = f.getFullYear() + '-' + pad(f.getMonth(), 2) + '-' + f.getDate();
     $("#txtFechaIngreso").val(fecha)
     $("#lblTituloModal").html("Nuevo Empleado");
     AbrirModal("modal-form");
@@ -52,6 +56,7 @@ function ModalNuevo() {
     CargarCondicionPago();
     CargarPaises();
     CargarDepartamentos();
+    CargarCargo();
     $("#cboPais").val(193);
 }
 
@@ -71,7 +76,7 @@ function GuardarEmpleado() {
     let varEstadoContribuyente = $("#txtEstadoContribuyente").val();
     let varCondicionContribuyente = $("#txtCondicionContribuyente").val();
     let varDireccionFiscal = $("#txtDireccionFiscal").val();
-    let varTelefono = $("#txtTlf1").val();
+    let varTelefono = $("#txtTelefono").val();
     let varComprobantesElectronicos = $("#txtComprobantesElectronicos").val();
     let varAfiliadoPLE = $("#txtAfiliadoPLE").val();
     let varLineaCredito = $("#txtLineaCredito").val();
@@ -93,9 +98,10 @@ function GuardarEmpleado() {
     let varDistrito = $("#cboDistrito").val();
     let varPais = $("#cboPais").val();
     let varCondicionPago = $("#cboCondicionPago").val();
+    let varCargo = $("#cboCargo").val();
     let varTipo = 3; // empleado
     let varEstado = false;
-
+    let IdBase = $("#cboBase").val();
     if ($('#chkActivo')[0].checked) {
         varEstado = true;
     }
@@ -137,7 +143,9 @@ function GuardarEmpleado() {
         'FechaIngreso': varFechaIngreso,
         'Observacion': varObservacion,
         'Tipo': varTipo,
-        'Estado': varEstado
+        'Estado': varEstado,
+        'IdBase': IdBase,
+        'IdCargo' : varCargo
     }, function (data, status) {
 
         if (data == 1) {
@@ -154,6 +162,7 @@ function GuardarEmpleado() {
 }
 
 function ObtenerDatosxID(varIdEmpleado) {
+    CargarBase();
     $("#lblTituloModal").html("Editar Empleado");
     AbrirModal("modal-form");
 
@@ -178,12 +187,15 @@ function ObtenerDatosxID(varIdEmpleado) {
             CargarTipoDocumento();
             $("#cboTipoDocumento").val(empleados[0].TipoDocumento);
 
+            CargarCargo();
+            $("#cboCargo").val(empleados[0].IdCargo);
+
             $("#txtNroDocumento").val(empleados[0].NumeroDocumento);
             $("#txtRazonSocial").val(empleados[0].RazonSocial);
             $("#txtEstadoContribuyente").val(empleados[0].EstadoContribuyente);
             $("#txtCondicionContribuyente").val(empleados[0].CondicionContribuyente);
             $("#txtDireccionFiscal").val(empleados[0].DireccionFiscal);
-            $("#txtTlf1").val(empleados[0].Telefono);
+            $("#txtTelefono").val(empleados[0].Telefono);
             $("#txtComprobantesElectronicos").val(empleados[0].ComprobantesElectronicos);
             $("#txtAfiliadoPLE").val(empleados[0].AfiliadoPLE);
             $("#txtLineaCredito").val(empleados[0].LineaCredito);
@@ -227,6 +239,8 @@ function ObtenerDatosxID(varIdEmpleado) {
             if (empleados[0].Estado) {
                 $("#chkActivo").prop('checked', true);
             }
+
+            $("#cboBase").val(empleados[0].IdBase);
 
         }
 
@@ -312,6 +326,15 @@ function CargarDistritos() {
     $.post("/Ubigeo/ObtenerDistritos", { 'Provincia': varProvincia.slice(0, 4) }, function (data, status) {
         let distrito = JSON.parse(data);
         llenarComboDistrito(distrito, "cboDistrito", "Seleccione")
+    });
+}
+
+function CargarCargo() {
+    $.ajaxSetup({ async: false });
+    $.post("/Cargo2/ObtenerCargo", function (data, status) {
+        let cargo = JSON.parse(data);
+        console.log(cargo)
+        llenarComboCargo(cargo, "cboCargo", "Seleccione")
     });
 }
 
@@ -493,6 +516,20 @@ function llenarComboDistrito(lista, idCombo, primerItem) {
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
 }
+function llenarComboCargo(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value=''>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdCargo + "'>" + lista[i].Descripcion + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+}
 
 
 function limpiarDatos() {
@@ -521,6 +558,7 @@ function limpiarDatos() {
     $("#cboDepartamento").val("");
     $("#cboProvincia").val("");
     $("#cboDistrito").val("");
+    $("#cboCargo").val("");
     //$("#cboPais").val("");
     $("#cboCondicionPago").val("");
 
@@ -528,4 +566,28 @@ function limpiarDatos() {
     var f = new Date();
     fecha = f.getFullYear() + '-' + pad(f.getMonth(), 2) + '-' + f.getDate();
     $("#txtFechaIngreso").val(fecha)
+}
+
+
+function CargarBase() {
+    $.ajaxSetup({ async: false });
+    $.post("/Base/ObtenerBase", { 'estado': 1 }, function (data, status) {
+        let tipoRegistros = JSON.parse(data);
+        llenarComboBase(tipoRegistros, "cboBase", "Seleccione")
+    });
+}
+
+function llenarComboBase(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdBase + "'>" + lista[i].Descripcion + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
 }

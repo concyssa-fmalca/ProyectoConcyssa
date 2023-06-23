@@ -12,8 +12,107 @@ function ObtenerProveedores() {
         }
         $("#txtProveedor").html(optionesselect);
     });
-    
+}
 
+
+function addprecioproductoproveedor() {
+    let IdArticulo=$("#txtId").val();
+    let IdProveedor = $("#IdProveedor").val();
+    let PrecioSoles = $("#PrecioSoles").val();
+    let PrecioDolares = $("#PrecioDolares").val();
+    let IdCondicionPagoProveedor = $("#IdCondicionPagoProveedor").val();
+    let numeroentrega = $("#numeroentrega").val();
+
+    if (IdProveedor == "" || IdProveedor == null || IdProveedor == "0" || !$.isNumeric(IdProveedor)) {
+        swal("Informacion!", "Seleccione Proveedor!");
+        return;
+    }
+    if (PrecioSoles == "" || PrecioSoles == null || PrecioSoles == "0" || !$.isNumeric(PrecioSoles)) {
+        swal("Informacion!", "Ingrese Precio Soles!");
+        return;
+    }
+
+    if (PrecioDolares == "" || PrecioDolares == null || PrecioDolares == "0" || !$.isNumeric(PrecioDolares)) {
+        swal("Informacion!", "Ingrese Precio dolares!");
+        return;
+    }
+
+    if (IdCondicionPagoProveedor == "" || IdCondicionPagoProveedor == null || IdCondicionPagoProveedor == "0" || !$.isNumeric(IdCondicionPagoProveedor)) {
+        swal("Informacion!", "Seleccione condicion de pago!");
+        return;
+    }
+
+    if (numeroentrega == "" || numeroentrega == null || numeroentrega == "0" || !$.isNumeric(numeroentrega)) {
+        swal("Informacion!", "Ingrese numero de entrega!");
+        return;
+    }
+
+    $.post("/Articulo/SavePrecioProveedor", {
+        "IdArticulo": IdArticulo,
+        "IdProveedor": IdProveedor,
+        "PrecioSoles": PrecioSoles,
+        "PrecioDolares": PrecioDolares,
+        "IdCondicionPagoProveedor": IdCondicionPagoProveedor,
+        "numeroentrega": numeroentrega
+
+    }, function (data, status) {
+        swal("Exito!", "Proceso Realizado Correctamente", "success")
+        console.log(IdArticulo);
+        listarPrecioProductoProveedor(IdArticulo);
+        console.log(IdArticulo);
+    });
+}
+
+
+function CargarCondicionPago() {
+    $.ajaxSetup({ async: false });
+    $.post("/CondicionPago/ObtenerCondicionPagos", function (data, status) {
+        let condicionpago = JSON.parse(data);
+        llenarCondicionPago(condicionpago, "IdCondicionPagoProveedor", "Seleccione")
+    });
+}
+
+
+function llenarCondicionPago(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdCondicionPago + "'>" + lista[i].Descripcion + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+}
+
+
+
+function CargarProveedor() {
+    $.ajaxSetup({ async: false });
+    $.post("/Proveedor/ObtenerProveedores", { estado: 1 }, function (data, status) {
+        let proveedores = JSON.parse(data);
+        llenarComboProveedor(proveedores, "IdProveedor", "Seleccione")
+        $("#IdProveedor").select2()
+    });
+}
+
+function llenarComboProveedor(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+
+    for (var i = 0; i < nRegistros; i++) {
+        console.log(lista[i])
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdProveedor + "'>" + lista[i].RazonSocial + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
 }
 
 window.onload = function () {
@@ -23,6 +122,8 @@ window.onload = function () {
     listarCodigoUbso();
     listarGrupoArticulo();
     CargarGrupoUnidadMedida();
+    $("#cboIdCodigoUbso").select2();
+  
 };
 
 function CargarGrupoUnidadMedida() {
@@ -159,9 +260,20 @@ function ModalNuevo() {
 
     AbrirModal("modal-form");
     ObtenerProveedores();
+    CargarProveedor();
+    CargarCondicionPago();
     //CargarPerfiles();
     //CargarSociedades();
     //CargarGrupoUnidadMedida();
+
+    let IdPerfil = $("#ArtIdPerfil").val();
+    if (IdPerfil == "1014") {
+        $('#chkArticulo').attr('disabled', true);
+        $('#chkActivoFijo').attr('disabled', true);
+    } else {
+        $('#chkArticulo').attr('disabled', false);
+        $('#chkActivoFijo').attr('disabled', false);
+    }
 
 }
 
@@ -295,6 +407,20 @@ function ObtenerDatosxID(varIdArticulo) {
     ObtenerProveedores();
     AbrirModal("modal-form");
 
+
+    let IdPerfil = $("#ArtIdPerfil").val();
+    if (IdPerfil == "1014") {
+        $('#chkArticulo').attr('disabled', true);
+        $('#chkActivoFijo').attr('disabled', true);
+    } else {
+        $('#chkArticulo').attr('disabled', false);
+        $('#chkActivoFijo').attr('disabled', false);
+    }
+
+    CargarProveedor();
+    CargarCondicionPago();
+    listarPrecioProductoProveedor(varIdArticulo);
+
     //console.log(varIdUsuario);
 
     $.post('ObtenerDatosxID', {
@@ -368,6 +494,47 @@ function eliminar(varIdArticulo) {
 
 }
 
+function listarPrecioProductoProveedor(IdArticulo) {
+    $.post("/Articulo/ListarPrecioProductoProveedor", { 'IdArticulo': IdArticulo }, function (data, status) {
+        $("#tbody_tabledetalle_precioproveedor").html();
+        let tr = "";
+        if (validadJson(data)) {
+       
+            let datos = JSON.parse(data);
+            if (datos.length>0) {
+                for (var i = 0; i < datos.length; i++) {
+                    tr += `<tr>
+                        <td>`+ datos[i].Proveedor + `</td>
+                        <td>`+ datos[i].PrecioSoles + `</td>
+                        <td>`+ datos[i].PrecioDolares + `</td>
+                        <td>`+ datos[i].CondicionPago + `</td>
+                        <td>`+ datos[i].numeroentrega + `</td>
+                        <td> <button class="btn btn-sm btn-danger" onclick="elimiarproductoproveedor(`+ datos[i].IdArticuloProveedor + `,` + datos[i].IdArticulo + `)">-</button></td>
+                    </tr>`;
+                }
+
+                $("#tbody_tabledetalle_precioproveedor").html(tr);
+            }
+        }
+      
+    });
+}
+
+function elimiarproductoproveedor(IdProductoProveedor,IdArticulo) {
+    $.post("/Articulo/EliminarProductoProveedor", { 'IdProductoProveedor': IdProductoProveedor }, function (data, status) {
+        if (data == 0) {
+            swal("Error!", "Ocurrio un Error")
+
+        } else {
+            swal("Exito!", "Articulo Eliminado", "success")
+      
+
+        }
+
+    })
+    listarPrecioProductoProveedor(IdArticulo);
+}
+
 
 function limpiarDatos() {
     $("#txtId").val("");
@@ -382,7 +549,14 @@ function limpiarDatos() {
     $("#chkActivoCatalogo").prop('checked', false);
 }
 
-
+function validadJson(json) {
+    try {
+        object = JSON.parse(json);
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
 
 function ObtenerAlmacenes() {
 
@@ -445,3 +619,5 @@ function GuardarStock(IdProducto, IdAlmacen) {
 
 
 }
+
+

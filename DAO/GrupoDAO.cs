@@ -12,8 +12,8 @@ namespace DAO
 {
     public class GrupoDAO
     {
-        
-        public List<SubGrupoDTO> ObtenerSubGrupo(int IdSociedad, ref string mensaje_error, int Estado = 3)
+
+        public List<SubGrupoDTO> ObtenerSubGrupo(int IdSociedad, int IdGrupo, ref string mensaje_error, int Estado = 3)
         {
             List<SubGrupoDTO> lstSubGrupoDTO = new List<SubGrupoDTO>();
             using (SqlConnection cn = new Conexion().conectar())
@@ -24,6 +24,7 @@ namespace DAO
                     SqlDataAdapter da = new SqlDataAdapter("SMC_ListarSubGrupo", cn);
                     da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
                     da.SelectCommand.Parameters.AddWithValue("@Estado", Estado);
+                    da.SelectCommand.Parameters.AddWithValue("@IdGrupo", IdGrupo);
 
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
                     SqlDataReader drd = da.SelectCommand.ExecuteReader();
@@ -35,6 +36,7 @@ namespace DAO
                         oSubGrupoDTO.Codigo = drd["Codigo"].ToString();
                         oSubGrupoDTO.Descripcion = drd["Descripcion"].ToString();
                         oSubGrupoDTO.DescGrupo = drd["DescGrupo"].ToString();
+                        oSubGrupoDTO.DescripcionObraSG = drd["DescripcionObraSG"].ToString();
                         lstSubGrupoDTO.Add(oSubGrupoDTO);
                     }
                     drd.Close();
@@ -46,7 +48,6 @@ namespace DAO
             }
             return lstSubGrupoDTO;
         }
-
 
         public List<GrupoDTO> ObtenerGrupo(int IdSociedad, ref string mensaje_error, int Estado = 3)
         {
@@ -71,6 +72,76 @@ namespace DAO
                         oGrupoDTO.Descripcion = drd["Descripcion"].ToString();
                         oGrupoDTO.Estado = bool.Parse(drd["Estado"].ToString());
                         oGrupoDTO.Eliminado = bool.Parse(drd["Eliminado"].ToString());
+                        oGrupoDTO.DescripcionObra = drd["DescripcionObra"].ToString();
+                        lstGrupoDTO.Add(oGrupoDTO);
+                    }
+                    drd.Close();
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstGrupoDTO;
+        }
+        public List<GrupoDTO> ObtenerGrupoxObra(int IdObra, ref string mensaje_error)
+        {
+            List<GrupoDTO> lstGrupoDTO = new List<GrupoDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarGrupoXObra", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdObra", IdObra);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        GrupoDTO oGrupoDTO = new GrupoDTO();
+                        oGrupoDTO.IdObra = int.Parse(drd["IdObra"].ToString());
+                        oGrupoDTO.IdGrupo = int.Parse(drd["IdGrupo"].ToString());
+                        oGrupoDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
+                        oGrupoDTO.Codigo = drd["Codigo"].ToString();
+                        oGrupoDTO.Descripcion = drd["Descripcion"].ToString();
+                        oGrupoDTO.Estado = bool.Parse(drd["Estado"].ToString());
+                        oGrupoDTO.Eliminado = bool.Parse(drd["Eliminado"].ToString());
+                        oGrupoDTO.DescripcionObra = drd["DescripcionObra"].ToString();
+
+                        lstGrupoDTO.Add(oGrupoDTO);
+                    }
+                    drd.Close();
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstGrupoDTO;
+        }
+        public List<GrupoDTO> ObtenerGrupoxId(int IdGrupo, ref string mensaje_error)
+        {
+            List<GrupoDTO> lstGrupoDTO = new List<GrupoDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarGrupoxID", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdGrupo", IdGrupo);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        GrupoDTO oGrupoDTO = new GrupoDTO();
+                        oGrupoDTO.IdObra = int.Parse(drd["IdObra"].ToString());
+                        oGrupoDTO.IdGrupo = int.Parse(drd["IdGrupo"].ToString());
+                        oGrupoDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
+                        oGrupoDTO.Codigo = drd["Codigo"].ToString();
+                        oGrupoDTO.Descripcion = drd["Descripcion"].ToString();
+                        oGrupoDTO.Estado = bool.Parse(drd["Estado"].ToString());
+                        oGrupoDTO.Eliminado = bool.Parse(drd["Eliminado"].ToString());
+
                         lstGrupoDTO.Add(oGrupoDTO);
                     }
                     drd.Close();
@@ -137,7 +208,10 @@ namespace DAO
                         oSubGrupoDTO.IdSubGrupo = int.Parse(drd["IdSubGrupo"].ToString());
                         oSubGrupoDTO.IdGrupo = int.Parse(drd["IdGrupo"].ToString());
                         oSubGrupoDTO.Codigo = (drd["Codigo"].ToString());
-                        oSubGrupoDTO.Descripcion = drd["Descripcion"].ToString();;
+                        oSubGrupoDTO.Descripcion = drd["Descripcion"].ToString();
+                        oSubGrupoDTO.DescGrupo = drd["DescGrupo"].ToString();
+                        oSubGrupoDTO.IdObra = int.Parse(drd["IdObra"].ToString());
+                        oSubGrupoDTO.DescripcionObraSG = drd["DescripcionObraSG"].ToString();
                         lstSubGrupoDTO.Add(oSubGrupoDTO);
                     }
                     drd.Close();
@@ -287,6 +361,38 @@ namespace DAO
                     cn.Open();
                     SqlDataAdapter da = new SqlDataAdapter("SMC_ListarSubGrupoxIdGrupo", cn);
                     da.SelectCommand.Parameters.AddWithValue("@IdGrupo", IdGrupo);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        SubGrupoDTO oSubGrupoDTO = new SubGrupoDTO();
+                        oSubGrupoDTO.IdSubGrupo = int.Parse(drd["IdSubGrupo"].ToString());
+                        oSubGrupoDTO.IdGrupo = int.Parse(drd["IdGrupo"].ToString());
+                        oSubGrupoDTO.Codigo = (drd["Codigo"].ToString());
+                        oSubGrupoDTO.Descripcion = drd["Descripcion"].ToString(); ;
+                        lstSubGrupoDTO.Add(oSubGrupoDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstSubGrupoDTO;
+        }
+        public List<SubGrupoDTO> ObtenerSubGrupoxID(int IdSubGrupo, ref string mensaje_error)
+        {
+            List<SubGrupoDTO> lstSubGrupoDTO = new List<SubGrupoDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarSubGrupoxID", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSubGrupo", IdSubGrupo);
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
                     SqlDataReader drd = da.SelectCommand.ExecuteReader();
                     while (drd.Read())

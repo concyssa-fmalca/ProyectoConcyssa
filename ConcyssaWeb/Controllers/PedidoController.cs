@@ -7,6 +7,11 @@ using System.Data;
 using System.Net.Mail;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Xml;
+using Microsoft.SqlServer.Server;
+using System;
+using System.Xml.Linq;
+using Karambolo.AspNetCore.Bundling;
 
 namespace ConcyssaWeb.Controllers
 {
@@ -27,13 +32,15 @@ namespace ConcyssaWeb.Controllers
             return View();
         }
 
-        public string ObtenerPedidosEntregaLDT(string EstadoPedido = "ABIERTO")
+        public string ObtenerPedidosEntregaLDT(int IdObra,string EstadoPedido = "ABIERTO")
         {
             string mensaje_error = "";
             PedidoDAO oPedidoDAO = new PedidoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+
             DataTableDTO oDataTableDTO = new DataTableDTO();
-            List<PedidoDTO> lstPedidoDTO = oPedidoDAO.ObtenerPedidosEntregaLDT(IdSociedad, ref mensaje_error, EstadoPedido);
+            List<PedidoDTO> lstPedidoDTO = oPedidoDAO.ObtenerPedidosEntregaLDT(IdSociedad, ref mensaje_error, EstadoPedido, IdObra, IdUsuario);
             if (lstPedidoDTO.Count > 0)
             {
                 oDataTableDTO.sEcho = 1;
@@ -91,6 +98,43 @@ namespace ConcyssaWeb.Controllers
                     oPedidoDTO.detalles[i].IdPedido = respuesta;
                     int respuesta1 = oPedidoDAO.InsertUpdatePedidoDetalle(oPedidoDTO.detalles[i], ref mensaje_error);
                 }
+
+
+                /*INSERTAR CUADRO COMPARATIVO*/
+                RespuestaDTO oRespuestaDTOReporte = new RespuestaDTO();
+                try
+                {
+                    string respuestareporte = GenerarReporte("CuadroComparativo", "PDF", respuesta);
+                    oRespuestaDTOReporte = JsonConvert.DeserializeObject<RespuestaDTO>(respuestareporte);
+                    Byte[] archivoreporte = Convert.FromBase64String(oRespuestaDTOReporte.Base64ArchivoPDF);
+                    string nombrearchivocuadro = "CuadroComparativoPedido" + respuesta + ".pdf";
+
+
+                    if (System.IO.File.Exists("wwwroot\\Anexos\\" + nombrearchivocuadro))
+                        System.IO.File.WriteAllBytes("wwwroot\\Anexos\\" + nombrearchivocuadro, archivoreporte);
+                    else
+                    {
+                        System.IO.File.Delete("wwwroot\\Anexos\\" + nombrearchivocuadro);
+                        System.IO.File.WriteAllBytes("wwwroot\\Anexos\\" + nombrearchivocuadro, archivoreporte);
+                    }
+                    AnexoDTO oPedAnexo = new AnexoDTO();
+                    oPedAnexo.ruta = "/Anexos/" + nombrearchivocuadro;
+                    oPedAnexo.IdSociedad= oPedidoDTO.IdSociedad;
+                    oPedAnexo.Tabla= "Pedido";
+                    oPedAnexo.IdTabla = respuesta;
+                    oPedAnexo.NombreArchivo = nombrearchivocuadro;
+
+                    oMovimientoDAO.InsertAnexoMovimiento(oPedAnexo, ref mensaje_error);
+
+                }
+                catch (Exception ex)
+                {
+
+                    var dd = "";
+                }
+               
+
+                /*INSERTAR CUADRO COMPARATIVO*/
                 if (oPedidoDTO.AnexoDetalle!=null)
                 {
                     for (int i = 0; i < oPedidoDTO.AnexoDetalle.Count; i++)
@@ -305,7 +349,24 @@ namespace ConcyssaWeb.Controllers
 
         }
 
-        public string ObtenerProveedoresPrecioxProducto(int IdArticulo)
+        public string ObtenerPrecioxProductoUltimasVentas(int IdArticulo)
+        {
+            string mensaje_error = "";
+            List<ProveedoresPrecioProductoDTO> lstProveedoresPrecioProductoDTO = new List<ProveedoresPrecioProductoDTO>();
+            PedidoDAO oPedidoDAO = new PedidoDAO();
+            lstProveedoresPrecioProductoDTO = oPedidoDAO.ObtenerPrecioxProductoUltimasVentas(IdArticulo, ref mensaje_error);
+            if (lstProveedoresPrecioProductoDTO.Count() > 0)
+            {
+                return JsonConvert.SerializeObject(lstProveedoresPrecioProductoDTO);
+
+            }
+            else
+            {
+                return mensaje_error;
+            }
+            return JsonConvert.SerializeObject(lstProveedoresPrecioProductoDTO);
+
+        }public string ObtenerProveedoresPrecioxProducto(int IdArticulo)
         {
             string mensaje_error = "";
             List<ProveedoresPrecioProductoDTO> lstProveedoresPrecioProductoDTO = new List<ProveedoresPrecioProductoDTO>();
@@ -324,11 +385,15 @@ namespace ConcyssaWeb.Controllers
 
         }
 
-        public string ActualizarProveedorPrecio(int IdProveedor, decimal precionacional, decimal precioextranjero, int idproducto, int IdDetalleRq)
+        public string ActualizarProveedorPrecio(int IdProveedor, decimal precionacional, decimal precioextranjero, int idproducto, int IdDetalleRq, string Comentario)
         {
+            if (Comentario==null)
+            {
+                Comentario = "";
+            }
             string mensaje_error = "";
             PedidoDAO oPedidoDAO = new PedidoDAO();
-            oPedidoDAO.UpdateInsertPedidoAsignadoPedidoRQ(IdProveedor, precionacional, precioextranjero, idproducto, IdDetalleRq, ref mensaje_error);
+            oPedidoDAO.UpdateInsertPedidoAsignadoPedidoRQ(IdProveedor, precionacional, precioextranjero, idproducto, IdDetalleRq, Comentario, ref mensaje_error);
             if (mensaje_error.Length > 0)
             {
                 return mensaje_error;
@@ -355,12 +420,12 @@ namespace ConcyssaWeb.Controllers
             return JsonConvert.SerializeObject(oDataTableDTO);
         }
 
-        public string ObtenerDatosProveedorXRQAsignados(int IdProveedor)
+        public string ObtenerDatosProveedorXRQAsignados(int IdProveedor,int TipoItem,int IdObra)
         {
             string mensaje_error = "";
             List<AsignadoPedidoRequeridoDTO> lstAsignadoPedidoRequeridoDTO = new List<AsignadoPedidoRequeridoDTO>();
             PedidoDAO oPedidoDAO = new PedidoDAO();
-            lstAsignadoPedidoRequeridoDTO = oPedidoDAO.ListarProductosAsignadosxProveedorDetalle(IdProveedor, ref mensaje_error);
+            lstAsignadoPedidoRequeridoDTO = oPedidoDAO.ListarProductosAsignadosxProveedorDetalle(IdProveedor,TipoItem, IdObra, ref mensaje_error);
             return JsonConvert.SerializeObject(lstAsignadoPedidoRequeridoDTO);
         }
 
@@ -420,39 +485,103 @@ namespace ConcyssaWeb.Controllers
 
         public int EnviarCorreoxPedido(int IdPedido)
         {
-            string html =@"";
-            string mensaje_error = "";
-            PedidoDAO oPedidoDAO = new PedidoDAO();
-            PedidoDTO oPedidoDTO = new PedidoDTO();
-            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            
 
-            oPedidoDTO = oPedidoDAO.ObtenerPedidoxId(IdPedido, ref mensaje_error);
-            string body;
-            body = "BASE PRUBAS";
+            try
+            {
 
-            //body = "<body>" +
-            //    "<h2>Se "+Estado+" una Solicitud</h2>" +
-            //    "<h4>Detalles de Solicitud:</h4>" +
-            //    "<span>N° Solicitud: " + Serie + "-" + Numero + "</span>" +
-            //    "<br/><span>Solicitante: " + Solicitante + "</span>" +
-            //    "</body>";
+                string base64;
+                string html = @"";
+                string mensaje_error = "";
+                PedidoDAO oPedidoDAO = new PedidoDAO();
+                PedidoDTO oPedidoDTO = new PedidoDTO();
+                int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
 
-            string msge = "";
-            string from = "concyssa.smc@gmail.com";
-            string correo = from;
-            string password = "tlbvngkvjcetzunr";
-            string displayName = "SMC - ENVIO ORDEN COMPRA";
-            MailMessage mail = new MailMessage();
-            mail.From = new MailAddress(from, displayName);
-            mail.To.Add(oPedidoDTO.EmailProveedor);
+                oPedidoDTO = oPedidoDAO.ObtenerPedidoxId(IdPedido, ref mensaje_error);
+                string body;
+                body = "BASE PRUBAS";
 
-            mail.Subject = "CONCYSSA - ENVIO ORDEN COMPRA";
-            mail.Body = body;
+                //body = "<body>" +
+                //    "<h2>Se "+Estado+" una Solicitud</h2>" +
+                //    "<h4>Detalles de Solicitud:</h4>" +
+                //    "<span>N° Solicitud: " + Serie + "-" + Numero + "</span>" +
+                //    "<br/><span>Solicitante: " + Solicitante + "</span>" +
+                //    "</body>";
 
-            mail.IsBodyHtml = true;
-            SmtpClient client = new SmtpClient("smtp.gmail.com", 587); //Aquí debes sustituir tu servidor SMTP y el puerto
-            client.Credentials = new NetworkCredential(from, password);
-            client.EnableSsl = true;//En caso de que tu servidor de correo no utilice cifrado SSL,poner en false
+
+                //solo para pruebas
+                oPedidoDTO.EmailProveedor = "fperez@smartcode.pe";
+
+                string msge = "";
+                string from = "concyssa.smc@gmail.com";
+                string correo = from;
+                string password = "tlbvngkvjcetzunr";
+                string displayName = "SMC - ENVIO ORDEN COMPRA "+ oPedidoDTO.NombSerie + "-"+oPedidoDTO.Correlativo;
+                MailMessage mail = new MailMessage();
+                mail.From = new MailAddress(from, displayName);
+
+
+                mail.To.Add(oPedidoDTO.EmailProveedor);
+                mail.To.Add("jhuniors.ramos@smartcode.pe");
+                mail.Subject = "CONCYSSA - ENVIO ORDEN COMPRA";
+                //mail.CC.Add(new MailAddress("camala145@gmail.com"));
+                mail.Body = TemplateEmail();
+
+                mail.IsBodyHtml = true; 
+                SmtpClient client = new SmtpClient("smtp.gmail.com", 587); //Aquí debes sustituir tu servidor SMTP y el puerto
+                client.Credentials = new NetworkCredential(from, password);
+                client.EnableSsl = true;//En caso de que tu servidor de correo no utilice cifrado SSL,poner en false
+
+
+
+                WebResponse webResponse;
+                HttpWebRequest request;
+                Uri uri;
+                string cadenaUri;
+                string response;
+              
+                string strNew = "NombreReporte=OrdenCompra&Formato=PDF&Id=" + IdPedido;
+                cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReportCrystal";
+                //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReportCrystal";
+                uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
+                request = (HttpWebRequest)WebRequest.Create(uri);
+                request.Method = "POST";
+                request.ContentType = "application/x-www-form-urlencoded";
+                StreamWriter requestWriter = new StreamWriter(request.GetRequestStream(), System.Text.Encoding.ASCII);
+                requestWriter.Write(strNew);
+                requestWriter.Close();
+                webResponse = request.GetResponse();
+                Stream webStream = webResponse.GetResponseStream();
+                StreamReader responseReader = new StreamReader(webStream);
+                response = responseReader.ReadToEnd();
+                XmlDocument xDoc = new XmlDocument();
+                xDoc.LoadXml(response);
+                base64 = xDoc.ChildNodes[1].ChildNodes[2].InnerText;
+                Byte[] archivopdf = Convert.FromBase64String(base64);
+                Attachment att = new Attachment(new MemoryStream(archivopdf), "OrdenCompra.pdf");
+                mail.Attachments.Add(att);
+                client.Send(mail);
+
+
+                oPedidoDAO.UpdateEnvioCorreoPedido(IdPedido, ref mensaje_error);
+            }
+            catch (WebException e)
+            {
+                using (WebResponse responses = e.Response)
+                {
+                    HttpWebResponse httpResponse = (HttpWebResponse)responses;
+                    using (Stream data = responses.GetResponseStream())
+                    using (var reader = new StreamReader(data))
+                    {
+                        var dd = reader.ReadToEnd();
+                    }
+                }
+                string err = e.ToString();
+            }
+
+            
+
+
             //string path = "C:\\inetpub\\wwwroot\\Binario\\Anexos\\" + pathPDF + ".pdf";
             //string path = "C:\\Users\\soporte.sap\\source\\repos\\SMC_AddonRequerimientos\\SMC_AddonRequerimientos\\Anexos\\" + pathPDF + ".pdf";
             //bool result = System.IO.File.Exists(path);
@@ -467,13 +596,157 @@ namespace ConcyssaWeb.Controllers
             //Attachment archivo = new Attachment("C:\\Users\\soporte.sap\\source\\repos\\SMC_AddonRequerimientos\\SMC_AddonRequerimientos\\Anexos\\" + pathPDF + ".pdf");
             //mail.Attachments.Add(archivo);
 
-            client.Send(mail);
-
-
-            oPedidoDAO.UpdateEnvioCorreoPedido(IdPedido, ref mensaje_error);
+           
 
 
             return 0;
+        }
+
+
+        public string GenerarReporte(string NombreReporte, string Formato, int Id)
+        {
+            RespuestaDTO oRespuestaDTO = new RespuestaDTO();
+            WebResponse webResponse;
+            HttpWebRequest request;
+            Uri uri;
+            string cadenaUri;
+            string requestData;
+            string response;
+            string mensaje_error;
+            WebServiceDTO oWebServiceDTO = new WebServiceDTO();
+            oWebServiceDTO.Formato = Formato;
+            oWebServiceDTO.NombreReporte = NombreReporte;
+            oWebServiceDTO.Id = Id;
+            requestData = JsonConvert.SerializeObject(oWebServiceDTO);
+
+
+            try
+            {
+                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&Id=" + Id;
+               //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReportCrystal";
+                cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReportCrystal";
+                uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
+                request = (HttpWebRequest)WebRequest.Create(uri);
+
+                request.Method = "POST";
+                //request.ContentType = "application/json;charset=utf-8";
+                request.ContentType = "application/x-www-form-urlencoded";
+
+
+                StreamWriter requestWriter = new StreamWriter(request.GetRequestStream(), System.Text.Encoding.ASCII);
+
+                requestWriter.Write(strNew);
+
+
+                requestWriter.Close();
+
+
+
+                webResponse = request.GetResponse();
+                Stream webStream = webResponse.GetResponseStream();
+                StreamReader responseReader = new StreamReader(webStream);
+                response = responseReader.ReadToEnd();
+
+                //var Resultado = response;
+                //XmlSerializer xmlSerializer = new XmlSerializer(response);
+                var rr = 33;
+                XmlDocument xDoc = new XmlDocument();
+                xDoc.LoadXml(response);
+                var dd = "";
+
+                oRespuestaDTO.Result = xDoc.ChildNodes[1].ChildNodes[0].InnerText;
+                oRespuestaDTO.Mensaje = xDoc.ChildNodes[1].ChildNodes[1].InnerText;
+                oRespuestaDTO.Base64ArchivoPDF = xDoc.ChildNodes[1].ChildNodes[2].InnerText;
+
+                return JsonConvert.SerializeObject(oRespuestaDTO);
+            }
+            catch (WebException e)
+            {
+                using (WebResponse responses = e.Response)
+                {
+                    HttpWebResponse httpResponse = (HttpWebResponse)responses;
+                    using (Stream data = responses.GetResponseStream())
+                    using (var reader = new StreamReader(data))
+                    {
+                        mensaje_error = reader.ReadToEnd();
+
+                    }
+                }
+
+                string err = e.ToString();
+            }
+
+            return "";
+        }    
+
+
+
+        public string TemplateEmail()
+        {
+            return @"
+<html><head><meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>
+	<title></title>
+	
+</head>
+<body>
+<p>Estimado proveedor</p>
+
+<p><u>Coordinar las entregas con Almacén y tener presente los siguientes recomendaciones:</u></p>
+
+<p>Antes de proceder con el despacho tienen que haber llenado el formato adjunto, asimismo el vehículo que transporta el material y enviarlos a los correos de <a href='mailto:passante@concyssa.com'>passante@concyssa.com</a> y <a href='mailto:cbartolo@concyssa.com'>cbartolo@concyssa.com</a> para que puedan realizar las coordinaciones con el personal de vigilancia de la puerta principal de la universidad San Marcos y los dejen ingresar.</p>
+
+<p>Sin este requisito ningún proveedor podrá ingresar, es por eso que resulta necesario que la comunicación sea oportuna para evitar falsos fletes.</p>
+
+<p>Criterios de compra al momento del despacho:</p>
+
+<h3>Equipos de protección personal:</h3>
+
+<ul>
+	<li>Los equipos de protección personal deben cumplir el estándar indicado en la orden de compra</li>
+</ul>
+
+<h3>Equipos y herramientas:</h3>
+
+<ul>
+	<li>Las herramientas deben ser normadas, contar con especificaciones técnicas que entregarán al momento del despacho.</li>
+	<li>Los equipos tienen que ser normados, contar con manual en español y medidas de seguridad.</li>
+	<li>El proveedor debe realizar una capacitación sobre el uso del equipo cuando se requiera.</li>
+</ul>
+
+<h3>Productos químicos:</h3>
+
+<ul>
+	<li>Al momento de la entrega, adjuntar la hoja de seguridad o MSDS y las recomendaciones de almacenamiento.</li>
+	<li>En caso de no contar con lo indicado no se recibirá el material</li>
+</ul>
+
+<h3>Facturación:</h3>
+
+<ul>
+	<li>Enviar su factura electrónica a l correo: <b>comprobanteelectronico_proveedor@concyssa.com, cbartolo@concyssa.com y passante@concyssa.com</b></li>
+</ul>
+
+<h3>DOCUMENTOS A PRESENTAR PARA LA RECEPCION DE LA FACTURA</h3>
+
+<ul>
+<li>CERTIFICADO DE CALIDAD  (nombre de la obra, listado de productos)</li>
+<li>CERTIFICADO Y/O CARTA DE GARANTIA (nombre de la obra, listado de productos)</li>
+<li>PROTOCOLO DE APROBACION POR SEDAPAL (nombre de la obra, listado de productos)</li>
+<li>FICHA TECNICA DEL PRODUCTO</li>
+<li>HOJADE SEGURIDAD DE LOS PRODUCTOS</li>
+<li>REGISTRO SANITARIO (DIGESA)</li>
+</ul>
+<h3>NOMBRE DE LA OBRA: </h3>
+<p><b>“REUBICACION DE REDES DE AGUA POTABLE Y ALCANTARILLADO EN LA ESTACION JUAN PABLO II – E3    DE LA LINEA 2 Y RAMAL AV. FAUCETT – AV. GAMBETTA DE LA RED BASICA DEL METRO DE LIMA Y CALLAO”</b></p>
+
+Favor de prever lo mencionado para no generar demoras en la logística.
+
+<p>Lugar de entrega:</p>
+<b>UNMSM (Puerta N° 08) av. Oscar R. Benavides cdra. 53, Lima.</b>
+
+
+
+</body></html>";
         }
 
 

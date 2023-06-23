@@ -46,6 +46,55 @@ namespace DAO
             return lstAlmacenDTO;
         }
 
+
+
+
+        public List<AlmacenDTO> ObtenerAlmacenxIdUsuario(int IdSociedad,int IdUsuario, ref string mensaje_error, int Estado = 3)
+        {
+            List<AlmacenDTO> lstAlmacenDTO = new List<AlmacenDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarAlmacenxIdUsuario", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
+                    
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                       
+                        AlmacenDTO oAlmacenDTO = new AlmacenDTO();
+                        oAlmacenDTO.IdAlmacen = int.Parse(drd["IdAlmacen"].ToString());
+                        oAlmacenDTO.IdObra = Convert.ToInt32((String.IsNullOrEmpty(drd["IdObra"].ToString())) ? "0" : drd["IdObra"].ToString());
+                        oAlmacenDTO.Codigo = drd["Codigo"].ToString();
+                        oAlmacenDTO.Descripcion = drd["Descripcion"].ToString();
+                        oAlmacenDTO.Estado = bool.Parse(drd["Estado"].ToString());
+                        oAlmacenDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
+                        lstAlmacenDTO.Add(oAlmacenDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstAlmacenDTO;
+        }
+
+
+
+
+
+
+
+
+
         public int UpdateInsertAlmacen(AlmacenDTO oAlmacenDTO, ref string mensaje_error, int IdUsuario)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);

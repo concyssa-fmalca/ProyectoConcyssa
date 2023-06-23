@@ -58,6 +58,56 @@ namespace DAO
             return lstArticuloDTO;
         }
 
+        public List<ArticuloDTO> ListarArticulosxSociedadxAlmacenStockxProductoConServicios(int IdSociedad, int IdArticulo, int IdAlmacen, ref string mensaje_error, int Estado = 3)
+        {
+            List<ArticuloDTO> lstArticuloDTO = new List<ArticuloDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarArticulosxSociedadxAlmacenStockxProductoConServicios", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
+                    da.SelectCommand.Parameters.AddWithValue("@IdArticulo", IdArticulo);
+                    da.SelectCommand.Parameters.AddWithValue("@IdAlmacen", IdAlmacen);
+                    da.SelectCommand.Parameters.AddWithValue("@Estado", Estado);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        ArticuloDTO oArticuloDTO = new ArticuloDTO();
+                        oArticuloDTO.IdArticulo = int.Parse(drd["IdArticulo"].ToString());
+                        oArticuloDTO.Codigo = drd["Codigo"].ToString();
+                        oArticuloDTO.Descripcion1 = drd["Descripcion1"].ToString();
+                        oArticuloDTO.Descripcion2 = drd["Descripcion2"].ToString();
+                        oArticuloDTO.IdUnidadMedida = int.Parse(drd["IdUnidadMedida"].ToString());
+                        oArticuloDTO.ActivoFijo = Convert.ToBoolean(drd["ActivoFijo"].ToString());
+                        oArticuloDTO.ActivoCatalogo = Convert.ToBoolean(drd["ActivoCatalogo"].ToString());
+                        oArticuloDTO.IdCodigoUbso = int.Parse(drd["IdCodigoUbso"].ToString());
+                        oArticuloDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
+                        oArticuloDTO.Inventario = Convert.ToBoolean(drd["Inventario"].ToString());
+                        oArticuloDTO.Compra = Convert.ToBoolean(drd["Compra"].ToString());
+                        oArticuloDTO.Venta = Convert.ToBoolean(drd["Venta"].ToString());
+                        oArticuloDTO.UnidadMedida = (drd["UnidadMedida"].ToString());
+                        oArticuloDTO.Stock = Convert.ToDecimal(drd["Stock"].ToString());
+                        oArticuloDTO.PrecioPromedio = Convert.ToDecimal(drd["Precio"].ToString());
+                        oArticuloDTO.IdGrupoUnidadMedida = Convert.ToInt32(drd["IdGrupoUnidadMedida"].ToString());
+                        oArticuloDTO.IdUnidadMedidaInv = Convert.ToInt32(drd["IdUnidadMedidaInv"].ToString());
+
+                        lstArticuloDTO.Add(oArticuloDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstArticuloDTO;
+        }
+
         public List<ArticuloDTO> ObtenerArticulosRequerimientos(int Almacen, int Stock, int TipoItem,int TipoProducto,int IdSociedad, ref string mensaje_error)
         {
             List<ArticuloDTO> lstArticuloDTO = new List<ArticuloDTO>();
@@ -158,7 +208,6 @@ namespace DAO
                         oArticuloDTO.NombUnidadMedida = (drd["NombUnidadMedida"].ToString());
                         oArticuloDTO.IdUnidadMedidaInv = Convert.ToInt32(drd["IdUnidadMedidaInv"].ToString());
                         oArticuloDTO.IdUnidadMedida = Convert.ToInt32(drd["IdUnidadMedida"].ToString());
-
                         oArticuloDTO.IdGrupoUnidadMedida = Convert.ToInt32(drd["IdGrupoUnidadMedida"].ToString());
                         oArticuloDTO.UltimoPrecioCompra = Convert.ToDecimal(drd["UltimoPrecioCompra"].ToString());
                         oArticuloDTO.Stock = Convert.ToDecimal(drd["Stock"].ToString());
@@ -194,6 +243,52 @@ namespace DAO
                     da.SelectCommand.Parameters.AddWithValue("@IdAlmacen", IdAlmacen);
                     da.SelectCommand.Parameters.AddWithValue("@IdTipoProducto", IdTipoProducto);
                     da.SelectCommand.Parameters.AddWithValue("@Estado", Estado);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        ArticuloDTO oArticuloDTO = new ArticuloDTO();
+                        oArticuloDTO.IdArticulo = int.Parse(drd["IdArticulo"].ToString());
+                        oArticuloDTO.Codigo = drd["Codigo"].ToString();
+                        oArticuloDTO.Descripcion1 = drd["Descripcion1"].ToString();
+                        oArticuloDTO.Descripcion2 = drd["Descripcion2"].ToString();
+                        oArticuloDTO.IdUnidadMedida = int.Parse(drd["IdUnidadMedida"].ToString());
+                        oArticuloDTO.ActivoFijo = Convert.ToBoolean(drd["ActivoFijo"].ToString());
+                        oArticuloDTO.ActivoCatalogo = Convert.ToBoolean(drd["ActivoCatalogo"].ToString());
+                        oArticuloDTO.IdCodigoUbso = int.Parse(drd["IdCodigoUbso"].ToString());
+                        oArticuloDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
+                        oArticuloDTO.Inventario = Convert.ToBoolean(drd["Inventario"].ToString());
+                        oArticuloDTO.Compra = Convert.ToBoolean(drd["Compra"].ToString());
+                        oArticuloDTO.Venta = Convert.ToBoolean(drd["Venta"].ToString());
+                        oArticuloDTO.UnidadMedida = (drd["UnidadMedida"].ToString());
+                        oArticuloDTO.Stock = Convert.ToDecimal(drd["Stock"].ToString());
+                        lstArticuloDTO.Add(oArticuloDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstArticuloDTO;
+        }
+        public List<ArticuloDTO> ListarArticulosCatalogoxSociedadxAlmacenStockxIdTipoProductoConServicios(int TipoItem,int IdSociedad, int IdAlmacen, int IdTipoProducto, ref string mensaje_error, int Estado = 3)
+        {
+            List<ArticuloDTO> lstArticuloDTO = new List<ArticuloDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarArticulosCatalogoxSociedadxAlmacenStockxIdTipoProductoConServicios", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
+                    da.SelectCommand.Parameters.AddWithValue("@IdAlmacen", IdAlmacen);
+                    da.SelectCommand.Parameters.AddWithValue("@IdTipoProducto", IdTipoProducto);
+                    da.SelectCommand.Parameters.AddWithValue("@Estado", Estado);
+                    da.SelectCommand.Parameters.AddWithValue("@TipoItem", TipoItem);
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
                     SqlDataReader drd = da.SelectCommand.ExecuteReader();
                     while (drd.Read())
@@ -433,7 +528,31 @@ namespace DAO
             }
             return exito;
         }
-
+        
+        public bool EliminarProductoProveedor(int IdProductoProveedor, ref string mensaje_error)
+        {
+            bool exito = false;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ELiminarArticuloProveedor", cn);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    da.SelectCommand.Parameters.AddWithValue("@IdProductoProveedor", IdProductoProveedor);
+                    int i = da.SelectCommand.ExecuteNonQuery();
+                    if (i > 0)
+                    {
+                        exito = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return exito;
+        }
 
         public bool InsertStockArticuloAlmacen(int IdProducto, int IdAlmacen, decimal StockMinimo, decimal StockMaximo, decimal StockAlerta, ref string mensaje_error)
         {
@@ -500,6 +619,80 @@ namespace DAO
                 }
             }
             return lstArticuloDTO;
+        }
+
+        
+        public List<ArticuloPrecioProveedorDTO> ListarPrecioProductoProveedor(int IdArticulo,ref string mensaje_error)
+        {
+            List<ArticuloPrecioProveedorDTO> lstArticuloPrecioProveedorDTO = new List<ArticuloPrecioProveedorDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarPrecioProductoProveedor", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdArticulo", IdArticulo);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        ArticuloPrecioProveedorDTO oArticuloPrecioProveedorDTO = new ArticuloPrecioProveedorDTO();
+                        //oArticuloPrecioProveedorDTO.IdProducto = Convert.ToInt32(drd["IdProducto"].ToString());
+                        oArticuloPrecioProveedorDTO.IdArticuloProveedor = Convert.ToInt32(drd["IdArticuloProveedor"].ToString());
+                        oArticuloPrecioProveedorDTO.IdArticulo = Convert.ToInt32(drd["IdArticulo"].ToString());
+                        oArticuloPrecioProveedorDTO.IdProveedor = Convert.ToInt32(drd["IdProveedor"].ToString());
+                        oArticuloPrecioProveedorDTO.PrecioSoles = Convert.ToDecimal(drd["PrecioSoles"].ToString());
+                        oArticuloPrecioProveedorDTO.PrecioDolares = Convert.ToDecimal(drd["PrecioDolares"].ToString());
+                        oArticuloPrecioProveedorDTO.IdCondicionPago = Convert.ToInt32(drd["IdCondicionPago"].ToString());
+                        oArticuloPrecioProveedorDTO.numeroentrega = Convert.ToInt32(drd["numeroentrega"].ToString());
+                        oArticuloPrecioProveedorDTO.IdSociedad = Convert.ToInt32( drd["IdSociedad"].ToString());
+                        oArticuloPrecioProveedorDTO.Proveedor = (drd["Proveedor"].ToString());
+                        oArticuloPrecioProveedorDTO.CondicionPago = (drd["CondicionPago"].ToString());
+                        lstArticuloPrecioProveedorDTO.Add(oArticuloPrecioProveedorDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstArticuloPrecioProveedorDTO;
+        }
+
+        public bool SavePrecioProveedor(int IdArticulo,int IdProveedor, decimal PrecioSoles, decimal PrecioDolares, int IdCondicionPagoProveedor, int numeroentrega,int IdSociedad, ref string mensaje_error)
+        {
+            bool exito = false;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_SavePrecioProveedor", cn);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    da.SelectCommand.Parameters.AddWithValue("@IdArticulo", IdArticulo);
+                    da.SelectCommand.Parameters.AddWithValue("@IdProveedor", IdProveedor);
+                    da.SelectCommand.Parameters.AddWithValue("@PrecioSoles", PrecioSoles);
+                    da.SelectCommand.Parameters.AddWithValue("@PrecioDolares", PrecioDolares);
+                    da.SelectCommand.Parameters.AddWithValue("@IdCondicionPagoProveedor", IdCondicionPagoProveedor);
+                    da.SelectCommand.Parameters.AddWithValue("@numeroentrega", numeroentrega);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
+
+
+                    int i = da.SelectCommand.ExecuteNonQuery();
+                    if (i > 0)
+                    {
+                        exito = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return exito;
         }
 
     }

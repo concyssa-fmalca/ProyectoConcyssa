@@ -28,19 +28,58 @@ namespace ConcyssaWeb.Controllers
 
         public int UpdateInsertProveedor(ProveedorDTO proveedorDTO)
         {
-
             ProveedorDAO oProveedorDAO = new ProveedorDAO();
+            MovimientoDAO oMovimientoDAO = new MovimientoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             int resultado = oProveedorDAO.UpdateInsertProveedor(proveedorDTO, IdSociedad.ToString());
             if (resultado != 0)
             {
-                resultado = 1;
+
+                /*INSERTAR ANEXO*/
+                if (proveedorDTO.AnexoDetalle != null)
+                {
+                    for (int i = 0; i < proveedorDTO.AnexoDetalle.Count; i++)
+                    {
+                        proveedorDTO.AnexoDetalle[i].ruta = "/Anexos/" + proveedorDTO.AnexoDetalle[i].NombreArchivo;
+                        proveedorDTO.AnexoDetalle[i].IdSociedad = IdSociedad;
+                        proveedorDTO.AnexoDetalle[i].Tabla = "SociosNegocio";
+                        proveedorDTO.AnexoDetalle[i].IdTabla = resultado;
+                        string mensaje_error = "error";
+                        oMovimientoDAO.InsertAnexoMovimiento(proveedorDTO.AnexoDetalle[i], ref mensaje_error);
+
+                    }
+                }
             }
 
             return resultado;
 
         }
 
+
+        public string ObtenerDatosxIDNuevo(int IdProveedor)
+        {
+            string mensaje_error = "";
+            ProveedorDAO oProveedorDAO = new ProveedorDAO();
+            ProveedorDTO oProveedorDTO = new ProveedorDTO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+
+            oProveedorDTO = oProveedorDAO.ObtenerDatosxIDNuevo(IdProveedor);
+            if (oProveedorDTO != null)
+            {
+                //oDataTableDTO.sEcho = 1;
+                //oDataTableDTO.iTotalDisplayRecords = lstProveedorDetalleDTO.Count;
+                //oDataTableDTO.iTotalRecords = lstProveedorDetalleDTO.Count;
+                //oDataTableDTO.aaData = (lstProveedorDetalleDTO);
+                //return oDataTableDTO;
+                return JsonConvert.SerializeObject(oProveedorDTO);
+
+            }
+            else
+            {
+                return mensaje_error;
+
+            }
+        }
         public string ObtenerDatosxID(int IdProveedor)
         {
             ProveedorDAO oProveedorDAO = new ProveedorDAO();
@@ -61,6 +100,51 @@ namespace ConcyssaWeb.Controllers
         {
             ProveedorDAO oProveedorDAO = new ProveedorDAO();
             int resultado = oProveedorDAO.Delete(IdProveedor);
+            if (resultado == 0)
+            {
+                resultado = 1;
+            }
+
+            return resultado;
+        }
+
+        public string GuardarFile(IFormFile file)
+        {
+            List<string> Archivos = new List<string>();
+            if (file != null && file.Length > 0)
+            {
+                try
+                {
+                    string dir = "wwwroot/Anexos/" + file.FileName;
+                    if (Directory.Exists(dir))
+                    {
+                        ViewBag.Message = "Archivo ya existe";
+                    }
+                    else
+                    {
+                        string filePath = Path.Combine(dir, Path.GetFileName(file.FileName));
+                        using (Stream fileStream = new FileStream(dir, FileMode.Create, FileAccess.Write))
+                        {
+                            file.CopyTo(fileStream);
+                            Archivos.Add(file.FileName);
+                        }
+
+                        ViewBag.Message = "Anexo guardado correctamente";
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.Message = "Error:" + ex.Message.ToString();
+                    throw;
+                }
+            }
+            return JsonConvert.SerializeObject(Archivos);
+        }
+        public int EliminarAnexo(int IdAnexo)
+        {
+            ProveedorDAO oProveedorDAO = new ProveedorDAO();
+            int resultado = oProveedorDAO.DeleteAnexo(IdAnexo);
             if (resultado == 0)
             {
                 resultado = 1;

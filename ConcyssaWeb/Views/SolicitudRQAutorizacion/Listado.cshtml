@@ -80,7 +80,7 @@
     </div>
     <div class="panel">
         <div class="container-fluid">
-            <div class="panel" style="background-color:#effafc">
+            <div class="panel titulo" style="background-color:#effafc">
                 <div class="row">
                     @* @if (base.Session["idPerfil"].ToString() == "2" || base.Session["idPerfil"].ToString() == "5" || base.Session["idPerfil"].ToString() == "6")
                     {
@@ -90,7 +90,7 @@
                     {*@
                     <label for="CboAutorizador" class="control-label col-sm-1 left-align" style="color:black;margin-top:5px">Autorizador</label>
                     <div class="col-sm-2">
-                        <select id="CboAutorizador" class="form-control"></select>
+                        <select id="CboAutorizador" class="form-control" disabled></select>
                     </div>
                     @*}*@
 
@@ -111,13 +111,9 @@
                     <label for="Estado" class="control-label col-sm-1 left-align" style="color:black;margin-top:5px">Estado</label>
                     <div class="col-sm-2">
                         <select class="form-control" id="Estado">
-                            <option value="1">Pendiente de Aprobacion</option>
-                            <option value="2">Cerrado</option>
-                            <option value="3">Rechazado</option>
-                            <option value="4">Aprobado</option>
-                            <option value="5">Aprobado Parcial</option>
-                            <option value="6">En Proceso </option>
-                            @*<option value="8">Cerrado Parcial</option>*@
+                            <option value="0">Pendiente de Aprobacion</option>
+                            <option value="1">Rechazados</option>
+                            <option value="2">Aceptados</option>
                         </select>
                     </div>
                     <div class="col-sm-2">
@@ -126,40 +122,96 @@
                 </div>
             </div>
 
-            <br />
+
+
+            <div class="row">
+                <div class="col-sm-2">
+                    <button class="btn btn-sm btn-primary" id="IdAprobarTodo" onclick="AprobarTodo()" type="button">Aprobar todo</button>
+                </div>
+                <div class="col-sm-2">
+                    <button class="btn btn-sm btn-primary" id="IdRechazarTodo" onclick="RechazarTodo()" type="button">Rechazar todo</button>
+                </div>
+            </div>
+
             <div class="table-responsive" style="border:0px">
-                <table id="table_id" class="table" style="width:100%">
+                <table id="table_id" class="table text-center" style="width:100%">
                     <thead>
                         <tr>
-                            <th><input style="display:none" type="checkbox" id="checkbox_all" onclick="seleccionar_todo()" /></th>
-                            <th>N° Solicitud</th>
-                            <th>Etapa</th>
-                            <th>Solicitante</th>
-                            <th>Area Solicitante</th>
-                            @*<th>Area</th>*@
-                            <th>Tipo</th>
-                            <th>Moneda</th>
-                            @*<th>Impuesto</th>*@
-                            <th>Monto Total</th>
-                            <th>Prioridad</th>
-                            <th>Estado</th>
-                            <th>Fecha Documento</th>
-                            <th>Fecha Valido Hasta</th>
-                            @*<th>Fecha Aprobacion</th>*@
-                            <th>PDF</th>
-                            <th>Anexos</th>
-                            <th>Accion</th>
-
+                           <th class="txt-center" style="text-align: center !important;">N° RQ</th>
+                            <th class="txt-center" style="text-align: center !important;">Fecha</th>
+                            <th class="txt-center" style="text-align: center !important;">Usuario</th>
+                            <th class="txt-center" style="text-align: center !important;">Obra</th>
+                            <th class="txt-center" style="text-align: center !important;">Tipo</th>
+                            
+                             
+                            <th class="txt-center" style="text-align: center !important;">Producto</th>
+                            <th class="txt-center" style="text-align: center !important;">Cantidad Solicitada</th>
+                            <th class="txt-center" style="text-align: center !important;">Comentario</th>
+                            <th class="txt-center" style="text-align: center !important;">Aprobado</th>
                         </tr>
                     </thead>
                     <tbody id="tbody_SolicitudAutorizacion"></tbody>
                 </table>
+            </div>
+            <div class="row">
+
+                <div class="col-sm-12">
+                    <button class="btn btn-sm btn-primary pull-right" id="IdGuardarAuto" onclick="GuardarDetallesAutorizar()" type="button">Guardar</button>
+                </div>
+
             </div>
         </div>
     </div>
 
 
     <div class="panel">
+
+        <div class='col s12 m12'>
+            <div class='container-fluid'>
+                <div class="row">
+
+                    <div class="col-sm-8 s4 m4">
+                        <h5 style="color:red">Stock Actual</h5>
+                        <div class="table-responsive">
+                            <table class="table" id="tabla_aprobados_stock">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Obra</th>
+                                        <th scope="col">Almacen</th>
+                                        <th scope="col">Stock</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody> </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 s4 m4">
+                        <h5>Ultimas Compras</h5>
+                        <div class="table-responsive">
+                            <table class="table" id="tabla_listado_ultimasventas">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Proveedor</th>
+                                        <th scope="col">Precio NAC</th>
+                                        <th scope="col">Precio EXT</th>
+                                        <th scope="col">Cantidad</th>
+                                        <th scope="col">Fecha</th>
+                                        <th scope="col">Obra</th>
+                                    </tr>
+                                </thead>
+                                <tbody> </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+            </div>
+        </div>
 
         <div class="row">
             <div class="col-sm-5">
@@ -172,17 +224,9 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-sm-2">
-                <button class="btn btn-sm btn-primary" id="IdAprobarTodo" onclick="AprobarTodo()" type="button">Aprobar todo</button>
-            </div>
-            <div class="col-sm-2">
-                <button class="btn btn-sm btn-primary" id="IdRechazarTodo" onclick="RechazarTodo()" type="button">Rechazar todo</button>
-            </div>
-        </div>
 
 
-        <div class="table-responsive">
+        <div class="table-responsive" style="display:none">
             <table class="table" id="tablaDet" width="100%">
                 <thead>
                     <tr>
@@ -225,13 +269,7 @@
             </table>
         </div>
 
-        <div class="row">
 
-            <div class="col-sm-12">
-                <button class="btn btn-sm btn-primary pull-right" id="IdGuardarAuto" onclick="GuardarDetallesAutorizar()" type="button">Guardar</button>
-            </div>
-
-        </div>
 
     </div>
 

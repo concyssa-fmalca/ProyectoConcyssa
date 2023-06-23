@@ -24,12 +24,27 @@
         </div>
     </div>
     <div class="panel">
+        <div class="row mx-auto">
+            <div class="form-group-sm">
+                <label class="control-label col-sm-1 left-align" style="font-size:1.5rem;padding-left:20px">Obra: </label>
+                <div class="col-sm-4">
+                    <select id="IdObrafiltro" class="form-control input-sm">
+                        <option>Seleccione</option>
+                    </select>
+                </div>
+                <div class="col-sm-4 mb-3" style="margin-top:-8px">
+                    <button class="btn-primary btn" onclick="ConsultaServidor()">Buscar</button>
+                </div>
+            </div>
+        </div>
         <div class="container-fluid">
             <table id="table_id" class="table" style="width:100%">
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>Obra</th>
                         <th>Codigo</th>
+                        
                         <th>Descripcion</th>
                         <th>Mas</th>
                     </tr>

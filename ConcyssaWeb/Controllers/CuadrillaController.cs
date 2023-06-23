@@ -83,6 +83,22 @@ namespace ConcyssaWeb.Controllers
             return resultado;
         }
 
+        public string ObtenerCuadrillaxIdObra(int IdObra)
+        {
+            string mensaje_error = "";
+            CuadrillaDAO oCuadrillaDAO = new CuadrillaDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            List<CuadrillaDTO> lstCuadrillaDTO = oCuadrillaDAO.ObtenerCuadrillaxIdObra(IdObra, ref mensaje_error);
+            if (lstCuadrillaDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstCuadrillaDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
+
 
 
     }

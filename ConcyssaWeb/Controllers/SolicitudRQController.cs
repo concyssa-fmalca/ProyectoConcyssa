@@ -2,9 +2,13 @@
 using DTO;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Data.SqlClient;
+using System.Data;
 using System.Net;
 using System.Net.Mail;
-
+using System.Transactions;
+using System.Xml;
+using System.Web;
 
 namespace ConcyssaWeb.Controllers
 {
@@ -25,7 +29,7 @@ namespace ConcyssaWeb.Controllers
             return View();
         }
 
-        public string ObtenerSolicitudesRQ(string FechaInicio, string FechaFinal, int Estado, int IdSolicitante)
+        public string ObtenerSolicitudesRQ(int IdBase,string FechaInicio, string FechaFinal, int Estado, int IdSolicitante)
         {
             string valida = "";
             valida = validarEmpresaActual();
@@ -40,7 +44,7 @@ namespace ConcyssaWeb.Controllers
             {
                 SolicitudRQDAO oSolicitudRQDAO = new SolicitudRQDAO();
                 int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-                List<SolicitudRQDTO> lstSolicitudRQDTO = oSolicitudRQDAO.ObtenerSolicitudesRQ(IdSolicitante, IdSociedad.ToString(), FechaInicio, FechaFinal, Estado);
+                List<SolicitudRQDTO> lstSolicitudRQDTO = oSolicitudRQDAO.ObtenerSolicitudesRQ(IdBase,IdSolicitante, IdSociedad.ToString(), FechaInicio, FechaFinal, Estado);
                 if (lstSolicitudRQDTO.Count > 0)
                 {
                     return JsonConvert.SerializeObject(lstSolicitudRQDTO);
@@ -55,7 +59,7 @@ namespace ConcyssaWeb.Controllers
                 SolicitudRQDAO oSolicitudRQDAO = new SolicitudRQDAO();
                 int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
                 int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
-                List<SolicitudRQDTO> lstSolicitudRQDTO = oSolicitudRQDAO.ObtenerSolicitudesRQ(int.Parse(IdUsuario.ToString()), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado);
+                List<SolicitudRQDTO> lstSolicitudRQDTO = oSolicitudRQDAO.ObtenerSolicitudesRQ(IdBase,int.Parse(IdUsuario.ToString()), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado);
                 if (lstSolicitudRQDTO.Count > 0)
                 {
                     return JsonConvert.SerializeObject(lstSolicitudRQDTO);
@@ -128,9 +132,6 @@ namespace ConcyssaWeb.Controllers
             {
                 return valida;
             }
-
-
-
             SolicitudRQDAO oSolicitudRQDAO = new SolicitudRQDAO();
             int resultado = oSolicitudRQDAO.Delete(IdSolicitudRQDetalle);
             if (resultado == 0)
@@ -140,6 +141,29 @@ namespace ConcyssaWeb.Controllers
 
             return resultado;
         }
+        
+        public int CerrarSolicitudEstado(int IdSolicitud)
+        {
+            int valida = 0;
+            valida = validarEmpresaActualUpdateInsert();
+            if (valida != 0)
+            {
+                return valida;
+            }
+
+
+
+            SolicitudRQDAO oSolicitudRQDAO = new SolicitudRQDAO();
+            int resultado = oSolicitudRQDAO.CerrarSolicitudEstado(IdSolicitud);
+            if (resultado == 0)
+            {
+                resultado = 1;
+            }
+
+            return resultado;
+        }
+
+
 
         public int EliminarAnexoSolicitud(int IdSolicitudRQAnexos)
         {
@@ -186,7 +210,7 @@ namespace ConcyssaWeb.Controllers
                 ModeloAutorizacionDAO oModeloAutorizacionDAO = new ModeloAutorizacionDAO();
                 SolicitudRQModeloDAO oSolicitudRQModeloDAO = new SolicitudRQModeloDAO();
                 EtapaAutorizacionDAO oEtapaAutorizacionDAO = new EtapaAutorizacionDAO();
-                var ModeloAuorizacion = oModeloAutorizacionDAO.VerificarExisteModeloSolicitud(int.Parse(IdSociedad.ToString())); //valida si existe alguina modelo aplicado a documento solicitud
+                var ModeloAuorizacion = oModeloAutorizacionDAO.VerificarExisteModeloSolicitud(int.Parse(IdSociedad.ToString()),1); //valida si existe alguina modelo aplicado a documento solicitud
 
                 //listado de modelos obtenidos
                 if (ModeloAuorizacion.Count > 0)
@@ -203,36 +227,42 @@ namespace ConcyssaWeb.Controllers
                             {
                                 for (int c = 0; c < ResultadoModelo[0].DetallesCondicion.Count; c++)
                                 {
-                                    var Resultado = oModeloAutorizacionDAO.ObtenerResultadoCondicion(ResultadoModelo[0].DetallesCondicion[c].Condicion, IdInsert);
+                                    var Resultado = oModeloAutorizacionDAO.ObtenerResultadoCondicion(ResultadoModelo[0].DetallesCondicion[c].Condicion, IdInsert,1);
 
                                     if (Resultado[0].EntraAlProcesoAutorizar == 1) //si es una solicitud para autorizar 
                                     {
 
                                         for (int e = 0; e < ResultadoModelo[0].DetallesEtapa.Count; e++)
                                         {
-                                            var result = oSolicitudRQModeloDAO.UpdateInsertSolicitudRQModelo(new SolicitudRQModeloDTO
-                                            {
-                                                IdSolicitudRQModelo = 0,
-                                                IdSolicitud = IdInsert,
-                                                IdModelo = ResultadoModelo[0].IdModeloAutorizacion,
-                                                IdEtapa = ResultadoModelo[0].DetallesEtapa[e].IdEtapa,
-                                                Aprobaciones = ResultadoModelo[0].DetallesEtapa[e].AutorizacionesRequeridas,
-                                                Rechazos = ResultadoModelo[0].DetallesEtapa[e].RechazosRequeridos
-                                            }, IdSociedad.ToString());
+                                            
+                                                var result = oSolicitudRQModeloDAO.UpdateInsertSolicitudRQModelo(new SolicitudRQModeloDTO
+                                                {
+                                                    IdSolicitudRQModelo = 0,
+                                                    IdSolicitud = IdInsert,
+                                                    IdModelo = ResultadoModelo[0].IdModeloAutorizacion,
+                                                    IdEtapa = ResultadoModelo[0].DetallesEtapa[e].IdEtapa,
+                                                    Aprobaciones = ResultadoModelo[0].DetallesEtapa[e].AutorizacionesRequeridas,
+                                                    Rechazos = ResultadoModelo[0].DetallesEtapa[e].RechazosRequeridos
+                                                }, IdSociedad.ToString());
 
-                                            var ResultadoEtapa = oEtapaAutorizacionDAO.ObtenerDatosxID(ResultadoModelo[0].DetallesEtapa[e].IdEtapa);
-                                            UsuarioDAO oUsuarioDAO = new UsuarioDAO();
-                                            //enviar correo
-                                            string mensaje_error = "";
-                                            for (int k = 0; k < ResultadoEtapa[0].Detalles.Count; k++)
+                                                var ResultadoEtapa = oEtapaAutorizacionDAO.ObtenerDatosxID(ResultadoModelo[0].DetallesEtapa[e].IdEtapa);
+                                                UsuarioDAO oUsuarioDAO = new UsuarioDAO();
+                                                //enviar correo
+                                                string mensaje_error = "";
+                                            if (e == 0)
                                             {
-                                                var UsersDeEtapa = oUsuarioDAO.ObtenerDatosxID(ResultadoEtapa[0].Detalles[k].IdUsuario, ref mensaje_error);
-                                                var Solicitante = oUsuarioDAO.ObtenerDatosxID(solicitudRQDTO.IdSolicitante, ref mensaje_error);
-                                                EnviarCorreo(UsersDeEtapa[0].Correo, Solicitante[0].Nombre, solicitudRQDTO.Serie, solicitudRQDTO.Numero, Resultado[0].Mensaje, solicitudRQDTO);
-                                                //EnviarCorreo("jhuniors.ramos@smartcode.pe", Solicitante[0].Nombre, solicitudRQDTO.Serie, solicitudRQDTO.Numero, Resultado[0].Mensaje);
+                                                for (int k = 0; k < ResultadoEtapa[0].Detalles.Count; k++)
+                                                {
+                                                    var UsersDeEtapa = oUsuarioDAO.ObtenerDatosxID(ResultadoEtapa[0].Detalles[k].IdUsuario, ref mensaje_error);
+                                                    var Solicitante = oUsuarioDAO.ObtenerDatosxID(solicitudRQDTO.IdSolicitante, ref mensaje_error);
+                                                    EnviarCorreo(UsersDeEtapa[0].Correo, Solicitante[0].Nombre, solicitudRQDTO.Serie, solicitudRQDTO.Numero, Resultado[0].Mensaje, solicitudRQDTO);
+                                                    //EnviarCorreo("jhuniors.ramos@smartcode.pe", Solicitante[0].Nombre, solicitudRQDTO.Serie, solicitudRQDTO.Numero, Resultado[0].Mensaje);
 
+                                                }
+                                                //enviar correo
                                             }
-                                            //enviar correo
+
+
                                         }
 
 
@@ -260,20 +290,20 @@ namespace ConcyssaWeb.Controllers
 
             if (resultado[0] != 0)
             {
-                if (solicitudRQDTO.AnexoDetalle != null)
-                {
-                    MovimientoDAO oMovimientoDAO = new MovimientoDAO();
-                    string mensaje_error="";
-                    for (int i = 0; i < solicitudRQDTO.AnexoDetalle.Count; i++)
-                    {
-                        solicitudRQDTO.AnexoDetalle[i].ruta = "/Anexos/" + solicitudRQDTO.AnexoDetalle[i].NombreArchivo;
-                        solicitudRQDTO.AnexoDetalle[i].IdSociedad = IdSociedad;
-                        solicitudRQDTO.AnexoDetalle[i].Tabla = "SolicitudRQ";
-                        solicitudRQDTO.AnexoDetalle[i].IdTabla = resultado[1];
+                //if (solicitudRQDTO.AnexoDetalle != null)
+                //{
+                //    MovimientoDAO oMovimientoDAO = new MovimientoDAO();
+                //    string mensaje_error = "";
+                //    for (int i = 0; i < solicitudRQDTO.AnexoDetalle.Count; i++)
+                //    {
+                //        solicitudRQDTO.AnexoDetalle[i].ruta = "/Anexos/" + solicitudRQDTO.AnexoDetalle[i].NombreArchivo;
+                //        solicitudRQDTO.AnexoDetalle[i].IdSociedad = IdSociedad;
+                //        solicitudRQDTO.AnexoDetalle[i].Tabla = "SolicitudRQ";
+                //        solicitudRQDTO.AnexoDetalle[i].IdTabla = resultado[1];
 
-                        oMovimientoDAO.InsertAnexoMovimiento(solicitudRQDTO.AnexoDetalle[i], ref mensaje_error);
-                    }
-                }
+                //        oMovimientoDAO.InsertAnexoMovimiento(solicitudRQDTO.AnexoDetalle[i], ref mensaje_error);
+                //    }
+                //}
 
 
                 resultado[0] = 1;
@@ -344,6 +374,120 @@ namespace ConcyssaWeb.Controllers
 
         }
 
+
+
+        public string GenerarReporte(string NombreReporte, string Formato, int Id)
+        {
+            RespuestaDTO oRespuestaDTO = new RespuestaDTO();
+            WebResponse webResponse;
+            HttpWebRequest request;
+            Uri uri;
+            string cadenaUri;
+            string requestData;
+            string response;
+            string mensaje_error;
+            WebServiceDTO oWebServiceDTO = new WebServiceDTO();
+            oWebServiceDTO.Formato = Formato;
+            oWebServiceDTO.NombreReporte = NombreReporte;
+            oWebServiceDTO.Id = Id;
+            requestData = JsonConvert.SerializeObject(oWebServiceDTO);
+
+
+            try
+            {
+                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&Id=" + Id;
+                cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReportCrystal";
+                //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReportCrystal";
+                uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
+                request = (HttpWebRequest)WebRequest.Create(uri);
+
+                request.Method = "POST";
+                //request.ContentType = "application/json;charset=utf-8";
+                request.ContentType = "application/x-www-form-urlencoded";
+
+
+                StreamWriter requestWriter = new StreamWriter(request.GetRequestStream(), System.Text.Encoding.ASCII);
+
+                requestWriter.Write(strNew);
+
+
+                requestWriter.Close();
+
+
+
+                webResponse = request.GetResponse();
+                Stream webStream = webResponse.GetResponseStream();
+                StreamReader responseReader = new StreamReader(webStream);
+                response = responseReader.ReadToEnd();
+
+                //var Resultado = response;
+                //XmlSerializer xmlSerializer = new XmlSerializer(response);
+                var rr = 33;
+                XmlDocument xDoc = new XmlDocument();
+                xDoc.LoadXml(response);
+                var dd = "";
+
+                oRespuestaDTO.Result = xDoc.ChildNodes[1].ChildNodes[0].InnerText;
+                oRespuestaDTO.Mensaje = xDoc.ChildNodes[1].ChildNodes[1].InnerText;
+                oRespuestaDTO.Base64ArchivoPDF = xDoc.ChildNodes[1].ChildNodes[2].InnerText;
+
+                return JsonConvert.SerializeObject(oRespuestaDTO);
+            }
+            catch (WebException e)
+            {
+                using (WebResponse responses = e.Response)
+                {
+                    HttpWebResponse httpResponse = (HttpWebResponse)responses;
+                    using (Stream data = responses.GetResponseStream())
+                    using (var reader = new StreamReader(data))
+                    {
+                        mensaje_error = reader.ReadToEnd();
+
+                    }
+                }
+
+                string err = e.ToString();
+            }
+
+
+
+            //WebResponse webResponse;
+            //HttpWebRequest request;
+            //Uri uri;
+            //string response;
+            //try
+            //{
+
+            //    string cadenaUri = "https://api.apis.net.pe/v1/tipo-cambio-sunat?fecha=" + Fecha;
+            //    uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
+            //    request = (HttpWebRequest)WebRequest.Create(uri);
+            //    request.ContentType = "application/json";
+            //    webResponse = request.GetResponse();
+            //    Stream webStream = webResponse.GetResponseStream();
+            //    StreamReader responseReader = new StreamReader(webStream);
+            //    response = responseReader.ReadToEnd();
+            //    Resultado = response;
+            //    var ff = JsonConvert.DeserializeObject(response);
+            //    var ddd = "ee";
+            //}
+            //catch (WebException e)
+            //{
+            //    using (WebResponse responses = e.Response)
+            //    {
+            //        HttpWebResponse httpResponse = (HttpWebResponse)responses;
+            //        using (Stream data = responses.GetResponseStream())
+            //        using (var reader = new StreamReader(data))
+            //        {
+            //            mensaje_error = reader.ReadToEnd();
+
+            //        }
+            //    }
+
+            //    string err = e.ToString();
+            //}
+
+            return "";
+        }
 
 
         //[HttpPost]
@@ -648,6 +792,7 @@ namespace ConcyssaWeb.Controllers
             return rpta;
         }
 
+
         public string GuardarFile(IFormFile file)
         {
             List<string> Archivos = new List<string>();
@@ -697,6 +842,79 @@ namespace ConcyssaWeb.Controllers
             }
             
         }
+
+        public string SaveDetalleSolicitud (int IdSolicitudDetalle, decimal Cantidad)
+        {
+            string respuesta = "";
+            int respuetadao;
+            SolicitudRQDTO oSolicitudRQDTO = new SolicitudRQDTO();
+            SolicitudRQDAO oSolicitudRQDAO = new SolicitudRQDAO();
+            respuetadao = oSolicitudRQDAO.SaveDetalleSolicitud(IdSolicitudDetalle, Cantidad);
+            if (respuetadao ==1)
+            {
+                respuesta = "1";
+            }
+            else
+            {
+                respuesta = "0";
+            }
+            return respuesta;
+        }
+
+        public string  EliminarDetalleSolicitudNew(int IdSolicitudRQDetalle)
+        {
+            int valida = 0;
+            string respuesta="";
+            valida = validarEmpresaActualUpdateInsert();
+            if (valida != 0)
+            {
+                return valida.ToString();
+            }
+            SolicitudRQDAO oSolicitudRQDAO = new SolicitudRQDAO();
+            int resultado = oSolicitudRQDAO.DeleteDetalleSolicitud(IdSolicitudRQDetalle);
+            if (resultado == 0)
+            {
+                respuesta = "1";
+            }
+            else
+            {
+                respuesta = "0";
+            }
+
+            return respuesta;
+        }
+
+
+
+        public int ValidaSolicitudDetalleAprobado(int IdSolicitudRQDetalle)
+        {
+
+            int valida = 0;
+            int respuesta = 0;
+            valida = validarEmpresaActualUpdateInsert();
+            if (valida != 0)
+            {
+                return valida;
+            }
+            SolicitudRQDAO oSolicitudRQDAO = new SolicitudRQDAO();
+            int resultado = oSolicitudRQDAO.ValidaSolicitudDetalleAprobado(IdSolicitudRQDetalle);
+            if (resultado == 0)
+            {
+                respuesta = 0;
+            }
+            else
+            {
+                respuesta = 1;
+            }
+
+            return respuesta;
+
+        }
+
+
+
+
+
 
     }
 }

@@ -50,7 +50,8 @@ namespace ConcyssaWeb.Controllers
                 for (int i = 0; i < oMovimientoDTO.detalles.Count; i++)
                 {
                     oMovimientoDTO.detalles[i].IdMovimiento = respuesta;
-                    int respuesta1 = oMovimimientoDAO.InsertUpdateMovimientoDetalle(oMovimientoDTO.detalles[i], ref mensaje_error);
+                    oMovimientoDTO.detalles[i].IdMovimientoDetalle = 0;
+                    int respuesta1 = oMovimimientoDAO.InsertUpdateMovimientoDetalle(oMovimientoDTO.detalles[i], 0,ref mensaje_error);
                 }
                 if (oMovimientoDTO.AnexoDetalle != null)
                 {
@@ -112,10 +113,15 @@ namespace ConcyssaWeb.Controllers
                 oMovimientoDTO.IdTipoDocumento = 335;
                 oMovimientoDTO.Comentario = "EXTORNO DEL SALIDA " + oMovimientoDTO.NombSerie + "-" + +oMovimientoDTO.Correlativo;
                 oMovimientoDTO.IdMovimiento = 0;
+                //for (int i = 0; i < oMovimientoDTO.detalles.Count; i++)
+                //{
+                //    oMovimientoDTO.detalles[i].IdMovimientoDetalle = 0;
+                //}
+
                 oEntradaMercanciaController.UpdateInsertMovimiento(oMovimientoDTO);
 
 
-                return "ddd";
+                return "1";
 
             }
             else

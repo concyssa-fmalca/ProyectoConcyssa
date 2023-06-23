@@ -1,0 +1,98 @@
+﻿@model List<string>
+@{
+    ViewBag.Title = "Listado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="container-fluid" style="height:93%;">
+    <div class="panel">
+        <div class="container-fluid">
+            <div class="topbar-left col-xs-6">
+                <h3>Tipo Registro</h3>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="col-xs-6">
+                <div class="topbar-left col-xs-6">
+                    <h4 style="font-size:1.2em;">Total de Registros: <span id="spnTotalRegistros"></span></h4>
+                </div>
+            </div>
+            <div class="col-xs-6 right">
+                <button class="btn btn-sm btn-primary pull-right plu" data-target="modal1" onclick="ModalNuevo()" style="margin-left:10px;">Nuevo</button>
+                @*<button class="btn btn-sm  btn-success pull-right plu" id="btnPdf" style="margin-left:10px;">Descargar PDF</button>
+                <button class="btn btn-sm btn-info pull-right plu" id="btnExcel" style="margin-left:10px;">Descargar Excel</button>*@
+            </div>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="container-fluid">
+            <table id="table_id" class="table" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nomb. Registro</th>
+                        <th>Estado</th>
+                        <th>Mas</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody_Registros"></tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+    <div id="modaltiporegistro" class="modal fade" data-backdrop="static"
+         data-keyboard="false" id="ModalListadoItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="margin-top:120px" role="document">
+            <div class="modal-content">
+
+
+                <div class="panel" style="margin-bottom:0px">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="lblTituloModal"></h5>
+                    </div>
+                    <div class="panel-body ">
+                        <div class="col-s12">
+                            <div class="form-group row">
+                                <label for="NombTipoRegistro" class="col-sm-2 col-form-label">Nombre</label>
+                                <div class="col-sm-10">
+                                    <input id='txtId' name="txtId" type='hidden' class="form-control input-sm">
+                                    <input type="text" class="form-control" id="NombTipoRegistro" placeholder="Nombre">
+                                </div>
+                            </div>
+
+                            <div class="checkbox-custom col-xs-6">
+                                <input type="checkbox" id="chkActivo">
+                                <label for="chkActivo">Activo</label>
+                            </div>
+
+                        </div>
+                        
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary pull-right plu" onclick="Grabar()" data-dismiss="modal">Aceptar</button>
+                        <button type="button" class="btn btn-danger pull-right"  data-dismiss="modal" onclick="CerrarModalListadoItems()">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+</div>
+
+
+
+<script src="~/Scripts/TipoRegistro/Listado.js"></script>
+<script src="~/Scripts/General.js"></script>
+<script src="~/js/pdf/jspdf.min.js"></script>
+<script src="~/js/pdf/faker.min.js"></script>
+<script src="~/js/pdf/jspdf.plugin.autotable.src.js"></script>
+
+

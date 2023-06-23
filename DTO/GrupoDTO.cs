@@ -15,6 +15,7 @@ namespace DTO
         public int IdObra { get; set; }
         public bool Estado { get; set; }
         public bool Eliminado { get; set; }
+        public string DescripcionObra { get; set; }
         public IList<SubGrupoDTO> SubGrupos { get; set; }
     }
 
@@ -28,5 +29,7 @@ namespace DTO
         public bool Eliminado { get; set; }
         public int IdSociedad { get; set; }
         public string DescGrupo { get; set; } //Campo Opcional
+        public string DescripcionObraSG { get; set; }
+        public int IdObra { get; set; }
     }
 }

@@ -1,0 +1,70 @@
+﻿@{
+    ViewBag.Title = "ListaPrecio";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" style="height:93%;">
+
+    <div class="panel">
+        <div class="container-fluid">
+            <div class="topbar-left col-xs-6">
+                <h3>Lista Precios</h3>
+            </div>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="container-fluid">
+
+            <a id="reporteRPT" style="display:none"></a>
+            <div class="panel-footer text-left">
+
+                <div class="row">
+                    <div class='form-group-sm'>
+                        <label for="IdDivision" class="control-label col-sm-2 left-align">Division</label>
+                        <div class="col-sm-4">
+                            <select class="form-control input-sm" id="IdDivision"></select>
+                        </div>
+                    </div>
+                    <div class='form-group-sm'>
+                        <label for="cboTipoPersona" class="control-label col-sm-2 rigth-align">Tipo</label>
+                        <div class="col-sm-4">
+                            <select id="IdTipoProducto" class="form-control input-sm" tabindex="1">
+                                <option value="1">Materiales</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="row">
+                    <div class='form-group-sm'>
+                        <label for="IdArticulo" class="control-label col-sm-2 left-align">Articulo</label>
+                        <div class="col-sm-4">
+                            <select id="IdArticulo" class="form-control input-sm" tabindex="1">
+                            </select>
+                        </div>
+                    </div>
+                   
+                </div>
+
+
+
+
+                <div class="row">
+                    <button type="button" id="btnReporte" class="btn btn-primary pull-centers plu" onclick="GenerarReporteListaPrecio()">Generar Reporte</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script src="~/Scripts/ReporteLogistica/ListaPrecio.js"></script>
+<script src="~/Scripts/General.js"></script>
+<script src="~/js/pdf/jspdf.min.js"></script>
+<script src="~/js/pdf/faker.min.js"></script>
+<script src="~/js/pdf/jspdf.plugin.autotable.src.js"></script>
+
+

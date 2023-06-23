@@ -28,6 +28,28 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
+        public string ObtenerBasexIdUsuario( int estado = 3)
+        {
+            string mensaje_error = "";
+            BaseDAO oBaseDAO = new BaseDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            int IdPerfil = Convert.ToInt32(HttpContext.Session.GetInt32("IdPerfil"));
+            DataTableDTO oDataTableDTO = new DataTableDTO();
+            List<BaseDTO> lstAlmacenDTO = oBaseDAO.ObtenerBasexIdUsuario(IdPerfil,IdUsuario, ref mensaje_error, estado);
+            if (lstAlmacenDTO.Count > 0)
+            {
+
+                //return oDataTableDTO;
+                return JsonConvert.SerializeObject(lstAlmacenDTO);
+
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
+
 
         public string ObtenerDatosxID(int IdBase)
         {

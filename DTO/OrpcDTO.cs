@@ -75,8 +75,12 @@ namespace DTO
         public string NombObra { get; set; }
         public int IdProveedor { get; set; }
         public int idCondicionPago { get; set; }
+        public int IdGlosaContable { get; set; }
 
         public IList<AnexoDTO> AnexoDetalle { get; set; }
+
+        public string NumProveedor { get; set; }
+        public string NombProveedor { get; set; }
 
     }
 
@@ -127,7 +131,7 @@ namespace DTO
         public int IdOrigen { get; set; }
 
         public decimal CantidadUsada { get; set; }
-
+        public string CodigoArticulo { get; set; }
 
     }
 }

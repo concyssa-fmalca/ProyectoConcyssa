@@ -1,5 +1,410 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model List<string>
 @{
+    ViewBag.Title = "Listado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+
+<div class="container-fluid" style="height:93%;">
+    <div class="panel">
+        <div class="container-fluid">
+            <div class="topbar-left col-xs-6">
+                <h3>Gestion de Giros</h3>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="col-xs-6">
+                <div class="topbar-left col-xs-6">
+                    <h4 style="font-size:1.2em;">Total de Registros: <span id="spnTotalRegistros"></span></h4>
+                </div>
+            </div>
+            <div class="col-xs-6 right">
+                <button class="btn btn-sm btn-primary pull-right plu" data-target="modal1" onclick="ModalNuevo()" style="margin-left:10px;">Nuevo</button>
+                @*<button class="btn btn-sm  btn-success pull-right plu" id="btnPdf" style="margin-left:10px;">Descargar PDF</button>
+                <button class="btn btn-sm btn-info pull-right plu" id="btnExcel" style="margin-left:10px;">Descargar Excel</button>*@
+            </div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="container-fluid">
+            <div class="panel titulo" style="background-color:#effafc">
+                <div class="row">
+                    @* @if (base.Session["idPerfil"].ToString() == "2" || base.Session["idPerfil"].ToString() == "5" || base.Session["idPerfil"].ToString() == "6")
+                    {
+
+                    }
+                    else
+                    {*@
+                    <label for="cboObra" class="control-label col-sm-1 left-align" style="color:black;margin-top:5px">Obra</label>
+                    <div class="col-sm-2">
+                        <select id="cboObra" class="form-control" onchange="onchangeObra()"></select>
+                    </div>
+                    @*}*@
+                    <label for="cboTipoRegistro" class="control-label col-sm-1 left-align" style="color:black;margin-top:5px">Tipo Registro</label>
+                    <div class="col-sm-2">
+                        <select id="cboTipoRegistro" class="form-control" onchange="onchangeTipoRegistroM()"></select>
+                    </div>
+                    <label for="cboSemana" class="control-label col-sm-1 left-align" style="color:black;margin-top:5px">Semana</label>
+                    <div class="col-sm-2">
+                        <select id="cboSemana" class="form-control" onchange="onchangeSemana()"></select>
+                    </div>
+                    <label for="cboEstado" class="control-label col-sm-1 left-align" style="color:black;margin-top:5px">Estado</label>
+                    <div class="col-sm-2">
+                        <select id="cboEstado" class="form-control" onchange="onchangeEstado()"></select>
+                    </div>
+
+
+                </div>
+            </div>
+
+
+
+
+
+            <div class="table-responsive" style="border:0px">
+                <table id="table_id" class="table text-center" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th class="txt-center">Nro</th>
+                            <th class="txt-center">Serie y Numero</th>
+                            <th class="txt-center">Obra</th>
+                            <th class="txt-center">Semana</th>
+                            <th class="txt-center">Orden Giro</th>
+                            <th class="txt-center">Fecha</th>
+                            <th class="txt-center">Total Soles</th>
+                            <th class="txt-center">Total Dolares</th>
+                            <th class="txt-center">Estado Giro</th>
+                            <th class="txt-center">Historial</th>
+                            <th class="txt-center">PDF</th>
+
+                            <th class="txt-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody_SolicitudAutorizacion"></tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+
+
+    <div id="modal-form" class="popup-xl allcp-form mfp-with-anim mfp-hide modal-articulos">
+        <div class="panel panel-info ">
+            <div class="panel-heading">
+                <h5 id='lblTituloModal'></h5>
+
+                <button type="submit" id="btnCancelar" class="cerrar btn btn-danger pull-left" onclick="cerrarModal();"><i class="fa fa-close fa-15x"></i></button>
+            </div>
+            <div class="panel-body ">
+                <div class='col s12 m12 '>
+                    <div class='container-fluid'>
+                        <div class='form-horizontal'>
+
+                            <div class="row pl30 pr30">
+
+                                <div class="col-md-4">
+                                    <div class='form-group-sm'>
+                                        <input id='txtId' style="display:none" name="txtId" class="form-control input-sm">
+                                        <label for="cboObra" class="control-label col-sm-2 left-align">Obra</label>
+                                        <div class="col-sm-10">
+                                            <select id="cboObraM" onchange="onchangeObra()" type="text" class="form-control input-sm" tabindex="3"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4" style="display:none">
+                                    <div class='form-group-sm'>
+
+                                        <label for="cboTipoRegistro" class="control-label col-sm- left-align">Tipo Registro</label>
+                                        <div class="col-sm-9">
+                                            <select id="cboTipoRegistroM" type="text" class="form-control input-sm" tabindex="3" onchange="onchangeTipoRegistro()"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class='form-group-sm '>
+
+                                        <label for="cboSemana" class="control-label col-sm-2 left-align">Semana</label>
+                                        <div class="col-sm-10">
+                                            <select id="cboSemanaM" type="text" class="form-control input-sm" tabindex="3"></select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row pl30 pr30">
+
+                                <div class="col-lg-4 col-sm-4 ">
+
+                                    <div class="row">
+                                        <div class='form-group-sm'>
+                                            <label for='cboIdUnidadMedida' class="control-label col-sm-6 left-align">Giro ala orden de </label>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row pl30 pr30">
+                                <div class="row">
+
+                                    <div class='form-group-sm'>
+                                        <div class="radio-custom radio-custom  col-md-2">
+                                            <input type="radio" id="rdProveedor" name="tipoPersona" tabindex="6" onClick="Proveedores()" />
+                                            <label for="rdProveedor">Proveedor</label>
+                                        </div>
+                                    </div>
+
+                                    <div class='form-group-sm'>
+                                        <div class="radio-custom col-md-2">
+                                            <input type="radio" id="rdEmpleado" name="tipoPersona" tabindex="7" onClick="Empleados()" />
+                                            <label for="rdEmpleado">Empleado</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row pl30 pr30">
+                                <div class="row">
+
+                                    <div class='form-group-sm col-md-4' id="divProveedor">
+                                        <label for="cboEncargado" class="control-label col-sm-0 left-align"></label>
+                                        <div class="col-sm-10">
+                                            <select id="cboEncargado" type="text" class="form-control input-sm" tabindex="3"></select>
+                                        </div>
+                                    </div>
+
+                                    <div class='form-group-sm col-md-4' id="divSolicitante">
+
+                                        <label for="cboSolicitante" class="control-label col-sm-0 left-align"></label>
+                                        <div class="col-sm-10">
+                                            <select id="cboSolicitante" type="text" class="form-control input-sm" tabindex="3"></select>
+                                        </div>
+
+                                    </div>
+                                    <div id="cboEstadosGiroCol" class='form-group-sm col-md-4'>
+
+                                        <label for="cboEstadosGiro" class="control-label col-sm-2 left-align">Estados</label>
+                                        <div class="col-sm-10">
+                                            <select id="cboEstadosGiro" type="text" class="form-control input-sm" tabindex="3"></select>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <br />
+                            </div>
+                        </div>
+                        <div class="row pl10 pr10">
+
+                            @*<button type="submit" id="btnGrabarCabecera" onclick="Guardar()" class="btn btn-primary pull-left plu">Grabar</button>*@
+
+
+                        </div>
+
+                        <div class="row pl10 pr10">
+
+
+                            <div class="tab-block mb10 mt20 ">
+                                <ul class="nav nav-tabs tabs-border nav-justified">
+                                    <li class="active">
+                                        <a href="#tab15_5" data-toggle="tab" id="giro-header">Detalle de giro </a>
+                                    </li>
+
+                                </ul>
+                                <div class="tab-content pl15 pr15 ">
+                                    <div id="tab15_5" class="tab-pane active">
+                                        <div class="container">
+                                            <div class="row giro">
+                                                <div class="col-md-10">
+                                                    <div class="row form-giro">
+                                                        <div class="form-group-sm col-md-5">
+                                                            <input id='txtIdDetalle' name="txtIdDetalle" type='hidden' class="form-control input-sm">
+                                                            <label for="IdProveedor" class="control-label col-sm-0 left-align">Proveedor:</label>
+                                                            <select style="height: 25px" id="IdProveedor" class="form-control input-sm" tabindex="0"></select>
+
+                                                        </div>
+                                                        <div class=" form-group-sm col-md-4">
+
+                                                            <label for="cboTipoDocumento" class="control-label col-sm-0 left-align"> Tipo Documento:</label>
+
+                                                            <select style="height: 25px" id="cboTipoDocumento" class="form-control input-sm" tabindex="0"></select>
+
+                                                        </div>
+                                                        <div class="form-group-sm col-md-3">
+
+                                                            <label for="cboTipoDocumento" class="control-label col-sm-0 left-align">   Nro. Documento:</label>
+
+                                                            <input style="height: 25px" type="text" id="txtNroDocumento" class="form-control" placeholder="Ingreso Nro de Documento">
+                                                        </div>
+
+
+
+                                                        <div class="form-group-sm col-md-3">
+                                                            <label for="cboMoneda" class="control-label col-sm-0 left-align">   Moneda</label>
+
+                                                            <select style="height: 25px" id="cboMoneda" class="form-control input-sm" tabindex="0"></select>
+                                                        </div>
+                                                        <div class="form-group-sm col-md-2">
+                                                            <label for="txtMonto" class="control-label col-sm-0 left-align">    Monto:</label>
+                                                            <input style="height: 25px" type="text" id="txtMonto" class="form-control" placeholder="Ingrese Monto">
+                                                        </div>
+                                                        <div class="form-group-sm col-md-4">
+                                                            <label for="txtComentario" class="control-label col-sm-0 left-align">    Comentario:</label>
+                                                            <textarea type="text" id="txtComentario" class="form-control"></textarea>
+                                                        </div>
+                                                        <div class="col-xs-3">
+                                                            <div id="progressOuter" class="progress progress-striped active hidden">
+                                                                <div id="progressBar" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-xs-12 text-center">
+                                                                <button id="uploadBtn" class="btn btn-large btn-primary"><i class="fa fa-upload fa-15px pr5"></i>Examinar</button>
+                                                                <div id="msgBox" style="display:none;"></div>
+
+                                                            </div>
+
+
+
+                                                        </div>
+
+
+                                                    </div>
+
+
+                                                </div>
+                                                <div class=" col-md-2">
+                                                    <div class="row btn-giro ">
+                                                        <div class="form-group-sm col-md-5">
+
+
+                                                            <button class="btn btn-sm btn-success" onclick="GuardarDetalle()"><i class="fa fa-save fa-15x"></i> <span id="guardarDetalle">Agregar</span> </button>
+                                                            </br>
+                                                            <button style="display:none" class="btn btn-sm btn-success btn-clean" onclick="LimpiarDetalle()"><i class="fa fa-eraser fa-15x"></i><span> Limpiar</span> </button>
+
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <br />
+                                        <div class="row">
+
+                                            <div class="table-responsive" style="border:0px">
+                                                <table id="tabla_detalle" class="table text-center" style="width:100%">
+                                                    <thead>
+                                                        <tr>
+
+                                                            <th>Proveedor</th>
+                                                            <th>Tipo Doc</th>
+                                                            <th>Numero</th>
+                                                            <th>Moneda</th>
+                                                            <th>Monto</th>
+                                                            @*<th>Rendicion</th>*@
+                                                            <th>Comentario</th>
+                                                            <th>Documento</th>
+                                                            <th>Opciones</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="tbody_Detalle"></tbody>
+                                                </table>
+                                            </div>
+
+
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="panel-footer">
+                <div class="row">
+
+                    <div class='form-group-sm'>
+                        @*<button type="submit" id="btnGrabarCabecera" onclick="Guardar()" class="btn btn-primary pull-left plu">Grabar</button>*@
+                        <button type="submit" id="btnGrabarCabecera" onclick="Guardar()" class="btn btn-primary pull-right plu">Grabar</button>
+                        @*<button type="button" id="btnCancelar" onclick="CerrarModal()" class="btn btn-danger pull-right" style="background-color:orange;">Cancelar</button>*@
+                    </div>
+
+                </div>
+            </div>
+
+            <input type="hidden" id="hdfL" value="@ViewBag.Permiso" />
+        </div>
+
+    </div>
+
+
+
+
+    <!-- Modal EStados-->
+    <div class="modal fade" data-backdrop="static"
+         data-keyboard="false" id="ModalHistorialEstados" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered allcp-form" style="margin-top:120px" role="document">
+            <div class="modal-content">
+
+
+                <div class="panel" style="margin-bottom:0px">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="lblTituloModalItem">Historial Estados</h5>
+                    </div>
+                    <div class="panel-body ">
+                        <div class='col s12 m12 '>
+                            <div class='container-fluid'>
+
+
+                                <div class="" id="div_modelos_aprobaciones">
+                                    <table class="table" id="tabla_modal_estado">
+                                        <thead>
+                                            <tr>
+                                                <th>Proveedor</th>
+                                                <th>Nro Documento</th>
+                                                <th>Aprobador</th>
+                                                <th>Estados</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger pull-right" style="background-color:orange;" data-dismiss="modal" onclick="CerrarModalHistorial()">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+</div>
+
+
+
+<script src="~/Scripts/SimpleAjaxUploader.js"></script>
+<script src="~/Scripts/GestionGiro/Listado.js"></script>
+<script src="~/Scripts/General.js"></script>
+<script src="~/js/pdf/jspdf.min.js"></script>
+<script src="~/js/pdf/faker.min.js"></script>
+<script src="~/js/pdf/jspdf.plugin.autotable.src.js"></script>
+
+

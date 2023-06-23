@@ -147,5 +147,54 @@ namespace ConcyssaWeb.Controllers
                 return mensaje_error;
             }
         }
+
+        public string ObtenerObraxIdUsuarioSession(int IdBase)
+        {
+            string mensaje_error = "";
+            ObraDAO oObraDAO = new ObraDAO();
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            int IdPerfil = Convert.ToInt32(HttpContext.Session.GetInt32("IdPerfil"));
+            List<ObraDTO> lstObraDTO = oObraDAO.ObtenerObraxIdUsuario(IdPerfil,IdBase,IdUsuario, ref mensaje_error);
+            if (lstObraDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstObraDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
+        public string ObtenerObraxIdUsuarioSessionSinBase()
+        {
+            string mensaje_error = "";
+            ObraDAO oObraDAO = new ObraDAO();
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            int IdPerfil = Convert.ToInt32(HttpContext.Session.GetInt32("IdPerfil"));
+            List<ObraDTO> lstObraDTO = oObraDAO.ObtenerObraxIdUsuarioSinBase(IdPerfil, IdUsuario, ref mensaje_error);
+            if (lstObraDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstObraDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
+        public string ObtenerObraxIdUsuarioSessionFiltro()
+        {
+            string mensaje_error = "";
+            ObraDAO oObraDAO = new ObraDAO();
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            int IdPerfil = Convert.ToInt32(HttpContext.Session.GetInt32("IdPerfil"));
+            List<ObraDTO> lstObraDTO = oObraDAO.ObtenerObraxIdUsuarioFiltro(IdPerfil,IdUsuario, ref mensaje_error);
+            if (lstObraDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstObraDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
     }
 }

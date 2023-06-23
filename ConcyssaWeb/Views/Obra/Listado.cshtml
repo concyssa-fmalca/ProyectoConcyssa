@@ -1,4 +1,10 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Http
+@using Karambolo.AspNetCore.Bundling.ViewHelpers
+@addTagHelper *, Karambolo.AspNetCore.Bundling
+@inject IHttpContextAccessor Accessor
+
+
+@{
     ViewBag.Title = "Listado";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -11,6 +17,7 @@
             </div>
         </div>
         <div class="container-fluid">
+            <input style="display:none" id="IdPerfilSesion" type="text" value="@Accessor.HttpContext.Session.GetInt32("IdPerfil")" disabled></input>
             <div class="col-xs-6">
                 <div class="topbar-left col-xs-6">
                     <h4 style="font-size:1.2em;">Total de Registros: <span id="spnTotalRegistros"></span></h4>

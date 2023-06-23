@@ -109,6 +109,37 @@ namespace DAO
         }
 
 
+        public List<CondicionPagoDTO> ObtenerCondicionxProveedor(int IdProveedor)
+        {
+            List<CondicionPagoDTO> lstCondicionPagoDTO = new List<CondicionPagoDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarCondicionPagoxProveedor", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdProveedor", IdProveedor);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        CondicionPagoDTO oCondicionPagoDTO = new CondicionPagoDTO();
+                        oCondicionPagoDTO.IdCondicionPago = int.Parse(drd["CondicionPago"].ToString());
+                        lstCondicionPagoDTO.Add(oCondicionPagoDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            return lstCondicionPagoDTO;
+        }
+
+
+
         public int Delete(int IdCondicionPago)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);

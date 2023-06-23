@@ -37,6 +37,7 @@ namespace DTO
         public string DetalleEstado { get; set; }
         public string NombObra { get; set; } = "";
         public string NombBase { get; set; } = "";
+        public int IdBase { get; set; }
         public string NombAlmacen { get; set; } = "";
 
         public IList<SolicitudDetalleDTO> Detalle;
@@ -45,6 +46,10 @@ namespace DTO
         public IList<SolicitudRQAnexos> DetallesAnexo;
 
         public IList<SolicitudRQModeloDTO> ListSolicitudRqModelo;
+        public int EstadoSolicitud { get; set; } = 1;
+
+        public string NombMoneda { get; set; } = "";
+        public decimal TotalCantidad { get; set; } = 0;
 
     }
 
@@ -55,5 +60,33 @@ namespace DTO
         public int IdSolicitud { get; set; }
         public string Nombre { get; set; }
         public int IdSociedad { get; set; }
+    }
+
+
+    public class DetalleSolicitudRqAprobacionDTO
+    {
+        public int IdArticulo { get; set; }
+        public decimal PrecioInfo { get; set; }
+        public int IdSolicitud { get; set; }
+
+        public string ObraDescripcion { get; set; }
+        public string NumeroPedido { get; set; }
+
+        public string TipoProducto { get; set; }
+
+        public int IdClaseArticulo { get; set; }
+        public string CodigoArticulo { get; set; }
+        public string NombreArticulo { get; set; }
+        public int Numero { get; set; }
+        public decimal CantidadNecesaria { get; set; }
+        public int Accion { get; set; }
+        public int IdSolicitudRQModelo { get; set; }
+        public int IdSolicitudRQDetalle { get; set; }
+        public DateTime FechaDocumento { get; set; }
+        public int IdUsuario { get; set; }
+        public int IdTipoProducto { get; set; } = 1;
+        public string NombUsuario { get; set; } = "";
+        public string Serie { get; set; } = "";
+        public string Referencia { get; set; } = "";
     }
 }

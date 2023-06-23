@@ -15,6 +15,7 @@ namespace DTO
         public List<string> IdUnidadMedida { get; set; }
         public List<DateTime> FechaNecesaria { get; set; }
         public List<decimal> CantidadNecesaria { get; set; }
+        public List<decimal> CantidadSolicitada { get; set; }
         public List<decimal> PrecioInfo { get; set; }
         public List<int> IdIndicadorImpuesto { get; set; }
         public List<decimal> ItemTotal { get; set; }

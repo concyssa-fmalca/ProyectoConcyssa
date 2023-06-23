@@ -154,7 +154,7 @@ namespace ConcyssaWeb.Controllers
         {
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
-
+           
             string valida = "";
             valida = validarEmpresaActual();
             if (valida != "")
@@ -168,11 +168,12 @@ namespace ConcyssaWeb.Controllers
             if (IdAutorizador != 0)
             {
                 SolicitudRQAutorizacionDAO oSolicitudRQAutorizacionDAO = new SolicitudRQAutorizacionDAO();
-
-                List<SolicitudRQAutorizacionDTO> lstSolicitudRQAutorizacionDTO = oSolicitudRQAutorizacionDAO.ObtenerSolicitudesxAutorizar(IdAutorizador.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado);
-                if (lstSolicitudRQAutorizacionDTO.Count > 0)
+                //List<SolicitudRQAutorizacionDTO> lstSolicitudRQAutorizacionDTO = oSolicitudRQAutorizacionDAO.ObtenerSolicitudesxAutorizar(IdAutorizador.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado);
+                List<DetalleSolicitudRqAprobacionDTO> lstDetalleSolicitudRqAprobacionDTO = oSolicitudRQAutorizacionDAO.ObtenerSolicitudesxAutorizarDetalle(IdUsuario.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado);
+                if (lstDetalleSolicitudRqAprobacionDTO.Count > 0)
                 {
-                    Resultado = JsonConvert.SerializeObject(lstSolicitudRQAutorizacionDTO);
+                  
+                    Resultado = JsonConvert.SerializeObject(lstDetalleSolicitudRqAprobacionDTO);
                 }
                 else
                 {
@@ -182,10 +183,11 @@ namespace ConcyssaWeb.Controllers
             else
             {
                 SolicitudRQAutorizacionDAO oSolicitudRQAutorizacionDAO = new SolicitudRQAutorizacionDAO();
-                List<SolicitudRQAutorizacionDTO> lstSolicitudRQAutorizacionDTO = oSolicitudRQAutorizacionDAO.ObtenerSolicitudesxAutorizar(IdUsuario.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado);
-                if (lstSolicitudRQAutorizacionDTO.Count > 0)
+                //List<SolicitudRQAutorizacionDTO> lstSolicitudRQAutorizacionDTO = oSolicitudRQAutorizacionDAO.ObtenerSolicitudesxAutorizar(IdUsuario.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado);
+                List<DetalleSolicitudRqAprobacionDTO> lstDetalleSolicitudRqAprobacionDTO = oSolicitudRQAutorizacionDAO.ObtenerSolicitudesxAutorizarDetalle(IdUsuario.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado);
+                if (lstDetalleSolicitudRqAprobacionDTO.Count > 0)
                 {
-                    Resultado = JsonConvert.SerializeObject(lstSolicitudRQAutorizacionDTO);
+                    Resultado = JsonConvert.SerializeObject(lstDetalleSolicitudRqAprobacionDTO);
                 }
                 else
                 {
@@ -235,24 +237,29 @@ namespace ConcyssaWeb.Controllers
             {
 
                 //Valida si hay cambio en precio o cantidad y realiza la actualizacion dependiendo de eso
-                var DatosSolicitud = oSolicitudRQDAO.ObtenerDatosxID(solicitudRQModeloAprobacionesDTO[0].IdSolicitud);
-                for (int i = 0; i < solicitudRQModeloAprobacionesDTO.Count; i++) //datos enviados de aprobador
+                for (int i = 0; i < solicitudRQModeloAprobacionesDTO.Count; i++)
                 {
-                    for (int j = 0; j < DatosSolicitud[0].Detalle.Count; j++) //datos de solicitud
-                    {
-                        if (solicitudRQModeloAprobacionesDTO[i].IdArticulo == DatosSolicitud[0].Detalle[j].IdArticulo)
+                    var DatosSolicitud = oSolicitudRQDAO.ObtenerDatosxID(solicitudRQModeloAprobacionesDTO[i].IdSolicitud);
+                    //for (int i = 0; i < solicitudRQModeloAprobacionesDTO.Count; i++) //datos enviados de aprobador
+                    //{
+                        for (int j = 0; j < DatosSolicitud[0].Detalle.Count; j++) //datos de solicitud
                         {
-                            if (solicitudRQModeloAprobacionesDTO[i].CantidadItem != DatosSolicitud[0].Detalle[j].CantidadNecesaria)
+                            if (solicitudRQModeloAprobacionesDTO[i].IdArticulo == DatosSolicitud[0].Detalle[j].IdArticulo)
                             {
-                                oSolicitudRQModeloAprobacionesDAO.ActualizarCantidadPrecioDetalle(solicitudRQModeloAprobacionesDTO[i], IdSociedad.ToString());
-                            }
-                            if (solicitudRQModeloAprobacionesDTO[i].PrecioItem != DatosSolicitud[0].Detalle[j].PrecioInfo)
-                            {
-                                oSolicitudRQModeloAprobacionesDAO.ActualizarCantidadPrecioDetalle(solicitudRQModeloAprobacionesDTO[i], IdSociedad.ToString());
+                                if (solicitudRQModeloAprobacionesDTO[i].CantidadItem != DatosSolicitud[0].Detalle[j].CantidadNecesaria)
+                                {
+                                    oSolicitudRQModeloAprobacionesDAO.ActualizarCantidadPrecioDetalle(solicitudRQModeloAprobacionesDTO[i], IdSociedad.ToString());
+                                }
+                                //if (solicitudRQModeloAprobacionesDTO[i].PrecioItem != DatosSolicitud[0].Detalle[j].PrecioInfo)
+                                //{
+                                //    oSolicitudRQModeloAprobacionesDAO.ActualizarCantidadPrecioDetalle(solicitudRQModeloAprobacionesDTO[i], IdSociedad.ToString());
+                                //}
                             }
                         }
-                    }
+                    //}
                 }
+
+               
                 //Valida si hay cambio en precio o cantidad y realiza la actualizacion dependiendo de eso
 
 

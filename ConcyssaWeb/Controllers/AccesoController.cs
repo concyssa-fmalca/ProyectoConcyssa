@@ -65,14 +65,15 @@ namespace ConcyssaWeb.Controllers
 
 
 
-        public string grabarAcceso(string BDEmpresaActual)
+        public string grabarAcceso(string datos)
         {
+
             string mensaje_error = ""; string rpta = "";
-            Stream st = HttpContext.Request.Body;
-            StreamReader sr = new StreamReader(st);
-            var data = sr.ReadToEnd();
+            //Stream st = HttpContext.Request.Body;
+            //StreamReader sr = new StreamReader(st);
+            //var data = sr.ReadToEnd();
             MenuDAO oSeg_MenuBL = new MenuDAO();
-            if (oSeg_MenuBL.GrabarAccesos(data, Convert.ToInt32( HttpContext.Session.GetInt32("Usuario")) , ref mensaje_error )  )
+            if (oSeg_MenuBL.GrabarAccesos(datos, Convert.ToInt32( HttpContext.Session.GetInt32("Usuario")) , ref mensaje_error )  )
             {
                 rpta = "1";
             }else

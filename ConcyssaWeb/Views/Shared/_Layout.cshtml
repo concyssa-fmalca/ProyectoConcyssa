@@ -147,7 +147,7 @@
 
                             <span class="fa fa-caret-down hidden-xs mr15"></span>
                         </a>
-                        <ul class="dropdown-menu list-group keep-dropdown fw600" role="menu" style="background-color:#5a1c1c;">
+                        <ul class="dropdown-menu list-group keep-dropdown fw600" role="menu" style="background-color:#173e60;">
                             <li class="dropdown-footer text-center">
                                 <a href="/Home/CerrarSesion" class="btn btn-primary btn-sm btn-bordered">
                                     <span class="fa fa-power-off pr5"></span> Logout
@@ -183,6 +183,8 @@
                                     <div class="media-author">
                                         @Accessor.HttpContext.Session.GetString("NombUsuario").ToString()
                                     </div>
+                                     <label>BASE:  @Accessor.HttpContext.Session.GetString("NombBase").ToString() </label>
+                            <br>    
                                 </div>
                                 <label>Conectado</label>
                             </div>
