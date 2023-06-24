@@ -205,5 +205,42 @@ namespace DAO
             }
         }
 
+
+
+
+        public List<VehiculoDTO> ObtenerDatosConductorxPlaca(string Placa)
+        {
+            List<VehiculoDTO> lstVehiculoDTO = new List<VehiculoDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerDatosConductorxPlaca", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@Placa", Placa);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        VehiculoDTO oVehiculoDTO = new VehiculoDTO();
+                        oVehiculoDTO.MarcaDescripcion = (drd["Marca"].ToString());
+                        oVehiculoDTO.Placa = (drd["Placa"].ToString());
+                        oVehiculoDTO.Licencia = (drd["Licencia"].ToString());
+                        oVehiculoDTO.NumeroDocumento = (drd["NumeroDocumento"].ToString());
+                        oVehiculoDTO.RazonSocial = (drd["RazonSocial"].ToString());
+                        lstVehiculoDTO.Add(oVehiculoDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    
+                }
+            }
+            return lstVehiculoDTO;
+        }
+
     }
 }

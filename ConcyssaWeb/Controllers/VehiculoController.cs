@@ -47,6 +47,22 @@ namespace ConcyssaWeb.Controllers
         }
 
 
+        public string ObtenerDatosConductorxPlaca(string Placa)
+        {
+            string mensaje_error = "";
+            VehiculoDAO oVehiculoDAO = new VehiculoDAO();
+            List<VehiculoDTO> lstCodigoUbsoDTO = oVehiculoDAO.ObtenerDatosConductorxPlaca(Placa);
+
+            if (lstCodigoUbsoDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstCodigoUbsoDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
+
 
         public string UpdateInsertVehiculo(VehiculoDTO oVehiculoDTO)
         {

@@ -381,7 +381,7 @@ function ModalNuevo() {
     //AgregarLinea();
 
 
-
+    CargarVehiculos();
 
     CargarSolicitante(1);
     CargarSucursales();
@@ -423,7 +423,8 @@ function ModalNuevo() {
     $("#IdTipoDocumentoRef").val(1);
 
     $("#IdDestinatario").val(24154).change();
-
+    $("#IdTransportista").val(24154).change();
+    $("#IdMotivoTraslado").val(09).change();
 }
 
 
@@ -1687,6 +1688,7 @@ function ObtenerDatosxID(IdMovimiento) {
 
 
     //CargarObra();
+    CargarVehiculos();
 
 
     $("#lblTituloModal").html("Editar Transferencia");
@@ -1736,7 +1738,7 @@ function ObtenerDatosxID(IdMovimiento) {
             $("#IdDestinatario").val(movimiento.IdDestinatario).change()
             $("#IdMotivoTraslado").val(movimiento.IdMotivoTraslado).change()
             $("#IdTransportista").val(movimiento.IdTransportista).change()
-            $("#PlacaVehiculo").val(movimiento.PlacaVehiculo)
+            $("#PlacaVehiculo").val(movimiento.PlacaVehiculo).change()
             $("#MarcaVehiculo").val(movimiento.MarcaVehiculo)
             $("#NumIdentidadConductor").val(movimiento.NumIdentidadConductor)
 
@@ -2760,4 +2762,51 @@ function verBase64PDF(datos) {
 }
 function LimpiarAlmacen() {
     $("#cboAlmacen").prop("selectedIndex", 0)
+}
+
+
+function CargarVehiculos() {
+    $.ajaxSetup({ async: false });
+    $.post("/Vehiculo/ObtenerVehiculo", function (data, status) {
+        if (validadJson(data)) {
+            let datos = JSON.parse(data);
+            let option = '<option value="0">SELECCIONE</option>';
+            for (var i = 0; i < datos.length; i++) {
+                option += `<option value="` + datos[i].Placa + `">` + datos[i].Placa + `</option>`
+            }
+            $("#PlacaVehiculo").html(option);
+            $("#PlacaVehiculo").select2();
+        } else {
+
+        }
+    });
+}
+
+
+function BuscarVehiculoxPlaca() {
+
+    var Placa = $("#PlacaVehiculo").val();
+    $.ajaxSetup({ async: false });
+    $.post("/Vehiculo/ObtenerDatosConductorxPlaca", { 'Placa': Placa }, function (data, status) {
+
+        if (validadJson(data)) {
+            let datos = JSON.parse(data);
+            console.log(datos);
+            $("#MarcaVehiculo").val(datos[0].MarcaDescripcion);
+            $("#LicenciaConductor").val(datos[0].Licencia);
+            $("#NumIdentidadConductor").val(datos[0].NumeroDocumento);
+
+            var NombreApellido = datos[0].RazonSocial;
+            var a = NombreApellido.split(" ");
+            var Nombre = a[2];
+            var Apellido = a[0] + " " + a[1];
+            $("#NombreConductor").val(Nombre);
+            $("#ApellidoConductor").val(Apellido);
+        } else {
+
+        }
+
+    });
+
+
 }

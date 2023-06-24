@@ -481,6 +481,8 @@
 
                                     @*GUIA REMISION*@
                                     <hr class="ocultate" style="margin: 0px 0px 5px 0px" />
+                                    <p class="ocultate">Tipo Transporte: <select style="height: 20px" id="IdTipoTransporte" class="form-control input-sm" tabindex="21"><option value="0">SELECCIONE </option><option selected value="02">PRIVADO</option><option value="01">PUBLICO</option></select></p>
+                                    <hr class="ocultate" style="margin: 0px 0px 5px 0px" />
                                     <p class="ocultate">DESTINATARIO: <select style="height: 20px" id="IdDestinatario" class="form-control input-sm" tabindex="0"><option value="0">SELECCIONE </option></select> </p>
                                     <hr class="ocultate" style="margin: 0px 0px 5px 0px" />
                                     <p class="ocultate">MOTIVO TRASLADO: <select style="height: 20px" id="IdMotivoTraslado" class="form-control input-sm" tabindex="0"><option value="0">SELECCIONE </option></select> </p>
@@ -489,7 +491,8 @@
                                     <p class="ocultate"> RUC TRANSPORTISTA: <select style="height: 20px" id="IdTransportista" class="form-control input-sm" tabindex="0"><option value="0">SELECCIONE </option></select> </p>
 
                                     <hr class="ocultate" style="margin: 0px 0px 5px 0px" />
-                                    <p class="ocultate">PLACA VEHICULO:<input id="PlacaVehiculo" type="text" class="form-control huser-20" tabindex="16"> </p>
+                                    @*<p class="ocultate">PLACA VEHICULO:<input id="PlacaVehiculo" type="text" class="form-control huser-20" tabindex="16"> </p>*@
+                                    <p class="ocultate">PLACA VEHICULO: <select style="height: 20px" id="PlacaVehiculo" class="form-control input-sm" tabindex="0" onchange="BuscarVehiculoxPlaca()" ><option value="0">SELECCIONE </option></select> </p>
                                     <hr class="ocultate" style="margin: 0px 0px 5px 0px" />
                                     <p class="ocultate">MARCA VEHICULO:<input id="MarcaVehiculo" type="text" class="form-control huser-20" tabindex="16"> </p>
                                     <hr class="ocultate" style="margin: 0px 0px 5px 0px" />
@@ -507,9 +510,7 @@
                                     <hr class="ocultate" style="margin: 0px 0px 5px 0px" />*@
                                     <p class="ocultate">Bulto: <input id="Bulto" type="text" class="form-control huser-20" tabindex="20"></p>
                                     <hr class="ocultate" style="margin: 0px 0px 5px 0px" />
-                                    <p class="ocultate">Tipo Transporte: <select style="height: 20px" id="IdTipoTransporte" class="form-control input-sm" tabindex="21"><option value="0">SELECCIONE </option><option value="02">PRIVADO</option><option value="01">PUBLICO</option></select></p>
-                                    <hr class="ocultate" style="margin: 0px 0px 5px 0px" />
-                                    <p class="ocultate">Estado FE: <select style="height: 20px" id="cboEstadoFE" class="form-control input-sm" tabindex="21"><option value="0">NO ACEPTADO</option><option value="1">ACEPTADO</option></select></p>
+                                    <p class="ocultate"><strong>Estado GE:</strong> <select style="height: 20px" id="cboEstadoFE" class="form-control input-sm" tabindex="21"><option value="0">NO ACEPTADO</option><option value="1">ACEPTADO</option></select></p>
                                     @*<p class="ocultate">UBIGEO PARTIDA:<input id="UbigeoPartida" type="text" class="form-control huser-20" tabindex="16"> </p>
                                     <hr class="ocultate" style="margin: 0px 0px 5px 0px" />
                                     <p class="ocultate">UBIGEO LLEGADA:<input id="UbigeoLlegada" type="text" class="form-control huser-20" tabindex="16"> </p>*@

@@ -10,6 +10,11 @@ namespace DTO
     {
         public int IdVehiculo { get; set; }
         public int IdMarca { get; set; }
+        public string NumeroDocumento { get; set; }
+        public string Nombre { get; set; }
+        public string Apellido { get; set; }
+        public string RazonSocial { get; set; }
+        public string Licencia { get; set; }
         public int IdBase { get; set; }
 #pragma warning disable CS8618 // El elemento propiedad "Condicion" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declarar el elemento propiedad como que admite un valor NULL.
         public string Condicion { get; set; }

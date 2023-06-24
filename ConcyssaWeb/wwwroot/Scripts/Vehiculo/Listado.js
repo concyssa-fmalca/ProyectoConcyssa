@@ -85,7 +85,7 @@ function GuardarVehiculo() {
 
         if (data == 1) {
             swal("Exito!", "Proceso Realizado Correctamente", "success")
-            table.destroy();
+            //table.destroy();
             ConsultaServidor("ObtenerVehiculo");
             limpiarDatos();
 
