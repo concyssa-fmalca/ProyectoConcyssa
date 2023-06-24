@@ -422,6 +422,8 @@ function ModalNuevo() {
 
     $("#IdTipoDocumentoRef").val(1);
 
+    $("#IdDestinatario").val(24154).change();
+
 }
 
 
