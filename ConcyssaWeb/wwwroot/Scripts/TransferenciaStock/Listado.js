@@ -335,7 +335,7 @@ function ConsultaServidor() {
                 '<td>' + movimientos[i].NombSerie.toUpperCase() + '-' + movimientos[i].Correlativo + '</td>' +
                 '<td>' + movimientos[i].NombObra + '</td>' +
                 '<td>' + movimientos[i].NombAlmacen + '</td>' +
-                '<td>' + movimientos[i].NumSerieTipoDocumentoRef + '</td>' +
+                '<td>' + movimientos[i].SerieGuiaElectronica.toUpperCase() + '-' + movimientos[i].NumeroGuiaElectronica + '</td>' +
                 '<td>' + movimientos[i].FechaDocumento.split("T")[0] + '</td>' +
                 '<td><button class="btn btn-primary fa fa-eye btn-xs" onclick="ObtenerDatosxID(' + movimientos[i].IdMovimiento + ')"></button>' +
                 '<button class="btn btn-primary" onclick="GenerarReporte(' + movimientos[i].IdMovimiento + ')">R</button>' +
@@ -1532,7 +1532,14 @@ function GuardarSolicitud() {
                 'IdMotivoTraslado': $("#IdMotivoTraslado").val(),
                 'IdTransportista': $("#IdTransportista").val(),
                 'PlacaVehiculo': $("#PlacaVehiculo").val(),
+                'MarcaVehiculo': $("#MarcaVehiculo").val(),
                 'NumIdentidadConductor': $("#NumIdentidadConductor").val(),
+
+                'NombreConductor': $("#NombreConductor").val(),
+                'ApellidoConductor': $("#ApellidoConductor").val(),
+                'LicenciaConductor': $("#LicenciaConductor").val(),
+                'TipoTransporte': $("#IdTipoTransporte").val(),
+
                 'Peso': $("#Peso").val(),
                 'Bulto': $("#Bulto").val(),
 
@@ -1728,9 +1735,31 @@ function ObtenerDatosxID(IdMovimiento) {
             $("#IdMotivoTraslado").val(movimiento.IdMotivoTraslado).change()
             $("#IdTransportista").val(movimiento.IdTransportista).change()
             $("#PlacaVehiculo").val(movimiento.PlacaVehiculo)
+            $("#MarcaVehiculo").val(movimiento.MarcaVehiculo)
             $("#NumIdentidadConductor").val(movimiento.NumIdentidadConductor)
+
+            $("#NombreConductor").val(movimiento.NombreConductor)
+            $("#ApellidoConductor").val(movimiento.ApellidoConductor)
+            $("#LicenciaConductor").val(movimiento.LicenciaConductor)
+            $("#IdTipoTransporte").val(movimiento.TipoTransporte)
+
+            $("#SerieNumeroRef").val(movimiento.SerieGuiaElectronica + "-" + movimiento.NumeroGuiaElectronica)
+
+            $("#cboEstadoFE").val(movimiento.EstadoFE);
+
             $("#Peso").val(movimiento.Peso)
             $("#Bulto").val(movimiento.Bulto)
+
+            var TipDoc = $("#IdTipoDocumentoRef").val();
+            if (TipDoc == "1") {
+                $("#btnGenerarGuia").show();
+            } else {
+                $("#btnGenerarGuia").hide();
+            }
+
+
+
+
             setTimeout(() => {
                 $("#IdObra").val(movimiento.IdObra)
             },200)
@@ -2648,7 +2677,7 @@ function disabledmodal(valorbolean) {
     $("#txtFechaContabilizacion").prop('disabled', valorbolean);
     $("#cboTipoDocumentoOperacion").prop('disabled', valorbolean);
     $("#IdTipoDocumentoRef").prop('disabled', valorbolean);
-    $("#SerieNumeroRef").prop('disabled', valorbolean);
+    //$("#SerieNumeroRef").prop('disabled', valorbolean);
     $("#IdCuadrilla").prop('disabled', valorbolean);
     $("#IdResponsable").prop('disabled', valorbolean);
     $("#txtComentarios").prop('disabled', valorbolean)

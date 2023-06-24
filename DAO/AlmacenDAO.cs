@@ -114,6 +114,9 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@IdObra", oAlmacenDTO.IdObra);
                         da.SelectCommand.Parameters.AddWithValue("@Codigo", oAlmacenDTO.Codigo);
                         da.SelectCommand.Parameters.AddWithValue("@Descripcion", oAlmacenDTO.Descripcion);
+                        da.SelectCommand.Parameters.AddWithValue("@Direccion", oAlmacenDTO.Direccion);
+                        da.SelectCommand.Parameters.AddWithValue("@CodigoUbigeo", oAlmacenDTO.CodigoUbigeo);
+                        da.SelectCommand.Parameters.AddWithValue("@CodigoAnexo", oAlmacenDTO.CodigoAnexo);
                         da.SelectCommand.Parameters.AddWithValue("@IdSociedad", oAlmacenDTO.IdSociedad);
                         da.SelectCommand.Parameters.AddWithValue("@Estado", oAlmacenDTO.Estado);
                         da.SelectCommand.Parameters.AddWithValue("@UsuarioCreacion", IdUsuario);
@@ -151,6 +154,9 @@ namespace DAO
                         oAlmacenDTO.IdObra = Convert.ToInt32((String.IsNullOrEmpty(drd["IdObra"].ToString())) ? "0" : drd["IdObra"].ToString());
                         oAlmacenDTO.Codigo = drd["Codigo"].ToString();
                         oAlmacenDTO.Descripcion = drd["Descripcion"].ToString();
+                        oAlmacenDTO.Direccion = String.IsNullOrEmpty(drd["Direccion"].ToString())?"": drd["Direccion"].ToString();
+                        oAlmacenDTO.CodigoUbigeo = String.IsNullOrEmpty(drd["CodigoUbigeo"].ToString())?"": drd["CodigoUbigeo"].ToString();
+                        oAlmacenDTO.CodigoAnexo = String.IsNullOrEmpty(drd["CodigoAnexo"].ToString())?"": drd["CodigoAnexo"].ToString();
                         oAlmacenDTO.Estado = bool.Parse(drd["Estado"].ToString());
                         lstAlmacenDTO.Add(oAlmacenDTO);
                     }

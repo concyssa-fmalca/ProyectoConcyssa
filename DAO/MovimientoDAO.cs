@@ -184,7 +184,14 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@IdMotivoTraslado", oMovimientoDTO.IdMotivoTraslado);
                         da.SelectCommand.Parameters.AddWithValue("@IdTransportista", oMovimientoDTO.IdTransportista);
                         da.SelectCommand.Parameters.AddWithValue("@PlacaVehiculo", oMovimientoDTO.PlacaVehiculo);
+                        da.SelectCommand.Parameters.AddWithValue("@MarcaVehiculo", oMovimientoDTO.MarcaVehiculo);
                         da.SelectCommand.Parameters.AddWithValue("@NumIdentidadConductor", oMovimientoDTO.NumIdentidadConductor);
+                        da.SelectCommand.Parameters.AddWithValue("@NombreConductor", oMovimientoDTO.NombreConductor);
+                        da.SelectCommand.Parameters.AddWithValue("@ApellidoConductor", oMovimientoDTO.ApellidoConductor);
+                        da.SelectCommand.Parameters.AddWithValue("@LicenciaConductor", oMovimientoDTO.LicenciaConductor);
+                        da.SelectCommand.Parameters.AddWithValue("@TipoTransporte", oMovimientoDTO.TipoTransporte);
+                        //da.SelectCommand.Parameters.AddWithValue("@UbigeoPartida", oMovimientoDTO.UbigeoPartida);
+                        //da.SelectCommand.Parameters.AddWithValue("@UbigeoLlegada", oMovimientoDTO.UbigeoLlegada);
                         da.SelectCommand.Parameters.AddWithValue("@Peso", oMovimientoDTO.Peso);
                         da.SelectCommand.Parameters.AddWithValue("@Bulto", oMovimientoDTO.Bulto);
 
@@ -467,6 +474,9 @@ namespace DAO
                         oMovimientoDTO.NombObra = (drd["NombObra"].ToString());
                         oMovimientoDTO.NumSerieTipoDocumentoRef = (drd["NumSerieTipoDocumentoRef"].ToString());
                         oMovimientoDTO.NombUsuario = (drd["NombUsuario"].ToString());
+
+                        oMovimientoDTO.SerieGuiaElectronica =(String.IsNullOrEmpty(drd["SerieGuiaElectronica"].ToString()) ? "" : drd["SerieGuiaElectronica"].ToString());
+                        oMovimientoDTO.NumeroGuiaElectronica = Convert.ToInt32(String.IsNullOrEmpty(drd["NumeroGuiaElectronica"].ToString()) ? "0" : drd["NumeroGuiaElectronica"].ToString());
 
                         lstMovimientoDTO.Add(oMovimientoDTO);
                     }
@@ -806,7 +816,25 @@ namespace DAO
                         oMovimientoDTO.IdMotivoTraslado = Convert.ToInt32(String.IsNullOrEmpty(drd["IdMotivoTraslado"].ToString()) ? "0" : drd["IdMotivoTraslado"].ToString());
                         oMovimientoDTO.IdTransportista = Convert.ToInt32(String.IsNullOrEmpty(drd["IdTransportista"].ToString()) ? "0" : drd["IdTransportista"].ToString());
                         oMovimientoDTO.PlacaVehiculo = (String.IsNullOrEmpty(drd["PlacaVehiculo"].ToString()) ? "" : drd["PlacaVehiculo"].ToString());
+                        oMovimientoDTO.MarcaVehiculo = (String.IsNullOrEmpty(drd["MarcaVehiculo"].ToString()) ? "" : drd["MarcaVehiculo"].ToString());
                         oMovimientoDTO.NumIdentidadConductor = (String.IsNullOrEmpty(drd["NumIdentidadConductor"].ToString()) ? "" : drd["NumIdentidadConductor"].ToString());
+
+                        oMovimientoDTO.NombreConductor = (String.IsNullOrEmpty(drd["NombreConductor"].ToString()) ? "" : drd["NombreConductor"].ToString());
+                        oMovimientoDTO.ApellidoConductor = (String.IsNullOrEmpty(drd["ApellidoConductor"].ToString()) ? "" : drd["ApellidoConductor"].ToString());
+                        oMovimientoDTO.LicenciaConductor = (String.IsNullOrEmpty(drd["LicenciaConductor"].ToString()) ? "" : drd["LicenciaConductor"].ToString());
+                        oMovimientoDTO.TipoTransporte = (String.IsNullOrEmpty(drd["TipoTransporte"].ToString()) ? "" : drd["TipoTransporte"].ToString());
+
+                        oMovimientoDTO.DireccionPartida = (String.IsNullOrEmpty(drd["DireccionPartida"].ToString()) ? "" : drd["DireccionPartida"].ToString());
+                        oMovimientoDTO.CodigoUbigeoPartida = (String.IsNullOrEmpty(drd["CodigoUbigeoPartida"].ToString()) ? "" : drd["CodigoUbigeoPartida"].ToString());
+                        oMovimientoDTO.CodigoAnexoPartida = (String.IsNullOrEmpty(drd["CodigoAnexoPartida"].ToString()) ? "" : drd["CodigoAnexoPartida"].ToString());
+
+                        oMovimientoDTO.DireccionLlegada = (String.IsNullOrEmpty(drd["DireccionLlegada"].ToString()) ? "" : drd["DireccionLlegada"].ToString());
+                        oMovimientoDTO.CodigoUbigeoLlegada = (String.IsNullOrEmpty(drd["CodigoUbigeoLlegada"].ToString()) ? "" : drd["CodigoUbigeoLlegada"].ToString());
+                        oMovimientoDTO.CodigoAnexoLlegada = (String.IsNullOrEmpty(drd["CodigoAnexoLlegada"].ToString()) ? "" : drd["CodigoAnexoLlegada"].ToString());
+
+                        oMovimientoDTO.SerieGuiaElectronica = (String.IsNullOrEmpty(drd["SerieGuiaElectronica"].ToString()) ? "" : drd["SerieGuiaElectronica"].ToString());
+                        oMovimientoDTO.NumeroGuiaElectronica = Convert.ToInt32(String.IsNullOrEmpty(drd["NumeroGuiaElectronica"].ToString()) ? "0" : drd["NumeroGuiaElectronica"].ToString());
+
                         oMovimientoDTO.Peso = Convert.ToDecimal(String.IsNullOrEmpty(drd["Peso"].ToString()) ? "0" : drd["Peso"].ToString());
                         oMovimientoDTO.Bulto = Convert.ToDecimal(String.IsNullOrEmpty(drd["Bulto"].ToString()) ? "0" : drd["Bulto"].ToString());
 
@@ -1135,6 +1163,38 @@ namespace DAO
 
 
 
+        public int GuardarTicketUpdateEstadoGuia(int IdMovimiento,string Ticket, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_GuardarTicketUpdateEstadoGuia", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdMovimiento", IdMovimiento);
+                        da.SelectCommand.Parameters.AddWithValue("@Ticket", Ticket);
+                        int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+                }
+            }
+        }
+
+
+
         #region ORPC
         public int InsertUpdateMovimientoORPC(OrpcDTO oOrpcDTO, ref string mensaje_error)
         {
@@ -1380,7 +1440,19 @@ namespace DAO
                         oMovimientoDTO.IdMotivoTraslado = Convert.ToInt32(String.IsNullOrEmpty(drd["IdMotivoTraslado"].ToString()) ? "0" : drd["IdMotivoTraslado"].ToString());
                         oMovimientoDTO.IdTransportista = Convert.ToInt32(String.IsNullOrEmpty(drd["IdTransportista"].ToString()) ? "0" : drd["IdTransportista"].ToString());
                         oMovimientoDTO.PlacaVehiculo = (String.IsNullOrEmpty(drd["PlacaVehiculo"].ToString()) ? "" : drd["PlacaVehiculo"].ToString());
+                        oMovimientoDTO.MarcaVehiculo = (String.IsNullOrEmpty(drd["MarcaVehiculo"].ToString()) ? "" : drd["MarcaVehiculo"].ToString());
                         oMovimientoDTO.NumIdentidadConductor = (String.IsNullOrEmpty(drd["NumIdentidadConductor"].ToString()) ? "" : drd["NumIdentidadConductor"].ToString());
+
+                        oMovimientoDTO.NombreConductor = (String.IsNullOrEmpty(drd["NombreConductor"].ToString()) ? "" : drd["NombreConductor"].ToString());
+                        oMovimientoDTO.ApellidoConductor = (String.IsNullOrEmpty(drd["ApellidoConductor"].ToString()) ? "" : drd["ApellidoConductor"].ToString());
+                        oMovimientoDTO.LicenciaConductor = (String.IsNullOrEmpty(drd["LicenciaConductor"].ToString()) ? "" : drd["LicenciaConductor"].ToString());
+                        oMovimientoDTO.TipoTransporte = (String.IsNullOrEmpty(drd["TipoTransporte"].ToString()) ? "" : drd["TipoTransporte"].ToString());
+
+                        oMovimientoDTO.EstadoFE = Convert.ToInt32(String.IsNullOrEmpty(drd["EstadoFE"].ToString()) ? "0" : drd["EstadoFE"].ToString());
+
+                        oMovimientoDTO.SerieGuiaElectronica = (String.IsNullOrEmpty(drd["SerieGuiaElectronica"].ToString()) ? "" : drd["SerieGuiaElectronica"].ToString());
+                        oMovimientoDTO.NumeroGuiaElectronica = Convert.ToInt32(String.IsNullOrEmpty(drd["NumeroGuiaElectronica"].ToString()) ? "0" : drd["NumeroGuiaElectronica"].ToString());
+
                         oMovimientoDTO.Peso = Convert.ToDecimal(String.IsNullOrEmpty(drd["Peso"].ToString()) ? "0" : drd["Peso"].ToString());
                         oMovimientoDTO.Bulto = Convert.ToDecimal(String.IsNullOrEmpty(drd["Bulto"].ToString()) ? "0" : drd["Bulto"].ToString());
 

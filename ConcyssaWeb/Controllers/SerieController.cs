@@ -94,6 +94,35 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
+        public string ObtenerSeriesElectronicas()
+        {
+            string valida = "";
+            valida = validarEmpresaActual();
+            if (valida != "")
+            {
+                return valida;
+            }
+
+
+            SerieDAO oSerieDAO = new SerieDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            List<SerieDTO> lstSerieDTO = oSerieDAO.ObtenerSeriesElectronicas(IdSociedad.ToString());
+            DataTableDTO oDataTableDTO = new DataTableDTO();
+            if (lstSerieDTO.Count > 0)
+            {
+                oDataTableDTO.sEcho = 1;
+                oDataTableDTO.iTotalDisplayRecords = lstSerieDTO.Count;
+                oDataTableDTO.iTotalRecords = lstSerieDTO.Count;
+                oDataTableDTO.aaData = (lstSerieDTO);
+                return JsonConvert.SerializeObject(oDataTableDTO);
+
+            }
+            else
+            {
+                return "error";
+            }
+        }
+
         public string ObtenerSeriesxIdDocumento(int IdDocumento)
         {
             string valida = "";

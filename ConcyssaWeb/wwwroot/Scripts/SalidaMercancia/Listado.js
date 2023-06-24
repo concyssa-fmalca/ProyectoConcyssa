@@ -387,6 +387,9 @@ function ModalNuevo() {
     $("#cboTipoDocumentoOperacion").val(332).change();
     $("#IdTipoDocumentoRef").val(14).change();
 
+    $("#IdDestinatario").val(24154);
+    
+
 }
 
 
@@ -727,7 +730,7 @@ function disabledmodal(valorbolean) {
     $("#txtFechaContabilizacion").prop('disabled', valorbolean);
     $("#cboTipoDocumentoOperacion").prop('disabled', valorbolean);
     $("#IdTipoDocumentoRef").prop('disabled', valorbolean);
-    $("#SerieNumeroRef").prop('disabled', valorbolean);
+    //$("#SerieNumeroRef").prop('disabled', valorbolean);
     $("#IdCuadrilla").prop('disabled', valorbolean);
     $("#IdResponsable").prop('disabled', valorbolean);
     $("#txtComentarios").prop('disabled', valorbolean)
@@ -864,11 +867,11 @@ function CargarSolicitante(identificar) {
 }
 
 function CargarSucursales() {
-    $.ajaxSetup({ async: false });
-    $.post("/Sucursal/ObtenerSucursales", function (data, status) {
-        let sucursales = JSON.parse(data);
-        llenarComboSucursal(sucursales, "cboSucursal", "Seleccione")
-    });
+    //$.ajaxSetup({ async: false });
+    //$.post("/Sucursal/ObtenerSucursales", function (data, status) {
+    //    let sucursales = JSON.parse(data);
+    //    llenarComboSucursal(sucursales, "cboSucursal", "Seleccione")
+    //});
 }
 
 function CargarDepartamentos() {
@@ -1429,7 +1432,16 @@ function GuardarSolicitud() {
             'IdMotivoTraslado': $("#IdMotivoTraslado").val(),
             'IdTransportista': $("#IdTransportista").val(),
             'PlacaVehiculo': $("#PlacaVehiculo").val(),
+            'MarcaVehiculo': $("#MarcaVehiculo").val(),
             'NumIdentidadConductor': $("#NumIdentidadConductor").val(),
+
+            'NombreConductor': $("#NombreConductor").val(),
+            'ApellidoConductor': $("#ApellidoConductor").val(),
+            'LicenciaConductor': $("#LicenciaConductor").val(),
+            'TipoTransporte': $("#IdTipoTransporte").val(),
+            //'UbigeoPartida': $("#UbigeoPartida").val(),
+            //'UbigeoLlegada': $("#UbigeoLlegada").val(),
+
             'Peso': $("#Peso").val(),
             'Bulto': $("#Bulto").val(),
 
@@ -1545,6 +1557,21 @@ function limpiarDatos() {
     $("#txtImpuesto").val('');
     $("#txtTotal").val('');
     $("#txtEstado").val(1);
+
+    $("#PlacaVehiculo").val('');
+    $("#MarcaVehiculo").val('');
+    $("#NumIdentidadConductor").val('');
+    $("#NombreConductor").val('');
+    $("#ApellidoConductor").val('');
+    $("#LicenciaConductor").val('');
+    $("#cboEstadoFE").val('0');
+    $("#SerieNumeroRef").val('');
+    
+    
+    
+    
+    
+
 }
 
 
@@ -1571,6 +1598,7 @@ function ObtenerDatosxID(IdMovimiento) {
     CargarMotivoTraslado();
 
 
+    
 
 
 
@@ -1615,7 +1643,18 @@ function ObtenerDatosxID(IdMovimiento) {
             $("#IdMotivoTraslado").val(movimiento.IdMotivoTraslado).change()
             $("#IdTransportista").val(movimiento.IdTransportista).change()
             $("#PlacaVehiculo").val(movimiento.PlacaVehiculo)
+            $("#MarcaVehiculo").val(movimiento.MarcaVehiculo)
             $("#NumIdentidadConductor").val(movimiento.NumIdentidadConductor)
+
+            $("#NombreConductor").val(movimiento.NombreConductor)
+            $("#ApellidoConductor").val(movimiento.ApellidoConductor)
+            $("#LicenciaConductor").val(movimiento.LicenciaConductor)
+            $("#IdTipoTransporte").val(movimiento.TipoTransporte)
+
+            $("#SerieNumeroRef").val(movimiento.SerieGuiaElectronica + "-" + movimiento.NumeroGuiaElectronica)
+
+            $("#cboEstadoFE").val(movimiento.EstadoFE);
+
             $("#Peso").val(movimiento.Peso)
             $("#Bulto").val(movimiento.Bulto)
             $("#IdCuadrilla").val(movimiento.IdCuadrilla).change();
@@ -1628,7 +1667,12 @@ function ObtenerDatosxID(IdMovimiento) {
             let trAnexo = '';
 
 
-
+            var TipDoc = $("#IdTipoDocumentoRef").val();
+    if (TipDoc == "1") {
+        $("#btnGenerarGuia").show();
+    } else {
+        $("#btnGenerarGuia").hide();
+    }
 
 
             for (var k = 0; k < AnexoDetalle.length; k++) {

@@ -73,6 +73,8 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@UsuarioCreacion", IdUsuario);
                         da.SelectCommand.Parameters.AddWithValue("@UsuarioActualizacion", IdUsuario);
                         da.SelectCommand.Parameters.AddWithValue("@IdDivision", oBaseDTO.IdDivision);
+                        da.SelectCommand.Parameters.AddWithValue("@SerieGuiaElectronica", oBaseDTO.SerieGuiaElectronica);
+                        da.SelectCommand.Parameters.AddWithValue("@NumeroInicialGuiaElectronica", oBaseDTO.NumeroInicialGuiaElectronica);
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
                         return rpta;
@@ -107,7 +109,10 @@ namespace DAO
                         oBaseDTO.Descripcion = drd["Descripcion"].ToString();
                         oBaseDTO.Estado = bool.Parse(drd["Estado"].ToString());
                         oBaseDTO.IdDivision = int.Parse(drd["IdDivision"].ToString());
-                        
+
+                        oBaseDTO.SerieGuiaElectronica = (String.IsNullOrEmpty(drd["SerieGuiaElectronica"].ToString())) ? "" : drd["SerieGuiaElectronica"].ToString();
+                        oBaseDTO.NumeroInicialGuiaElectronica = Convert.ToInt32((String.IsNullOrEmpty(drd["NumeroInicialGuiaElectronica"].ToString())) ? "0": drd["NumeroInicialGuiaElectronica"].ToString());
+
                         lstBaseDTO.Add(oBaseDTO);
                     }
                     drd.Close();

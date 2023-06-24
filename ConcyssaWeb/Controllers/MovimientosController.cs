@@ -124,32 +124,44 @@ namespace ConcyssaWeb.Controllers
 
             MovimientoDTO oMovimientoDTO = oMovimientoDAO.ObtenerMovimientosDetallexIdMovimiento(IdMovimiento, ref mensaje_error);
 
-            oGRSunatDTO.N_DOC = oMovimientoDTO.NumSerieTipoDocumentoRef;
+            oGRSunatDTO.N_DOC = oMovimientoDTO.SerieGuiaElectronica + "-" + oMovimientoDTO.NumeroGuiaElectronica;//oMovimientoDTO.NumSerieTipoDocumentoRef;
             oGRSunatDTO.TIPO_DOC = "09";
-            oGRSunatDTO.FECHA = oMovimientoDTO.FechaDocumento.ToString("yyyy-MM-dd");
-            oGRSunatDTO.RUC = oMovimientoDTO.NumDocumentoDestinatario;
+            oGRSunatDTO.FECHA = oMovimientoDTO.FechaContabilizacion.ToString("yyyy-MM-dd");
+            oGRSunatDTO.RUC = "20513233605";//oMovimientoDTO.NumDocumentoDestinatario; consyssa
             oGRSunatDTO.TIPO_RUC = "6";
-            oGRSunatDTO.NOMBRE = oMovimientoDTO.NombDestinatario;
-            oGRSunatDTO.RUC_EMIS = "20100370426";
-            oGRSunatDTO.NOMBRE_EMIS = "CONCYSSA S A ";
+            oGRSunatDTO.NOMBRE = "CONCYSSA SA";//oMovimientoDTO.NombDestinatario; consyssa
+            oGRSunatDTO.DIRECCION = "AV. LA MARINA 1039"; //consyssa
+            oGRSunatDTO.RUC_EMIS = "20100370426"; //consysaa
+            oGRSunatDTO.NOMBRE_EMIS = "ANDES SYSTEMS E.I.R.L."; //consysaa
             oGRSunatDTO.MOT_TRAS = oMovimientoDTO.CodigoMotivoTrasladoSunat;
             oGRSunatDTO.MOT_TRAS_DES = oMovimientoDTO.DescripcionMotivoTrasladoSunat;
-            oGRSunatDTO.PESO = oMovimientoDTO.Peso.ToString();
-            oGRSunatDTO.BULTOS = oMovimientoDTO.Bulto.ToString();
-            oGRSunatDTO.TIPO_TRANS = "01";
-            oGRSunatDTO.FCH_INICIO = oMovimientoDTO.FechaDocumento.ToString("yyyy-MM-dd");
+            oGRSunatDTO.PESO_BRUTO = oMovimientoDTO.Peso;
+            oGRSunatDTO.UNI_PESO_BRUTO = "KGM";
+            oGRSunatDTO.BULTOS = oMovimientoDTO.Bulto;
+            oGRSunatDTO.TIPO_TRANS = oMovimientoDTO.TipoTransporte;
+            oGRSunatDTO.FCH_INICIO = oMovimientoDTO.FechaContabilizacion.ToString("yyyy-MM-dd");
             oGRSunatDTO.RUC_TRANS = oMovimientoDTO.NumDocumentoTransportista;
             oGRSunatDTO.NOM_TRANS = oMovimientoDTO.NombTransportista;
-            oGRSunatDTO.PLACA = oMovimientoDTO.PlacaVehiculo;
-            oGRSunatDTO.LIC_TRANS = oMovimientoDTO.NumIdentidadConductor;
-            oGRSunatDTO.UBIGEO_LLE = "070101";
-            oGRSunatDTO.PUNTO_LLE = "PUNTO DE PARTIDA";
-            oGRSunatDTO.UBIGEO_PAR = "070102";
-            oGRSunatDTO.PUNTO_PAR = "PUNTO DE LLEGADA";
-            oGRSunatDTO.PUERTO = "PUERTO";
+            oGRSunatDTO.PLACA_PRINCIPAL = oMovimientoDTO.PlacaVehiculo;
+            oGRSunatDTO.MARCA_PRINCIPAL = oMovimientoDTO.MarcaVehiculo;
+
+            //oGRSunatDTO.LIC_TRANS = oMovimientoDTO.NumIdentidadConductor;
+  
+            oGRSunatDTO.UBIGEO_LLE = oMovimientoDTO.CodigoUbigeoLlegada;
+            oGRSunatDTO.PUNTO_LLE = oMovimientoDTO.DireccionLlegada;
+            oGRSunatDTO.RUC_LLE = oMovimientoDTO.NumDocumentoDestinatario;
+            oGRSunatDTO.COD_LLE = oMovimientoDTO.CodigoAnexoLlegada;
+
+            oGRSunatDTO.UBIGEO_PAR = oMovimientoDTO.CodigoUbigeoPartida;
+            oGRSunatDTO.PUNTO_PAR = oMovimientoDTO.DireccionPartida;
+            oGRSunatDTO.RUC_PAR = "20100370426";
+            oGRSunatDTO.COD_PAR = oMovimientoDTO.CodigoAnexoPartida;
+
             oGRSunatDTO.PDF = "SI";
-            oGRSunatDTO.ENVIO = "2";
-            oGRSunatDTO.WSDL = "3";
+            oGRSunatDTO.OBS1 = oMovimientoDTO.Comentario;
+            oGRSunatDTO.OBS2 = "";
+            //oGRSunatDTO.ENVIO = "2";
+            //oGRSunatDTO.WSDL = "3";
 
             for (int i = 0; i < oMovimientoDTO.detalles.Count(); i++)
             {
@@ -162,19 +174,48 @@ namespace ConcyssaWeb.Controllers
 
                 }) ;
             }
+
+            oGRSunatDTO.CONDUCTORES.Add(new CONDUCTORES
+            {
+                TIPO = "Principal",
+                RUC = oMovimientoDTO.NumIdentidadConductor,
+                TIPO_RUC = "1",
+                LICENCIA = oMovimientoDTO.LicenciaConductor,
+                NOMBRES = oMovimientoDTO.NombreConductor,
+                APELLIDOS = oMovimientoDTO.ApellidoConductor
+            });
+
+
             APIGuiaRemisionSunat oAPIGuiaRemisionSunat = new APIGuiaRemisionSunat();
             ResultadoGRDTO oResultadoGRDTO = new ResultadoGRDTO();
             oResultadoGRDTO=oAPIGuiaRemisionSunat.SendGuiaRemision(oGRSunatDTO);
-            if (oResultadoGRDTO.FilesMessage=="OK")
+                
+            if (oResultadoGRDTO.Message.Contains("500"))
             {
-                for (int j = 0; j < oResultadoGRDTO.DetalleAnexo.Count(); j++)
+                oResultadoGRDTO.Message = oResultadoGRDTO.Message;
+                return JsonConvert.SerializeObject(oResultadoGRDTO);
+            }
+
+            if (oResultadoGRDTO.Success == true)
+            {
+                MovimientoDAO dao = new MovimientoDAO();
+                dao.GuardarTicketUpdateEstadoGuia(oMovimientoDTO.IdMovimiento, oResultadoGRDTO.Ticket,ref mensaje_error);
+
+                if (oResultadoGRDTO.DetalleAnexo != null)
                 {
-                    oResultadoGRDTO.DetalleAnexo[j].IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-                    oResultadoGRDTO.DetalleAnexo[j].IdTabla = IdMovimiento;
-                    oResultadoGRDTO.DetalleAnexo[j].Tabla = "Movimiento";
-                    oMovimientoDAO.InsertAnexoMovimiento(oResultadoGRDTO.DetalleAnexo[j],ref mensaje_error);
+                    for (int j = 0; j < oResultadoGRDTO.DetalleAnexo.Count(); j++)
+                    {
+                        oResultadoGRDTO.DetalleAnexo[j].IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+                        oResultadoGRDTO.DetalleAnexo[j].IdTabla = IdMovimiento;
+                        oResultadoGRDTO.DetalleAnexo[j].Tabla = "Movimiento";
+                        oMovimientoDAO.InsertAnexoMovimiento(oResultadoGRDTO.DetalleAnexo[j], ref mensaje_error);
+                    }
                 }
                 
+
+
+               
+
             }
 
 

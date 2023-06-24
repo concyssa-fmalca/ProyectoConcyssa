@@ -287,6 +287,10 @@ function GuardarObra() {
     let IdTipoObra = $("#IdTipoObra").val();
     let IdDivision = $("#IdDivision").val();
 
+    let varCodigoUbigeo = $("#txtUbigeo").val();
+    let varCodigoAnexo = $("#txtAnexo").val();
+
+
     let Direccion = $("#txtDireccion").val();
     let VisibleInternet = false;
     if ($('#chkIntranet')[0].checked) {
@@ -314,7 +318,9 @@ function GuardarObra() {
         'VisibleInternet': VisibleInternet,
         'ContratoMantenimiento': ContratoMantenimiento,        
         'Estado': Estado,
-        'Direccion': Direccion
+        'Direccion': Direccion,
+        'CodigoUbigeo': varCodigoUbigeo,
+        'CodigoAnexo': varCodigoAnexo
     }, function (data, status) {
 
         if (data == 1) {
@@ -385,6 +391,10 @@ function ObtenerDatosxID(varIdObra) {
             $("#txtDescripcion").val(obra[0].Descripcion);
             $("#txtDescripcionCorta").val(obra[0].DescripcionCorta);
             $("#txtDireccion").val(obra[0].Direccion);
+
+            $("#txtUbigeo").val(obra[0].CodigoUbigeo);
+            $("#txtAnexo").val(obra[0].CodigoAnexo);
+
             $("#IdTipoObra").val(obra[0].IdTipoObra);
             $("#IdDivision").val(obra[0].IdDivision);
             if (obra[0].VisibleInternet) {
@@ -437,6 +447,9 @@ function limpiarDatos() {
     $("#txtDireccion").val("");
     $("#IdTipoObra").val(0);
     $("#IdDivision").val(0);
+
+    $("#txtUbigeo").val("");
+    $("#txtAnexo").val("");
 }
 
 

@@ -61,6 +61,10 @@ function GuardarBase() {
     let varCodigo = $("#txtCodigo").val();
     let varDescripcion = $("#txtDescripcion").val();
     let varDivision = $("#cboDivision").val();
+
+    let varSerieGuiaElectronica = $("#txtSerieGuiaElectronica").val();
+    let varNumeroInicialGuiaElectronica = $("#txtNumeroInicialGuiaElectronica").val();
+
     let varEstado = false;
 
     if ($('#chkActivo')[0].checked) {
@@ -72,7 +76,10 @@ function GuardarBase() {
         'Codigo': varCodigo,
         'Descripcion': varDescripcion,
         'Estado': varEstado,
-        'IdDivision': varDivision
+        'IdDivision': varDivision,
+        'SerieGuiaElectronica': varSerieGuiaElectronica,
+        'NumeroInicialGuiaElectronica': varNumeroInicialGuiaElectronica
+
     }, function (data, status) {
 
         if (data == 1) {
@@ -109,6 +116,10 @@ function ObtenerDatosxID(varIdBase) {
             $("#txtCodigo").val(base[0].Codigo);
             $("#txtDescripcion").val(base[0].Descripcion);
             $("#cboDivision").val(base[0].IdDivision);
+
+            $("#txtSerieGuiaElectronica").val(base[0].SerieGuiaElectronica);
+            $("#txtNumeroInicialGuiaElectronica").val(base[0].NumeroInicialGuiaElectronica);
+
             if (base[0].Estado) {
                 $("#chkActivo").prop('checked', true);
             }
@@ -169,6 +180,8 @@ function limpiarDatos() {
     $("#txtCodigo").val("");
     $("#txtDescripcion").val("");
     $("#cboDivision").val("");
+    $("#txtSerieGuiaElectronica").val("");
+    $("#txtNumeroInicialGuiaElectronica").val("");
     $("#chkActivo").prop('checked', false);
 }
 
