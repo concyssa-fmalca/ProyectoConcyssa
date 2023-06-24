@@ -478,7 +478,7 @@ namespace ConcyssaWeb.Controllers
 
             if (lstSemanaDTO.Count > 0)
             {
-                return JsonConvert.SerializeObject(lstSemanaDTO[0]);
+                return JsonConvert.SerializeObject(lstSemanaDTO);
             }
             else
             {

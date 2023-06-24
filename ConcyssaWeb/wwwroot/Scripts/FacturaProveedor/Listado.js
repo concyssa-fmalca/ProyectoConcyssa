@@ -87,6 +87,7 @@ function CargarGiros() {
 
 
 function llenarComboGiros(lista, idCombo, primerItem) {
+    console.log(lista)
     var contenido = "";
     if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
     var nRegistros = lista.length;
@@ -94,13 +95,11 @@ function llenarComboGiros(lista, idCombo, primerItem) {
     var campos;
     for (var i = 0; i < nRegistros; i++) {
 
-        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdBase + "'>" + lista[i].Descripcion.toUpperCase() + "</option>"; }
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdGiro + "'>" + lista[i].Serie.toUpperCase() + "</option>"; }
         else { }
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
-    $("#cboBaseFiltro").prop("selectedIndex", 1);
-    listarOpch();
 }
 
 
@@ -1840,10 +1839,10 @@ function GuardarSolicitud() {
             )
             return;
         }
-        if ($("#IdSemana").val() == 0 || $("#IdSemana").val() == null) {
+        if ($("#IdGiro").val() == 0 || $("#IdGiro").val() == null) {
             Swal.fire(
                 'Error!',
-                'Complete el campo de Semana',
+                'Complete el campo de Giro',
                 'error'
             )
             return;
@@ -2087,7 +2086,7 @@ function GuardarSolicitud() {
                 'IdProveedor': $("#IdProveedor").val(),
                 'IdCondicionPago': $("#IdCondicionPago").val(),
                 'IdTipoRegistro': $("#IdTipoRegistro").val(),
-                'IdSemana': $("#IdSemana").val(),
+                'IdSemana': $("#IdGiro").val(),
             },
             beforeSend: function () {
                 Swal.fire({
