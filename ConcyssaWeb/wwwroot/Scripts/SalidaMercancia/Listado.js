@@ -1681,7 +1681,8 @@ function ObtenerDatosxID(IdMovimiento) {
             $("#Bulto").val(movimiento.Bulto)
             $("#IdCuadrilla").val(movimiento.IdCuadrilla).change();
             $("#IdResponsable").val(movimiento.IdResponsable)
-            $("#EntregadoA").val(movimiento.EntregadoA)
+
+            $("#EntregadoA").val(movimiento.EntregadoA).change();
 
 
             //AnxoDetalle
@@ -3161,12 +3162,12 @@ function llenarComboEmpleados(lista, idCombo, primerItem) {
 }
 function ObtenerCapataz() {
     let IdCuadrilla = $("#IdCuadrilla").val();
-    setTimeout(() => {
+   /* setTimeout(() => {*/
     $.post("/Empleado/ObtenerCapatazXCuadrilla", { 'IdCuadrilla': IdCuadrilla }, function (data, status) {
         let capataz = JSON.parse(data);
         $("#EntregadoA").select2("val", capataz[0].IdEmpleado);
     })
-     }, 1000);
+     /*}, 1000);*/
 
 }
 
