@@ -372,13 +372,13 @@
                                                 @*<th style="display:none">Numero de Articulo</th>*@
                                                  <th>#</th>
                                                 <th>Codigo</th>
-                                                <th>Descripcion de Articulo</th>
+                                                <th style="width:300px;display:block">Descripcion de Articulo</th>
                                                 <th>Unid. Medida</th>
                                                 @*<th>Prioridad de Item</th>*@
                                                 @*<th style="display:none">Fecha Necesaria</th>
                                                 <th style="display:none">Moneda</th>
                                                 <th style="display:none">Tipo Cambio</th>*@
-                                                <th style="width:140px;display:block">Cantidad</th>
+                                                <th style="width:100px;display:block">Cantidad</th>
                                                 <th>Precio Unitario</th>
                                                 <th>Indicador de Impuestos</th>
                                                 <th>Total</th>
@@ -449,6 +449,10 @@
 
                             <br />
                             <div class="row">
+                                <div class='form-group-sm'>
+                                    <div class="col-sm-6">
+                                    </div>
+                                </div>
                                 <div class='form-group-sm' style="display:none">
                                     <label for="cboTitular" class="control-label col-sm-2 left-align">Titular</label>
                                     <div class="col-sm-4">
@@ -458,7 +462,7 @@
 
 
 
-                                <div class='form-group-sm' style="display:none">
+                                <div class='form-group-sm'>
                                     <label for="txtTotalAntesDescuento" class="control-label col-sm-2 left-align">Sub Total</label>
                                     <div class="col-sm-4">
                                         <input id="txtTotalAntesDescuento" type="text" class="form-control input-sm" tabindex="12" disabled>
@@ -472,10 +476,27 @@
                                     </div>
                                 </div>
 
-                                <div class='form-group-sm' style="display:none">
+                                <div class='form-group-sm'>
                                     <label for="txtImpuesto" class="control-label col-sm-2 left-align">Impuesto</label>
                                     <div class="col-sm-4">
                                         <input id="txtImpuesto" type="text" class="form-control input-sm" tabindex="15" disabled>
+                                    </div>
+                                </div>
+
+                              
+                            </div>
+                               <div class="row">
+                                <div class='form-group-sm'>
+                                    <div class="col-sm-6">
+                                    </div>
+                                </div>
+
+                               
+
+                                <div class='form-group-sm'>
+                                    <label for="txtImpuesto" class="control-label col-sm-2 left-align">Redondeo</label>
+                                    <div class="col-sm-4">
+                                        <input id="txtRedondeo" type="text" class="form-control input-sm" tabindex="15" onchange="redondear()">
                                     </div>
                                 </div>
                             </div>
@@ -743,7 +764,7 @@
                                         </div>
                                     </div>
                                        <div class='form-group-sm'>
-                                        <label for="txtStockAlmacenItem" class="control-label col-sm-2 left-align">Stock en Almacen</label>
+                                        <label id="lblStockItem" for="txtStockAlmacenItem" class="control-label col-sm-2 left-align">Stock en Almacen</label>
                                         <div class="col-sm-4">
                                             <input id="txtStockAlmacenItem" type="text" class="form-control input-sm" tabindex="5" disabled>
                                         </div>

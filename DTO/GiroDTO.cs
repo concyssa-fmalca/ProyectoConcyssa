@@ -39,6 +39,7 @@ namespace DTO
         public int IdSerie { get; set; }
         public string NombSerie { get; set; }
         public int Correlativo { get; set; }
+        public string Serie { get; set; }
 
     }
 }

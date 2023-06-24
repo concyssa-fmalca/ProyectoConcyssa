@@ -265,6 +265,23 @@ namespace ConcyssaWeb.Controllers
             return rpta;
         }
 
+        public string ObtenerSemanasXIdObraAnioIdTipoRegistro(int IdObra, int Anio,int IdTipoRegistro )
+        {
+            string mensaje_error = "";
+            SemanaDAO oSemanaDAO = new SemanaDAO();
+            List<SemanaDTO> lstSemanaDTO = oSemanaDAO.ObtenerSemanasXIdObraAnio(IdObra,Anio,IdTipoRegistro, ref mensaje_error);
+
+            if (lstSemanaDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstSemanaDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
+
+
 
     }
 }

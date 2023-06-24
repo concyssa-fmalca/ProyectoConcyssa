@@ -188,6 +188,51 @@ namespace DAO
             return lstSemanaDTO;
         }
 
+        public List<SemanaDTO> ObtenerSemanasXIdObraAnio(int IdObra, int Anio,int IdTipoRegistro, ref string mensaje_error)
+        {
+            List<SemanaDTO> lstSemanaDTO = new List<SemanaDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarSemanasXIdObraAnio", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdObra", IdObra);
+                    da.SelectCommand.Parameters.AddWithValue("@Anio", Anio);
+                    da.SelectCommand.Parameters.AddWithValue("@IdTipoRegistro", IdTipoRegistro);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        SemanaDTO oSemanaDTO = new SemanaDTO();
+                        oSemanaDTO.IdSemana = Convert.ToInt32(drd["IdSemana"].ToString());
+                        oSemanaDTO.Anio = Convert.ToInt32(drd["Anio"].ToString());
+                        oSemanaDTO.FechaI = Convert.ToDateTime(drd["FechaI"].ToString());
+                        oSemanaDTO.FechaF = Convert.ToDateTime(drd["FechaF"].ToString());
+                        oSemanaDTO.NumSemana = Convert.ToInt32(drd["NumSemana"].ToString());
+                        oSemanaDTO.Estado = Convert.ToBoolean(drd["Estado"].ToString());
+                        oSemanaDTO.IdSociedad = Convert.ToInt32(drd["IdSociedad"].ToString());
+
+
+                        oSemanaDTO.IdTipoRegistro = HelperDao.conversionInt(drd, "IdTipoRegistro");
+                        oSemanaDTO.IdObra = HelperDao.conversionInt(drd, "IdObra");
+
+                        oSemanaDTO.Fondo = Convert.ToDecimal(drd["Fondo"].ToString());
+                        oSemanaDTO.Descripcion = (drd["Descripcion"].ToString());
+                        lstSemanaDTO.Add(oSemanaDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstSemanaDTO;
+        }
+
         public int Delete(int IdSemana, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);

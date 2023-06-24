@@ -470,8 +470,21 @@ namespace ConcyssaWeb.Controllers
 
             return "";
         }
+        public string ObtenerGiroAprobado(int IdObra)
+        {
+            string mensaje_error = "";
+            GiroDAO oGiroDAO = new GiroDAO();
+            List<GiroDTO> lstSemanaDTO = oGiroDAO.ObtenerGiroxAprobado(IdObra, ref mensaje_error);
 
-
+            if (lstSemanaDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstSemanaDTO[0]);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
 
 
     }

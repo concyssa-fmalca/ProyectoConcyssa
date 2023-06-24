@@ -35,7 +35,7 @@ function ConsultaServidor() {
                 '<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + cuadrilla[i].IdCuadrilla + ')"></button></td >' +
                 '</tr>';
         }
-
+        if (table) { table.destroy()}
         $("#tbody_cuadrilla").html(tr);
         $("#spnTotalRegistros").html(total_cuadrilla);
 

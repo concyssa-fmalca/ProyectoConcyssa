@@ -138,7 +138,7 @@ function llenarComboCuadrilla(lista, idCombo, primerItem) {
     var campos;
     for (var i = 0; i < nRegistros; i++) {
 
-        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdCuadrilla + "'>" + lista[i].IdCuadrilla +  " - "+lista[i].Descripcion.toUpperCase() + "</option>"; }
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdCuadrilla + "'>" + lista[i].Codigo +  " - "+lista[i].Descripcion.toUpperCase() + "</option>"; }
         else { }
     }
     var cbo = document.getElementById(idCombo);
@@ -753,7 +753,8 @@ function AgregarLinea() {
     $("#txtCodigoArticulo" + contador).val(CodigoItem);
     $("#txtDescripcionArticulo" + contador).val(DescripcionItem);
     $("#cboUnidadMedida" + contador).val(MedidaItem);
-    $("#txtCantidadNecesaria" + contador).val(formatNumber(parseFloat(CantidadItem).toFixed(DecimalesCantidades))).change();
+    //$("#txtCantidadNecesaria" + contador).val(formatNumber(parseFloat(CantidadItem).toFixed(DecimalesCantidades))).change();
+    $("#txtCantidadNecesaria" + contador).val(CantidadItem).change();
     $("#txtPrecioInfo" + contador).val(PrecioUnitarioItem).change();
     $("#cboProyecto" + contador).val(ProyectoItem);
     $("#cboAlmacen" + contador).val(AlmacenItem);

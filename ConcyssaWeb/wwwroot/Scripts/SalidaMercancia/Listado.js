@@ -76,7 +76,7 @@ function llenarComboCuadrilla(lista, idCombo, primerItem) {
     var campos;
     for (var i = 0; i < nRegistros; i++) {
 
-        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdCuadrilla + "'>" + lista[i].IdCuadrilla + " - " + lista[i].Descripcion.toUpperCase() + "</option>"; }
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdCuadrilla + "'>" + lista[i].Codigo + " - " + lista[i].Descripcion.toUpperCase() + "</option>"; }
         else { }
     }
     var cbo = document.getElementById(idCombo);

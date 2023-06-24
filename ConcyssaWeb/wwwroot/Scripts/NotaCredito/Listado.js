@@ -16,6 +16,16 @@ function ObtenerConfiguracionDecimales() {
         DecimalesPorcentajes = datos[0].Porcentajes;
     });
 }
+function getDecimales() {
+    $.post("/ConfiguracionDecimales/ObtenerConfiguracionDecimales", function (data, status) {
+
+        let datos = JSON.parse(data);
+        DecimalesCantidades = datos[0].Cantidades;
+        DecimalesImportes = datos[0].Importes;
+        DecimalesPrecios = datos[0].Precios;
+        DecimalesPorcentajes = datos[0].Porcentajes;
+    });
+}
 
 function ListarBasesxUsuario() {
     $.post("/Usuario/ObtenerBasesxIdUsuario", function (data, status) {
@@ -249,7 +259,7 @@ function llenarComboCuadrilla(lista, idCombo, primerItem) {
     var campos;
     for (var i = 0; i < nRegistros; i++) {
 
-        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdCuadrilla + "'>" + lista[i].IdCuadrilla + " - " + lista[i].Descripcion.toUpperCase() + "</option>"; }
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdCuadrilla + "'>" + lista[i].Codigo + " - " + lista[i].Descripcion.toUpperCase() + "</option>"; }
         else { }
     }
     var cbo = document.getElementById(idCombo);
@@ -374,7 +384,8 @@ function llenarComboCentroCosto(lista, idCombo, primerItem) {
 
 
 window.onload = function () {
-    ObtenerConfiguracionDecimales();
+    getDecimales();
+
     CargarBaseFiltro()
     var url = "../Movimientos/ObtenerMovimientosIngresos";
     $("#cboCentroCosto").val(7)
@@ -881,7 +892,8 @@ function AgregarLinea() {
     $("#txtCodigoArticulo" + contador).val(CodigoItem);
     $("#txtDescripcionArticulo" + contador).val(DescripcionItem);
     $("#cboUnidadMedida" + contador).val(MedidaItem);
-    $("#txtCantidadNecesaria" + contador).val(formatNumber(parseFloat(CantidadItem).toFixed(DecimalesCantidades))).change();
+    //$("#txtCantidadNecesaria" + contador).val(formatNumber(parseFloat(CantidadItem).toFixed(DecimalesCantidades))).change();
+    $("#txtCantidadNecesaria" + contador).val(CantidadItem)
 
     $("#cboProyecto" + contador).val(ProyectoItem);
     $("#cboAlmacen" + contador).val(AlmacenItem);
@@ -894,6 +906,12 @@ function AgregarLinea() {
     CalcularTotalDetalle(contador)
     LimpiarModalItem();
     NumeracionDinamica();
+    $("#cboClaseArticulo").prop("disabled", true)
+    if ($("#cboClaseArticulo").val() != 2) {
+        for (var i = 0; i < 50; i++) {
+            $("#txtDescripcionArticulo" + i).prop("disabled", true)
+        } 
+    }
 }
 
 
@@ -2229,6 +2247,7 @@ function SeleccionarItemListado() {
                 tableItems.destroy();
             }
         });
+        $("#txtDescripcionItem").prop("disabled",false)
     }
 
 }
@@ -4243,4 +4262,8 @@ function NumeracionDinamica() {
 function LimpiarAlmacen() {
     $("#cboAlmacen").prop("selectedIndex", 0)
 }
-
+function redondear() {
+    let valorSinR = +$("#txtTotalAntesDescuento").val() + +$("#txtImpuesto").val()
+    let valorRedondeo = +$("#txtRedondeo").val()
+    $("#txtTotal").val((valorSinR+valorRedondeo).toFixed(DecimalesPrecios))
+}

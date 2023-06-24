@@ -646,7 +646,44 @@ namespace DAO
             return oGiroDTO;
         }
 
+        public List<GiroDTO> ObtenerGiroxAprobado(int IdObra, ref string mensaje_error)
+        {
+            List<GiroDTO> lstGiroDTO = new List<GiroDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerGiroxAprobado", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdObra", IdObra);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        GiroDTO oGiroDTO = new GiroDTO();
+                        oGiroDTO.IdGiro = Convert.ToInt32(drd["IdGiro"].ToString());
+                        oGiroDTO.IdResponsable = Convert.ToInt32(drd["IdResponsable"].ToString());
+                        oGiroDTO.IdSolicitante = Convert.ToInt32(drd["IdSolicitante"].ToString());
+                        oGiroDTO.Tipo = Convert.ToInt32(drd["Tipo"].ToString());
+                        oGiroDTO.IdObra = Convert.ToInt32(drd["IdObra"].ToString());
+                        oGiroDTO.IdSemana = Convert.ToInt32(drd["IdSemana"].ToString());
+                        oGiroDTO.IdTipoRegistro = Convert.ToInt32(drd["IdTipoRegistro"].ToString());
+                        oGiroDTO.IdEstadoGiro = Convert.ToInt32(drd["IdEstadoGiro"].ToString());
+                        oGiroDTO.IdCreador = Convert.ToInt32((drd["IdCreador"].ToString() == null ? 0 : drd["IdCreador"].ToString()));
+                        oGiroDTO.Serie = drd["Serie"].ToString();
+                        lstGiroDTO.Add(oGiroDTO);
+                    }
+                    drd.Close();
 
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstGiroDTO;
+        }
 
 
 

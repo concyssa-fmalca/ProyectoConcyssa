@@ -16,6 +16,7 @@ namespace DTO
         public int IdObra;
         public int Anio;
         public int NumeroSemana;
+        public int IdSemana;
         public DateTime FechaInicio;
         public DateTime FechaTermino;
     }

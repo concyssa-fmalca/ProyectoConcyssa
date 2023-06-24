@@ -21,7 +21,7 @@ namespace ConcyssaWeb.Controllers
         {
             return View();
         }
-        public string GenerarReporte(string NombreReporte, string Formato, int IdObra, int NumeroSemana, int Anio)
+        public string GenerarReporte(string NombreReporte, string Formato, int IdObra, int IdSemana, int Anio)
         {
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
@@ -36,13 +36,13 @@ namespace ConcyssaWeb.Controllers
             oWebServiceDTO.NombreReporte = NombreReporte;
             oWebServiceDTO.IdObra = IdObra;
             oWebServiceDTO.Anio = Anio;
-            oWebServiceDTO.NumeroSemana = NumeroSemana;
+            oWebServiceDTO.IdSemana = IdSemana;
             requestData = JsonConvert.SerializeObject(oWebServiceDTO);
 
 
             try
             {
-                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdObra=" + IdObra + "&Anio=" + Anio + "&NumeroSemana=" + NumeroSemana;
+                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdObra=" + IdObra + "&Anio=" + Anio + "&IdSemana=" + IdSemana;
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteInformeProvisionSemanas";
                 cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteInformeProvisionSemanas";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
@@ -53,9 +53,9 @@ namespace ConcyssaWeb.Controllers
                 request.ContentType = "application/x-www-form-urlencoded";
 
 
-                StreamWriter requestWriter = new StreamWriter(request.GetRequestStream(), System.Text.Encoding.ASCII);
+               StreamWriter requestWriter = new StreamWriter(request.GetRequestStream(), System.Text.Encoding.ASCII);
 
-                requestWriter.Write(strNew);
+               requestWriter.Write(strNew);
 
 
                 requestWriter.Close();

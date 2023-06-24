@@ -163,7 +163,7 @@ function llenarComboMoneda(lista, idCombo, primerItem) {
 function CargarObra(tipo = 0) {
 
     $.ajaxSetup({ async: false });
-    $.post("/Obra/ObtenerObraxIdUsuarioSession", function (data, status) {
+    $.post("/Obra/ObtenerObraxIdUsuarioSessionSinBase", function (data, status) {
         let monedas = JSON.parse(data);
         if (tipo == 0)
             llenarComboObra(monedas, "cboObra", "Seleccione")
@@ -1024,23 +1024,7 @@ function ObtenerGiros() {
 
                 },
             },
-            {
-                targets: 10,
-                orderable: false,
-                render: function (data, type, full, meta) {
-                    let button = '';
-                    if (full.EstadoGiro.toUpperCase() == "APROBADO") {
-                        button = `<button class="btn btn-danger  reporte  juntos fa fa-file-pdf-o btn-xs" onclick="RerporteGiroSemana(` + full.IdSemana + `,` + full.IdObra + `)"></button>`;
-                    } else {
-                        button = '-'
-                    }
-
-                    //`<button class="btn btn-danger btn-xs fa fa-trash" onclick="eliminar(` + full[i].IdSerie + `)"></button>`;
-                    return button;
-
-                },
-            },
-
+            
 
 
 
