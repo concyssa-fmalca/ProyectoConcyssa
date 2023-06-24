@@ -104,6 +104,9 @@ function GuardarAlmacen() {
     let IdObra=$("#IdObra").val();
     let varCodigo = $("#txtCodigo").val();
     let varDescripcion = $("#txtDescripcion").val();
+    let varDireccion = $("#txtDireccion").val();
+    let varCodigoUbigeo = $("#txtCodigoUbigeo").val();
+    let varCodigoAnexo = $("#txtCodigoAnexo").val();
     let varEstado = false;
 
     if ($('#chkActivo')[0].checked) {
@@ -115,6 +118,9 @@ function GuardarAlmacen() {
         'IdObra': IdObra,
         'Codigo': varCodigo,
         'Descripcion': varDescripcion,
+        'Direccion': varDireccion,
+        'CodigoUbigeo': varCodigoUbigeo,
+        'CodigoAnexo': varCodigoAnexo,
         'Estado': varEstado
     }, function (data, status) {
 
@@ -152,6 +158,9 @@ function ObtenerDatosxID(varIdAlmacen) {
             $("#IdObra").val(almacen[0].IdObra);
             $("#txtCodigo").val(almacen[0].Codigo);
             $("#txtDescripcion").val(almacen[0].Descripcion);
+            $("#txtDireccion").val(almacen[0].Direccion);
+            $("#txtCodigoUbigeo").val(almacen[0].CodigoUbigeo);
+            $("#txtCodigoAnexo").val(almacen[0].CodigoAnexo);
             if (almacen[0].Estado) {
                 $("#chkActivo").prop('checked', true);
             }
@@ -189,6 +198,9 @@ function limpiarDatos() {
     $("#txtId").val("");
     $("#txtCodigo").val("");
     $("#txtDescripcion").val("");
+    $("#txtDireccion").val("");
+    $("#txtCodigoUbigeo").val("");
+    $("#txtCodigoAnexo").val("");
     $("#chkActivo").prop('checked', false);
     $("#IdObra").val(0);
 }

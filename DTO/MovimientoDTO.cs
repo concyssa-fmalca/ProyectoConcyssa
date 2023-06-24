@@ -81,8 +81,28 @@ namespace DTO
         public int IdDestinatario { get; set; }=0;
         public int IdMotivoTraslado { get; set; } = 0;
         public int IdTransportista { get; set; } = 0;
+
         public string PlacaVehiculo { get; set; } = "";
+        public string MarcaVehiculo { get; set; } = "";
         public string NumIdentidadConductor { get; set; } = "";
+        public string NombreConductor { get; set; } = "";
+        public string ApellidoConductor { get; set; } = "";
+        public string LicenciaConductor { get; set; } = "";
+        public string TipoTransporte { get; set; } = "";
+
+        public string DireccionPartida { get; set; } = "";
+        public string CodigoUbigeoPartida { get; set; } = "";
+        public string CodigoAnexoPartida { get; set; } = "";
+
+        public string DireccionLlegada { get; set; } = "";
+        public string CodigoUbigeoLlegada { get; set; } = "";
+        public string CodigoAnexoLlegada { get; set; } = "";
+
+        public string SerieGuiaElectronica { get; set; } = "";
+        public int NumeroGuiaElectronica { get; set; } = 0;
+
+        public int EstadoFE { get; set; } = 0;
+
         public decimal Peso { get; set; } = 0;
         public decimal Bulto { get; set; } = 0;
 

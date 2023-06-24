@@ -20,5 +20,8 @@ namespace DTO
         public bool Eliminado { get; set; }
         public string? Division { get; set; }
         public int IdDivision { get; set; }
+
+        public string SerieGuiaElectronica { get; set; }
+        public int NumeroInicialGuiaElectronica { get; set; }
     }
 }

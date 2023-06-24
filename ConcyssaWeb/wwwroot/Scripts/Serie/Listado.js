@@ -6,6 +6,7 @@ window.onload = function () {
     var url = "ObtenerSeries";
     //ConsultaServidor(url);
     ObtenerSeriesDT();
+    //ObtenerSeriesElectronicas();
 };
 
 
@@ -333,6 +334,10 @@ function ObtenerSeriesDT() {
     }).DataTable();
 }
 
+
+
+
+
 function addtrserie() {
     let tr = "";
     tr = `
@@ -373,6 +378,10 @@ function listarindicadorperiodo(idcontador) {
 function removetr(idcontador) {
     $("#tr" + idcontador).remove()
 }
+
+
+
+
 
 
 function guardar(bd, id) {

@@ -43,6 +43,41 @@ namespace DAO
             return lstSerieDTO;
         }
 
+
+        public List<SerieDTO> ObtenerSeriesElectronicas(string IdSociedad)
+        {
+            List<SerieDTO> lstSerieDTO = new List<SerieDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarSerieElectronica", cn);
+
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        SerieDTO oSerieDTO = new SerieDTO();
+                        oSerieDTO.IdSerie = int.Parse(drd["Id"].ToString());
+                        oSerieDTO.Serie = drd["Serie"].ToString();
+                        oSerieDTO.NumeroInicial = int.Parse(drd["NumeroInicial"].ToString());
+                        oSerieDTO.NumeroFinal = int.Parse(drd["NumeroFinal"].ToString());
+                        oSerieDTO.Estado = bool.Parse(drd["Estado"].ToString());
+                        oSerieDTO.Documento = Convert.ToInt32(drd["Documento"].ToString());
+                        lstSerieDTO.Add(oSerieDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            return lstSerieDTO;
+        }
+
         public List<SerieDTO> ObtenerSeriesxIdDocumento(int IdSociedad, int IdDocumento)
         {
             List<SerieDTO> lstSerieDTO = new List<SerieDTO>();

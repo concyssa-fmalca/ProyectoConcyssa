@@ -208,6 +208,8 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@Eliminado", oObraDTO.Eliminado);
                         da.SelectCommand.Parameters.AddWithValue("@UsuarioCreacion", IdUsuario);
                         da.SelectCommand.Parameters.AddWithValue("@UsuarioActualizacion", IdUsuario);
+                        da.SelectCommand.Parameters.AddWithValue("@CodigoUbigeo", oObraDTO.CodigoUbigeo);
+                        da.SelectCommand.Parameters.AddWithValue("@CodigoAnexo", oObraDTO.CodigoAnexo);
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
                         return rpta;
@@ -283,6 +285,8 @@ namespace DAO
                         oObraDTO.Estado = bool.Parse(drd["Estado"].ToString());
                         oObraDTO.Eliminado = bool.Parse(drd["Eliminado"].ToString());
                         oObraDTO.Direccion = (drd["Direccion"].ToString());
+                        oObraDTO.CodigoUbigeo = (String.IsNullOrEmpty(drd["CodigoUbigeo"].ToString())) ? "0" : drd["CodigoUbigeo"].ToString();
+                        oObraDTO.CodigoAnexo = (String.IsNullOrEmpty(drd["CodigoAnexo"].ToString())) ? "0" : drd["CodigoAnexo"].ToString();
                         //oObraDTO.DescripcionBase = (drd["DescripcionBase"].ToString());
 
 
