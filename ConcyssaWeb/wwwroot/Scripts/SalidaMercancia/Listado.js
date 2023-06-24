@@ -1690,11 +1690,18 @@ function ObtenerDatosxID(IdMovimiento) {
 
 
             var TipDoc = $("#IdTipoDocumentoRef").val();
-    if (TipDoc == "1") {
-        $("#btnGenerarGuia").show();
-    } else {
-        $("#btnGenerarGuia").hide();
-    }
+            if (TipDoc == "1") {
+                $("#btnGenerarGuia").show();
+            } else {
+                $("#btnGenerarGuia").hide();
+            }
+
+            if (movimiento.EstadoFE == 1) {
+                $("#btnGenerarGuia").hide();
+            } else {
+                $("#btnGenerarGuia").show();
+            }
+
 
 
             for (var k = 0; k < AnexoDetalle.length; k++) {

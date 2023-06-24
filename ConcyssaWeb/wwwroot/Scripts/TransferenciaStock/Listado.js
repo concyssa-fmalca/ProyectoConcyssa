@@ -1761,7 +1761,11 @@ function ObtenerDatosxID(IdMovimiento) {
                 $("#btnGenerarGuia").hide();
             }
 
-
+            if (movimiento.EstadoFE == 1) {
+                $("#btnGenerarGuia").hide();
+            } else {
+                $("#btnGenerarGuia").show();
+            }
 
 
             setTimeout(() => {
