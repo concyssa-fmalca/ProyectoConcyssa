@@ -435,9 +435,14 @@ function OpenModalItem() {
     //Cuando se abre agregar Item
 
     let IdObraDestino = $("#IdObraDestino").val();
-
+    let TipoProd = $("#IdTipoProducto").val();
     if (IdObraDestino == "0") {
         swal("Informacion!", "Debe Seleccionar Obra Destino!");
+        return;
+    }
+
+    if (TipoProd == 0) {
+        swal("Informacion!", "Debe Seleccionar Tipo Producto!");
         return;
     }
 
