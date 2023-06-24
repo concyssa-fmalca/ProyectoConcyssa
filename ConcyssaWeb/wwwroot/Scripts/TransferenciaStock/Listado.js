@@ -425,6 +425,9 @@ function ModalNuevo() {
     $("#IdDestinatario").val(24154).change();
     $("#IdTransportista").val(24154).change();
     $("#IdMotivoTraslado").val(09).change();
+
+    $("#Peso").val(1);
+    $("#Bulto").val(1);
 }
 
 
@@ -1453,6 +1456,28 @@ function GuardarSolicitud() {
         DatoValidarIngresoSalidaOAmbos = 2;
 
     }
+
+    if ($("#IdTipoDocumentoRef").val() == 1) {
+        if ($("#Peso").val() == 0) {
+            Swal.fire(
+                'Error!',
+                'Peso debe ser mayor a 0',
+                'error'
+            )
+            return;
+        }
+        if ($("#Bulto").val() == 0) {
+            Swal.fire(
+                'Error!',
+                'Bulto debe ser mayor a 0',
+                'error'
+            )
+            return;
+        }
+    }
+
+   
+
 
 
 
