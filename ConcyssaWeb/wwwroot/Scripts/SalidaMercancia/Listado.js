@@ -387,7 +387,7 @@ function ModalNuevo() {
     $("#cboTipoDocumentoOperacion").val(332).change();
     $("#IdTipoDocumentoRef").val(14).change();
 
-    $("#IdDestinatario").val(24154);
+    $("#IdDestinatario").val(24154).change();
     
 
 }
@@ -1228,7 +1228,11 @@ function ObtenerNumeracion() {
 
 function GuardarSolicitud() {
 
-
+    //CerrarModal();
+    //ObtenerDatosxID(7463);
+    ////table.destroy();
+    //ConsultaServidor();
+    //return;
 
 
     let ArrayGeneral = new Array();
@@ -1359,6 +1363,24 @@ function GuardarSolicitud() {
         return;
     }
 
+    if ($("#IdCuadrilla").val() == 0) {
+        Swal.fire(
+            'Error!',
+            'Complete el campo Cuadrilla',
+            'error'
+        )
+        return;
+    }
+
+    if ($("#EntregadoA").val() == 0) {
+        Swal.fire(
+            'Error!',
+            'Complete el campo Entregado A',
+            'error'
+        )
+        return;
+    }
+    
     //End Validaciones
 
 
@@ -1513,7 +1535,7 @@ function GuardarSolicitud() {
                 //ModalNuevo();
                 CerrarModal();
                 ObtenerDatosxID(data);
-                table.destroy();
+                //table.destroy();
                 ConsultaServidor();
 
 
@@ -3083,13 +3105,12 @@ function llenarComboEmpleados(lista, idCombo, primerItem) {
 }
 function ObtenerCapataz() {
     let IdCuadrilla = $("#IdCuadrilla").val();
-    //setTimeout(() => {
+    setTimeout(() => {
     $.post("/Empleado/ObtenerCapatazXCuadrilla", { 'IdCuadrilla': IdCuadrilla }, function (data, status) {
         let capataz = JSON.parse(data);
         $("#EntregadoA").select2("val", capataz[0].IdEmpleado);
     })
-    /*  }, 1000);*/
-
+     }, 1000);
 
 }
 
