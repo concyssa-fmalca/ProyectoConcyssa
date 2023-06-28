@@ -101,14 +101,16 @@
                         <th>#</th>
                         <th>Fecha Documento</th>
                         <th>Usuario</th>
-                        <th>Tipo Documento</th>
-                        <th>Serie y Numero</th>
+                        <th>Tipo Movimiento</th>
+                        <th>Numero</th>
+                         <th>Tipo Documento</th>
+                          <th>Serie y Número</th>
                         <th>Proveedor</th>
                         <th>Total</th>
-                        @*<th>Cuadrilla</th>*@
+                        <th>Cuadrilla</th>
                         <th>Obra</th>
                         <th>Almacen</th>
-
+                           <th>Moneda</th>
                         <th>Mas</th>
                     </tr>
                 </thead>
@@ -149,7 +151,7 @@
                                 <div class='form-group-sm'>
                                     <label for="IdObra" class="control-label col-sm-2 left-align">Obra</label>
                                     <div class="col-sm-4">
-                                        <select id="IdObra" class="form-control input-sm" tabindex="0" onchange="ObtenerAlmacenxIdObra();ObtenerCuadrillasxIdObra()"></select>
+                                        <select id="IdObra" class="form-control input-sm" tabindex="0" onchange="ResetRegistroSemana();ObtenerAlmacenxIdObra();ObtenerCuadrillasxIdObra()"></select>
                                     </div>
                                 </div>
                             </div>
@@ -571,6 +573,26 @@
                                         </select>
                                     </p>
                                     <hr style="margin: 0px 0px 5px 0px" />
+                                    <p>
+                                        Tipo Registro:
+                                        <select style="height: 20px" id="IdTipoRegistro" type="text" class="form-control input-sm" onchange="changeTipoRegistro();esRendicion()" tabindex="0">
+                                            <option value="0"> - Tipo Registro - </option>
+                                        </select>
+                                    </p>
+                                    <hr style="margin: 0px 0px 5px 0px" />
+                                    <p id="DivSemana">
+                                        Semana:
+                                        <select style="height: 20px" id="IdSemana" type="text" class="form-control input-sm" tabindex="0">
+                                            <option value="0"> - Semana - </option>
+                                        </select>
+                                    </p>
+                                    <hr style="margin: 0px 0px 5px 0px" />
+                                    <p id="DivGiro">
+                                        Giro:
+                                        <select style="height: 20px" id="IdGiro" type="text" class="form-control input-sm" tabindex="0">
+                                            <option value="0"> - Giro - </option>
+                                        </select>
+                                    </p>
 
 
 

@@ -64,6 +64,8 @@ namespace DAO
                         oOrpcDTO.IdGlosaContable = Convert.ToInt32(drd["IdGlosaContable"].ToString());
                         oOrpcDTO.NombUsuario = (drd["NombUsuario"].ToString());
                         oOrpcDTO.CreatedAt = Convert.ToDateTime(drd["CreatedAt"].ToString());
+                        oOrpcDTO.IdTipoRegistro = Convert.ToInt32(drd["IdTipoRegistro"].ToString());
+                        oOrpcDTO.IdSemana = Convert.ToInt32(drd["IdSemana"].ToString());
 
                     }
                     drd.Close();
@@ -133,8 +135,9 @@ namespace DAO
                         oOrpcDTO.NombUsuario = (drd["NombUsuario"].ToString());
                         oOrpcDTO.NombProveedor = (drd["NombProveedor"].ToString());
                         oOrpcDTO.NumProveedor = (drd["NumProveedor"].ToString());
-
-
+                        oOrpcDTO.TipoDocumentoRef = drd["TipoDocumentoRef"].ToString();
+                        oOrpcDTO.Moneda = drd["Moneda"].ToString();
+                        oOrpcDTO.NumSerieTipoDocumentoRef = drd["NumSerieTipoDocumentoRef"].ToString();
 
                         lstOrpcDTO.Add(oOrpcDTO);
                     }

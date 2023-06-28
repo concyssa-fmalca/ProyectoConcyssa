@@ -47,5 +47,9 @@ namespace DTO
 
 
         public int ValidarIngresoSalidaOAmbos { get; set; }
+        public int IdCuadrilla { get; set; }
+        public int IdResponsable { get; set; }
+        public string NombCuadrilla { get; set; }
+        public string NombResponsable { get; set; }
     }
 }

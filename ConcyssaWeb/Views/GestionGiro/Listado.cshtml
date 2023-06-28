@@ -93,8 +93,6 @@
         <div class="panel panel-info ">
             <div class="panel-heading">
                 <h5 id='lblTituloModal'></h5>
-
-                <button type="submit" id="btnCancelar" class="cerrar btn btn-danger pull-left" onclick="cerrarModal();"><i class="fa fa-close fa-15x"></i></button>
             </div>
             <div class="panel-body ">
                 <div class='col s12 m12 '>
@@ -146,7 +144,7 @@
 
                             </div>
                             <div class="row pl30 pr30">
-                                <div class="row">
+                                <div class="col-sm-12">
 
                                     <div class='form-group-sm'>
                                         <div class="radio-custom radio-custom  col-md-2">
@@ -161,20 +159,16 @@
                                             <label for="rdEmpleado">Empleado</label>
                                         </div>
                                     </div>
-                                </div>
+                             
 
-                            </div>
-                            <div class="row pl30 pr30">
-                                <div class="row">
-
-                                    <div class='form-group-sm col-md-4' id="divProveedor">
+                                    <div class='form-group-sm col-md-6' id="divProveedor">
                                         <label for="cboEncargado" class="control-label col-sm-0 left-align"></label>
                                         <div class="col-sm-10">
                                             <select id="cboEncargado" type="text" class="form-control input-sm" tabindex="3"></select>
                                         </div>
                                     </div>
 
-                                    <div class='form-group-sm col-md-4' id="divSolicitante">
+                                    <div class='form-group-sm col-md-6' id="divSolicitante">
 
                                         <label for="cboSolicitante" class="control-label col-sm-0 left-align"></label>
                                         <div class="col-sm-10">
@@ -182,7 +176,7 @@
                                         </div>
 
                                     </div>
-                                    <div id="cboEstadosGiroCol" class='form-group-sm col-md-4'>
+                                    <div id="cboEstadosGiroCol" class='form-group-sm col-md-6'>
 
                                         <label for="cboEstadosGiro" class="control-label col-sm-2 left-align">Estados</label>
                                         <div class="col-sm-10">
@@ -214,75 +208,70 @@
                                 <div class="tab-content pl15 pr15 ">
                                     <div id="tab15_5" class="tab-pane active">
                                         <div class="container">
-                                            <div class="row giro">
-                                                <div class="col-md-10">
-                                                    <div class="row form-giro">
-                                                        <div class="form-group-sm col-md-5">
-                                                            <input id='txtIdDetalle' name="txtIdDetalle" type='hidden' class="form-control input-sm">
-                                                            <label for="IdProveedor" class="control-label col-sm-0 left-align">Proveedor:</label>
-                                                            <select style="height: 25px" id="IdProveedor" class="form-control input-sm" tabindex="0"></select>
+                                            <div class="row-md-12 giro">
+                                                <div class="row" >
+                                                 @*   <div class="row form-giro">*@
+                                                    <div class="row" >
+                                                            <div class="form-group-sm col-md-3">
+                                                                <input id='txtIdDetalle' name="txtIdDetalle" type='hidden' class="form-control input-sm">
+                                                                <label for="IdProveedor" class="control-label col-sm-0 left-align">Proveedor:</label>
+                                                                <select style="height: 25px" id="IdProveedor" class="form-control input-sm" tabindex="0"></select>
 
-                                                        </div>
-                                                        <div class=" form-group-sm col-md-4">
+                                                            </div>
+                                                            <div class=" form-group-sm col-md-3">
 
-                                                            <label for="cboTipoDocumento" class="control-label col-sm-0 left-align"> Tipo Documento:</label>
+                                                                <label for="cboTipoDocumento" class="control-label col-sm-0 left-align"> Tipo Documento:</label>
 
-                                                            <select style="height: 25px" id="cboTipoDocumento" class="form-control input-sm" tabindex="0"></select>
+                                                                <select style="height: 25px" id="cboTipoDocumento" class="form-control input-sm" tabindex="0"></select>
 
-                                                        </div>
-                                                        <div class="form-group-sm col-md-3">
+                                                            </div>
+                                                            <div class="form-group-sm col-md-2">
 
-                                                            <label for="cboTipoDocumento" class="control-label col-sm-0 left-align">   Nro. Documento:</label>
+                                                                <label for="cboTipoDocumento" class="control-label col-sm-0 left-align">   Nro. Documento:</label>
 
-                                                            <input style="height: 25px" type="text" id="txtNroDocumento" class="form-control" placeholder="Ingreso Nro de Documento">
-                                                        </div>
+                                                                <input style="height: 25px" type="text" id="txtNroDocumento" class="form-control" placeholder="Ingreso Nro de Documento">
+                                                            </div>
+                                                    </div>
+                                                    <div class="row">
+                                                            <div class="form-group-sm col-md-2">
+                                                                <label for="cboMoneda" class="control-label col-sm-0 left-align">   Moneda</label>
 
+                                                                <select style="height: 25px" id="cboMoneda" class="form-control input-sm" tabindex="0"></select>
+                                                            </div>
 
+                                                            <div class="form-group-sm col-md-2">
+                                                                <label for="txtMonto" class="control-label col-sm-0 left-align">    Monto:</label>
+                                                                <input style="height: 25px" type="text" id="txtMonto" class="form-control" placeholder="Ingrese Monto">
+                                                            </div>
 
-                                                        <div class="form-group-sm col-md-3">
-                                                            <label for="cboMoneda" class="control-label col-sm-0 left-align">   Moneda</label>
+                                                            <div class="form-group-sm col-md-6">
+                                                                <div id="progressOuter" class="progress progress-striped active hidden">
+                                                                    <div id="progressBar" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-xs-12 text-center">
+                                                                    <button id="uploadBtn" class="btn btn-large btn-primary"><i class="fa fa-upload fa-15px pr5"></i>Examinar</button>
+                                                                    <div id="msgBox" style="display:none;"></div>
 
-                                                            <select style="height: 25px" id="cboMoneda" class="form-control input-sm" tabindex="0"></select>
-                                                        </div>
-                                                        <div class="form-group-sm col-md-2">
-                                                            <label for="txtMonto" class="control-label col-sm-0 left-align">    Monto:</label>
-                                                            <input style="height: 25px" type="text" id="txtMonto" class="form-control" placeholder="Ingrese Monto">
-                                                        </div>
-                                                        <div class="form-group-sm col-md-4">
-                                                            <label for="txtComentario" class="control-label col-sm-0 left-align">    Comentario:</label>
-                                                            <textarea type="text" id="txtComentario" class="form-control"></textarea>
-                                                        </div>
-                                                        <div class="col-xs-3">
-                                                            <div id="progressOuter" class="progress progress-striped active hidden">
-                                                                <div id="progressBar" class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
                                                                 </div>
                                                             </div>
-                                                            <div class="col-xs-12 text-center">
-                                                                <button id="uploadBtn" class="btn btn-large btn-primary"><i class="fa fa-upload fa-15px pr5"></i>Examinar</button>
-                                                                <div id="msgBox" style="display:none;"></div>
+                                                        </div>
+                                                    <div class="row">
+                                                            <div class="form-group-sm col-md-6">
+                                                             
+                                                                    <label for="txtComentario" class="control-label col-sm-0 left-align">    Comentario:</label>
+                                                                    <textarea type="text" id="txtComentario" class="form-control"></textarea>
 
                                                             </div>
-
-
-
+                                                            <div class="form-group-sm col-md-3">                                   
+                                                                    <button class="btn btn-sm btn-primary" style="padding-bottom:20px" onclick="GuardarDetalle()"><i class="fa fa-save fa-15x"></i> <span id="guardarDetalle">Agregar</span> </button>
+                                                                    <button style="display:none" class="btn btn-sm btn-success btn-clean" onclick="LimpiarDetalle()"><i class="fa fa-eraser fa-15x"></i><span> Limpiar</span> </button>
+                                                           </div>
+                                                       
                                                         </div>
 
-
-                                                    </div>
-
-
-                                                </div>
-                                                <div class=" col-md-2">
-                                                    <div class="row btn-giro ">
-                                                        <div class="form-group-sm col-md-5">
-
-
-                                                            <button class="btn btn-sm btn-success" onclick="GuardarDetalle()"><i class="fa fa-save fa-15x"></i> <span id="guardarDetalle">Agregar</span> </button>
-                                                            </br>
-                                                            <button style="display:none" class="btn btn-sm btn-success btn-clean" onclick="LimpiarDetalle()"><i class="fa fa-eraser fa-15x"></i><span> Limpiar</span> </button>
-
-                                                        </div>
-                                                    </div>
+                                         @*           </div>*@
+                                                  
 
                                                 </div>
                                             </div>
@@ -333,6 +322,7 @@
                     <div class='form-group-sm'>
                         @*<button type="submit" id="btnGrabarCabecera" onclick="Guardar()" class="btn btn-primary pull-left plu">Grabar</button>*@
                         <button type="submit" id="btnGrabarCabecera" onclick="Guardar()" class="btn btn-primary pull-right plu">Grabar</button>
+                        <button type="submit" id="btnCancelar" class="btn btn-danger pull-right" onclick="cerrarModal();" style="background-color:#dea929">Cerrar</button>
                         @*<button type="button" id="btnCancelar" onclick="CerrarModal()" class="btn btn-danger pull-right" style="background-color:orange;">Cancelar</button>*@
                     </div>
 

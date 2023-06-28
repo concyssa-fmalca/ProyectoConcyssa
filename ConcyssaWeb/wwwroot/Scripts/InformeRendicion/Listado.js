@@ -108,7 +108,7 @@ function ObtenerSemanas() {
     let ObraSemana = $("#cboObraFiltro").val()
     let AnioSemana = $("#cboPeriodo").val()
     $.ajaxSetup({ async: false });
-    $.post("/TipoRegistro/ObtenerSemanasXIdObraAnioIdTipoRegistro", { 'IdObra': ObraSemana, 'Anio': AnioSemana, 'IdTipoRegistro': 4 }, function (data, status) {
+    $.post("/GestionGiro/ObtenerGiroAprobado", { 'IdObra': ObraSemana }, function (data, status) {
         if (validadJson(data)) {
             let SemanaData = JSON.parse(data);
             llenarComboSemanaFiltro(SemanaData, "cboSemana", "Seleccione")
@@ -129,7 +129,7 @@ function llenarComboSemanaFiltro(lista, idCombo, primerItem) {
     var campos;
     for (var i = 0; i < nRegistros; i++) {
 
-        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdSemana + "'>" + lista[i].Descripcion + "</option>"; }
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdGiro + "'>" + lista[i].Serie + "</option>"; }
         else { }
     }
     var cbo = document.getElementById(idCombo);

@@ -576,6 +576,7 @@ namespace DAO
                         oSolicitudRQDetalleDTO.SeriePedido = (drd["SeriePedido"].ToString());
                         oSolicitudRQDetalleDTO.FechaDocumentoPedido = Convert.ToDateTime(drd["FechaDocumentoPedido"].ToString());
                         oSolicitudRQDetalleDTO.ConformidadPedido = (drd["ConformidadPedido"].ToString());
+                        oSolicitudRQDetalleDTO.IdPedido = int.Parse((drd["IdPedido"].ToString()));
 
                         //oSolicitudRQDetalleDTO.DescripcionItem = drd["DescripcionItem"].ToString();
                         //lstSolicitudRQDTO.Add(oSolicitudRQDTO.Detalle.Add(oSolicitudRQDetalleDTO));

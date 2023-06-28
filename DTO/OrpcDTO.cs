@@ -44,6 +44,10 @@ namespace DTO
         public int IdSociedad { get; set; }
         public bool Estado { get; set; }
         public bool Eliminado { get; set; }
+        public string TipoDocumentoRef { get; set; }
+        public string Moneda { get; set; }
+        public int IdTipoRegistro { get; set; }
+        public int IdSemana { get; set; }
 
 
         public IList<ORPCDetalle> detalles { get; set; }

@@ -82,6 +82,69 @@ function llenarComboCuadrilla(lista, idCombo, primerItem) {
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
 }
+function ObtenerCuadrillasTabla() {
+    let IdObra = $("#IdObra").val()
+    $.ajaxSetup({ async: false });
+    $.post("/Cuadrilla/ObtenerCuadrillaxIdObra", { 'IdObra': IdObra }, function (data, status) {
+        let cuadrilla = JSON.parse(data);
+        llenarComboCuadrillaTabla(cuadrilla, "cboCuadrillaTabla", "Seleccione")
+    });
+}
+function llenarComboCuadrillaTabla(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdCuadrilla + "'>" + lista[i].Codigo + " - " + lista[i].Descripcion.toUpperCase() + "</option>"; }
+        else { }
+    }
+    //var cbo = document.getElementById(idCombo);
+    //if (cbo != null) cbo.innerHTML = contenido;
+    $(".cboCuadrillaTabla").html(contenido)
+}
+
+function ObtenerEmpleadosxIdCuadrillaTabla() {
+
+    let IdCuadrilla = $("#IdCuadrilla").val();
+    $.ajaxSetup({ async: false });
+    $.post("/Empleado/ObtenerEmpleadosPorUsuarioBase", function (data, status) {
+        let empleados = JSON.parse(data);
+        llenarComboEmpleadosTabla(empleados, "cboResponsableTabla", "Seleccione")
+    });
+}
+
+function llenarComboEmpleadosTabla(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    console.log("Empleados: " + lista.length)
+    var nCampos;
+    var campos;
+    let ultimoindice = 0;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdEmpleado + "'>" + lista[i].RazonSocial.toUpperCase() + "</option>"; ultimoindice = i }
+        else { }
+    }
+    $(".cboResponsableTabla").html(contenido)
+  
+   
+    ObtenerCapatazTabla()
+}
+function ObtenerCapatazTabla() {
+    let IdCuadrilla = $("#IdCuadrilla").val();
+    /* setTimeout(() => {*/
+    $.post("/Empleado/ObtenerCapatazXCuadrilla", { 'IdCuadrilla': IdCuadrilla }, function (data, status) {
+        let capataz = JSON.parse(data);
+        $(".cboResponsableTabla").val(capataz[0].IdEmpleado).change();
+    })
+    /*}, 1000);*/
+
+}
+
 
 
 function ObtenerAlmacenxIdObra() {
@@ -639,6 +702,8 @@ function AgregarLinea() {
 
             </td>
             <td><input class="form-control" type="number" name="txtPrecioInfo[]" value="0" id="txtPrecioInfo`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled></td>
+            <td><select class="form-control cboCuadrillaTabla" id="cboCuadrillaTablaId`+ contador +`"></select></td>
+            <td><select class="form-control cboResponsableTabla" id="cboResponsableTablaId`+ contador +`"></select></td>
             <td input style="display:none;">
             <select class="form-control ImpuestoCabecera" name="cboIndicadorImpuesto[]" id="cboIndicadorImpuestoDetalle`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled>`;
     tr += `  <option impuesto="0" value="0">Seleccione</option>`;
@@ -712,7 +777,9 @@ function AgregarLinea() {
 
     $("#cboCentroCostos" + contador).val(CentroCostoItem);
     $("#txtReferencia" + contador).val(ReferenciaItem);
-
+    ObtenerCuadrillasTabla()
+    $(".cboCuadrillaTabla").select2()
+    $(".cboResponsableTabla").select2()
     LimpiarModalItem();
     NumeracionDinamica();
 }
@@ -1333,6 +1400,18 @@ function GuardarSolicitud() {
     });
 
 
+    let arrayCboCuadrillaTabla = new Array();
+    $(".cboCuadrillaTabla").each(function (indice, elemento) {
+        arrayCboCuadrillaTabla.push($(elemento).val());
+    });
+
+    let arrayCboResponsableTabla = new Array();
+    $(".cboResponsableTabla").each(function (indice, elemento) {
+        arrayCboResponsableTabla.push($(elemento).val());
+    });
+
+
+
 
 
 
@@ -1437,6 +1516,9 @@ function GuardarSolicitud() {
                 'Referencia': arrayReferencia[i],
                 'IdOrigen': arrayIdOrigen[i],
                 'TablaOrigen': arrayTablaOrigen[i],
+                'IdCuadrilla' : arrayCboCuadrillaTabla[i],
+                'IdResponsable' : arrayCboResponsableTabla[i],
+                
             })
         }
 
@@ -1895,6 +1977,8 @@ function AgregarLineaDetalle(contador, detalle) {
         <td>
             <input class="form-control" type="text" name="txtPrecioInfo[]" value="`+ formatNumberDecimales(detalle.PrecioUnidadTotal, 2) + `" id="txtPrecioInfo` + contador + `" onkeyup="CalcularTotalDetalle(` + contador + `)" disabled>
         </td>
+        <td><input class="form-control" value="`+ detalle.NombCuadrilla +`" disabled></input></td>
+        <td><input class="form-control" value="`+ detalle.NombResponsable +`" disabled></input></td>
         <td>
             <input class="form-control changeTotal" type="text" style="width:100px" value="`+ formatNumberDecimales(detalle.Total, 3) + `" name="txtItemTotal[]" id="txtItemTotal` + contador + `" onchange="CalcularTotales()" disabled>
         </td>
@@ -3183,7 +3267,7 @@ function llenarComboEmpleados(lista, idCombo, primerItem) {
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
-    $("#" + idCombo).val(lista[ultimoindice].IdEmpleado).change();
+    //$("#" + idCombo).val(lista[ultimoindice].IdEmpleado).change();
     ObtenerCapataz()
 }
 function ObtenerCapataz() {
@@ -3236,4 +3320,7 @@ function verBase64PDF(datos) {
 function LimpiarAlmacen() {
     $("#cboAlmacen").prop("selectedIndex", 0)
 }
-
+function SetCuadrillaTabla() {
+    let SetCuadrilla = $("#IdCuadrilla").val()
+    $(".cboCuadrillaTabla").val(SetCuadrilla).change()
+}

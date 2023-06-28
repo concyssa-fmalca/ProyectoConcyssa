@@ -257,6 +257,40 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@ValidarIngresoSalidaOAmbos", ValidarIngresoSalidaOAmbos);
                         
 
+                        int rpta = int.Parse(da.SelectCommand.ExecuteScalar().ToString());
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region InsertUpdateMovimientoDetalleCuadrilla
+        public int InsertUpdateMovimientoDetalleCuadrilla(int MovDetalle,MovimientoDetalleDTO oMovimientoDetalleDTO, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_InsertUpdateMovimientoDetalleCuadrilla", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdMovimientoDetalle", MovDetalle);
+                        da.SelectCommand.Parameters.AddWithValue("@IdCuadrilla", oMovimientoDetalleDTO.IdCuadrilla);
+                        da.SelectCommand.Parameters.AddWithValue("@IdResponsable", oMovimientoDetalleDTO.IdResponsable);
+                        
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
                         return rpta;
@@ -1241,6 +1275,8 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@IdProveedor", oOrpcDTO.IdProveedor);
                         da.SelectCommand.Parameters.AddWithValue("@IdCondicionPago", oOrpcDTO.idCondicionPago);
                         da.SelectCommand.Parameters.AddWithValue("@IdGlosaContable", oOrpcDTO.IdGlosaContable);
+                        da.SelectCommand.Parameters.AddWithValue("@IdTipoRegistro", oOrpcDTO.IdTipoRegistro);
+                        da.SelectCommand.Parameters.AddWithValue("@IdSemana", oOrpcDTO.IdSemana);
 
                         int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
                         transactionScope.Complete();
@@ -1540,7 +1576,8 @@ namespace DAO
                         oMovimientoDetalleDTO.IdAlmacenDestino = Convert.ToInt32(dr2["IdAlmacenDestino"].ToString());
 
                         oMovimientoDetalleDTO.CantidadNotaCredito = Convert.ToDecimal(String.IsNullOrEmpty(dr2["CantidadNotaCredito"].ToString()) ? "0" : dr2["CantidadNotaCredito"].ToString());
-
+                        oMovimientoDetalleDTO.NombCuadrilla = (dr2["NombCuadrilla"].ToString());
+                        oMovimientoDetalleDTO.NombResponsable = (dr2["NombResponsable"].ToString());
 
                         oMovimientoDTO.detalles[posicion] = oMovimientoDetalleDTO;
                         posicion = posicion + 1;

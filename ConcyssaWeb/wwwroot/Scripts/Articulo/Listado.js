@@ -16,6 +16,7 @@ function ObtenerProveedores() {
 
 
 function addprecioproductoproveedor() {
+    let varIdObra
     let IdArticulo=$("#txtId").val();
     let IdProveedor = $("#IdProveedor").val();
     let PrecioSoles = $("#PrecioSoles").val();
@@ -27,12 +28,12 @@ function addprecioproductoproveedor() {
         swal("Informacion!", "Seleccione Proveedor!");
         return;
     }
-    if (PrecioSoles == "" || PrecioSoles == null || PrecioSoles == "0" || !$.isNumeric(PrecioSoles)) {
+    if (PrecioSoles == "" || PrecioSoles == null || PrecioSoles < "0" || !$.isNumeric(PrecioSoles)) {
         swal("Informacion!", "Ingrese Precio Soles!");
         return;
     }
 
-    if (PrecioDolares == "" || PrecioDolares == null || PrecioDolares == "0" || !$.isNumeric(PrecioDolares)) {
+    if (PrecioDolares == "" || PrecioDolares == null || PrecioDolares < "0" || !$.isNumeric(PrecioDolares)) {
         swal("Informacion!", "Ingrese Precio dolares!");
         return;
     }
@@ -46,23 +47,40 @@ function addprecioproductoproveedor() {
         swal("Informacion!", "Ingrese numero de entrega!");
         return;
     }
+    if ($("#ObraArticulo").val() == 0) {
+        varIdObra = 0
+    } else {
+        varIdObra = $("#ObraArticulo").val()
+    }
 
-    $.post("/Articulo/SavePrecioProveedor", {
+    $.post("/Articulo/SavePrecioProveedorNuevo", {
         "IdArticulo": IdArticulo,
         "IdProveedor": IdProveedor,
         "PrecioSoles": PrecioSoles,
         "PrecioDolares": PrecioDolares,
         "IdCondicionPagoProveedor": IdCondicionPagoProveedor,
-        "numeroentrega": numeroentrega
+        "numeroentrega": numeroentrega,
+        "IdObra": varIdObra,
+        
 
     }, function (data, status) {
         swal("Exito!", "Proceso Realizado Correctamente", "success")
         console.log(IdArticulo);
         listarPrecioProductoProveedor(IdArticulo);
         console.log(IdArticulo);
+        LimpiarArticuloxProveedor()
     });
 }
 
+function LimpiarArticuloxProveedor() {
+    $("#IdProveedor").val(0).change()
+    $("#PrecioSoles").val("").change()
+    $("#PrecioDolares").val("").change()
+    $("#IdCondicionPagoProveedor").val(0).change()
+    $("#numeroentrega").val("").change()
+    $("#ObraArticulo").val(0).change()
+
+}
 
 function CargarCondicionPago() {
     $.ajaxSetup({ async: false });
@@ -107,7 +125,6 @@ function llenarComboProveedor(lista, idCombo, primerItem) {
     var campos;
 
     for (var i = 0; i < nRegistros; i++) {
-        console.log(lista[i])
         if (lista.length > 0) { contenido += "<option value='" + lista[i].IdProveedor + "'>" + lista[i].RazonSocial + "</option>"; }
         else { }
     }
@@ -123,6 +140,8 @@ window.onload = function () {
     listarGrupoArticulo();
     CargarGrupoUnidadMedida();
     $("#cboIdCodigoUbso").select2();
+    $("#divObraArticulo").hide()
+    ObtenerObra()
   
 };
 
@@ -495,20 +514,32 @@ function eliminar(varIdArticulo) {
 }
 
 function listarPrecioProductoProveedor(IdArticulo) {
-    $.post("/Articulo/ListarPrecioProductoProveedor", { 'IdArticulo': IdArticulo }, function (data, status) {
+    $.post("/Articulo/ListarPrecioProductoProveedorNuevo", { 'IdArticulo': IdArticulo }, function (data, status) {
         $("#tbody_tabledetalle_precioproveedor").html();
         let tr = "";
         if (validadJson(data)) {
-       
             let datos = JSON.parse(data);
-            if (datos.length>0) {
+            if (datos.length > 0) {
                 for (var i = 0; i < datos.length; i++) {
+                    let ObraA
+                    let TipoPrecio
+                    if (datos[i].Obra == 0) {
+                        ObraA = "-"
+                        TipoPrecio = "General"
+                    } else {
+                        ObraA = datos[i].Obra
+                        TipoPrecio = "Por Obra"
+                    }
+                    console.log("aaaaaaaaaaaaaa")
                     tr += `<tr>
+    
                         <td>`+ datos[i].Proveedor + `</td>
                         <td>`+ datos[i].PrecioSoles + `</td>
                         <td>`+ datos[i].PrecioDolares + `</td>
                         <td>`+ datos[i].CondicionPago + `</td>
                         <td>`+ datos[i].numeroentrega + `</td>
+                        <td>`+ TipoPrecio + `</td>
+                        <td>`+ ObraA + `</td>
                         <td> <button class="btn btn-sm btn-danger" onclick="elimiarproductoproveedor(`+ datos[i].IdArticuloProveedor + `,` + datos[i].IdArticulo + `)">-</button></td>
                     </tr>`;
                 }
@@ -518,6 +549,9 @@ function listarPrecioProductoProveedor(IdArticulo) {
         }
       
     });
+}
+function cerrarModalArticuloProveedor() {
+    $("#tbody_tabledetalle_precioproveedor").empty();
 }
 
 function elimiarproductoproveedor(IdProductoProveedor,IdArticulo) {
@@ -617,7 +651,38 @@ function GuardarStock(IdProducto, IdAlmacen) {
 
         })
 
-
+    
 }
 
+function alertar() {
+    if ($("#PrecioXGeneral").is(":checked")) {
+        $("#divObraArticulo").hide()
+        $("#ObraArticulo").val(0)
+    } else if ($("#PrecioXObra").is(":checked")) {
+        $("#divObraArticulo").show()
+    }
+}
+function ObtenerObra() {
+    $.ajaxSetup({ async: false });
+
+    $.post("/Obra/ObtenerObraxIdUsuarioSessionSinBase", function (data, status) {
+        let obra = JSON.parse(data);
+        llenarComboObra(obra, "ObraArticulo", "Seleccione")
+    });
+}
+
+function llenarComboObra(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdObra + "'>" + lista[i].Descripcion.toUpperCase() + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+}
 

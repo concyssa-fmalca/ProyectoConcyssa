@@ -144,6 +144,8 @@ namespace DAO
                         oOpchDTO.Moneda = (drd["Moneda"].ToString());
                         oOpchDTO.NombUsuario = (drd["NombUsuario"].ToString());
                         oOpchDTO.NumSerieTipoDocumentoRef = drd["NumSerieTipoDocumentoRef"].ToString();
+                        oOpchDTO.Proveedor = drd["Proveedor"].ToString();
+                        oOpchDTO.TipoDocumentoRef = drd["TipoDocumentoRef"].ToString();
 
                         lstOPCHDTO.Add(oOpchDTO);
                     }

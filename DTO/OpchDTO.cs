@@ -46,6 +46,8 @@ namespace DTO
         public int IdSociedad { get; set; }
         public bool Estado { get; set; }
         public bool Eliminado { get; set; }
+        public string TipoDocumentoRef { get; set; }
+        public string Proveedor { get; set; }
 
 
         public IList<OPCHDetalle> detalles { get; set; }

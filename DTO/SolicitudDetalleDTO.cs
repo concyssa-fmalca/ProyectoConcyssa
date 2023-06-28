@@ -59,6 +59,7 @@ namespace DTO
         public string SeriePedido { get; set; }
         public DateTime FechaDocumentoPedido { get; set; }
         public string ConformidadPedido { get; set; }
+        public int IdPedido { get; set; }
 
     }
 }

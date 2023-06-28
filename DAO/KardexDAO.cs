@@ -54,7 +54,8 @@ namespace DAO
                         oKardexDTO.NombUsuario = (drd["NombUsuario"].ToString());
                         oKardexDTO.Comentario = (drd["Comentario"].ToString());
                         oKardexDTO.Modulo = (drd["Modulo"].ToString());
-
+                        oKardexDTO.NumSerieTipoDocumentoRef = drd["NumSerieTipoDocumentoRef"].ToString();
+                        oKardexDTO.TipoDocumentoRef = drd["TipoDocumentoRef"].ToString();
 
 
 

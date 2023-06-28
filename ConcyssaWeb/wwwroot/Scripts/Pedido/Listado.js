@@ -2886,12 +2886,12 @@ function addprecioproductoproveedor() {
         swal("Informacion!", "Seleccione Proveedor!");
         return;
     }
-    if (PrecioSoles == "" || PrecioSoles == null || PrecioSoles == "0" || !$.isNumeric(PrecioSoles)) {
+    if (PrecioSoles == "" || PrecioSoles == null || PrecioSoles < "0" || !$.isNumeric(PrecioSoles)) {
         swal("Informacion!", "Ingrese Precio Soles!");
         return;
     }
 
-    if (PrecioDolares == "" || PrecioDolares == null || PrecioDolares == "0" || !$.isNumeric(PrecioDolares)) {
+    if (PrecioDolares == "" || PrecioDolares == null || PrecioDolares < "0" || !$.isNumeric(PrecioDolares)) {
         swal("Informacion!", "Ingrese Precio dolares!");
         return;
     }

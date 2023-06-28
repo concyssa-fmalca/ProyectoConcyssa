@@ -244,34 +244,53 @@
                                     <div id="tab15_5" class="tab-pane">
                                         <div class="container">
                                                 <div class="row">
-                                                <div class="col-xs-2">
-                                                    Proveedor:
-                                                     <select id="IdProveedor" class="form-control input-sm" style="width:100%" tabindex="0"></select>
+                                                    <div class="col-xs-2">
+                                                        Proveedor:
+                                                         <select id="IdProveedor" class="form-control input-sm" style="width:100%" tabindex="0"></select>
                                                     
-                                                </div>
-                                                <div class="col-xs-2">
-                                                    Precio Soles:
-                                                    <input type="text" id="PrecioSoles" class="form-control" placeholder="Precio Soles">
-                                                </div>
+                                                    </div>
+                                                    <div class="col-xs-1">
+                                                        Precio Soles:
+                                                        <input type="text" id="PrecioSoles" class="form-control" placeholder="Precio Soles">
+                                                    </div>
 
-                                                <div class="col-xs-2">
-                                                    Precio Dolares:
-                                                    <input type="text" id="PrecioDolares" class="form-control" placeholder="Precio Dolares">
-                                                </div>
-                                                <div class="col-xs-2">
-                                                    Condicion de Pago:
-                                                    <select id="IdCondicionPagoProveedor" class="form-control input-sm" style="width:100%" tabindex="0"></select>
-                                                </div>
-                                                <div class="col-xs-2">
-                                                    Numero de Entrega:
-                                                    <input type="text" id="numeroentrega" class="form-control" placeholder="Numero Entrega">
-                                                </div>
+                                                    <div class="col-xs-1">
+                                                        Precio Dolares:
+                                                        <input type="text" id="PrecioDolares" class="form-control" placeholder="Precio Dolares">
+                                                    </div>
+                                                    <div class="col-xs-2">
+                                                        Condicion de Pago:
+                                                        <select id="IdCondicionPagoProveedor" class="form-control input-sm" style="width:100%" tabindex="0"></select>
+                                                    </div>
+                                                    <div class="col-xs-2">
+                                                        Numero de Entrega:
+                                                        <input type="text" id="numeroentrega" class="form-control" placeholder="Numero Entrega">
+                                                    </div>
+                                                     <div class="col-xs-1">
+                                                        Precio:
+                                                        <div class="col-xs-12">
+                                                            <input type="radio" id="PrecioXGeneral" name="TipoPrecio" onclick="alertar()" checked />
+                                                            <label style="font-size:1.5rem" for="PrecioXGeneral">General</label>
+                                                       
+                                                        </div>
+                                                        <div class="col-xs-12">
+                                         
+                                                            <input type="radio" id="PrecioXObra" name="TipoPrecio" onclick="alertar()" />
+                                                            <label style="font-size:1.5rem" for="PrecioXObra">Por Obra</label>
+                                                        </div>
+                                                    </div>
 
-                                                <div class="col-xs-2">
-                                                  
-                                                    <button class="btn btn-sm btn-success" onclick="addprecioproductoproveedor()">+</button>
-                                                </div>
-                                         </div>
+                                                    <div class="col-xs-1">
+
+                                                    <button class="btn btn-sm btn-success" onclick="addprecioproductoproveedor()" style="background-color:var(--colorN-primario)">Guardar</button>
+                                                    </div>
+                                                 </div>
+                                                 <div class="row">
+                                                    <div class="col-sm-3" id="divObraArticulo">
+                                                        Obra:
+                                                        <select type="text" id="ObraArticulo" class="form-control"></select>
+                                                    </div>
+                                                 </div>
                                         </div>
                                         <br />
 
@@ -285,6 +304,8 @@
                                                 <th>Dolares</th>
                                                 <th>Condicion Pago</th>
                                                 <th>Numero de Dias Enrega</th>
+                                                <th>Tipo de Precio</th>
+                                                <th>Obra</th>
                                                 <th>Opciones</th>
                                                 </thead>
                                                 <tbody id="tbody_tabledetalle_precioproveedor"></tbody>
@@ -523,7 +544,7 @@
         <div class="panel-footer text-left">
             <div class="row">
                 <button type="submit" id="btnGrabar" onclick="GuardarArticulo(0)" class="btn btn-primary pull-left plu">Grabar</button>
-                <button type="submit" id="btnCancelar" class="btn btn-danger pull-left" onclick="closePopup();">Cancelar</button>
+                <button type="submit" id="btnCancelar" style="background-color:orange" class="btn btn-danger pull-left" onclick="closePopup();cerrarModalArticuloProveedor()">Cancelar</button>
             </div>
         </div>
     </div>

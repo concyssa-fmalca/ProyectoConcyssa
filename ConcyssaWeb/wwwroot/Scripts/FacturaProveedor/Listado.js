@@ -287,6 +287,7 @@ function llenarComboCuadrilla(lista, idCombo, primerItem) {
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
     $("#IdCuadrilla").prop("selectedIndex", 1)
+    $("#IdCuadrilla").val(2582).change()
 }
 
 
@@ -573,6 +574,7 @@ function ModalNuevo() {
     $("#IdCondicionPago").val(1).change();
 
     //setearValor_ComboRenderizado("cboCodigoArticulo");
+    
 }
 
 
@@ -3654,7 +3656,19 @@ function listarOpch() {
                 targets: 1,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.FechaDocumento
+                    let FechaDoc = full.FechaDocumento
+                    const fechaTabla = new Date(FechaDoc);
+                    const diaTabla = fechaTabla.getDate();
+                    const mesTabla = fechaTabla.getMonth() + 1;
+                    const anioTabla = fechaTabla.getFullYear();
+
+                    // Añadir ceros iniciales si es necesario
+                    const diaFormateado = diaTabla < 10 ? "0" + diaTabla : diaTabla;
+                    const mesFormateado = mesTabla < 10 ? "0" + mesTabla : mesTabla;
+
+                    const fechaFormateada = `${diaFormateado}/${mesFormateado}/${anioTabla}`;
+
+                    return fechaFormateada
                 },
             },
             {
@@ -3670,7 +3684,7 @@ function listarOpch() {
                 render: function (data, type, full, meta) {
                     return full.NombTipoDocumentoOperacion
                 },
-            },
+            },       
             {
                 targets: 4,
                 orderable: false,
@@ -3682,40 +3696,54 @@ function listarOpch() {
                 targets: 5,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.NumSerieTipoDocumentoRef
-
+                    return full.TipoDocumentoRef
                 },
             },
             {
                 targets: 6,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return formatNumberDecimales(full.Total, 2)
+                    return full.NumSerieTipoDocumentoRef
+
                 },
             },
             {
                 targets: 7,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.DescCuadrilla
+                    return full.Proveedor
                 },
             },
             {
                 targets: 8,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.NombObra
+                    return formatNumberDecimales(full.Total, 2)
                 },
             },
             {
                 targets: 9,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.NombAlmacen
+                    return full.DescCuadrilla
                 },
             },
             {
                 targets: 10,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.NombObra
+                },
+            },
+            {
+                targets: 11,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.NombAlmacen
+                },
+            },
+            {
+                targets: 12,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     return full.Moneda
@@ -4570,12 +4598,13 @@ function ResetRegistroSemana() {
     $("#IdSemana").prop("selectedIndex", 0)
 }
 function redondear() {
-    let CantidadRedondeo = +$("#txtRedondeo").val()
-    let TotalSinImp = +$("#txtTotalAntesDescuento").val()
-    let Imp = +$("#txtImpuesto").val()
+    let CantidadRedondeo = +($("#txtRedondeo").val().replace(/,/g, ""))
+    let TotalSinImp = +($("#txtTotalAntesDescuento").val().replace(/,/g, ""))
+    let Imp = +($("#txtImpuesto").val().replace(/,/g, ""))
     let TotalSinR = TotalSinImp + Imp
     let NuevoTotal = TotalSinR + CantidadRedondeo
-    $("#txtTotal").val(NuevoTotal.toFixed(DecimalesPrecios))
+    $("#txtTotal").val(formatNumberDecimales(NuevoTotal,2))
+    
        
 }
 function esRendicion() {

@@ -255,79 +255,84 @@ function ListarDatatableKardexDT(url, IdArticulo, IdAlmacen, FechaInicio, FechaT
                 targets: 5,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return '-'
+                    return full.FechaDocumento.split('T')[0]
                 },
             },
             {
                 targets: 6,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.FechaDocumento.split('T')[0]
+                    return full.TipoDocumentoRef
                 },
             },
             {
                 targets: 7,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.DescUnidadMedidaBase
+                    if (full.NumSerieTipoDocumentoRef == '-0') {
+                        return '-'
+                    } else {
+                        return full.NumSerieTipoDocumentoRef
+                    }
+                  
                 },
             },
             {
                 targets: 8,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return formatNumber(full.CantidadBase)
+                    return full.DescUnidadMedidaBase
                 },
             },
             {
                 targets: 9,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return formatNumber(full.PrecioBase)
+                    return formatNumber(full.CantidadBase)
                 },
             },
             {
                 targets: 10,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return formatNumber((full.CantidadBase * full.PrecioBase))
+                    return formatNumber(full.PrecioBase)
                 },
             },
             {
                 targets: 11,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.Saldo
+                    return formatNumber((full.CantidadBase * full.PrecioBase))
                 },
             },
             {
                 targets: 12,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return formatNumberDecimales(full.PrecioPromedio, 2)
+                    return full.Saldo
                 },
             },
             {
                 targets: 13,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return formatNumber(Math.abs(full.PrecioPromedio * full.Saldo))
+                    return formatNumberDecimales(full.PrecioPromedio, 2)
                 },
             },
             {
                 targets: 14,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.NombUsuario
+                    return formatNumber(Math.abs(full.PrecioPromedio * full.Saldo))
                 },
             },
             {
                 targets: 15,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.Comentario
+                    return full.NombUsuario
                 },
-            }
+            },   
         ],
         "bDestroy": true
     });

@@ -83,11 +83,18 @@ function listarPedidoDtConfirmidad() {
                 targets: 6,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return formatNumberDecimales(full.total_venta, 2)
+                    return full.NombMoneda
                 },
             },
             {
                 targets: 7,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return formatNumberDecimales(full.total_venta, 2)
+                },
+            },
+            {
+                targets: 8,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     if (full.Conformidad == 0) {

@@ -41,6 +41,7 @@ namespace ConcyssaWeb.Controllers
             oMovimientoDTO.IdUsuario = IdUsuario;
             MovimientoDAO oMovimimientoDAO = new MovimientoDAO();
             int respuesta = oMovimimientoDAO.InsertUpdateMovimiento(oMovimientoDTO, ref mensaje_error);
+            int respuesta1 = 0;
             if (mensaje_error.Length > 0)
             {
                 return mensaje_error;
@@ -51,8 +52,15 @@ namespace ConcyssaWeb.Controllers
                 {
                     oMovimientoDTO.detalles[i].IdMovimiento = respuesta;
                     oMovimientoDTO.detalles[i].IdMovimientoDetalle = 0;
-                    int respuesta1 = oMovimimientoDAO.InsertUpdateMovimientoDetalle(oMovimientoDTO.detalles[i], 0,ref mensaje_error);
+                    respuesta1 = oMovimimientoDAO.InsertUpdateMovimientoDetalle(oMovimientoDTO.detalles[i], 0,ref mensaje_error);
+                    int respuesta2 = oMovimimientoDAO.InsertUpdateMovimientoDetalleCuadrilla(respuesta1, oMovimientoDTO.detalles[i], ref mensaje_error);
+
                 }
+                //for (int i = 0; i < oMovimientoDTO.detalles.Count; i++)
+                //{
+                //    oMovimientoDTO.detalles[i].IdMovimientoDetalle = respuesta1;
+                //    int respuesta2 = oMovimimientoDAO.InsertUpdateMovimientoDetalleCuadrilla(respuesta1, oMovimientoDTO.detalles[i], ref mensaje_error);
+                //}
                 if (oMovimientoDTO.AnexoDetalle != null)
                 {
                     for (int i = 0; i < oMovimientoDTO.AnexoDetalle.Count; i++)

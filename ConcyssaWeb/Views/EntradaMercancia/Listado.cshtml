@@ -339,6 +339,8 @@
                                                 <th style="display:none">Tipo Cambio</th>*@
                                                 <th >Cantidad</th>
                                                 <th>Precio Unitario</th>
+                                                <th style="min-width:200px">Cuadrilla</th>
+                                                <th style="min-width:200px">Responsable</th>
                                                 @*<th style="display:none">Indicador de Impuestos</th>*@
                                                 <th>Total</th>
                                                 <th style="display:none">Almacen</th>
@@ -491,12 +493,12 @@
 
                                     <p>
                                         Cuadrilla:
-                                        <select style="height: 20px" id="IdCuadrilla" type="text" class="form-control input-sm" tabindex="0" onchange="ObtenerEmpleadosxIdCuadrilla()">
+                                        <select style="height: 20px" id="IdCuadrilla" type="text" class="form-control input-sm" tabindex="0" onchange="SetCuadrillaTabla();ObtenerEmpleadosxIdCuadrilla()">
                                         <option value="0">SELECCIONE CUADRILLAS </option>
                                     </select> </p>
                                 <hr style="margin: 0px 0px 5px 0px"/>
 
-                                <p>Responsable:<select  style="height: 20px"  id="IdResponsable" type="text" class="form-control input-sm" tabindex="0">
+                                <p>Responsable:<select  style="height: 20px"  id="IdResponsable" type="text" class="form-control input-sm" tabindex="0"  onchange="ObtenerEmpleadosxIdCuadrillaTabla()">
                                             <option value="0">SELECCIONE Responsable </option>
                                         </select> </p>
                                 <hr style="margin: 0px 0px 5px 0px"/>

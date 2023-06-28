@@ -39,6 +39,8 @@ namespace DTO
         public string Comentario { get; set; }
 
         public string Modulo { get; set; } = "";
+        public string TipoDocumentoRef { get; set; }
+        public string NumSerieTipoDocumentoRef { get; set; }
 
     }
 }
