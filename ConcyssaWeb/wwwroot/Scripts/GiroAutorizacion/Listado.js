@@ -286,7 +286,8 @@ function ConsultaServidorDetalle(IdGiro) {
             tr += `<td>` + giros[i].NumeroDocumento + `</td>`;
             tr += `<td>` + giros[i].Moneda + `</td>`;
             tr += `<td>` + formatNumber(giros[i].Monto) + `</td>`;
-            tr += `<td><strong><a href="/Requerimiento/` + giros[i].Anexo + `"target="_blank" > ` + giros[i].Anexo + `</a></strong></td>`;
+            tr += `<td><strong><a style="color:blue;text-decoration:underline" href="/Requerimiento/` + giros[i].Anexo + `"target="_blank" > ` + giros[i].Anexo + `</a></strong></td>`;
+            tr += `<td id="txtIdComentario" name="txtIdComentario[]">` + giros[i].Comentario + `</td>`
             //tr += `<td>` + giros[i].NombUsuario + `</td>`;
             tr += `<td>`;
 

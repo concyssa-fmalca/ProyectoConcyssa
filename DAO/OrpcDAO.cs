@@ -190,6 +190,8 @@ namespace DAO
                         oORPCDetalle.NombImpuesto = (drd["NombImpuesto"].ToString());
                         oORPCDetalle.IdGrupoUnidadMedida = Convert.ToInt32(drd["IdGrupoUnidadMedida"].ToString());
                         oORPCDetalle.CodigoArticulo = drd["CodigoArticulo"].ToString();
+                        oORPCDetalle.NombCuadrilla = drd["NombCuadrilla"].ToString();
+                        oORPCDetalle.NombResponsable = drd["NombResponsable"].ToString();
                         lstORPCDetalle.Add(oORPCDetalle);
                     }
                     drd.Close();

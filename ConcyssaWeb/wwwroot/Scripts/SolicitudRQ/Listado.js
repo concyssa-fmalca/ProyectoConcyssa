@@ -2292,7 +2292,7 @@ function AgregarLineaDetalle(datos, DescripcionServicio, Numero, EstadoCabecera,
 
 </td>
 
-<td class="HabilitarVisualizacion PedidoOC"  onclick="AbrirOC(`+datos.IdPedido+`,'`+ConformidadPedido+`')" style="display:none;"><u>`+ SeriePedido + `</u></td>`;
+<td class="HabilitarVisualizacion PedidoOC"  onclick="AbrirOC(`+datos.IdPedido+`,'`+ConformidadPedido+`')" style="color:blue" ><u>`+ SeriePedido + `</u></td>`;
     if (FechaDocumentoPedido == "1999-01-01T00:00:00") {
         tr += `<td class="HabilitarVisualizacion" style="display:none">-</td>`;
     } else {

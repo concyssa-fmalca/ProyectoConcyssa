@@ -107,7 +107,6 @@
                         <th>Serie y Numero</th>
                         <th>Proveedor</th>
                         <th>Total</th>
-                        <th>Cuadrilla</th>
                         <th>Obra</th>
                         <th>Almacen</th>
                         <th>Moneda</th>
@@ -390,6 +389,8 @@
                                
                                                 <th id="PrecioEditar">Precio Unitario</th>
                                                 <th>Indicador de Impuestos</th>
+                                                <th style="min-width:200px">Cuadrilla</th>
+                                                <th style="min-width:200px">Responsable</th>
                                                 <th>Total</th>
                                                 <th style="display:none">Almacen</th>
                                                 @*<th style="display:none">Proveedor</th>
@@ -553,15 +554,15 @@
 
                                     <p>
                                         Cuadrilla:
-                                        <select style="height: 20px" id="IdCuadrilla" type="text" class="form-control input-sm" tabindex="0" onchange="ObtenerEmpleadosxIdCuadrilla()">
+                                        <select style="height: 20px" id="IdCuadrilla" type="text" class="form-control input-sm" tabindex="0" onchange="SetCuadrillaTabla()">
                                             <option value="0">SELECCIONE CUADRILLAS </option>
                                         </select>
                                     </p>
                                     <hr style="margin: 0px 0px 5px 0px" />
 
-                                    <p>
+                                    <p style="display:none">
                                         Responsable:
-                                        <select style="height: 20px" id="IdResponsable" type="text" class="form-control input-sm" tabindex="0">
+                                        <select style="height: 20px" id="IdResponsable" type="text" class="form-control input-sm" tabindex="0" onchange="ObtenerEmpleadosxIdCuadrillaTabla()">
                                             <option value="0">SELECCIONE Responsable </option>
                                         </select>
                                     </p>

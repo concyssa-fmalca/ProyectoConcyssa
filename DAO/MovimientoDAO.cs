@@ -121,7 +121,7 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@NombTablaOrigen", oOPDNDetalle.NombTablaOrigen);
                         da.SelectCommand.Parameters.AddWithValue("@IdOrigen", oOPDNDetalle.IdOrigen);
 
-                        int rpta = da.SelectCommand.ExecuteNonQuery();
+                        int rpta = int.Parse(da.SelectCommand.ExecuteScalar().ToString());
                         transactionScope.Complete();
                         return rpta;
                     }
@@ -134,6 +134,9 @@ namespace DAO
             }
         }
         #endregion
+
+
+
 
 
         #region InsertUpdateMovimiento
@@ -773,6 +776,10 @@ namespace DAO
                         oMovimientoDTO.NombMoneda = (drd["NombMoneda"].ToString());
                         oMovimientoDTO.NombUsuario = (drd["NombUsuario"].ToString());
                         oMovimientoDTO.IdDocExtorno = Convert.ToInt32(drd["IdDocExtorno"].ToString());
+                        oMovimientoDTO.TDocumento = (drd["TDocumento"].ToString());
+                        oMovimientoDTO.SerieGuiaElectronica = (String.IsNullOrEmpty(drd["SerieGuiaElectronica"].ToString()) ? "" : drd["SerieGuiaElectronica"].ToString());
+                        oMovimientoDTO.NumeroGuiaElectronica = Convert.ToInt32(String.IsNullOrEmpty(drd["NumeroGuiaElectronica"].ToString()) ? "0" : drd["NumeroGuiaElectronica"].ToString());
+                        oMovimientoDTO.EstadoFE = Convert.ToInt32(String.IsNullOrEmpty(drd["EstadoFE"].ToString()) ? "0" : drd["EstadoFE"].ToString());
                         lstMovimientoDTO.Add(oMovimientoDTO);
                     }
                     drd.Close();
@@ -952,6 +959,8 @@ namespace DAO
                         oMovimientoDetalleDTO.CodigoArticulo = (dr2["CodigoArticulo"].ToString());
                         oMovimientoDetalleDTO.TipoUnidadMedida = (dr2["TipoUnidadMedida"].ToString());
                         oMovimientoDetalleDTO.IdGrupoUnidadMedida = Convert.ToInt32(dr2["IdGrupoUnidadMedida"].ToString());
+                        oMovimientoDetalleDTO.NombCuadrilla = dr2["NombCuadrilla"].ToString();
+                        oMovimientoDetalleDTO.NombResponsable = dr2["NombResponsable"].ToString();
 
                         oMovimientoDetalleDTO.IdAlmacenDestino = Convert.ToInt32(dr2["IdAlmacenDestino"].ToString());
 
@@ -1145,7 +1154,7 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@NombTablaOrigen", oOPCHDetalle.NombTablaOrigen);
                         da.SelectCommand.Parameters.AddWithValue("@IdOrigen", oOPCHDetalle.IdOrigen);
 
-                        int rpta = da.SelectCommand.ExecuteNonQuery();
+                        int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
                         transactionScope.Complete();
                         return rpta;
                     }
@@ -1159,7 +1168,38 @@ namespace DAO
         }
         #endregion
 
+        public int InsertUpdateOPCHDetalleCuadrilla(int IdOPCHDet,OPCHDetalle oOPCHDetalle, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_InsertUpdateOPCHDetalleCuadrilla", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdOPCHDetalle", IdOPCHDet);
+                        da.SelectCommand.Parameters.AddWithValue("@IdCuadrilla", oOPCHDetalle.IdCuadrilla);
+                        da.SelectCommand.Parameters.AddWithValue("@IdResponsable", oOPCHDetalle.IdResponsable);
+                       
 
+                        int rpta = da.SelectCommand.ExecuteNonQuery();
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+                }
+            }
+        }
 
 
         public int InsertAnexoMovimiento(AnexoDTO oAnexoDTO, ref string mensaje_error)
@@ -1338,7 +1378,7 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@NombTablaOrigen", oORPCDetalle.NombTablaOrigen);
                         da.SelectCommand.Parameters.AddWithValue("@IdOrigen", oORPCDetalle.IdOrigen);
 
-                        int rpta = da.SelectCommand.ExecuteNonQuery();
+                        int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
                         transactionScope.Complete();
                         return rpta;
                     }
@@ -1351,6 +1391,38 @@ namespace DAO
             }
         }
         #endregion
+        public int InsertUpdateORPCDetalleCuadrilla(int OPRCDDetId,ORPCDetalle oORPCDetalle, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_InsertUpdateORPCDetalleCuadrilla", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdORPCDetalle", OPRCDDetId);
+                        da.SelectCommand.Parameters.AddWithValue("@IdCuadrilla", oORPCDetalle.IdCuadrilla);
+                        da.SelectCommand.Parameters.AddWithValue("@IdResponsable", oORPCDetalle.IdResponsable);
+
+
+                        int rpta = da.SelectCommand.ExecuteNonQuery();
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+                }
+            }
+        }
 
 
 

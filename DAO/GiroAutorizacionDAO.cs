@@ -167,6 +167,7 @@ namespace DAO
                             oDetalleGiroAprobacionDTO.Fecha = Convert.ToDateTime(drd["Fecha"].ToString());
                             oDetalleGiroAprobacionDTO.Accion = Convert.ToInt32(drd["Accion"].ToString());
                             oDetalleGiroAprobacionDTO.IdUsuario = Convert.ToInt32(IdUsuario);
+                            oDetalleGiroAprobacionDTO.Comentario = drd["Comentario"].ToString();
 
 
                             lstDetalleGiroAprobacionDTO.Add(oDetalleGiroAprobacionDTO);

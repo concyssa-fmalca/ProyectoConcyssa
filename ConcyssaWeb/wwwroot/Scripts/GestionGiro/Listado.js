@@ -66,7 +66,7 @@ function llenarComboProveedor(lista, idCombo, primerItem) {
 
     for (var i = 0; i < nRegistros; i++) {
 
-        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdProveedor + "'>" + lista[i].RazonSocial + "</option>"; }
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdProveedor + "'>" + lista[i].NumeroDocumento + " - " + lista[i].RazonSocial + "</option>"; }
         else { }
     }
     var cbo = document.getElementById(idCombo);

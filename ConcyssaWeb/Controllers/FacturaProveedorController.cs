@@ -116,6 +116,7 @@ namespace ConcyssaWeb.Controllers
             MovimientoDAO oMovimimientoDAO = new MovimientoDAO();
             OpchDAO oOpchDAO = new OpchDAO();
             int respuesta = oMovimimientoDAO.InsertUpdateMovimientoOPCH(oOpchDTO, ref mensaje_error);
+            int respuesta1 = 0;
             if (mensaje_error.Length > 0)
             {
                 return mensaje_error;
@@ -125,7 +126,9 @@ namespace ConcyssaWeb.Controllers
                 for (int i = 0; i < oOpchDTO.detalles.Count; i++)
                 {
                     oOpchDTO.detalles[i].IdOPCH = respuesta;
-                    int respuesta1 = oMovimimientoDAO.InsertUpdateOPCHDetalle(oOpchDTO.detalles[i], ref mensaje_error);
+                    respuesta1 = oMovimimientoDAO.InsertUpdateOPCHDetalle(oOpchDTO.detalles[i], ref mensaje_error);
+                    int respuesta2 = oMovimimientoDAO.InsertUpdateOPCHDetalleCuadrilla(respuesta1, oOpchDTO.detalles[i], ref mensaje_error);
+
                 }
                 oOpchDAO.UpdateTotalesOPCH(respuesta, ref mensaje_error);
                 if (oOpchDTO.AnexoDetalle!=null)

@@ -129,6 +129,10 @@
         public decimal CantidadDevolucion { get; set; }
 
         public string CodigoArticulo { get; set; }
+        public int IdCuadrilla { get; set; }
+        public int IdResponsable { get; set; }
+        public string NombCuadrilla { get; set; }
+        public string NombResponsable { get; set; }
 
     }
 }

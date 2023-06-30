@@ -688,7 +688,7 @@ function AgregarLinea() {
             <td input style="display:none;"><input class="form-control TipoCambioDeCabecera" type="number" name="txtTipoCambio[]" id="txtTipoCambioDetalle`+ contador + `" disabled></td>
             <td><input class="form-control"  type="number" name="txtCantidadNecesaria[]" value="0" id="txtCantidadNecesaria`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled></td>
             <td><input class="form-control" type="number" name="txtPrecioInfo[]" value="0" id="txtPrecioInfo`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled></td>
-            <td><select class="form-control cboCuadrillaTabla" id="cboCuadrillaTablaId`+ contador + `"></select></td>
+            <td><select onchange="SeleccionarEmpleadosTabla(`+contador+`)" class="form-control cboCuadrillaTabla" id="cboCuadrillaTablaId`+ contador + `"></select></td>
             <td><select class="form-control cboResponsableTabla" id="cboResponsableTablaId`+ contador +`"></select></td>
             <td input style="display:none;">
             <select class="form-control ImpuestoCabecera" name="cboIndicadorImpuesto[]" id="cboIndicadorImpuestoDetalle`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)">`;
@@ -1319,6 +1319,16 @@ function GuardarSolicitud() {
     $("input[name='txtReferencia[]']").each(function (indice, elemento) {
         arrayReferencia.push($(elemento).val());
     });
+    let arrayCboCuadrillaTabla = new Array();
+    $(".cboCuadrillaTabla").each(function (indice, elemento) {
+        arrayCboCuadrillaTabla.push($(elemento).val());
+    });
+
+    let arrayCboResponsableTabla = new Array();
+    $(".cboResponsableTabla").each(function (indice, elemento) {
+        arrayCboResponsableTabla.push($(elemento).val());
+    });
+
 
 
 
@@ -1336,9 +1346,9 @@ function GuardarSolicitud() {
     let SubTotal = $("#txtTotalAntesDescuento").val();
     let Impuesto = $("#txtImpuesto").val();
     let Total = $("#txtTotal").val();
-    let IdCuadrilla = $("#IdCuadrilla").val();
+    let IdCuadrilla = 2582;
 
-    let IdResponsable = $("#IdResponsable").val();
+    let IdResponsable = 24151
     let IdTipoDocumentoRef = $("#IdTipoDocumentoRef").val();
     let SerieNumeroRef = $("#SerieNumeroRef").val();
     //END Cabecera
@@ -1365,7 +1375,9 @@ function GuardarSolicitud() {
                 'IdCentroCosto': IdCentroCosto,
                 'IdAfectacionIgv': 1,
                 'Descuento': 0,
-                'Referencia': arrayReferencia[i]
+                'Referencia': arrayReferencia[i],
+                'IdCuadrilla': arrayCboCuadrillaTabla[i],
+                'IdResponsable': arrayCboResponsableTabla[i],
             })
         }
 
@@ -1580,7 +1592,8 @@ function ObtenerDatosxID(IdMovimiento) {
             $("#txtTipoCambio").val(movimiento.TipoCambio);
             $("#CreatedAt").html(movimiento.CreatedAt.replace("T", " "));
             $("#NombUsuario").html(movimiento.NombUsuario);
-            $("#IdCuadrilla").val(movimiento.IdCuadrilla).change()
+            $("#IdCuadrilla").val("")
+            $("#IdCuadrilla").prop("disabled",true)
             $("#IdResponsable").val(movimiento.IdResponsable)
             //agrega detalle
             let tr = '';
@@ -1777,6 +1790,8 @@ function AgregarLineaDetalle(contador, detalle) {
         <td>
             <input class="form-control" type="text" name="txtPrecioInfo[]" value="`+ formatNumberDecimales(detalle.PrecioUnidadTotal, 2) + `" id="txtPrecioInfo` + contador + `" onkeyup="CalcularTotalDetalle(` + contador + `)" disabled>
         </td>
+        <td><input class="form-control" value="`+ detalle.NombCuadrilla + `" disabled></input></td>
+        <td><input class="form-control" value="`+ detalle.NombResponsable +`" disabled></input></td>
         <td>
             <input class="form-control changeTotal" type="text" style="width:100px" value="`+ formatNumberDecimales(detalle.Total, 2) + `" name="txtItemTotal[]" id="txtItemTotal` + contador + `" onchange="CalcularTotales()" disabled>
         </td>
@@ -2460,8 +2475,8 @@ function listarIngresosDT() {
                 targets: -1,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return `<button class= "btn btn-primary fa fa-pencil btn-xs" onclick = "ObtenerDatosxID(` + full.IdMovimiento + `)"></button>
-                        <button class="btn btn-primary btn-xs" onclick="GenerarReporte(` + full.IdMovimiento + `)">R</button>`
+                    return `<button class= "btn btn-primary fa fa-pencil btn-xs" onclick = "ObtenerDatosxID(` + full.IdMovimiento + `)"></button>`
+                        //<button class="btn btn-primary btn-xs" onclick="GenerarReporte(` + full.IdMovimiento + `)">R</button>`
                 },
             },
             {
@@ -2494,10 +2509,10 @@ function listarIngresosDT() {
             },
             {
                 targets: 4,
-                orderable: false,
+                orderable: false,                          
                 render: function (data, type, full, meta) {
-                    return full.NombSerie.toUpperCase() + '-' + full.Correlativo
-                },
+                    return '<u style="color:blue;cursor:pointer" onclick="GenerarReporte(' + full.IdMovimiento + ')">'+full.NombSerie.toUpperCase() + ' -' + full.Correlativo+'</u>' 
+                },             
             },
             {
                 targets: 5,
@@ -2513,22 +2528,16 @@ function listarIngresosDT() {
                     return formatNumber(full.Total)
                 },
             },
+       
             {
                 targets: 7,
-                orderable: false,
-                render: function (data, type, full, meta) {
-                    return full.DescCuadrilla
-                },
-            },
-            {
-                targets: 8,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     return full.NombObra
                 },
             },
             {
-                targets: 9,
+                targets: 8,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     return full.NombAlmacen
@@ -2644,20 +2653,60 @@ function llenarComboCuadrillaTabla(lista, idCombo, primerItem) {
     //var cbo = document.getElementById(idCombo);
     //if (cbo != null) cbo.innerHTML = contenido;
     $(".cboCuadrillaTabla").html(contenido)
-    ObtenerEmpleadosxIdCuadrillaTabla()
 }
 
-function ObtenerEmpleadosxIdCuadrillaTabla() {
+//function ObtenerEmpleadosxIdCuadrillaTabla() {
 
-    let IdCuadrilla = $("#IdCuadrilla").val();
-    $.ajaxSetup({ async: false });
-    $.post("/Empleado/ObtenerEmpleadosPorUsuarioBase", function (data, status) {
-        let empleados = JSON.parse(data);
-        llenarComboEmpleadosTabla(empleados, "cboResponsableTabla", "Seleccione")
-    });
+//    let IdCuadrilla = $("#IdCuadrilla").val();
+//    $.ajaxSetup({ async: false });
+//    $.post("/Empleado/ObtenerEmpleadosPorUsuarioBase", function (data, status) {
+//        let empleados = JSON.parse(data);
+//        llenarComboEmpleadosTabla(empleados, "cboResponsableTabla", "Seleccione")
+//    });
+//}
+
+//function llenarComboEmpleadosTabla(lista, idCombo, primerItem) {
+//    var contenido = "";
+//    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+//    var nRegistros = lista.length;
+//    console.log("Empleados: " + lista.length)
+//    var nCampos;
+//    var campos;
+//    let ultimoindice = 0;
+//    for (var i = 0; i < nRegistros; i++) {
+
+//        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdEmpleado + "'>" + lista[i].RazonSocial.toUpperCase() + "</option>"; ultimoindice = i }
+//        else { }
+//    }
+//    $(".cboResponsableTabla").html(contenido)
+
+
+//    ObtenerCapatazTabla()
+//}
+//function ObtenerCapatazTabla() {
+//    let IdCuadrilla = $("#IdCuadrilla").val();
+//    /* setTimeout(() => {*/
+//    $.post("/Empleado/ObtenerCapatazXCuadrilla", { 'IdCuadrilla': IdCuadrilla }, function (data, status) {
+//        let capataz = JSON.parse(data);
+//        $(".cboResponsableTabla").val(capataz[0].IdEmpleado).change();
+//    })
+//    /*}, 1000);*/
+
+//}
+function SetCuadrillaTabla() {
+    let SetCuadrilla = $("#IdCuadrilla").val()
+    $(".cboCuadrillaTabla").val(SetCuadrilla).change()
 }
+function SeleccionarEmpleadosTabla(contador) {
 
-function llenarComboEmpleadosTabla(lista, idCombo, primerItem) {
+        $.ajaxSetup({ async: false });
+        $.post("/Empleado/ObtenerEmpleadosPorUsuarioBase", function (data, status) {
+            let empleados = JSON.parse(data);
+            llenarComboEmpleadosTablaFila(empleados, "cboResponsableTablaId" + contador, "Seleccione",contador)
+        });
+
+}
+function llenarComboEmpleadosTablaFila(lista, idCombo, primerItem,contador) {
     var contenido = "";
     if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
     var nRegistros = lista.length;
@@ -2670,22 +2719,18 @@ function llenarComboEmpleadosTabla(lista, idCombo, primerItem) {
         if (lista.length > 0) { contenido += "<option value='" + lista[i].IdEmpleado + "'>" + lista[i].RazonSocial.toUpperCase() + "</option>"; ultimoindice = i }
         else { }
     }
-    $(".cboResponsableTabla").html(contenido)
+    $("#cboResponsableTablaId"+contador).html(contenido)
 
 
-    ObtenerCapatazTabla()
+   ObtenerCapatazTablaFila(contador)
 }
-function ObtenerCapatazTabla() {
-    let IdCuadrilla = $("#IdCuadrilla").val();
+function ObtenerCapatazTablaFila(contador) {
+    let IdCuadrillaFila = $("#cboCuadrillaTablaId"+contador).val();
     /* setTimeout(() => {*/
-    $.post("/Empleado/ObtenerCapatazXCuadrilla", { 'IdCuadrilla': IdCuadrilla }, function (data, status) {
+    $.post("/Empleado/ObtenerCapatazXCuadrilla", { 'IdCuadrilla': IdCuadrillaFila }, function (data, status) {
         let capataz = JSON.parse(data);
-        $(".cboResponsableTabla").val(capataz[0].IdEmpleado).change();
+        $("#cboResponsableTablaId"+contador).val(capataz[0].IdEmpleado).change();
     })
     /*}, 1000);*/
 
-}
-function SetCuadrillaTabla() {
-    let SetCuadrilla = $("#IdCuadrilla").val()
-    $(".cboCuadrillaTabla").val(SetCuadrilla).change()
 }

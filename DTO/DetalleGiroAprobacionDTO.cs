@@ -37,5 +37,6 @@ namespace DTO
 
         public int Accion { get; set; }
         public int IdUsuario { get; set; }
+        public string Comentario { get; set; }
     }
 }

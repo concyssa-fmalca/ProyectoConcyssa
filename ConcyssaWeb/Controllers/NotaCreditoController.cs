@@ -86,6 +86,7 @@ namespace ConcyssaWeb.Controllers
             MovimientoDAO oMovimimientoDAO = new MovimientoDAO();
             OrpcDAO oOrpcDAO = new OrpcDAO();
             int respuesta = oMovimimientoDAO.InsertUpdateMovimientoORPC(oOrpcDTO, ref mensaje_error);
+            int respuesta1 = 0;
             if (mensaje_error.Length > 0)
             {
                 return mensaje_error;
@@ -95,7 +96,8 @@ namespace ConcyssaWeb.Controllers
                 for (int i = 0; i < oOrpcDTO.detalles.Count; i++)
                 {
                     oOrpcDTO.detalles[i].IdORPC = respuesta;
-                    int respuesta1 = oMovimimientoDAO.InsertUpdateORPCDetalle(oOrpcDTO.detalles[i], ref mensaje_error);
+                    respuesta1 = oMovimimientoDAO.InsertUpdateORPCDetalle(oOrpcDTO.detalles[i], ref mensaje_error);
+                    int respuesta2 = oMovimimientoDAO.InsertUpdateORPCDetalleCuadrilla(respuesta1, oOrpcDTO.detalles[i], ref mensaje_error);
                 }
                 oOrpcDAO.UpdateTotalesORPC(respuesta, ref mensaje_error);
                 if (oOrpcDTO.AnexoDetalle!=null)

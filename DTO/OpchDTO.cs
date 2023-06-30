@@ -137,6 +137,10 @@ namespace DTO
         public decimal CantidadUsada { get; set; }
         public decimal CantidadNotaCredito { get; set; }
         public string CodigoArticulo { get; set; }
+        public int IdCuadrilla { get; set; }
+        public int IdResponsable { get; set; }
+        public string NombCuadrilla { get; set; }
+        public string NombResponsable { get; set; }
 
 
     }

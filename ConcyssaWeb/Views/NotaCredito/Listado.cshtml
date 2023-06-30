@@ -88,7 +88,7 @@
                 <div class="col-sm-3">
                     <select class="form-control" id="cboBaseFiltro"></select>
                 </div>
-                <button class="btn btn-primary" style="margin-top:3px" onclick=" listarOpch()">Buscar</button>
+                <button class="btn btn-primary" style="margin-top:3px" onclick=" listarOrpc()">Buscar</button>
             </div>
         </div>
     </div>
@@ -107,7 +107,7 @@
                           <th>Serie y Número</th>
                         <th>Proveedor</th>
                         <th>Total</th>
-                        <th>Cuadrilla</th>
+      
                         <th>Obra</th>
                         <th>Almacen</th>
                            <th>Moneda</th>
@@ -374,15 +374,17 @@
                                                 @*<th style="display:none">Numero de Articulo</th>*@
                                                  <th>#</th>
                                                 <th>Codigo</th>
-                                                <th style="width:300px;display:block">Descripcion de Articulo</th>
+                                                <th style="min-width:300px">Descripcion de Articulo</th>
                                                 <th>Unid. Medida</th>
                                                 @*<th>Prioridad de Item</th>*@
                                                 @*<th style="display:none">Fecha Necesaria</th>
                                                 <th style="display:none">Moneda</th>
                                                 <th style="display:none">Tipo Cambio</th>*@
-                                                <th style="width:100px;display:block">Cantidad</th>
+                                                <th style="min-width:100px">Cantidad</th>
                                                 <th>Precio Unitario</th>
                                                 <th>Indicador de Impuestos</th>
+                                                <th style="min-width:200px">Cuadrilla</th>
+                                                <th style="min-width:200px">Responsable</th>
                                                 <th>Total</th>
                                                 <th style="display:none">Almacen</th>
                                                 @*<th style="display:none">Proveedor</th>
@@ -552,15 +554,15 @@
 
                                     <p>
                                         Cuadrilla:
-                                        <select style="height: 20px" id="IdCuadrilla" type="text" class="form-control input-sm" tabindex="0" onchange="ObtenerEmpleadosxIdCuadrilla()">
+                                        <select style="height: 20px" id="IdCuadrilla" type="text" class="form-control input-sm" tabindex="0" onchange="SetCuadrillaTabla()">
                                             <option value="0">SELECCIONE CUADRILLAS </option>
                                         </select>
                                     </p>
                                     <hr style="margin: 0px 0px 5px 0px" />
 
-                                    <p>
+                                    <p style="display:none">
                                         Responsable:
-                                        <select style="height: 20px" id="IdResponsable" type="text" class="form-control input-sm" tabindex="0">
+                                        <select style="height: 20px" id="IdResponsable" type="text" class="form-control input-sm" tabindex="0" onchange="ObtenerEmpleadosxIdCuadrillaTabla()">
                                             <option value="0">SELECCIONE Responsable </option>
                                         </select>
                                     </p>

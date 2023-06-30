@@ -283,7 +283,8 @@ namespace DAO
                         oOPCHDetalle.IdGrupoUnidadMedida = Convert.ToInt32(drd["IdGrupoUnidadMedida"].ToString());
                         oOPCHDetalle.PrecioUnidadBase = Convert.ToDecimal(drd["PrecioUnidadBase"].ToString());
                         oOPCHDetalle.CodigoArticulo = (drd["CodigoArticulo"].ToString());
-
+                        oOPCHDetalle.NombCuadrilla = drd["NombCuadrilla"].ToString();
+                        oOPCHDetalle.NombResponsable = drd["NombResponsable"].ToString();
 
 
 

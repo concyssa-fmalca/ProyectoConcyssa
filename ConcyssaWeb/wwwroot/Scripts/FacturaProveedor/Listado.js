@@ -182,7 +182,7 @@ function llenarComboProveedor(lista, idCombo, primerItem) {
     var campos;
     for (var i = 0; i < nRegistros; i++) {
 
-        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdProveedor + "'>" + lista[i].RazonSocial + "</option>"; }
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdProveedor + "'>"+ lista[i].NumeroDocumento +" - "+  lista[i].RazonSocial + "</option>"; }
         else { }
     }
     var cbo = document.getElementById(idCombo);
@@ -207,7 +207,7 @@ function llenarCondicionPago(lista, idCombo, primerItem) {
     var campos;
     for (var i = 0; i < nRegistros; i++) {
 
-        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdCondicionPago + "'>" + lista[i].Descripcion + "</option>"; }
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdCondicionPago + "'>" + lista[i].Descripcion.toUpperCase() + "</option>"; }
         else { }
     }
     var cbo = document.getElementById(idCombo);
@@ -287,7 +287,7 @@ function llenarComboCuadrilla(lista, idCombo, primerItem) {
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
     $("#IdCuadrilla").prop("selectedIndex", 1)
-    $("#IdCuadrilla").val(2582).change()
+
 }
 
 
@@ -884,6 +884,8 @@ function AgregarLinea() {
     }
     tr += `</select>
             </td>
+<td><select class="form-control cboCuadrillaTabla" onchange="SeleccionarEmpleadosTabla(`+ contador +`)" id="cboCuadrillaTablaId`+ contador + `"></select></td>
+            <td><select class="form-control cboResponsableTabla" id="cboResponsableTablaId`+ contador +`"></select></td>
             <td><input class="form-control changeTotal" type="number" style="width:100px" name="txtItemTotal[]" id="txtItemTotal`+ contador + `" onchange="CalcularTotales()" disabled></td>
             <td style="display:none">
             <select class="form-control" style="width:100px" id="cboAlmacen`+ contador + `" name="cboAlmacen[]">`;
@@ -961,6 +963,9 @@ function AgregarLinea() {
             $("#txtDescripcionArticulo" + i).prop("disabled", true)
         }
     }
+    ObtenerCuadrillasTabla()
+    $(".cboCuadrillaTabla").select2()
+    $(".cboResponsableTabla").select2()
 }
 
 
@@ -1462,24 +1467,6 @@ function GuardarSolicitud() {
             )
             return;
         }
-        if ($("#IdCuadrilla").val() == 0 || $("#IdCuadrilla").val() == null) {
-            Swal.fire(
-                'Error!',
-                'Complete el campo de Cuadrilla',
-                'error'
-            )
-            return;
-        }
-
-        if ($("#IdResponsable").val() == 0 || $("#IdResponsable").val() == null) {
-            Swal.fire(
-                'Error!',
-                'Complete el campo Responsable',
-                'error'
-            )
-            return;
-        }
-
         if ($("#cboSerie").val() == 0 || $("#cboSerie").val() == null) {
             Swal.fire(
                 'Error!',
@@ -1621,6 +1608,16 @@ function GuardarSolicitud() {
         $("input[name='txtIdOrigen[]']").each(function (indice, elemento) {
             arraytxtIdOrigen.push($(elemento).val());
         });
+        let arrayCboCuadrillaTabla = new Array();
+        $(".cboCuadrillaTabla").each(function (indice, elemento) {
+            arrayCboCuadrillaTabla.push($(elemento).val());
+        });
+
+        let arrayCboResponsableTabla = new Array();
+        $(".cboResponsableTabla").each(function (indice, elemento) {
+            arrayCboResponsableTabla.push($(elemento).val());
+        });
+
 
         //Cabecera
         let IdAlmacen = $("#cboAlmacen").val();
@@ -1693,6 +1690,9 @@ function GuardarSolicitud() {
                     'Referencia': arrayReferencia[i],
                     'NombTablaOrigen': NombTablaOrigen,
                     'IdOrigen': arraytxtIdOrigen[i],
+                    'IdCuadrilla': arrayCboCuadrillaTabla[i],
+                    'IdResponsable': arrayCboResponsableTabla[i],
+
 
 
                 })
@@ -1737,8 +1737,8 @@ function GuardarSolicitud() {
                 'Impuesto': Impuesto,
                 'Redondeo': Redondeo,
                 'Total': Total,
-                'IdCuadrilla': IdCuadrilla,
-                'IdResponsable': IdResponsable,
+                'IdCuadrilla': 2582,
+                'IdResponsable': 24151,
                 'IdTipoDocumentoRef': IdTipoDocumentoRef,
                 'NumSerieTipoDocumentoRef': SerieNumeroRef,
                 'IdProveedor': $("#IdProveedor").val(),
@@ -1802,23 +1802,6 @@ function GuardarSolicitud() {
             Swal.fire(
                 'Error!',
                 'Complete el campo de Documento de referencia',
-                'error'
-            )
-            return;
-        }
-        if ($("#IdCuadrilla").val() == 0 || $("#IdCuadrilla").val() == null) {
-            Swal.fire(
-                'Error!',
-                'Complete el campo de Cuadrilla',
-                'error'
-            )
-            return;
-        }
-
-        if ($("#IdResponsable").val() == 0 || $("#IdResponsable").val() == null) {
-            Swal.fire(
-                'Error!',
-                'Complete el campo Responsable',
                 'error'
             )
             return;
@@ -2081,8 +2064,8 @@ function GuardarSolicitud() {
                 'Impuesto': Impuesto,
                 'Redondeo': Redondeo,
                 'Total': Total,
-                'IdCuadrilla': IdCuadrilla,
-                'IdResponsable': IdResponsable,
+                'IdCuadrilla': 2582,
+                'IdResponsable': 24151,
                 'IdTipoDocumentoRef': IdTipoDocumentoRef,
                 'NumSerieTipoDocumentoRef': SerieNumeroRef,
                 'IdProveedor': $("#IdProveedor").val(),
@@ -2372,6 +2355,8 @@ function AgregarLineaDetalle(contador, detalle) {
     }
     tr += `</select>
         </td>
+  <td><input class="form-control" value="`+ detalle.NombCuadrilla + `" disabled></input></td>
+        <td><input class="form-control" value="`+ detalle.NombResponsable +`" disabled></input></td>
 
 
 
@@ -3060,22 +3045,22 @@ function listarpedidosdt() {
         "bDestroy": true
     }).DataTable();
 
-    $('#tabla_listado_pedidos tbody').on('dblclick', 'tr', function () {
-        var data = tablepedido.row(this).data();
-        console.log(data);
-        if (ultimaFila != null) {
-            ultimaFila.css('background-color', colorOriginal)
-        }
-        colorOriginal = $("#" + data["DT_RowId"]).css('background-color');
-        $("#" + data["DT_RowId"]).css('background-color', '#dde5ed');
-        ultimaFila = $("#" + data["DT_RowId"]);
-        AgregarPedidoToEntradaMercancia(data);
-        $('#ModalListadoPedido').modal('hide');
-        tablepedido.ajax.reload()
-        //$("#tbody_detalle").find('tbody').empty();
-        //AgregarItemTranferir(((table.row(this).index()) + 1), data["IdArticulo"], data["Descripcion"], (data["CantidadEnviada"] - data["CantidadTranferida"]), data["Stock"]);
+    //$('#tabla_listado_pedidos tbody').on('dblclick', 'tr', function () {
+    //    var data = tablepedido.row(this).data();
+    //    console.log(data);
+    //    if (ultimaFila != null) {
+    //        ultimaFila.css('background-color', colorOriginal)
+    //    }
+    //    colorOriginal = $("#" + data["DT_RowId"]).css('background-color');
+    //    $("#" + data["DT_RowId"]).css('background-color', '#dde5ed');
+    //    ultimaFila = $("#" + data["DT_RowId"]);
+    //    AgregarPedidoToEntradaMercancia(data);
+    //    $('#ModalListadoPedido').modal('hide');
+    //    tablepedido.ajax.reload()
+    //    //$("#tbody_detalle").find('tbody').empty();
+    //    //AgregarItemTranferir(((table.row(this).index()) + 1), data["IdArticulo"], data["Descripcion"], (data["CantidadEnviada"] - data["CantidadTranferida"]), data["Stock"]);
 
-    });
+    //});
 }
 
 function AgregarPedidoToEntradaMercancia(data) {
@@ -3256,6 +3241,8 @@ function AgregarPedidoToEntradaMercancia(data) {
             }
             tr += `</select>
             </td>
+            <td><select class="form-control cboCuadrillaTabla" onchange="SeleccionarEmpleadosTabla(`+ contador +`)" id="cboCuadrillaTablaId`+ contador +`"></select></td>
+            <td><select class="form-control cboResponsableTabla" id="cboResponsableTablaId`+ contador +`"></select></td>
             <td><input class="form-control changeTotal" type="number" style="width:100px" name="txtItemTotal[]" id="txtItemTotal`+ contador + `" onchange="CalcularTotales()" disabled></td>
             <td style="display:none">
             <select class="form-control" style="width:100px" id="cboAlmacen`+ contador + `" name="cboAlmacen[]">`;
@@ -3528,6 +3515,8 @@ function AgregarOPNDDetalle(data) {
             }
             tr += `</select>
             </td>
+<td><select class="form-control cboCuadrillaTabla" onchange="SeleccionarEmpleadosTabla(`+ contador +`)" id="cboCuadrillaTablaId`+ contador + `"></select></td>
+            <td><select class="form-control cboResponsableTabla" id="cboResponsableTablaId`+ contador +`"></select></td>
             <td><input class="form-control changeTotal" type="number" style="width:100px" name="txtItemTotal[]" id="txtItemTotal`+ contador + `" onchange="CalcularTotales()" disabled></td>
             <td style="display:none">
             <select class="form-control" style="width:100px" id="cboAlmacen`+ contador + `" name="cboAlmacen[]">`;
@@ -3725,25 +3714,18 @@ function listarOpch() {
                 targets: 9,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.DescCuadrilla
+                    return full.NombObra
                 },
             },
             {
                 targets: 10,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.NombObra
-                },
-            },
-            {
-                targets: 11,
-                orderable: false,
-                render: function (data, type, full, meta) {
                     return full.NombAlmacen
                 },
             },
             {
-                targets: 12,
+                targets: 11,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     return full.Moneda
@@ -3863,8 +3845,8 @@ function ObtenerDatosxIDOPCH(IdOpch) {
             $("#IdSemana").val(movimiento.IdSemana)
             $("#IdTipoRegistro").val(movimiento.IdTipoRegistro)
             $("#cboGlosaContable").val(movimiento.IdGlosaContable)
-            $("#IdCuadrilla").val(movimiento.IdCuadrilla).change()
-            $("#IdResponsable").val(movimiento.IdResponsable)
+            $("#IdCuadrilla").val("")
+            $("#IdResponsable").val("")
             $("#cboGlosaContable").val(movimiento.IdGlosaContable)
             setTimeout(() => {
                 $("#IdSemana").val(movimiento.IdSemana)
@@ -3980,6 +3962,10 @@ function AgregarSeleccionadOPDN() {
     $("#IdTipoProducto").prop("disabled", true)
     $("#IdTipoProducto").val(0)
     $("#btn_agregar_item").prop("disabled", true)
+
+    ObtenerCuadrillasTabla()
+    $(".cboCuadrillaTabla").select2()
+    $(".cboResponsableTabla").select2()
 }
 
 function ValidacionesCheckPedido() {
@@ -4008,6 +3994,7 @@ function ValidacionesCheckPedido() {
 }
 
 function AgregarSeleccionadoPedido() {
+   
     let checkSeleccionados = 0;
     let IdProveedor = 0;
     let sumaproveedor = 0;
@@ -4044,6 +4031,14 @@ function AgregarSeleccionadoPedido() {
     $("#IdTipoProducto").prop("disabled", true)
     $("#btn_agregar_item").prop("disabled", true)
     $("#IdTipoProducto").val(0)
+    console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+    console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+    ObtenerCuadrillasTabla()
+    $(".cboCuadrillaTabla").select2()
+    $(".cboResponsableTabla").select2()
+
+
+    
 }
 
 function disabledmodal(valorbolean) {
@@ -4611,9 +4606,116 @@ function esRendicion() {
     if ($("#IdTipoRegistro").val() != 4) {
         $("#DivGiro").hide()
         $("#DivSemana").show()
+        if ($("#IdTipoRegistro").val() == 5) {
+            $("#IdCondicionPago").val(1)
+        }
     } else {
         $("#DivGiro").show()
         $("#DivSemana").hide()
         CargarGiros()
     }
+}
+function SetCuadrillaTabla() {
+    let SetCuadrilla = $("#IdCuadrilla").val()
+    $(".cboCuadrillaTabla").val(SetCuadrilla).change()
+}
+function ObtenerCuadrillasTabla() {
+    let IdObra = $("#IdObra").val()
+    $.ajaxSetup({ async: false });
+    $.post("/Cuadrilla/ObtenerCuadrillaxIdObra", { 'IdObra': IdObra }, function (data, status) {
+        let cuadrilla = JSON.parse(data);
+        llenarComboCuadrillaTabla(cuadrilla, "cboCuadrillaTabla", "Seleccione")
+    });
+}
+function llenarComboCuadrillaTabla(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdCuadrilla + "'>" + lista[i].Codigo + " - " + lista[i].Descripcion.toUpperCase() + "</option>"; }
+        else { }
+    }
+    //var cbo = document.getElementById(idCombo);
+    //if (cbo != null) cbo.innerHTML = contenido;
+    $(".cboCuadrillaTabla").html(contenido)
+}
+
+//function ObtenerEmpleadosxIdCuadrillaTabla() {
+
+//    let IdCuadrilla = $("#IdCuadrilla").val();
+//    $.ajaxSetup({ async: false });
+//    $.post("/Empleado/ObtenerEmpleadosPorUsuarioBase", function (data, status) {
+//        let empleados = JSON.parse(data);
+//        llenarComboEmpleadosTabla(empleados, "cboResponsableTabla", "Seleccione")
+//    });
+//}
+
+//function llenarComboEmpleadosTabla(lista, idCombo, primerItem) {
+//    var contenido = "";
+//    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+//    var nRegistros = lista.length;
+//    console.log("Empleados: " + lista.length)
+//    var nCampos;
+//    var campos;
+//    let ultimoindice = 0;
+//    for (var i = 0; i < nRegistros; i++) {
+
+//        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdEmpleado + "'>" + lista[i].RazonSocial.toUpperCase() + "</option>"; ultimoindice = i }
+//        else { }
+//    }
+//    $(".cboResponsableTabla").html(contenido)
+
+
+//    ObtenerCapatazTabla()
+//}
+//function ObtenerCapatazTabla() {
+//    let IdCuadrilla = $("#IdCuadrilla").val();
+//    /* setTimeout(() => {*/
+//    $.post("/Empleado/ObtenerCapatazXCuadrilla", { 'IdCuadrilla': IdCuadrilla }, function (data, status) {
+//        let capataz = JSON.parse(data);
+//        $(".cboResponsableTabla").val(capataz[0].IdEmpleado).change();
+//    })
+//    /*}, 1000);*/
+
+//}
+
+function SeleccionarEmpleadosTabla(contador) {
+
+    $.ajaxSetup({ async: false });
+    $.post("/Empleado/ObtenerEmpleadosPorUsuarioBase", function (data, status) {
+        let empleados = JSON.parse(data);
+        llenarComboEmpleadosTablaFila(empleados, "cboResponsableTablaId" + contador, "Seleccione", contador)
+    });
+
+}
+function llenarComboEmpleadosTablaFila(lista, idCombo, primerItem, contador) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    console.log("Empleados: " + lista.length)
+    var nCampos;
+    var campos;
+    let ultimoindice = 0;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdEmpleado + "'>" + lista[i].RazonSocial.toUpperCase() + "</option>"; ultimoindice = i }
+        else { }
+    }
+    $("#cboResponsableTablaId" + contador).html(contenido)
+
+
+    ObtenerCapatazTablaFila(contador)
+}
+function ObtenerCapatazTablaFila(contador) {
+    let IdCuadrillaFila = $("#cboCuadrillaTablaId" + contador).val();
+    /* setTimeout(() => {*/
+    $.post("/Empleado/ObtenerCapatazXCuadrilla", { 'IdCuadrilla': IdCuadrillaFila }, function (data, status) {
+        let capataz = JSON.parse(data);
+        $("#cboResponsableTablaId" + contador).val(capataz[0].IdEmpleado).change();
+    })
+    /*}, 1000);*/
+
 }
