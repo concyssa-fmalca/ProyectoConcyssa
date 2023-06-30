@@ -3,6 +3,7 @@ using System.Net;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using DAO;
 
 namespace FE
 {
@@ -22,6 +23,7 @@ namespace FE
             "2ukF5r4TbZcYfLw7poJ1JLxOXL9Hd4NG70VrLlBuN54h0wOSa-oe6Sn6ltNYXT-bzRfk1F-NYm9R5cqkW6tWe" +
             "_IWTsuRA9gcWKdvyHQSwMYUwNajK3VuCZssRyRFO5Luw1UTPYLOxNQWQy0YPSG0cYxNagQlnAkazgW5JytyM" +
             "iB2mnATg35jTWky0vLRoTo8LGwTmnjRV1bcSy6HoJcnA8W3ocxxonozXUBDsnDP06w";
+
 
         //private readonly string accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIx" +
         //        "IiwianRpIjoiZDU2MDRlODdkYjE3MmEyODI0NzA5NmEzNTU5NmNmYzVjYTlhMTR" +
@@ -56,7 +58,7 @@ namespace FE
         //    "tPqS8DxcxiRcBPhAorVfkXZj_PWSJM_GGeZKbC0m4eGl1m-zeVDahSiD8F8AJ1NGQfkeGAs4o";
 
 
-        public ResultadoGRDTO SendGuiaRemision(GRSunatDTO gr)
+        public ResultadoGRDTO SendGuiaRemision(GRSunatDTO gr,int IdMovimiento)
         {
 
             //var fullpath = "https://apiandes.andessystems.com/api/send-document";
@@ -102,43 +104,31 @@ namespace FE
                 using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
                 {
                     var result = streamReader.ReadToEnd();
-
+                    string mensaje_error = "";
                     //JavaScriptSerializer js = new JavaScriptSerializer();
                     //ResponseDTO jsonResponse = js.Deserialize<ResponseDTO>(result);
                     ResponseDTO jsonResponse = JsonSerializer.Deserialize<ResponseDTO>(result);
                     if (jsonResponse.Success == true)
                     {
-                        
                         resultado.Success = jsonResponse.Success;
                         resultado.Ticket = jsonResponse.registro;
                         resultado.Message = jsonResponse.information;
-
-                        var resultTicket = ConsultaTicket(resultado.Ticket);
-
-                        if (resultTicket.Contains("500"))
+                        MovimientoDAO mov = new MovimientoDAO();
+                        mov.GuardarTicketUpdateEstadoGuia(IdMovimiento, resultado.Ticket);
+                        var respuesta = RespuestaConsultaTicket(resultado.Ticket,gr);
+                        if (respuesta.Success)
                         {
-                            resultado.Message = "Se envio la guia pero se detecto error al consultar ticket";
-                            return resultado;
+                            resultado.DetalleAnexo = respuesta.DetalleAnexo;
+                            mov.UpdateEstadoGuia(IdMovimiento, ref mensaje_error);
                         }
-               
-
-                        if (resultTicket.Contains("false"))
+                        resultado.Message = respuesta.Message;
+                       
+                        
+                        if (respuesta.DetalleAnexo != null)
                         {
-  
-                            ResultadoTicketError respuesta1 = JsonSerializer.Deserialize<ResultadoTicketError>(resultTicket);
-                            //resultado.Success = false;
-                            resultado.Message = respuesta1.error.desError;
+                            resultado.DetalleAnexo = respuesta.DetalleAnexo;
                         }
-                        else
-                        {
-                            ResultadoTicket respuesta1 = JsonSerializer.Deserialize<ResultadoTicket>(resultTicket);
-                            //resultado.Success = true;
-                            //resultado.Message = jsonResponse.information[0].message;
-                            List<AnexoDTO> lstAnexoDTO = new List<AnexoDTO>();
-                            resultado.FilesMessage = GenerateFiles(respuesta1.pdf, respuesta1.xml, gr, ref lstAnexoDTO);
-                            resultado.DetalleAnexo = lstAnexoDTO;
-                        }
-
+                        
                     }
                     else
                     {
@@ -147,7 +137,22 @@ namespace FE
 
                         if (jsonResponse.error != null)
                         {
-                            resultado.Message = jsonResponse.error.desError;
+                            resultado.Message = jsonResponse.error.numError +"-"+ jsonResponse.error.desError;
+                            if (jsonResponse.error.numError.Contains("1033"))
+                            {
+                                MovimientoDAO mov = new MovimientoDAO();
+                                var TicketObtenido = mov.ObtenerTicketGuia(IdMovimiento);
+                                if (TicketObtenido != "")
+                                {
+                                    var respuesta = RespuestaConsultaTicket(TicketObtenido, gr);
+                                    if (respuesta.Success)
+                                    {
+                                        resultado.Success = respuesta.Success;
+                                        resultado.DetalleAnexo = respuesta.DetalleAnexo;
+                                        mov.UpdateEstadoGuia(IdMovimiento, ref mensaje_error);
+                                    }
+                                }
+                            }
                         }
                         //resultado.Message = jsonResponse.information[0].message;
                         //resultado.Result = DTO.Global.eResultado.Error;
@@ -206,6 +211,43 @@ namespace FE
             return resultado;
         }
 
+        public ResultadoGRDTO RespuestaConsultaTicket(string Ticket, GRSunatDTO gr)
+        {
+            ResultadoGRDTO resultado = new ResultadoGRDTO();
+
+            var resultTicket = ConsultaTicket(Ticket);
+
+            if (resultTicket.Contains("(500) Internal Server Error"))
+            {
+                resultado.Message = "500-Se encontro error al consultar ticket";
+                resultado.Success = false;
+                return resultado;
+            }
+
+            if (resultTicket.Contains("false"))
+            {
+
+                ResultadoTicketError respuesta1 = JsonSerializer.Deserialize<ResultadoTicketError>(resultTicket);
+                //resultado.Success = false;
+                resultado.Message = respuesta1.error.desError;
+                resultado.Success = false;
+            }
+            else
+            {
+                ResultadoTicket respuesta1 = JsonSerializer.Deserialize<ResultadoTicket>(resultTicket);
+                //resultado.Success = true;
+                //resultado.Message = jsonResponse.information[0].message;
+                List<AnexoDTO> lstAnexoDTO = new List<AnexoDTO>();
+                resultado.FilesMessage = GenerateFiles(respuesta1.pdf, respuesta1.xml, gr, ref lstAnexoDTO);
+                resultado.Success = respuesta1.Success;
+                resultado.Message = respuesta1.message;
+                resultado.DetalleAnexo = lstAnexoDTO;
+            }
+
+            return resultado;
+        }
+
+
 
         private string GenerateFiles(string pdf1,string xml1, GRSunatDTO gr, ref List<AnexoDTO> lstAnexoDTO)
         {
@@ -215,9 +257,12 @@ namespace FE
 
             try
             {
-                
+                //C:\Users\Dell\Documents\GitHub\ProyectoConcyssa\ConcyssaWeb\wwwroot\Archivos
                 File.WriteAllBytes(@"C:\SMC\Binario\ProyectoConcyssa\wwwroot\Archivos\" + gr.N_DOC + ".pdf", Convert.FromBase64String(pdf1));
                 File.WriteAllBytes(@"C:\SMC\Binario\ProyectoConcyssa\wwwroot\Archivos\" + gr.N_DOC + ".xml", Convert.FromBase64String(xml1));
+
+                //File.WriteAllBytes(@"C:\Users\Dell\Documents\GitHub\ProyectoConcyssa\ConcyssaWeb\wwwroot\Archivos\" + gr.N_DOC + ".pdf", Convert.FromBase64String(pdf1));
+                //File.WriteAllBytes(@"C:\Users\Dell\Documents\GitHub\ProyectoConcyssa\ConcyssaWeb\wwwroot\Archivos\" + gr.N_DOC + ".xml", Convert.FromBase64String(xml1));
 
                 lstAnexoDTO.Add(new AnexoDTO
                 {
@@ -233,6 +278,7 @@ namespace FE
             }
             catch (Exception ex)
             {
+                
                 return ex.Message;
             }
         }

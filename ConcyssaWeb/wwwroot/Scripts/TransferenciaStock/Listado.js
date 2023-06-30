@@ -428,6 +428,8 @@ function ModalNuevo() {
 
     $("#Peso").val(1);
     $("#Bulto").val(1);
+
+    $("#btnGenerarPDF").hide();
 }
 
 
@@ -1786,14 +1788,18 @@ function ObtenerDatosxID(IdMovimiento) {
 
             var TipDoc = $("#IdTipoDocumentoRef").val();
             if (TipDoc == "1") {
+                $("#btnGenerarPDF").show();
                 $("#btnGenerarGuia").show();
             } else {
                 $("#btnGenerarGuia").hide();
+                $("#btnGenerarPDF").hide();
             }
 
             if (movimiento.EstadoFE == 1) {
+                $("#btnGenerarPDF").show();
                 $("#btnGenerarGuia").hide();
             } else {
+                $("#btnGenerarPDF").hide();
                 $("#btnGenerarGuia").show();
             }
 
@@ -2842,5 +2848,42 @@ function BuscarVehiculoxPlaca() {
 
     });
 
+
+}
+
+
+
+
+function GenerarPDF() {
+
+    let IdMovimiento = $("#txtId").val();
+    $.post("/Movimientos/GenerarPDF", { 'IdMovimiento': IdMovimiento }, function (data, status) {
+        //CerrarModal();
+        //ObtenerDatosxID(IdMovimiento);
+        console.log(data.message);
+        Swal.fire(
+            'Correcto',
+            data.message,
+            'success')
+
+        return;
+
+        //let datos;
+        //if (validadJson(data)) {
+        //    console.log(data)
+        //    Swal.fire(
+        //        'Correcto',
+        //        data.Message,
+        //        'success'
+        //    )
+        //    return;
+        //    //let datobase64;
+        //    //datobase64 = "data:application/octet-stream;base64,"
+        //    //datos = JSON.parse(data);
+        //    //verBase64PDF(datos)
+        //} else {
+        //    //respustavalidacion
+        //}
+    });
 
 }

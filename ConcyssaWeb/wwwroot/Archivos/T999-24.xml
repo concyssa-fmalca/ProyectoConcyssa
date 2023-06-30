@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<DespatchAdvice xmlns="urn:oasis:names:specification:ubl:schema:xsd:DespatchAdvice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2" xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+  <ext:UBLExtensions>
+    <ext:UBLExtension>
+      <ext:ExtensionContent><ds:Signature Id="SignAndesSystemsEIRL">
+  <ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+    <ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+  <ds:Reference URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>xVt38tZcsVN8dYUg79vONCoMXr0=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue>odhZoiLbOwCXQwPBl/bnVepmAK0xmn+UBBvXgD0/vz/pavbgXp1X/flK9WSk3nAvHCzEnSTlrYtcnzQWH/8WO3H1VDf7+QruHf/RSsL+xwkaaeXOHxunkS3otWF3gh3LdwfPYq5ZAIj5XOBW8tLVpucxPjtDw6PO/hI/nLTA5ywejmwQQgedX49KTj4hBL5efrn5ooTIVPS6RtAjx7m2IG2gRQq6QnaMNUssFvMJhX+bLjmvGJ6Rrx6AJaHDvL+0hhWbOecVINkD2Vj514i/ovENkuHixK9NMJBcD2EDW5J7CLxV6Q2iYNfbKHs1aA3t8FMWxMnYsVMWmxFpt8IqFw==</ds:SignatureValue>
+<ds:KeyInfo><ds:X509Data><ds:X509Certificate>MIIJNDCCBxygAwIBAgIJEitO7kIOjYS4MA0GCSqGSIb3DQEBCwUAMIIBIjELMAkGA1UEBhMCUEUxDTALBgNVBAgMBExJTUExDTALBgNVBAcMBExJTUExPTA7BgNVBAsMNHNlZSBjdXJyZW50IGFkZHJlc3MgYXQgd3d3LmNhbWVyZmlybWEuY29tLnBlL2FkZHJlc3MxMDAuBgNVBAsMJ0FDIENBTUVSRklSTUEgUEVSw5ogQ0VSVElGSUNBRE9TIC0gMjAxNjEUMBIGA1UEBRMLMjA1NjYzMDI0NDcxGjAYBgNVBGEMEU5UUlBFLTIwNTY2MzAyNDQ3MSAwHgYDVQQKDBdDQU1FUkZJUk1BIFBFUsOaIFMuQS5DLjEwMC4GA1UEAwwnQUMgQ0FNRVJGSVJNQSBQRVLDmiBDRVJUSUZJQ0FET1MgLSAyMDE2MB4XDTIxMDcwODE2MTg1MFoXDTIzMDcwODE2MTg1MFowggFcMSgwJgYJKoZIhvcNAQkBFhllcnVpekBhbmRlc3N5c3RlbXMuY29tLnBlMSUwIwYDVQQDDBxFVkEgVklSR0lOSUEgUlVJWiBERUwgQUdVSUxBMRUwEwYDVQQqDAxFVkEgVklSR0lOSUExGDAWBgNVBAQMD1JVSVogREVMIEFHVUlMQTEVMBMGA1UEBRMMRE5JOjI1ODE2OTQ4MREwDwYDVQQHDAhMQSBQRVJMQTEYMBYGA1UECAwPQ0FMTEFPIC0gQ0FMTEFPMRgwFgYDVQQMDA9HRVJFTlRFIEdFTkVSQUwxETAPBgNVBAsMCEdFUkVOQ0lBMSMwIQYDVQQLDBpJc3N1ZWQgYnkgUEVSVU1FRElBICBbUEUxXTEUMBIGA1UEYQwLMjA1MTMyMzM2MDUxHzAdBgNVBAoMFkFOREVTIFNZU1RFTVMgRS5JLlIuTC4xCzAJBgNVBAYTAlBFMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvnmR/5485dB9SeU9XWlXanX1hAsnPK4D0Nlq3rWyKTwD2KkLFzlVVudSB39kYeu+btKwjsJAJAD4CnDINZJDN3isS5QaAB3k93brX9cZEUBmf8Xn2o5S2i3qDwzgrvVWG5ZmndpF2g41HMbqPGeryd4nOTqT8u7FSM/mPOijTBOjFw8zT+4TJ+ULS1Ys8v5yrGkI3KuPzZMKh33iCny+ugqgrpCiHLqlvKSHF09P4c01ofI4WRDUK8oEwzpp/WGV9DrXCbG5J3+2Ya22glPk0zw3dJdVkdXCua4WvtEyQybUgQQ6RO2OscmPl9WkRy8RtJyWFtutvmZE0zBM4RyGsQIDAQABo4IDLTCCAykwDAYDVR0TAQH/BAIwADAOBgNVHQ8BAf8EBAMCBsAwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMB0GA1UdDgQWBBTlbIqzVs7HR8eDASg3rSmymZuS1DCBjQYIKwYBBQUHAQEEgYAwfjBUBggrBgEFBQcwAoZIaHR0cDovL3d3dy5jYW1lcmZpcm1hLmNvbS9jZXJ0cy9hY19jYW1lcmZpcm1hX3BlcnVfY2VydGlmaWNhZG9zLTIwMTYuY3J0MCYGCCsGAQUFBzABhhpodHRwOi8vb2NzcC5jYW1lcmZpcm1hLmNvbTAfBgNVHSMEGDAWgBQ6bmUY51bS5PMt3aV8cm3/MOGGJzCBoAYDVR0fBIGYMIGVMEigRqBEhkJodHRwOi8vY3JsLmNhbWVyZmlybWEuY29tL2FjX2NhbWVyZmlybWFfcGVydV9jZXJ0aWZpY2Fkb3MtMjAxNi5jcmwwSaBHoEWGQ2h0dHA6Ly9jcmwxLmNhbWVyZmlybWEuY29tL2FjX2NhbWVyZmlybWFfcGVydV9jZXJ0aWZpY2Fkb3MtMjAxNi5jcmwwgcUGA1UdEQSBvTCBuoEZZXJ1aXpAYW5kZXNzeXN0ZW1zLmNvbS5wZaSBnDCBmTEcMBoGCisGAQQBgYcuHgcMDEVWQSBWSVJHSU5JQTEUMBIGCisGAQQBgYcuHggMBFJVSVoxGjAYBgorBgEEAYGHLh4JDApERUwgQUdVSUxBMUcwRQYKKwYBBAGBhy4eCgw3Q0VSVElGSUNBRE8gREUgUEVSU09OQSBGSVNJQ0EgQ09OIFZJTkNVTEFDSU9OIEEgRU1QUkVTQTAcBgNVHRIEFTATgRFjYUBjYW1lcmZpcm1hLmNvbTCBkAYDVR0gBIGIMIGFMIGCBgwrBgEEAYGHLh4QAAEwcjApBggrBgEFBQcCARYdaHR0cHM6Ly9wb2xpY3kuY2FtZXJmaXJtYS5jb20wRQYIKwYBBQUHAgIwOQw3Q0VSVElGSUNBRE8gREUgUEVSU09OQSBGSVNJQ0EgQ09OIFZJTkNVTEFDSU9OIEEgRU1QUkVTQTANBgkqhkiG9w0BAQsFAAOCAgEAWFu4h7k1ppJyNHbf0WVwdwc2E/sFldtHA/aBI7kUQanF0BrCIMCve8eAxSSe36FhpIQcoqEbixklt6VBEc0RFyC7/kjFjiXHyAvMiZnw8M3q2IKH07yDIiUccI45c/Pk3Qo8XZFLf6zuP0nSS/K/MxkM/ai19sRtdCPgOJGrLQHDm1tN5KKVAYqQMJdUhsOrzXQfDcTWRhvk4mOF4dVtXtEzCk3sMNhfA0NLbT6T+DTzrp3Ht3Qz7FUnH/u4Xi3e2GowrEMOLsVKApvIexdhuY4ay0ptawio312ZtO4/E6SVWVBReHEndaIsSO5uYtTTbwk2MV8YKyy+saxbI08H6J+5Q2PRr/4ctpCscTCyulpYAlOKVQyawwUDmvvGTr8NsH+nxI/ljCC2BwJSLjnQ5y3Az15O9kcIXDIxmFpMdwjJEB6t1nDKH9kj/FdBC9MLKBy0kdomDumeWMuFTOBFvn/uinRZphBjT5qA0EFzxhVVfGF+s0Y0qBGv1yxHv891pFZbDGzvsNU0aBllWZGHBCb8t5c0/to5VY2w9NIcm1kYQPxw943Ta+JrPwBaYRaQCHAph4dyjQuZbYtNPVk1E9bPDf1YW3jwpgo8OtubQGp7n6S9iOF7doKDW4kMKHZ9SiCU1HuAt1iiw7ZU6Lb8gSvrPg/j2qADis3O7y4Gwvg=</ds:X509Certificate></ds:X509Data></ds:KeyInfo></ds:Signature></ext:ExtensionContent>
+    </ext:UBLExtension>
+  </ext:UBLExtensions>
+  <cbc:UBLVersionID>2.1</cbc:UBLVersionID>
+  <cbc:CustomizationID>2.0</cbc:CustomizationID>
+  <cbc:ID>T999-24</cbc:ID>
+  <cbc:IssueDate>2023-06-28</cbc:IssueDate>
+  <cbc:IssueTime>18:48:14</cbc:IssueTime>
+  <cbc:DespatchAdviceTypeCode listAgencyName="PE:SUNAT" listName="Tipo de Documento" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo01">09</cbc:DespatchAdviceTypeCode>
+  <cac:Signature>
+    <cbc:ID>SF20100370426</cbc:ID>
+    <cac:SignatoryParty>
+      <cac:PartyIdentification>
+        <cbc:ID>20100370426</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyName>
+        <cbc:Name><![CDATA[ANDES SYSTEMS E.I.R.L.]]></cbc:Name>
+      </cac:PartyName>
+    </cac:SignatoryParty>
+    <cac:DigitalSignatureAttachment>
+      <cac:ExternalReference>
+        <cbc:URI>SIGN20100370426</cbc:URI>
+      </cac:ExternalReference>
+    </cac:DigitalSignatureAttachment>
+  </cac:Signature>
+  <cac:DespatchSupplierParty>
+    <cac:Party>
+      <cac:PartyIdentification>
+        <cbc:ID schemeID="6" schemeName="Documento de Identidad" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">20100370426</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName><![CDATA[ANDES SYSTEMS E.I.R.L.]]></cbc:RegistrationName>
+      </cac:PartyLegalEntity>
+    </cac:Party>
+  </cac:DespatchSupplierParty>
+  <cac:DeliveryCustomerParty>
+    <cac:Party>
+      <cac:PartyIdentification>
+        <cbc:ID schemeID="6" schemeName="Documento de Identidad" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">20513233605</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName><![CDATA[CONCYSSA SA]]></cbc:RegistrationName>
+      </cac:PartyLegalEntity>
+    </cac:Party>
+  </cac:DeliveryCustomerParty>
+  <cac:Shipment>
+    <cbc:ID>SUNAT_Envio</cbc:ID>
+    <cbc:HandlingCode listAgencyName="PE:SUNAT" listName="Motivo de traslado" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo20">13</cbc:HandlingCode>
+    <cbc:HandlingInstructions><![CDATA[OTROS]]></cbc:HandlingInstructions>
+    <cbc:GrossWeightMeasure unitCode="KGM">1</cbc:GrossWeightMeasure>
+    <cbc:TotalTransportHandlingUnitQuantity>1</cbc:TotalTransportHandlingUnitQuantity>
+    <cac:ShipmentStage>
+      <cbc:TransportModeCode listName="Modalidad de traslado" listAgencyName="PE:SUNAT" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo18">02</cbc:TransportModeCode>
+      <cac:TransitPeriod>
+        <cbc:StartDate>2023-06-28</cbc:StartDate>
+      </cac:TransitPeriod>
+      <cac:DriverPerson>
+        <cbc:ID schemeID="1" schemeName="Documento de Identidad" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">09797000</cbc:ID>
+        <cbc:FirstName><![CDATA[MIGUEL]]></cbc:FirstName>
+        <cbc:FamilyName><![CDATA[ABANTO CHAVEZ]]></cbc:FamilyName>
+        <cbc:JobTitle>Principal</cbc:JobTitle>
+        <cac:IdentityDocumentReference>
+          <cbc:ID>Q72870164</cbc:ID>
+        </cac:IdentityDocumentReference>
+      </cac:DriverPerson>
+    </cac:ShipmentStage>
+    <cac:Delivery>
+      <cac:DeliveryAddress>
+        <cbc:ID schemeName="Ubigeos" schemeAgencyName="PE:INEI">070104</cbc:ID>
+        <cbc:AddressTypeCode listAgencyName="PE:SUNAT" listName="Establecimientos anexos" listID="20100370426">0000</cbc:AddressTypeCode>
+        <cac:AddressLine>
+          <cbc:Line><![CDATA[AV. LA MARINA 1039]]></cbc:Line>
+        </cac:AddressLine>
+      </cac:DeliveryAddress>
+      <cac:Despatch>
+        <cac:DespatchAddress>
+          <cbc:ID schemeName="Ubigeos" schemeAgencyName="PE:INEI">070104</cbc:ID>
+          <cbc:AddressTypeCode listAgencyName="PE:SUNAT" listName="Establecimientos anexos" listID="20100370426">0000</cbc:AddressTypeCode>
+          <cac:AddressLine>
+            <cbc:Line><![CDATA[AV. LA MARINA 1039]]></cbc:Line>
+          </cac:AddressLine>
+        </cac:DespatchAddress>
+      </cac:Despatch>
+    </cac:Delivery>
+    <cac:TransportHandlingUnit>
+      <cac:TransportEquipment>
+        <cbc:ID>A8M832</cbc:ID>
+      </cac:TransportEquipment>
+    </cac:TransportHandlingUnit>
+  </cac:Shipment>
+  <cac:DespatchLine>
+    <cbc:ID>1</cbc:ID>
+    <cbc:DeliveredQuantity unitCode="UND">2.00000</cbc:DeliveredQuantity>
+    <cac:OrderLineReference>
+      <cbc:LineID>1</cbc:LineID>
+    </cac:OrderLineReference>
+    <cac:Item>
+      <cbc:Description><![CDATA[ABRAZADERA ACERO 160-184 X 25MM REQUISITO NTP 350.096.]]></cbc:Description>
+      <cac:SellersItemIdentification>
+        <cbc:ID><![CDATA[100109]]></cbc:ID>
+      </cac:SellersItemIdentification>
+    </cac:Item>
+  </cac:DespatchLine>
+</DespatchAdvice>

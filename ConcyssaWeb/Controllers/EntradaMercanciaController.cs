@@ -410,9 +410,9 @@ namespace ConcyssaWeb.Controllers
 
         public string GenerarGuiaElectronica()
         {
-            APIGuiaRemisionSunat oAPIGuiaRemisionSunat = new APIGuiaRemisionSunat();
-            GRSunatDTO oGRSunatDTO = new GRSunatDTO();
-            oAPIGuiaRemisionSunat.SendGuiaRemision(oGRSunatDTO);
+            //APIGuiaRemisionSunat oAPIGuiaRemisionSunat = new APIGuiaRemisionSunat();
+            //GRSunatDTO oGRSunatDTO = new GRSunatDTO();
+            //oAPIGuiaRemisionSunat.SendGuiaRemision(oGRSunatDTO);
 
             return "";
         }
