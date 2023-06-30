@@ -1237,7 +1237,7 @@ namespace DAO
 
 
 
-        public int GuardarTicketUpdateEstadoGuia(int IdMovimiento,string Ticket, ref string mensaje_error)
+        public int GuardarTicketUpdateEstadoGuia(int IdMovimiento,string Ticket)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
@@ -1260,13 +1260,42 @@ namespace DAO
                     }
                     catch (Exception ex)
                     {
-                        mensaje_error = ex.Message.ToString();
                         return 0;
                     }
                 }
             }
         }
 
+
+
+        public int UpdateEstadoGuia(int IdMovimiento, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_UpdateEstadoGuia", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdMovimiento", IdMovimiento);
+                        int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+                }
+            }
+        }
 
 
         #region ORPC
@@ -1726,7 +1755,34 @@ namespace DAO
 
 
 
+        public string ObtenerTicketGuia(int IdMovimiento)
+        {
+            string Ticket = "";
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerTicketGuia", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdMovimiento", IdMovimiento);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        Ticket = drd["Ticket"].ToString();
 
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                   
+                }
+            }
+            return Ticket;
+        }
 
 
 

@@ -116,6 +116,40 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
+
+        public ResultadoGRDTO GenerarPDF(int IdMovimiento)
+        {
+            var respuesta = new ResultadoGRDTO();
+            string mensaje_error = "";
+            MovimientoDAO mov = new MovimientoDAO();
+            var TicketObtenido = mov.ObtenerTicketGuia(IdMovimiento);
+            MovimientoDTO oMovimientoDTO = mov.ObtenerMovimientosDetallexIdMovimiento(IdMovimiento, ref mensaje_error);
+            APIGuiaRemisionSunat api = new APIGuiaRemisionSunat();
+            GRSunatDTO aux = new GRSunatDTO();
+            aux =(new GRSunatDTO{
+                N_DOC = oMovimientoDTO.SerieGuiaElectronica + "-" + oMovimientoDTO.NumeroGuiaElectronica
+            });
+    
+
+            if (TicketObtenido != "")
+            {
+                 respuesta = api.RespuestaConsultaTicket(TicketObtenido, aux);
+                if (respuesta.DetalleAnexo != null)
+                {
+                    for (int j = 0; j < respuesta.DetalleAnexo.Count(); j++)
+                    {
+                        respuesta.DetalleAnexo[j].IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+                        respuesta.DetalleAnexo[j].IdTabla = IdMovimiento;
+                        respuesta.DetalleAnexo[j].Tabla = "Movimiento";
+                        mov.InsertAnexoMovimiento(respuesta.DetalleAnexo[j], ref mensaje_error);
+                    }
+                }
+            }
+
+            return respuesta;
+        }
+
+
         public string GenerarGuia(int IdMovimiento)
         {
             string mensaje_error = "";
@@ -142,7 +176,15 @@ namespace ConcyssaWeb.Controllers
             oGRSunatDTO.FCH_INICIO = oMovimientoDTO.FechaContabilizacion.ToString("yyyy-MM-dd");
             oGRSunatDTO.RUC_TRANS = oMovimientoDTO.NumDocumentoTransportista;
             oGRSunatDTO.NOM_TRANS = oMovimientoDTO.NombTransportista;
-            oGRSunatDTO.PLACA_PRINCIPAL = oMovimientoDTO.PlacaVehiculo;
+            var Conduc1 = oMovimientoDTO.PlacaVehiculo;
+
+            if (oMovimientoDTO.PlacaVehiculo.Contains("-"))
+            {
+                var Conduc = oMovimientoDTO.PlacaVehiculo.Split("-");
+                Conduc1 = Conduc[0] + Conduc[1];
+            }
+
+            oGRSunatDTO.PLACA_PRINCIPAL = Conduc1;
             oGRSunatDTO.MARCA_PRINCIPAL = oMovimientoDTO.MarcaVehiculo;
 
             //oGRSunatDTO.LIC_TRANS = oMovimientoDTO.NumIdentidadConductor;
@@ -174,6 +216,8 @@ namespace ConcyssaWeb.Controllers
 
                 }) ;
             }
+            
+            
 
             oGRSunatDTO.CONDUCTORES.Add(new CONDUCTORES
             {
@@ -188,7 +232,7 @@ namespace ConcyssaWeb.Controllers
 
             APIGuiaRemisionSunat oAPIGuiaRemisionSunat = new APIGuiaRemisionSunat();
             ResultadoGRDTO oResultadoGRDTO = new ResultadoGRDTO();
-            oResultadoGRDTO=oAPIGuiaRemisionSunat.SendGuiaRemision(oGRSunatDTO);
+            oResultadoGRDTO=oAPIGuiaRemisionSunat.SendGuiaRemision(oGRSunatDTO, oMovimientoDTO.IdMovimiento);
                 
             if (oResultadoGRDTO.Message.Contains("500"))
             {
@@ -196,10 +240,30 @@ namespace ConcyssaWeb.Controllers
                 return JsonConvert.SerializeObject(oResultadoGRDTO);
             }
 
+            if (oResultadoGRDTO.Message.Contains("1033"))
+            {
+                oResultadoGRDTO.Message = oResultadoGRDTO.Message;
+                MovimientoDAO dao1 = new MovimientoDAO();
+                dao1.UpdateEstadoGuia(oMovimientoDTO.IdMovimiento, ref mensaje_error);
+
+                if (oResultadoGRDTO.DetalleAnexo != null)
+                {
+                    for (int j = 0; j < oResultadoGRDTO.DetalleAnexo.Count(); j++)
+                    {
+                        oResultadoGRDTO.DetalleAnexo[j].IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+                        oResultadoGRDTO.DetalleAnexo[j].IdTabla = IdMovimiento;
+                        oResultadoGRDTO.DetalleAnexo[j].Tabla = "Movimiento";
+                        oMovimientoDAO.InsertAnexoMovimiento(oResultadoGRDTO.DetalleAnexo[j], ref mensaje_error);
+                    }
+                }
+
+                return JsonConvert.SerializeObject(oResultadoGRDTO);
+            }
+
             if (oResultadoGRDTO.Success == true)
             {
                 MovimientoDAO dao = new MovimientoDAO();
-                dao.GuardarTicketUpdateEstadoGuia(oMovimientoDTO.IdMovimiento, oResultadoGRDTO.Ticket,ref mensaje_error);
+                
 
                 if (oResultadoGRDTO.DetalleAnexo != null)
                 {
@@ -212,9 +276,6 @@ namespace ConcyssaWeb.Controllers
                     }
                 }
                 
-
-
-               
 
             }
 
