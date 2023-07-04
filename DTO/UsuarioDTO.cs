@@ -31,8 +31,7 @@ namespace DTO
         public string Correo { get; set; }
         public int AprobarGiro { get; set; }
         public string NombBase { get; set; }
-
-        
+        public int IdEmpleado { get; set; }
     }
 
     public class UsuarioBaseAlmacenDTO{

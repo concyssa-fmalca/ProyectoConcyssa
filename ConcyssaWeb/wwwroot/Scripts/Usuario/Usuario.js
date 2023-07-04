@@ -5,6 +5,7 @@ window.onload = function () {
     var url = "ObtenerUsuarios";
     ConsultaServidor(url);
     CargarEstadosGiro();
+    
 };
 
 
@@ -57,6 +58,7 @@ function ModalNuevo() {
     CargarSociedades();
     CargarEstadosGiro();
     CargarDepartamentos();
+    listarEmpleados();
 }
 
 function CargarDepartamentos() {
@@ -188,6 +190,7 @@ function GuardarUsuario() {
     let varUsuarioSAP = $("#txtUsuarioSap").val();
     let varContrasenaSAP = $("#txtContrasenaSap").val();
     let varCorreo = $("#txtCorreo").val();
+    let varEmpleado = $("#cboEmpleado").val();
 
     if ($('#chkActivo')[0].checked) {
         varEstado = true;
@@ -209,7 +212,8 @@ function GuardarUsuario() {
         'SapPassword': varContrasenaSAP,
         'IdDepartamento': varDepartamento,
         'AprobarGiro': varAbrobar,
-        'Correo': varCorreo
+        'Correo': varCorreo,
+        'IdEmpleado': varEmpleado
     }, function (data, status) {
 
         if (data == 1) {
@@ -240,7 +244,9 @@ function ObtenerDatosxID(varIdUsuario) {
             limpiarDatos();
         } else {
             let usuarios = JSON.parse(data);
-            //console.log(usuarios);
+            console.log("ssssss");
+            console.log(usuarios);
+            console.log("ssssss");
             $("#txtId").val(usuarios[0].IdUsuario);
             $("#txtNombre").val(usuarios[0].Nombre);
             $("#txtUsuario").val(usuarios[0].Usuario);
@@ -260,7 +266,8 @@ function ObtenerDatosxID(varIdUsuario) {
             }
 
 
-            
+            listarEmpleados();
+            $("#cboEmpleado").val(usuarios[0].IdEmpleado);
 
             $.post("ObtenerSociedades", function (data, status) {
                 let contenido;
@@ -555,4 +562,34 @@ function eliminartralmacenbase(IdEliminar,contartr) {
         });
     }
     listartablealmacenbase($("#txtIdUsuarioAlmacenBase").val());
+}
+
+
+
+function listarEmpleados() {
+    $.ajaxSetup({ async: false });
+
+    $.ajax({
+        url: "../Empleado/ObtenerEmpleados",
+        type: "GET",
+        contentType: "application/json",
+        dataType: "json",
+        data: {
+            'estado': 1
+        },
+        cache: false,
+        contentType: false,
+        success: function (datos) {
+
+            //console.log(datos);
+            let options = `<option value="0">Seleccione</option>`;
+            if (datos.length > 0) {
+
+                for (var i = 0; i < datos.length; i++) {
+                    options += `<option value="` + datos[i].IdEmpleado + `">` + datos[i].RazonSocial + `</option>`;
+                }
+                $("#cboEmpleado").html(options);
+            }
+        }
+    });
 }

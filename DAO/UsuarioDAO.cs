@@ -155,7 +155,7 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@Correo", oUsuarioDTO.Correo);
                         da.SelectCommand.Parameters.AddWithValue("@IdDepartamento", oUsuarioDTO.IdDepartamento);
                         da.SelectCommand.Parameters.AddWithValue("@AprobarGiro", oUsuarioDTO.AprobarGiro);
-
+                        da.SelectCommand.Parameters.AddWithValue("@IdEmpleado", oUsuarioDTO.IdEmpleado);
 
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
@@ -203,7 +203,7 @@ namespace DAO
                         oUsuarioDTO.AprobarGiro = HelperDao.conversionInt(drd,"AprobarGiro");
                         oUsuarioDTO.IdDepartamento =Convert.ToInt32((String.IsNullOrEmpty(drd["IdDepartamento"].ToString())) ? "0" : drd["IdDepartamento"].ToString());
 
-
+                        oUsuarioDTO.IdEmpleado = Convert.ToInt32((String.IsNullOrEmpty(drd["IdEmpleado"].ToString())) ? "0" : drd["IdEmpleado"].ToString());
 
                         lstUsuarioDTO.Add(oUsuarioDTO);
                     }
@@ -384,6 +384,7 @@ namespace DAO
                 }
             }
         }
+
 
     }
 }
