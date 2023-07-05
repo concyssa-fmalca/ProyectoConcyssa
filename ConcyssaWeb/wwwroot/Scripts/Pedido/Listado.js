@@ -415,6 +415,14 @@ function quitarAnexo() {
 }
 
 function ModalNuevo() {
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+
+    today = yyyy + '-' + mm + '-' + dd;
+    $("#txtFechaDocumento").val(today)
+    $("#txtFechaContabilizacion").val(today)
     disabledmodal(false);
     $("#div_tabla_listadorequerimiento_items").hide();
     $("#div_tabla_listado_items").show();
@@ -1521,7 +1529,9 @@ function ObtenerDatosxID(id) {
         $("#total_items").html(pedido.detalles.length)
         $("#CreatedAt").html(pedido.CreatedAt);
         $("#txtTipoCambio").html(pedido.TipoCambio);
+        $("#txtFechaDocumento").val((pedido.FechaDocumento).split("T")[0])
 
+        $("#txtFechaContabilizacion").val((pedido.FechaContabilizacion).split("T")[0])
         //$("#cboMoneda").html(pedido.IdMoneda).change();
         $("#cboMoneda").val(pedido.IdMoneda).change();
 

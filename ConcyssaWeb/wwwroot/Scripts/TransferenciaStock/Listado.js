@@ -338,6 +338,7 @@ function ConsultaServidor() {
         for (var i = 0; i < movimientos.length; i++) {
             let varSNGE = "-"
             let varEstadoGE = "-"
+            if (movimientos[i].TDocumento == "GUIA REMISION") varEstadoGE = 'NO ACEPTADO'
             if (movimientos[i].SerieGuiaElectronica) {
                 varSNGE = movimientos[i].SerieGuiaElectronica.toUpperCase() + "-" + movimientos[i].NumeroGuiaElectronica
                 if (movimientos[i].EstadoFE == 1) {
@@ -378,7 +379,15 @@ function ConsultaServidor() {
 
 
 function ModalNuevo() {
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
 
+    today = yyyy + '-' + mm + '-' + dd;
+    $("#txtFechaDocumento").val(today)
+    $("#txtFechaContabilizacion").val(today)
+    $("#btnEditar").hide()
     validarGuardado = 0;
 
     disabledmodal(false);
@@ -657,7 +666,7 @@ function AgregarLinea() {
         Almacen = JSON.parse(data);
     });
 
-
+  
 
 
     $.post("/Proveedor/ObtenerProveedores", function (data, status) {
@@ -749,7 +758,7 @@ function AgregarLinea() {
             <select class="form-control" style="width:100px" id="cboAlmacen`+ contador + `" name="cboAlmacen[]" onchange="ValidaAlmacenIguales(` + contador + `)">`;
         tr += `  <option value="0">Seleccione</option>`;
         for (var i = 0; i < AlmacenFinal.length; i++) {
-            tr += `  <option value="` + Almacen[i].IdAlmacen + `">` + Almacen[i].Descripcion + `</option>`;
+            tr += `  <option value="` + AlmacenFinal[i].IdAlmacen + `">` + AlmacenFinal[i].Descripcion + `</option>`;
         }
         tr += `</select>
             </td>`
@@ -1732,7 +1741,6 @@ function limpiarDatos() {
     limitador = 0;
 }
 
-
 function ObtenerDatosxID(IdMovimiento) {
     $("#btnEditar").show()
     $("#txtId").val(IdMovimiento)
@@ -1818,6 +1826,14 @@ function ObtenerDatosxID(IdMovimiento) {
             $("#SerieNumeroRef").val(movimiento.SerieGuiaElectronica + "-" + movimiento.NumeroGuiaElectronica)
 
             $("#cboEstadoFE").val(movimiento.EstadoFE);
+            console.log("FECHA")
+            console.log(movimiento.FechaDocumento)
+
+            $("#txtFechaDocumento").val((movimiento.FechaDocumento).split("T")[0])
+
+            $("#txtFechaContabilizacion").val((movimiento.FechaContabilizacion).split("T")[0])
+
+
 
             $("#Peso").val(movimiento.Peso)
             $("#Bulto").val(movimiento.Bulto)
@@ -2269,7 +2285,7 @@ function BuscarCodigoProducto() {
                             '<td><input type="radio" clase="" id="rdSeleccionado' + items[i].IdArticulo + '"  name="rdSeleccionado"  value = "' + items[i].IdArticulo + '" ></td>' +
                             '<td>' + items[i].Codigo + '</td>' +
                             '<td>' + items[i].Descripcion1 + '</td>' +
-                            '<td>' + items[i].Stock + '</td>' +
+                            '<td>-</td>' +
                             '<td>' + items[i].UnidadMedida + '</td>' +
                             '</tr>';
                         //} else {

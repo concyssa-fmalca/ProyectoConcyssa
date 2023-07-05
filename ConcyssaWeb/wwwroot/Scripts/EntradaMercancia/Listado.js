@@ -384,6 +384,14 @@ function ConsultaServidor(url) {
 
 
 function ModalNuevo() {
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+
+    today = yyyy + '-' + mm + '-' + dd;
+    $("#txtFechaDocumento").val(today)
+    $("#txtFechaContabilizacion").val(today)
 
     disabledmodal(false);
     $("#lblTituloModal").html("Nuevo Ingreso");
@@ -1636,7 +1644,9 @@ function ObtenerDatosxID(IdMovimiento) {
             $("#txtTipoCambio").val(movimiento.TipoCambio);
             $("#CreatedAt").html(movimiento.CreatedAt.replace("T", " "));
             $("#NombUsuario").html(movimiento.NombUsuario);
-          
+            $("#txtFechaDocumento").val((movimiento.FechaDocumento).split("T")[0])
+
+            $("#txtFechaContabilizacion").val((movimiento.FechaContabilizacion).split("T")[0])
             //agrega detalle
             let tr = '';
             let Detalle = movimiento.detalles;

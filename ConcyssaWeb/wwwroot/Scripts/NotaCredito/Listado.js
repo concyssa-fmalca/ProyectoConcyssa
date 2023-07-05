@@ -511,6 +511,14 @@ function ConsultaServidor(url) {
 
 
 function ModalNuevo() {
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+
+    today = yyyy + '-' + mm + '-' + dd;
+    $("#txtFechaDocumento").val(today)
+    $("#txtFechaContabilizacion").val(today)
 
     $("#cboGlosaContable").prop("disabled", false)
     $("#IdTipoRegistro").prop("disabled", false)
@@ -3887,7 +3895,9 @@ function ObtenerDatosxIDORPC(IdOrpc) {
             $("#NombUsuario").html(movimiento.NombUsuario);
             $("#txtNumeracion").val(movimiento.Correlativo);
             $("#txtTipoCambio").val(formatNumberDecimales(movimiento.TipoCambio, 2))
+            $("#txtFechaDocumento").val((movimiento.FechaDocumento).split("T")[0])
 
+            $("#txtFechaContabilizacion").val((movimiento.FechaContabilizacion).split("T")[0])
             $("#IdCondicionPago").val(movimiento.idCondicionPago)
             $("#cboGlosaContable").val(movimiento.IdGlosaContable)
             if ($("#IdTipoRegistro").val() != 4) {

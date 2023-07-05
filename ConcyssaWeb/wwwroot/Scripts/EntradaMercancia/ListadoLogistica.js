@@ -458,6 +458,15 @@ function ConsultaServidor(url) {
 
 
 function ModalNuevo() {
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+
+    today = yyyy + '-' + mm + '-' + dd;
+    $("#txtFechaDocumento").val(today)
+    $("#txtFechaContabilizacion").val(today)
+
     $("#IdPedido").val(0);
     $("#IdOPCH").val(0);
     $("#lblTituloModal").html("Entrega Mercancia");

@@ -516,6 +516,14 @@ function ConsultaServidor(url) {
 
 
 function ModalNuevo() {
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+
+    today = yyyy + '-' + mm + '-' + dd;
+    $("#txtFechaDocumento").val(today)
+    $("#txtFechaContabilizacion").val(today)
     $("#cboGlosaContable").prop("disabled",false)
     $("#IdPedido").val(0);
     $("#IdOPDN").val(0);
@@ -3979,6 +3987,9 @@ function ObtenerDatosxIDOPCH(IdOpch) {
             $("#IdCuadrilla").val("")
             $("#IdResponsable").val("")
             $("#cboGlosaContable").val(movimiento.IdGlosaContable)
+            $("#txtFechaDocumento").val((movimiento.FechaDocumento).split("T")[0])
+
+            $("#txtFechaContabilizacion").val((movimiento.FechaContabilizacion).split("T")[0])
             setTimeout(() => {
                 $("#IdSemana").val(movimiento.IdSemana)
 

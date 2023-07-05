@@ -434,7 +434,14 @@ function ConsultaServidor() {
 
 
 function ModalNuevo() {
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
 
+    today = yyyy + '-' + mm + '-' + dd;
+    $("#txtFechaDocumento").val(today)
+    $("#txtFechaContabilizacion").val(today)
     $("#lblTituloModal").html("Nueva Salida");
     $("#btnEditar").hide()
     disabledmodal(false);
@@ -1846,7 +1853,9 @@ function ObtenerDatosxID(IdMovimiento) {
             $("#SerieNumeroRef").val(movimiento.SerieGuiaElectronica + "-" + movimiento.NumeroGuiaElectronica)
 
             $("#cboEstadoFE").val(movimiento.EstadoFE);
+            $("#txtFechaDocumento").val((movimiento.FechaDocumento).split("T")[0])
 
+            $("#txtFechaContabilizacion").val((movimiento.FechaContabilizacion).split("T")[0])
             $("#Peso").val(movimiento.Peso)
             $("#Bulto").val(movimiento.Bulto)
             $("#IdCuadrilla").val("")
