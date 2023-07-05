@@ -157,6 +157,16 @@ namespace ConcyssaWeb.Controllers
             GRSunatDTO oGRSunatDTO = new GRSunatDTO();
 
             MovimientoDTO oMovimientoDTO = oMovimientoDAO.ObtenerMovimientosDetallexIdMovimiento(IdMovimiento, ref mensaje_error);
+            if (oMovimientoDTO != null)
+            {
+                int re = oMovimientoDAO.AsignarSerieCorrelativoGuia(IdMovimiento, oMovimientoDTO.IdTipoDocumentoRef, oMovimientoDTO.IdAlmacen);
+                if (re == 0)
+                {
+                    mensaje_error = "No se puede asignar folio";
+                    return mensaje_error;
+                }
+            }
+            
 
             oGRSunatDTO.N_DOC = oMovimientoDTO.SerieGuiaElectronica + "-" + oMovimientoDTO.NumeroGuiaElectronica;//oMovimientoDTO.NumSerieTipoDocumentoRef;
             oGRSunatDTO.TIPO_DOC = "09";
@@ -205,18 +215,20 @@ namespace ConcyssaWeb.Controllers
             //oGRSunatDTO.ENVIO = "2";
             //oGRSunatDTO.WSDL = "3";
 
-            for (int i = 0; i < oMovimientoDTO.detalles.Count(); i++)
+            if (oMovimientoDTO.detalles != null)
             {
-                oGRSunatDTO.ITEMS.Add(new ITEMS
+                for (int i = 0; i < oMovimientoDTO.detalles.Count(); i++)
                 {
-                    CODIGO = oMovimientoDTO.detalles[i].CodigoArticulo,
-                    DESCRIPCION = oMovimientoDTO.detalles[i].DescripcionArticulo,
-                    TIPOUNI = oMovimientoDTO.detalles[i].TipoUnidadMedida,
-                    CANTIDAD= oMovimientoDTO.detalles[i].CantidadBase
+                    oGRSunatDTO.ITEMS.Add(new ITEMS
+                    {
+                        CODIGO = oMovimientoDTO.detalles[i].CodigoArticulo,
+                        DESCRIPCION = oMovimientoDTO.detalles[i].DescripcionArticulo,
+                        TIPOUNI = oMovimientoDTO.detalles[i].TipoUnidadMedida,
+                        CANTIDAD = oMovimientoDTO.detalles[i].CantidadBase
 
-                }) ;
+                    });
+                }
             }
-            
             
 
             oGRSunatDTO.CONDUCTORES.Add(new CONDUCTORES

@@ -1786,5 +1786,37 @@ namespace DAO
 
 
 
+        public int AsignarSerieCorrelativoGuia(int IdMovimiento,int IdTipoDocumentoRef,int IdAlmacen)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_AsignarSerieCorrelativoGuia", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdMovimiento", IdMovimiento);
+                        da.SelectCommand.Parameters.AddWithValue("@IdTipoDocumentoRef", IdTipoDocumentoRef);
+                        da.SelectCommand.Parameters.AddWithValue("@IdAlmacen", IdAlmacen);
+                        int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        return 0;
+                    }
+                }
+            }
+        }
+
+
+
     }
 }
