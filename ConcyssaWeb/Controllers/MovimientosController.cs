@@ -156,17 +156,13 @@ namespace ConcyssaWeb.Controllers
             MovimientoDAO oMovimientoDAO = new MovimientoDAO();
             GRSunatDTO oGRSunatDTO = new GRSunatDTO();
 
-            MovimientoDTO oMovimientoDTO = oMovimientoDAO.ObtenerMovimientosDetallexIdMovimiento(IdMovimiento, ref mensaje_error);
-            if (oMovimientoDTO != null)
+            MovimientoDTO oMovimientoDTO1 = oMovimientoDAO.ObtenerMovimientosDetallexIdMovimiento(IdMovimiento, ref mensaje_error);
+            if (oMovimientoDTO1 != null)
             {
-                int re = oMovimientoDAO.AsignarSerieCorrelativoGuia(IdMovimiento, oMovimientoDTO.IdTipoDocumentoRef, oMovimientoDTO.IdAlmacen);
-                if (re == 0)
-                {
-                    mensaje_error = "No se puede asignar folio";
-                    return mensaje_error;
-                }
+                int re = oMovimientoDAO.AsignarSerieCorrelativoGuia(IdMovimiento, oMovimientoDTO1.IdTipoDocumentoRef, oMovimientoDTO1.IdAlmacen);
             }
-            
+
+            MovimientoDTO oMovimientoDTO = oMovimientoDAO.ObtenerMovimientosDetallexIdMovimiento(IdMovimiento, ref mensaje_error);
 
             oGRSunatDTO.N_DOC = oMovimientoDTO.SerieGuiaElectronica + "-" + oMovimientoDTO.NumeroGuiaElectronica;//oMovimientoDTO.NumSerieTipoDocumentoRef;
             oGRSunatDTO.TIPO_DOC = "09";

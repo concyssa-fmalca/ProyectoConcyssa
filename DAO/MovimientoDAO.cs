@@ -993,8 +993,9 @@ namespace DAO
                         oMovimientoDetalleDTO.CodigoArticulo = (dr2["CodigoArticulo"].ToString());
                         oMovimientoDetalleDTO.TipoUnidadMedida = (dr2["TipoUnidadMedida"].ToString());
                         oMovimientoDetalleDTO.IdGrupoUnidadMedida = Convert.ToInt32(dr2["IdGrupoUnidadMedida"].ToString());
-                        oMovimientoDetalleDTO.IdCuadrilla = Convert.ToInt32(dr2["IdCuadrilla"].ToString());
-                        oMovimientoDetalleDTO.IdResponsable = Convert.ToInt32(dr2["IdResponsable"].ToString());
+                        
+                        oMovimientoDetalleDTO.IdCuadrilla = Convert.ToInt32((String.IsNullOrEmpty(dr2["IdCuadrilla"].ToString()) ? "0" : dr2["IdCuadrilla"].ToString()));
+                        oMovimientoDetalleDTO.IdResponsable = Convert.ToInt32((String.IsNullOrEmpty(dr2["IdResponsable"].ToString()) ? "0" : dr2["IdResponsable"].ToString()));
                         oMovimientoDetalleDTO.NombCuadrilla = dr2["NombCuadrilla"].ToString();
                         oMovimientoDetalleDTO.NombResponsable = dr2["NombResponsable"].ToString();
 
