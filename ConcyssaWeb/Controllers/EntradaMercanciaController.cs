@@ -127,13 +127,12 @@ namespace ConcyssaWeb.Controllers
 
 
 
-
         public string UpdateInsertMovimientoEMLogistica(OpdnDTO oOpdnDTO)
         {
             string mensaje_error = "";
             int IdSociedad = Convert.ToInt32((String.IsNullOrEmpty(oOpdnDTO.IdSociedad.ToString())) ? Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad")) : oOpdnDTO.IdSociedad);
             int IdUsuario = Convert.ToInt32((String.IsNullOrEmpty(oOpdnDTO.IdUsuario.ToString())) ? Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")) : oOpdnDTO.IdUsuario);
-            if (IdSociedad==0)
+            if (IdSociedad == 0)
             {
                 IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             }
@@ -154,6 +153,7 @@ namespace ConcyssaWeb.Controllers
             MovimientoDAO oMovimimientoDAO = new MovimientoDAO();
             OpdnDAO oOpdnDAO = new OpdnDAO();
             int respuesta = oMovimimientoDAO.InsertUpdateMovimientoOPDN(oOpdnDTO, ref mensaje_error);
+            int respuesta1 = 0;
             if (mensaje_error.Length > 0)
             {
                 return mensaje_error;
@@ -163,7 +163,8 @@ namespace ConcyssaWeb.Controllers
                 for (int i = 0; i < oOpdnDTO.detalles.Count; i++)
                 {
                     oOpdnDTO.detalles[i].IdOPDN = respuesta;
-                    int respuesta1 = oMovimimientoDAO.InsertUpdateOPDNDetalle(oOpdnDTO.detalles[i], ref mensaje_error);
+                    respuesta1 = oMovimimientoDAO.InsertUpdateOPDNDetalle(oOpdnDTO.detalles[i], ref mensaje_error);
+                    int respuesta2 = oMovimimientoDAO.InsertUpdateOPDNDetalleCuadrilla(respuesta1, oOpdnDTO.detalles[i], ref mensaje_error);
                 }
 
                 if (oOpdnDTO.AnexoDetalle != null)
@@ -179,12 +180,12 @@ namespace ConcyssaWeb.Controllers
                     }
                 }
 
-                   
+
 
 
 
                 oOpdnDAO.UpdateTotalesOPDN(respuesta, ref mensaje_error);
-                
+
 
             }
 

@@ -384,6 +384,24 @@ namespace ConcyssaWeb.Controllers
             return JsonConvert.SerializeObject(lstProveedoresPrecioProductoDTO);
 
         }
+        public string ObtenerProveedoresPrecioxProductoConObras(int IdObra,int IdArticulo)
+        {
+            string mensaje_error = "";
+            List<ProveedoresPrecioProductoDTO> lstProveedoresPrecioProductoDTO = new List<ProveedoresPrecioProductoDTO>();
+            PedidoDAO oPedidoDAO = new PedidoDAO();
+            lstProveedoresPrecioProductoDTO = oPedidoDAO.ObtenerProveedoresPrecioxProductoConObras(IdObra,IdArticulo, ref mensaje_error);
+            if (lstProveedoresPrecioProductoDTO.Count() > 0)
+            {
+                return JsonConvert.SerializeObject(lstProveedoresPrecioProductoDTO);
+
+            }
+            else
+            {
+                return mensaje_error;
+            }
+            return JsonConvert.SerializeObject(lstProveedoresPrecioProductoDTO);
+
+        }
 
         public string ActualizarProveedorPrecio(int IdProveedor, decimal precionacional, decimal precioextranjero, int idproducto, int IdDetalleRq, string Comentario)
         {

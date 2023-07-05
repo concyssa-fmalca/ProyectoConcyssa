@@ -12,10 +12,19 @@ builder.Services.Configure<KestrelServerOptions>(options =>
 {
     options.AllowSynchronousIO=true;
 });
-
 builder.Services.AddBundling()
     //.UseDefaults(_env)
     .UseNUglify();
+//builder.WebHost.ConfigureKestrel(c =>
+//{
+//    c.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(1);
+//});
+builder.Services.AddSession(options => {
+    options.IdleTimeout = TimeSpan.FromMinutes(40);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

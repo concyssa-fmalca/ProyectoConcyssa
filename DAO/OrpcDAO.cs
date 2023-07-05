@@ -58,8 +58,8 @@ namespace DAO
                         oOrpcDTO.IdProveedor = Convert.ToInt32(drd["IdProveedor"].ToString());
                         oOrpcDTO.IdTipoDocumentoRef = Convert.ToInt32(drd["IdTipoDocumentoRef"].ToString());
                         oOrpcDTO.NumSerieTipoDocumentoRef = (drd["NumSerieTipoDocumentoRef"].ToString());
-                        oOrpcDTO.IdCuadrilla = Convert.ToInt32(drd["IdCuadrilla"].ToString());
-                        oOrpcDTO.IdResponsable = Convert.ToInt32(drd["IdResponsable"].ToString());
+                        oOrpcDTO.IdCuadrilla = Convert.ToInt32(String.IsNullOrEmpty(drd["IdCuadrilla"].ToString()) ? "0" : drd["IdCuadrilla"].ToString()); 
+                        oOrpcDTO.IdResponsable = Convert.ToInt32(String.IsNullOrEmpty(drd["IdResponsable"].ToString()) ? "0" : drd["IdResponsable"].ToString());
                         oOrpcDTO.idCondicionPago = Convert.ToInt32(drd["IdCondicionPago"].ToString());
                         oOrpcDTO.IdGlosaContable = Convert.ToInt32(drd["IdGlosaContable"].ToString());
                         oOrpcDTO.NombUsuario = (drd["NombUsuario"].ToString());

@@ -152,5 +152,46 @@ namespace ConcyssaWeb.Controllers
 
             return resultado;
         }
+        public int InsertRubroProveedor_X_Provedor(RubroXProveedorDTO oRubroXProveedorDTO)
+        {
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            ProveedorDAO oProveedorDAO = new ProveedorDAO();
+            int resultado = oProveedorDAO.InsertRubroProveedor_X_Provedor(oRubroXProveedorDTO,IdUsuario);
+            if (resultado != 0)
+            {
+                resultado = 1;
+            }
+
+            return resultado;
+
+        }
+        public string ListarRubroProveedor_X_Provedor(int IdProveedor)
+        {
+            string mensaje_error = "";
+            ProveedorDAO oProveedorDAO = new ProveedorDAO();
+            List<RubroXProveedorDTO> lstRubroXProveedorDTO = oProveedorDAO.ListarRubroProveedor_X_Provedor(IdProveedor, ref mensaje_error);
+
+            if (lstRubroXProveedorDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstRubroXProveedorDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
+        public int EliminarRubroProveedor_X_Provedor(int Id, int IdUsuario)
+        {
+            IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            ProveedorDAO oProveedorDAO = new ProveedorDAO();
+            int resultado = oProveedorDAO.EliminarRubroProveedor_X_Provedor(Id,IdUsuario);
+            if (resultado == 0)
+            {
+                resultado = 1;
+            }
+
+            return resultado;
+        }
+
     }
 }

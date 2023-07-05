@@ -436,6 +436,69 @@
         </div>
     </div>
 
+    @*MODAL RUBRO*@
+    <!-- Modal -->
+    <div class="modal fade" data-backdrop="static"
+         data-keyboard="false" id="ModalRubro" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered allcp-form" role="document">
+            <div class="modal-content">
+
+
+                <div class="panel" style="margin-bottom:0px">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="lblTituloModalItem">Rubros del Proveedor</h5>
+                    </div>
+                    <div class="panel-body ">
+                        <div class='col s12 m12 '>
+                            <div class='container-fluid'>
+                                <input id='txtIdRSRubro' type="hidden" name="txtIdRSRubro" class="form-control input-sm">
+
+                                <div class="row">
+                                    <div class='col-md-12'>
+                                        <label for="txtRazonSocialRubro" class="control-label col-md-2 left-align">Razón Social</label>
+                                        <div class="col-md-10">
+                                            <input class="form-control" id="txtRazonSocialRubro" disabled readonly />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class='col-md-12'>
+                                        <label for="cboRubro" class="control-label col-md-2 left-align">Rubro</label>
+                                        <div class="col-md-10">
+                                            <select class="form-control" id="cboRubro"></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <button type="button" class="btn btn-primary pull-right plu" onclick="AgregarRubro()">Agregar</button>
+                                </div>
+                                
+                                <div class="row">
+                                    <div style="margin-top:10px;margin-bottom:10px"><b>Rubros Actuales</b></div>
+                                    <div class="table-responsive">
+                                        <table class="table" id="tablaRubroProveedor">
+                                            <thead>
+                                                <tr>
+                                                    <th>Razón Social</th>
+                                                    <th>Rubro</th>
+                                                    <th>Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tbody_RubroProveedor"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger pull-right" style="background-color:orange;" data-dismiss="modal" onclick="LimpiarModalRubro()">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 </div>

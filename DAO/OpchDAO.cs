@@ -66,8 +66,8 @@ namespace DAO
                         oOpchDTO.IdProveedor = Convert.ToInt32(drd["IdProveedor"].ToString());
                         oOpchDTO.IdTipoDocumentoRef = Convert.ToInt32(drd["IdTipoDocumentoRef"].ToString());
                         oOpchDTO.NumSerieTipoDocumentoRef = (drd["NumSerieTipoDocumentoRef"].ToString());
-                        oOpchDTO.IdCuadrilla = Convert.ToInt32(drd["IdCuadrilla"].ToString());
-                        oOpchDTO.IdResponsable = Convert.ToInt32(drd["IdResponsable"].ToString());
+                        oOpchDTO.IdCuadrilla = Convert.ToInt32(String.IsNullOrEmpty(drd["IdCuadrilla"].ToString()) ? "0" : drd["IdCuadrilla"].ToString());
+                        oOpchDTO.IdResponsable = Convert.ToInt32(String.IsNullOrEmpty(drd["IdResponsable"].ToString()) ? "0" : drd["IdResponsable"].ToString());
                         oOpchDTO.idCondicionPago = Convert.ToInt32(drd["idCondicionPago"].ToString());
                         oOpchDTO.IdSemana = Convert.ToInt32(drd["IdSemana"].ToString());
                         oOpchDTO.IdTipoRegistro = Convert.ToInt32(drd["IdTipoRegistro"].ToString());
@@ -214,9 +214,9 @@ namespace DAO
                         oOpchDTO.IdObra = Convert.ToInt32(drd["IdObra"].ToString());
                         oOpchDTO.IdBase = Convert.ToInt32(drd["IdBase"].ToString());
                         oOpchDTO.IdProveedor = Convert.ToInt32(drd["IdProveedor"].ToString());
-                        oOpchDTO.IdCuadrilla = Convert.ToInt32(drd["IdCuadrilla"].ToString());
+                        oOpchDTO.IdCuadrilla = Convert.ToInt32((String.IsNullOrEmpty(drd["IdCuadrilla"].ToString())) ? 0 : drd["IdCuadrilla"].ToString());
                         oOpchDTO.IdTipoDocumentoRef = Convert.ToInt32(drd["IdTipoDocumentoRef"].ToString());
-                        oOpchDTO.IdResponsable = Convert.ToInt32(drd["IdResponsable"].ToString());
+                        oOpchDTO.IdResponsable = Convert.ToInt32((String.IsNullOrEmpty(drd["IdResponsable"].ToString())) ? 0 : drd["IdResponsable"].ToString()); 
                         oOpchDTO.NumSerieTipoDocumentoRef = (drd["NumSerieTipoDocumentoRef"].ToString());
 
 

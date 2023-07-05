@@ -323,7 +323,81 @@ namespace ConcyssaWeb.Controllers
 
         }
 
+        public string UpdateMovimiento(MovimientoDTO oMovimientoDTO)
+        {
 
+            string mensaje_error = "";
+            MovimientoDAO oMovimientoDAO = new MovimientoDAO();
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            int respuesta = oMovimientoDAO.UpdateMovimiento(IdUsuario,oMovimientoDTO, ref mensaje_error);
+
+            if (mensaje_error.Length > 0)
+            {
+                return mensaje_error;
+            }
+            else
+            {
+                if (respuesta == 1)
+                {
+                    return "1";
+                }
+                else
+                {
+                    return "error";
+                }
+            }
+
+        }
+        public string UpdateMovimientoSalida(MovimientoDTO oMovimientoDTO)
+        {
+
+            string mensaje_error = "";
+            MovimientoDAO oMovimientoDAO = new MovimientoDAO();
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            int respuesta = oMovimientoDAO.UpdateMovimientoSalida(IdUsuario, oMovimientoDTO, ref mensaje_error);
+
+            if (mensaje_error.Length > 0)
+            {
+                return mensaje_error;
+            }
+            else
+            {
+                if (respuesta == 1)
+                {
+                    return "1";
+                }
+                else
+                {
+                    return "error";
+                }
+            }
+
+        }
+        public string UpdateMovimientoTransferencia(MovimientoDTO oMovimientoDTO)
+        {
+
+            string mensaje_error = "";
+            MovimientoDAO oMovimientoDAO = new MovimientoDAO();
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            int respuesta = oMovimientoDAO.UpdateMovimientoTransferencia(IdUsuario, oMovimientoDTO, ref mensaje_error);
+
+            if (mensaje_error.Length > 0)
+            {
+                return mensaje_error;
+            }
+            else
+            {
+                if (respuesta == 1)
+                {
+                    return "1";
+                }
+                else
+                {
+                    return "error";
+                }
+            }
+
+        }
 
     }
 }

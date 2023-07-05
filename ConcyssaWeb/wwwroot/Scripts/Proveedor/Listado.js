@@ -68,6 +68,7 @@ function ConsultaServidor(url) {
                 '<td>' + proveedores[i].NumeroDocumento.toUpperCase() + '</td>' +
                 '<td>' + proveedores[i].RazonSocial.toUpperCase() + '</td>' +
                 '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + proveedores[i].IdProveedor + ')"></button>' +
+                '<button class="btn btn-primary btn-xs" onclick="ObtenerRubrosxID(' + proveedores[i].IdProveedor + ');ListarRubrosxID(' + proveedores[i].IdProveedor + ')">RUBRO</button>' +
                 '<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + proveedores[i].IdProveedor + ')"></button></td >' +
                 '</tr>';
         }
@@ -614,3 +615,132 @@ function CrearCodigo()
 {
     $("#txtCodigo").val("P" + $("#txtNroDocumento").val())
 }
+
+function ObtenerRubrosxID(IdProveedor) {
+    $("#ModalRubro").modal("show");
+    CargarRubro()
+    $.post('ObtenerDatosxIDNuevo', {
+        'IdProveedor': IdProveedor,
+    }, function (data, status) {
+
+        if (data == "Error") {
+            swal("Error!", "Ocurrio un error")
+            limpiarDatos();
+        } else {
+            let proveedores = JSON.parse(data);           
+            $("#txtIdRSRubro").val(proveedores.IdProveedor);
+            $("#txtRazonSocialRubro").val(proveedores.RazonSocial);
+        
+        }
+
+    });
+}
+
+function CargarRubro() {
+    $.ajaxSetup({ async: false });
+    $.post("/RubroProveedor/ObtenerRubroProveedor", function (data, status) {
+        let rubros = JSON.parse(data);
+        llenarComboRubro(rubros, "cboRubro", "Seleccione")
+    });
+}
+function llenarComboRubro(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value=''>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdRubroProveedor + "'>" + lista[i].Codigo + " - " + lista[i].Descripcion + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+}
+function AgregarRubro() {
+    if ($("#cboRubro").val() == 0) {
+        swal("Informacion!", "Debe Seleccionar el Rubro!");
+        return;
+    }
+    let varIdRubro = $("#cboRubro").val();
+    let varIdProveedorR = $("#txtIdRSRubro").val();
+
+    $.post('InsertRubroProveedor_X_Provedor', {
+        'IdRubroProveedor': varIdRubro,
+        'IdProveedor': varIdProveedorR,
+    }, function (data, status) {
+
+        if (data == 1) {
+            swal("Exito!", "Proceso Realizado Correctamente", "success")
+            ListarRubrosxID(varIdProveedorR)
+            //ConsultaServidor("ObtenerArea");
+            //limpiarDatos();
+
+        } else {
+            swal("Error!", "Ocurrio un Error")
+           /* limpiarDatos();*/
+        }
+
+    });
+
+}
+let tablePR
+function ListarRubrosxID(IdProveedor) {
+    try {
+        $.post('ListarRubroProveedor_X_Provedor', {
+            'IdProveedor': IdProveedor,
+        }, function (data, status) {
+            if (data == "Error") {
+                tablePR = $("#tablaRubroProveedor").DataTable(lenguaje);
+                return;
+            } else {
+                let tr = '';
+
+                let provrubro = JSON.parse(data);
+
+
+                for (var i = 0; i < provrubro.length; i++) {
+
+                    tr += '<tr>' +
+                        '<td>' + provrubro[i].RazonSocial.toUpperCase() + '</td>' +
+                        '<td>' + provrubro[i].Descripcion.toUpperCase() + '</td>' +
+                        '<td><button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminarProvRub(' + provrubro[i].Id + ',' + IdProveedor + ')"></button></td >' +
+                        '</tr>';
+                }
+
+                if (tablePR) { tablePR.destroy(); }
+
+
+                $("#tbody_RubroProveedor").html(tr);
+
+                tablePR = $("#tablaRubroProveedor").DataTable(lenguaje);
+
+            }
+
+        });
+    }
+    catch (e) {
+        tablePR.clear()
+        tablePR = $("#tablaRubroProveedor").DataTable(lenguaje);
+    }
+}
+function LimpiarModalRubro() {
+    console.log(1)
+}
+function eliminarProvRub(Id, IdProveedor) {
+    alertify.confirm('Confirmar', '¿Desea eliminar el Rubro para este Proveedor?', function () {
+        $.post("EliminarRubroProveedor_X_Provedor", { 'Id': Id }, function (data) {
+
+            if (data == 0) {
+                swal("Error!", "Ocurrio un Error")
+                limpiarDatos();
+            } else {
+                swal("Exito!", "Proveedor Eliminado", "success")
+                ListarRubrosxID(IdProveedor)
+            }
+
+        });
+
+    }, function () { });
+}
+

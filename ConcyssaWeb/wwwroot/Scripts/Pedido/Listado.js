@@ -361,7 +361,7 @@ function llenarComboObra(lista, idCombo, primerItem) {
 
 
 window.onload = function () {
-
+    $("#divObraArticulo").hide();
     $('#modalasignarproveedor').on('hidden.bs.modal', function (e) {
         $('#ModalProductosAprobados').css('overflow', 'auto');
     });
@@ -2600,7 +2600,7 @@ function listarItemAprobados(IdDetalleSeleccionado = 0) {
 
 
         ObtenerStockxIdDetalleSolicitudRQ(data.IdDetalle)
-        ObtenerProveedoresPrecioxProducto(data.IdArticulo, data.IdDetalle,  data.IdProveedor)
+        ObtenerProveedoresPrecioxProducto(data.IdArticulo, data.IdDetalle,  data.IdProveedor,data.IdObra)
         ObtenerPrecioxProductoUltimasVentas(data.IdArticulo, data.IdDetalle)
         //$("#tbody_detalle").find('tbody').empty();
         //AgregarItemTranferir(((table.row(this).index()) + 1), data["IdArticulo"], data["Descripcion"], (data["CantidadEnviada"] - data["CantidadTranferida"]), data["Stock"]);
@@ -2646,7 +2646,7 @@ function actualizarInfoAutorizados(IdDetalle) {
     $("#rdSeleccionado" + data["IdDetalle"]).prop('checked', true);
 
     ObtenerStockxIdDetalleSolicitudRQ(data.IdDetalle)
-    ObtenerProveedoresPrecioxProducto(data.IdArticulo, data.IdDetalle, data.IdProveedor)
+    ObtenerProveedoresPrecioxProducto(data.IdArticulo, data.IdDetalle, data.IdProveedor,data.IdObra)
     ObtenerPrecioxProductoUltimasVentas(data.IdArticulo, data.IdDetalle)
 
 
@@ -2677,10 +2677,10 @@ function ObtenerStockxIdDetalleSolicitudRQ(IdDetalle) {
     });
 }
 
-function ObtenerProveedoresPrecioxProducto(IdArticulo, IdDetalleRq, IdProveedor ) {
+function ObtenerProveedoresPrecioxProducto(IdArticulo, IdDetalleRq, IdProveedor,IdObra ) {
 
     $.ajaxSetup({ async: false });
-    $.post("ObtenerProveedoresPrecioxProducto", { 'IdArticulo': IdArticulo }, function (data, status) {
+    $.post("ObtenerProveedoresPrecioxProductoConObras", { 'IdObra':IdObra, 'IdArticulo': IdArticulo }, function (data, status) {
         let tr = "";
         if (!validadJson(data)) {
             tr += `<tr>
@@ -2700,9 +2700,10 @@ function ObtenerProveedoresPrecioxProducto(IdArticulo, IdDetalleRq, IdProveedor 
                         <input type="hidden" id="idproducto`+ datos[i].IdProveedor + `" value="` + IdArticulo + `" /> 
                         <input type="hidden" id="IdDetalleRq`+ datos[i].IdProveedor + `" value="` + IdDetalleRq + `" />
                         ` + datos[i].RazonSocial + `</td>
+                <td id="NombObra"`+ datos[i].IdProveedor+`>`+datos[i].NombObra+`</td>
                 <td> <input class="form-control" id="precionacional`+ datos[i].IdProveedor + `" value="` + datos[i].PrecioNacional + `"/></td>
                 <td> <input class="form-control" id="precioextranjero`+ datos[i].IdProveedor + `" value="` + datos[i].PrecioExtranjero + `"/></td>
-                <td> <input class="form-control" id="comentario`+ datos[i].IdProveedor + `" value=""/></td>
+                <td style="display:none"> <input class="form-control"  id="comentario`+ datos[i].IdProveedor + `" value=""/></td>
                 <td> <button class="btn btn-danger editar solo" onclick="AsignarProveedorPrecio(`+ datos[i].IdProveedor + `)">ASIGNADO</button></td>
             </tr>`;
             }
@@ -2712,9 +2713,10 @@ function ObtenerProveedoresPrecioxProducto(IdArticulo, IdDetalleRq, IdProveedor 
                         <input type="hidden" id="idproducto`+ datos[i].IdProveedor + `" value="` + IdArticulo + `" /> 
                         <input type="hidden" id="IdDetalleRq`+ datos[i].IdProveedor + `" value="` + IdDetalleRq + `" />
                         ` + datos[i].RazonSocial + `</td>
+                <td id="NombObra"`+ datos[i].IdProveedor +`>`+ datos[i].NombObra +`</td>
                 <td> <input class="form-control" id="precionacional`+ datos[i].IdProveedor + `" value="` + datos[i].PrecioNacional + `"/></td>
                 <td> <input class="form-control" id="precioextranjero`+ datos[i].IdProveedor + `" value="` + datos[i].PrecioExtranjero + `"/></td>
-                <td> <input class="form-control" id="comentario`+ datos[i].IdProveedor + `" value=""/></td>
+                <td style="display:none"> <input class="form-control"  id="comentario`+ datos[i].IdProveedor + `" value=""/></td>
                 <td> <button class="btn btn-info editar solo" onclick="AsignarProveedorPrecio(`+ datos[i].IdProveedor + `)">ASIGNAR</button></td>
             </tr>`;
             }
@@ -2764,12 +2766,13 @@ function AsignarProveedorPrecio(IdProveedor) {
     let idproducto = $("#idproducto" + IdProveedor).val();
     let IdDetalleRq = $("#IdDetalleRq" + IdProveedor).val();
     let Comentario = $("#comentario" + IdProveedor).val();
+    let IdObra = $("#NombObra"+ IdProveedor).val()
            
 
     $.ajaxSetup({ async: false });
     $.post("ActualizarProveedorPrecio", { 'IdProveedor': IdProveedor, 'precionacional': precionacional, 'precioextranjero': precioextranjero, 'idproducto': idproducto, 'IdDetalleRq': IdDetalleRq, 'Comentario': Comentario }, function (data, status) {
         listarItemAprobados(IdDetalleRq);
-        ObtenerProveedoresPrecioxProducto(idproducto, IdDetalleRq, IdProveedor);
+        ObtenerProveedoresPrecioxProducto(idproducto, IdDetalleRq, IdProveedor,IdObra);
         actualizarInfoAutorizados(IdDetalleRq)
        
       
@@ -2791,6 +2794,7 @@ function agregarProvedoraProductoxSeparado() {
     $("#IdProveedorAsignar").val(0).change();
     $("#PrecioAsignar").val(0);
     $("#ComentarioPrecio").val('');
+
     let IdArticulo = $('input:radio[name=rdSeleccionado]:checked').attr("idproductolinea");
 
 
@@ -2809,7 +2813,8 @@ function agregarProvedoraProductoxSeparado() {
         });
         CargarCondicionPagoArticuloProveedor();
     }
-   
+    ObtenerObra()
+    $("#PrecioAsignar").val(0);
 }
 function CargarCondicionPagoArticuloProveedor() {
     $.ajaxSetup({ async: false });
@@ -2872,7 +2877,7 @@ function GuardarAsignarProveedorProductoOld() {
 
 
 function addprecioproductoproveedor() {
-
+    let varIdObra
     let IdArticulo = $('input:radio[name=rdSeleccionado]:checked').attr("idproductolinea");
     let IdProveedorSeleccionado = $('input:radio[name=rdSeleccionado]:checked').attr("IdProveedor");
     let IdDetalleRq = $('input:radio[name=rdSeleccionado]:checked').val();
@@ -2896,23 +2901,29 @@ function addprecioproductoproveedor() {
         return;
     }
 
-    //if (IdCondicionPagoProveedor == "" || IdCondicionPagoProveedor == null || IdCondicionPagoProveedor == "0" || !$.isNumeric(IdCondicionPagoProveedor)) {
-    //    swal("Informacion!", "Agregue condicion de pago en Maestro Socio de Negocio!");
-    //    return;
-    //}
+    if (IdCondicionPagoProveedor == "" || IdCondicionPagoProveedor == null || IdCondicionPagoProveedor == "0" || !$.isNumeric(IdCondicionPagoProveedor)) {
+        swal("Informacion!", "Agregue condicion de pago en Maestro Socio de Negocio!");
+        return;
+    }
 
     if (numeroentrega == "" || numeroentrega == null || numeroentrega == "0" || !$.isNumeric(numeroentrega)) {
         swal("Informacion!", "Ingrese numero de entrega!");
         return;
     }
+    if ($("#ObraArticulo").val() == 0) {
+        varIdObra = 0
+    } else {
+        varIdObra = $("#ObraArticulo").val()
+    }
 
-    $.post("/Articulo/SavePrecioProveedor", {
+    $.post("/Articulo/SavePrecioProveedorNuevo", {
         "IdArticulo": IdArticulo,
         "IdProveedor": IdProveedor,
         "PrecioSoles": PrecioSoles,
         "PrecioDolares": PrecioDolares,
         "IdCondicionPagoProveedor": IdCondicionPagoProveedor,
-        "numeroentrega": numeroentrega
+        "numeroentrega": numeroentrega,
+        "IdObra": varIdObra,
 
     }, function (data, status) {
         swal("Exito!", "Proceso Realizado Correctamente", "success")
@@ -2939,6 +2950,9 @@ function LimpiarModalItemProveedor() {
 
 function CerrarModalListadoItems() {
     let int = 1;
+    $("#PrecioMonedaExtrangera").val(0)
+    $("#numeroentrega").val(0)
+    $("#PrecioAsignar").val(0)
 }
 
 
@@ -3176,7 +3190,13 @@ function BuscarCondicionPago() {
 
         if (validadJson(data)) {
             var datos = JSON.parse(data);
-            $("#IdCondicionPagoProveedor").val(datos[0].IdCondicionPago);
+            if (datos[0].IdCondicionPago == 0) {
+                $("#IdCondicionPagoProveedor").prop("disabled", false)
+                $("#IdCondicionPagoProveedor").val(0);
+            } else {
+                $("#IdCondicionPagoProveedor").val(datos[0].IdCondicionPago);
+                $("#IdCondicionPagoProveedor").prop("disabled", true)
+            }
         } 
         
     });
@@ -3211,4 +3231,35 @@ function NumeracionDinamica() {
         $(this)[0].cells[0].outerHTML = '<td>' + i + '</td>';
         i++;
     });
+}
+function alertar() {
+    if ($("#PrecioXGeneral").is(":checked")) {
+        $("#divObraArticulo").hide()
+        $("#ObraArticulo").val(0)
+    } else if ($("#PrecioXObra").is(":checked")) {
+        $("#divObraArticulo").show()
+    }
+}
+function ObtenerObra() {
+    $.ajaxSetup({ async: false });
+
+    $.post("/Obra/ObtenerObraxIdUsuarioSessionSinBase", function (data, status) {
+        let obra = JSON.parse(data);
+        llenarComboObraArt(obra, "ObraArticulo", "Seleccione")
+    });
+}
+
+function llenarComboObraArt(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdObra + "'>" + lista[i].Descripcion.toUpperCase() + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
 }

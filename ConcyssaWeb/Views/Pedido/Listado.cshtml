@@ -818,9 +818,10 @@
                                                 <thead>
                                                     <tr>
                                                         <th scope="col">Proveedor</th>
+                                                        <th scope="col">Obra</th>
                                                         <th scope="col">Precio NAC</th>
                                                         <th scope="col">Precio EXT</th>
-                                                        <th scope="col">Comentario</th>
+                                                       @* <th scope="col">Comentario</th>*@
                                                         <th scope="col">Accion</th>
                                                     </tr>
                                                 </thead>
@@ -994,6 +995,27 @@
                                 <label for="numeroentrega" class="control-label col-sm-4 left-align">Numero de Entrega: </label>
                                 <div class="col-sm-8">
                                     <input id="numeroentrega" class="form-control" value="0" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class='form-group-sm'>
+                                <label for="numeroentrega" class="control-label col-sm-4 left-align">Precio: </label>
+                                <div class="col-xs-8">
+                                    <input type="radio" id="PrecioXGeneral" name="TipoPrecio" onclick="alertar()" checked />
+                                    <label style="font-size:1.5rem" for="PrecioXGeneral">General</label>
+
+                                    <input type="radio" id="PrecioXObra" name="TipoPrecio" onclick="alertar()" />
+                                    <label style="font-size:1.5rem" for="PrecioXObra">Por Obra</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12" id="divObraArticulo">
+                                <label for="numeroentrega" class="control-label col-sm-4 left-align">Obra: </label>
+                                <div class="col-sm-8">
+                                    <select type="text" id="ObraArticulo" class="form-control col-sm-8"></select>
+
                                 </div>
                             </div>
                         </div>

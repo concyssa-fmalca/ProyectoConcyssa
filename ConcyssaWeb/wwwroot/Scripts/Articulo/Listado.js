@@ -286,13 +286,13 @@ function ModalNuevo() {
     //CargarGrupoUnidadMedida();
 
     let IdPerfil = $("#ArtIdPerfil").val();
-    if (IdPerfil == "1014") {
-        $('#chkArticulo').attr('disabled', true);
-        $('#chkActivoFijo').attr('disabled', true);
-    } else {
-        $('#chkArticulo').attr('disabled', false);
-        $('#chkActivoFijo').attr('disabled', false);
-    }
+    //if (IdPerfil == "1014") {
+    //    $('#chkArticulo').attr('disabled', true);
+    //    $('#chkActivoFijo').attr('disabled', true);
+    //} else {
+    //    $('#chkArticulo').attr('disabled', false);
+    //    $('#chkActivoFijo').attr('disabled', false);
+    //}
 
 }
 
@@ -428,13 +428,13 @@ function ObtenerDatosxID(varIdArticulo) {
 
 
     let IdPerfil = $("#ArtIdPerfil").val();
-    if (IdPerfil == "1014") {
-        $('#chkArticulo').attr('disabled', true);
-        $('#chkActivoFijo').attr('disabled', true);
-    } else {
-        $('#chkArticulo').attr('disabled', false);
-        $('#chkActivoFijo').attr('disabled', false);
-    }
+    //if (IdPerfil == "1014") {
+    //    $('#chkArticulo').attr('disabled', true);
+    //    $('#chkActivoFijo').attr('disabled', true);
+    //} else {
+    //    $('#chkArticulo').attr('disabled', false);
+    //    $('#chkActivoFijo').attr('disabled', false);
+    //}
 
     CargarProveedor();
     CargarCondicionPago();

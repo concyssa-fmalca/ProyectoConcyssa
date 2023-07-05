@@ -135,7 +135,39 @@ namespace DAO
         }
         #endregion
 
+        #region InsertUpdateMovimientoDetalleCuadrilla
+        public int InsertUpdateOPDNDetalleCuadrilla(int OPDNDetalle, OPDNDetalle oOPDNDetalle, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();                       
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_InsertUpdateOPDNDetalleCuadrilla", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdOPDNDetalle", OPDNDetalle);
+                        da.SelectCommand.Parameters.AddWithValue("@IdCuadrilla", oOPDNDetalle.IdCuadrilla);
+                        da.SelectCommand.Parameters.AddWithValue("@IdResponsable", oOPDNDetalle.IdResponsable);
 
+                        int rpta = da.SelectCommand.ExecuteNonQuery();
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+                }
+            }
+        }
+        #endregion
 
 
 
@@ -511,10 +543,10 @@ namespace DAO
                         oMovimientoDTO.NombObra = (drd["NombObra"].ToString());
                         oMovimientoDTO.NumSerieTipoDocumentoRef = (drd["NumSerieTipoDocumentoRef"].ToString());
                         oMovimientoDTO.NombUsuario = (drd["NombUsuario"].ToString());
-
+                        oMovimientoDTO.TDocumento = (drd["TDocumento"].ToString());
                         oMovimientoDTO.SerieGuiaElectronica =(String.IsNullOrEmpty(drd["SerieGuiaElectronica"].ToString()) ? "" : drd["SerieGuiaElectronica"].ToString());
                         oMovimientoDTO.NumeroGuiaElectronica = Convert.ToInt32(String.IsNullOrEmpty(drd["NumeroGuiaElectronica"].ToString()) ? "0" : drd["NumeroGuiaElectronica"].ToString());
-
+                        oMovimientoDTO.EstadoFE = Convert.ToInt32(String.IsNullOrEmpty(drd["EstadoFE"].ToString()) ? "0" : drd["EstadoFE"].ToString());
                         lstMovimientoDTO.Add(oMovimientoDTO);
                     }
                     drd.Close();
@@ -642,6 +674,8 @@ namespace DAO
                         oMovimientoDTO.NombAlmacen = (drd["NombAlmacen"].ToString());
                         oMovimientoDTO.NombObra = (drd["NombObra"].ToString());
                         oMovimientoDTO.NombMoneda = (drd["NombMoneda"].ToString());
+                        oMovimientoDTO.TDocumento = drd["TDocumento"].ToString();
+                        oMovimientoDTO.NumSerieTipoDocumentoRef = drd["NumSerieTipoDocumentoRef"].ToString();
 
                         oMovimientoDTO.NombUsuario = (drd["NombUsuario"].ToString());
 
@@ -837,9 +871,9 @@ namespace DAO
                         oMovimientoDTO.NombTipoDocumentoOperacion = (drd["NombTipoDocumentoOperacion"].ToString());
                         oMovimientoDTO.NombSerie = (drd["NombSerie"].ToString());
                         oMovimientoDTO.Estado = Convert.ToBoolean(drd["Estado"].ToString());
-                        oMovimientoDTO.IdCuadrilla = Convert.ToInt32(drd["IdCuadrilla"].ToString());
+                        oMovimientoDTO.IdCuadrilla = Convert.ToInt32(String.IsNullOrEmpty(drd["IdCuadrilla"].ToString()) ? "0" : drd["IdCuadrilla"].ToString()); 
                         oMovimientoDTO.IdAlmacenDestino = Convert.ToInt32(drd["IdAlmacenDestino"].ToString());
-                        oMovimientoDTO.IdResponsable = Convert.ToInt32(drd["IdResponsable"].ToString());
+                        oMovimientoDTO.IdResponsable = Convert.ToInt32(String.IsNullOrEmpty(drd["IdResponsable"].ToString()) ? "0" : drd["IdResponsable"].ToString());
                         oMovimientoDTO.IdTipoDocumentoRef = Convert.ToInt32(drd["IdTipoDocumentoRef"].ToString());
                         oMovimientoDTO.NumSerieTipoDocumentoRef = (drd["NumSerieTipoDocumentoRef"].ToString());
                         oMovimientoDTO.EntregadoA = Convert.ToInt32(drd["EntregadoA"].ToString());
@@ -959,6 +993,8 @@ namespace DAO
                         oMovimientoDetalleDTO.CodigoArticulo = (dr2["CodigoArticulo"].ToString());
                         oMovimientoDetalleDTO.TipoUnidadMedida = (dr2["TipoUnidadMedida"].ToString());
                         oMovimientoDetalleDTO.IdGrupoUnidadMedida = Convert.ToInt32(dr2["IdGrupoUnidadMedida"].ToString());
+                        oMovimientoDetalleDTO.IdCuadrilla = Convert.ToInt32(dr2["IdCuadrilla"].ToString());
+                        oMovimientoDetalleDTO.IdResponsable = Convert.ToInt32(dr2["IdResponsable"].ToString());
                         oMovimientoDetalleDTO.NombCuadrilla = dr2["NombCuadrilla"].ToString();
                         oMovimientoDetalleDTO.NombResponsable = dr2["NombResponsable"].ToString();
 
@@ -1557,9 +1593,9 @@ namespace DAO
                         oMovimientoDTO.NombTipoDocumentoOperacion = (drd["NombTipoDocumentoOperacion"].ToString());
                         oMovimientoDTO.NombSerie = (drd["NombSerie"].ToString());
                         oMovimientoDTO.Estado = Convert.ToBoolean(drd["Estado"].ToString());
-                        oMovimientoDTO.IdCuadrilla = Convert.ToInt32(drd["IdCuadrilla"].ToString());
+                        oMovimientoDTO.IdCuadrilla = Convert.ToInt32(String.IsNullOrEmpty(drd["IdCuadrilla"].ToString()) ? "0" : drd["IdCuadrilla"].ToString());
                         oMovimientoDTO.IdAlmacenDestino = Convert.ToInt32(drd["IdAlmacenDestino"].ToString());
-                        oMovimientoDTO.IdResponsable = Convert.ToInt32(drd["IdResponsable"].ToString());
+                        oMovimientoDTO.IdResponsable = Convert.ToInt32(String.IsNullOrEmpty(drd["IdResponsable"].ToString()) ? "0" : drd["IdResponsable"].ToString()); 
                         oMovimientoDTO.IdTipoDocumentoRef = Convert.ToInt32(drd["IdTipoDocumentoRef"].ToString());
                         oMovimientoDTO.NumSerieTipoDocumentoRef = (drd["NumSerieTipoDocumentoRef"].ToString());
                         oMovimientoDTO.EntregadoA = Convert.ToInt32(drd["EntregadoA"].ToString());
@@ -1656,7 +1692,7 @@ namespace DAO
                         oMovimientoDetalleDTO.DescripcionArticulo = (dr2["DescripcionArticulo"].ToString());
                         oMovimientoDetalleDTO.IdDefinicionGrupoUnidad = Convert.ToInt32(dr2["IdDefinicionGrupoUnidad"].ToString());
                         oMovimientoDetalleDTO.IdUnidadMedidaBase = Convert.ToInt32(dr2["IdUnidadMedidaBase"].ToString());
-                        oMovimientoDetalleDTO.IdUnidadMedida = Convert.ToInt32(dr2["IdUnidadMedida"].ToString());
+                        oMovimientoDetalleDTO.IdUnidadMedida = Convert.ToInt32(String.IsNullOrEmpty(dr2["IdUnidadMedida"].ToString()) ? "0" : dr2["IdUnidadMedida"].ToString());
                         oMovimientoDetalleDTO.IdAlmacen = Convert.ToInt32(dr2["IdAlmacen"].ToString());
                         oMovimientoDetalleDTO.CantidadBase = Convert.ToDecimal(dr2["CantidadBase"].ToString());
                         oMovimientoDetalleDTO.Cantidad = Convert.ToDecimal(dr2["Cantidad"].ToString());
@@ -1677,8 +1713,10 @@ namespace DAO
                         oMovimientoDetalleDTO.IdAlmacenDestino = Convert.ToInt32(dr2["IdAlmacenDestino"].ToString());
 
                         oMovimientoDetalleDTO.CantidadNotaCredito = Convert.ToDecimal(String.IsNullOrEmpty(dr2["CantidadNotaCredito"].ToString()) ? "0" : dr2["CantidadNotaCredito"].ToString());
-                        oMovimientoDetalleDTO.NombCuadrilla = (dr2["NombCuadrilla"].ToString());
-                        oMovimientoDetalleDTO.NombResponsable = (dr2["NombResponsable"].ToString());
+                        oMovimientoDetalleDTO.NombCuadrilla = (String.IsNullOrEmpty(dr2["NombCuadrilla"].ToString()) ? "" : dr2["NombCuadrilla"].ToString()); 
+                        oMovimientoDetalleDTO.NombResponsable = (String.IsNullOrEmpty(dr2["NombResponsable"].ToString()) ? "" : dr2["NombResponsable"].ToString());
+                        oMovimientoDetalleDTO.IdCuadrilla = Convert.ToInt32(String.IsNullOrEmpty(dr2["IdCuadrilla"].ToString()) ? "0" : dr2["IdCuadrilla"].ToString());
+                        oMovimientoDetalleDTO.IdResponsable = Convert.ToInt32(String.IsNullOrEmpty(dr2["IdResponsable"].ToString()) ? "0" : dr2["IdResponsable"].ToString());
 
                         oMovimientoDTO.detalles[posicion] = oMovimientoDetalleDTO;
                         posicion = posicion + 1;
@@ -1784,7 +1822,136 @@ namespace DAO
             return Ticket;
         }
 
+        public int UpdateMovimiento(int IdUsuario,MovimientoDTO oMovimientoDTO, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        string comentario = oMovimientoDTO.Comentario == null ? " " : oMovimientoDTO.Comentario;
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_UpdateMovimiento", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdMovimiento", oMovimientoDTO.IdMovimiento);
+                        da.SelectCommand.Parameters.AddWithValue("@IdTipoDocumentoRef", oMovimientoDTO.IdTipoDocumentoRef);
+                        da.SelectCommand.Parameters.AddWithValue("@NumSerieTipoDocumentoRef", oMovimientoDTO.NumSerieTipoDocumentoRef);
+                        da.SelectCommand.Parameters.AddWithValue("@Comentario",comentario );
+                        da.SelectCommand.Parameters.AddWithValue("@IdCuadrilla", oMovimientoDTO.IdCuadrilla);
+                        da.SelectCommand.Parameters.AddWithValue("@IdResponsable", oMovimientoDTO.IdResponsable);
+                        da.SelectCommand.Parameters.AddWithValue("@UsuarioEdicion", IdUsuario);
 
 
+                        int rpta = da.SelectCommand.ExecuteNonQuery();
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+                }
+            }
+        }
+        public int UpdateMovimientoSalida(int IdUsuario, MovimientoDTO oMovimientoDTO, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        string comentario = oMovimientoDTO.Comentario == null ? " " : oMovimientoDTO.Comentario;
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_UpdateMovimientoSalida", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdMovimiento", oMovimientoDTO.IdMovimiento);
+                        da.SelectCommand.Parameters.AddWithValue("@IdTipoDocumentoRef", oMovimientoDTO.IdTipoDocumentoRef);
+                        da.SelectCommand.Parameters.AddWithValue("@NumSerieTipoDocumentoRef", oMovimientoDTO.NumSerieTipoDocumentoRef);
+                        da.SelectCommand.Parameters.AddWithValue("@Comentario", comentario);
+                        da.SelectCommand.Parameters.AddWithValue("@IdCuadrilla", oMovimientoDTO.IdCuadrilla);
+                        da.SelectCommand.Parameters.AddWithValue("@IdResponsable", oMovimientoDTO.IdResponsable);
+                        da.SelectCommand.Parameters.AddWithValue("@TipoTransporte", oMovimientoDTO.TipoTransporte);
+                        da.SelectCommand.Parameters.AddWithValue("@IdDestinatario", oMovimientoDTO.IdDestinatario);
+                        da.SelectCommand.Parameters.AddWithValue("@IdMotivoTraslado", oMovimientoDTO.IdMotivoTraslado);
+                        da.SelectCommand.Parameters.AddWithValue("@IdTransportista", oMovimientoDTO.IdTransportista);
+                        da.SelectCommand.Parameters.AddWithValue("@PlacaVehiculo", oMovimientoDTO.PlacaVehiculo);
+                        da.SelectCommand.Parameters.AddWithValue("@MarcaVehiculo", oMovimientoDTO.MarcaVehiculo);
+                        da.SelectCommand.Parameters.AddWithValue("@NumIdentidadConductor", oMovimientoDTO.NumIdentidadConductor);
+                        da.SelectCommand.Parameters.AddWithValue("@NombreConductor", oMovimientoDTO.NombreConductor);
+                        da.SelectCommand.Parameters.AddWithValue("@ApellidoConductor", oMovimientoDTO.ApellidoConductor);
+                        da.SelectCommand.Parameters.AddWithValue("@LicenciaConductor", oMovimientoDTO.LicenciaConductor);
+                        da.SelectCommand.Parameters.AddWithValue("@Peso", oMovimientoDTO.Peso);
+                        da.SelectCommand.Parameters.AddWithValue("@Bulto", oMovimientoDTO.Bulto);
+                        da.SelectCommand.Parameters.AddWithValue("@UsuarioEdicion", IdUsuario);
+
+                        int rpta = da.SelectCommand.ExecuteNonQuery();
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+                }
+            }
+        }
+        public int UpdateMovimientoTransferencia(int IdUsuario, MovimientoDTO oMovimientoDTO, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        string comentario = oMovimientoDTO.Comentario == null ? " " : oMovimientoDTO.Comentario;
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_UpdateMovimientoTransferencia", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdMovimiento", oMovimientoDTO.IdMovimiento);
+                        da.SelectCommand.Parameters.AddWithValue("@IdTipoDocumentoRef", oMovimientoDTO.IdTipoDocumentoRef);
+                        da.SelectCommand.Parameters.AddWithValue("@NumSerieTipoDocumentoRef", oMovimientoDTO.NumSerieTipoDocumentoRef);
+                        da.SelectCommand.Parameters.AddWithValue("@Comentario", comentario);
+                        da.SelectCommand.Parameters.AddWithValue("@TipoTransporte", oMovimientoDTO.TipoTransporte);
+                        da.SelectCommand.Parameters.AddWithValue("@IdDestinatario", oMovimientoDTO.IdDestinatario);
+                        da.SelectCommand.Parameters.AddWithValue("@IdMotivoTraslado", oMovimientoDTO.IdMotivoTraslado);
+                        da.SelectCommand.Parameters.AddWithValue("@IdTransportista", oMovimientoDTO.IdTransportista);
+                        da.SelectCommand.Parameters.AddWithValue("@PlacaVehiculo", oMovimientoDTO.PlacaVehiculo);
+                        da.SelectCommand.Parameters.AddWithValue("@MarcaVehiculo", oMovimientoDTO.MarcaVehiculo);
+                        da.SelectCommand.Parameters.AddWithValue("@NumIdentidadConductor", oMovimientoDTO.NumIdentidadConductor);
+                        da.SelectCommand.Parameters.AddWithValue("@NombreConductor", oMovimientoDTO.NombreConductor);
+                        da.SelectCommand.Parameters.AddWithValue("@ApellidoConductor", oMovimientoDTO.ApellidoConductor);
+                        da.SelectCommand.Parameters.AddWithValue("@LicenciaConductor", oMovimientoDTO.LicenciaConductor);
+                        da.SelectCommand.Parameters.AddWithValue("@Peso", oMovimientoDTO.Peso);
+                        da.SelectCommand.Parameters.AddWithValue("@Bulto", oMovimientoDTO.Bulto);
+                        da.SelectCommand.Parameters.AddWithValue("@UsuarioEdicion", IdUsuario);
+
+                        int rpta = da.SelectCommand.ExecuteNonQuery();
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+                }
+            }
+        }
     }
 }

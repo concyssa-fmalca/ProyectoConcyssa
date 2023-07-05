@@ -17,5 +17,6 @@ namespace DTO
         public DateTime Fecha { get; set; }
         public string? Obra { get; set; }
         public string? Serie { get; set; }
+        public string NombObra { get; set; }
     }
 }

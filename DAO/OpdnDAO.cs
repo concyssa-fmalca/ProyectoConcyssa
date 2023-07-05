@@ -262,6 +262,10 @@ namespace DAO
                         oOPDNDetalle.Referencia = (drd["Referencia"].ToString());
                         oOPDNDetalle.CantidadDevolucion = Convert.ToDecimal((String.IsNullOrEmpty(drd["CantidadDevolucion"].ToString())) ? "0" : drd["CantidadDevolucion"].ToString());
                         oOPDNDetalle.CodigoArticulo = (drd["CodigoArticulo"].ToString());
+                        oOPDNDetalle.IdCuadrilla = Convert.ToInt32(drd["IdCuadrilla"].ToString());
+                        oOPDNDetalle.IdResponsable = Convert.ToInt32(drd["IdResponsable"].ToString());
+                        oOPDNDetalle.NombCuadrilla = (drd["NombCuadrilla"].ToString());
+                        oOPDNDetalle.NombResponsable = (drd["NombResponsable"].ToString());
 
 
 

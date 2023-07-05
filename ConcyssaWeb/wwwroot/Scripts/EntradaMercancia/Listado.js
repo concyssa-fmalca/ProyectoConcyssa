@@ -1,6 +1,9 @@
 ﻿let contadorBase = 0;
 let contadorObra = 0;
 let contadorAlmacen = 0;
+let limitador = 0;
+let valorfor = 1
+
 
 function ObtenerConfiguracionDecimales() {
     $.post("/ConfiguracionDecimales/ObtenerConfiguracionDecimales", function (data, status) {
@@ -386,7 +389,7 @@ function ModalNuevo() {
     $("#lblTituloModal").html("Nuevo Ingreso");
     let seguiradelante = 'false';
     seguiradelante = CargarBasesObraAlmacenSegunAsignado();
-    
+    $("#btnEditar").hide()
     if (seguiradelante == 'false') {
         swal("Informacion!", "No tiene acceso a ninguna base, comunicarse con su administrador");
         return true;
@@ -435,9 +438,20 @@ function ModalNuevo() {
 
 }
 
+function EsActivo() {
+    let TipoArticulo = $("#cboClaseArticulo").val()
+    if (TipoArticulo == 3) {
+        $("#IdTipoProducto").hide()
+    } else {
+        $("#IdTipoProducto").show()
+    }
+
+}
+
 
 function OpenModalItem() {
-    if ($("#IdTipoProducto").val() == 0) {
+    
+    if ($("#cboClaseArticulo").val() == 1 && $("#IdTipoProducto").val() == 0) {
         swal("Informacion!", "Debe Seleccionar Tipo de Articulo!");
         return;
     }
@@ -651,14 +665,21 @@ function AgregarLinea() {
     $.post("/Moneda/ObtenerMonedas", function (data, status) {
         Moneda = JSON.parse(data);
     });
+    if (limitador >= 30) {
+        swal("Informacion!", "Solo se pueden agregar Hasta 30 items");
+        return;
+    }
+    for (var J = 0; J < valorfor; J++) {
+        console.log("VUELTAAAAAAAAAAA: " + J)
 
-    contador++;
-    let tr = '';
+        limitador++
+        contador++;
+        let tr = '';
 
-    //<select class="form-control select2" id="cboCodigoArticulo" name="cboCodigoArticulo[]">
-    //    <option value="0">Seleccione</option>
-    //</select>
-    tr += `<tr id="tritem` + contador + `">
+        //<select class="form-control select2" id="cboCodigoArticulo" name="cboCodigoArticulo[]">
+        //    <option value="0">Seleccione</option>
+        //</select>
+        tr += `<tr id="tritem` + contador + `">
             <td style="display:none;"><input input style="display:none;" class="form-control" type="text" value="0" id="txtIdSolicitudRQDetalle" name="txtIdSolicitudRQDetalle[]"/></td>
             <td input style="display:none;">
             <input  class="form-control" type="text" id="txtIdArticulo`+ contador + `" name="txtIdArticulo[]" />
@@ -669,112 +690,118 @@ function AgregarLinea() {
             <td><input class="form-control" type="text" id="txtDescripcionArticulo`+ contador + `" name="txtDescripcionArticulo[]"/></td>
             <td>
             <select class="form-control" id="cboUnidadMedida`+ contador + `" name="cboUnidadMedida[]">`;
-    tr += `  <option value="0">Seleccione</option>`;
-    for (var i = 0; i < UnidadMedida.length; i++) {
-        tr += `  <option value="` + UnidadMedida[i].IdDefinicionGrupo + `">` + UnidadMedida[i].DescUnidadMedidaAlt + `</option>`;
-    }
-    tr += `</select>
+        tr += `  <option value="0">Seleccione</option>`;
+        for (var i = 0; i < UnidadMedida.length; i++) {
+            tr += `  <option value="` + UnidadMedida[i].IdDefinicionGrupo + `">` + UnidadMedida[i].DescUnidadMedidaAlt + `</option>`;
+        }
+        tr += `</select>
             </td>
            
            
             <td input style="display:none;">
             <select class="form-control MonedaDeCabecera" style="width:100px" name="cboMoneda[]" id="cboMonedaDetalle`+ contador + `" disabled>`;
-    tr += `  <option value="0">Seleccione</option>`;
-    for (var i = 0; i < Moneda.length; i++) {
-        tr += `  <option value="` + Moneda[i].IdMoneda + `">` + Moneda[i].Descripcion + `</option>`;
-    }
-    tr += `</select>
+        tr += `  <option value="0">Seleccione</option>`;
+        for (var i = 0; i < Moneda.length; i++) {
+            tr += `  <option value="` + Moneda[i].IdMoneda + `">` + Moneda[i].Descripcion + `</option>`;
+        }
+        tr += `</select>
             </td>
             <td input style="display:none;"><input class="form-control TipoCambioDeCabecera" type="number" name="txtTipoCambio[]" id="txtTipoCambioDetalle`+ contador + `" disabled></td>
             <td><input class="form-control"  type="number" name="txtCantidadNecesaria[]" value="0" id="txtCantidadNecesaria`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled></td>
             <td><input class="form-control" type="number" name="txtPrecioInfo[]" value="0" id="txtPrecioInfo`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled></td>
-            <td><select onchange="SeleccionarEmpleadosTabla(`+contador+`)" class="form-control cboCuadrillaTabla" id="cboCuadrillaTablaId`+ contador + `"></select></td>
-            <td><select class="form-control cboResponsableTabla" id="cboResponsableTablaId`+ contador +`"></select></td>
+            <td style="display:none"><select onchange="SeleccionarEmpleadosTabla(`+ contador + `)" class="form-control cboCuadrillaTabla" id="cboCuadrillaTablaId` + contador + `"></select></td>
+            <td style="display:none"><select class="form-control cboResponsableTabla" id="cboResponsableTablaId`+ contador + `"></select></td>
             <td input style="display:none;">
             <select class="form-control ImpuestoCabecera" name="cboIndicadorImpuesto[]" id="cboIndicadorImpuestoDetalle`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)">`;
-    tr += `  <option impuesto="0" value="0">Seleccione</option>`;
-    for (var i = 0; i < IndicadorImpuesto.length; i++) {
-        tr += `  <option impuesto="` + IndicadorImpuesto[i].Porcentaje + `" value="` + IndicadorImpuesto[i].IdIndicadorImpuesto + `">` + IndicadorImpuesto[i].Descripcion + `</option>`;
-    }
-    tr += `</select>
+        tr += `  <option impuesto="0" value="0">Seleccione</option>`;
+        for (var i = 0; i < IndicadorImpuesto.length; i++) {
+            tr += `  <option impuesto="` + IndicadorImpuesto[i].Porcentaje + `" value="` + IndicadorImpuesto[i].IdIndicadorImpuesto + `">` + IndicadorImpuesto[i].Descripcion + `</option>`;
+        }
+        tr += `</select>
             </td>
             <td><input class="form-control changeTotal" type="number" style="width:100px" name="txtItemTotal[]" id="txtItemTotal`+ contador + `" onchange="CalcularTotales()" disabled></td>
             <td style="display:none">
             <select class="form-control" style="width:100px" id="cboAlmacen`+ contador + `" name="cboAlmacen[]">`;
-    tr += `  <option value="0">Seleccione</option>`;
-    for (var i = 0; i < Almacen.length; i++) {
-        tr += `  <option value="` + Almacen[i].IdAlmacen + `">` + Almacen[i].Descripcion + `</option>`;
-    }
-    tr += `</select>
+        tr += `  <option value="0">Seleccione</option>`;
+        for (var i = 0; i < Almacen.length; i++) {
+            tr += `  <option value="` + Almacen[i].IdAlmacen + `">` + Almacen[i].Descripcion + `</option>`;
+        }
+        tr += `</select>
             </td>`
-    tr += `
+        tr += `
             <td input style="display:none;"><input class="form-control" type="text" name="txtNumeroFacbricacion[]"></td>
             <td input style="display:none;"><input class="form-control" type="text" name="txtNumeroSerie[]"></td>
             <td input style="display:none;">
             <select class="form-control" name="cboLineaNegocio[]">`;
-    tr += `  <option value="0">Seleccione</option>`;
-    //for (var i = 0; i < LineaNegocio.length; i++) {
-    //    tr += `  <option value="` + LineaNegocio[i].IdLineaNegocio + `">` + LineaNegocio[i].Descripcion + `</option>`;
-    //}
-    tr += `</select>
+        tr += `  <option value="0">Seleccione</option>`;
+        //for (var i = 0; i < LineaNegocio.length; i++) {
+        //    tr += `  <option value="` + LineaNegocio[i].IdLineaNegocio + `">` + LineaNegocio[i].Descripcion + `</option>`;
+        //}
+        tr += `</select>
             </td>`;
-    //for (var i = 0; i < CentroCosto.length; i++) {
-    //    tr += `  <option value="` + CentroCosto[i].IdCentroCosto + `">` + CentroCosto[i].Descripcion + `</option>`;
-    //}
+        //for (var i = 0; i < CentroCosto.length; i++) {
+        //    tr += `  <option value="` + CentroCosto[i].IdCentroCosto + `">` + CentroCosto[i].Descripcion + `</option>`;
+        //}
 
-    //for (var i = 0; i < Proyecto.length; i++) {
-    //    tr += `  <option value="` + Proyecto[i].IdProyecto + `">` + Proyecto[i].Descripcion + `</option>`;
-    //}
-    tr += `
+        //for (var i = 0; i < Proyecto.length; i++) {
+        //    tr += `  <option value="` + Proyecto[i].IdProyecto + `">` + Proyecto[i].Descripcion + `</option>`;
+        //}
+        tr += `
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td ><input class="form-control" type="text" value="" id="txtReferencia`+ contador + `" name="txtReferencia[]"></td>
-            <td><button class="btn btn-xs btn-danger borrar fa fa-trash fa fa-trash" onclick="borrartditem(`+ contador + `)"></button></td>
+            <td><button class="btn btn-xs btn-danger borrar fa fa-trash fa fa-trash" onclick="borrartditem(`+ contador + `);restarLimitador()"></button></td>
           </tr>`;
 
-    $("#tabla").find('tbody').append(tr);
+        $("#tabla").find('tbody').append(tr);
 
 
-    let varMoneda = $("#cboMoneda").val();
-    let varTipoCambio = $("#txtTipoCambio").val();
-    let varimpuesto = $("#cboImpuesto").val();
+        let varMoneda = $("#cboMoneda").val();
+        let varTipoCambio = $("#txtTipoCambio").val();
+        let varimpuesto = $("#cboImpuesto").val();
 
-    if (varMoneda) {
-        $(".MonedaDeCabecera").val(varMoneda);
+        if (varMoneda) {
+            $(".MonedaDeCabecera").val(varMoneda);
+        }
+        if (varTipoCambio) {
+            $(".TipoCambioDeCabecera").val(varTipoCambio);
+        }
+        if (varimpuesto) {
+            $(".ImpuestoCabecera").val(varimpuesto);
+        }
+
+
+
+        $("#txtIdArticulo" + contador).val(IdItem);
+        $("#txtCodigoArticulo" + contador).val(CodigoItem);
+        $("#txtDescripcionArticulo" + contador).val(DescripcionItem);
+        $("#cboUnidadMedida" + contador).val(MedidaItem);
+        //$("#txtCantidadNecesaria" + contador).val(formatNumber(parseFloat(CantidadItem).toFixed(DecimalesCantidades))).change();
+        $("#txtCantidadNecesaria" + contador).val(CantidadItem).change();
+        $("#txtPrecioInfo" + contador).val(PrecioUnitarioItem).change();
+        $("#cboProyecto" + contador).val(ProyectoItem);
+        $("#cboAlmacen" + contador).val(AlmacenItem);
+        $("#cboPrioridadDetalle" + contador).val(PrioridadItem);
+
+        $("#cboCentroCostos" + contador).val(CentroCostoItem);
+        $("#txtReferencia" + contador).val(ReferenciaItem);
+        //ObtenerCuadrillasTabla()
+        //$(".cboCuadrillaTabla").select2()
+        //$(".cboResponsableTabla").select2()
+        LimpiarModalItem();
+        NumeracionDinamica();
+        ObtenerCuadrillasTabla(contador)
+        ObtenerEmpleadosxIdCuadrillaTabla(contador)
     }
-    if (varTipoCambio) {
-        $(".TipoCambioDeCabecera").val(varTipoCambio);
-    }
-    if (varimpuesto) {
-        $(".ImpuestoCabecera").val(varimpuesto);
-    }
-
-
-
-    $("#txtIdArticulo" + contador).val(IdItem);
-    $("#txtCodigoArticulo" + contador).val(CodigoItem);
-    $("#txtDescripcionArticulo" + contador).val(DescripcionItem);
-    $("#cboUnidadMedida" + contador).val(MedidaItem);
-    //$("#txtCantidadNecesaria" + contador).val(formatNumber(parseFloat(CantidadItem).toFixed(DecimalesCantidades))).change();
-    $("#txtCantidadNecesaria" + contador).val(CantidadItem).change();
-    $("#txtPrecioInfo" + contador).val(PrecioUnitarioItem).change();
-    $("#cboProyecto" + contador).val(ProyectoItem);
-    $("#cboAlmacen" + contador).val(AlmacenItem);
-    $("#cboPrioridadDetalle" + contador).val(PrioridadItem);
-
-    $("#cboCentroCostos" + contador).val(CentroCostoItem);
-    $("#txtReferencia" + contador).val(ReferenciaItem);
-    ObtenerCuadrillasTabla()
-    $(".cboCuadrillaTabla").select2()
-    $(".cboResponsableTabla").select2()
-    LimpiarModalItem();
-    NumeracionDinamica();
 }
 
 
 //function LimpiarDatosModalItems() {
 
 //}
+function restarLimitador() {
+    limitador = limitador - 1
+}
 
 function borrartditem(contador) {
     $("#tritem" + contador).remove()
@@ -1240,7 +1267,22 @@ function GuardarSolicitud() {
         )
         return;
     }
-
+    if ($("#IdCuadrilla").val() == 0) {
+        Swal.fire(
+            'Error!',
+            'Complete el campo Cuadrilla',
+            'error'
+        )
+        return;
+    }
+    if ($("#IdResponsable").val() == 0) {
+        Swal.fire(
+            'Error!',
+            'Complete el campo Entregado A',
+            'error'
+        )
+        return;
+    }
 
     let ArrayGeneral = new Array();
 
@@ -1346,9 +1388,9 @@ function GuardarSolicitud() {
     let SubTotal = $("#txtTotalAntesDescuento").val();
     let Impuesto = $("#txtImpuesto").val();
     let Total = $("#txtTotal").val();
-    let IdCuadrilla = 2582;
+    let IdCuadrilla = null;
 
-    let IdResponsable = 24151
+    let IdResponsable = null
     let IdTipoDocumentoRef = $("#IdTipoDocumentoRef").val();
     let SerieNumeroRef = $("#SerieNumeroRef").val();
     //END Cabecera
@@ -1418,8 +1460,8 @@ function GuardarSolicitud() {
             'SubTotal': SubTotal,
             'Impuesto': Impuesto,
             'Total': Total,
-            'IdCuadrilla': IdCuadrilla,
-            'IdResponsable': IdResponsable,
+            'IdCuadrilla': null,
+            'IdResponsable': null,
             'IdTipoDocumentoRef': IdTipoDocumentoRef,
             'NumSerieTipoDocumentoRef': SerieNumeroRef
             //end cabecera
@@ -1532,10 +1574,12 @@ function limpiarDatos() {
     $("#txtImpuesto").val('');
     $("#txtTotal").val('');
     $("#txtEstado").val(1);
+    limitador = 0;
 }
 
 
 function ObtenerDatosxID(IdMovimiento) {
+    $("#btnEditar").show()
     $("#btnExtorno").show();
     $("#txtId").val(IdMovimiento);
     CargarCentroCosto();
@@ -1592,9 +1636,7 @@ function ObtenerDatosxID(IdMovimiento) {
             $("#txtTipoCambio").val(movimiento.TipoCambio);
             $("#CreatedAt").html(movimiento.CreatedAt.replace("T", " "));
             $("#NombUsuario").html(movimiento.NombUsuario);
-            $("#IdCuadrilla").val("")
-            $("#IdCuadrilla").prop("disabled",true)
-            $("#IdResponsable").val(movimiento.IdResponsable)
+          
             //agrega detalle
             let tr = '';
             let Detalle = movimiento.detalles;
@@ -1604,7 +1646,10 @@ function ObtenerDatosxID(IdMovimiento) {
             for (var i = 0; i < Detalle.length; i++) {
                 AgregarLineaDetalle(i, Detalle[i]);
                 $("#cboImpuesto").val(Detalle[0].IdIndicadorImpuesto);
+                $("#IdCuadrilla").val(Detalle[0].IdCuadrilla).change()
+                $("#IdResponsable").val(Detalle[0].IdResponsable).change()
             }
+           
 
 
             //AnxoDetalle
@@ -1636,11 +1681,15 @@ function ObtenerDatosxID(IdMovimiento) {
 
         }
     });
-
     /*DISABLE*/
     disabledmodal(true)
 
-    /*DISABLE*/
+    $("#SerieNumeroRef").prop("disabled", false)
+    $("#IdTipoDocumentoRef").prop("disabled", false)
+    $("#IdCuadrilla").prop("disabled", false)
+    $("#IdResponsable").prop("disabled", false)
+    $("#txtComentarios").prop("disabled", false)
+
 
 }
 
@@ -1742,6 +1791,38 @@ function CalcularTotales() {
 
 }
 
+function Editar() {
+    let varIdMovimiento = $("#txtId").val();
+    let varIdTipoDocumentoRef = $("#IdTipoDocumentoRef").val();
+    let varNumSerieTipoDocumentoRef = $("#SerieNumeroRef").val();
+    let varComentario = $("#txtComentarios").val();
+    let varIdCuadrilla = $("#IdCuadrilla").val();
+    let varIdResponsable = $("#IdResponsable").val();
+
+
+    $.post('/Movimientos/UpdateMovimiento', {
+        'IdMovimiento': varIdMovimiento,
+        'IdTipoDocumentoRef': varIdTipoDocumentoRef,
+        'NumSerieTipoDocumentoRef': varNumSerieTipoDocumentoRef,
+        'Comentario': varComentario,
+        'IdCuadrilla': varIdCuadrilla,
+        'IdResponsable': varIdResponsable,
+        
+    }, function (data, status) {
+
+        if (data != 0) {
+            swal("Exito!", "Proceso Realizado Correctamente", "success")
+            CerrarModal()
+            listarIngresosDT()
+        } else {
+            swal("Error!", "Ocurrio un Error")
+            CerrarModal()
+        }
+
+    });
+
+}
+
 
 function AgregarLineaDetalle(contador, detalle) {
 
@@ -1790,8 +1871,8 @@ function AgregarLineaDetalle(contador, detalle) {
         <td>
             <input class="form-control" type="text" name="txtPrecioInfo[]" value="`+ formatNumberDecimales(detalle.PrecioUnidadTotal, 2) + `" id="txtPrecioInfo` + contador + `" onkeyup="CalcularTotalDetalle(` + contador + `)" disabled>
         </td>
-        <td><input class="form-control" value="`+ detalle.NombCuadrilla + `" disabled></input></td>
-        <td><input class="form-control" value="`+ detalle.NombResponsable +`" disabled></input></td>
+        <td style="display:none"><input class="form-control" value="`+ detalle.NombCuadrilla + `" disabled></input></td>
+        <td style="display:none"><input class="form-control" value="`+ detalle.NombResponsable +`" disabled></input></td>
         <td>
             <input class="form-control changeTotal" type="text" style="width:100px" value="`+ formatNumberDecimales(detalle.Total, 2) + `" name="txtItemTotal[]" id="txtItemTotal` + contador + `" onchange="CalcularTotales()" disabled>
         </td>
@@ -1877,58 +1958,116 @@ function BuscarCodigoProducto() {
     }
 
     $("#ModalListadoItem").modal();
+    if (TipoItem == 1) {
+        $.post("/Articulo/ListarArticulosCatalogoxSociedadxAlmacenStockxIdTipoProducto", { 'IdTipoProducto': IdTipoProducto, 'IdAlmacen': IdAlmacen, 'Estado': 1, }, function (data, status) {
 
-    $.post("/Articulo/ListarArticulosCatalogoxSociedadxAlmacenStockxIdTipoProducto", { 'IdTipoProducto': IdTipoProducto, 'IdAlmacen': IdAlmacen, 'Estado': 1, }, function (data, status) {
+            if (data == "error") {
+                swal("Informacion!", "No se encontro Articulo")
+            } else {
+                let items = JSON.parse(data);
+                console.log(items);
+                let tr = '';
 
-        if (data == "error") {
-            swal("Informacion!", "No se encontro Articulo")
-        } else {
-            let items = JSON.parse(data);
-            console.log(items);
-            let tr = '';
+                for (var i = 0; i < items.length; i++) {
+                    /* if (items[i].Inventario == TipoItem) {*/
+                    tr += '<tr>' +
+                        '<td><input type="radio" clase="" id="rdSeleccionado' + items[i].IdArticulo + '"  name="rdSeleccionado"  value = "' + items[i].IdArticulo + '" ></td>' +
+                        '<td>' + items[i].Codigo + '</td>' +
+                        '<td>' + items[i].Descripcion1 + '</td>' +
+                        '<td>' + items[i].Stock + '</td>' +
+                        '<td>' + items[i].UnidadMedida + '</td>' +
+                        '</tr>';
+                    //} else {
+                    //    if (TipoItem == 2 && items[i].Inventario==false) {
+                    //        tr += '<tr>' +
+                    //            '<td><input type="radio" clase="" id="rdSeleccionado' + items[i].Codigo + '"  name="rdSeleccionado"  value = "' + items[i].Codigo + '" ></td>' +
+                    //            '<td>' + items[i].Codigo + '</td>' +
+                    //            '<td>' + items[i].Descripcion1 + '</td>' +
+                    //            '<td>' + items[i].Stock + '</td>' +
+                    //            '<td>' + items[i].UnidadMedida + '</td>' +
+                    //            '</tr>';
+                    //    }
+                    //}
 
-            for (var i = 0; i < items.length; i++) {
-                /* if (items[i].Inventario == TipoItem) {*/
-                tr += '<tr>' +
-                    '<td><input type="radio" clase="" id="rdSeleccionado' + items[i].IdArticulo + '"  name="rdSeleccionado"  value = "' + items[i].IdArticulo + '" ></td>' +
-                    '<td>' + items[i].Codigo + '</td>' +
-                    '<td>' + items[i].Descripcion1 + '</td>' +
-                    '<td>' + items[i].Stock + '</td>' +
-                    '<td>' + items[i].UnidadMedida + '</td>' +
-                    '</tr>';
-                //} else {
-                //    if (TipoItem == 2 && items[i].Inventario==false) {
-                //        tr += '<tr>' +
-                //            '<td><input type="radio" clase="" id="rdSeleccionado' + items[i].Codigo + '"  name="rdSeleccionado"  value = "' + items[i].Codigo + '" ></td>' +
-                //            '<td>' + items[i].Codigo + '</td>' +
-                //            '<td>' + items[i].Descripcion1 + '</td>' +
-                //            '<td>' + items[i].Stock + '</td>' +
-                //            '<td>' + items[i].UnidadMedida + '</td>' +
-                //            '</tr>';
-                //    }
-                //}
+                }
 
+                $("#tbody_listado_items").html(tr);
+
+                tableItems = $("#tabla_listado_items").DataTable({
+                    info: false, "language": {
+                        "paginate": {
+                            "first": "Primero",
+                            "last": "Último",
+                            "next": "Siguiente",
+                            "previous": "Anterior"
+                        },
+                        "processing": "Procesando...",
+                        "search": "Buscar:",
+                        "lengthMenu": "Mostrar _MENU_ registros"
+                    }
+                });
             }
 
-            $("#tbody_listado_items").html(tr);
+        });
+    } else {
+        $.post("/Articulo/ObtenerArticulosActivoFijo",
 
-            tableItems = $("#tabla_listado_items").DataTable({
-                info: false, "language": {
-                    "paginate": {
-                        "first": "Primero",
-                        "last": "Último",
-                        "next": "Siguiente",
-                        "previous": "Anterior"
-                    },
-                    "processing": "Procesando...",
-                    "search": "Buscar:",
-                    "lengthMenu": "Mostrar _MENU_ registros"
+            function (data, status) {
+
+                if (data == "error") {
+                    swal("Informacion!", "No se encontro Articulo")
+
+                } else {
+
+                    let items = JSON.parse(data);
+                    //console.log(items);
+                    let tr = '';
+
+                    for (var i = 0; i < items.length; i++) {
+                        /* if (items[i].Inventario == TipoItem) {*/
+                        tr += '<tr>' +
+                            '<td><input type="radio" clase="" id="rdSeleccionado' + items[i].IdArticulo + '"  name="rdSeleccionado"  value = "' + items[i].IdArticulo + '" ></td>' +
+                            '<td>' + items[i].Codigo + '</td>' +
+                            '<td>' + items[i].Descripcion1 + '</td>' +
+                            '<td>' + items[i].Stock + '</td>' +
+                            '<td>' + items[i].UnidadMedida + '</td>' +
+                            '</tr>';
+                        //} else {
+                        //    if (TipoItem == 2 && items[i].Inventario==false) {
+                        //        tr += '<tr>' +
+                        //            '<td><input type="radio" clase="" id="rdSeleccionado' + items[i].Codigo + '"  name="rdSeleccionado"  value = "' + items[i].Codigo + '" ></td>' +
+                        //            '<td>' + items[i].Codigo + '</td>' +
+                        //            '<td>' + items[i].Descripcion1 + '</td>' +
+                        //            '<td>' + items[i].Stock + '</td>' +
+                        //            '<td>' + items[i].UnidadMedida + '</td>' +
+                        //            '</tr>';
+                        //    }
+                        //}
+
+                    }
+
+                    $("#tbody_listado_items").html(tr);
+
+                    tableItems = $("#tabla_listado_items").DataTable({
+                        "iDisplayLength": 100,
+                        "bDestroy": true,
+                        info: false, "language": {
+                            "paginate": {
+                                "first": "Primero",
+                                "last": "Último",
+                                "next": "Siguiente",
+                                "previous": "Anterior"
+                            },
+                            "processing": "Procesando...",
+                            "search": "Buscar:",
+                            "lengthMenu": "Mostrar _MENU_ registros"
+                        },
+                    });
+
                 }
+
             });
-        }
-
-    });
-
+    }
 }
 
 
@@ -2078,27 +2217,49 @@ function SeleccionarItemListado() {
     let IdArticulo = $('input:radio[name=rdSeleccionado]:checked').val();
     let TipoItem = $("#cboClaseArticulo").val();
     let Almacen = $("#cboAlmacenItem").val();
-    $.post("/Articulo/ListarArticulosxSociedadxAlmacenStockxProducto", { 'IdArticulo': IdArticulo, 'IdAlmacen': Almacen, 'Estado': 1 }, function (data, status) {
+    if (TipoItem == 3) {
+        $.post("/Articulo/ListarArticulosxSociedadxAlmacenStockxProductoActivoFijo", { 'IdArticulo': IdArticulo, 'IdAlmacen': Almacen, 'Estado': 1 }, function (data, status) {
 
-        if (data == "error") {
-            swal("Info!", "No se encontro Articulo")
-            tableItems.destroy();
-        } else {
-            let datos = JSON.parse(data);
-            console.log(1);
-            $("#cboGrupoUnidadMedida").val(datos[0].IdGrupoUnidadMedida).change();
-            $("#cboMedidaItem").val(datos[0].IdUnidadMedidaInv);
-            $("#cboGrupoUnidadMedida").prop('disabled', true);
-            $("#txtCodigoItem").val(datos[0].Codigo);
-            $("#txtIdItem").val(datos[0].IdArticulo);
-            $("#txtDescripcionItem").val(datos[0].Descripcion1);
-            $("#txtPrecioUnitarioItem").val(datos[0].UltimoPrecioCompra);
-            $("#txtStockAlmacenItem").val(datos[0].Stock);
-            $("#txtPrecioUnitarioItem").val((datos[0].PrecioPromedio).toFixed(DecimalesPrecios))
-            tableItems.destroy();
-        }
-    });
+            if (data == "error") {
+                swal("Info!", "No se encontro Articulo")
+                tableItems.destroy();
+            } else {
+                let datos = JSON.parse(data);
+                console.log(1);
+                $("#cboGrupoUnidadMedida").val(datos[0].IdGrupoUnidadMedida).change();
+                $("#cboMedidaItem").val(datos[0].IdUnidadMedidaInv);
+                $("#cboGrupoUnidadMedida").prop('disabled', true);
+                $("#txtCodigoItem").val(datos[0].Codigo);
+                $("#txtIdItem").val(datos[0].IdArticulo);
+                $("#txtDescripcionItem").val(datos[0].Descripcion1);
+                $("#txtPrecioUnitarioItem").val(datos[0].UltimoPrecioCompra);
+                $("#txtStockAlmacenItem").val(datos[0].Stock);
+                $("#txtPrecioUnitarioItem").val((datos[0].PrecioPromedio).toFixed(DecimalesPrecios))
+                tableItems.destroy();
+            }
+        });
+    } else {
+        $.post("/Articulo/ListarArticulosxSociedadxAlmacenStockxProducto", { 'IdArticulo': IdArticulo, 'IdAlmacen': Almacen, 'Estado': 1 }, function (data, status) {
 
+            if (data == "error") {
+                swal("Info!", "No se encontro Articulo")
+                tableItems.destroy();
+            } else {
+                let datos = JSON.parse(data);
+                console.log(1);
+                $("#cboGrupoUnidadMedida").val(datos[0].IdGrupoUnidadMedida).change();
+                $("#cboMedidaItem").val(datos[0].IdUnidadMedidaInv);
+                $("#cboGrupoUnidadMedida").prop('disabled', true);
+                $("#txtCodigoItem").val(datos[0].Codigo);
+                $("#txtIdItem").val(datos[0].IdArticulo);
+                $("#txtDescripcionItem").val(datos[0].Descripcion1);
+                $("#txtPrecioUnitarioItem").val(datos[0].UltimoPrecioCompra);
+                $("#txtStockAlmacenItem").val(datos[0].Stock);
+                $("#txtPrecioUnitarioItem").val((datos[0].PrecioPromedio).toFixed(DecimalesPrecios))
+                tableItems.destroy();
+            }
+        });
+    }
 }
 
 function CerrarModalListadoItems() {
@@ -2518,11 +2679,27 @@ function listarIngresosDT() {
                 targets: 5,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.NombMoneda
+                    return full.TDocumento.toUpperCase()
                 },
             },
             {
                 targets: 6,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    let SeriREF = "-"
+                    if (full.NumSerieTipoDocumentoRef) SeriREF = full.NumSerieTipoDocumentoRef
+                    return SeriREF
+                },
+            },
+            {
+                targets: 7,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.NombMoneda
+                },
+            },
+            {
+                targets: 8,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     return formatNumber(full.Total)
@@ -2530,14 +2707,14 @@ function listarIngresosDT() {
             },
        
             {
-                targets: 7,
+                targets: 9,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     return full.NombObra
                 },
             },
             {
-                targets: 8,
+                targets: 10,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     return full.NombAlmacen
@@ -2631,12 +2808,12 @@ function verBase64PDF(datos) {
 function LimpiarAlmacen() {
     $("#cboAlmacen").prop("selectedIndex", 0)
 }
-function ObtenerCuadrillasTabla() {
+function ObtenerCuadrillasTabla(contador) {
     let IdObra = $("#IdObra").val()
     $.ajaxSetup({ async: false });
     $.post("/Cuadrilla/ObtenerCuadrillaxIdObra", { 'IdObra': IdObra }, function (data, status) {
         let cuadrilla = JSON.parse(data);
-        llenarComboCuadrillaTabla(cuadrilla, "cboCuadrillaTabla", "Seleccione")
+        llenarComboCuadrillaTabla(cuadrilla, "cboCuadrillaTablaId" + contador, "Seleccione")
     });
 }
 function llenarComboCuadrillaTabla(lista, idCombo, primerItem) {
@@ -2652,47 +2829,39 @@ function llenarComboCuadrillaTabla(lista, idCombo, primerItem) {
     }
     //var cbo = document.getElementById(idCombo);
     //if (cbo != null) cbo.innerHTML = contenido;
-    $(".cboCuadrillaTabla").html(contenido)
+    $("#cboCuadrillaTablaId" + contador).html(contenido)
+    $("#cboCuadrillaTablaId" + contador).val($("#IdCuadrilla").val())
 }
 
-//function ObtenerEmpleadosxIdCuadrillaTabla() {
+function ObtenerEmpleadosxIdCuadrillaTabla(contador) {
 
-//    let IdCuadrilla = $("#IdCuadrilla").val();
-//    $.ajaxSetup({ async: false });
-//    $.post("/Empleado/ObtenerEmpleadosPorUsuarioBase", function (data, status) {
-//        let empleados = JSON.parse(data);
-//        llenarComboEmpleadosTabla(empleados, "cboResponsableTabla", "Seleccione")
-//    });
-//}
+    let IdCuadrilla = $("#IdCuadrilla").val();
+    $.ajaxSetup({ async: false });
+    $.post("/Empleado/ObtenerEmpleadosPorUsuarioBase", function (data, status) {
+        let empleados = JSON.parse(data);
+        llenarComboEmpleadosTabla(empleados, "cboResponsableTablaId"+contador, "Seleccione")
+    });
+}
 
-//function llenarComboEmpleadosTabla(lista, idCombo, primerItem) {
-//    var contenido = "";
-//    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
-//    var nRegistros = lista.length;
-//    console.log("Empleados: " + lista.length)
-//    var nCampos;
-//    var campos;
-//    let ultimoindice = 0;
-//    for (var i = 0; i < nRegistros; i++) {
+function llenarComboEmpleadosTabla(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    console.log("Empleados: " + lista.length)
+    var nCampos;
+    var campos;
+    let ultimoindice = 0;
+    for (var i = 0; i < nRegistros; i++) {
 
-//        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdEmpleado + "'>" + lista[i].RazonSocial.toUpperCase() + "</option>"; ultimoindice = i }
-//        else { }
-//    }
-//    $(".cboResponsableTabla").html(contenido)
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdEmpleado + "'>" + lista[i].RazonSocial.toUpperCase() + "</option>"; ultimoindice = i }
+        else { }
+    }
+    $("#cboResponsableTablaId" + contador).html(contenido)
+    $("#cboResponsableTablaId" + contador).val($("#IdResponsable").val())
 
 
-//    ObtenerCapatazTabla()
-//}
-//function ObtenerCapatazTabla() {
-//    let IdCuadrilla = $("#IdCuadrilla").val();
-//    /* setTimeout(() => {*/
-//    $.post("/Empleado/ObtenerCapatazXCuadrilla", { 'IdCuadrilla': IdCuadrilla }, function (data, status) {
-//        let capataz = JSON.parse(data);
-//        $(".cboResponsableTabla").val(capataz[0].IdEmpleado).change();
-//    })
-//    /*}, 1000);*/
+}
 
-//}
 function SetCuadrillaTabla() {
     let SetCuadrilla = $("#IdCuadrilla").val()
     $(".cboCuadrillaTabla").val(SetCuadrilla).change()
@@ -2732,5 +2901,9 @@ function ObtenerCapatazTablaFila(contador) {
         $("#cboResponsableTablaId"+contador).val(capataz[0].IdEmpleado).change();
     })
     /*}, 1000);*/
+
+}
+function SetearEmpleadosEnTabla() {
+    $(".cboResponsableTabla").val($("#IdResponsable").val())
 
 }

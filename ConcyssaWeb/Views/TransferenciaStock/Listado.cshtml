@@ -100,13 +100,17 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Tipo Documento</th>
+                        <th>Fecha</th>
                         <th>Usuario</th>
-                        <th>Numeracion</th>
+                        <th>Tipo Movimiento</th>
+                        <th>Nro Operacion</th>
+                        <th>Tipo Documento</th>
+                        <th>Serie y Numero</th>
+                        <th>Estado GE</th>
                         <th>Obra</th>
                         <th>Almacen</th>
-                        <th>Guia</th>
-                        <th>Fecha</th>
+         
+                       
                         <th>Mas</th>
                     </tr>
                 </thead>
@@ -305,11 +309,11 @@
                             <div id="Contenido" class="tabcontent" style="display: block;">
                                 <div class='form-group-sm'>
                                     <div class="col-sm-4">
-                                        <select class="form-control" id="cboClaseArticulo" style="margin-bottom:10px;margin-top:5px">
+                                        <select class="form-control" id="cboClaseArticulo" style="margin-bottom:10px;margin-top:5px" onchange="EsActivo()">
                                             @*<option value="0">Seleccione</option>*@
                                             <option value="1">Producto</option>
-                                            @*        <option value="2">Servicio</option>
-                                            <option value="3">Activo</option>*@
+                                                   @* <option value="2">Servicio</option>*@
+                                            <option value="3">Activo</option>
                                         </select>
                                     </div>
                                 </div>
@@ -474,7 +478,7 @@
 
                             <div class="row" id="global" style="font-size:10px">
                                 <div class='container-fluid' id="mensajes">
-                                    <label for="cboSerie" class="control-label col-sm-2 center-align">T.Documento</label>
+                                    <label for="cboSerie" class="control-label col-sm-2 center-align">T.Movimiento</label>
                                     <br />
                                     <select style="height: 20px" id="cboTipoDocumentoOperacion" class="form-control input-sm" tabindex="0"></select>
                                     @*<select style="height: 20px" id="cboSerie" class="form-control" tabindex="0" onchange="ObtenerNumeracion()"></select>*@
@@ -492,7 +496,7 @@
 
                                     @*GUIA REMISION*@
                                     <hr style="margin: 0px 0px 5px 0px" />
-                                    <p>Tipo  Documento: <select style="height: 20px" id="IdTipoDocumentoRef" class="form-control input-sm" tabindex="0" onchange="ocultarCampos()"></select> </p>
+                                    <p>Tipo  Documento: <select style="height: 20px" id="IdTipoDocumentoRef" class="form-control input-sm" tabindex="0" onchange="OcultarCampos()"></select> </p>
                                     <hr style="margin: 0px 0px 5px 0px" />
                                     <p>Serie y Numero:  <input id="SerieNumeroRef" type="text" class="form-control huser-20" tabindex="16" disabled> </p>
                                     <hr class="ocultate" style="margin: 0px 0px 5px 0px" />
@@ -540,7 +544,8 @@
         </div>
         <div class="panel-footer text-right">
             <div class="row">
-                <button type="button" id="btnGrabar" onclick="GuardarSolicitud()" class="btn btn-primary pull-right plu">Grabar</button>
+                <button type="button" id="btnGrabar" onclick="GuardarSolicitud()" class="btn btn-primary pull-right plu">Crear</button>
+                <button type="button" id="btnEditar" onclick="Editar()" class="btn btn-primary pull-right plu">Grabar</button>
                 @*<button type="button" id="btnExtorno" onclick="GenerarGuia()" class="btn btn-primary pull-right plu">Generar Guia</button>*@
 
                 <button type="button" id="btnGenerarGuia" onclick="GenerarGuia()" style="display:none" class="btn btn-primary pull-right plu">Generar Guia</button>

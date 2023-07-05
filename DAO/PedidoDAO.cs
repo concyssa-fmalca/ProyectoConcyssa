@@ -446,6 +446,42 @@ namespace DAO
                 return lstProveedoresPrecioProductoDTO;
             }
         }
+        public List<ProveedoresPrecioProductoDTO> ObtenerProveedoresPrecioxProductoConObras(int IdObra,int IdArticulo, ref string mensaje_error)
+        {
+            List<ProveedoresPrecioProductoDTO> lstProveedoresPrecioProductoDTO = new List<ProveedoresPrecioProductoDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerProveedoresPrecioxProductoConObras", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdArticulo", IdArticulo);
+                    da.SelectCommand.Parameters.AddWithValue("@IdObra", IdObra);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        ProveedoresPrecioProductoDTO oProveedoresPrecioProductoDTO = new ProveedoresPrecioProductoDTO();
+                        oProveedoresPrecioProductoDTO.IdProveedor = Convert.ToInt32(drd["IdProveedor"].ToString());
+                        oProveedoresPrecioProductoDTO.RazonSocial = (drd["RazonSocial"].ToString());
+                        oProveedoresPrecioProductoDTO.PrecioNacional = Convert.ToDecimal(drd["PrecioNacional"].ToString());
+                        oProveedoresPrecioProductoDTO.PrecioExtranjero = Convert.ToDecimal(drd["PrecioExtranjero"].ToString());
+                        oProveedoresPrecioProductoDTO.DescripcionArticulo = (drd["DescripcionArticulo"].ToString());
+                        oProveedoresPrecioProductoDTO.NombObra = (drd["NombObra"].ToString());
+
+                        lstProveedoresPrecioProductoDTO.Add(oProveedoresPrecioProductoDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+                return lstProveedoresPrecioProductoDTO;
+            }
+        }
         public List<ProveedoresPrecioProductoDTO> ObtenerPrecioxProductoUltimasVentas(int IdArticulo, ref string mensaje_error)
         {
             List<ProveedoresPrecioProductoDTO> lstProveedoresPrecioProductoDTO = new List<ProveedoresPrecioProductoDTO>();

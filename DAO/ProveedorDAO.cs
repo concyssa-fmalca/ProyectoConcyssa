@@ -342,5 +342,96 @@ namespace DAO
                 }
             }
         }
+        public int InsertRubroProveedor_X_Provedor(RubroXProveedorDTO oRubroXProveedorDTO, int IdUsuario)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_InsertRubroProveedor_X_Provedor", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdRubroProveedor", oRubroXProveedorDTO.IdRubroProveedor);
+                        da.SelectCommand.Parameters.AddWithValue("@IdProveedor", oRubroXProveedorDTO.IdProveedor);
+                        da.SelectCommand.Parameters.AddWithValue("@UsuarioCreacion", IdUsuario);       
+                        int rpta = da.SelectCommand.ExecuteNonQuery();
+                        transactionScope.Complete();
+
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        return 0;
+                    }
+                }
+            }
+        }
+        public List<RubroXProveedorDTO>ListarRubroProveedor_X_Provedor(int IdProveedor, ref string mensaje_error)
+        {
+            List<RubroXProveedorDTO> lstRubroXProveedorDTO = new List<RubroXProveedorDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarRubroProveedor_X_Provedor", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdProveedor", IdProveedor);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        RubroXProveedorDTO RubroXProveedorDTO = new RubroXProveedorDTO();
+                        RubroXProveedorDTO.Id = int.Parse(drd["Id"].ToString());
+                        RubroXProveedorDTO.IdRubroProveedor = int.Parse(drd["IdRubroProveedor"].ToString());
+                        RubroXProveedorDTO.IdProveedor = int.Parse(drd["IdProveedor"].ToString());
+                        RubroXProveedorDTO.Descripcion = drd["Descripcion"].ToString();
+                        RubroXProveedorDTO.RazonSocial = drd["RazonSocial"].ToString();
+                        lstRubroXProveedorDTO.Add(RubroXProveedorDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstRubroXProveedorDTO;
+        }
+        public int EliminarRubroProveedor_X_Provedor(int Id,int IdUsuario)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_EliminarRubroProveedor_X_Provedor", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@Id", Id);
+                        da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
+                        int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        return -1;
+                    }
+                }
+            }
+        }
     }
 }

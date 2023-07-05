@@ -4,6 +4,7 @@ using DTO;
 using System.Data;
 using System.Data.SqlClient;
 using System.Net;
+using System.Net.Http;
 using System.Net.Mail;
 using System.Transactions;
 
@@ -12,11 +13,15 @@ namespace DAO
     public class SolicitudRQDAO
     {
 
-        public List<SolicitudRQDTO> ObtenerSolicitudesRQ(int IdBase,int IdSolicitante, string IdSociedad, string FechaInicio, string FechaFinal, int Estado)
+        public List<SolicitudRQDTO> ObtenerSolicitudesRQ(int Usuario,int IdPerfil,int IdBase,int IdSolicitante, string IdSociedad, string FechaInicio, string FechaFinal, int Estado)
         {
+            if (IdPerfil == 1018) {
+                IdSolicitante = 999999;
+            }
             List<SolicitudRQDTO> lstSolicitudRQDTO = new List<SolicitudRQDTO>();
             using (SqlConnection cn = new Conexion().conectar())
             {
+
                 try
                 {
                     cn.Open();
@@ -58,6 +63,7 @@ namespace DAO
                         oSolicitudRQDTO.EstadoSolicitud = int.Parse(drd["EstadoSolicitud"].ToString());
                         oSolicitudRQDTO.NombMoneda =(drd["NombMoneda"].ToString());
                         oSolicitudRQDTO.TotalCantidad = Convert.ToDecimal(drd["TotalCantidad"].ToString());
+                        oSolicitudRQDTO.Usuario = Usuario;
                     
 
 
@@ -498,6 +504,216 @@ namespace DAO
                 {
                 }
             }
+
+
+
+            Int32 filasdetalle = 0;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarSolicitudDetalleRQxID", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSolicitudRQ", IdSolicitudRQ);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader dr1 = da.SelectCommand.ExecuteReader();
+                    while (dr1.Read())
+                    {
+                        filasdetalle++;
+                    }
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+
+            oSolicitudRQDTO.Detalle = new SolicitudDetalleDTO[filasdetalle];
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarSolicitudDetalleRQxID", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSolicitudRQ", IdSolicitudRQ);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    Int32 posicion = 0;
+                    while (drd.Read())
+                    {
+                        SolicitudDetalleDTO oSolicitudRQDetalleDTO = new SolicitudDetalleDTO();
+                        oSolicitudRQDetalleDTO.IdSolicitudRQDetalle = int.Parse(drd["Id"].ToString());
+                        oSolicitudRQDetalleDTO.CodArticulo = (drd["CodArticulo"].ToString());
+
+                        oSolicitudRQDetalleDTO.IdSolicitudCabecera = int.Parse(drd["IdSolicitud"].ToString());
+                        oSolicitudRQDetalleDTO.IdArticulo = drd["IdArticulo"].ToString();
+                        oSolicitudRQDetalleDTO.Descripcion = drd["Descripcion"].ToString();
+                        oSolicitudRQDetalleDTO.IdUnidadMedida = drd["IdUnidadMedida"].ToString();
+                        oSolicitudRQDetalleDTO.FechaNecesaria = Convert.ToDateTime(drd["FechaNecesaria"].ToString());
+                        oSolicitudRQDetalleDTO.CantidadNecesaria = decimal.Parse(drd["CantidadNecesaria"].ToString());
+                        oSolicitudRQDetalleDTO.CantidadSolicitada = decimal.Parse(drd["CantidadSolicitada1"].ToString());
+                        oSolicitudRQDetalleDTO.PrecioInfo = decimal.Parse(drd["PrecioInfo"].ToString());
+                        oSolicitudRQDetalleDTO.IdIndicadorImpuesto = int.Parse(drd["IdIndicadorImpuesto"].ToString());
+                        oSolicitudRQDetalleDTO.ItemTotal = decimal.Parse(drd["Total"].ToString());
+                        oSolicitudRQDetalleDTO.IdAlmacen = drd["IdAlmacen"].ToString();
+                        oSolicitudRQDetalleDTO.IdProveedor = int.Parse(drd["IdProveedor"].ToString());
+                        oSolicitudRQDetalleDTO.NumeroFabricacion = drd["NumeroFabricacion"].ToString();
+                        oSolicitudRQDetalleDTO.NumeroSerie = drd["NumeroSerie"].ToString();
+                        oSolicitudRQDetalleDTO.IdLineaNegocio = int.Parse(drd["IdLineaNegocio"].ToString());
+                        oSolicitudRQDetalleDTO.IdCentroCostos = drd["IdCentroCostos"].ToString();
+                        oSolicitudRQDetalleDTO.IdProyecto = drd["IdProyecto"].ToString();
+                        oSolicitudRQDetalleDTO.IdItemMoneda = drd["IdMoneda"].ToString();
+                        oSolicitudRQDetalleDTO.ItemTipoCambio = decimal.Parse(drd["TipoCambio"].ToString());
+                        oSolicitudRQDetalleDTO.Referencia = drd["Referencia"].ToString();
+                        oSolicitudRQDetalleDTO.EstadoDescripcion = drd["Estado"].ToString();
+                        oSolicitudRQDetalleDTO.Prioridad = int.Parse(drd["Prioridad"].ToString());
+                        oSolicitudRQDetalleDTO.EstadoItemAutorizado = 1;
+                        oSolicitudRQDetalleDTO.EstadoDetalle = int.Parse(drd["EstadoDetalle"].ToString());
+                        oSolicitudRQDetalleDTO.EstadoDisabled = 1;
+
+                        oSolicitudRQDetalleDTO.TotalCompraLocal = decimal.Parse(drd["TotalCompraLocal"].ToString());
+                        oSolicitudRQDetalleDTO.TotalCompraLima = decimal.Parse(drd["TotalCompraLima"].ToString());
+                        oSolicitudRQDetalleDTO.TotalDespacho = decimal.Parse(drd["TotalDespacho"].ToString());
+
+                        oSolicitudRQDetalleDTO.IdDetalle = int.Parse(drd["IdDetalle"].ToString());
+                        oSolicitudRQDetalleDTO.NombAlmacen = (drd["NombAlmacen"].ToString());
+                        oSolicitudRQDetalleDTO.NombObra = (drd["NombObra"].ToString());
+                        oSolicitudRQDetalleDTO.NombBase = (drd["NombBase"].ToString());
+                        oSolicitudRQDetalleDTO.IdTipoProducto = Convert.ToInt32(drd["IdTipoProducto"].ToString());
+
+                        oSolicitudRQDetalleDTO.SeriePedido = (drd["SeriePedido"].ToString());
+                        oSolicitudRQDetalleDTO.FechaDocumentoPedido = Convert.ToDateTime(drd["FechaDocumentoPedido"].ToString());
+                        oSolicitudRQDetalleDTO.ConformidadPedido = (drd["ConformidadPedido"].ToString());
+                        oSolicitudRQDetalleDTO.IdPedido = int.Parse((drd["IdPedido"].ToString()));
+
+                        //oSolicitudRQDetalleDTO.DescripcionItem = drd["DescripcionItem"].ToString();
+                        //lstSolicitudRQDTO.Add(oSolicitudRQDTO.Detalle.Add(oSolicitudRQDetalleDTO));
+                        oSolicitudRQDTO.Detalle[posicion] = oSolicitudRQDetalleDTO;
+                        posicion = posicion + 1;
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                }
+
+            }
+
+
+
+            Int32 filasdetalleAnexo = 0;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerAnexosSolicitudRQxId", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSolicitudRQ", IdSolicitudRQ);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader dr1 = da.SelectCommand.ExecuteReader();
+                    while (dr1.Read())
+                    {
+                        filasdetalleAnexo++;
+                    }
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+
+            oSolicitudRQDTO.AnexoDetalle = new AnexoDTO[filasdetalleAnexo];
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerAnexosSolicitudRQxId", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSolicitudRQ", IdSolicitudRQ);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    Int32 posicion = 0;
+                    while (drd.Read())
+                    {
+                        AnexoDTO oAnexoDTO = new AnexoDTO();
+                        oAnexoDTO.IdAnexo = Convert.ToInt32(drd["IdAnexo"].ToString());
+                        oAnexoDTO.ruta = (drd["ruta"].ToString());
+                        oAnexoDTO.IdSociedad = Convert.ToInt32(drd["IdSociedad"].ToString());
+                        oAnexoDTO.Tabla = (drd["Tabla"].ToString());
+                        oAnexoDTO.IdTabla = Convert.ToInt32(drd["IdTabla"].ToString());
+                        oAnexoDTO.NombreArchivo = (drd["NombreArchivo"].ToString());
+                        oSolicitudRQDTO.AnexoDetalle[posicion] = oAnexoDTO;
+                        posicion = posicion + 1;
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                }
+
+                lstSolicitudRQDTO.Add(oSolicitudRQDTO);
+
+            }
+
+
+
+            return lstSolicitudRQDTO;
+        }
+
+        public List<SolicitudRQDTO> ObtenerDatosxIDV2(int IdUsuario,int IdSolicitudRQ)
+        {
+            List<SolicitudRQDTO> lstSolicitudRQDTO = new List<SolicitudRQDTO>();
+
+            SolicitudRQDTO oSolicitudRQDTO = new SolicitudRQDTO();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarSolicitudRQxID", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSolicitudRQ", IdSolicitudRQ);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+
+                        oSolicitudRQDTO.IdSolicitudRQ = int.Parse(drd["Id"].ToString());
+                        oSolicitudRQDTO.IdSerie = int.Parse(drd["IdSerie"].ToString());
+                        oSolicitudRQDTO.Serie = drd["Serie"].ToString();
+                        oSolicitudRQDTO.Numero = int.Parse(drd["Numero"].ToString());
+                        oSolicitudRQDTO.IdSolicitante = int.Parse(drd["IdSolicitante"].ToString());
+                        oSolicitudRQDTO.Solicitante = drd["Solicitante"].ToString();
+                        oSolicitudRQDTO.IdSucursal = int.Parse(drd["IdSucursal"].ToString());
+                        oSolicitudRQDTO.IdDepartamento = int.Parse(drd["IdDepartamento"].ToString());
+                        oSolicitudRQDTO.IdClaseArticulo = int.Parse(drd["IdClaseArticulo"].ToString());
+                        oSolicitudRQDTO.IdTitular = int.Parse(drd["IdTitular"].ToString());
+                        oSolicitudRQDTO.IdMoneda = drd["IdMoneda"].ToString();
+                        oSolicitudRQDTO.TipoCambio = decimal.Parse(drd["TipoCambio"].ToString());
+                        oSolicitudRQDTO.TotalAntesDescuento = decimal.Parse(drd["TotalAntesDescuento"].ToString());
+                        oSolicitudRQDTO.IdIndicadorImpuesto = int.Parse(drd["IdIndicadorImpuesto"].ToString());
+                        oSolicitudRQDTO.Impuesto = decimal.Parse(drd["Impuesto"].ToString());
+                        oSolicitudRQDTO.Total = decimal.Parse(drd["Total"].ToString());
+                        oSolicitudRQDTO.FechaContabilizacion = Convert.ToDateTime(drd["FechaContabilizacion"].ToString());
+                        oSolicitudRQDTO.FechaValidoHasta = Convert.ToDateTime(drd["FechaValidoHasta"].ToString());
+                        oSolicitudRQDTO.FechaDocumento = Convert.ToDateTime(drd["FechaDocumento"].ToString());
+                        oSolicitudRQDTO.FechaCreacion = Convert.ToDateTime(drd["FechaCreacion"].ToString());
+                        oSolicitudRQDTO.Comentarios = drd["Comentarios"].ToString();
+                        oSolicitudRQDTO.Estado = int.Parse(drd["Estado"].ToString());
+                        oSolicitudRQDTO.DetalleEstado = drd["DetalleEstado"].ToString();
+                        oSolicitudRQDTO.Prioridad = int.Parse(drd["Prioridad"].ToString());
+                        oSolicitudRQDTO.Usuario = IdUsuario;
+
+                        //oSolicitudRQDTO.NombObra = (drd["NombObra"].ToString());
+                        //oSolicitudRQDTO.NombBase = (drd["NombBase"].ToString());
+                        //oSolicitudRQDTO.NombAlmacen = (drd["NombAlmacen"].ToString());
+
+                        //lstSolicitudRQDTO.Add(oSolicitudRQDTO);
+                    }
+                    drd.Close();
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+
 
 
             Int32 filasdetalle = 0;

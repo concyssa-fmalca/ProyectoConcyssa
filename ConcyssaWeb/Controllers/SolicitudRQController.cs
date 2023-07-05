@@ -31,6 +31,8 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerSolicitudesRQ(int IdBase,string FechaInicio, string FechaFinal, int Estado, int IdSolicitante)
         {
+            int IdPerfil = Convert.ToInt32(HttpContext.Session.GetInt32("IdPerfil"));
+            int Usuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             string valida = "";
             valida = validarEmpresaActual();
             if (valida != "")
@@ -44,7 +46,7 @@ namespace ConcyssaWeb.Controllers
             {
                 SolicitudRQDAO oSolicitudRQDAO = new SolicitudRQDAO();
                 int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-                List<SolicitudRQDTO> lstSolicitudRQDTO = oSolicitudRQDAO.ObtenerSolicitudesRQ(IdBase,IdSolicitante, IdSociedad.ToString(), FechaInicio, FechaFinal, Estado);
+                List<SolicitudRQDTO> lstSolicitudRQDTO = oSolicitudRQDAO.ObtenerSolicitudesRQ(Usuario,IdPerfil,IdBase,IdSolicitante, IdSociedad.ToString(), FechaInicio, FechaFinal, Estado);
                 if (lstSolicitudRQDTO.Count > 0)
                 {
                     return JsonConvert.SerializeObject(lstSolicitudRQDTO);
@@ -59,7 +61,7 @@ namespace ConcyssaWeb.Controllers
                 SolicitudRQDAO oSolicitudRQDAO = new SolicitudRQDAO();
                 int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
                 int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
-                List<SolicitudRQDTO> lstSolicitudRQDTO = oSolicitudRQDAO.ObtenerSolicitudesRQ(IdBase,int.Parse(IdUsuario.ToString()), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado);
+                List<SolicitudRQDTO> lstSolicitudRQDTO = oSolicitudRQDAO.ObtenerSolicitudesRQ(Usuario,IdPerfil,IdBase,int.Parse(IdUsuario.ToString()), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado);
                 if (lstSolicitudRQDTO.Count > 0)
                 {
                     return JsonConvert.SerializeObject(lstSolicitudRQDTO);
@@ -75,6 +77,7 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerDatosxID(int IdSolicitudRQ)
         {
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             string valida = "";
             valida = validarEmpresaActual();
             if (valida != "")
@@ -84,7 +87,7 @@ namespace ConcyssaWeb.Controllers
 
 
             SolicitudRQDAO oSerieDAO = new SolicitudRQDAO();
-            List<SolicitudRQDTO> lstSolicitudRQDTO = oSerieDAO.ObtenerDatosxID(IdSolicitudRQ);
+            List<SolicitudRQDTO> lstSolicitudRQDTO = oSerieDAO.ObtenerDatosxIDV2(IdUsuario,IdSolicitudRQ);
 
             if (lstSolicitudRQDTO.Count > 0)
             {

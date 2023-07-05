@@ -8,7 +8,8 @@ let DecimalesPrecios = 0;
 let DecimalesCantidades = 0;
 let DecimalesPorcentajes = 0;
 let tableStockObras;
-
+let limitador = 0;
+let valorfor = 1
 
 function seleccionarAlmacenItem() {
 
@@ -284,20 +285,23 @@ function ConsultaServidor() {
             //var fechavalidohasta = fechaSplitvalidohasta[2] + "/" + fechaSplitvalidohasta[1] + "/" + fechaSplitvalidohasta[0];
             //tr += '<td>' + fechavalidohasta + '</td>';
 
-           /* tr += '<td><a href="/SolicitudRQAutorizacion/GenerarPDF?Id=' + solicitudes[i].IdSolicitudRQ + '" target=”_blank” class="btn btn-danger btn-xs reporte fa fa-file-pdf-o fa-lg "></a></td>';*/
-
-            if (solicitudes[i].Estado == 1) {
-                tr += '<td><button class="btn btn-danger btn-xs editar fa fa-edit" onclick="ObtenerDatosxID(' + solicitudes[i].IdSolicitudRQ + ')"><img src="/assets/img/fa_pencil.png" height ="15" width="15" /></button></td>';
+            /* tr += '<td><a href="/SolicitudRQAutorizacion/GenerarPDF?Id=' + solicitudes[i].IdSolicitudRQ + '" target=”_blank” class="btn btn-danger btn-xs reporte fa fa-file-pdf-o fa-lg "></a></td>';*/
+            if (solicitudes[i].Usuario == solicitudes[i].IdSolicitante) {
+                if (solicitudes[i].Estado == 1) {
+                    tr += '<td><button class="btn btn-danger btn-xs editar fa fa-edit" onclick="ObtenerDatosxID(' + solicitudes[i].IdSolicitudRQ + ')"><img src="/assets/img/fa_pencil.png" height ="15" width="15" /></button></td>';
+                } else {
+                    tr += '<td><button class="btn btn-danger btn-xs  mostrar fa fa-eye fa-lg" onclick="ObtenerDatosxID(' + solicitudes[i].IdSolicitudRQ + ')"></button></td>';
+                }
             } else {
                 tr += '<td><button class="btn btn-danger btn-xs  mostrar fa fa-eye fa-lg" onclick="ObtenerDatosxID(' + solicitudes[i].IdSolicitudRQ + ')"></button></td>';
             }
-
-            if (solicitudes[i].EstadoSolicitud == 1) {
-                tr += '<td><button class="btn btn-danger btn-xs borrar fa fa-trash fa-lg" onclick="CerrarSolicitudEstado(' + solicitudes[i].IdSolicitudRQ + ')"></button></td>';
-            } else {
-                tr += '<td> <span style="font-color:red">CANCELADO</span> </td>';
-            }
-
+            if (solicitudes[i].Usuario == solicitudes[i].IdSolicitante) {
+                if (solicitudes[i].EstadoSolicitud == 1) {
+                    tr += '<td><button class="btn btn-danger btn-xs borrar fa fa-trash fa-lg" onclick="CerrarSolicitudEstado(' + solicitudes[i].IdSolicitudRQ + ')"></button></td>';
+                } else {
+                    tr += '<td> <span style="font-color:red">CANCELADO</span> </td>';
+                }
+            } else { tr += '<td> - </td>' }
 
             //let IdPerfil = $("#IdPerfil").val();
             //if ((IdPerfil == 1 || IdPerfil == 5) && solicitudes[i].Estado == 1) {
@@ -366,6 +370,7 @@ function ModalNuevo() {
     $("#OpenModalItem").show();
     $("#btnGrabar").show();
     $("#lblTituloModal").html("Nueva Solicitud");
+    $("#btnGrabar").text("CREAR")
     let seguiradelante = 'false';
     seguiradelante = CargarBasesObraAlmacenSegunAsignado();
 
@@ -423,7 +428,7 @@ function OpenModalItem() {
         if (ClaseArticulo == 2) { //servicio
             $("#BtnBuscarListadoAlmacen").prop("disabled", false);
             $("#BtnBuscarCodigoProducto").prop("disabled", false);
-            $("#txtDescripcionItem").prop("disabled", true);
+            $("#txtDescripcionItem").prop("disabled", false);
 
             $("#IdTipoProducto").hide();
             $("#IdTipoProducto").val(0);
@@ -438,6 +443,8 @@ function OpenModalItem() {
 
             $("#IdTipoProducto").show();
             //$("#IdTipoProducto").val(0);
+            $("#IdTipoProducto").hide();
+            $("#IdTipoProducto").val(0);
 
             $("#txtStockAlmacenItem").show();
             $("#lblStockItem").show();
@@ -545,7 +552,11 @@ function CambiarClaseArticulo() {
     if (ClaseArticulo == "2") {
         $("#IdTipoProducto").hide();
         $("#IdTipoProducto").val(0);
-    } else {
+    } else if (ClaseArticulo == "3") {
+        $("#IdTipoProducto").hide();
+        $("#IdTipoProducto").val(0);
+    }
+    else {
         $("#IdTipoProducto").show();
         $("#IdTipoProducto").val(0);
     }
@@ -832,30 +843,38 @@ function AgregarLinea() {
         }
         Moneda = JSON.parse(data);
     });
+    if (limitador >= 30) {
+        swal("Informacion!", "Solo se pueden agregar Hasta 30 items");
+        return;
+    }
+    for (var J = 0; J < valorfor; J++) {
+        console.log("VUELTAAAAAAAAAAA: " + J)
 
-    contador++;
-    let tr = '';
+        limitador++
 
-    //<select class="form-control select2" id="cboCodigoArticulo" name="cboCodigoArticulo[]">
-    //    <option value="0">Seleccione</option>
-    //</select>
-    tr += `<tr id="tr` + contador + `">
+        contador++;
+        let tr = '';
+
+        //<select class="form-control select2" id="cboCodigoArticulo" name="cboCodigoArticulo[]">
+        //    <option value="0">Seleccione</option>
+        //</select>
+        tr += `<tr id="tr` + contador + `">
             
             <td style="display:none;"><input class="form-control" type="text" value="0" id="txtIdSolicitudRQDetalle" name="txtIdSolicitudRQDetalle[]"/></td>
             <td input style="display:none;">
             <input  class="form-control" type="text" id="txtIdArticulo`+ contador + `" name="txtIdArticulo[]" />
             </td>
 
-            <td><button class="btn btn-xs btn-danger borrar  fa fa-trash" onclick="borrartr('tr`+ contador + `')" ></button></td>
+            <td><button class="btn btn-xs btn-danger borrar  fa fa-trash" onclick="borrartr('tr`+ contador + `');restarLimitador()" ></button></td>
             <td><input class="form-control" type="text" id="txtCodigoArticulo`+ contador + `" name="txtCodigoArticulo[]" disabled/></td>
             <td><textarea class="form-control" type="text" id="txtDescripcionArticulo`+ contador + `" name="txtDescripcionArticulo[]" disabled></textarea></td>
             <td>
             <select class="form-control" id="cboUnidadMedida`+ contador + `" name="cboUnidadMedida[]" disabled>`;
-    tr += `  <option value="0">Seleccione</option>`;
-    for (var i = 0; i < UnidadMedida.length; i++) {
-        tr += `  <option value="` + UnidadMedida[i].IdUnidadMedida + `">` + UnidadMedida[i].Codigo + `</option>`;
-    }
-    tr += `</select>
+        tr += `  <option value="0">Seleccione</option>`;
+        for (var i = 0; i < UnidadMedida.length; i++) {
+            tr += `  <option value="` + UnidadMedida[i].IdUnidadMedida + `">` + UnidadMedida[i].Codigo + `</option>`;
+        }
+        tr += `</select>
             </td>
             <td>
             <select class="form-control" id="cboPrioridadDetalle`+ contador + `" name="cboPrioridadDetalle[]" onchange="ValidarPrioridadDetalle()">
@@ -867,80 +886,80 @@ function AgregarLinea() {
             <td input style="display:none;"><input class="form-control" type="date" value="`+ today + `" id="txtFechaNecesaria` + contador + `" name="txtFechaNecesaria[]"></td>
             <td input style="display:none;">
             <select class="form-control MonedaDeCabecera" style="width:100px" name="cboMoneda[]" id="cboMonedaDetalle`+ contador + `" disabled>`;
-    tr += `  <option value="0">Seleccione</option>`;
-    for (var i = 0; i < Moneda.length; i++) {
-        tr += `  <option value="` + Moneda[i].IdMoneda + `">` + Moneda[i].Descripcion + `</option>`;
-    }
-    tr += `</select>
+        tr += `  <option value="0">Seleccione</option>`;
+        for (var i = 0; i < Moneda.length; i++) {
+            tr += `  <option value="` + Moneda[i].IdMoneda + `">` + Moneda[i].Descripcion + `</option>`;
+        }
+        tr += `</select>
             </td>
             <td input style="display:none;"><input class="form-control TipoCambioDeCabecera" type="number" name="txtTipoCambio[]" id="txtTipoCambioDetalle`+ contador + `" disabled></td>
 
             <td><input class="form-control"  type="number" name="txtCantidadNecesaria[]" min="0" value="0" id="txtCantidadNecesaria`+ contador + `" onkeyup="CalcularTotalDetalle(` + contador + `)"></td>
             <td><input disabled class="form-control" type="number" name="txtCantidadSolicitada[]" min="0" value="0" id="txtCantidadSolicitada`+ contador + `"></td>`;
 
-    
-
-    if (ClaseArticulo != 2 && (Number(PrecioUnitarioItem)) > 0) {
-        tr += `<td  style="display:none"><input class="form-control" type="number" name="txtPrecioInfo[]" min="0" value="0" id="txtPrecioInfo` + contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled></td>`;
-    } else {
-        tr += `<td  style="display:none"><input class="form-control" type="number" name="txtPrecioInfo[]" min="0" value="0" id="txtPrecioInfo` + contador + `" onchange="CalcularTotalDetalle(` + contador + `)"></td>`;
-    }
 
 
+        if (ClaseArticulo != 2 && (Number(PrecioUnitarioItem)) > 0) {
+            tr += `<td  style="display:none"><input class="form-control" type="number" name="txtPrecioInfo[]" min="0" value="0" id="txtPrecioInfo` + contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled></td>`;
+        } else {
+            tr += `<td  style="display:none"><input class="form-control" type="number" name="txtPrecioInfo[]" min="0" value="0" id="txtPrecioInfo` + contador + `" onchange="CalcularTotalDetalle(` + contador + `)"></td>`;
+        }
 
-    tr += `<td input style="display:none;">
+
+
+        tr += `<td input style="display:none;">
             <select class="form-control ImpuestoCabecera" name="cboIndicadorImpuesto[]" id="cboIndicadorImpuestoDetalle`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)">`;
-    tr += `  <option impuesto="0" value="0">Seleccione</option>`;
-    for (var i = 0; i < IndicadorImpuesto.length; i++) {
-        tr += `  <option impuesto="` + IndicadorImpuesto[i].Porcentaje + `" value="` + IndicadorImpuesto[i].IdIndicadorImpuesto + `">` + IndicadorImpuesto[i].Descripcion + `</option>`;
-    }
-    tr += `</select>
+        tr += `  <option impuesto="0" value="0">Seleccione</option>`;
+        for (var i = 0; i < IndicadorImpuesto.length; i++) {
+            tr += `  <option impuesto="` + IndicadorImpuesto[i].Porcentaje + `" value="` + IndicadorImpuesto[i].IdIndicadorImpuesto + `">` + IndicadorImpuesto[i].Descripcion + `</option>`;
+        }
+        tr += `</select>
             </td>
             <td style="display:none"><input class="form-control changeTotal" type="number"  name="txtItemTotal[]" id="txtItemTotal`+ contador + `" onchange="CalcularTotales()" disabled></td>
             <td>
             <select class="form-control"  id="cboAlmacen`+ contador + `" name="cboAlmacen[]">`;
-    tr += `  <option value="0">Seleccione</option>`;
-    for (var i = 0; i < Almacen.length; i++) {
-        tr += `  <option value="` + Almacen[i].IdAlmacen + `">` + Almacen[i].Descripcion + `</option>`;
-    }
-    tr += `</select>
+        tr += `  <option value="0">Seleccione</option>`;
+        for (var i = 0; i < Almacen.length; i++) {
+            tr += `  <option value="` + Almacen[i].IdAlmacen + `">` + Almacen[i].Descripcion + `</option>`;
+        }
+        tr += `</select>
             </td>
             <td input style="display:none;">
             <select class="form-control" style="width:100px" name="cboProveedor[]">`;
-    tr += `  <option value="0">Seleccione</option>`;
-    for (var i = 0; i < Proveedor.length; i++) {
-        tr += `  <option value="` + Proveedor[i].IdProveedor + `">` + Proveedor[i].RazonSocial + `</option>`;
-    }
-    tr += `</select>
+        tr += `  <option value="0">Seleccione</option>`;
+        for (var i = 0; i < Proveedor.length; i++) {
+            tr += `  <option value="` + Proveedor[i].IdProveedor + `">` + Proveedor[i].RazonSocial + `</option>`;
+        }
+        tr += `</select>
             </td>
             <td input style="display:none;"><input class="form-control" type="text" name="txtNumeroFacbricacion[]"></td>
             <td input style="display:none;"><input class="form-control" type="text" name="txtNumeroSerie[]"></td>
             <td input style="display:none;">
             <select class="form-control" name="cboLineaNegocio[]">`;
-    tr += `  <option value="0">Seleccione</option>`;
-    //if (LineaNegocio.count()>0) {
-    //    for (var i = 0; i < LineaNegocio.length; i++) {
-    //        tr += `  <option value="` + LineaNegocio[i].IdLineaNegocio + `">` + LineaNegocio[i].Descripcion + `</option>`;
-    //    }
-    //}
+        tr += `  <option value="0">Seleccione</option>`;
+        //if (LineaNegocio.count()>0) {
+        //    for (var i = 0; i < LineaNegocio.length; i++) {
+        //        tr += `  <option value="` + LineaNegocio[i].IdLineaNegocio + `">` + LineaNegocio[i].Descripcion + `</option>`;
+        //    }
+        //}
 
-    tr += `</select>
+        tr += `</select>
             </td>
             <td style="display:none">
             <select class="form-control" id="cboCentroCostos`+ contador + `" name="cboCentroCostos[]">`;
-    tr += `  <option value="0">Seleccione</option>`;
-    //for (var i = 0; i < CentroCosto.length; i++) {
-    //    tr += `  <option value="` + CentroCosto[i].IdCentroCosto + `">` + CentroCosto[i].IdCentroCosto + `</option>`;
-    //}
-    tr += `</select>
+        tr += `  <option value="0">Seleccione</option>`;
+        //for (var i = 0; i < CentroCosto.length; i++) {
+        //    tr += `  <option value="` + CentroCosto[i].IdCentroCosto + `">` + CentroCosto[i].IdCentroCosto + `</option>`;
+        //}
+        tr += `</select>
             </td>
             <td  style="display:none">
             <select class="form-control" id="cboProyecto`+ contador + `" name="cboProyecto[]">`;
-    tr += `  <option value="0">Seleccione</option>`;
-    //for (var i = 0; i < Proyecto.length; i++) {
-    //    tr += `  <option value="` + Proyecto[i].IdProyecto + `">` + Proyecto[i].IdProyecto + `</option>`;
-    //}
-    tr += `</select>
+        tr += `  <option value="0">Seleccione</option>`;
+        //for (var i = 0; i < Proyecto.length; i++) {
+        //    tr += `  <option value="` + Proyecto[i].IdProyecto + `">` + Proyecto[i].IdProyecto + `</option>`;
+        //}
+        tr += `</select>
             </td>
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
@@ -949,51 +968,54 @@ function AgregarLinea() {
             
           </tr>`;
 
-    $("#tabla").find('tbody').append(tr);
+        $("#tabla").find('tbody').append(tr);
 
 
-    let varMoneda = $("#cboMoneda").val();
-    let varTipoCambio = $("#txtTipoCambio").val();
-    let varimpuesto = $("#cboImpuesto").val();
+        let varMoneda = $("#cboMoneda").val();
+        let varTipoCambio = $("#txtTipoCambio").val();
+        let varimpuesto = $("#cboImpuesto").val();
 
-    if (varMoneda) {
-        $(".MonedaDeCabecera").val(varMoneda);
+        if (varMoneda) {
+            $(".MonedaDeCabecera").val(varMoneda);
+        }
+        if (varTipoCambio) {
+            $(".TipoCambioDeCabecera").val(varTipoCambio);
+        }
+        if (varimpuesto) {
+            $(".ImpuestoCabecera").val(varimpuesto);
+        }
+
+        let cantidadround = (Number(CantidadItem)).toFixed(DecimalesCantidades);
+        let precioround = (Number(PrecioUnitarioItem)).toFixed(DecimalesPrecios);
+
+        $("#txtIdArticulo" + contador).val(IdItem);
+        $("#txtCodigoArticulo" + contador).val(CodigoItem);
+        $("#txtDescripcionArticulo" + contador).val(DescripcionItem);
+        $("#cboUnidadMedida" + contador).val(MedidaItem);
+
+        $("#txtCantidadNecesaria" + contador).val(cantidadround).change();
+        $("#txtCantidadSolicitada" + contador).val(0);
+
+        $("#txtPrecioInfo" + contador).val(precioround).change();
+        $("#cboProyecto" + contador).val(ProyectoItem);
+        $("#cboAlmacen" + contador).val(AlmacenItem);
+        $("#cboPrioridadDetalle" + contador).val(PrioridadItem);
+
+        $("#cboCentroCostos" + contador).val(CentroCostoItem);
+        $("#txtReferencia" + contador).val(ReferenciaItem);
+
+
+        if (ClaseArticulo == 3) {
+            LimpiarModalItem(1);
+        } else {
+            LimpiarModalItem();
+        }
     }
-    if (varTipoCambio) {
-        $(".TipoCambioDeCabecera").val(varTipoCambio);
-    }
-    if (varimpuesto) {
-        $(".ImpuestoCabecera").val(varimpuesto);
-    }
-
-    let cantidadround = (Number(CantidadItem)).toFixed(DecimalesCantidades);
-    let precioround = (Number(PrecioUnitarioItem)).toFixed(DecimalesPrecios);
-
-    $("#txtIdArticulo" + contador).val(IdItem);
-    $("#txtCodigoArticulo" + contador).val(CodigoItem);
-    $("#txtDescripcionArticulo" + contador).val(DescripcionItem);
-    $("#cboUnidadMedida" + contador).val(MedidaItem);
-
-    $("#txtCantidadNecesaria" + contador).val(cantidadround).change();
-    $("#txtCantidadSolicitada" + contador).val(0);
-
-    $("#txtPrecioInfo" + contador).val(precioround).change();
-    $("#cboProyecto" + contador).val(ProyectoItem);
-    $("#cboAlmacen" + contador).val(AlmacenItem);
-    $("#cboPrioridadDetalle" + contador).val(PrioridadItem);
-
-    $("#cboCentroCostos" + contador).val(CentroCostoItem);
-    $("#txtReferencia" + contador).val(ReferenciaItem);
-
-
-    if (ClaseArticulo == 3) {
-        LimpiarModalItem(1);
-    } else {
-        LimpiarModalItem();
-    }
-
 }
 
+function restarLimitador() {
+    limitador = limitador - 1
+}
 
 //function LimpiarDatosModalItems() {
 
@@ -1885,7 +1907,7 @@ function limpiarDatos() {
     $("#txtEstado").val(1);
 
     $("#file").val('');
-
+    limitador = 0;
     //------------ANTERIOR AL 12/06/23
     //$("#txtId").val('');
     //$("#cboSerie").val('');
@@ -1918,7 +1940,7 @@ function ObtenerDatosxID(IdSolicitudRQ) {
 
     AbrirModal("modal-form");
 
-
+    $("#btnGrabar").text("GRABAR")
     //$("#lblTituloModal").html("Nueva Solicitud");
     let seguiradelante = 'false';
     seguiradelante = CargarBasesObraAlmacenSegunAsignado();
@@ -2070,6 +2092,15 @@ function ObtenerDatosxID(IdSolicitudRQ) {
                 $(".HabilitarVisualizacion").hide();
             } else {
                 $(".HabilitarVisualizacion").show();
+            }
+
+            if (solicitudes[0].Usuario != solicitudes[0].IdSolicitante) {
+                $("#btnGrabar").hide()
+            }
+            if (solicitudes[0].Usuario != solicitudes[0].IdSolicitante) {
+                for (var i = 0; i < Detalle.length; i++) {
+                    $("#btnedit" + i).hide();
+                }
             }
 
         }
@@ -2594,7 +2625,75 @@ function BuscarCodigoProducto(stock) {
     if (tableItems) {
         tableItems.destroy();
     }
-       
+
+    if (TipoItem == 3) {
+        $.post("/Articulo/ObtenerArticulosActivoFijo",
+           
+            function (data, status) {
+
+                var errorEmpresa = validarEmpresa(data);
+                if (errorEmpresa) {
+                    return;
+                }
+
+
+                if (data == "error") {
+                    swal("Informacion!", "No se encontro Articulo")
+
+                } else {
+                    $("#ModalListadoItem").modal();
+
+                    let items = JSON.parse(data);
+                    //console.log(items);
+                    let tr = '';
+
+                    for (var i = 0; i < items.length; i++) {
+
+                        tr += '<tr id="item' + items[i].IdArticulo + '" onclick="SeleccionTrItem(' + "'" + items[i].IdArticulo + "'" + ')" ondblclick="SeleccionarItemDoubleClick()">' +
+                            '<td><input type="radio" clase="" id="rdSeleccionado' + items[i].IdArticulo + '"  name="rdSeleccionado"  value = "' + items[i].IdArticulo + '" ></td>' +
+                            '<td>' + items[i].Codigo + '</td>' +
+                            '<td>' + items[i].Descripcion1 + '</td>';
+                        if (TipoItem == 2) {
+                            tr += '<td>-</td>';
+                            tr += '<td>-</td>';
+                        } else {
+                            tr += '<td>' + items[i].Stock + '</td>';
+                            tr += '<td>' + items[i].NombUnidadMedida + '</td>';
+                        }
+                        //if (items[i].PathImage != "") {
+                        //    tr += '<td><a target="_blank" href="/SolicitudRQ/DownloadImagen?ImageName=' + items[i].PathImage + '">Ver</a></td>';
+                        //} else {
+                        //    tr += '<td><a>-</a></td>';
+                        //}
+
+                        tr += '</tr>';
+
+
+                    }
+
+                    $("#tbody_listado_items").html(tr);
+
+                    tableItems = $("#tabla_listado_items").DataTable({
+                        "iDisplayLength": 100,
+                        "bDestroy": true,
+                        info: false, "language": {
+                            "paginate": {
+                                "first": "Primero",
+                                "last": "Último",
+                                "next": "Siguiente",
+                                "previous": "Anterior"
+                            },
+                            "processing": "Procesando...",
+                            "search": "Buscar:",
+                            "lengthMenu": "Mostrar _MENU_ registros"
+                        },
+                    });
+
+                }
+
+            });
+    } else {
+
         //console.log("aqui");
         $.post("/Articulo/ObtenerArticulosConStockSolicitud",
             { 'Almacen': Almacen, 'Stock': stock, 'TipoItem': TipoItem, 'TipoProducto': $("#IdTipoProducto").val() },
@@ -2644,7 +2743,7 @@ function BuscarCodigoProducto(stock) {
 
                     tableItems = $("#tabla_listado_items").DataTable({
                         "iDisplayLength": 100,
-                        "bDestroy":true,
+                        "bDestroy": true,
                         info: false, "language": {
                             "paginate": {
                                 "first": "Primero",
@@ -2663,176 +2762,81 @@ function BuscarCodigoProducto(stock) {
             });
 
 
-    //} else {
-    //    console.log("aqui1");
-    //    if (tableItems) {
+        //} else {
+        //    console.log("aqui1");
+        //    if (tableItems) {
 
-    //        $("#ModalListadoItem").modal();
-    //    } else {
-    //        console.log("aqui2");
-    //        $.post("/Articulo/ObtenerArticulosConStockSolicitud",
-    //            { 'Almacen': Almacen, 'Stock': stock, 'TipoItem': TipoItem, 'TipoProducto': $("#IdTipoProducto").val() },
-    //            function (data, status) {
+        //        $("#ModalListadoItem").modal();
+        //    } else {
+        //        console.log("aqui2");
+        //        $.post("/Articulo/ObtenerArticulosConStockSolicitud",
+        //            { 'Almacen': Almacen, 'Stock': stock, 'TipoItem': TipoItem, 'TipoProducto': $("#IdTipoProducto").val() },
+        //            function (data, status) {
 
-    //                var errorEmpresa = validarEmpresa(data);
-    //                if (errorEmpresa) {
-    //                    return;
-    //                }
-
-
-    //                if (data == "error") {
-    //                    swal("Informacion!", "No se encontro Articulo")
-
-    //                } else {
-    //                    $("#ModalListadoItem").modal();
-
-    //                    let items = JSON.parse(data);
-    //                    //console.log(items);
-    //                    let tr = '';
-
-    //                    for (var i = 0; i < items.length; i++) {
-
-    //                        tr += '<tr id="item' + items[i].IdArticulo + '" onclick="SeleccionTrItem(' + "'" + items[i].IdArticulo + "'" + ')" ondblclick="SeleccionarItemDoubleClick()">' +
-    //                            '<td><input type="radio" clase="" id="rdSeleccionado' + items[i].IdArticulo + '"  name="rdSeleccionado"  value = "' + items[i].IdArticulo + '" ></td>' +
-    //                            '<td>' + items[i].Codigo + '</td>' +
-    //                            '<td>' + items[i].Descripcion1 + '</td>';
-    //                        if (TipoItem == 2) {
-    //                            tr += '<td>-</td>';
-    //                            tr += '<td>-</td>';
-    //                        } else {
-    //                            tr += '<td>' + items[i].Stock + '</td>';
-    //                            tr += '<td>' + items[i].NombUnidadMedida + '</td>';
-    //                        }
-    //                        //if (items[i].PathImage != "") {
-    //                        //    tr += '<td><a target="_blank" href="/SolicitudRQ/DownloadImagen?ImageName=' + items[i].PathImage + '">Ver</a></td>';
-    //                        //} else {
-    //                        //    tr += '<td><a>-</a></td>';
-    //                        //}
-
-    //                        tr += '</tr>';
+        //                var errorEmpresa = validarEmpresa(data);
+        //                if (errorEmpresa) {
+        //                    return;
+        //                }
 
 
-    //                    }
+        //                if (data == "error") {
+        //                    swal("Informacion!", "No se encontro Articulo")
 
-    //                    $("#tbody_listado_items").html(tr);
+        //                } else {
+        //                    $("#ModalListadoItem").modal();
 
-    //                    tableItems = $("#tabla_listado_items").DataTable({
-    //                        "iDisplayLength": 100,
-    //                        info: false, "language": {
-    //                            "paginate": {
-    //                                "first": "Primero",
-    //                                "last": "Último",
-    //                                "next": "Siguiente",
-    //                                "previous": "Anterior"
-    //                            },
-    //                            "processing": "Procesando...",
-    //                            "search": "Buscar:",
-    //                            "lengthMenu": "Mostrar _MENU_ registros"
-    //                        },
-    //                    });
+        //                    let items = JSON.parse(data);
+        //                    //console.log(items);
+        //                    let tr = '';
 
-    //                }
+        //                    for (var i = 0; i < items.length; i++) {
 
-    //            });
+        //                        tr += '<tr id="item' + items[i].IdArticulo + '" onclick="SeleccionTrItem(' + "'" + items[i].IdArticulo + "'" + ')" ondblclick="SeleccionarItemDoubleClick()">' +
+        //                            '<td><input type="radio" clase="" id="rdSeleccionado' + items[i].IdArticulo + '"  name="rdSeleccionado"  value = "' + items[i].IdArticulo + '" ></td>' +
+        //                            '<td>' + items[i].Codigo + '</td>' +
+        //                            '<td>' + items[i].Descripcion1 + '</td>';
+        //                        if (TipoItem == 2) {
+        //                            tr += '<td>-</td>';
+        //                            tr += '<td>-</td>';
+        //                        } else {
+        //                            tr += '<td>' + items[i].Stock + '</td>';
+        //                            tr += '<td>' + items[i].NombUnidadMedida + '</td>';
+        //                        }
+        //                        //if (items[i].PathImage != "") {
+        //                        //    tr += '<td><a target="_blank" href="/SolicitudRQ/DownloadImagen?ImageName=' + items[i].PathImage + '">Ver</a></td>';
+        //                        //} else {
+        //                        //    tr += '<td><a>-</a></td>';
+        //                        //}
 
-
-    //    }
-    //}
-
-
-
-
-
-
+        //                        tr += '</tr>';
 
 
+        //                    }
 
-    //$.ajax({
-    //    url: "/Articulo/ObtenerArticulosConStock",
-    //    type: "POST",
-    //    async: true,
-    //    data: { 'Almacen': Almacen, 'Stock': stock, 'TipoItem': TipoItem },
-    //    beforeSend: function () {
+        //                    $("#tbody_listado_items").html(tr);
 
-    //        Swal.fire({
-    //            title: "Cargando...",
-    //            text: "Por favor espere",
-    //            showConfirmButton: false,
-    //            allowOutsideClick: false
-    //        });
+        //                    tableItems = $("#tabla_listado_items").DataTable({
+        //                        "iDisplayLength": 100,
+        //                        info: false, "language": {
+        //                            "paginate": {
+        //                                "first": "Primero",
+        //                                "last": "Último",
+        //                                "next": "Siguiente",
+        //                                "previous": "Anterior"
+        //                            },
+        //                            "processing": "Procesando...",
+        //                            "search": "Buscar:",
+        //                            "lengthMenu": "Mostrar _MENU_ registros"
+        //                        },
+        //                    });
 
-    //    },
-    //    success: function (data) {
+        //                }
 
-    //        var errorEmpresa = validarEmpresa(data);
-    //        if (errorEmpresa) {
-    //            return;
-    //        }
-
-
-    //        if (data == "error") {
-    //            swal("Informacion!", "No se encontro Articulo")
-
-    //        } else {
-
-    //            Sweetalert2.close();
-    //            $("#ModalListadoItem").modal();
-
-    //            let items = JSON.parse(data);
-    //            //console.log(items);
-    //            let tr = '';
-
-    //            for (var i = 0; i < items.length; i++) {
-
-    //                tr += '<tr id="item' + items[i].Codigo + '" onclick="SeleccionTrItem(' + "'" + items[i].Codigo + "'" + ')" ondblclick="SeleccionarItemDoubleClick()">' +
-    //                    '<td><input type="radio" clase="" id="rdSeleccionado' + items[i].Codigo + '"  name="rdSeleccionado"  value = "' + items[i].Codigo + '" ></td>' +
-    //                    '<td>' + items[i].Codigo + '</td>' +
-    //                    '<td>' + items[i].Descripcion1 + '</td>';
-    //                if (TipoItem == 2) {
-    //                    tr += '<td>-</td>';
-    //                    tr += '<td>-</td>';
-    //                } else {
-    //                    tr += '<td>' + items[i].Stock + '</td>';
-    //                    tr += '<td>' + items[i].CodigoUnidadMedida + '</td>';
-    //                }
-    //                if (items[i].PathImage != "") {
-    //                    tr += '<td><a target="_blank" href="/SolicitudRQ/DownloadImagen?ImageName=' + items[i].PathImage + '">Ver</a></td>';
-    //                } else {
-    //                    tr += '<td><a>-</a></td>';
-    //                }
-
-    //                tr += '</tr>';
+        //            });
 
 
-    //            }
-
-    //            $("#tbody_listado_items").html(tr);
-
-    //            tableItems = $("#tabla_listado_items").DataTable({
-    //                "iDisplayLength": 100,
-    //                info: false, "language": {
-    //                    "paginate": {
-    //                        "first": "Primero",
-    //                        "last": "Último",
-    //                        "next": "Siguiente",
-    //                        "previous": "Anterior"
-    //                    },
-    //                    "processing": "Procesando...",
-    //                    "search": "Buscar:",
-    //                    "lengthMenu": "Mostrar _MENU_ registros"
-    //                },
-    //            });
-
-    //        }
-
-    //    }
-    //}).fail(function () {
-    //    Swal.fire(
-    //        'Error!',
-    //        'Comunicarse con el Area Soporte: smarcode@smartcode.pe !',
-    //        'error'
-    //    )
-    //});
+        //    }
+        //}
 
 
 
@@ -2842,8 +2846,103 @@ function BuscarCodigoProducto(stock) {
 
 
 
+        //$.ajax({
+        //    url: "/Articulo/ObtenerArticulosConStock",
+        //    type: "POST",
+        //    async: true,
+        //    data: { 'Almacen': Almacen, 'Stock': stock, 'TipoItem': TipoItem },
+        //    beforeSend: function () {
+
+        //        Swal.fire({
+        //            title: "Cargando...",
+        //            text: "Por favor espere",
+        //            showConfirmButton: false,
+        //            allowOutsideClick: false
+        //        });
+
+        //    },
+        //    success: function (data) {
+
+        //        var errorEmpresa = validarEmpresa(data);
+        //        if (errorEmpresa) {
+        //            return;
+        //        }
 
 
+        //        if (data == "error") {
+        //            swal("Informacion!", "No se encontro Articulo")
+
+        //        } else {
+
+        //            Sweetalert2.close();
+        //            $("#ModalListadoItem").modal();
+
+        //            let items = JSON.parse(data);
+        //            //console.log(items);
+        //            let tr = '';
+
+        //            for (var i = 0; i < items.length; i++) {
+
+        //                tr += '<tr id="item' + items[i].Codigo + '" onclick="SeleccionTrItem(' + "'" + items[i].Codigo + "'" + ')" ondblclick="SeleccionarItemDoubleClick()">' +
+        //                    '<td><input type="radio" clase="" id="rdSeleccionado' + items[i].Codigo + '"  name="rdSeleccionado"  value = "' + items[i].Codigo + '" ></td>' +
+        //                    '<td>' + items[i].Codigo + '</td>' +
+        //                    '<td>' + items[i].Descripcion1 + '</td>';
+        //                if (TipoItem == 2) {
+        //                    tr += '<td>-</td>';
+        //                    tr += '<td>-</td>';
+        //                } else {
+        //                    tr += '<td>' + items[i].Stock + '</td>';
+        //                    tr += '<td>' + items[i].CodigoUnidadMedida + '</td>';
+        //                }
+        //                if (items[i].PathImage != "") {
+        //                    tr += '<td><a target="_blank" href="/SolicitudRQ/DownloadImagen?ImageName=' + items[i].PathImage + '">Ver</a></td>';
+        //                } else {
+        //                    tr += '<td><a>-</a></td>';
+        //                }
+
+        //                tr += '</tr>';
+
+
+        //            }
+
+        //            $("#tbody_listado_items").html(tr);
+
+        //            tableItems = $("#tabla_listado_items").DataTable({
+        //                "iDisplayLength": 100,
+        //                info: false, "language": {
+        //                    "paginate": {
+        //                        "first": "Primero",
+        //                        "last": "Último",
+        //                        "next": "Siguiente",
+        //                        "previous": "Anterior"
+        //                    },
+        //                    "processing": "Procesando...",
+        //                    "search": "Buscar:",
+        //                    "lengthMenu": "Mostrar _MENU_ registros"
+        //                },
+        //            });
+
+        //        }
+
+        //    }
+        //}).fail(function () {
+        //    Swal.fire(
+        //        'Error!',
+        //        'Comunicarse con el Area Soporte: smarcode@smartcode.pe !',
+        //        'error'
+        //    )
+        //});
+
+
+
+
+
+
+
+
+
+
+    }
 }
 
 
