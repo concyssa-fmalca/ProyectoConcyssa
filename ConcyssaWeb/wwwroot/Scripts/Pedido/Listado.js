@@ -1333,12 +1333,12 @@ function GuardarPedido() {
 
     let arrayCantidadNecesaria = new Array();
     $("input[name='txtCantidadNecesaria[]']").each(function (indice, elemento) {
-        arrayCantidadNecesaria.push($(elemento).val());
+        arrayCantidadNecesaria.push($(elemento).val().replace(/,/g, ""));
     });
 
     let arrayPrecioInfo = new Array();
     $("input[name='txtPrecioInfo[]']").each(function (indice, elemento) {
-        arrayPrecioInfo.push($(elemento).val());
+        arrayPrecioInfo.push($(elemento).val().replace(/,/g, ""));
     });
 
     let arrayTotal = new Array();

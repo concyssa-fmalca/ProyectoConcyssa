@@ -435,6 +435,8 @@ function OpenModalItem() {
 
             $("#txtStockAlmacenItem").hide();
             $("#lblStockItem").hide();
+            $("#divTipoServicio").show();
+            $("#SNinguno").prop('checked',true)
             //$("#divStockObraPedido").hide();
         } else if (ClaseArticulo == 3) { //activo
             $("#BtnBuscarListadoAlmacen").prop("disabled", false);
@@ -445,7 +447,9 @@ function OpenModalItem() {
             //$("#IdTipoProducto").val(0);
             $("#IdTipoProducto").hide();
             $("#IdTipoProducto").val(0);
-
+            $("#divTipoServicio").hide();
+            $("#SNinguno").prop('checked', true)
+            $("#SNinguno").prop('checked', false)
             $("#txtStockAlmacenItem").show();
             $("#lblStockItem").show();
         } else {//Producto
@@ -454,7 +458,9 @@ function OpenModalItem() {
             $("#BtnBuscarCodigoProducto").prop("disabled", false);
             $("#IdTipoProducto").show();
             //$("#IdTipoProducto").val(0);
-
+            $("#divTipoServicio").hide();
+            $("#SNinguno").prop('checked', true)
+            $("#SNinguno").prop('checked', false)
             $("#txtStockAlmacenItem").show();
             $("#lblStockItem").show();
         }
@@ -657,6 +663,20 @@ function AgregarLinea() {
     let ReferenciaItem = $("#txtReferenciaItem").val();
     let AlmacenItem = $("#cboAlmacenItem").val();
     let PrioridadItem = $("#cboPrioridadItem").val();
+    let TipoServicio 
+
+    if ($("#SNinguno").is(":checked")) {
+        TipoServicio = 'Ninguno'
+    } else if ($("#SPreventivo").is(":checked")) {
+        TipoServicio = 'Preventivo'
+        ReferenciaItem = ReferenciaItem+"(Servicio Preventivo)"
+    } else if ($("#SCorrectivo").is(":checked")) {
+        TipoServicio = 'Correctivo'
+        ReferenciaItem = ReferenciaItem+ "(Servicio Correctivo)"
+    } else {
+        TipoServicio = 'No Aplica'
+    }
+
 
 
     let arrayIdArticulo = new Array();
@@ -964,6 +984,7 @@ function AgregarLinea() {
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td><textarea class="form-control" type="text" value="" id="txtReferencia`+ contador + `" name="txtReferencia[]"></textarea></td>
+            <td style="display:none" ><input style="width:50px" class="form-control" type="text" value="" id="txtTipoServicio`+ contador + `" name="txtTipoServicio[]"></input></td>
             <td style="display:none;"><input class="form-control" type="text" value="1" id="txtEstadoDetalle`+ contador + `" name="txtEstadoDetalle[]"></td>
             
           </tr>`;
@@ -1003,6 +1024,8 @@ function AgregarLinea() {
 
         $("#cboCentroCostos" + contador).val(CentroCostoItem);
         $("#txtReferencia" + contador).val(ReferenciaItem);
+        console.log(TipoServicio)
+        $("#txtTipoServicio" + contador).val(TipoServicio);
 
 
         if (ClaseArticulo == 3) {
@@ -1483,7 +1506,7 @@ function GuardarSolicitud() {
     let arrayReferencia = new Array();
     let arrayIdSolicitudDetalle = new Array();
     let arrayEstadoDetalle = new Array();
-
+    let arrayTipoServicio = new Array();
     //let arrayIdAlmacen = new Array();
     let arrayPrioridad = new Array();
 
@@ -1551,6 +1574,10 @@ function GuardarSolicitud() {
 
     $("input[name='txtEstadoDetalle[]']").each(function (indice, elemento) {
         arrayEstadoDetalle.push($(elemento).val());
+    });
+
+    $("input[name='txtTipoServicio[]']").each(function (indice, elemento) {
+        arrayTipoServicio.push($(elemento).val());
     });
 
 
@@ -1805,7 +1832,8 @@ function GuardarSolicitud() {
             'Referencia': arrayReferencia,
             'IdSolicitudRQDetalle': arrayIdSolicitudDetalle,
             'EstadoDetalle': arrayEstadoDetalle,
-            'AnexoDetalle': AnexoDetalle
+            'AnexoDetalle': AnexoDetalle,
+            'TipoServicio' : arrayTipoServicio,
         },
         beforeSend: function () {
             Swal.fire({

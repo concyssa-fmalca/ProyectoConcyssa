@@ -33,5 +33,6 @@ namespace DTO
         public List<string> EstadoDescripcion { get; set; }
         public List<int> Prioridad { get; set; }
         public List<int> EstadoItemAutorizado { get; set; }
+        public List<string> TipoServicio { get; set; }
     }
 }

@@ -198,6 +198,7 @@ namespace DAO
                             dad.SelectCommand.Parameters.AddWithValue("@Referencia", oSolicitudRQDetalleDTO.Referencia[i]);
                             dad.SelectCommand.Parameters.AddWithValue("@EstadoDetalle", oSolicitudRQDetalleDTO.EstadoDetalle[i]);//;oSolicitudRQDetalleDTO.EstadoDetalle[i]);
                             dad.SelectCommand.Parameters.AddWithValue("@Prioridad", oSolicitudRQDetalleDTO.Prioridad[i]);
+                            dad.SelectCommand.Parameters.AddWithValue("@TipoServicio", oSolicitudRQDetalleDTO.TipoServicio[i]);
                             rpta = dad.SelectCommand.ExecuteNonQuery();
 
                         }
