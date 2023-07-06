@@ -96,6 +96,7 @@ namespace DTO
 
         public int IdSolicitud { get; set; }
         public string SerieNumero { get; set; }
+        public string TipoServicio { get; set; }
     }
 
     public class AsignadoPedidoRequeridoDTO
@@ -132,6 +133,7 @@ namespace DTO
         public string SerieCorrelativo { get; set; }
 
         public int IdSolicitud { get; set; }
+        public string TipoServicio { get; set; }
 
     }
 

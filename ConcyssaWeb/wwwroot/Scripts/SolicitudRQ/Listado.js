@@ -2089,7 +2089,9 @@ function ObtenerDatosxID(IdSolicitudRQ) {
                     Detalle[i].EstadoDetalle,
                     Detalle[i].SeriePedido,
                     Detalle[i].FechaDocumentoPedido,
-                    Detalle[i].ConformidadPedido);
+                    Detalle[i].ConformidadPedido,
+                    Detalle[i].TipoServicio,
+                );
 
                 $("#cboImpuesto").val(Detalle[0].IdIndicadorImpuesto);
                 $("#IdTipoProducto").val(Detalle[0].IdTipoProducto);
@@ -2206,7 +2208,7 @@ function CalcularTotales() {
 }
 
 
-function AgregarLineaDetalle(datos, DescripcionServicio, Numero, EstadoCabecera, contador, Prioridad, IdArticulo, IdSolicitudRQDetalle, IdUnidadMedida, IdIndicadorImpuesto, IdAlmacen, IdProveedor, IdLineaNegocio, IdCentroCosto, IdProyecto, IdMoneda, ItemTipoCambio, CantidadNecesaria, CantidadSolicitada, PrecioInfo, ItemTotal, NumeroFabricacion, NumeroSerie, FechaNecesaria, Referencia, DescripcionItem, EstadoDetalle,SeriePedido,FechaDocumentoPedido,ConformidadPedido) {
+function AgregarLineaDetalle(datos, DescripcionServicio, Numero, EstadoCabecera, contador, Prioridad, IdArticulo, IdSolicitudRQDetalle, IdUnidadMedida, IdIndicadorImpuesto, IdAlmacen, IdProveedor, IdLineaNegocio, IdCentroCosto, IdProyecto, IdMoneda, ItemTipoCambio, CantidadNecesaria, CantidadSolicitada, PrecioInfo, ItemTotal, NumeroFabricacion, NumeroSerie, FechaNecesaria, Referencia, DescripcionItem, EstadoDetalle,SeriePedido,FechaDocumentoPedido,ConformidadPedido,TipoServicio) {
     console.log(datos);
     let UnidadMedida;
     let IndicadorImpuesto;
@@ -2486,6 +2488,7 @@ function AgregarLineaDetalle(datos, DescripcionServicio, Numero, EstadoCabecera,
             <td style="display:none"><input class="form-control" type="text" value="0" disabled></td>
             <td style="display:none"><input class="form-control" type="text" value="0" disabled></td>
             <td ><textarea class="form-control" type="text" value="`+ Referencia + `"  name="txtReferencia[]" disabled>` + Referencia + `</textarea></td>
+            <td><input style="width:50px" class="form-control" type="text" value="`+ TipoServicio + `" name="txtTipoServicio[]" disabled></input></td>
             <td style="display:none;"><input class="form-control" type="text" value="`+ EstadoDetalle + `"  name="txtEstadoDetalle[]"></td>
             
           </tr>`;

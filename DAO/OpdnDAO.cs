@@ -266,7 +266,7 @@ namespace DAO
                         oOPDNDetalle.IdResponsable = Convert.ToInt32(drd["IdResponsable"].ToString());
                         oOPDNDetalle.NombCuadrilla = (drd["NombCuadrilla"].ToString());
                         oOPDNDetalle.NombResponsable = (drd["NombResponsable"].ToString());
-
+                        oOPDNDetalle.TipoServicio = drd["TipoServicio"].ToString();
 
 
                         lstOPDNDetalle.Add(oOPDNDetalle);

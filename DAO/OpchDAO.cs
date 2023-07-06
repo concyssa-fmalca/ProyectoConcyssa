@@ -285,6 +285,7 @@ namespace DAO
                         oOPCHDetalle.CodigoArticulo = (drd["CodigoArticulo"].ToString());
                         oOPCHDetalle.NombCuadrilla = drd["NombCuadrilla"].ToString();
                         oOPCHDetalle.NombResponsable = drd["NombResponsable"].ToString();
+                        oOPCHDetalle.TipoServicio = drd["TipoServicio"].ToString();
 
 
 

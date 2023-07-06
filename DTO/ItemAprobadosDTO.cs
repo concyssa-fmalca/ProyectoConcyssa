@@ -20,7 +20,7 @@
         public DateTime Fecha { get; set; }
         public string Referencia { get; set; }
 
-
+        public string TipoServicio { get; set; }
 
     }
 }

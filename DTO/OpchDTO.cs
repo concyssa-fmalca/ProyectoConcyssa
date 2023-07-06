@@ -141,7 +141,7 @@ namespace DTO
         public int IdResponsable { get; set; }
         public string NombCuadrilla { get; set; }
         public string NombResponsable { get; set; }
-
+        public string TipoServicio { get; set; }
 
     }
 }

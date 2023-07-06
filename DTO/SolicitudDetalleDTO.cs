@@ -60,6 +60,7 @@ namespace DTO
         public DateTime FechaDocumentoPedido { get; set; }
         public string ConformidadPedido { get; set; }
         public int IdPedido { get; set; }
+        public string TipoServicio { get; set; }
 
     }
 }

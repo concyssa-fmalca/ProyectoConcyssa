@@ -306,6 +306,7 @@ namespace DAO
                         oPedidoDetalleDTO.NombImpuesto = (drd["NombImpuesto"].ToString());
                         oPedidoDetalleDTO.IdGrupoUnidadMedida = Convert.ToInt32(drd["IdGrupoUnidadMedida"].ToString());
                         oPedidoDetalleDTO.CodigoProducto = (drd["CodigoProducto"].ToString());
+                        oPedidoDetalleDTO.TipoServicio = drd["TipoServicio"].ToString();
                         lstPedidoDetalleDTO.Add(oPedidoDetalleDTO);
                     }
                     drd.Close();
@@ -390,6 +391,7 @@ namespace DAO
 
                         oItemAprobadosDTO.NombUnidadMedida = (drd["UnidadMedida"].ToString());
                         oItemAprobadosDTO.Referencia = drd["Referencia"].ToString();
+                        oItemAprobadosDTO.TipoServicio = drd["TipoServicio"].ToString();
 
 
                         lstItemAprobadosDTO.Add(oItemAprobadosDTO);
@@ -602,6 +604,7 @@ namespace DAO
                         oAsignadoPedidoRequeridoDTO.CodigoArticulo = (drd["CodigoProducto"].ToString());
                         oAsignadoPedidoRequeridoDTO.SerieCorrelativo = (drd["SerieCorrelativo"].ToString());
                         oAsignadoPedidoRequeridoDTO.IdSolicitud = Convert.ToInt32(drd["IdSolicitud"].ToString());
+                        oAsignadoPedidoRequeridoDTO.TipoServicio = drd["TipoServicio"].ToString();
                         lstAsignadoPedidoRequeridoDTO.Add(oAsignadoPedidoRequeridoDTO);
                     }
                     drd.Close();
@@ -740,6 +743,8 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@DescOrigen", oPedidoDetalleDTO.DescOrigen);
                         da.SelectCommand.Parameters.AddWithValue("@IdOrigen", oPedidoDetalleDTO.IdOrigen);
                         da.SelectCommand.Parameters.AddWithValue("@IdSolicitud", oPedidoDetalleDTO.IdSolicitud);
+                        da.SelectCommand.Parameters.AddWithValue("@TipoServicio", oPedidoDetalleDTO.TipoServicio);
+                        
 
 
 

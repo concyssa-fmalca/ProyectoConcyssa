@@ -107,6 +107,7 @@ function llenarComboTipoRegistroFiltro(lista, idCombo, primerItem) {
 }
 function ModalNuevo() {
     $("#lblTituloModal").html("Semana Nueva");
+    $("#chkActivo").prop("checked",true)
     AbrirModal("modal-form");
    
 }

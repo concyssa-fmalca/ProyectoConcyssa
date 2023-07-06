@@ -545,7 +545,41 @@ function OpenModalItem() {
         swal("Informacion!", "Debe Seleccionar Moneda!");
     }
     else {
+        if (ClaseArticulo == 2) { //servicio
+            $("#BtnBuscarListadoAlmacen").prop("disabled", false);
+            $("#BtnBuscarCodigoProducto").prop("disabled", false);
+            $("#txtDescripcionItem").prop("disabled", true);
 
+            $("#IdTipoProducto").hide();
+            $("#IdTipoProducto").val(1);
+            $("#divTipoServicio").show();
+            $("#SNinguno").prop('checked', true) 
+            $("#txtStockAlmacenItem").hide();
+            $("#lblStockItem").hide();
+        } else if (ClaseArticulo == 3) { //activo
+            $("#BtnBuscarListadoAlmacen").prop("disabled", false);
+            $("#BtnBuscarCodigoProducto").prop("disabled", false);
+            $("#txtDescripcionItem").prop("disabled", true);
+
+            $("#IdTipoProducto").hide();
+            //$("#IdTipoProducto").val(0);
+            $("#divTipoServicio").hide();
+            $("#SNinguno").prop('checked', true)
+            $("#SNinguno").prop('checked', false) 
+            $("#txtStockAlmacenItem").show();
+            $("#lblStockItem").show();
+        } else {//Producto
+            $("#txtDescripcionItem").prop("disabled", true);
+            $("#BtnBuscarListadoAlmacen").prop("disabled", false);
+            $("#BtnBuscarCodigoProducto").prop("disabled", false);
+            $("#IdTipoProducto").show();
+            //$("#IdTipoProducto").val(0);
+            $("#divTipoServicio").hide();
+            $("#SNinguno").prop('checked', true)
+            $("#SNinguno").prop('checked', false) 
+            $("#txtStockAlmacenItem").show();
+            $("#lblStockItem").show();
+        }
         $("#cboAlmacenItem").val($("#cboAlmacen").val()); // que salga el almacen por defecto
 
 
@@ -680,7 +714,19 @@ function AgregarLinea() {
     let AlmacenItem = $("#cboAlmacenItem").val();
     let PrioridadItem = $("#cboPrioridadItem").val();
     let IdGrupoUnidadMedida = $("#cboGrupoUnidadMedida").val();
+    let TipoServicio 
     //txtReferenciaItem
+    if ($("#SNinguno").is(":checked")) {
+        TipoServicio = 'Ninguno'
+    } else if ($("#SPreventivo").is(":checked")) {
+        TipoServicio = 'Preventivo'
+        ReferenciaItem = ReferenciaItem + "(Servicio Preventivo)"
+    } else if ($("#SCorrectivo").is(":checked")) {
+        TipoServicio = 'Correctivo'
+        ReferenciaItem = ReferenciaItem + "(Servicio Correctivo)"
+    } else {
+        TipoServicio = 'No Aplica'
+    }
 
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
@@ -863,7 +909,9 @@ function AgregarLinea() {
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td ><input class="form-control" type="text" value="" id="txtReferencia`+ contador + `" name="txtReferencia[]"></td>
-            <td><button class="btn btn-xs btn-danger borrar fa fa-trash" onclick="borrartditem(`+ contador + `);restarLimitador()"></button></td>
+<td style="display:none"><input style="width:50px" class="form-control" type="text" value="" id="txtTipoServicio`+ contador + `" name="txtTipoServicio[]"></input></td>
+
+<td><button class="btn btn-xs btn-danger borrar fa fa-trash" onclick="borrartditem(`+ contador + `);restarLimitador()"></button></td>
           </tr>`;
 
         $("#tabla").find('tbody').append(tr);
@@ -905,6 +953,7 @@ function AgregarLinea() {
         $("#txtReferencia" + contador).val(ReferenciaItem);
         $("#txtPrecioInfo" + contador).val(PrecioUnitarioItem).change();
         $("#cboIndicadorImpuestoDetalle" + contador).val(1).change();
+        $("#txtTipoServicio" + contador).val(TipoServicio);
         CalcularTotalDetalle(contador)
         CalcularTotalDetalle(contador)
         LimpiarModalItem();
@@ -1549,8 +1598,10 @@ function GuardarSolicitud() {
     $(".cboResponsableTabla").each(function (indice, elemento) {
         arrayCboResponsableTabla.push($(elemento).val());
     });
-
-
+    let arrayTipoServicio = new Array();
+    $("input[name='txtTipoServicio[]']").each(function (indice, elemento) {
+        arrayTipoServicio.push($(elemento).val());
+    });
 
     //Cabecera
     let IdAlmacen = $("#cboAlmacen").val();
@@ -1623,7 +1674,7 @@ function GuardarSolicitud() {
                 'IdOrigen': arraytxtIdOrigen[i],
                 'IdCuadrilla': arrayCboCuadrillaTabla[i],
                 'IdResponsable': arrayCboResponsableTabla[i],
-
+                'TipoServicio' : arrayTipoServicio[i],
             })
         }
 
@@ -2173,58 +2224,116 @@ function BuscarCodigoProducto() {
     }
 
     $("#ModalListadoItem").modal();
+    if (TipoItem == 1 || TipoItem == 2) {
+        $.post("/Articulo/ListarArticulosCatalogoxSociedadxAlmacenStockxIdTipoProductoConServicios", { 'IdTipoProducto': IdTipoProducto, 'IdAlmacen': IdAlmacen, 'Estado': 1, 'TipoItem': TipoItem }, function (data, status) {
 
-    $.post("/Articulo/ListarArticulosCatalogoxSociedadxAlmacenStockxIdTipoProductoConServicios", { 'IdTipoProducto': IdTipoProducto, 'IdAlmacen': IdAlmacen, 'Estado': 1, 'TipoItem': TipoItem }, function (data, status) {
+            if (data == "error") {
+                swal("Informacion!", "No se encontro Articulo")
+            } else {
+                let items = JSON.parse(data);
+                console.log(items);
+                let tr = '';
 
-        if (data == "error") {
-            swal("Informacion!", "No se encontro Articulo")
-        } else {
-            let items = JSON.parse(data);
-            console.log(items);
-            let tr = '';
+                for (var i = 0; i < items.length; i++) {
+                    /* if (items[i].Inventario == TipoItem) {*/
+                    tr += '<tr>' +
+                        '<td><input type="radio" clase="" id="rdSeleccionado' + items[i].IdArticulo + '"  name="rdSeleccionado"  value = "' + items[i].IdArticulo + '" ></td>' +
+                        '<td>' + items[i].Codigo + '</td>' +
+                        '<td>' + items[i].Descripcion1 + '</td>' +
+                        '<td>' + items[i].Stock + '</td>' +
+                        '<td>' + items[i].UnidadMedida + '</td>' +
+                        '</tr>';
+                    //} else {
+                    //    if (TipoItem == 2 && items[i].Inventario==false) {
+                    //        tr += '<tr>' +
+                    //            '<td><input type="radio" clase="" id="rdSeleccionado' + items[i].Codigo + '"  name="rdSeleccionado"  value = "' + items[i].Codigo + '" ></td>' +
+                    //            '<td>' + items[i].Codigo + '</td>' +
+                    //            '<td>' + items[i].Descripcion1 + '</td>' +
+                    //            '<td>' + items[i].Stock + '</td>' +
+                    //            '<td>' + items[i].UnidadMedida + '</td>' +
+                    //            '</tr>';
+                    //    }
+                    //}
 
-            for (var i = 0; i < items.length; i++) {
-                /* if (items[i].Inventario == TipoItem) {*/
-                tr += '<tr>' +
-                    '<td><input type="radio" clase="" id="rdSeleccionado' + items[i].IdArticulo + '"  name="rdSeleccionado"  value = "' + items[i].IdArticulo + '" ></td>' +
-                    '<td>' + items[i].Codigo + '</td>' +
-                    '<td>' + items[i].Descripcion1 + '</td>' +
-                    '<td>' + items[i].Stock + '</td>' +
-                    '<td>' + items[i].UnidadMedida + '</td>' +
-                    '</tr>';
-                //} else {
-                //    if (TipoItem == 2 && items[i].Inventario==false) {
-                //        tr += '<tr>' +
-                //            '<td><input type="radio" clase="" id="rdSeleccionado' + items[i].Codigo + '"  name="rdSeleccionado"  value = "' + items[i].Codigo + '" ></td>' +
-                //            '<td>' + items[i].Codigo + '</td>' +
-                //            '<td>' + items[i].Descripcion1 + '</td>' +
-                //            '<td>' + items[i].Stock + '</td>' +
-                //            '<td>' + items[i].UnidadMedida + '</td>' +
-                //            '</tr>';
-                //    }
-                //}
+                }
 
+                $("#tbody_listado_items").html(tr);
+
+                tableItems = $("#tabla_listado_items").DataTable({
+                    info: false, "language": {
+                        "paginate": {
+                            "first": "Primero",
+                            "last": "Último",
+                            "next": "Siguiente",
+                            "previous": "Anterior"
+                        },
+                        "processing": "Procesando...",
+                        "search": "Buscar:",
+                        "lengthMenu": "Mostrar _MENU_ registros"
+                    }
+                });
             }
 
-            $("#tbody_listado_items").html(tr);
+        });
+    } else {
+        $.post("/Articulo/ObtenerArticulosActivoFijo",
 
-            tableItems = $("#tabla_listado_items").DataTable({
-                info: false, "language": {
-                    "paginate": {
-                        "first": "Primero",
-                        "last": "Último",
-                        "next": "Siguiente",
-                        "previous": "Anterior"
-                    },
-                    "processing": "Procesando...",
-                    "search": "Buscar:",
-                    "lengthMenu": "Mostrar _MENU_ registros"
+            function (data, status) {
+
+                if (data == "error") {
+                    swal("Informacion!", "No se encontro Articulo")
+
+                } else {
+
+                    let items = JSON.parse(data);
+                    //console.log(items);
+                    let tr = '';
+
+                    for (var i = 0; i < items.length; i++) {
+                        /* if (items[i].Inventario == TipoItem) {*/
+                        tr += '<tr>' +
+                            '<td><input type="radio" clase="" id="rdSeleccionado' + items[i].IdArticulo + '"  name="rdSeleccionado"  value = "' + items[i].IdArticulo + '" ></td>' +
+                            '<td>' + items[i].Codigo + '</td>' +
+                            '<td>' + items[i].Descripcion1 + '</td>' +
+                            '<td>' + items[i].Stock + '</td>' +
+                            '<td>' + items[i].UnidadMedida + '</td>' +
+                            '</tr>';
+                        //} else {
+                        //    if (TipoItem == 2 && items[i].Inventario==false) {
+                        //        tr += '<tr>' +
+                        //            '<td><input type="radio" clase="" id="rdSeleccionado' + items[i].Codigo + '"  name="rdSeleccionado"  value = "' + items[i].Codigo + '" ></td>' +
+                        //            '<td>' + items[i].Codigo + '</td>' +
+                        //            '<td>' + items[i].Descripcion1 + '</td>' +
+                        //            '<td>' + items[i].Stock + '</td>' +
+                        //            '<td>' + items[i].UnidadMedida + '</td>' +
+                        //            '</tr>';
+                        //    }
+                        //}
+
+                    }
+
+                    $("#tbody_listado_items").html(tr);
+
+                    tableItems = $("#tabla_listado_items").DataTable({
+                        "iDisplayLength": 100,
+                        "bDestroy": true,
+                        info: false, "language": {
+                            "paginate": {
+                                "first": "Primero",
+                                "last": "Último",
+                                "next": "Siguiente",
+                                "previous": "Anterior"
+                            },
+                            "processing": "Procesando...",
+                            "search": "Buscar:",
+                            "lengthMenu": "Mostrar _MENU_ registros"
+                        },
+                    });
+
                 }
+
             });
-        }
-
-    });
-
+    }
 }
 
 
@@ -2366,7 +2475,7 @@ function BuscarListadoAlmacen() {
 
 function SeleccionarItemListado() {
 
-    if ($("#cboClaseArticulo").val() != 2) {
+    if ($("#cboClaseArticulo").val() == 1) {
         let IdArticulo = $('input:radio[name=rdSeleccionado]:checked').val();
         let TipoItem = $("#cboClaseArticulo").val();
         let Almacen = $("#cboAlmacenItem").val();
@@ -2390,7 +2499,7 @@ function SeleccionarItemListado() {
             }
         });
 
-    } else {
+    } else if ($("#cboClaseArticulo").val() == 2) {
         $("#IdIndicadorImpuesto").val(1)
         let IdArticulo = $('input:radio[name=rdSeleccionado]:checked').val();
         let TipoItem = $("#cboClaseArticulo").val();
@@ -2415,6 +2524,30 @@ function SeleccionarItemListado() {
             }
         });
         $("#txtDescripcionItem").prop("disabled", false)
+    } else {
+        let IdArticulo = $('input:radio[name=rdSeleccionado]:checked').val();
+        let TipoItem = $("#cboClaseArticulo").val();
+        let Almacen = $("#cboAlmacenItem").val();
+        $.post("/Articulo/ListarArticulosxSociedadxAlmacenStockxProductoActivoFijo", { 'IdArticulo': IdArticulo, 'IdAlmacen': Almacen, 'Estado': 1 }, function (data, status) {
+
+            if (data == "error") {
+                swal("Info!", "No se encontro Articulo")
+                tableItems.destroy();
+            } else {
+                let datos = JSON.parse(data);
+                console.log(1);
+                $("#cboGrupoUnidadMedida").val(datos[0].IdGrupoUnidadMedida).change();
+                $("#cboMedidaItem").val(datos[0].IdUnidadMedidaInv);
+                $("#cboGrupoUnidadMedida").prop('disabled', true);
+                $("#txtCodigoItem").val(datos[0].Codigo);
+                $("#txtIdItem").val(datos[0].IdArticulo);
+                $("#txtDescripcionItem").val(datos[0].Descripcion1);
+                $("#txtPrecioUnitarioItem").val(datos[0].UltimoPrecioCompra);
+                $("#txtStockAlmacenItem").val(datos[0].Stock);
+                $("#txtPrecioUnitarioItem").val((datos[0].PrecioPromedio).toFixed(DecimalesPrecios))
+                tableItems.destroy();
+            }
+        });
     }
     $("#cboMedidaItem").prop("disabled",true)
 }
@@ -2811,6 +2944,7 @@ function AgregarPedidoToEntradaMercancia(data) {
             let PrioridadItem = datos[k]['IdArticulo'];
             let IdGrupoUnidadMedida = datos[k]['IdGrupoUnidadMedida'];
             let IdIndicadorImpuesto = datos[k]['IdIndicadorImpuesto'];
+            let TipoServicio = datos[k]['TipoServicio']
 
 
             //txtReferenciaItem
@@ -2978,6 +3112,7 @@ function AgregarPedidoToEntradaMercancia(data) {
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td ><input class="form-control" type="text" value="" id="txtReferencia`+ contador + `" name="txtReferencia[]"></td>
+            <td><input style="width:50px" class="form-control" type="text" value="" id="txtTipoServicio`+ contador + `" name="txtTipoServicio[]"></input></td>
             <td><button class="btn btn-xs btn-danger borrar fa fa-trash" onclick="borrartditem(`+ contador + `)"></button></td>
           </tr>`;
             if (pasardato==0) {
@@ -3013,6 +3148,7 @@ function AgregarPedidoToEntradaMercancia(data) {
                 $("#cboIndicadorImpuestoDetalle" + contador).val(IdIndicadorImpuesto).change();
                 $("#cboCentroCostos" + contador).val(CentroCostoItem);
                 $("#txtReferencia" + contador).val('BASADO EN PEDIDO ' + dataa['NombSerie'] + '-' + dataa['Correlativo']);
+                $("#txtTipoServicio" + contador).val(TipoServicio);
 
                 //$("#txtItemTotal" + contador).val(formatNumber(datos[k].total_item));
                 NumeracionDinamica();
@@ -3386,6 +3522,9 @@ function CambiarClaseArticulo() {
         $("#IdTipoProducto").val(0);
        // $("#cboTipoDocumentoOperacion").val(1338)
         $("#txtDescripcionItem").prop("disabled", false)
+    } else if (ClaseArticulo == "3") {
+        $("#IdTipoProducto").hide();
+        $("#IdTipoProducto").val(0);
     } else {
         $("#IdTipoProducto").show();
         $("#IdTipoProducto").val(0);

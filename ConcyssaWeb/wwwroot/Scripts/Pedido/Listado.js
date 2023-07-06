@@ -1382,6 +1382,18 @@ function GuardarPedido() {
         arrayTxtNombreAnexo.push($(elemento).val());
     });
 
+    let arrayTipoServicio = new Array();
+    let arrayComentTipoServicio = new Array();
+    $("input[name='txtTipoServicio[]']").each(function (indice, elemento) {
+        arrayTipoServicio.push($(elemento).val());
+        if (elemento == 'Correctivo') {
+            arrayComentTipoServicio.push("(Servicio Correctivo)")
+        } else if (elemento == 'Preventivo') {
+            arrayComentTipoServicio.push("(Servicio Preventivo)")
+        } else {
+            arrayComentTipoServicio.push("")
+        }
+    });
     let AnexoDetalle = [];
     for (var i = 0; i < arrayTxtNombreAnexo.length; i++) {
         AnexoDetalle.push({
@@ -1412,8 +1424,8 @@ function GuardarPedido() {
                 'total_impuestos': arrayTotal[i] - (arrayPrecioInfo[i] * arrayCantidadNecesaria[i]),
                 'total_valor_item': (arrayPrecioInfo[i] * arrayCantidadNecesaria[i]),
                 'total_item': arrayTotal[i],
-                'Referencia': arrayReferencia[i],
-
+                'Referencia': arrayReferencia[i] + arrayComentTipoServicio[i],
+                'TipoServicio': arrayTipoServicio[i],
                 'DescOrigen': DescOrigen[i],
                 'IdOrigen': IdOrigen[i],
                 'IdSolicitud': IdSolicitud[i]
@@ -1704,7 +1716,7 @@ function ObtenerDatosxID(id) {
             tr += `
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
-            <td ><input class="form-control" type="text" value="" id="txtReferencia`+ contador + `" name="txtReferencia[]" disabled></td>
+            <td ><input  class="form-control" type="text" value="" id="txtReferencia`+ contador + `" name="txtReferencia[]" disabled></td>
             <td><button class="btn btn-xs btn-danger borrar fa fa-trash" onclick="eliminartrpedidos(`+contador+`)"></button></td>
           </tr>`;
 
@@ -2180,6 +2192,7 @@ function ObtenerDatosProveedorXRQ(IdProveedor, dataa) {
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td ><input class="form-control" type="text" value="" id="txtReferencia`+ contador + `" name="txtReferencia[]"></td>
+            <td style="display:none"><input style="width:50px" class="form-control" type="text" value="" id="txtTipoServicio`+ contador + `" name="txtTipoServicio[]"></input></td>
             <td><button class="btn btn-xs btn-danger borrar  fa fa-trash" onclick="eliminartr3(`+ contador +`)" style="background-color:red"></button></td>
           </tr>`;
 
@@ -2205,7 +2218,7 @@ function ObtenerDatosProveedorXRQ(IdProveedor, dataa) {
             $("#txtDescripcionArticulo" + contador).val(datos[p].NombArticulo);
             //$("#cboUnidadMedida" + contador).val(MedidaItem);
             $("#cboUnidadMedida" + contador).val(datos[p].IdUnidadMedida);
-
+            $()
 
            // $("#txtCantidadNecesaria" + contador).val(formatNumberDecimales(datos[p].Cantidad,2) ).change();
 
@@ -2221,7 +2234,7 @@ function ObtenerDatosProveedorXRQ(IdProveedor, dataa) {
             }
 
 
-
+            $("#txtTipoServicio" + contador).val(datos[p].TipoServicio);
 
             $("#txtCantidadNecesaria" + contador).val(datos[p].Cantidad).change();
             //$("#txtCantidadNecesaria" + contador).val(formatNumberDecimales(datos[p].Cantidad,2)).change();
@@ -2425,7 +2438,7 @@ function AgregarLinea() {
     tr += `
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
-            <td ><input class="form-control" type="text" value="" id="txtReferencia`+ contador + `" name="txtReferencia[]"></td>
+            <td ><input  class="form-control" type="text" value="" id="txtReferencia`+ contador + `" name="txtReferencia[]"></td>
             <td><button class="btn btn-xs btn-danger borrar tram33  fa fa-trash" onclick="eliminartr4(` + contador +`)"></button></td>
 
           <tr>`;

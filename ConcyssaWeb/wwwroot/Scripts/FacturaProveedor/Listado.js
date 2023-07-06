@@ -617,7 +617,8 @@ function OpenModalItem() {
 
             $("#IdTipoProducto").hide();
             $("#IdTipoProducto").val(1);
-
+            $("#divTipoServicio").show();
+            $("#SNinguno").prop('checked', true) 
             $("#txtStockAlmacenItem").hide();
             $("#lblStockItem").hide();
         } else if (ClaseArticulo == 3) { //activo
@@ -627,7 +628,9 @@ function OpenModalItem() {
 
             $("#IdTipoProducto").hide();
             //$("#IdTipoProducto").val(0);
-
+            $("#divTipoServicio").hide();
+            $("#SNinguno").prop('checked', true) 
+            $("#SNinguno").prop('checked', false) 
             $("#txtStockAlmacenItem").show();
             $("#lblStockItem").show();
         } else {//Producto
@@ -636,7 +639,9 @@ function OpenModalItem() {
             $("#BtnBuscarCodigoProducto").prop("disabled", false);
             $("#IdTipoProducto").show();
             //$("#IdTipoProducto").val(0);
-
+            $("#divTipoServicio").hide();
+            $("#SNinguno").prop('checked', true) 
+            $("#SNinguno").prop('checked', false) 
             $("#txtStockAlmacenItem").show();
             $("#lblStockItem").show();
         }
@@ -751,6 +756,21 @@ function AgregarLinea() {
     let IdGrupoUnidadMedida = $("#cboGrupoUnidadMedida").val();
     let IdIndicadorImpuesto = $("#IdIndicadorImpuesto").val();
     //txtReferenciaItem
+    let TipoServicio 
+
+    if ($("#SNinguno").is(":checked")) {
+        TipoServicio = 'Ninguno'
+    } else if ($("#SPreventivo").is(":checked")) {
+        TipoServicio = 'Preventivo'
+        ReferenciaItem = ReferenciaItem + "(Servicio Preventivo)"
+    } else if ($("#SCorrectivo").is(":checked")) {
+        TipoServicio = 'Correctivo'
+        ReferenciaItem = ReferenciaItem + "(Servicio Correctivo)"
+    } else {
+        TipoServicio = 'No Aplica'
+    }
+
+
 
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
@@ -940,7 +960,8 @@ function AgregarLinea() {
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td ><input class="form-control" type="text" value="" id="txtReferencia`+ contador + `" name="txtReferencia[]"></td>
-            <td><button class="btn btn-xs btn-danger borrar fa fa-trash" onclick="borrartditem(`+ contador + `);restarLimitador()"></button></td>
+<td style="display:none"><input style="width:50px" class="form-control" type="text" value="" id="txtTipoServicio`+ contador + `" name="txtTipoServicio[]"></input></td>
+<td><button class="btn btn-xs btn-danger borrar fa fa-trash" onclick="borrartditem(`+ contador + `);restarLimitador()"></button></td>
           </tr>`;
 
         $("#tabla").find('tbody').append(tr);
@@ -972,7 +993,7 @@ function AgregarLinea() {
         $("#cboProyecto" + contador).val(ProyectoItem);
         $("#cboAlmacen" + contador).val(AlmacenItem);
         $("#cboPrioridadDetalle" + contador).val(PrioridadItem);
-
+        $("#txtTipoServicio" + contador).val(TipoServicio);
         $("#cboCentroCostos" + contador).val(CentroCostoItem);
         $("#txtReferencia" + contador).val(ReferenciaItem);
         $("#txtPrecioInfo" + contador).val(PrecioUnitarioItem).change();
@@ -1645,8 +1666,10 @@ function GuardarSolicitud() {
         $(".cboResponsableTabla").each(function (indice, elemento) {
             arrayCboResponsableTabla.push($(elemento).val());
         });
-
-
+        let arrayTipoServicio = new Array();
+        $("input[name='txtTipoServicio[]']").each(function (indice, elemento) {
+            arrayTipoServicio.push($(elemento).val());
+        });
         //Cabecera
         let IdAlmacen = $("#cboAlmacen").val();
         let IdTipoDocumento = $("#cboTipoDocumentoOperacion").val();
@@ -1720,6 +1743,7 @@ function GuardarSolicitud() {
                     'IdOrigen': arraytxtIdOrigen[i],
                     'IdCuadrilla': arrayCboCuadrillaTabla[i],
                     'IdResponsable': arrayCboResponsableTabla[i],
+                    'TipoServicio' : arrayTipoServicio[i],
 
 
 
@@ -3228,7 +3252,7 @@ function AgregarPedidoToEntradaMercancia(data) {
             let PrioridadItem = datos[k]['IdArticulo'];
             let IdGrupoUnidadMedida = datos[k]['IdGrupoUnidadMedida'];
             let IdIndicadorImpuesto = datos[k]['IdIndicadorImpuesto'];
-
+            let TipoServicio = datos[k]['TipoServicio']
 
             //txtReferenciaItem
 
@@ -3388,7 +3412,8 @@ function AgregarPedidoToEntradaMercancia(data) {
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td ><input class="form-control" type="text" value="" id="txtReferencia`+ contador + `" name="txtReferencia[]"></td>
-            <td><button class="btn btn-danger btn-xs  borrar fa fa-trash" onclick="borrartditem(`+ contador + `)">-</button></td>
+<td style="display:none"><input style="width:50px" class="form-control" type="text" value="" id="txtTipoServicio`+ contador + `" name="txtTipoServicio[]"></input></td>
+<td><button class="btn btn-danger btn-xs  borrar fa fa-trash" onclick="borrartditem(`+ contador + `)">-</button></td>
           </tr>`;
 
             $("#tabla").find('tbody').append(tr);
@@ -3419,6 +3444,7 @@ function AgregarPedidoToEntradaMercancia(data) {
             $("#cboAlmacen" + contador).val(AlmacenItem);
             $("#cboPrioridadDetalle" + contador).val(PrioridadItem);
             $("#cboIndicadorImpuestoDetalle" + contador).val(IdIndicadorImpuesto);
+            $("#txtTipoServicio" + contador).val(TipoServicio);
 
 
             $("#txtItemTotal"+ contador).val((datos[k].total_item).toFixed(DecimalesPrecios))
@@ -3505,6 +3531,7 @@ function AgregarOPNDDetalle(data) {
             let PrioridadItem = datos[k]['IdArticulo'];
             let IdGrupoUnidadMedida = datos[k]['IdGrupoUnidadMedida'];
             let IdIndicadorImpuesto = datos[k]['IdIndicadorImpuesto'];
+            let TipoServicio = datos[k]['TipoServicio']
             let IdCuadrillaParaTabla = 0
             let IdResponsableParaTabla = 0
 
@@ -3679,6 +3706,7 @@ function AgregarOPNDDetalle(data) {
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td> <input class="form-control" type="text" value="BASADO EN LA ENTREGA `+ serieycorrelativo + `" id="txtReferencia` + contador + `" name="txtReferencia[]"></td>
+            <td style="display:none"><input style="width:50px" class="form-control" type="text" value="" id="txtTipoServicio`+ contador + `" name="txtTipoServicio[]"></input></td>
             <td><button class="btn btn-xs btn-danger borrar fa fa-trash" onclick="borrartditem(`+ contador + `)">-</button></td>
           </tr>`;
 
@@ -3709,7 +3737,7 @@ function AgregarOPNDDetalle(data) {
             $("#cboAlmacen" + contador).val(AlmacenItem);
             $("#cboPrioridadDetalle" + contador).val(PrioridadItem);
             $("#cboIndicadorImpuestoDetalle" + contador).val(IdIndicadorImpuesto).change();;
-
+            $("#txtTipoServicio" + contador).val(TipoServicio);
             ObtenerCuadrillasTabla(contador)
             ObtenerEmpleadosxIdCuadrillaTabla(contador)
             $(".cboCuadrillaTabla").select2()

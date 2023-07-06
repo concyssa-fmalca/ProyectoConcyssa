@@ -120,6 +120,7 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@Referencia", oOPDNDetalle.Referencia);
                         da.SelectCommand.Parameters.AddWithValue("@NombTablaOrigen", oOPDNDetalle.NombTablaOrigen);
                         da.SelectCommand.Parameters.AddWithValue("@IdOrigen", oOPDNDetalle.IdOrigen);
+                        da.SelectCommand.Parameters.AddWithValue("@TipoServicio", oOPDNDetalle.TipoServicio);
 
                         int rpta = int.Parse(da.SelectCommand.ExecuteScalar().ToString());
                         transactionScope.Complete();
@@ -1190,6 +1191,7 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@Referencia", oOPCHDetalle.Referencia);
                         da.SelectCommand.Parameters.AddWithValue("@NombTablaOrigen", oOPCHDetalle.NombTablaOrigen);
                         da.SelectCommand.Parameters.AddWithValue("@IdOrigen", oOPCHDetalle.IdOrigen);
+                        da.SelectCommand.Parameters.AddWithValue("@TipoServicio", oOPCHDetalle.TipoServicio);
 
                         int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
                         transactionScope.Complete();
@@ -1443,6 +1445,7 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@Referencia", oORPCDetalle.Referencia);
                         da.SelectCommand.Parameters.AddWithValue("@NombTablaOrigen", oORPCDetalle.NombTablaOrigen);
                         da.SelectCommand.Parameters.AddWithValue("@IdOrigen", oORPCDetalle.IdOrigen);
+                        da.SelectCommand.Parameters.AddWithValue("@TipoServicio", oORPCDetalle.TipoServicio);
 
                         int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
                         transactionScope.Complete();
