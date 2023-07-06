@@ -110,7 +110,6 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Ver</th>
                             <th style="min-width:5px">Numero</th>
                             <th>Cuadrilla</th>
                             <th>Obra</th>
@@ -276,25 +275,25 @@
                                         <button id="OpenModalItem" style="margin-bottom:10px;margin-top:5px" class="btn btn-xs btn-info" onclick="OpenModalItem()" type="button">Agregar Item</button>
                                     </div>
                                 </div>
-                                <div class="table-responsive" >
-                                    <table class="table" id="tabla" width="100%">
-                                        <thead>
-                                            <tr>
-                                                <th style="display:none"><button style="display:none" class="btn btn-xs btn-info" onclick="AgregarLinea()" type="button">+</button></th>
-
-                                                <th>Item</th>
-                                                <th>Ver</th>
-                                                <th style="min-width:80px">Codigo</th>
-                                                <th style="min-width:320px">Descripcion de Articulo</th>
-                                                <th style="min-width:100px">UM</th>
-                                                <th style="min-width:100px">Cantidad</th>
-                         
-                                                <th>Accion</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="tbody_detalle"></tbody>
-                                    </table>
+                                <div class="container-fluid">
+                                    <div class="table-responsive">
+                                        <table class="table" id="tabla" width="100%">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Item</th>
+                                                    <th style="min-width:100px">Codigo</th>
+                                                    <th style="min-width:300px">Descripcion de Articulo</th>
+                                                    <th style="min-width:80px">UM</th>
+                                                    <th style="min-width:80px">Cantidad</th>
+                                                    <th>Accion</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tbody_detalle"></tbody>
+                                        </table>
+                                    </div>
                                 </div>
+                                
                             </div>
 
                             <div id="Anexos" class="tabcontent">
