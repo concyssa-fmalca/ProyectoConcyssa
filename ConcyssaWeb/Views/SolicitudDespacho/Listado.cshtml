@@ -21,7 +21,7 @@
 
     #global {
         height: 500px;
-        border: 1px solid #ddd;
+        /*border: 1px solid #ddd;*/
         background: #f1f1f1;
         overflow-y: scroll;
         margin-left: 25px;
@@ -110,7 +110,8 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Numero</th>
+                            <th>Ver</th>
+                            <th style="min-width:5px">Numero</th>
                             <th>Cuadrilla</th>
                             <th>Obra</th>
                             <th>Base</th>
@@ -202,7 +203,7 @@
                                 <div class='form-group-sm'>
                                     <label for="cboSerie" class="control-label col-sm-2 col-xs-12 left-align">Serie</label>
                                     <div class="col-sm-2 col-xs-6">
-                                        <select id="cboSerie" class="form-control input-sm" tabindex="0" onchange="ObtenerNumeracion()"></select>
+                                        <select id="cboSerie" class="form-control input-sm" tabindex="0" ></select>
                                     </div>
                                 </div>
 
@@ -256,7 +257,7 @@
                                             @*<option value="0">Seleccione</option>*@
                                             <option value="1">Producto</option>
                                             @*<option value="2">Servicio</option>*@
-                                            <option value="3">Activo</option>
+                                            @*<option value="3">Activo</option>*@
                                         </select>
                                     </div>
                                 </div>
@@ -282,6 +283,7 @@
                                                 <th style="display:none"><button style="display:none" class="btn btn-xs btn-info" onclick="AgregarLinea()" type="button">+</button></th>
 
                                                 <th>Item</th>
+                                                <th>Ver</th>
                                                 <th style="min-width:80px">Codigo</th>
                                                 <th style="min-width:320px">Descripcion de Articulo</th>
                                                 <th style="min-width:100px">UM</th>
@@ -620,6 +622,50 @@
             </div>
         </div>
     </div>
+
+
+
+
+
+    <!-- Modal visualizar detale-->
+    <div class="modal fade" data-backdrop="static"
+         data-keyboard="false" id="ModalListadoDetalle" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered allcp-form" role="document">
+            <div class="modal-content">
+
+
+                <div class="panel" style="margin-bottom:0px">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="lblTituloModalItem">Detalle</h5>
+                    </div>
+                    <div class="panel-body ">
+                        <div class='col s12 m12 '>
+                            <div class='container-fluid'>
+                                @*<div class="table-responsive">*@
+                                <table class="table" id="tabla_listado_detalle" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>Descripcion</th>
+                                            <th>Valor</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbody_listado_detalle"></tbody>
+                                </table>
+                                @*</div>*@
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger pull-right" style="background-color:orange;" data-dismiss="modal" >Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
 
 
 </div>

@@ -153,8 +153,18 @@ namespace ConcyssaWeb.Controllers
         public string GenerarGuia(int IdMovimiento)
         {
             string mensaje_error = "";
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            string mensaje = "";
+
             MovimientoDAO oMovimientoDAO = new MovimientoDAO();
             GRSunatDTO oGRSunatDTO = new GRSunatDTO();
+
+
+            ConfiguracionSociedadDAO conf = new ConfiguracionSociedadDAO();
+            List<ConfiguracionSociedadDTO> oConfiguracionSociedadDTO = conf.ObtenerConfiguracionSociedad(IdSociedad, ref mensaje);
+            if (oConfiguracionSociedadDTO.Count() > 0)
+            {}else{return "Debe Configurar Sociedad";}
+
 
             MovimientoDTO oMovimientoDTO1 = oMovimientoDAO.ObtenerMovimientosDetallexIdMovimiento(IdMovimiento, ref mensaje_error);
             if (oMovimientoDTO1 != null)
@@ -162,16 +172,17 @@ namespace ConcyssaWeb.Controllers
                 int re = oMovimientoDAO.AsignarSerieCorrelativoGuia(IdMovimiento, oMovimientoDTO1.IdTipoDocumentoRef, oMovimientoDTO1.IdAlmacen);
             }
 
+           
             MovimientoDTO oMovimientoDTO = oMovimientoDAO.ObtenerMovimientosDetallexIdMovimiento(IdMovimiento, ref mensaje_error);
 
             oGRSunatDTO.N_DOC = oMovimientoDTO.SerieGuiaElectronica + "-" + oMovimientoDTO.NumeroGuiaElectronica;//oMovimientoDTO.NumSerieTipoDocumentoRef;
             oGRSunatDTO.TIPO_DOC = "09";
             oGRSunatDTO.FECHA = oMovimientoDTO.FechaContabilizacion.ToString("yyyy-MM-dd");
-            oGRSunatDTO.RUC = "20513233605";//oMovimientoDTO.NumDocumentoDestinatario; consyssa
+            oGRSunatDTO.RUC = oConfiguracionSociedadDTO[0].Ruc;//"20513233605";//oMovimientoDTO.NumDocumentoDestinatario; consyssa
             oGRSunatDTO.TIPO_RUC = "6";
             oGRSunatDTO.NOMBRE = "CONCYSSA SA";//oMovimientoDTO.NombDestinatario; consyssa
             oGRSunatDTO.DIRECCION = "AV. LA MARINA 1039"; //consyssa
-            oGRSunatDTO.RUC_EMIS = "20100370426"; //consysaa
+            oGRSunatDTO.RUC_EMIS = oConfiguracionSociedadDTO[0].Ruc;//"20100370426"; //consysaa
             oGRSunatDTO.NOMBRE_EMIS = "ANDES SYSTEMS E.I.R.L."; //consysaa
             oGRSunatDTO.MOT_TRAS = oMovimientoDTO.CodigoMotivoTrasladoSunat;
             oGRSunatDTO.MOT_TRAS_DES = oMovimientoDTO.DescripcionMotivoTrasladoSunat;
@@ -202,7 +213,7 @@ namespace ConcyssaWeb.Controllers
 
             oGRSunatDTO.UBIGEO_PAR = oMovimientoDTO.CodigoUbigeoPartida;
             oGRSunatDTO.PUNTO_PAR = oMovimientoDTO.DireccionPartida;
-            oGRSunatDTO.RUC_PAR = "20100370426";
+            oGRSunatDTO.RUC_PAR = oConfiguracionSociedadDTO[0].Ruc; 
             oGRSunatDTO.COD_PAR = oMovimientoDTO.CodigoAnexoPartida;
 
             oGRSunatDTO.PDF = "SI";
