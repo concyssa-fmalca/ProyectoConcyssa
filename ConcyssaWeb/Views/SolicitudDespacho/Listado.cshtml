@@ -84,9 +84,9 @@
         </div>
         <div class="container-fluid">
             <div class="col-xs-6 col-sm-6">
-                <div class="topbar-left col-xs-6 col-sm-6">
+                @*<div class="topbar-left col-xs-6 col-sm-6">
                     <h4 style="font-size:1.2em;">Total de Registros: <span id="spnTotalRegistros"></span></h4>
-                </div>
+                </div>*@
             </div>
             <div class="col-xs-6 right">
                 <a id="reporteRPT" style="display:none" download="" href="data:application/octet-stream;base64,R0lGODdhAQABAPAAAP8AAAAAACwAAAAAAQABAAACAkQBADs=">download image</a>
@@ -222,7 +222,7 @@
 
                                 <div class='form-group-sm'>
                                     <label for="txtFechaDocumento" class="control-label col-sm-2 left-align">Fecha Documento</label>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-4 col-xs-12">
                                         <input id="txtFechaDocumento" value="@DateTime.Now.ToString("yyyy-MM-dd")" type="date" class="form-control input-sm" tabindex="10" disabled>
                                     </div>
                                 </div>
@@ -230,7 +230,7 @@
 
                                 <div class='form-group-sm'>
                                     <label for="txtFechaContabilizacion" class="control-label col-sm-2 left-align">Fecha Contabilizacion</label>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-4 col-xs-12">
                                         <input id="txtFechaContabilizacion" value="@DateTime.Now.ToString("yyyy-MM-dd")" type="date" class="form-control input-sm" tabindex="6">
                                     </div>
                                 </div>
