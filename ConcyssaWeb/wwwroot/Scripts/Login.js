@@ -61,11 +61,19 @@ $("#frmAcceso").on('submit', function (e) {
 
 
     $.post("/Home/login", { "usuario": usuario, "password": password, "idsociedad": idsociedad }, function (data) {
-        console.log(data)
+        
 
+
+        let datos = JSON.parse(data);
+
+ 
         if (data) {
-            console.log('wwwwwwwwwwww')
-            $(location).attr("href", URLactual + "Home/about");
+            if (datos.IdPerfil == 1021) {
+                $(location).attr("href", URLactual + "Responsive/Index");
+            } else {
+                $(location).attr("href", URLactual + "Home/about");
+            }
+            
         }
         else {
             

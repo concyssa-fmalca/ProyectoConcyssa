@@ -79,7 +79,7 @@
     <div class="panel">
         <div class="container-fluid">
             <div class="">
-                <h3>Solicitud de Despacho</h3>
+                <h5 style="display:flex;justify-content:center">Solicitud de Despacho</h5>
             </div>
         </div>
         <div class="container-fluid">
@@ -88,9 +88,9 @@
                     <h4 style="font-size:1.2em;">Total de Registros: <span id="spnTotalRegistros"></span></h4>
                 </div>*@
             </div>
-            <div class="col-xs-6 right">
+            <div class="col-xs-12" style="display:flex;justify-content:center">
                 <a id="reporteRPT" style="display:none" download="" href="data:application/octet-stream;base64,R0lGODdhAQABAPAAAP8AAAAAACwAAAAAAQABAAACAkQBADs=">download image</a>
-                <button class="btn btn-sm  btn-primary pull-right plu" data-target="modal1" onclick="ModalNuevo()" style="margin-left:10px;">Nuevo</button>
+                <button class="btn btn-sm btn-primary" style="border-radius:10px;width:150px" data-target="modal1" onclick="ModalNuevo()">Nuevo</button>
                 @*<button class="btn btn-sm  btn-success pull-right plu" id="btnPdf" style="margin-left:10px;">Descargar PDF</button>
                 <button class="btn btn-sm btn-info pull-right plu" id="btnExcel" style="margin-left:10px;">Descargar Excel</button>*@
             </div>
@@ -111,12 +111,11 @@
                         <tr>
                             <th style="min-width:15px"></th>
                             <th>#</th>
+                            <th>Ver</th>
                             <th style="min-width:5px">Numero</th>
-                            <th>Cuadrilla</th>
-                            <th>Obra</th>
-                            <th>Base</th>
                             <th>Fecha</th>
-                            <th>Mas</th>
+                            <th>Cuadrilla</th>
+
                         </tr>
                     </thead>
                     <tbody id="tbody_Solicitudes"></tbody>
@@ -285,7 +284,7 @@
                                                     <th>Item</th>
                                                     <th>Codigo</th>
                                                     <th>Descripcion de Articulo</th>
-                                                    <th>UM</th>
+                                                    <th style="min-width:80px">UM</th>
                                                     <th>Cantidad</th>
                                                     <th>Accion</th>
                                                 </tr>
@@ -402,7 +401,7 @@
     <!-- Modal -->
     <div class="modal fade" data-backdrop="static"
          data-keyboard="false" id="ModalItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog  modal-lg modal-dialog-centered allcp-form" style="margin-top:120px" role="document">
+        <div class="modal-dialog  modal-lg modal-dialog-centered allcp-form" role="document">
             <div class="modal-content">
 
 
@@ -512,6 +511,7 @@
                                         <table class="table" id="tablaStockOtrosAlmacenes">
                                             <thead>
                                                 <tr>
+                                                    <th>#</th>
                                                     <th>Descripcion de Articulo</th>
                                                     <th>Obra</th>
                                                     <th>Almacen</th>

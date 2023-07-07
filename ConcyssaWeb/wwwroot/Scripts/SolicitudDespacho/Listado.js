@@ -1,4 +1,5 @@
 ﻿
+var tt = '';
 var table = '';
 var tableStock = "";
 var tablePrincipal = "";
@@ -41,12 +42,11 @@ function ConsultaServidor() {
                     tr += `<tr>
                             <td></td>
                             <td>`+ (i + 1) +`</td>
+                            <td><button class="btn btn-primary btn-sm fa fa-edit" style="border-radius:10px" onclick="ObtenerDatosxID(`+ datos[i].Id +`)"></button></td>
                             <td><input type="hidden" value="`+ datos[i].Numero+`" />`+ datos[i].Numero +`</td>
-                            <td><input type="hidden" value="`+ datos[i].DescripcionCuadrilla +`" />`+ datos[i].DescripcionCuadrilla +`</td>
-                            <td><input type="hidden" value="`+ datos[i].DescripcionObra +`" />`+ datos[i].DescripcionObra +`</td>
-                            <td><input type="hidden" value="`+ datos[i].DescripcionBase +`" />`+ datos[i].DescripcionBase + `</td>
-                            <td><input type="hidden" value="`+ datos[i].FechaDocumento.split("T")[0] +`" />`+ datos[i].FechaDocumento.split("T")[0] +`</td>
-                            <td><button class="btn btn-primary btn-xs fa fa-edit" onclick="ObtenerDatosxID(`+ datos[i].Id+`)"></button></td>
+                            <td><input type="hidden" value="`+ datos[i].FechaDocumento.split("T")[0] + `" />` + datos[i].FechaDocumento.split("T")[0] +`</td>
+                            <td><input type="hidden" value="`+ datos[i].DescripcionCuadrilla + `" />` + datos[i].DescripcionCuadrilla +`</td>
+
                             </tr>`;
                 }
 
@@ -92,7 +92,11 @@ function ModalNuevo() {
 function CerrarModal() {
 
     $.magnificPopup.close();
-    $("#tabla").find('tbody').empty();
+    if(tt){
+        tt.clear().draw();
+    }
+    
+    //$("#tabla").find('tbody').empty();
     limpiarDatos();
 
 }
@@ -436,6 +440,7 @@ function ListarStockTodasObras(IdArticulo) {
 
 
             tr += '<tr>' +
+                '<td></td>' +
                 '<td>' + area[i].Descripcion1 + '</td>' +
                 '<td>' + area[i].Obra + '</td>' +
                 '<td>' + area[i].Almacen + '</td>' +
@@ -639,7 +644,7 @@ function AgregarLinea() {
 
 
 
-    var tt = $('#tabla').DataTable(lenguaje);
+    tt = $('#tabla').DataTable(lenguaje);
 
 
 
@@ -977,6 +982,7 @@ function ObtenerDatosxID(IdSolicitudDespacho) {
             let solicitudes = JSON.parse(data);
             console.log(solicitudes);
 
+          
             CargarSeries();
 
             $("#cboSerie").prop("disabled", true);
@@ -984,6 +990,8 @@ function ObtenerDatosxID(IdSolicitudDespacho) {
 
             $("#IdCuadrilla").select2();
             CargarCuadrillaxUsuario();
+
+            return;
 
             $("#IdCuadrilla").val(solicitudes[0].IdCuadrilla).change();
 
@@ -1093,7 +1101,7 @@ function AgregarLineaDetalle(Id, CodigoArticulo, IdItem, Descripcion, Cantidad, 
                   combo1 += `</select>`;
 
 
-    var tt = $('#tabla').DataTable(lenguaje);
+    tt = $('#tabla').DataTable(lenguaje);
 
  
     var newRow1 = $(`<tr>`).
@@ -1131,72 +1139,72 @@ function AgregarLineaDetalle(Id, CodigoArticulo, IdItem, Descripcion, Cantidad, 
 
 
 
-function AgregarLineaDetalle1(Id, CodigoArticulo, IdItem, Descripcion, Cantidad, IdUnidadMedida, IdGrupoUnidadMedida, IdDefinicionGrupoUnidad) {
+//function AgregarLineaDetalle1(Id, CodigoArticulo, IdItem, Descripcion, Cantidad, IdUnidadMedida, IdGrupoUnidadMedida, IdDefinicionGrupoUnidad) {
 
 
-    let UnidadMedida;
-    let Almacen;
+//    let UnidadMedida;
+//    let Almacen;
 
 
-    $.ajaxSetup({ async: false });
-    $.post("/UnidadMedida/ObtenerUnidadMedidas", function (data, status) {
-        UnidadMedida = JSON.parse(data);
-    });
+//    $.ajaxSetup({ async: false });
+//    $.post("/UnidadMedida/ObtenerUnidadMedidas", function (data, status) {
+//        UnidadMedida = JSON.parse(data);
+//    });
 
-    $.post("/Almacen/ObtenerAlmacenes", function (data, status) {
-        Almacen = JSON.parse(data);
-    });
+//    $.post("/Almacen/ObtenerAlmacenes", function (data, status) {
+//        Almacen = JSON.parse(data);
+//    });
 
 
-    let UnidadMed = "";
-    let tr = '';
+//    let UnidadMed = "";
+//    let tr = '';
 
-    tr += `<tr  id="tr` + contador + `">
+//    tr += `<tr  id="tr` + contador + `">
   
-            <td></td>
-           <td><button class="btn btn-primary btn-xs fa fa-edit" onclick="MostrarModalDetalleEditar(this)"></button></td>
-            <td>`+ CodigoArticulo + `</td>
+//            <td></td>
+//           <td><button class="btn btn-primary btn-xs fa fa-edit" onclick="MostrarModalDetalleEditar(this)"></button></td>
+//            <td>`+ CodigoArticulo + `</td>
 
-            <td style="display:none;">
-                <input input style="display:none;" class="form-control omitir" type="text" value="`+Id+`" id="txtIdSolicitudDespachoDetalle" name="txtIdSolicitudDespachoDetalle[]"/>
-                <input class="form-control omitir" type="text" value="`+ IdItem +`" id="txtIdArticulo`+ contador + `" name="txtIdArticulo[]" />
-                <input class="form-control" type="text" value="`+ CodigoArticulo +`" id="txtCodigoArticulo`+ contador + `" name="txtCodigoArticulo[]" />
-            </td>
+//            <td style="display:none;">
+//                <input input style="display:none;" class="form-control omitir" type="text" value="`+Id+`" id="txtIdSolicitudDespachoDetalle" name="txtIdSolicitudDespachoDetalle[]"/>
+//                <input class="form-control omitir" type="text" value="`+ IdItem +`" id="txtIdArticulo`+ contador + `" name="txtIdArticulo[]" />
+//                <input class="form-control" type="text" value="`+ CodigoArticulo +`" id="txtCodigoArticulo`+ contador + `" name="txtCodigoArticulo[]" />
+//            </td>
          
-            <td><input disabled class="form-control" type="text" value="`+ Descripcion +`" id="txtDescripcionArticulo`+ contador + `" name="txtDescripcionArticulo[]"/></td>
-            <td>
-             <input type="hidden" value="" id="inputUnidadMedida`+ contador + `" />
-            <select class="form-control" id="cboUnidadMedida`+ contador + `" name="cboUnidadMedida[]" disabled>`;
-            tr += `  <option value="0">Seleccione</option>`;
-            for (var i = 0; i < UnidadMedida.length; i++) {
-                if (UnidadMedida[i].IdUnidadMedida == IdUnidadMedida) {
-                    UnidadMed = UnidadMedida[i].Codigo;
-                    tr += `  <option value="` + UnidadMedida[i].IdUnidadMedida + `" selected>` + UnidadMedida[i].Codigo + `</option>`;
-                } else {
-                    tr += `  <option value="` + UnidadMedida[i].IdUnidadMedida + `">` + UnidadMedida[i].Codigo + `</option>`;
-                }
-            }
-    tr += `</select>
-            </td>
+//            <td><input disabled class="form-control" type="text" value="`+ Descripcion +`" id="txtDescripcionArticulo`+ contador + `" name="txtDescripcionArticulo[]"/></td>
+//            <td>
+//             <input type="hidden" value="" id="inputUnidadMedida`+ contador + `" />
+//            <select class="form-control" id="cboUnidadMedida`+ contador + `" name="cboUnidadMedida[]" disabled>`;
+//            tr += `  <option value="0">Seleccione</option>`;
+//            for (var i = 0; i < UnidadMedida.length; i++) {
+//                if (UnidadMedida[i].IdUnidadMedida == IdUnidadMedida) {
+//                    UnidadMed = UnidadMedida[i].Codigo;
+//                    tr += `  <option value="` + UnidadMedida[i].IdUnidadMedida + `" selected>` + UnidadMedida[i].Codigo + `</option>`;
+//                } else {
+//                    tr += `  <option value="` + UnidadMedida[i].IdUnidadMedida + `">` + UnidadMedida[i].Codigo + `</option>`;
+//                }
+//            }
+//    tr += `</select>
+//            </td>
           
-            <td>
-                <input class="form-control"  type="number" name="txtCantidad[]" value="`+Cantidad+`" id="txtCantidad`+ contador + `">
-            </td>
+//            <td>
+//                <input class="form-control"  type="number" name="txtCantidad[]" value="`+Cantidad+`" id="txtCantidad`+ contador + `">
+//            </td>
           
-            <td><button class="btn btn-xs btn-danger borrar fa fa-trash" onclick="EliminarDetalle(`+ Id +`,this)"></button></td>
-          </tr>`;
+//            <td><button class="btn btn-xs btn-danger borrar fa fa-trash" onclick="EliminarDetalle(`+ Id +`,this)"></button></td>
+//          </tr>`;
 
 
-    $("#tabla").find('tbody').append(tr);
+//    $("#tabla").find('tbody').append(tr);
 
-    $("#inputUnidadMedida" + contador).val(UnidadMed);
+//    $("#inputUnidadMedida" + contador).val(UnidadMed);
 
-    NumeracionDinamica();
-    //$("#tabla").find('tbody').append(tr);
-    //$("#cboPrioridadDetalle" + contador).val(Prioridad);
+//    NumeracionDinamica();
+//    //$("#tabla").find('tbody').append(tr);
+//    //$("#cboPrioridadDetalle" + contador).val(Prioridad);
 
 
-}
+//}
 
 
 
@@ -1285,46 +1293,46 @@ function limpiarDatos() {
 //}
 
 
-function MostrarModalDetalle(boton) {
+//function MostrarModalDetalle(boton) {
 
-    $("#ModalListadoDetalle").modal("show");
+//    $("#ModalListadoDetalle").modal("show");
 
-    var fila = boton.parentNode.parentNode;
-    var inputs = fila.getElementsByTagName('input');
+//    var fila = boton.parentNode.parentNode;
+//    var inputs = fila.getElementsByTagName('input');
 
-    var descripcion = "";
-    // Crear el contenido del modal
-    var modalContenido = '';
-
-
-    for (var i = 0; i < inputs.length; i++) {
-
-        if (inputs[i].classList.contains('omitir')) {
-            continue; // Ignorar el input y pasar al siguiente
-        }
+//    var descripcion = "";
+//    // Crear el contenido del modal
+//    var modalContenido = '';
 
 
-        if (i == 2) {
-            descripcion = "CODIGO";
-        } else if (i == 3) {
-            descripcion = "DESCRIPCION";
-        } else if (i == 4) {
-            descripcion = "UM";
-        } else if (i == 5) {
-            descripcion = "CANTIDAD";
-        }
+//    for (var i = 0; i < inputs.length; i++) {
 
-        modalContenido += `<tr>
-                            <td>`+ descripcion + `</td>
-                            <td>`+ inputs[i].value + `</td>
-                            </tr>`;
+//        if (inputs[i].classList.contains('omitir')) {
+//            continue; // Ignorar el input y pasar al siguiente
+//        }
 
 
-    }
+//        if (i == 2) {
+//            descripcion = "CODIGO";
+//        } else if (i == 3) {
+//            descripcion = "DESCRIPCION";
+//        } else if (i == 4) {
+//            descripcion = "UM";
+//        } else if (i == 5) {
+//            descripcion = "CANTIDAD";
+//        }
 
-    $("#tbody_listado_detalle").html(modalContenido);
+//        modalContenido += `<tr>
+//                            <td>`+ descripcion + `</td>
+//                            <td>`+ inputs[i].value + `</td>
+//                            </tr>`;
 
-}
+
+//    }
+
+//    $("#tbody_listado_detalle").html(modalContenido);
+
+//}
 
 
 //function MostrarModalDetalleEditar(boton) {

@@ -23,6 +23,7 @@ namespace DAO
                     cn.Open();
                     SqlDataAdapter da = new SqlDataAdapter("SMC_ListarSolicitudDespacho", cn);
                     da.SelectCommand.Parameters.AddWithValue("@IdSociedad", int.Parse(IdSociedad));
+                    da.SelectCommand.Parameters.AddWithValue("@IdUsuario", int.Parse(IdUsuario));
                     da.SelectCommand.Parameters.AddWithValue("@ignorar_primeros", ignorar_primeros);
                     da.SelectCommand.Parameters.AddWithValue("@cantidad_filas", cantidad_filas);
                     da.SelectCommand.Parameters.AddWithValue("@filtro", filtro);

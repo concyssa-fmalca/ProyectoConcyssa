@@ -4,6 +4,7 @@ using System.Diagnostics;
 using DAO;
 using DTO;
 using Helpers;
+using Newtonsoft.Json;
 
 namespace ConcyssaWeb.Controllers
 {
@@ -31,15 +32,16 @@ namespace ConcyssaWeb.Controllers
             return View();
         }
 
-        public bool login(string usuario, string password,int idsociedad)
+        public string login(string usuario, string password,int idsociedad)
         {
             bool respuesta = false;
             string mensajeError = "";
+            UsuarioDTO oUsuarioDTO = null;
             try
             {
                 UsuarioDAO oUsuarioDAO = new UsuarioDAO();
                 List<UsuarioDTO> lstUsuarioDTO = oUsuarioDAO.ValidarUsuario(usuario, password, idsociedad, ref mensajeError);
-                UsuarioDTO oUsuarioDTO = lstUsuarioDTO[0];
+                oUsuarioDTO = lstUsuarioDTO[0];
                 if (oUsuarioDTO.Estado == true)
                 {
                     HttpContext.Session.SetInt32("IdUsuario", oUsuarioDTO.IdUsuario);
@@ -52,18 +54,18 @@ namespace ConcyssaWeb.Controllers
                     HttpContext.Session.SetString("NumeroDocumento", oUsuarioDTO.NumeroDocumento);
                     HttpContext.Session.SetString("NombBase", oUsuarioDTO.NombBase);
 
-                    return true;
+                    return JsonConvert.SerializeObject(oUsuarioDTO);
                 }
                 else
                 {
-                    return false;
+                    return JsonConvert.SerializeObject(oUsuarioDTO);
                 }
 
 
             }
             catch (Exception ex)
             {
-                return false;
+                return JsonConvert.SerializeObject(oUsuarioDTO);
                 throw;
 
             }
