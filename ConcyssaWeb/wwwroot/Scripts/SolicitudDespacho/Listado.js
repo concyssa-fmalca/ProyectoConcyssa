@@ -627,7 +627,12 @@ function AgregarLinea() {
     let combo1 = `<select class="form-control" id="cboUnidadMedida` + contador + `" name="cboUnidadMedida[]" disabled>`;
     combo1 += `  <option value="0">Seleccione</option>`;
     for (var i = 0; i < UnidadMedida.length; i++) {
-        combo1 += `  <option value="` + UnidadMedida[i].IdUnidadMedida + `">` + UnidadMedida[i].Codigo + `</option>`;
+        if (MedidaItem == UnidadMedida[i].IdUnidadMedida) {
+            combo1 += `  <option selected value="` + UnidadMedida[i].IdUnidadMedida + `">` + UnidadMedida[i].Codigo + `</option>`;
+        } else {
+            combo1 += `  <option value="` + UnidadMedida[i].IdUnidadMedida + `">` + UnidadMedida[i].Codigo + `</option>`;
+        }
+        
     }
     combo1 += `</select>`;
 
@@ -642,15 +647,15 @@ function AgregarLinea() {
         append(`<td></td>`).
         append(`<td>` + CodigoItem + `
                     <input  input style="display:none;" class="form-control omitir" type="text" value="0" id="txtIdSolicitudDespachoDetalle" name="txtIdSolicitudDespachoDetalle[]"/>
-                    <input style="display:none;" class="form-control omitir" type="text" id="txtIdArticulo`+ contador + `" name="txtIdArticulo[]" />
-                    <input style="display:none;" class="form-control" type="text" id="txtCodigoArticulo`+ contador + `" name="txtCodigoArticulo[]" />
+                    <input style="display:none;" class="form-control omitir" type="text" value="`+ IdItem +`" id="txtIdArticulo`+ contador + `" name="txtIdArticulo[]" />
+                    <input style="display:none;" class="form-control" type="text" value="`+ CodigoItem +`" id="txtCodigoArticulo`+ contador + `" name="txtCodigoArticulo[]" />
                 </td>`).
-        append(`<td><input disabled class="form-control" type="text" id="txtDescripcionArticulo` + contador + `" name="txtDescripcionArticulo[]"/></td>`).
+        append(`<td><input disabled value="` + DescripcionItem +`" class="form-control" type="text" id="txtDescripcionArticulo` + contador + `" name="txtDescripcionArticulo[]"/></td>`).
         append(`<td>
-                <input type="hidden" value="" id="inputUnidadMedida` + contador + `" />
+                <input type="hidden" value="`+ MedidaItemDescripcion +`" id="inputUnidadMedida` + contador + `" />
                 `+ combo1 +`
                 </td>`).
-        append(`<td><input class="form-control"  type="number" name="txtCantidad[]" value="0" id="txtCantidad` + contador + `" disabled></td>`).
+        append(`<td><input class="form-control"  type="number" name="txtCantidad[]" value="` + CantidadItem +`" id="txtCantidad` + contador + `" disabled></td>`).
         append(`<td><button class="btn btn-xs btn-danger borrar fa fa-trash"></button></td>`);
 
     newRow1.attr('id', 'tritem' + contador);
@@ -660,12 +665,12 @@ function AgregarLinea() {
 
     tt.row.add(newRow1).draw();
 
-    $("#txtIdArticulo" + contador).val(IdItem);
-    $("#txtCodigoArticulo" + contador).val(CodigoItem);
-    $("#txtDescripcionArticulo" + contador).val(DescripcionItem);
-    $("#txtCantidad" + contador).val(CantidadItem);
-    $("#cboUnidadMedida" + contador).val(MedidaItem);
-    $("#inputUnidadMedida" + contador).val(MedidaItemDescripcion);
+    //$("#txtIdArticulo" + contador).val(IdItem);
+    //$("#txtCodigoArticulo" + contador).val(CodigoItem);
+    //$("#txtDescripcionArticulo" + contador).val(DescripcionItem);
+    //$("#txtCantidad" + contador).val(CantidadItem);
+    //$("#cboUnidadMedida" + contador).val(MedidaItem);
+    //$("#inputUnidadMedida" + contador).val(MedidaItemDescripcion);
 
 
     $("#cboAlmacen" + contador).val(AlmacenItem);
