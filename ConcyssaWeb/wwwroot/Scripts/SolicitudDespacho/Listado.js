@@ -39,6 +39,7 @@ function ConsultaServidor() {
 
                 for (var i = 0; i < datos.length; i++) {
                     tr += `<tr>
+                            <td></td>
                             <td>`+ (i + 1) +`</td>
                             <td><input type="hidden" value="`+ datos[i].Numero+`" />`+ datos[i].Numero +`</td>
                             <td><input type="hidden" value="`+ datos[i].DescripcionCuadrilla +`" />`+ datos[i].DescripcionCuadrilla +`</td>
@@ -461,114 +462,114 @@ function CerrarModalListadoItems() {
 }
 
 
-let contador = 0;
-
-function AgregarLinea1() {
-    let stockproducto = $("#txtStockAlmacenItem").val();
-    let IdItem = $("#txtIdItem").val();
-    let CodigoItem = $("#txtCodigoItem").val();
-    let MedidaItem = $("#cboMedidaItem").val();
-    let MedidaItemDescripcion = $("#cboMedidaItem").find('option:selected').text();
-    let DescripcionItem = $("#txtDescripcionItem").val();
-    //let PrecioUnitarioItem = $("#txtPrecioUnitarioItem").val();
-    let CantidadItem = $("#txtCantidadItem").val();
-    let AlmacenItem = $("#cboAlmacenItem").val();
-    let IdGrupoUnidadMedida = $("#cboGrupoUnidadMedida").val();
-    //txtReferenciaItem
-
-    var today = new Date();
-    var dd = String(today.getDate()).padStart(2, '0');
-    var mm = String(today.getMonth() + 1).padStart(2, '0');
-    var yyyy = today.getFullYear();
-
-    today = yyyy + '-' + mm + '-' + dd;
 
 
-    let UnidadMedida;
-    let Almacen;
+//function AgregarLinea1() {
+//    let stockproducto = $("#txtStockAlmacenItem").val();
+//    let IdItem = $("#txtIdItem").val();
+//    let CodigoItem = $("#txtCodigoItem").val();
+//    let MedidaItem = $("#cboMedidaItem").val();
+//    let MedidaItemDescripcion = $("#cboMedidaItem").find('option:selected').text();
+//    let DescripcionItem = $("#txtDescripcionItem").val();
+//    //let PrecioUnitarioItem = $("#txtPrecioUnitarioItem").val();
+//    let CantidadItem = $("#txtCantidadItem").val();
+//    let AlmacenItem = $("#cboAlmacenItem").val();
+//    let IdGrupoUnidadMedida = $("#cboGrupoUnidadMedida").val();
+//    //txtReferenciaItem
 
-    //valdiaciones
+//    var today = new Date();
+//    var dd = String(today.getDate()).padStart(2, '0');
+//    var mm = String(today.getMonth() + 1).padStart(2, '0');
+//    var yyyy = today.getFullYear();
 
-    let ValidartProducto = $("#cboMedidaItem").val();
-    let ValidarCantidad = $("#txtCantidadItem").val();
-
-    if (ValidarCantidad == "" || ValidarCantidad == null || ValidarCantidad == "0" || !$.isNumeric(ValidarCantidad)) {
-        swal("Informacion!", "Debe Especificar Cantidad!");
-        return;
-    }
-
-    if (ValidartProducto == 0) {
-        swal("Informacion!", "Debe Seleccionar Producto!");
-        return;
-    }
+//    today = yyyy + '-' + mm + '-' + dd;
 
 
+//    let UnidadMedida;
+//    let Almacen;
 
-    //validaciones
-    $.ajaxSetup({ async: false });
-    $.post("/UnidadMedida/ObtenerUnidadMedidas", function (data, status) {
-        UnidadMedida = JSON.parse(data);
-    });
+//    //valdiaciones
 
-    $.post("../Almacen/ObtenerAlmacen", function (data, status) {
-        Almacen = JSON.parse(data);
-    });
+//    let ValidartProducto = $("#cboMedidaItem").val();
+//    let ValidarCantidad = $("#txtCantidadItem").val();
 
-    contador++;
-    let tr = '';
+//    if (ValidarCantidad == "" || ValidarCantidad == null || ValidarCantidad == "0" || !$.isNumeric(ValidarCantidad)) {
+//        swal("Informacion!", "Debe Especificar Cantidad!");
+//        return;
+//    }
 
-    tr += `<tr  id="tritem` + contador + `">
+//    if (ValidartProducto == 0) {
+//        swal("Informacion!", "Debe Seleccionar Producto!");
+//        return;
+//    }
+
+
+
+//    //validaciones
+//    $.ajaxSetup({ async: false });
+//    $.post("/UnidadMedida/ObtenerUnidadMedidas", function (data, status) {
+//        UnidadMedida = JSON.parse(data);
+//    });
+
+//    $.post("../Almacen/ObtenerAlmacen", function (data, status) {
+//        Almacen = JSON.parse(data);
+//    });
+
+//    contador++;
+//    let tr = '';
+
+//    tr += `<tr  id="tritem` + contador + `">
   
-            <td></td>
-            <td>`+ CodigoItem + `
+//            <td></td>
+//            <td>`+ CodigoItem + `
 
-                <input  input style="display:none;" class="form-control omitir" type="text" value="0" id="txtIdSolicitudDespachoDetalle" name="txtIdSolicitudDespachoDetalle[]"/>
-                <input style="display:none;" class="form-control omitir" type="text" id="txtIdArticulo`+ contador + `" name="txtIdArticulo[]" />
-                <input style="display:none;" class="form-control" type="text" id="txtCodigoArticulo`+ contador + `" name="txtCodigoArticulo[]" />
+//                <input  input style="display:none;" class="form-control omitir" type="text" value="0" id="txtIdSolicitudDespachoDetalle" name="txtIdSolicitudDespachoDetalle[]"/>
+//                <input style="display:none;" class="form-control omitir" type="text" id="txtIdArticulo`+ contador + `" name="txtIdArticulo[]" />
+//                <input style="display:none;" class="form-control" type="text" id="txtCodigoArticulo`+ contador + `" name="txtCodigoArticulo[]" />
             
-            </td>
+//            </td>
 
           
          
-            <td><input disabled class="form-control" type="text" id="txtDescripcionArticulo`+ contador + `" name="txtDescripcionArticulo[]"/></td>
-            <td>
-            <input type="hidden" value="" id="inputUnidadMedida`+ contador + `" />
-            <select class="form-control" id="cboUnidadMedida`+ contador + `" name="cboUnidadMedida[]" disabled>`;
-    tr += `  <option value="0">Seleccione</option>`;
-    for (var i = 0; i < UnidadMedida.length; i++) {
-        tr += `  <option value="` + UnidadMedida[i].IdUnidadMedida + `">` + UnidadMedida[i].Codigo + `</option>`;
-    }
-    tr += `</select>
-            </td>
+//            <td><input disabled class="form-control" type="text" id="txtDescripcionArticulo`+ contador + `" name="txtDescripcionArticulo[]"/></td>
+//            <td>
+//            <input type="hidden" value="" id="inputUnidadMedida`+ contador + `" />
+//            <select class="form-control" id="cboUnidadMedida`+ contador + `" name="cboUnidadMedida[]" disabled>`;
+//    tr += `  <option value="0">Seleccione</option>`;
+//    for (var i = 0; i < UnidadMedida.length; i++) {
+//        tr += `  <option value="` + UnidadMedida[i].IdUnidadMedida + `">` + UnidadMedida[i].Codigo + `</option>`;
+//    }
+//    tr += `</select>
+//            </td>
           
-            <td>
-                <input class="form-control"  type="number" name="txtCantidad[]" value="0" id="txtCantidad`+ contador + `" disabled>
-            </td>
+//            <td>
+//                <input class="form-control"  type="number" name="txtCantidad[]" value="0" id="txtCantidad`+ contador + `" disabled>
+//            </td>
           
-          <td><button class="btn btn-xs btn-danger borrar fa fa-trash"></button></td>
-          </tr>`;
+//          <td><button class="btn btn-xs btn-danger borrar fa fa-trash"></button></td>
+//          </tr>`;
 
 
-    $("#tabla").find('tbody').append(tr);
+//    $("#tabla").find('tbody').append(tr);
 
 
-    $("#txtIdArticulo" + contador).val(IdItem);
-    $("#txtCodigoArticulo" + contador).val(CodigoItem);
-    $("#txtDescripcionArticulo" + contador).val(DescripcionItem);
-    $("#txtCantidad" + contador).val(CantidadItem);
-    $("#cboUnidadMedida" + contador).val(MedidaItem);
-    $("#inputUnidadMedida" + contador).val(MedidaItemDescripcion);
+//    $("#txtIdArticulo" + contador).val(IdItem);
+//    $("#txtCodigoArticulo" + contador).val(CodigoItem);
+//    $("#txtDescripcionArticulo" + contador).val(DescripcionItem);
+//    $("#txtCantidad" + contador).val(CantidadItem);
+//    $("#cboUnidadMedida" + contador).val(MedidaItem);
+//    $("#inputUnidadMedida" + contador).val(MedidaItemDescripcion);
     
 
-    $("#cboAlmacen" + contador).val(AlmacenItem);
+//    $("#cboAlmacen" + contador).val(AlmacenItem);
 
-    LimpiarModalItem();
-    NumeracionDinamica();
-}
-
-
+//    LimpiarModalItem();
+//    NumeracionDinamica();
+//}
 
 
+
+let contador = 0;
 
 function AgregarLinea() {
     let stockproducto = $("#txtStockAlmacenItem").val();
@@ -650,7 +651,7 @@ function AgregarLinea() {
                     <input style="display:none;" class="form-control omitir" type="text" value="`+ IdItem +`" id="txtIdArticulo`+ contador + `" name="txtIdArticulo[]" />
                     <input style="display:none;" class="form-control" type="text" value="`+ CodigoItem +`" id="txtCodigoArticulo`+ contador + `" name="txtCodigoArticulo[]" />
                 </td>`).
-        append(`<td><input disabled value="` + DescripcionItem +`" class="form-control" type="text" id="txtDescripcionArticulo` + contador + `" name="txtDescripcionArticulo[]"/></td>`).
+        append(`<td>` + DescripcionItem +`<input disabled value="` + DescripcionItem +`" class="form-control" type="hidden" id="txtDescripcionArticulo` + contador + `" name="txtDescripcionArticulo[]"/></td>`).
         append(`<td>
                 <input type="hidden" value="`+ MedidaItemDescripcion +`" id="inputUnidadMedida` + contador + `" />
                 `+ combo1 +`
@@ -1059,7 +1060,78 @@ function ObtenerDatosxID(IdSolicitudDespacho) {
 
 
 
+
 function AgregarLineaDetalle(Id, CodigoArticulo, IdItem, Descripcion, Cantidad, IdUnidadMedida, IdGrupoUnidadMedida, IdDefinicionGrupoUnidad) {
+
+
+    let UnidadMedida;
+    let Almacen;
+
+
+    $.ajaxSetup({ async: false });
+    $.post("/UnidadMedida/ObtenerUnidadMedidas", function (data, status) {
+        UnidadMedida = JSON.parse(data);
+    });
+
+    $.post("/Almacen/ObtenerAlmacenes", function (data, status) {
+        Almacen = JSON.parse(data);
+    });
+
+
+    let UnidadMed = "";
+
+    let combo1 = `<select class="form-control" id="cboUnidadMedida`+ contador + `" name="cboUnidadMedida[]" disabled>`;
+            combo1 += `  <option value="0">Seleccione</option>`;
+           for (var i = 0; i < UnidadMedida.length; i++) {
+               if (UnidadMedida[i].IdUnidadMedida == IdUnidadMedida) {
+                  UnidadMed = UnidadMedida[i].Codigo;
+                  combo1 += `  <option value="` + UnidadMedida[i].IdUnidadMedida + `" selected>` + UnidadMedida[i].Codigo + `</option>`;
+               } else {
+                  combo1 += `  <option value="` + UnidadMedida[i].IdUnidadMedida + `">` + UnidadMedida[i].Codigo + `</option>`;
+               }
+           }
+                  combo1 += `</select>`;
+
+
+    var tt = $('#tabla').DataTable(lenguaje);
+
+ 
+    var newRow1 = $(`<tr>`).
+        append(`<td></td>`).
+        append(`<td></td>`).
+        append(`<td>` + CodigoArticulo + `
+                <input input style="display:none;" class="form-control omitir" type="text" value="`+ Id + `" id="txtIdSolicitudDespachoDetalle" name="txtIdSolicitudDespachoDetalle[]"/>
+                <input style="display:none;" class="form-control omitir" type="text" value="`+ IdItem + `" id="txtIdArticulo` + contador + `" name="txtIdArticulo[]" />
+                <input style="display:none;" class="form-control" type="text" value="`+ CodigoArticulo + `" id="txtCodigoArticulo` + contador + `" name="txtCodigoArticulo[]" />
+            </td>`).
+        append(`<td>` + Descripcion + `<input disabled style="display:none;" class="form-control" type="text" value="` + Descripcion + `" id="txtDescripcionArticulo` + contador + `" name="txtDescripcionArticulo[]"/></td>`).
+        append(`<td>
+                <input type="hidden" value="`+ UnidadMed + `" id="inputUnidadMedida` + contador + `" />
+                 `+ combo1 + `
+                </td>`).
+        append(`<td>
+               <input class="form-control" type="number" name="txtCantidad[]" value="`+ Cantidad + `" id="txtCantidad` + contador + `">
+               </td>`).
+        append(`<td><button class="btn btn-xs btn-danger borrar fa fa-trash" onclick="EliminarDetalle(` + Id + `,this)"></button></td>`);
+
+
+    newRow1.attr('id', 'tr' + contador);
+
+
+
+    tt.row.add(newRow1).draw();
+
+    NumeracionDinamica();
+
+
+}
+
+
+
+
+
+
+function AgregarLineaDetalle1(Id, CodigoArticulo, IdItem, Descripcion, Cantidad, IdUnidadMedida, IdGrupoUnidadMedida, IdDefinicionGrupoUnidad) {
 
 
     let UnidadMedida;
@@ -1125,6 +1197,10 @@ function AgregarLineaDetalle(Id, CodigoArticulo, IdItem, Descripcion, Cantidad, 
 
 
 }
+
+
+
+
 
 function borrartr(id) {
     $("#" + id).remove();
@@ -1251,47 +1327,47 @@ function MostrarModalDetalle(boton) {
 }
 
 
-function MostrarModalDetalleEditar(boton) {
+//function MostrarModalDetalleEditar(boton) {
 
-    $("#ModalListadoDetalle").modal("show");
+//    $("#ModalListadoDetalle").modal("show");
 
-    var fila = boton.parentNode.parentNode;
-    var inputs = fila.getElementsByTagName('input');
+//    var fila = boton.parentNode.parentNode;
+//    var inputs = fila.getElementsByTagName('input');
 
-    var descripcion = "";
-    // Crear el contenido del modal
-    var modalContenido = '';
+//    var descripcion = "";
+//    // Crear el contenido del modal
+//    var modalContenido = '';
 
-    console.log(inputs);
+//    console.log(inputs);
 
-    for (var i = 0; i < inputs.length; i++) {
+//    for (var i = 0; i < inputs.length; i++) {
 
-        if (inputs[i].classList.contains('omitir')) {
-            continue; // Ignorar el input y pasar al siguiente
-        }
-
-
-        if (i == 2) {
-            descripcion = "CODIGO";
-        } else if (i == 3) {
-            descripcion = "DESCRIPCION";
-        } else if (i == 4) {
-            descripcion = "UM";
-        } else if (i == 5) {
-            descripcion = "CANTIDAD";
-        }
-
-        modalContenido += `<tr>
-                            <td>`+ descripcion + `</td>
-                            <td>`+ inputs[i].value + `</td>
-                            </tr>`;
+//        if (inputs[i].classList.contains('omitir')) {
+//            continue; // Ignorar el input y pasar al siguiente
+//        }
 
 
-    }
+//        if (i == 2) {
+//            descripcion = "CODIGO";
+//        } else if (i == 3) {
+//            descripcion = "DESCRIPCION";
+//        } else if (i == 4) {
+//            descripcion = "UM";
+//        } else if (i == 5) {
+//            descripcion = "CANTIDAD";
+//        }
 
-    $("#tbody_listado_detalle").html(modalContenido);
+//        modalContenido += `<tr>
+//                            <td>`+ descripcion + `</td>
+//                            <td>`+ inputs[i].value + `</td>
+//                            </tr>`;
 
-}
+
+//    }
+
+//    $("#tbody_listado_detalle").html(modalContenido);
+
+//}
 
 
 function CargarSeries() {
