@@ -28,6 +28,22 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
+        public string ObtenerArticulosSelect2(string TipoProducto,string IdObra, string searchTerm = "")
+        {
+            string mensaje_error = "";
+            ArticuloDAO oArticuloDAO = new ArticuloDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            List<ArticuloDTO> lstArticuloDTO = oArticuloDAO.ObtenerArticulosSelect2(searchTerm, TipoProducto,IdObra);
+            if (lstArticuloDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstArticuloDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
+
         public string ListarArticulosxSociedadxAlmacenStock(int IdAlmacen,int estado = 3)
         {
             string mensaje_error = "";
@@ -331,6 +347,22 @@ namespace ConcyssaWeb.Controllers
             ArticuloDAO oArticuloDAO = new ArticuloDAO();
             ArticuloDTO oArticuloDTO = oArticuloDAO.ObtenerArticuloxIdArticuloRequerimiento(IdArticulo,IdAlmacen, ref mensaje_error);
             if (oArticuloDTO!=null)
+            {
+                return JsonConvert.SerializeObject(oArticuloDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
+
+
+        public string ObtenerArticuloxIdArticulo(int IdArticulo)
+        {
+            string mensaje_error = "";
+            ArticuloDAO oArticuloDAO = new ArticuloDAO();
+            ArticuloDTO oArticuloDTO = oArticuloDAO.ObtenerArticuloxIdArticulo(IdArticulo, ref mensaje_error);
+            if (oArticuloDTO != null)
             {
                 return JsonConvert.SerializeObject(oArticuloDTO);
             }

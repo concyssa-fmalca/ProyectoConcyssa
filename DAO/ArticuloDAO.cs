@@ -310,7 +310,43 @@ namespace DAO
         }
 
 
-        
+
+        public ArticuloDTO ObtenerArticuloxIdArticulo(int IdArticulo, ref string mensaje_error)
+        {
+            ArticuloDTO oArticuloDTO = new ArticuloDTO();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerArticuloxIdArticulo", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdArticulo", IdArticulo);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        oArticuloDTO.IdArticulo = int.Parse(drd["IdArticulo"].ToString());
+                        oArticuloDTO.Codigo = drd["Codigo"].ToString();
+                        oArticuloDTO.Descripcion1 = drd["Descripcion1"].ToString();
+                        oArticuloDTO.NombUnidadMedida = (drd["NombUnidadMedida"].ToString());
+                        oArticuloDTO.IdUnidadMedidaInv = Convert.ToInt32(drd["IdUnidadMedidaInv"].ToString());
+                        oArticuloDTO.IdUnidadMedida = Convert.ToInt32(drd["IdUnidadMedida"].ToString());
+                        oArticuloDTO.IdGrupoUnidadMedida = Convert.ToInt32(drd["IdGrupoUnidadMedida"].ToString());
+                        
+
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return oArticuloDTO;
+        }
+
 
 
 
@@ -494,6 +530,44 @@ namespace DAO
             }
             return lstArticuloDTO;
         }
+
+
+
+        public List<ArticuloDTO> ObtenerArticulosSelect2(string searchTerm,string TipoProducto,string IdObra)
+        {
+            List<ArticuloDTO> lstArticuloDTO = new List<ArticuloDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarArticulosSelect2", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@Search", searchTerm);
+                    da.SelectCommand.Parameters.AddWithValue("@IdObra", int.Parse(IdObra));
+                    da.SelectCommand.Parameters.AddWithValue("@IdTipoProducto", int.Parse(TipoProducto));
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        ArticuloDTO oArticuloDTO = new ArticuloDTO();
+                        oArticuloDTO.IdArticulo = int.Parse(drd["IdArticulo"].ToString());
+                        oArticuloDTO.Codigo = drd["Codigo"].ToString();
+                        oArticuloDTO.Descripcion1 = drd["Descripcion1"].ToString();
+
+                        lstArticuloDTO.Add(oArticuloDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    ex.Message.ToString();
+                }
+            }
+            return lstArticuloDTO;
+        }
+
 
 
         public bool UpdateInsertArticulo(ArticuloDTO oArticuloDTO,ref string mensaje_error)

@@ -72,6 +72,9 @@ function ModalNuevo() {
     //$("#ModalFormulario").modal("show");
     AbrirModal("modal-form");
 
+    //CargarProductosTodos();
+    /*$("#cboProductosTodos").select2();*/
+
     $("#cboSerie").prop("disabled", false);
     CargarSeries();
 
@@ -86,7 +89,7 @@ function ModalNuevo() {
     CargarCuadrillaxUsuario();
     $("#IdCuadrilla").val("0").change();
 
-    
+  
 }
 
 function CerrarModal() {
@@ -177,6 +180,8 @@ function CargarObraBasexUsuario() {
         //llenarComboCuadrilla(datos, "IdCuadrilla", "Seleccione")
 
     });
+
+    $("#IdObra").change();
 
 }
 
@@ -577,16 +582,19 @@ function CerrarModalListadoItems() {
 let contador = 0;
 
 function AgregarLinea() {
-    let stockproducto = $("#txtStockAlmacenItem").val();
+
+   
+
+    //let stockproducto = $("#txtStockAlmacenItem").val();
     let IdItem = $("#txtIdItem").val();
     let CodigoItem = $("#txtCodigoItem").val();
     let MedidaItem = $("#cboMedidaItem").val();
     let MedidaItemDescripcion = $("#cboMedidaItem").find('option:selected').text();
     let DescripcionItem = $("#txtDescripcionItem").val();
-    //let PrecioUnitarioItem = $("#txtPrecioUnitarioItem").val();
-    let CantidadItem = $("#txtCantidadItem").val();
-    let AlmacenItem = $("#cboAlmacenItem").val();
-    let IdGrupoUnidadMedida = $("#cboGrupoUnidadMedida").val();
+    let CantidadItem = $("#IdTxtCantidad").val();
+    //let CantidadItem = $("#txtCantidadItem").val();
+    //let AlmacenItem = $("#cboAlmacenItem").val();
+/*    let IdGrupoUnidadMedida = $("#cboGrupoUnidadMedida").val();*/
     //txtReferenciaItem
 
     var today = new Date();
@@ -598,12 +606,11 @@ function AgregarLinea() {
 
 
     let UnidadMedida;
-    let Almacen;
-
+ 
     //valdiaciones
 
     let ValidartProducto = $("#cboMedidaItem").val();
-    let ValidarCantidad = $("#txtCantidadItem").val();
+    let ValidarCantidad = $("#IdTxtCantidad").val();
 
     if (ValidarCantidad == "" || ValidarCantidad == null || ValidarCantidad == "0" || !$.isNumeric(ValidarCantidad)) {
         swal("Informacion!", "Debe Especificar Cantidad!");
@@ -630,7 +637,7 @@ function AgregarLinea() {
     contador++;
 
 
-    let combo1 = `<select class="form-control" id="cboUnidadMedida` + contador + `" name="cboUnidadMedida[]" disabled>`;
+    let combo1 = `<select style="display:none" class="form-control" id="cboUnidadMedida` + contador + `" name="cboUnidadMedida[]" disabled>`;
     combo1 += `  <option value="0">Seleccione</option>`;
     for (var i = 0; i < UnidadMedida.length; i++) {
         if (MedidaItem == UnidadMedida[i].IdUnidadMedida) {
@@ -644,7 +651,7 @@ function AgregarLinea() {
 
 
 
-    tt = $('#tabla').DataTable(lenguaje);
+    tt = $('#tabla').DataTable(lenguaje1);
 
 
 
@@ -657,12 +664,14 @@ function AgregarLinea() {
                     <input style="display:none;" class="form-control" type="text" value="`+ CodigoItem +`" id="txtCodigoArticulo`+ contador + `" name="txtCodigoArticulo[]" />
                 </td>`).
         append(`<td>` + DescripcionItem +`<input disabled value="` + DescripcionItem +`" class="form-control" type="hidden" id="txtDescripcionArticulo` + contador + `" name="txtDescripcionArticulo[]"/></td>`).
-        append(`<td>
-                <input type="hidden" value="`+ MedidaItemDescripcion +`" id="inputUnidadMedida` + contador + `" />
-                `+ combo1 +`
-                </td>`).
         append(`<td><input class="form-control"  type="number" name="txtCantidad[]" value="` + CantidadItem +`" id="txtCantidad` + contador + `" disabled></td>`).
-        append(`<td><button class="btn btn-xs btn-danger borrar fa fa-trash"></button></td>`);
+        append(`<td><button class="btn btn-xs btn-danger borrar fa fa-trash"></button>
+
+
+         <input type="hidden" value="`+ MedidaItemDescripcion + `" id="inputUnidadMedida` + contador + `" />
+                `+ combo1 +`
+
+        </td>`);
 
     newRow1.attr('id', 'tritem' + contador);
 
@@ -679,14 +688,13 @@ function AgregarLinea() {
     //$("#inputUnidadMedida" + contador).val(MedidaItemDescripcion);
 
 
-    $("#cboAlmacen" + contador).val(AlmacenItem);
-
     
     NumeracionDinamica();
     LimpiarModalItem();
     
 
-    
+    $("#IdTxtCantidad").val("0");
+    $("#cboProductosTodos").val(null).trigger('change');
 
 }
 
@@ -991,8 +999,6 @@ function ObtenerDatosxID(IdSolicitudDespacho) {
             $("#IdCuadrilla").select2();
             CargarCuadrillaxUsuario();
 
-            return;
-
             $("#IdCuadrilla").val(solicitudes[0].IdCuadrilla).change();
 
             var fechaSplit = (solicitudes[0].FechaDocumento.substring(0, 10)).split("-");
@@ -1088,7 +1094,7 @@ function AgregarLineaDetalle(Id, CodigoArticulo, IdItem, Descripcion, Cantidad, 
 
     let UnidadMed = "";
 
-    let combo1 = `<select class="form-control" id="cboUnidadMedida`+ contador + `" name="cboUnidadMedida[]" disabled>`;
+    let combo1 = `<select style="display:none" class="form-control" id="cboUnidadMedida`+ contador + `" name="cboUnidadMedida[]" disabled>`;
             combo1 += `  <option value="0">Seleccione</option>`;
            for (var i = 0; i < UnidadMedida.length; i++) {
                if (UnidadMedida[i].IdUnidadMedida == IdUnidadMedida) {
@@ -1101,7 +1107,7 @@ function AgregarLineaDetalle(Id, CodigoArticulo, IdItem, Descripcion, Cantidad, 
                   combo1 += `</select>`;
 
 
-    tt = $('#tabla').DataTable(lenguaje);
+    tt = $('#tabla').DataTable(lenguaje1);
 
  
     var newRow1 = $(`<tr>`).
@@ -1114,13 +1120,13 @@ function AgregarLineaDetalle(Id, CodigoArticulo, IdItem, Descripcion, Cantidad, 
             </td>`).
         append(`<td>` + Descripcion + `<input disabled style="display:none;" class="form-control" type="text" value="` + Descripcion + `" id="txtDescripcionArticulo` + contador + `" name="txtDescripcionArticulo[]"/></td>`).
         append(`<td>
-                <input type="hidden" value="`+ UnidadMed + `" id="inputUnidadMedida` + contador + `" />
-                 `+ combo1 + `
-                </td>`).
-        append(`<td>
                <input class="form-control" type="number" name="txtCantidad[]" value="`+ Cantidad + `" id="txtCantidad` + contador + `">
                </td>`).
-        append(`<td><button class="btn btn-xs btn-danger borrar fa fa-trash" onclick="EliminarDetalle(` + Id + `,this)"></button></td>`);
+        append(`<td><button class="btn btn-xs btn-danger borrar fa fa-trash" onclick="EliminarDetalle(` + Id + `,this)"></button>
+
+        <input type="hidden" value="`+ UnidadMed + `" id="inputUnidadMedida` + contador + `" />
+                 `+ combo1 + `
+        </td>`);
 
 
     newRow1.attr('id', 'tr' + contador);
@@ -1402,4 +1408,102 @@ function llenarComboSerie(lista, idCombo, primerItem) {
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
     $("#" + idCombo).val(lista[ultimoindice].IdSerie).change();
+}
+
+
+function CargarProductosTodos() {
+
+    let varTipoProducto = $("#IdTipoProducto").val();
+    let varIdObra = $("#IdObra").val();
+
+
+    $("#cboProductosTodos").select2({
+        language: "es",
+        width: '100%',
+        //theme: "classic",
+        async: false,
+        ajax: {
+            url: "/Articulo/ObtenerArticulosSelect2",
+            type: "post",
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+
+                return {
+                    searchTerm: params.term, // search term
+                    TipoProducto: varTipoProducto,
+                    IdObra: varIdObra
+                };
+
+
+
+            },
+            processResults: function (response) {
+
+                var results = [];
+                $.each(response, function (index, item) {
+                    results.push({ id: item.IdArticulo, text: item.Codigo + " | " + item.Descripcion1 })
+                });
+
+
+                return { results }
+
+
+            },
+            cache: true,
+        },
+        placeholder: 'Ingrese Nombre de Producto',
+        minimunInputLength: 3
+    });
+
+    //console.log('CargarUnidadMedidaItem');
+    //$.ajaxSetup({ async: false });
+    //$.post("/Articulo/ObtenerArticulosxSociedad", function (data, status) {
+    //    let articulos = JSON.parse(data);
+    //    llenarComboProductosTodos(articulos, "cboProductosTodos", "Seleccione")
+    //});
+}
+
+//function llenarComboProductosTodos(lista, idCombo, primerItem) {
+//    var contenido = "";
+//    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+//    var nRegistros = lista.length;
+//    var nCampos;
+//    var campos;
+//    for (var i = 0; i < nRegistros; i++) {
+
+//        if (lista.length > 0) { contenido += "<option value='" + lista[i].Codigo + "'>" + lista[i].Descripcion1 + "</option>"; }
+//        else { }
+//    }
+//    var cbo = document.getElementById(idCombo);
+//    if (cbo != null) cbo.innerHTML = contenido;
+//}
+
+
+
+function ObtenerDetalleProducto() {
+
+    CargarUnidadMedidaItem();
+    CargarGrupoUnidadMedida();
+    //CargarAlmacen();
+
+    let IdArticulo = $('#cboProductosTodos').val();
+    let TipoItem = $("#cboClaseArticulo").val();
+
+    $.post("/Articulo/ObtenerArticuloxIdArticulo", { 'IdArticulo': IdArticulo, 'TipoItem': TipoItem }, function (data, status) {
+        if (data == "error") {
+            swal("Info!", "No se encontro Articulo")
+            tableItems.destroy();
+        } else {
+            let datos = JSON.parse(data);
+            console.log(datos);
+          
+            $("#txtCodigoItem").val(datos.Codigo);
+            $("#txtIdItem").val(datos.IdArticulo);
+            $("#txtDescripcionItem").val(datos.Descripcion1);
+            $("#cboMedidaItem").val(datos.IdUnidadMedida);
+
+        }
+    });
+
 }

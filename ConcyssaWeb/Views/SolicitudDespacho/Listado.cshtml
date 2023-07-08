@@ -179,19 +179,19 @@
                                 <div class='form-group-sm'>
                                     <label for="IdObra" class="control-label col-sm-2 left-align">Obra</label>
                                     <div class="col-sm-4">
-                                        <select id="IdObra" disabled class="form-control input-sm" tabindex="0">
+                                        <select id="IdObra" onchange="CargarProductosTodos()" disabled class="form-control input-sm" tabindex="0">
         
                                         </select>
                                     </div>
                                 </div>
 
-                           
+  
                             </div>
 
 
                             <div class="row">
                                
-                                <div class='form-group-sm'>
+                                <div class='form-group-sm' style="display:none">
                                     <label for="IdBase" class="control-label col-sm-2 left-align">Base</label>
                                     <div class="col-sm-4">
                                         <select id="IdBase" disabled class="form-control input-sm" tabindex="0"></select>
@@ -199,14 +199,14 @@
                                 </div>
                                
 
-                                <div class='form-group-sm'>
+                                <div class='form-group-sm' style="display:none">
                                     <label for="cboSerie" class="control-label col-sm-2 col-xs-12 left-align">Serie</label>
                                     <div class="col-sm-2 col-xs-6">
                                         <select id="cboSerie" class="form-control input-sm" tabindex="0" ></select>
                                     </div>
                                 </div>
 
-                                <div class='form-group-sm'>
+                                <div class='form-group-sm' style="display:none">
                                     <div class="col-sm-2 col-xs-6">
                                         <input id="txtNumeracion" type="text" class="form-control input-sm" tabindex="2" disabled>
                                     </div>
@@ -222,12 +222,12 @@
                                 <div class='form-group-sm'>
                                     <label for="txtFechaDocumento" class="control-label col-sm-2 col-xs-12 left-align">Fecha Documento</label>
                                     <div class="col-sm-4 col-xs-12">
-                                        <input id="txtFechaDocumento" value="@DateTime.Now.ToString("yyyy-MM-dd")" type="date" class="form-control input-sm" tabindex="10" disabled>
+                                        <input id="txtFechaDocumento" value="@DateTime.Now.ToString("yyyy-MM-dd")" type="date" class="form-control input-sm" tabindex="10">
                                     </div>
                                 </div>
 
 
-                                <div class='form-group-sm'>
+                                <div class='form-group-sm' style="display:none">
                                     <label for="txtFechaContabilizacion" class="control-label col-sm-2 col-xs-12 left-align">Fecha Contabilizacion</label>
                                     <div class="col-sm-4 col-xs-12">
                                         <input id="txtFechaContabilizacion" value="@DateTime.Now.ToString("yyyy-MM-dd")" type="date" class="form-control input-sm" tabindex="6">
@@ -244,13 +244,13 @@
                             <br />
 
                             <div class="tab">
-                                <button class="tablinks active" onclick="openContenido(event, 'Contenido')">Contenido</button>
+                                @*<button class="tablinks active" onclick="openContenido(event, 'Contenido')">Contenido</button>*@
                                 @*<button class="tablinks" onclick="openContenido(event, 'Anexos')">Anexos</button>*@
 
                             </div>
 
                             <div id="Contenido" class="tabcontent" style="display: block;">
-                                <div class='form-group-sm'>
+                                <div class='form-group-sm' style="display:none">
                                     <div class="col-sm-4">
                                         <select class="form-control" id="cboClaseArticulo" style="margin-bottom:10px;margin-top:5px">
                                             @*<option value="0">Seleccione</option>*@
@@ -265,14 +265,41 @@
                                     <div class="col-sm-4">
                                         <select class="form-control" id="IdTipoProducto" style="margin-bottom:10px;margin-top:5px">
                                             <option value="0">Seleccione</option>
-                                            <option value="1">MATERIALES</option>
+                                            <option value="1" selected >MATERIALES</option>
                                             <option value="2">AUXILIARES</option>
                                         </select>
                                     </div>
                                 </div>
+
+                                @*combo productos*@
                                 <div class='form-group-sm'>
                                     <div class="col-sm-4">
-                                        <button id="OpenModalItem" style="margin-bottom:10px;margin-top:5px" class="btn btn-xs btn-info" onclick="OpenModalItem()" type="button">Agregar Item</button>
+                                        <select class="form-control" onchange="ObtenerDetalleProducto()" id="cboProductosTodos" style="margin-bottom:10px;margin-top:5px">
+    
+                                        </select>
+                                    </div>
+                                </div>
+                                @*combo productos*@
+
+                                <div class='form-group-sm'>
+                                    <label for="IdTxtCantidad" class="control-label col-sm-2 left-align">Cantidad</label>
+                                    <div class="col-sm-4">
+                                        <input class="form-control" id="IdTxtCantidad" value="0" />
+                                    </div>
+                                </div>
+
+
+                                <div class='form-group-sm' style="display:none">
+                                    <div class="col-sm-4">
+                                        <select id="cboMedidaItem" class="form-control input-sm" tabindex="2" style="height:26px" disabled></select>
+                                    </div>
+                                </div>
+
+
+                                <div class='form-group-sm'>
+                                    <div class="col-sm-12" style="display:flex;justify-content:center">
+                                        @*<button id="OpenModalItem" style="margin-bottom:15px;margin-top:15px;border-radius:10px"  class="btn btn-xs btn-info" onclick="OpenModalItem()" type="button">Agregar Item</button>*@
+                                        <button id="OpenModalItem" style="margin-bottom:15px;margin-top:15px;border-radius:10px" class="btn btn-xs btn-info" onclick="AgregarLinea()" type="button">Agregar Item</button>
                                     </div>
                                 </div>
                                 <div class="container-fluid">
@@ -284,7 +311,7 @@
                                                     <th>Item</th>
                                                     <th>Codigo</th>
                                                     <th>Descripcion de Articulo</th>
-                                                    <th style="min-width:80px">UM</th>
+                                                    @*<th style="min-width:80px">UM</th>*@
                                                     <th>Cantidad</th>
                                                     <th>Accion</th>
                                                 </tr>
@@ -448,12 +475,12 @@
                                         </div>
                                     </div>*@
 
-                                    <div class='form-group-sm'>
+                                    @*<div class='form-group-sm'>
                                         <label for="cboMedidaItem" class="control-label col-sm-2 left-align">Medida</label>
                                         <div class="col-sm-4">
-                                            <select id="cboMedidaItem" class="form-control input-sm" tabindex="2" style="height:26px" onchange="ObtenerDatosDefinicion()" disabled></select>
+                                            <select id="cboMedidaItem" class="form-control input-sm" tabindex="2" style="height:26px" disabled></select>
                                         </div>
-                                    </div>
+                                    </div>*@
                                 </div>
                                 <div class="row">
 
