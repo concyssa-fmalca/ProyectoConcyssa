@@ -11,7 +11,10 @@ window.onload = function () {
 
     $(document).on('click', '.borrar', function (event) {
         event.preventDefault();
-        $(this).closest('tr').remove();
+        //$(this).closest('tr').remove();
+        var fila = $(this).closest('tr');
+        tt.row(fila).remove().draw();
+
     });
 
 };
@@ -665,7 +668,7 @@ function AgregarLinea() {
                 </td>`).
         append(`<td>` + DescripcionItem +`<input disabled value="` + DescripcionItem +`" class="form-control" type="hidden" id="txtDescripcionArticulo` + contador + `" name="txtDescripcionArticulo[]"/></td>`).
         append(`<td><input class="form-control"  type="number" name="txtCantidad[]" value="` + CantidadItem +`" id="txtCantidad` + contador + `" disabled></td>`).
-        append(`<td><button class="btn btn-xs btn-danger borrar fa fa-trash"></button>
+        append(`<td><button class="btn btn-xs btn-danger borrar fa fa-trash" ></button>
 
 
          <input type="hidden" value="`+ MedidaItemDescripcion + `" id="inputUnidadMedida` + contador + `" />
@@ -931,12 +934,12 @@ function GuardarSolicitud() {
                     'success'
                 )
 
-                //table.destroy();
+                table.destroy();
                 CerrarModal();
                 ConsultaServidor();
                 
                 //ObtenerDatosxID();
-                $("#tabla").find('tbody').empty();
+                //$("#tabla").find('tbody').empty();
 
             } else {
                 Swal.fire(
@@ -1122,7 +1125,7 @@ function AgregarLineaDetalle(Id, CodigoArticulo, IdItem, Descripcion, Cantidad, 
         append(`<td>
                <input class="form-control" type="number" name="txtCantidad[]" value="`+ Cantidad + `" id="txtCantidad` + contador + `">
                </td>`).
-        append(`<td><button class="btn btn-xs btn-danger borrar fa fa-trash" onclick="EliminarDetalle(` + Id + `,this)"></button>
+        append(`<td><button style="background: red;padding: 10px;border-radius: 3px;" class="btn btn-xs btn-danger fa fa-trash" onclick="EliminarDetalle(` + Id + `,this)"></button>
 
         <input type="hidden" value="`+ UnidadMed + `" id="inputUnidadMedida` + contador + `" />
                  `+ combo1 + `
@@ -1229,7 +1232,9 @@ function EliminarDetalle(IdSolicitudDespachoDetalle, dato) {
 
             } else {
                 swal("Exito!", "Item Eliminado", "success")
-                $(dato).closest('tr').remove();
+                //$(dato).closest('tr').remove();
+                var fila = $(dato).closest('tr');
+                tt.row(fila).remove().draw();
             }
 
         });
@@ -1254,7 +1259,7 @@ function limpiarDatos() {
     $("#txtComentarios").val("");
     $("#txtFechaDocumento").val(fechaReset);
     $("#txtFechaContabilizacion").val(fechaReset);
-    $("#IdTipoProducto").val("0");
+    $("#IdTipoProducto").val("1");
 
     
 }
@@ -1416,6 +1421,7 @@ function CargarProductosTodos() {
     let varTipoProducto = $("#IdTipoProducto").val();
     let varIdObra = $("#IdObra").val();
 
+    console.log(varTipoProducto);
 
     $("#cboProductosTodos").select2({
         language: "es",
@@ -1507,3 +1513,7 @@ function ObtenerDetalleProducto() {
     });
 
 }
+
+//function Quitar(cont) {
+//    tt.row(cont).remove().draw();
+//}
