@@ -122,6 +122,8 @@ namespace DTO
         public string NombMoneda { get; set; }
         public string NombUsuarioEdicion { get; set; }
         public DateTime FechaEdicion { get; set; }
+        public string SGI { get; set; }
+
     }
 
 

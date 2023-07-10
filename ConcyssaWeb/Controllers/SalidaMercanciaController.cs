@@ -249,5 +249,24 @@ namespace ConcyssaWeb.Controllers
 
 
 
+        public string ObtenerSGI(string SGI)
+        {
+            string mensaje_error = "";
+            MovimientoDAO oMovimientoDAO = new MovimientoDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            List<SgiDTO> oSgiDTO = oMovimientoDAO.BuscarSGI(SGI, ref mensaje_error);
+            if (mensaje_error.ToString().Length == 0)
+            {
+
+                return JsonConvert.SerializeObject(oSgiDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+
+        }
+
+
     }
 }
