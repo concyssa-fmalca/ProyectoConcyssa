@@ -1776,6 +1776,9 @@ function limpiarDatos() {
 
 
 function ObtenerDatosxID(IdMovimiento) {
+
+    
+
     $("#txtId").val(IdMovimiento);
     CargarCentroCosto();
     listarEmpleados();
@@ -1799,7 +1802,7 @@ function ObtenerDatosxID(IdMovimiento) {
 
     CargarVehiculos();
 
-
+   
 
     $.post('../Movimientos/ObtenerDatosxIdMovimientoOLD', {
         'IdMovimiento': IdMovimiento,
@@ -1811,7 +1814,9 @@ function ObtenerDatosxID(IdMovimiento) {
             limpiarDatos();
         } else {
             let movimiento = JSON.parse(data);
+            console.log("XDDD");
             console.log(movimiento);
+            console.log("XDDD");
 
             $("#cboAlmacen").val(movimiento.IdAlmacen);
             $("#cboSerie").val(movimiento.IdSerie);
@@ -1825,6 +1830,9 @@ function ObtenerDatosxID(IdMovimiento) {
             $("#cboTipoDocumentoOperacion").val(movimiento.IdTipoDocumento)
             $("#IdTipoDocumentoRef").val(movimiento.IdTipoDocumentoRef)
             $("#SerieNumeroRef").val(movimiento.NumSerieTipoDocumentoRef)
+
+            OcultarCampos();
+
 
             $("#IdBase").val(movimiento.IdBase).change();
             $("#IdObra").val(movimiento.IdObra).change();
@@ -1902,7 +1910,7 @@ function ObtenerDatosxID(IdMovimiento) {
                 $("#Peso").prop("disabled", true)
                 $("#Bulto").prop("disabled", true)
                 $("#cboEstadoFE").prop("disabled", true)
-              
+
 
             } else if (movimiento.EstadoFE == 0 && TipDoc == "1") {
                 $("#btnGenerarPDF").hide();
@@ -1912,7 +1920,8 @@ function ObtenerDatosxID(IdMovimiento) {
                 $("#IdTipoDocumentoRef").prop("disabled", false)
                 $("#IdCuadrilla").prop("disabled", false)
                 $("#EntregadoA").prop("disabled", false)
-                $("#SerieNumeroRef").prop("disabled", false)
+                $("#SerieNumeroRef").prop("disabled", true)
+                $("#SerieNumeroRef").val("");
                 $("#txtComentarios").prop("disabled", false)
 
                 $("#IdTipoTransporte").prop("disabled", false)
@@ -1997,8 +2006,8 @@ function ObtenerDatosxID(IdMovimiento) {
         }
 
     });
-    console.log("XDDDDDDDDDDD")
-    OcultarCampos()
+    
+    
     //$("#SerieNumeroRef").prop("disabled", false)
     //$("#IdTipoDocumentoRef").prop("disabled", false)
     //$("#IdCuadrilla").prop("disabled", false)
@@ -3429,7 +3438,7 @@ function OcultarCampos() {
         $("#IdDestinatario").val(24154).change();
         $("#IdTransportista").val(24154).change();
         $("#IdMotivoTraslado").val(09).change();
-        $("#PlacaVehiculo").val(0).change()
+        $("#PlacaVehiculo").val(0).change();
         $("#Peso").val(1);
         $("#Bulto").val(1);
         $("#IdTipoTransporte").val('02')
