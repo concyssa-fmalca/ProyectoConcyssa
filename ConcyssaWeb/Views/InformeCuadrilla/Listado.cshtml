@@ -1,0 +1,133 @@
+﻿@{
+    ViewBag.Title = "Listado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" style="height:93%;">
+    <div class="panel">
+        <div class="container-fluid">
+            <div class="topbar-left col-xs-6">
+                <h3>Informe de Consumo por Cuadrillas</h3>
+            </div>
+        </div>
+        <div class="container-fluid" style="margin-top:50px">           
+            @*    <div class="col-xs-6 right">
+
+            </div>
+            *@
+            <div class="col-xs-12 right">
+                <label class="col-sm-1" for="cboBaseFiltro">Base</label>
+                <div class="col-sm-5">
+                    <select class="form-control" id="cboBaseFiltro" onchange="ObtenerObraxIdBase()"></select>
+                </div>
+            </div>
+            <div class="col-xs-12 right">
+                <label class="col-sm-1" for="cboObraFiltro">Obra</label>
+                <div class="col-sm-5">
+                    <select class="form-control" id="cboObraFiltro" onchange="ObtenerCuadrillaxIdObra()"></select>
+                </div>
+            </div>
+
+            <div class="col-xs-12 right">
+                <label class="col-sm-1" for="txtFechaInicio">Fecha Inicial</label>
+                <div class="col-sm-2">
+                    <input class="form-control" type="date" id="txtFechaInicio"/>
+                </div>
+                <label class="col-sm-1" for="txtFechaFin">Fecha Final</label>
+                <div class="col-sm-2">
+                    <input class="form-control" type="date" id="txtFechaFin" />
+                </div>
+                @*<button class="btn btn-primary" style="margin-top:3px" onclick="ObtenerCuadrillaxIdObra()">Buscar</button>*@
+            </div>
+
+
+        </div>
+
+
+    </div>
+    <div class="panel">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-5">
+                    <div class="col-sm-12">
+                        <label class="col-sm-12" for="cboCuadrillaFiltro">Cuadrillas de la Obra</label>
+                        <select class="form-control" id="cboCuadrillaFiltro" multiple style="height:300px"></select>                      
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="col-sm-12" style="display:flex;justify-content:center;align-items:center;flex-direction:column;height:300px">
+                        <label class="col-sm-8" style="text-align:center" for="cboCuadrillaFiltro">Acciones</label>
+                        <div class="col-sm-8" style="margin-bottom:10px">
+                             <button class="button btn-primary col-sm-12" onclick="SeleccionarCuadrilla()">>></button>     
+                        </div>
+                        <div class="col-sm-8" style="margin-bottom:10px">
+                            <button class="button btn-primary col-sm-12" onclick="PasarTodasCuadrillas()">Seleccionar Todas</button>
+                        </div>
+                        <div class="col-sm-8" style="margin-bottom:10px">
+                            <button class="button btn-primary col-sm-12" onclick="QuitarTodasCuadrillas()">Quitar Todas</button>
+                        </div>
+                        <div class="col-sm-8" style="margin-bottom:10px">
+                            <button class="button btn-primary col-sm-12" onclick="QuitarCuadrilla()"><<</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-5">
+                    <div class="col-sm-12">
+                        <label class="col-sm-12" for="cboCuadrillaSeleccionada">Cuadrillas Seleccionadas</label>
+                        <select class="form-control" id="cboCuadrillaSeleccionada" multiple style="height:300px"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-8">
+                    <div class="row">
+                        <label class="col-sm-3" for="chkIncMateriales">Incluir Materiales</label>
+                        <div class="col-sm-9">
+                            <input type="checkbox" id="chkIncMateriales" checked />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <label class="col-sm-3" for="chkIncAuxiliares">Incluir Auxiliares</label>
+                        <div class="col-sm-9">
+                            <input type="checkbox" id="chkIncAuxiliares" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <label class="col-sm-3" for="chkIncServicios">Incluir Servicios</label>
+                        <div class="col-sm-9">
+                            <input type="checkbox" id="chkIncServicios" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <label class="col-sm-3" for="chkIncExtornos">Incluir Extornos</label>
+                        <div class="col-sm-9">
+                            <input type="checkbox" id="chkIncExtornos" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="col-sm-12">
+                        <button class="button btn-primary col-sm-12" onclick="GenerarReporte()">Generar Reporte</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+</div>
+
+
+<script src="~/Scripts/InformeCuadrilla/Listado.js"></script>
+<script src="~/Scripts/General.js"></script>
+<script src="~/js/pdf/jspdf.min.js"></script>
+<script src="~/js/pdf/faker.min.js"></script>
+<script src="~/js/pdf/jspdf.plugin.autotable.src.js"></script>
+
+

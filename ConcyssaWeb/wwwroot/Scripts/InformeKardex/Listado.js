@@ -110,7 +110,16 @@ function BuscarKardex() {
     if (FechaTermino == '') {
         FechaTermino = '2050-01-01'
     }
-
+    if ($("#IdArticulo").val()==0) {
+        swal("Informacion!", "Seleccione un Articulo");
+        return;
+    } if ($("#IdAlmacen").val()==0) {
+        swal("Informacion!", "Seleccione un Almacen");
+        return;
+    } if ($("#FechaInicio").val()=='') {
+        swal("Informacion!", "Seleccione una Fecha de Inicio");
+        return;
+    }
     //ListarDatatableKardex('ListarKardex',IdArticulo,IdAlmacen,FechaInicio, FechaTermino)
     ListarDatatableKardexDT('ListarKardexDT', IdArticulo, IdAlmacen, FechaInicio, FechaTermino)
 }
@@ -217,6 +226,7 @@ function ListarDatatableKardexDT(url, IdArticulo, IdAlmacen, FechaInicio, FechaT
             //    },
             //},
             {
+                data: null,
                 targets: 0,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -224,6 +234,7 @@ function ListarDatatableKardexDT(url, IdArticulo, IdAlmacen, FechaInicio, FechaT
                 },
             },
             {
+                data: null,
                 targets: 1,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -231,6 +242,7 @@ function ListarDatatableKardexDT(url, IdArticulo, IdAlmacen, FechaInicio, FechaT
                 },
             },
             {
+                data: null,
                 targets: 2,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -238,6 +250,7 @@ function ListarDatatableKardexDT(url, IdArticulo, IdAlmacen, FechaInicio, FechaT
                 },
             },
             {
+                data: null,
                 targets: 3,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -245,6 +258,7 @@ function ListarDatatableKardexDT(url, IdArticulo, IdAlmacen, FechaInicio, FechaT
                 },
             },
             {
+                data: null,
                 targets: 4,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -252,6 +266,7 @@ function ListarDatatableKardexDT(url, IdArticulo, IdAlmacen, FechaInicio, FechaT
                 },
             },
             {
+                data: null,
                 targets: 5,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -259,6 +274,7 @@ function ListarDatatableKardexDT(url, IdArticulo, IdAlmacen, FechaInicio, FechaT
                 },
             },
             {
+                data: null,
                 targets: 6,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -266,6 +282,7 @@ function ListarDatatableKardexDT(url, IdArticulo, IdAlmacen, FechaInicio, FechaT
                 },
             },
             {
+                data: null,
                 targets: 7,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -278,6 +295,7 @@ function ListarDatatableKardexDT(url, IdArticulo, IdAlmacen, FechaInicio, FechaT
                 },
             },
             {
+                data: null,
                 targets: 8,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -285,6 +303,7 @@ function ListarDatatableKardexDT(url, IdArticulo, IdAlmacen, FechaInicio, FechaT
                 },
             },
             {
+                data: null,
                 targets: 9,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -292,6 +311,7 @@ function ListarDatatableKardexDT(url, IdArticulo, IdAlmacen, FechaInicio, FechaT
                 },
             },
             {
+                data: null,
                 targets: 10,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -299,6 +319,7 @@ function ListarDatatableKardexDT(url, IdArticulo, IdAlmacen, FechaInicio, FechaT
                 },
             },
             {
+                data: null,
                 targets: 11,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -306,6 +327,7 @@ function ListarDatatableKardexDT(url, IdArticulo, IdAlmacen, FechaInicio, FechaT
                 },
             },
             {
+                data: null,
                 targets: 12,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -313,6 +335,7 @@ function ListarDatatableKardexDT(url, IdArticulo, IdAlmacen, FechaInicio, FechaT
                 },
             },
             {
+                data: null,
                 targets: 13,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -320,6 +343,7 @@ function ListarDatatableKardexDT(url, IdArticulo, IdAlmacen, FechaInicio, FechaT
                 },
             },
             {
+                data: null,
                 targets: 14,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -327,6 +351,7 @@ function ListarDatatableKardexDT(url, IdArticulo, IdAlmacen, FechaInicio, FechaT
                 },
             },
             {
+                data: null,
                 targets: 15,
                 orderable: false,
                 render: function (data, type, full, meta) {

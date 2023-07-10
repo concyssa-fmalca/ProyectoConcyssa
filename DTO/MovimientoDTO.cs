@@ -120,6 +120,8 @@ namespace DTO
 
         public int TranferenciaDirecta { get; set; }
         public string NombMoneda { get; set; }
+        public string NombUsuarioEdicion { get; set; }
+        public DateTime FechaEdicion { get; set; }
     }
 
 

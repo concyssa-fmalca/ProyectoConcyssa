@@ -170,7 +170,7 @@ function ObtenerStockxAlmacen() {
             //    },
             //},
             {
-                data:null,
+                data: null,
                 targets: 0,
                 orderable: false,
                 render: function (data, type, full, meta) {

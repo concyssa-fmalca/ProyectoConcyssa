@@ -395,8 +395,35 @@ function ConsultaServidor() {
                     varEstadoGE = "NO ACEPTADO"
                 }
             }
-            
-            
+            let datosext
+            if (movimientos[i].IdDocExtorno == 1) {
+                $.post("/Movimientos/ValidarExtorno", { 'IdMovimiento': movimientos[i].IdMovimiento }, function (data, status) {
+
+                    datosext = data.split("|");
+                    console.log(datosext);
+                });
+                console.log("extornado")
+                tr += '<tr>' +
+                    '<td>' + (i + 1) + '</td>' +
+                    '<td>' + movimientos[i].FechaDocumento.split('T')[0] + '</td>' +
+                    '<td>' + movimientos[i].NombUsuario + '</td>' +
+                    '<td style="color:red">' + movimientos[i].NombTipoDocumentoOperacion.toUpperCase() + '</td>' +
+                    '<td style="color:blue;cursor:pointer;text-decoration:underline" onclick="GenerarReporte(' + movimientos[i].IdMovimiento + ',' + movimientos[i].IdDocExtorno + ')">' + movimientos[i].NombSerie.toUpperCase() + '-' + movimientos[i].Correlativo + '</td>' +
+                    '<td>' + movimientos[i].TDocumento.toUpperCase() + '</td>' +
+                    '<td> Extornado con Doc N°: ' + datosext[1] + '</td>' +
+                    '<td>' + varEstadoGE + '</td>' +
+                    '<td>' + movimientos[i].NombMoneda + '</td>' +
+
+                    '<td>' + formatNumberDecimales(movimientos[i].Total, 3) + '</td>' +
+                    /*    '<td>' + movimientos[i].NombObra + '</td>' +*/
+
+                    '<td>' + movimientos[i].NombAlmacen + '</td>' +
+                    '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + movimientos[i].IdMovimiento + ')"></button>' +
+                    // '<button class="btn btn-primary" onclick="GenerarReporte(' + movimientos[i].IdMovimiento + ',' + movimientos[i].IdDocExtorno + ')">R</button></td>' +
+                    //'<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + solicitudes[i].IdSolicitudRQ + ')"></button></td >' +
+                    '</tr>';
+            } else {
+                console.log("no extornado")
                 tr += '<tr>' +
                     '<td>' + (i + 1) + '</td>' +
                     '<td>' + movimientos[i].FechaDocumento.split('T')[0] + '</td>' +
@@ -413,9 +440,13 @@ function ConsultaServidor() {
 
                     '<td>' + movimientos[i].NombAlmacen + '</td>' +
                     '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + movimientos[i].IdMovimiento + ')"></button>' +
-                   // '<button class="btn btn-primary" onclick="GenerarReporte(' + movimientos[i].IdMovimiento + ',' + movimientos[i].IdDocExtorno + ')">R</button></td>' +
+                    // '<button class="btn btn-primary" onclick="GenerarReporte(' + movimientos[i].IdMovimiento + ',' + movimientos[i].IdDocExtorno + ')">R</button></td>' +
                     //'<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + solicitudes[i].IdSolicitudRQ + ')"></button></td >' +
                     '</tr>';
+            }
+            
+            
+              
             }
         
         if (table) {
@@ -534,11 +565,11 @@ function OpenModalItem() {
         //CargarAlmacen();
     }
 }
-
+let contadorAnexo = 0;
 function AgregarLineaAnexo(Nombre) {
-
+    contadorAnexo++
     let tr = '';
-    tr += `<tr>
+    tr += `<tr id="filaAnexo` + contadorAnexo +`">
             <td style="display:none"><input  class="form-control" type="text" value="0" id="txtIdSolicitudRQAnexo" name="txtIdSolicitudRQAnexo[]"/></td>
             <td>
                `+ Nombre + `
@@ -547,13 +578,15 @@ function AgregarLineaAnexo(Nombre) {
             <td>
                <a href="/Anexos/`+ Nombre + `" target="_blank">Descargar</a>
             </td>
-            <td><button class="btn btn-xs btn-danger borrar">-</button></td>
+            <td><button type="button" class="btn btn-xs btn-danger borrar" onclick="EliminarAnexoEnMemoria(`+ contadorAnexo +`)">-</button></td>
             </tr>`;
 
     $("#tabla_files").find('tbody').append(tr);
 
 }
-
+function EliminarAnexoEnMemoria(contAnexo) {
+    $("#filaAnexo" + contAnexo).remove();
+}
 function AgregarLineaDetalleAnexo(Id, Nombre) {
 
     let tr = '';
@@ -1837,7 +1870,17 @@ function ObtenerDatosxID(IdMovimiento) {
             $("#IdBase").val(movimiento.IdBase).change();
             $("#IdObra").val(movimiento.IdObra).change();
             $("#cboAlmacen").val(movimiento.IdAlmacen);
+            if (movimiento.NombUsuarioEdicion == "") {
+                $("#NombUsuarioEdicion").html("-")
+            } else {
+                $("#NombUsuarioEdicion").html(movimiento.NombUsuarioEdicion)
+            }
 
+            if (movimiento.FechaEdicion == '1990-01-01T00:00:00') {
+                $("#EditedAt").html("-")
+            } else {
+                $("#EditedAt").html(movimiento.FechaEdicion.replace("T", " "))
+            }
             $("#CreatedAt").html(movimiento.CreatedAt.replace("T", " "));
             $("#NombUsuario").html(movimiento.NombUsuario);
             $("#txtComentarios").html(movimiento.Comentario)
@@ -2744,7 +2787,7 @@ function GenerarExtorno() {
                             'success'
                         )
                         //swal("Exito!", "Proceso Realizado Correctamente", "success")
-                        table.destroy();
+                        //table.destroy();
                         ConsultaServidor();
 
                     } else {

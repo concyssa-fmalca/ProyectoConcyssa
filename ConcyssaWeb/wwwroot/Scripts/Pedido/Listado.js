@@ -73,6 +73,7 @@ function listarPedidoDt() {
         columnDefs: [
             // {"className": "text-center", "targets": "_all"},
             {
+                data: null,
                 targets: -1,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -82,6 +83,7 @@ function listarPedidoDt() {
                 },
             },
             {
+                data: null,
                 targets: 0,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -89,6 +91,7 @@ function listarPedidoDt() {
                 },
             },
             {
+                data: null,
                 targets: 1,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -96,6 +99,7 @@ function listarPedidoDt() {
                 },
             },
             {
+                data: null,
                 targets: 2,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -104,6 +108,7 @@ function listarPedidoDt() {
             },
           
             {
+                data: null,
                 targets: 3,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -111,6 +116,7 @@ function listarPedidoDt() {
                 },
             },
             {
+                data: null,
                 targets: 4,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -118,6 +124,7 @@ function listarPedidoDt() {
                 },
             },
             {
+                data: null,
                 targets: 5,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -127,6 +134,7 @@ function listarPedidoDt() {
             
            
             {
+                data: null,
                 targets:6,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -134,6 +142,7 @@ function listarPedidoDt() {
                 },
             },
             {
+                data: null,
                 targets: 7,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -390,11 +399,11 @@ window.onload = function () {
         });
     });
 };
-
+let contadorAnexo = 0;
 function AgregarLineaAnexo(Nombre) {
-
+    contadorAnexo++
     let tr = '';
-    tr += `<tr>
+    tr += `<tr id="filaAnexo` + contadorAnexo +`">
             <td style="display:none"><input  class="form-control" type="text" value="0" id="txtIdSolicitudRQAnexo" name="txtIdSolicitudRQAnexo[]"/></td>
             <td>
                `+ Nombre + `
@@ -403,15 +412,14 @@ function AgregarLineaAnexo(Nombre) {
             <td>
                <a href="/Anexos/`+ Nombre + `" target="_blank" >Descargar</a>
             </td>
-            <td><button type="button" class="btn btn-xs btn-danger borrar fa fa-trash" onclick="quitarAnexo()"></button></td>
+            <td><button type="button" class="btn btn-xs btn-danger borrar fa fa-trash" onclick="EliminarAnexoEnMemoria(`+ contadorAnexo +`)"></button></td>
             </tr>`;
 
     $("#tabla_files").find('tbody').append(tr);
 
 }
-function quitarAnexo() {
-    console.log("hola")
-    $("#tabla_files").find('tbody').prepend(tr);
+function EliminarAnexoEnMemoria(contAnexo) {
+    $("#filaAnexo" + contAnexo).remove();
 }
 
 function ModalNuevo() {
@@ -660,6 +668,7 @@ function listadoItems() {
             // {"className": "text-center", "targets": "_all"},
 
             {
+                data: null,
                 targets: 0,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -668,6 +677,7 @@ function listadoItems() {
                 },
             },
             {
+                data: null,
                 targets: 1,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -675,6 +685,7 @@ function listadoItems() {
                 },
             },
             {
+                data: null,
                 targets: 2,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -682,6 +693,7 @@ function listadoItems() {
                 },
             },
             {
+                data: null,
                 targets: 3,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -689,6 +701,7 @@ function listadoItems() {
                 },
             },
             {
+                data: null,
                 targets: 4,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -1904,6 +1917,7 @@ function listarProductosAsignadosRQAgrupados() {
             // {"className": "text-center", "targets": "_all"},
 
             {
+                data: null,
                 targets: 0,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -1911,6 +1925,7 @@ function listarProductosAsignadosRQAgrupados() {
                 },
             },
             {
+                data: null,
                 targets: 1,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -1918,6 +1933,7 @@ function listarProductosAsignadosRQAgrupados() {
                 },
             },
             {
+                data: null,
                 targets: 2,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -1925,6 +1941,7 @@ function listarProductosAsignadosRQAgrupados() {
                 },
             },
             {
+                data: null,
                 targets: 3,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -1932,6 +1949,7 @@ function listarProductosAsignadosRQAgrupados() {
                 },
             },
             {
+                data: null,
                 targets: 4,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -1939,6 +1957,7 @@ function listarProductosAsignadosRQAgrupados() {
                 },
             },
             {
+                data: null,
                 targets: 5,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -2505,6 +2524,7 @@ function listarItemAprobados(IdDetalleSeleccionado = 0) {
             // {"className": "text-center", "targets": "_all"},
 
             {
+                data: null,
                 targets: 0,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -2514,6 +2534,7 @@ function listarItemAprobados(IdDetalleSeleccionado = 0) {
                 },
             },
             {
+                data: null,
                 targets: 1,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -2521,6 +2542,7 @@ function listarItemAprobados(IdDetalleSeleccionado = 0) {
                 },
             },
             {
+                data: null,
                 targets: 2,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -2529,6 +2551,7 @@ function listarItemAprobados(IdDetalleSeleccionado = 0) {
             },
 
             {
+                data: null,
                 targets: 3,
                 orderable: true,
                 render: function (data, type, full, meta) {
@@ -2536,6 +2559,7 @@ function listarItemAprobados(IdDetalleSeleccionado = 0) {
                 },
             },
             {
+                data: null,
                 targets: 4,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -2543,6 +2567,7 @@ function listarItemAprobados(IdDetalleSeleccionado = 0) {
                 },
             },
             {
+                data: null,
                 targets: 5,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -2550,6 +2575,7 @@ function listarItemAprobados(IdDetalleSeleccionado = 0) {
                 },
             },
             {
+                data: null,
                 targets: 6,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -2557,6 +2583,7 @@ function listarItemAprobados(IdDetalleSeleccionado = 0) {
                 },
             },
             {
+                data: null,
                 targets: 7,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -2564,6 +2591,7 @@ function listarItemAprobados(IdDetalleSeleccionado = 0) {
                 },
             },
             {
+                data: null,
                 targets: 8,
                 orderable: false,
                 render: function (data, type, full, meta) {

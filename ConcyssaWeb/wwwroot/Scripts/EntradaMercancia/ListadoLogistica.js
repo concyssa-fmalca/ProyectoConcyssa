@@ -594,11 +594,11 @@ function OpenModalItem() {
         //CargarAlmacen();
     }
 }
-
+let contadorAnexo = 0;
 function AgregarLineaAnexo(Nombre) {
-
+    contadorAnexo++
     let tr = '';
-    tr += `<tr>
+    tr += `<tr id="filaAnexo` + contadorAnexo +`">
             <td style="display:none"><input  class="form-control" type="text" value="0" id="txtIdSolicitudRQAnexo" name="txtIdSolicitudRQAnexo[]"/></td>
             <td>
                `+ Nombre + `
@@ -607,13 +607,15 @@ function AgregarLineaAnexo(Nombre) {
             <td>
                <a href="/Anexos/`+ Nombre + `" target="_blank" >Descargar</a>
             </td>
-            <td><button class="btn btn-xs btn-danger borrar fa fa-trash"></button></td>
+            <td><button type="button" class="btn btn-xs btn-danger borrar fa fa-trash" onclick="EliminarAnexoEnMemoria(`+ contadorAnexo +`)"></button></td>
             </tr>`;
 
     $("#tabla_files").find('tbody').append(tr);
 
 }
-
+function EliminarAnexoEnMemoria(contAnexo) {
+    $("#filaAnexo" + contAnexo).remove();
+}
 function AgregarLineaDetalleAnexo(Id, Nombre) {
 
     let tr = '';
@@ -931,11 +933,11 @@ function AgregarLinea() {
             $(".ImpuestoCabecera").val(varimpuesto);
         }
 
-        $('#tabla').find('tr').each(function () {
-            console.log("ESCONDIENDOOOOOOOOOOOOO")
-            $(this).find('td:eq(' + 9 + '), th:eq(' + 9 + ')').show();
-            $(this).find('td:eq(' + 10 + '), th:eq(' + 10 + ')').show();
-        });
+        //$('#tabla').find('tr').each(function () {
+        //    console.log("ESCONDIENDOOOOOOOOOOOOO")
+        //    $(this).find('td:eq(' + 9 + '), th:eq(' + 9 + ')').show();
+        //    $(this).find('td:eq(' + 10 + '), th:eq(' + 10 + ')').show();
+        //});
 
 
         $("#txtIdArticulo" + contador).val(IdItem);
@@ -1900,6 +1902,8 @@ function ObtenerDatosxIDOPDN(IdOPDN) {
         }
 
     });
+    $(".ocultarDiv").hide()
+
 }
 
 
@@ -2138,8 +2142,8 @@ function AgregarLineaDetalle(contador, detalle) {
                 }
                 tr += `</select>
         </td>
-        <td><input class="form-control" value="`+ detalle.NombCuadrilla + `" disabled></input></td>
-        <td><input class="form-control" value="`+ detalle.NombResponsable +`" disabled></input></td>
+        <td><input style="width:250px" class="form-control" value="`+ detalle.NombCuadrilla + `" disabled></input></td>
+        <td><input style="width:250px" class="form-control" value="`+ detalle.NombResponsable +`" disabled></input></td>
         <td>
             <input class="form-control changeTotal" type="text" style="width:100px" value="`+ formatNumber(detalle.total_item.toFixed(DecimalesPrecios)) + `" name="txtItemTotal[]" id="txtItemTotal` + contador + `" onchange="CalcularTotales()" disabled>
         </td>
@@ -2794,6 +2798,7 @@ function listarpedidosdt() {
             //    },
             //},
             {
+                data:null,
                 targets: 0,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -2801,6 +2806,7 @@ function listarpedidosdt() {
                 },
             },
             {
+                data: null,
                 targets: 1,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -2809,6 +2815,7 @@ function listarpedidosdt() {
                 },
             },
             {
+                data: null,
                 targets: 2,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -2816,6 +2823,7 @@ function listarpedidosdt() {
                 },
             },
             {
+                data: null,
                 targets: 3,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -2823,6 +2831,7 @@ function listarpedidosdt() {
                 },
             },
             {
+                data: null,
                 targets: 4,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -2830,6 +2839,7 @@ function listarpedidosdt() {
                 },
             },
             {
+                data: null,
                 targets: 5,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -2837,6 +2847,7 @@ function listarpedidosdt() {
                 },
             },
             {
+                data: null,
                 targets: 6,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -2844,6 +2855,7 @@ function listarpedidosdt() {
                 },
             },
             {
+                data: null,
                 targets:7,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -2851,6 +2863,7 @@ function listarpedidosdt() {
                 },
             },
             {
+                data: null,
                 targets: 8,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -2872,12 +2885,12 @@ function listarpedidosdt() {
         colorOriginal = $("#" + data["DT_RowId"]).css('background-color');
         $("#" + data["DT_RowId"]).css('background-color', '#dde5ed');
         ultimaFila = $("#" + data["DT_RowId"]);
-        $('#tabla').find('tr').each(function () {
-            console.log("ESCONDIENDOOOOOOOOOOOOO")
-            $(this).find('td:eq(' + 9 + '), th:eq(' + 9 + ')').hide();
-            $(this).find('td:eq(' + 10 + '), th:eq(' + 10 + ')').hide();
-        });
-        $(".ocultarDiv").hide()
+        //$('#tabla').find('tr').each(function () {
+        //    console.log("ESCONDIENDOOOOOOOOOOOOO")
+        //    $(this).find('td:eq(' + 9 + '), th:eq(' + 9 + ')').hide();
+        //    $(this).find('td:eq(' + 10 + '), th:eq(' + 10 + ')').hide();
+        //});
+        //$(".ocultarDiv").hide()
         $("#btn_agregaritem").prop("disabled",true)
         AgregarPedidoToEntradaMercancia(data);
         $('#ModalListadoPedido').modal('hide');
@@ -2900,7 +2913,12 @@ function AgregarPedidoToEntradaMercancia(data) {
     $("#IdProveedor").val(data['IdProveedor']).change();
     $("#IdCondicionPago").val(data['IdCondicionPago']).change();
     let dataa = data;
-
+    let varTipoDocumento = 'disabled'
+    $(".ocultarDiv").hide()
+    if (data['NombTipoPedido'] == 'Orden Servicio') {
+        varTipoDocumento = 'enabled'
+        $(".ocultarDiv").show()
+    }
     $.ajaxSetup({ async: false });
     $.post("/Pedido/ObtenerPedidoDetalle", { 'IdPedido': data['IdPedido'] }, function (data, status) {
         let datos = JSON.parse(data);
@@ -3079,8 +3097,8 @@ function AgregarPedidoToEntradaMercancia(data) {
             }
             tr += `</select>
             </td>
-            <td style="display:none"><select class="form-control cboCuadrillaTabla" onchange="SeleccionarEmpleadosTabla(`+ contador +`)" id="cboCuadrillaTablaId`+ contador + `"></select></td>
-            <td style="display:none"><select class="form-control cboResponsableTabla" id="cboResponsableTablaId`+ contador +`"></select></td>
+            <td><select class="form-control cboCuadrillaTabla" onchange="SeleccionarEmpleadosTabla(`+ contador +`)" id="cboCuadrillaTablaId`+ contador + `" `+varTipoDocumento+`></select></td>
+            <td><select class="form-control cboResponsableTabla" id="cboResponsableTablaId`+ contador + `" ` + varTipoDocumento +`></select></td>
             <td><input class="form-control changeTotal" type="text" style="width:100px" name="txtItemTotal[]" id="txtItemTotal`+ contador + `" onchange="CalcularTotales()" readonly></td>
             <td style="display:none">
             <select class="form-control" style="width:100px" id="cboAlmacen`+ contador + `" name="cboAlmacen[]">`;
@@ -3112,7 +3130,7 @@ function AgregarPedidoToEntradaMercancia(data) {
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td ><input class="form-control" type="text" value="" id="txtReferencia`+ contador + `" name="txtReferencia[]"></td>
-            <td><input style="width:50px" class="form-control" type="text" value="" id="txtTipoServicio`+ contador + `" name="txtTipoServicio[]"></input></td>
+            <td style="display:none"><input style="width:50px" class="form-control" type="text" value="" id="txtTipoServicio`+ contador + `" name="txtTipoServicio[]"></input></td>
             <td><button class="btn btn-xs btn-danger borrar fa fa-trash" onclick="borrartditem(`+ contador + `)"></button></td>
           </tr>`;
             if (pasardato==0) {
@@ -3149,7 +3167,10 @@ function AgregarPedidoToEntradaMercancia(data) {
                 $("#cboCentroCostos" + contador).val(CentroCostoItem);
                 $("#txtReferencia" + contador).val('BASADO EN PEDIDO ' + dataa['NombSerie'] + '-' + dataa['Correlativo']);
                 $("#txtTipoServicio" + contador).val(TipoServicio);
-
+                ObtenerCuadrillasTabla(contador)
+                ObtenerEmpleadosxIdCuadrillaTabla(contador)
+                $(".cboCuadrillaTabla").select2()
+                $(".cboResponsableTabla").select2()
                 //$("#txtItemTotal" + contador).val(formatNumber(datos[k].total_item));
                 NumeracionDinamica();
                 LimpiarModalItem();
@@ -3196,6 +3217,7 @@ function listaropdnDT() {
         columnDefs: [
             // {"className": "text-center", "targets": "_all"},
             {
+                data:null,
                 targets: -1,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -3205,6 +3227,7 @@ function listaropdnDT() {
                 },
             },
             {
+                data: null,
                 targets: 0,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -3212,6 +3235,7 @@ function listaropdnDT() {
                 },
             },
             {
+                data: null,
                 targets: 1,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -3219,6 +3243,7 @@ function listaropdnDT() {
                 },
             },
             {
+                data: null,
                 targets: 2,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -3226,6 +3251,7 @@ function listaropdnDT() {
                 },
             },
             {
+                data: null,
                 targets: 3,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -3233,6 +3259,7 @@ function listaropdnDT() {
                 },
             },
             {
+                data: null,
                 targets: 4,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -3240,6 +3267,7 @@ function listaropdnDT() {
                 },
             },
             {
+                data: null,
                 targets: 5,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -3247,6 +3275,7 @@ function listaropdnDT() {
                 },
             },
             {
+                data: null,
                 targets: 6,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -3254,6 +3283,7 @@ function listaropdnDT() {
                 },
             },
             {
+                data: null,
                 targets: 7,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -3261,6 +3291,7 @@ function listaropdnDT() {
                 },
             },
             {
+                data: null,
                 targets: 8,
                 orderable: false,
                 render: function (data, type, full, meta) {

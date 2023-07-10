@@ -164,6 +164,7 @@ function ObtenerProveedorxId() {
 
             $("#Direccion").val(proveedores[0].DireccionFiscal);
             $("#Telefono").val(proveedores[0].Telefono);
+            $("#IdCondicionPago").val(proveedores[0].CondicionPago);
 
 
 
@@ -662,11 +663,11 @@ function OpenModalItem() {
      
     }
 }
-
+let contadorAnexo = 0;
 function AgregarLineaAnexo(Nombre) {
-
+    contadorAnexo++
     let tr = '';
-    tr += `<tr>
+    tr += `<tr id="filaAnexo` + contadorAnexo +`">
             <td style="display:none"><input  class="form-control" type="text" value="0" id="txtIdSolicitudRQAnexo" name="txtIdSolicitudRQAnexo[]"/></td>
             <td>
                `+ Nombre + `
@@ -675,13 +676,15 @@ function AgregarLineaAnexo(Nombre) {
             <td>
                <a href="/Anexos/`+ Nombre + `" target="_blank" >Descargar</a>
             </td>
-            <td><button class="btn  btn-danger btn-xs borrar fa fa-trash" onclick="eventDefault(event)"></button></td>
+            <td><button type="button" class="btn  btn-danger btn-xs borrar fa fa-trash" onclick="EliminarAnexoEnMemoria(`+ contadorAnexo +`)"></button></td>
             </tr>`;
 
     $("#tabla_files").find('tbody').append(tr);
 
 }
-
+function EliminarAnexoEnMemoria(contAnexo) {
+    $("#filaAnexo" + contAnexo).remove();
+}
 function AgregarLineaDetalleAnexo(Id, Nombre) {
 
     let tr = '';
@@ -3042,6 +3045,7 @@ function listarentregadt() {
             // {"className": "text-center", "targets": "_all"},
 
             {
+                data:null,
                 targets: 1,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -3049,6 +3053,7 @@ function listarentregadt() {
                 },
             },
             {
+                data: null,
                 targets: 0,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -3056,6 +3061,7 @@ function listarentregadt() {
                 },
             },
             {
+                data: null,
                 targets: 2,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -3063,6 +3069,7 @@ function listarentregadt() {
                 },
             },
             {
+                data: null,
                 targets: 3,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -3070,6 +3077,7 @@ function listarentregadt() {
                 },
             },
             {
+                data: null,
                 targets: 4,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -3077,6 +3085,7 @@ function listarentregadt() {
                 },
             },
             {
+                data: null,
                 targets: 5,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -3084,6 +3093,7 @@ function listarentregadt() {
                 },
             },
             {
+                data: null,
                 targets: 6,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -3142,6 +3152,7 @@ function listarpedidosdt() {
             // {"className": "text-center", "targets": "_all"},
 
             {
+                data: null,
                 targets: 0,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -3150,6 +3161,7 @@ function listarpedidosdt() {
                 },
             },
             {
+                data: null,
                 targets: 1,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -3157,6 +3169,7 @@ function listarpedidosdt() {
                 },
             },
             {
+                data: null,
                 targets: 2,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -3164,6 +3177,7 @@ function listarpedidosdt() {
                 },
             },
             {
+                data: null,
                 targets: 3,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -3171,6 +3185,7 @@ function listarpedidosdt() {
                 },
             },
             {
+                data: null,
                 targets: 4,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -3794,6 +3809,7 @@ function listarOpch() {
         columnDefs: [
             // {"className": "text-center", "targets": "_all"},
             {
+                data: null,
                 targets: -1,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -3802,6 +3818,7 @@ function listarOpch() {
                 },
             },
             {
+                data: null,
                 targets: 0,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -3809,6 +3826,7 @@ function listarOpch() {
                 },
             },
             {
+                data: null,
                 targets: 1,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -3828,6 +3846,7 @@ function listarOpch() {
                 },
             },
             {
+                data: null,
                 targets: 2,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -3835,6 +3854,7 @@ function listarOpch() {
                 },
             },
             {
+                data: null,
                 targets: 3,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -3842,6 +3862,7 @@ function listarOpch() {
                 },
             },       
             {
+                data: null,
                 targets: 4,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -3849,6 +3870,7 @@ function listarOpch() {
                 },
             },
             {
+                data: null,
                 targets: 5,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -3856,6 +3878,7 @@ function listarOpch() {
                 },
             },
             {
+                data: null,
                 targets: 6,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -3864,6 +3887,7 @@ function listarOpch() {
                 },
             },
             {
+                data: null,
                 targets: 7,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -3871,6 +3895,7 @@ function listarOpch() {
                 },
             },
             {
+                data: null,
                 targets: 8,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -3878,6 +3903,7 @@ function listarOpch() {
                 },
             },
             {
+                data: null,
                 targets: 9,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -3885,6 +3911,7 @@ function listarOpch() {
                 },
             },
             {
+                data: null,
                 targets: 10,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -3892,6 +3919,7 @@ function listarOpch() {
                 },
             },
             {
+                data: null,
                 targets: 11,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -4566,11 +4594,40 @@ function modalProveedor()
     console.log("hola")
     CargarTipoPersona()
     CargarTipoDocumento()
+    CargarCondicionPagoMP()
     $("#ModalProveedores").modal();
+    $("#txtCodigoMP").val("")
+    $("#chkActivoMP").prop("checked", true)
     var f = new Date();
     fecha = f.getFullYear() + '-' + pad(f.getMonth()+1, 2) + '-' + f.getDate();
     $("#txtFechaIngresoMP").val(fecha)
 }
+function CrearCodigo() {
+    $("#txtCodigoMP").val("P" + $("#txtNroDocumentoMP").val())
+}
+function CargarCondicionPagoMP() {
+    $.ajaxSetup({ async: false });
+    $.post("/CondicionPago/ObtenerCondicionPagos", function (data, status) {
+        let condicionpago = JSON.parse(data);
+        llenarComboCondicionPagoMP(condicionpago, "cboCondicionPagoMP", "Seleccione")
+    });
+}
+
+function llenarComboCondicionPagoMP(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdCondicionPago + "'>" + lista[i].Descripcion + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+}
+
 function CargarTipoPersona() {
     $.ajaxSetup({ async: false });
     $.post("/TipoPersona/ObtenerTipoPersonas", function (data, status) {
@@ -4617,7 +4674,7 @@ function llenarComboTipoDocumento(lista, idCombo, primerItem) {
     if (cbo != null) cbo.innerHTML = contenido;
 }
 function GuardarProveedor() {
-
+    
     let varIdProveedorMP = $("#txtIdMP").val();
     let varCodigoMP = $("#txtCodigoMP").val();
     let varTipoPersonaMP = $("#cboTipoPersonaMP").val();
@@ -4651,7 +4708,7 @@ function GuardarProveedor() {
     let varCondicionPagoMP = $("#cboCondicionPagoMP").val();
     let varTipoMP = 2; // proveedor
     let varEstadoMP = false;
-
+    let varDiasEntrega = $("#txtDiasEntregaMP").val();
     if ($('#chkActivoMP')[0].checked) {
         varEstadoMP = true;
     }
@@ -4684,10 +4741,11 @@ function GuardarProveedor() {
         'FechaIngreso': varFechaIngresoMP,
         'Observacion': varObservacionMP,
         'Tipo': varTipoMP,
-        'Estado': varEstadoMP
+        'Estado': varEstadoMP,
+        'DiasEntrega' : varDiasEntrega,
     }, function (data, status) {
 
-        if (data == 1) {
+        if (data != 0) {
             swal("Exito!", "Proceso Realizado Correctamente", "success")
             limpiarDatosMP();
             CargarProveedor()
