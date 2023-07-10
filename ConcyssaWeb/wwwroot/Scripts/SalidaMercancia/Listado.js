@@ -87,6 +87,11 @@ function Editar() {
     let varPeso = $("#Peso").val();
     let varBulto = $("#Bulto").val();
 
+    let SGI = $("#txtSGI").val();
+    let Anexo = $("#Anexo").val();
+    let Ubigeo = $("#Ubigeo").val();
+    let DireccionLlegada = $("#Direccion").val();
+
     var TipDoc = $("#IdTipoDocumentoRef").val();
     if (TipDoc != "1") {
         varTipoTransporte = null,
@@ -122,7 +127,10 @@ function Editar() {
         'LicenciaConductor': varLicenciaConductor,
         'Peso': varPeso,
         'Bulto': varBulto,
-
+        'SGI': SGI,
+        'CodigoAnexoLlegada': Anexo,
+        'CodigoUbigeoLlegada': Ubigeo,
+        'DireccionLlegada': DireccionLlegada
     }, function (data, status) {
 
         if (data != 0) {
@@ -522,9 +530,9 @@ function ModalNuevo() {
     $("#cboTipoDocumentoOperacion").val(332).change();
     $("#IdTipoDocumentoRef").val(14).change();
 
-    $("#IdDestinatario").val(24154).change();
+    $("#IdDestinatario").val(24163).change();
     $("#IdTransportista").val(24154).change();
-    $("#IdMotivoTraslado").val(14).change();
+    $("#IdMotivoTraslado").val(13).change();
 
     $("#Peso").val(1);
     $("#Bulto").val(1);
@@ -1520,6 +1528,12 @@ function GuardarSolicitud() {
     let EntregadoA = 24151
     let IdTipoDocumentoRef = $("#IdTipoDocumentoRef").val();
     let SerieNumeroRef = $("#SerieNumeroRef").val();
+
+    let SGI = $("#txtSGI").val();
+    let Anexo = $("#Anexo").val();
+    let Ubigeo = $("#Ubigeo").val();
+    let DireccionLlegada = $("#Direccion").val();
+
     //END Cabecera
 
     //Validaciones
@@ -1677,6 +1691,11 @@ function GuardarSolicitud() {
 
             'Peso': $("#Peso").val(),
             'Bulto': $("#Bulto").val(),
+
+            'SGI': SGI,
+            'CodigoAnexoLlegada': Anexo,
+            'CodigoUbigeoLlegada': Ubigeo,
+            'DireccionLlegada': DireccionLlegada
 
             //end cabecera
 
@@ -3478,9 +3497,9 @@ function OcultarCampos() {
     if ($("#IdTipoDocumentoRef").val() == 1) {
         console.log("mostrars")
         $(".ocultate").show()
-        $("#IdDestinatario").val(24154).change();
+        $("#IdDestinatario").val(24163).change();
         $("#IdTransportista").val(24154).change();
-        $("#IdMotivoTraslado").val(09).change();
+        $("#IdMotivoTraslado").val(14).change();
         $("#PlacaVehiculo").val(0).change();
         $("#Peso").val(1);
         $("#Bulto").val(1);
@@ -3742,5 +3761,19 @@ function ObtenerCapatazTablaFila(contador) {
 }
 function SetearEmpleadosEnTabla() {
     $(".cboResponsableTabla").val($("#EntregadoA").val())
+
+}
+
+
+function BuscarSGI() {
+
+    let SGI = $("#txtSGI").val();
+    $.post("/SalidaMercancia/ObtenerSGI", { 'SGI': SGI }, function (data, status) {
+        let datos = JSON.parse(data);
+
+        $("#Ubigeo").val(datos[0].ubigeo);
+        $("#DistritoLlegada").val(datos[0].Distrito.trim());
+        $("#Direccion").val(datos[0].Direccion.trim());
+    })
 
 }

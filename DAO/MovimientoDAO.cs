@@ -235,8 +235,11 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@IdObraDestino", oMovimientoDTO.IdObraDestino);
 
                         da.SelectCommand.Parameters.AddWithValue("@IdDocExtorno", oMovimientoDTO.detalles[0].IdMovimiento);
-                        
-                        
+
+                        da.SelectCommand.Parameters.AddWithValue("@SGI", oMovimientoDTO.SGI);
+                        da.SelectCommand.Parameters.AddWithValue("@AnexoLlegada", oMovimientoDTO.CodigoAnexoLlegada);
+                        da.SelectCommand.Parameters.AddWithValue("@UbigeoLlegada", oMovimientoDTO.CodigoUbigeoLlegada);
+                        da.SelectCommand.Parameters.AddWithValue("@DireccionLlegada", oMovimientoDTO.DireccionLlegada);
 
 
                         int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
@@ -1991,6 +1994,40 @@ namespace DAO
                 }
             }
         }
+
+
+        public List<SgiDTO> BuscarSGI(string SGI, ref string mensaje_error)
+        {
+            SgiDTO sgi = new SgiDTO();
+            List<SgiDTO> list = new List<SgiDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_BuscarSGI", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@SGI", SGI);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        sgi.Ubigeo = "";//drd["Ticket"].ToString();
+                        sgi.Distrito = drd["municipio"].ToString();
+                        sgi.Direccion = drd["direccion"].ToString();
+                        list.Add(sgi);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return list;
+        }
+
 
     }
 }
