@@ -96,7 +96,13 @@ function ObtenerAlmacenxIdObra() {
 
 
 window.onload = function () {
-    CargarBaseFiltro()
+    CargarBaseFiltro();
+
+    $(".ocultartabla").hide();
+    //setTimeout(function () {
+    //    ObtenerStockxAlmacen();
+    //}, 2000);
+   
 };
 
 
@@ -136,6 +142,9 @@ function llenarComboAlmacen(lista, idCombo, primerItem) {
 
 
 function ObtenerStockxAlmacen() {
+
+    $(".ocultartabla").show();
+
     table = $('#table_id').dataTable({
         language: lenguaje_data,
         responsive: true,

@@ -6,7 +6,7 @@
 <div class="container-fluid" style="height:93%;">
     <div class="panel">
         <div class="container-fluid">
-            <div class="topbar-left col-xs-6">
+            <div class="topbar-left col-xs-12">
                 <h3>Informe Inventario Almacen</h3>
             </div>
         </div>
@@ -37,7 +37,7 @@
                 <div class="col-sm-3">
                     <select class="form-control" id="cboAlmacenFiltro"></select>
                 </div>
-                <button class="btn btn-primary" style="margin-top:3px" onclick="ObtenerStockxAlmacen()">Buscar</button>
+                <button class="btn btn-xs btn-primary res" style="margin-top:3px;border-radius:5px;margin-left:0" onclick="ObtenerStockxAlmacen()">Buscar</button>
             </div>
       
 
@@ -47,19 +47,22 @@
     </div>
     <div class="panel">
         <div class="container-fluid">
-            <table id="table_id" class="table table-resposive" style="width:100%">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>CodProducto</th>
-                        <th>Producto</th>
-                        <th>Stock</th>
-                        <th>Precio Promedio</th>
-                        <th>Valorizado</th>
-                    </tr>
-                </thead>
-                <tbody id="tbody_division"></tbody>
-            </table>
+            <div class="table-resposive">
+                <table id="table_id" class="table ocultartabla" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>CodProducto</th>
+                            <th>Producto</th>
+                            <th>Stock</th>
+                            <th>Precio Promedio</th>
+                            <th>Valorizado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody_division"></tbody>
+                </table>
+            </div>
+            
         </div>
     </div>
 
