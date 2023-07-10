@@ -461,7 +461,7 @@ function ListarStockTodasObras(IdArticulo) {
 
         $("#tbody_stockOtrosAlmacenes").html(tr);
 
-        tableStock = $("#tablaStockOtrosAlmacenes").DataTable(lenguaje);
+        tableStock = $("#tablaStockOtrosAlmacenes").DataTable(lenguaje1);
 
     });
 
@@ -1514,6 +1514,22 @@ function ObtenerDetalleProducto() {
 
 }
 
+
+function CambiarTipoProducto() {
+
+    $("#cboProductosTodos").val(null).trigger('change');
+    CargarProductosTodos();
+}
+
 //function Quitar(cont) {
 //    tt.row(cont).remove().draw();
 //}
+
+
+function VerStockxProducto() {
+
+    let IdProducto = $("#cboProductosTodos").val();
+    ListarStockTodasObras(IdProducto);
+    $("#ModalStockOtrosAlmacenes").modal("show");
+
+}

@@ -96,7 +96,13 @@ function ObtenerAlmacenxIdObra() {
 
 
 window.onload = function () {
-    CargarBaseFiltro()
+    CargarBaseFiltro();
+
+    $(".ocultartabla").hide();
+    //setTimeout(function () {
+    //    ObtenerStockxAlmacen();
+    //}, 2000);
+   
 };
 
 
@@ -136,6 +142,9 @@ function llenarComboAlmacen(lista, idCombo, primerItem) {
 
 
 function ObtenerStockxAlmacen() {
+
+    $(".ocultartabla").show();
+
     table = $('#table_id').dataTable({
         language: lenguaje_data,
         responsive: true,
@@ -161,6 +170,7 @@ function ObtenerStockxAlmacen() {
             //    },
             //},
             {
+                data:null,
                 targets: 0,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -168,6 +178,7 @@ function ObtenerStockxAlmacen() {
                 },
             },
             {
+                data: null,
                 targets: 1,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -175,6 +186,7 @@ function ObtenerStockxAlmacen() {
                 },
             },
             {
+                data: null,
                 targets: 2,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -182,6 +194,7 @@ function ObtenerStockxAlmacen() {
                 },
             },
             {
+                data: null,
                 targets: 3,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -189,6 +202,7 @@ function ObtenerStockxAlmacen() {
                 },
             },
             {
+                data: null,
                 targets: 4,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -196,6 +210,7 @@ function ObtenerStockxAlmacen() {
                 },
             },
             {
+                data: null,
                 targets: 5,
                 orderable: false,
                 render: function (data, type, full, meta) {

@@ -263,7 +263,7 @@
 
                                 <div class='form-group-sm'>
                                     <div class="col-sm-4">
-                                        <select class="form-control" id="IdTipoProducto" style="margin-bottom:10px;margin-top:5px">
+                                        <select class="form-control" id="IdTipoProducto" onchange="CambiarTipoProducto()" style="margin-bottom:10px;margin-top:5px">
                                             <option value="0">Seleccione</option>
                                             <option value="1" selected >MATERIALES</option>
                                             <option value="2">AUXILIARES</option>
@@ -282,9 +282,16 @@
                                 @*combo productos*@
 
                                 <div class='form-group-sm'>
-                                    <label for="IdTxtCantidad" class="control-label col-sm-2 left-align">Cantidad</label>
-                                    <div class="col-sm-4">
-                                        <input class="form-control" id="IdTxtCantidad" value="0" />
+                                    <label for="IdTxtCantidad" class="control-label col-sm-2 col-xs-12 left-align">Cantidad</label>
+                                    <div class="col-sm-4 col-xs-10">
+                                        <input class="form-control" type="number" id="IdTxtCantidad" value="0" />
+                                    </div>
+                                </div>
+
+
+                                <div class='form-group-sm'>
+                                    <div class="col-sm-4 col-xs-2" style="display:flex;justify-content:center">
+                                        <button class="btn btn-xs btn-info" style="border-radius:2px;height:25px" onclick="VerStockxProducto()">Stock</button>
                                     </div>
                                 </div>
 
@@ -297,7 +304,7 @@
 
 
                                 <div class='form-group-sm'>
-                                    <div class="col-sm-12" style="display:flex;justify-content:center">
+                                    <div class="col-sm-12 col-xs-12" style="display:flex;justify-content:center">
                                         @*<button id="OpenModalItem" style="margin-bottom:15px;margin-top:15px;border-radius:10px"  class="btn btn-xs btn-info" onclick="OpenModalItem()" type="button">Agregar Item</button>*@
                                         <button id="OpenModalItem" style="margin-bottom:15px;margin-top:15px;border-radius:10px" class="btn btn-xs btn-info" onclick="AgregarLinea()" type="button">Agregar Item</button>
                                     </div>
@@ -532,7 +539,7 @@
                                     </div>
                                 </div>
 *@
-                                <div class="row">
+                               @* <div class="row">
                                     <div style="margin-top:10px"><b>Stock en Otros Almacenes</b></div>
                                     <div class="table-responsive">
                                         <table class="table" id="tablaStockOtrosAlmacenes">
@@ -548,7 +555,7 @@
                                             <tbody id="tbody_stockOtrosAlmacenes"></tbody>
                                         </table>
                                     </div>
-                                </div>
+                                </div>*@
 
                             </div>
                         </div>
@@ -690,6 +697,55 @@
             </div>
         </div>
     </div>
+
+
+
+
+    <div class="modal fade" data-backdrop="static"
+         data-keyboard="false" id="ModalStockOtrosAlmacenes" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered allcp-form" role="document">
+            <div class="modal-content">
+
+
+                <div class="panel" style="margin-bottom:0px">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="lblTituloModalItem">Stock Almacenes</h5>
+                    </div>
+                    <div class="panel-body ">
+                        @*<div class='col s12 m12 '>*@
+                           @* <div class='container-fluid'>*@
+                                @*<div class="table-responsive">*@
+
+                               @* <div class="row">*@
+                                    <div class="table-responsive">
+                                        <table class="table" width="100%" id="tablaStockOtrosAlmacenes">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Descripcion de Articulo</th>
+                                                    <th>Obra</th>
+                                                    <th>Almacen</th>
+                                                    <th>Stock</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tbody_stockOtrosAlmacenes"></tbody>
+                                        </table>
+                                    </div>
+                                @*</div>*@
+                                @*</div>*@
+                           @* </div>*@
+                        @*</div>*@
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger pull-right" style="background-color:orange;" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
 
 
