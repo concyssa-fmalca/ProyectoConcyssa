@@ -53,6 +53,7 @@ function ConsultaServidor(url) {
         columnDefs: [
             // {"className": "text-center", "targets": "_all"},
             {
+                data:null,
                 targets: -1,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -62,6 +63,7 @@ function ConsultaServidor(url) {
                 },
             },
             {
+                data: null,
                 targets: 0,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -69,6 +71,7 @@ function ConsultaServidor(url) {
                 },
             },
             {
+                data: null,
                 targets: 1,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -76,6 +79,7 @@ function ConsultaServidor(url) {
                 },
             },
             {
+                data: null,
                 targets: 2,
                 orderable: false,
                 render: function (data, type, full, meta) {

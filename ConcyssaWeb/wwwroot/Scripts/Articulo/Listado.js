@@ -250,8 +250,6 @@ function ConsultaServidor(url) {
                 '<td>' + articulos[i].Descripcion2.toUpperCase() + '</td>' +
                 '<td>' + articulos[i].NombUnidadMedida.toUpperCase() + '</td>' +
 
-                '<td style="display:none">' + articulos[i].ActivoFijo + '</td>' +
-                '<td style="display:none">' + articulos[i].IdCodigoUbso + '</td>' +
                 '<td>' +
              
                     `<div class="btn-group" role="group" aria-label="..." style="inline-size: max-content !important; ">
@@ -336,7 +334,6 @@ function llenarComboDefinicionGrupoUnidadItem(lista, idCombo, primerItem) {
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
-    $("#IdUnidadMedidaInv").val(29)
 
 }
 
@@ -461,7 +458,7 @@ function ObtenerDatosxID(varIdArticulo) {
             $("#cboIdCodigoUbso").val(articulos[0].IdCodigoUbso);
 
             $("#IdGrupoUnidadMedida").val(articulos[0].IdGrupoUnidadMedida).change();
-            $("#idIdUnidadMedidaInv").val(articulos[0].IdUnidadMedidaInv);
+            //$("#idIdUnidadMedidaInv").val(articulos[0].IdUnidadMedidaInv);
             $("#txtProveedor").val(articulos[0].IdProveedor);
             if (articulos[0].ActivoFijo) {
                 $("#chkActivoFijo").prop('checked', true);
@@ -484,7 +481,8 @@ function ObtenerDatosxID(varIdArticulo) {
 
             ObtenerAlmacenes();
             $("#TablaAlmacenes").show();
-
+            console.log(articulos[0].IdUnidadMedidaInv)
+            $("#IdUnidadMedidaInv").val(articulos[0].IdUnidadMedidaInv);
         }
 
     });
