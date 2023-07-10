@@ -26,11 +26,11 @@ window.onload = function () {
     });
 };
 
-
+let contadorAnexo = 0;
 function AgregarLineaAnexo(Nombre) {
-
+    contadorAnexo++
     let tr = '';
-    tr += `<tr>
+    tr += `<tr id="filaAnexo`+contadorAnexo+`">
             <td style="display:none"><input  class="form-control" type="text" value="0" id="txtIdSolicitudRQAnexo" name="txtIdSolicitudRQAnexo[]"/></td>
             <td>
                `+ Nombre + `
@@ -39,13 +39,16 @@ function AgregarLineaAnexo(Nombre) {
             <td>
                <a href="/Anexos/`+ Nombre + `" target="_blank" >Descargar</a>
             </td>
-            <td><button type="button" class="btn btn-xs btn-danger borrar fa fa-trash"></button></td>
+            <td><button type="button" class="btn btn-xs btn-danger borrar fa fa-trash" onclick="EliminarAnexoEnMemoria(`+contadorAnexo+`)"></button></td>
             </tr>`;
 
     $("#tabla_files").find('tbody').append(tr);
 
 }
 
+function EliminarAnexoEnMemoria(contAnexo) {
+    $("#filaAnexo" + contAnexo).remove();
+}
 
 
 function ConsultaServidor(url) {

@@ -30,6 +30,7 @@ function listarPedidoDtConfirmidad() {
         columnDefs: [
              {"className": "text-center", "targets": "_all"},
             {
+                data: null,
                 targets: -1,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -38,6 +39,7 @@ function listarPedidoDtConfirmidad() {
                 },
             },
             {
+                data: null,
                 targets: 0,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -45,6 +47,7 @@ function listarPedidoDtConfirmidad() {
                 },
             },
             {
+                data: null,
                 targets: 1,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -52,6 +55,7 @@ function listarPedidoDtConfirmidad() {
                 },
             },
             {
+                data: null,
                 targets: 2,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -59,6 +63,7 @@ function listarPedidoDtConfirmidad() {
                 },
             },
             {
+                data: null,
                 targets: 3,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -66,6 +71,7 @@ function listarPedidoDtConfirmidad() {
                 },
             },
             {
+                data: null,
                 targets: 4,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -73,6 +79,7 @@ function listarPedidoDtConfirmidad() {
                 },
             },
             {
+                data: null,
                 targets: 5,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -80,6 +87,7 @@ function listarPedidoDtConfirmidad() {
                 },
             },
             {
+                data: null,
                 targets: 6,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -87,6 +95,7 @@ function listarPedidoDtConfirmidad() {
                 },
             },
             {
+                data: null,
                 targets: 7,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -94,6 +103,7 @@ function listarPedidoDtConfirmidad() {
                 },
             },
             {
+                data: null,
                 targets: 8,
                 orderable: false,
                 render: function (data, type, full, meta) {

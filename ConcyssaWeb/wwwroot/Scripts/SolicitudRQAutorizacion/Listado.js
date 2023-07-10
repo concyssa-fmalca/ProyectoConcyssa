@@ -164,7 +164,7 @@ function ConsultaServidor(url) {
 
 
            
-            tr += `<td>` + solicitudes[i].NombreArticulo + `</td>`;
+            tr += `<td>` + solicitudes[i].NombreArticulo.toUpperCase(); + `</td>`;
             tr += `<td><input class="form-control" type="numeric" value="` + solicitudes[i].CantidadNecesaria + `" name="txtCantidadNecesaria[]"  id="txtCantidadNecesaria` + contador + `" onkeyup="CalcularTotalDetalle(` + contador + `)" ></td>`;
             tr += `<td>` + solicitudes[i].Referencia + `</td>`;
             tr += `<td>`;

@@ -489,11 +489,11 @@ function OpenModalItem() {
         //CargarAlmacen();
     }
 }
-
+let contadorAnexo = 0;
 function AgregarLineaAnexo(Nombre) {
-
+    contadorAnexo++
     let tr = '';
-    tr += `<tr>
+    tr += `<tr id="filaAnexo` + contadorAnexo +`">
             <td style="display:none"><input  class="form-control" type="text" value="0" id="txtIdSolicitudRQAnexo" name="txtIdSolicitudRQAnexo[]"/></td>
             <td>
                `+ Nombre + `
@@ -502,13 +502,15 @@ function AgregarLineaAnexo(Nombre) {
             <td>
                <a href="/Anexos/`+ Nombre + `" target="_blank" >Descargar</a>
             </td>
-            <td><button class="btn btn-xs btn-danger borrar fa fa-trash"></button></td>
+            <td><button type="button" class="btn btn-xs btn-danger borrar fa fa-trash" onclick="EliminarAnexoEnMemoria(`+ contadorAnexo +`)"></button></td>
             </tr>`;
 
     $("#tabla_files").find('tbody').append(tr);
 
 }
-
+function EliminarAnexoEnMemoria(contAnexo) {
+    $("#filaAnexo" + contAnexo).remove();
+}
 function AgregarLineaDetalleAnexo(Id, Nombre) {
 
     let tr = '';
@@ -1634,8 +1636,17 @@ function ObtenerDatosxID(IdMovimiento) {
             $("#SerieNumeroRef").val(movimiento.NumSerieTipoDocumentoRef)
 
             $("#txtComentarios").val(movimiento.Comentario)
-
-
+            if (movimiento.NombUsuarioEdicion == "") {
+                $("#NombUsuarioEdicion").html("-")
+            } else {
+                $("#NombUsuarioEdicion").html(movimiento.NombUsuarioEdicion)
+            }
+            
+            if (movimiento.FechaEdicion == '1990-01-01T00:00:00') {
+                $("#EditedAt").html("-")
+            } else {
+                $("#EditedAt").html(movimiento.FechaEdicion.replace("T", " "))
+            }
             $("#IdBase").val(movimiento.IdBase).change();
             $("#IdObra").val(movimiento.IdObra).change();
             $("#cboAlmacen").val(movimiento.IdAlmacen);
@@ -2642,15 +2653,17 @@ function listarIngresosDT() {
         columnDefs: [
             // {"className": "text-center", "targets": "_all"},
             {
-
+                data: null,
                 targets: -1,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     return `<button class= "btn btn-primary fa fa-pencil btn-xs" onclick = "ObtenerDatosxID(` + full.IdMovimiento + `)"></button>`
                         //<button class="btn btn-primary btn-xs" onclick="GenerarReporte(` + full.IdMovimiento + `)">R</button>`
+
                 },
             },
             {
+                data: null,
                 targets: 0,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -2658,6 +2671,7 @@ function listarIngresosDT() {
                 },
             },
             {
+                data: null,
                 targets: 1,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -2665,6 +2679,7 @@ function listarIngresosDT() {
                 },
             },
             {
+                data: null,
                 targets: 2,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -2672,6 +2687,7 @@ function listarIngresosDT() {
                 },
             },
             {
+                data: null,
                 targets: 3,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -2679,6 +2695,7 @@ function listarIngresosDT() {
                 },
             },
             {
+                data: null,
                 targets: 4,
                 orderable: false,                          
                 render: function (data, type, full, meta) {
@@ -2686,6 +2703,7 @@ function listarIngresosDT() {
                 },             
             },
             {
+                data: null,
                 targets: 5,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -2693,6 +2711,7 @@ function listarIngresosDT() {
                 },
             },
             {
+                data: null,
                 targets: 6,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -2702,6 +2721,7 @@ function listarIngresosDT() {
                 },
             },
             {
+                data: null,
                 targets: 7,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -2709,6 +2729,7 @@ function listarIngresosDT() {
                 },
             },
             {
+                data: null,
                 targets: 8,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -2717,6 +2738,7 @@ function listarIngresosDT() {
             },
        
             {
+                data: null,
                 targets: 9,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -2724,6 +2746,7 @@ function listarIngresosDT() {
                 },
             },
             {
+                data: null,
                 targets: 10,
                 orderable: false,
                 render: function (data, type, full, meta) {

@@ -921,8 +921,8 @@ namespace DAO
 
                         oMovimientoDTO.CodigoMotivoTrasladoSunat = (String.IsNullOrEmpty(drd["CodigoMotivoTrasladoSunat"].ToString()) ? "" : drd["CodigoMotivoTrasladoSunat"].ToString());
                         oMovimientoDTO.DescripcionMotivoTrasladoSunat = (String.IsNullOrEmpty(drd["DescripcionMotivoTrasladoSunat"].ToString()) ? "" : drd["DescripcionMotivoTrasladoSunat"].ToString());
-
-                      
+                        oMovimientoDTO.FechaEdicion = Convert.ToDateTime(String.IsNullOrEmpty(drd["FechaEdicion"].ToString()) ? "1990/01/01" : drd["FechaEdicion"].ToString());
+                        oMovimientoDTO.NombUsuarioEdicion = (String.IsNullOrEmpty(drd["NombUsuarioEdicion"].ToString()) ? "" : drd["NombUsuarioEdicion"].ToString());
                     }
                     drd.Close();
 
@@ -1640,7 +1640,8 @@ namespace DAO
 
                         oMovimientoDTO.CodigoMotivoTrasladoSunat = (String.IsNullOrEmpty(drd["CodigoMotivoTrasladoSunat"].ToString()) ? "" : drd["CodigoMotivoTrasladoSunat"].ToString());
                         oMovimientoDTO.DescripcionMotivoTrasladoSunat = (String.IsNullOrEmpty(drd["DescripcionMotivoTrasladoSunat"].ToString()) ? "" : drd["DescripcionMotivoTrasladoSunat"].ToString());
-
+                        oMovimientoDTO.FechaEdicion = Convert.ToDateTime(String.IsNullOrEmpty(drd["FechaEdicion"].ToString()) ? "1990/01/01" : drd["FechaEdicion"].ToString());
+                        oMovimientoDTO.NombUsuarioEdicion = (String.IsNullOrEmpty(drd["NombUsuarioEdicion"].ToString()) ? "" : drd["NombUsuarioEdicion"].ToString());
 
                     }
                     drd.Close();

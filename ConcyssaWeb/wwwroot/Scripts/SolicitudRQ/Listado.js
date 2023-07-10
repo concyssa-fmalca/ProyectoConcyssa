@@ -368,6 +368,7 @@ function llenarComboCreadores(lista, idCombo, primerItem) {
 
 function ModalNuevo() {
     $("#OpenModalItem").show();
+    $("#tbody_stockOtrosAlmacenes").empty()
     $("#btnGrabar").show();
     $("#lblTituloModal").html("Nueva Solicitud");
     $("#btnGrabar").text("CREAR")
@@ -573,12 +574,12 @@ function CambiarClaseArticulo() {
 
 
 
-
+let contadorAnexo = 0;
 
 function AgregarLineaAnexo(Nombre) {
-
+    contadorAnexo++
     let tr = '';
-    tr += `<tr>
+    tr += `<tr id="filaAnexo` + contadorAnexo +`">
             <td style="display:none"><input  class="form-control" type="text" value="0" id="txtIdSolicitudRQAnexo" name="txtIdSolicitudRQAnexo[]"/></td>
             <td>
                `+ Nombre + `
@@ -587,13 +588,16 @@ function AgregarLineaAnexo(Nombre) {
             <td>
                <a href="/Anexos/`+ Nombre + `" target="_blank" >Descargar</a>
             </td>
-            <td><button class="btn btn-xs btn-danger borrar  fa fa-trash ">-</button></td>
+            <td><button type="button" class="btn btn-xs btn-danger borrar  fa fa-trash " onclick="EliminarAnexoEnMemoria(`+ contadorAnexo +`)"></button></td>
             </tr>`;
 
     $("#tabla_files").find('tbody').append(tr);
 
 }
 
+function EliminarAnexoEnMemoria(contAnexo) {
+    $("#filaAnexo" + contAnexo).remove();
+}
 function AgregarLineaDetalleAnexo(Id, Nombre) {
 
     let tr = '';
@@ -669,10 +673,10 @@ function AgregarLinea() {
         TipoServicio = 'Ninguno'
     } else if ($("#SPreventivo").is(":checked")) {
         TipoServicio = 'Preventivo'
-        ReferenciaItem = ReferenciaItem+"(Servicio Preventivo)"
+        ReferenciaItem = ReferenciaItem+" (Servicio Preventivo)"
     } else if ($("#SCorrectivo").is(":checked")) {
         TipoServicio = 'Correctivo'
-        ReferenciaItem = ReferenciaItem+ "(Servicio Correctivo)"
+        ReferenciaItem = ReferenciaItem+ " (Servicio Correctivo)"
     } else {
         TipoServicio = 'No Aplica'
     }
@@ -3279,37 +3283,38 @@ function SeleccionarItemListado() {
 
 }
 function ListarStockTodasObras(IdArticulo) {
-    $.post("/Articulo/ObtenerArticulosConStockObras", {'IdArticulo':IdArticulo}, function (data, status) {
+    if ($("#cboClaseArticulo").val() != 2) {
+        $.post("/Articulo/ObtenerArticulosConStockObras", { 'IdArticulo': IdArticulo }, function (data, status) {
 
-        //console.log(data);
-        if (data == "error") {
-            table = $("#table_id").DataTable(lenguaje);
-            return;
-        }
+            //console.log(data);
+            if (data == "error") {
+                table = $("#table_id").DataTable(lenguaje);
+                return;
+            }
 
-        let tr = '';
+            let tr = '';
 
-        let area = JSON.parse(data);
+            let area = JSON.parse(data);
 
-        for (var i = 0; i < area.length; i++) {
+            for (var i = 0; i < area.length; i++) {
 
 
-            tr += '<tr>' +
-                '<td>' + area[i].Descripcion1 + '</td>' +
-                '<td>' + area[i].Obra + '</td>' +
-                '<td>' + area[i].Almacen + '</td>' +
-                '<td>' + area[i].Stock + '</td>' +
-                '</tr>';
-        }
-        if (table) {
-            table.destroy();
-        }
-        $("#tbody_stockOtrosAlmacenes").html(tr);
+                tr += '<tr>' +
+                    '<td>' + area[i].Obra + '</td>' +
+                    '<td>' + area[i].Almacen + '</td>' +
+                    '<td>' + area[i].Stock + '</td>' +
+                    '</tr>';
+            }
+            if (table) {
+                table.destroy();
+            }
+            $("#tbody_stockOtrosAlmacenes").html(tr);
 
-        table = $("#tablaStockOtrosAlmacenes").DataTable(lenguaje);
+            table = $("#tablaStockOtrosAlmacenes").DataTable(lenguaje);
 
-    });
-
+        });
+    } else {
+    }
 
 }
 

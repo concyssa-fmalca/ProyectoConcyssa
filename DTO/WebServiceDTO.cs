@@ -19,5 +19,12 @@ namespace DTO
         public int IdSemana;
         public DateTime FechaInicio;
         public DateTime FechaTermino;
+        public string Cuadrillas;
+        public bool Materiales;
+        public bool Auxiliares;
+        public bool Servicios;
+        public bool Extornos;
+        public string FechaFin;
+        public string FechaInicioS;
     }
 }
