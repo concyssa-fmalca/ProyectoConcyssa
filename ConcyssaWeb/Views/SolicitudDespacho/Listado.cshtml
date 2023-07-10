@@ -47,7 +47,7 @@
             cursor: pointer;
             padding: 8px 16px;
             transition: 0.3s;
-            font-size: 17px;
+            font-size: 15px;
         }
 
             /* Change background color of buttons on hover */
@@ -68,9 +68,13 @@
         border-top: none;
     }
 
-    .popup-xl {
+    /*.popup-xl {
         max-width: 93% !important;
-    }
+    }*/
+
+    /*.mfp-slideDown.mfp-ready.mfp-bg{
+        opacity:0;
+    }*/
 
 
 </style>
@@ -153,7 +157,7 @@
 
 
     <!-- Modal -->
-    <div id="modal-form" class="popup-xl allcp-form mfp-with-anim mfp-hide">
+    <div id="modal-form" class="popup-xl allcp-form mfp-with-anim mfp-hide" style="max-width:100% !important">
         <div class="panel">
             <div class="panel-heading">
                 <h5 id='lblTituloModal'></h5>
@@ -244,7 +248,7 @@
                             <br />
 
                             <div class="tab">
-                                @*<button class="tablinks active" onclick="openContenido(event, 'Contenido')">Contenido</button>*@
+                                <button class="tablinks active" onclick="openContenido(event, 'Contenido')">Contenido</button>
                                 @*<button class="tablinks" onclick="openContenido(event, 'Anexos')">Anexos</button>*@
 
                             </div>

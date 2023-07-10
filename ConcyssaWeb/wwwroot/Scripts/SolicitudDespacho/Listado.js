@@ -699,6 +699,8 @@ function AgregarLinea() {
     $("#IdTxtCantidad").val("0");
     $("#cboProductosTodos").val(null).trigger('change');
 
+
+    //$('.mfp-bg').css('height', '100vh !important');
 }
 
 

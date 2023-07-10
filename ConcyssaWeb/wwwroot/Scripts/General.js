@@ -99,7 +99,8 @@ let lenguaje1 = {
     //scrollX: true,
     responsive: true,
     'bDestroy': true,
-    "lengthChange": false
+    "lengthChange": false,
+    "pageLength": 100
 
 };
 
