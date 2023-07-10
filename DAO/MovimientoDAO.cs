@@ -677,6 +677,7 @@ namespace DAO
                         oMovimientoDTO.NombMoneda = (drd["NombMoneda"].ToString());
                         oMovimientoDTO.TDocumento = drd["TDocumento"].ToString();
                         oMovimientoDTO.NumSerieTipoDocumentoRef = drd["NumSerieTipoDocumentoRef"].ToString();
+                        oMovimientoDTO.IdDocExtorno = Convert.ToInt32(drd["IdDocExtorno"].ToString());
 
                         oMovimientoDTO.NombUsuario = (drd["NombUsuario"].ToString());
 

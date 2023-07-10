@@ -1633,7 +1633,7 @@ function ObtenerDatosxID(IdMovimiento) {
             $("#cboCentroCosto").val(movimiento.IdCentroCosto)
             $("#cboTipoDocumentoOperacion").val(movimiento.IdTipoDocumento)
             $("#IdTipoDocumentoRef").val(movimiento.IdTipoDocumentoRef)
-            $("#SerieNumeroRef").val(movimiento.NumSerieTipoDocumentoRef)
+            $("#SerieNumeroRef").val(movimiento.NumSerieTipoDocumentoRef.toUpperCase())
 
             $("#txtComentarios").val(movimiento.Comentario)
             if (movimiento.NombUsuarioEdicion == "") {
@@ -2691,7 +2691,11 @@ function listarIngresosDT() {
                 targets: 3,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.NombTipoDocumentoOperacion
+                    if (full.IdDocExtorno == 1) {
+                        return '<p style="color:red">' + full.NombTipoDocumentoOperacion +'</p>'
+                    } else {
+                     return full.NombTipoDocumentoOperacion
+                    }
                 },
             },
             {
@@ -2699,7 +2703,7 @@ function listarIngresosDT() {
                 targets: 4,
                 orderable: false,                          
                 render: function (data, type, full, meta) {
-                    return '<u style="color:blue;cursor:pointer" onclick="GenerarReporte(' + full.IdMovimiento + ')">'+full.NombSerie.toUpperCase() + ' -' + full.Correlativo+'</u>' 
+                    return '<u style="color:blue;cursor:pointer" onclick="GenerarReporte(' + full.IdMovimiento + ')">'+full.NombSerie.toUpperCase() + '-' + full.Correlativo+'</u>' 
                 },             
             },
             {
@@ -2716,7 +2720,20 @@ function listarIngresosDT() {
                 orderable: false,
                 render: function (data, type, full, meta) {
                     let SeriREF = "-"
-                    if (full.NumSerieTipoDocumentoRef) SeriREF = full.NumSerieTipoDocumentoRef
+                    let datosext
+                    if (full.IdDocExtorno == 1) {
+                        $.post("/Movimientos/ValidarExtorno", { 'IdMovimiento': full.IdMovimiento }, function (data, status) {
+
+                            datosext = data.split("|");
+                            console.log(datosext);
+                        });
+
+                        SeriREF = "Extornado con Doc N°: " + datosext[1]
+                    }
+
+                    else {
+                        if (full.NumSerieTipoDocumentoRef) SeriREF = full.NumSerieTipoDocumentoRef.toUpperCase()
+                    }
                     return SeriREF
                 },
             },

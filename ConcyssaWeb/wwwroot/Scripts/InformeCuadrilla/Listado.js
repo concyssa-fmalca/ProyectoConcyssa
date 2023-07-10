@@ -103,16 +103,24 @@ function ObtenerCuadrillaxIdObra() {
 window.onload = function () {
     CargarBaseFiltro()
     $("#txtFechaInicio").val(getCurrentDate())
-    $("#txtFechaFin").val(getCurrentDate())
+    $("#txtFechaFin").val(getCurrentDateFinal())
 };
 
 function getCurrentDate() {
     var currentDate = new Date();
     var year = currentDate.getFullYear();
     var month = ('0' + (currentDate.getMonth() + 1)).slice(-2);
-    var day = ('0' + currentDate.getDate()).slice(-2);
-    var formattedDate = year + '-' + month + '-' + day;
+    var formattedDate = year + '-' + month + '-' + '01';
     return formattedDate;
+}
+function getCurrentDateFinal() {
+    var date = new Date();
+   
+    var ultimoDia = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    var year = date.getFullYear();
+    var month = ('0' + (date.getMonth() + 1)).slice(-2);
+    var formattedDate = year + '-' + month + '-' + ultimoDia.getDate();
+    return formattedDate
 }
 
 function formatNumber(num) {
@@ -223,6 +231,7 @@ function QuitarTodasCuadrillas() {
 }
 
 function GenerarReporte() {
+
     // Obtiene todos los elementos del select "llenar"
     var elementos = $("#cboCuadrillaSeleccionada option");
 
@@ -237,6 +246,12 @@ function GenerarReporte() {
 
     // Muestra el array en la consola
     console.log(valores);
+
+    if (valores.length == 0) {
+        swal("Error!", "Seleccione al menos una Cuadrilla")
+        return;
+    }
+
 
     let CuadrillasParaConsulta = ""
 
@@ -260,6 +275,12 @@ function GenerarReporte() {
     $("#chkIncAuxiliares").is(':checked') ? varAuxiliaresRPT = true : varAuxiliaresRPT = false
     $("#chkIncServicios").is(':checked') ? varServiciosRPT = true : varServiciosRPT = false
     $("#chkIncExtornos").is(':checked') ? varExtornosRPT = true : varExtornosRPT = false
+
+
+    if (varMaterialesRPT == false && varAuxiliaresRPT == false && varServiciosRPT == false && varExtornosRPT == false) {
+        swal("Error!", "Seleccione al menos una Casilla de la Sección 'Incluir'")
+        return;
+    }
 
     $.ajaxSetup({ async: false });
     $.post("GenerarReporte", {                                                                                                                                    
