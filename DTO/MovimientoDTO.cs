@@ -123,6 +123,7 @@ namespace DTO
         public string NombUsuarioEdicion { get; set; }
         public DateTime FechaEdicion { get; set; }
         public string SGI { get; set; }
+        public string DistritoLlegada { get; set; }
 
     }
 

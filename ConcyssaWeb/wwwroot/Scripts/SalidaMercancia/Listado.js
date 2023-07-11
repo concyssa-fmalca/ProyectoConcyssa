@@ -89,7 +89,8 @@ function Editar() {
 
     let SGI = $("#txtSGI").val();
     let Anexo = $("#Anexo").val();
-    let Ubigeo = $("#Ubigeo").val();
+    let Ubigeo = $("#DistritoLlegada").val();
+    let DistritoLlegada = $("#DistritoLlegada").find('option:selected').text();
     let DireccionLlegada = $("#Direccion").val();
 
     var TipDoc = $("#IdTipoDocumentoRef").val();
@@ -130,6 +131,7 @@ function Editar() {
         'SGI': SGI,
         'CodigoAnexoLlegada': Anexo,
         'CodigoUbigeoLlegada': Ubigeo,
+        'DistritoLlegada': DistritoLlegada,
         'DireccionLlegada': DireccionLlegada
     }, function (data, status) {
 
@@ -537,6 +539,7 @@ function ModalNuevo() {
     $("#Peso").val(1);
     $("#Bulto").val(1);
 
+    CargarTodosUbigeo();
 
     $("#btnGenerarPDF").hide();
 }
@@ -1531,7 +1534,8 @@ function GuardarSolicitud() {
 
     let SGI = $("#txtSGI").val();
     let Anexo = $("#Anexo").val();
-    let Ubigeo = $("#Ubigeo").val();
+    let Ubigeo = $("#DistritoLlegada").val();
+    let DistritoLlegada = $("#DistritoLlegada").find('option:selected').text();
     let DireccionLlegada = $("#Direccion").val();
 
     //END Cabecera
@@ -1695,6 +1699,7 @@ function GuardarSolicitud() {
             'SGI': SGI,
             'CodigoAnexoLlegada': Anexo,
             'CodigoUbigeoLlegada': Ubigeo,
+            'DistritoLlegada': DistritoLlegada,
             'DireccionLlegada': DireccionLlegada
 
             //end cabecera
@@ -1919,6 +1924,20 @@ function ObtenerDatosxID(IdMovimiento) {
             $("#ApellidoConductor").val(movimiento.ApellidoConductor)
             $("#LicenciaConductor").val(movimiento.LicenciaConductor)
             $("#IdTipoTransporte").val(movimiento.TipoTransporte)
+
+
+            CargarTodosUbigeo();
+
+            $("#txtSGI").val(movimiento.SGI);
+            $("#Anexo").val(movimiento.CodigoAnexoLlegada);
+            //$("#DistritoLlegada").val(movimiento.DistritoLlegada);
+            $("#DistritoLlegada option").filter(function () {
+                return $(this).text() === movimiento.DistritoLlegada.trim();
+            }).prop("selected", true);
+
+            $("#Direccion").val(movimiento.DireccionLlegada);
+
+
 
             $("#SerieNumeroRef").val(movimiento.SerieGuiaElectronica + "-" + movimiento.NumeroGuiaElectronica)
 
@@ -3650,6 +3669,9 @@ function GenerarPDF() {
                 data.message,
                 'success')
 
+        CerrarModal();
+        ObtenerDatosxID(IdMovimiento);
+
         return;
         //let datos;
         //if (validadJson(data)) {
@@ -3771,9 +3793,40 @@ function BuscarSGI() {
     $.post("/SalidaMercancia/ObtenerSGI", { 'SGI': SGI }, function (data, status) {
         let datos = JSON.parse(data);
 
-        $("#Ubigeo").val(datos[0].ubigeo);
-        $("#DistritoLlegada").val(datos[0].Distrito.trim());
+        //$("#Ubigeo").val(datos[0].ubigeo);
+        $("#DistritoLlegada option").filter(function () {
+            return $(this).text() === datos[0].Distrito.trim();
+        }).prop("selected", true);
+
+        //$("#DistritoLlegada").val(datos[0].Distrito.trim());
         $("#Direccion").val(datos[0].Direccion.trim());
+
     })
 
+}
+
+
+
+function CargarTodosUbigeo() {
+    $.ajaxSetup({ async: false });
+    $.post("/Ubigeo/ObtenerTodosUbigeo", function (data, status) {
+        let ubigeo = JSON.parse(data);
+        llenarComboUbigeos(ubigeo, "DistritoLlegada", "Seleccione")
+    });
+}
+
+
+function llenarComboUbigeos(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value=''>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].CodUbigeo + "'>" + lista[i].Descripcion + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
 }

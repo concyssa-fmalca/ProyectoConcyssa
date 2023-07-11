@@ -239,6 +239,7 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@SGI", oMovimientoDTO.SGI);
                         da.SelectCommand.Parameters.AddWithValue("@AnexoLlegada", oMovimientoDTO.CodigoAnexoLlegada);
                         da.SelectCommand.Parameters.AddWithValue("@UbigeoLlegada", oMovimientoDTO.CodigoUbigeoLlegada);
+                        da.SelectCommand.Parameters.AddWithValue("@DistritoLlegada", oMovimientoDTO.DistritoLlegada);
                         da.SelectCommand.Parameters.AddWithValue("@DireccionLlegada", oMovimientoDTO.DireccionLlegada);
 
 
@@ -904,13 +905,13 @@ namespace DAO
                         oMovimientoDTO.LicenciaConductor = (String.IsNullOrEmpty(drd["LicenciaConductor"].ToString()) ? "" : drd["LicenciaConductor"].ToString());
                         oMovimientoDTO.TipoTransporte = (String.IsNullOrEmpty(drd["TipoTransporte"].ToString()) ? "" : drd["TipoTransporte"].ToString());
 
-                        oMovimientoDTO.DireccionPartida = (String.IsNullOrEmpty(drd["DireccionPartida"].ToString()) ? "" : drd["DireccionPartida"].ToString());
-                        oMovimientoDTO.CodigoUbigeoPartida = (String.IsNullOrEmpty(drd["CodigoUbigeoPartida"].ToString()) ? "" : drd["CodigoUbigeoPartida"].ToString());
-                        oMovimientoDTO.CodigoAnexoPartida = (String.IsNullOrEmpty(drd["CodigoAnexoPartida"].ToString()) ? "" : drd["CodigoAnexoPartida"].ToString());
+                        oMovimientoDTO.DireccionPartida = (String.IsNullOrEmpty(drd["DireccionPartidaFirme"].ToString()) ? "" : drd["DireccionPartidaFirme"].ToString());
+                        oMovimientoDTO.CodigoUbigeoPartida = (String.IsNullOrEmpty(drd["CodigoUbigeoPartidaFirme"].ToString()) ? "" : drd["CodigoUbigeoPartidaFirme"].ToString());
+                        oMovimientoDTO.CodigoAnexoPartida = (String.IsNullOrEmpty(drd["CodigoAnexoPartidaFirme"].ToString()) ? "" : drd["CodigoAnexoPartidaFirme"].ToString());
 
-                        oMovimientoDTO.DireccionLlegada = (String.IsNullOrEmpty(drd["DireccionLlegada"].ToString()) ? "" : drd["DireccionLlegada"].ToString());
-                        oMovimientoDTO.CodigoUbigeoLlegada = (String.IsNullOrEmpty(drd["CodigoUbigeoLlegada"].ToString()) ? "" : drd["CodigoUbigeoLlegada"].ToString());
-                        oMovimientoDTO.CodigoAnexoLlegada = (String.IsNullOrEmpty(drd["CodigoAnexoLlegada"].ToString()) ? "" : drd["CodigoAnexoLlegada"].ToString());
+                        oMovimientoDTO.DireccionLlegada = (String.IsNullOrEmpty(drd["DireccionLlegadaFirme"].ToString()) ? "" : drd["DireccionLlegadaFirme"].ToString());
+                        oMovimientoDTO.CodigoUbigeoLlegada = (String.IsNullOrEmpty(drd["CodigoUbigeoLlegadaFirme"].ToString()) ? "" : drd["CodigoUbigeoLlegadaFirme"].ToString());
+                        oMovimientoDTO.CodigoAnexoLlegada = (String.IsNullOrEmpty(drd["CodigoAnexoLlegadaFirme"].ToString()) ? "" : drd["CodigoAnexoLlegadaFirme"].ToString());
 
                         oMovimientoDTO.SerieGuiaElectronica = (String.IsNullOrEmpty(drd["SerieGuiaElectronica"].ToString()) ? "" : drd["SerieGuiaElectronica"].ToString());
                         oMovimientoDTO.NumeroGuiaElectronica = Convert.ToInt32(String.IsNullOrEmpty(drd["NumeroGuiaElectronica"].ToString()) ? "0" : drd["NumeroGuiaElectronica"].ToString());
@@ -1647,6 +1648,12 @@ namespace DAO
                         oMovimientoDTO.FechaEdicion = Convert.ToDateTime(String.IsNullOrEmpty(drd["FechaEdicion"].ToString()) ? "1990/01/01" : drd["FechaEdicion"].ToString());
                         oMovimientoDTO.NombUsuarioEdicion = (String.IsNullOrEmpty(drd["NombUsuarioEdicion"].ToString()) ? "" : drd["NombUsuarioEdicion"].ToString());
 
+                        oMovimientoDTO.SGI = (String.IsNullOrEmpty(drd["SGI"].ToString()) ? "" : drd["SGI"].ToString());
+                        oMovimientoDTO.CodigoUbigeoLlegada = (String.IsNullOrEmpty(drd["UbigeoLlegada"].ToString()) ? "" : drd["UbigeoLlegada"].ToString());
+                        oMovimientoDTO.CodigoAnexoLlegada = (String.IsNullOrEmpty(drd["AnexoLlegada"].ToString()) ? "" : drd["AnexoLlegada"].ToString());
+                        oMovimientoDTO.DistritoLlegada = (String.IsNullOrEmpty(drd["DistritoLlegada"].ToString()) ? "" : drd["DistritoLlegada"].ToString());
+                        oMovimientoDTO.DireccionLlegada = (String.IsNullOrEmpty(drd["DireccionLlegada"].ToString()) ? "" : drd["DireccionLlegada"].ToString());
+
                     }
                     drd.Close();
 
@@ -1906,6 +1913,12 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@Peso", oMovimientoDTO.Peso);
                         da.SelectCommand.Parameters.AddWithValue("@Bulto", oMovimientoDTO.Bulto);
                         da.SelectCommand.Parameters.AddWithValue("@UsuarioEdicion", IdUsuario);
+
+                        da.SelectCommand.Parameters.AddWithValue("@SGI", oMovimientoDTO.SGI);
+                        da.SelectCommand.Parameters.AddWithValue("@AnexoLlegada", oMovimientoDTO.CodigoAnexoLlegada);
+                        da.SelectCommand.Parameters.AddWithValue("@UbigeoLlegada", oMovimientoDTO.CodigoUbigeoLlegada);
+                        da.SelectCommand.Parameters.AddWithValue("@DistritoLlegada", oMovimientoDTO.DistritoLlegada);
+                        da.SelectCommand.Parameters.AddWithValue("@DireccionLlegada", oMovimientoDTO.DireccionLlegada);
 
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();

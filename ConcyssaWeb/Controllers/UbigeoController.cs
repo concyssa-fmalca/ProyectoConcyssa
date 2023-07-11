@@ -12,6 +12,21 @@ namespace ConcyssaWeb.Controllers
             return View();
         }
 
+
+        public string ObtenerTodosUbigeo()
+        {
+            UbigeoDAO oUbigeoDAO = new UbigeoDAO();
+            List<UbigeoDTO> lstUbigeoDTO = oUbigeoDAO.ObtenerTodosUbigeo();
+            if (lstUbigeoDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstUbigeoDTO);
+            }
+            else
+            {
+                return "error";
+            }
+        }
+
         public string ObtenerDepartamentos()
         {
             UbigeoDAO oUbigeoDAO = new UbigeoDAO();

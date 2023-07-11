@@ -6,6 +6,37 @@ namespace DAO
 {
     public class UbigeoDAO
     {
+        public List<UbigeoDTO> ObtenerTodosUbigeo()
+        {
+            List<UbigeoDTO> lstUbigeoDTO = new List<UbigeoDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarTodosUbigeo", cn);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        UbigeoDTO oUbigeoDTO = new UbigeoDTO();
+                        oUbigeoDTO.CodUbigeo = drd["COD_UBIGEO"].ToString();
+                        oUbigeoDTO.Descripcion = drd["DES_UBIGEO"].ToString();
+                        ;
+                        lstUbigeoDTO.Add(oUbigeoDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            return lstUbigeoDTO;
+        }
+
+
         public List<UbigeoDTO> ObtenerDepartamentos()
         {
             List<UbigeoDTO> lstUbigeoDTO = new List<UbigeoDTO>();
