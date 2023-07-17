@@ -123,13 +123,14 @@ function ConsultaServidor(url) {
         for (var i = 0; i < solicitudes.length; i++) {
             contador++;
 
-
-
+            var fechaSplit = (solicitudes[i].FechaDocumento.substring(0, 10)).split("-");
+            //var fecha = fechaSplit[0] + "/" + fechaSplit[1] + "/" + fechaSplit[2];
+            var fecha = fechaSplit[2] + "/" + fechaSplit[1] + "/" + fechaSplit[0];
 
             tr += `<tr id="requerimiento` + solicitudes[i].IdSolicitudRQDetalle + `">`;
 
             tr += `<td>` + solicitudes[i].Serie + '-'  + solicitudes[i].NumeroPedido + `</td>`;
-            tr += `<td>` + solicitudes[i].FechaDocumento.split("T")[0] + `</td>`;
+            tr += `<td>` + fecha + `</td>`;
             tr += `<td>` + solicitudes[i].NombUsuario + `</td>`;
             tr += `<td>
                 <input  class="form-control" type="hidden" value="`+ solicitudes[i].IdSolicitudRQDetalle + `" id="txtIdSolicitudRQDetalle" name="txtIdSolicitudRQDetalle[]"/>
@@ -144,21 +145,19 @@ function ConsultaServidor(url) {
             ` + solicitudes[i].ObraDescripcion + `</td>`;
     
 
-            if (solicitudes[i].IdClaseArticulo == 2) {
-                tr += `<td>Servicio</td>`;
-            } else {
-                switch (solicitudes[i].IdTipoProducto) {
+          
+                switch (solicitudes[i].IdClaseArticulo) {
                     case 1:
-                        tr += `<td>Materiales</td>`;
+                        tr += `<td>Productos</td>`;
                         break;
                     case 2:
-                        tr += `<td>Auxiliares</td>`;
+                        tr += `<td>Servicios</td>`;
                         break;
                     default:
-                        tr += `<td>Materiales</td>`;
+                        tr += `<td>Activos</td>`;
                         break;
                 }
-            }
+            
           
 
 
@@ -167,6 +166,7 @@ function ConsultaServidor(url) {
             tr += `<td>` + solicitudes[i].NombreArticulo.toUpperCase(); + `</td>`;
             tr += `<td><input class="form-control" type="numeric" value="` + solicitudes[i].CantidadNecesaria + `" name="txtCantidadNecesaria[]"  id="txtCantidadNecesaria` + contador + `" onkeyup="CalcularTotalDetalle(` + contador + `)" ></td>`;
             tr += `<td>` + solicitudes[i].Referencia + `</td>`;
+            tr += `<td><button type="button" class="btn btn-primary btn-xs" onclick="verAnexos(` + solicitudes[i].IdSolicitud + `,'` + (solicitudes[i].Serie).toString() + `',` + solicitudes[i].NumeroPedido +`)">Ver Anexos</button></td>`;
             tr += `<td>`;
 
             if (solicitudes[i].Accion == 0) {
@@ -245,7 +245,34 @@ function ConsultaServidor(url) {
 
 
 }
+function verAnexos(IdSolicitudRq,Serie, Correlativo) {
+    $("#ModalAnexos").modal("show");
+    $("#lblTituloModalAnexos").html("ANEXOS DE LA SOLICITUD N° "+Serie+"-" + Correlativo)
+    $.ajax({
+        url: '/SolicitudRQ/ObtenerAnexosSolicitudRQ',
+        type: 'POST',
+        dataType: "json",
+        data: { 'IdSolicitudRQ': IdSolicitudRq },
+        success: function (datos) {
+            let tr = '';
+            for (var i = 0; i < datos.length; i++) {
+                tr += `<tr>`;
+                tr += `<td>` + datos[i].NombreArchivo + `</td>`;
+                tr += `<td><a target="_blank" href="` + datos[i].ruta + `"> Descargar </a></td>`;
+                tr += '</tr>';
+            }
 
+            $("#tbody_ModalAnexos").html(tr);
+        },
+        error: function () {
+            let tr = '<tr><td>Sin Datos</td><td>Sin Datos</td><tr/>';
+
+            $("#tbody_ModalAnexos").html(tr);
+        }
+
+        
+    })
+}
 
 function validarsipuedeaprobar(IdSolicitudRQ, IdEtapa) {
     let respuestaa = false;

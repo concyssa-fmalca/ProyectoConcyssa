@@ -313,6 +313,7 @@ namespace ConcyssaWeb.Controllers
                 oMovimientoDTO.IdTipoDocumento = 334;
                 oMovimientoDTO.Comentario = "EXTORNO DEL INGRESO " + oMovimientoDTO.NombSerie + "-" + +oMovimientoDTO.Correlativo;
                 oMovimientoDTO.IdMovimiento = 0;
+                oMovimientoDTO.IdSerie = 20007;
                 oSalidaMercanciaController.UpdateInsertMovimiento(oMovimientoDTO);
 
 
@@ -584,6 +585,104 @@ namespace ConcyssaWeb.Controllers
             //}
 
             return "";
+        }
+
+        public string UpdateOPDN(OpdnDTO oOpdnDTO)
+        {
+
+            string mensaje_error = "";
+            OpdnDAO oOpdnDAO = new OpdnDAO();
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            int respuesta = oOpdnDAO.UpdateOPDN(IdUsuario, oOpdnDTO, ref mensaje_error);
+
+            if (mensaje_error.Length > 0)
+            {
+                return mensaje_error;
+            }
+            else
+            {
+                if (respuesta == 1)
+                {
+                    return "1";
+                }
+                else
+                {
+                    return "error";
+                }
+            }
+
+        }
+        public string ValidarExtorno(int IdOPDN)
+        {
+            string Valida = "0";
+            string mensaje_error = "";
+            OpdnDAO oOpdnDAO = new OpdnDAO();
+            Valida = oOpdnDAO.ValidaExtorno(IdOPDN, ref mensaje_error);
+
+            return Valida;
+
+        }
+        public string GenerarOPDNExtorno(int IdOPDN)
+        {
+            string mensaje_error = "";
+           OpdnDAO oOpdnDAO = new OpdnDAO();
+            List<string> SinStock = new List<string>();
+           List<OPDNDetalle> lstoOpdnDTO = oOpdnDAO.ObtenerStockParaExtornoOPDN(IdOPDN, ref mensaje_error);
+            for (int i = 0; i < lstoOpdnDTO.Count; i++)
+            {
+                if( lstoOpdnDTO[i].Resta == -1) SinStock.Add( "No hay Stock para " + lstoOpdnDTO[i].DescripcionArticulo);
+            }
+            if(SinStock.Count != 0) {
+                return JsonConvert.SerializeObject(SinStock);
+            }
+            else
+            {
+                return "bien";
+            }
+
+        }
+        public string ExtornoConfirmado(int IdOPDn, string EsServicio)
+        {
+
+            string mensaje_error = "";
+            OpdnDAO oOpdnDAO = new OpdnDAO();
+            int respuesta = oOpdnDAO.ExtornoConfirmado(IdOPDn, EsServicio, ref mensaje_error);
+
+            if (mensaje_error.Length > 0)
+            {
+                return mensaje_error;
+            }
+            else
+            {
+                if (respuesta == 1)
+                {
+                    return "1";
+                }
+                else
+                {
+                    return "error";
+                }
+            }
+
+        }
+
+        public string ValidaTipoProductoOPDN(int ArticuloMuestra)
+        {
+            string mensaje_error = "";
+            OpdnDAO oOpdnDAO = new OpdnDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+
+            DataTableDTO oDataTableDTO = new DataTableDTO();
+            List<OpdnDTO> lstOpdnDTO = oOpdnDAO.ValidaTipoProductoOPDN(ArticuloMuestra, ref mensaje_error);
+            if (lstOpdnDTO.Count >= 0 && mensaje_error.Length == 0)
+            {
+                
+                return JsonConvert.SerializeObject(lstOpdnDTO);
+
+            }
+
+            return mensaje_error;
         }
     }
 }

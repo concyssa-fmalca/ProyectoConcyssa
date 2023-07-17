@@ -915,7 +915,21 @@ namespace ConcyssaWeb.Controllers
         }
 
 
-
+        public string ObtenerAnexosSolicitudRQ(int IdSolicitudRQ)
+        {
+            string mensaje_error = "";
+            SolicitudRQDAO oSolicitudRQDAO = new SolicitudRQDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            List<AnexoDTO> lstAnexoDTO = oSolicitudRQDAO.ObtenerAnexosSolicitudRQ(IdSolicitudRQ);
+            if (lstAnexoDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstAnexoDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
 
 
 

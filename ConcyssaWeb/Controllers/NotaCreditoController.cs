@@ -251,5 +251,55 @@ namespace ConcyssaWeb.Controllers
             return Resultado;
 
         }
+        public string UpdateORPC(OrpcDTO oOrpcDTO)
+        {
+
+            string mensaje_error = "";
+            OrpcDAO OOrpcDAO = new OrpcDAO();
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            int respuesta = OOrpcDAO.UpdateORPC(IdUsuario, oOrpcDTO, ref mensaje_error);
+
+            if (mensaje_error.Length > 0)
+            {
+                return mensaje_error;
+            }
+            else
+            {
+                if (respuesta == 1)
+                {
+                    return "1";
+                }
+                else
+                {
+                    return "error";
+                }
+            }
+
+        }
+        public string UpdateCuadrillas(ORPCDetalle oORPCDetalle)
+        {
+
+            string mensaje_error = "";
+            OrpcDAO oOrpcDAO = new OrpcDAO();
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            int respuesta = oOrpcDAO.UpdateCuadrillas(oORPCDetalle, ref mensaje_error);
+
+            if (mensaje_error.Length > 0)
+            {
+                return mensaje_error;
+            }
+            else
+            {
+                if (respuesta == 1)
+                {
+                    return "1";
+                }
+                else
+                {
+                    return "error";
+                }
+            }
+
+        }
     }
 }

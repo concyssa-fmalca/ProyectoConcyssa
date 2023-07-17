@@ -62,7 +62,9 @@ namespace DAO
                         oOpdnDTO.NumSerieTipoDocumentoRef = (drd["NumSerieTipoDocumentoRef"].ToString());
                         oOpdnDTO.NombUsuario = (drd["NombUsuario"].ToString());
                         oOpdnDTO.CreatedAt = Convert.ToDateTime(drd["CreatedAt"].ToString());
-
+                        oOpdnDTO.FechaEdicion = Convert.ToDateTime(String.IsNullOrEmpty(drd["FechaEdicion"].ToString()) ? "1990/01/01" : drd["FechaEdicion"].ToString());
+                        oOpdnDTO.NombUsuarioEdicion = (String.IsNullOrEmpty(drd["NombUsuarioEdicion"].ToString()) ? "" : drd["NombUsuarioEdicion"].ToString());
+                        oOpdnDTO.IdDocExtorno = Convert.ToInt32(drd["IdDocExtorno"].ToString());
 
 
 
@@ -135,7 +137,9 @@ namespace DAO
                         oOpdnDTO.IdBase = Convert.ToInt32(drd["IdBase"].ToString());
                         oOpdnDTO.NombProveedor = (drd["NombProveedor"].ToString());
                         oOpdnDTO.NumSerieTipoDocumentoRef = drd["NumSerieTipoDocumentoRef"].ToString();
-
+                        oOpdnDTO.IdDocExtorno = Convert.ToInt32(drd["IdDocExtorno"].ToString());
+                        oOpdnDTO.NOC = drd["NOC"].ToString();
+                        oOpdnDTO.IdPedido = Convert.ToInt32(drd["IdPedido"].ToString());
                         lstOPDNDTO.Add(oOpdnDTO);
                     }
                     drd.Close();
@@ -412,5 +416,163 @@ namespace DAO
         
         }
 
+        public int UpdateOPDN(int IdUsuario, OpdnDTO oOpdnDTO, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        string comentario = oOpdnDTO.Comentario == null ? " " : oOpdnDTO.Comentario;
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_UpdateOPDN", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdOPDN", oOpdnDTO.IdOPDN);
+                        da.SelectCommand.Parameters.AddWithValue("@IdTipoDocumentoRef", oOpdnDTO.IdTipoDocumentoRef);
+                        da.SelectCommand.Parameters.AddWithValue("@NumSerieTipoDocumentoRef", oOpdnDTO.NumSerieTipoDocumentoRef);
+                        da.SelectCommand.Parameters.AddWithValue("@Comentario", comentario);
+                        da.SelectCommand.Parameters.AddWithValue("@UsuarioEdicion", IdUsuario);
+
+                        int rpta = da.SelectCommand.ExecuteNonQuery();
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+                }
+            }
+        }
+        public string ValidaExtorno(int IdOPDN, ref string mensaje_error)
+        {
+            string Valida = "0";
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ValidarExtornoOPDN", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdOPDN", IdOPDN);
+
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+
+                        Valida = (drd["IdDocExtorno"].ToString());
+
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return Valida;
+        }
+        public List<OPDNDetalle> ObtenerStockParaExtornoOPDN(int IdOPDN, ref string mensaje_error)
+        {
+            List<OPDNDetalle> lstOPDNDetalle = new List<OPDNDetalle>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerStockParaExtornoOPDN", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdOPDN", IdOPDN);
+                  
+
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        OPDNDetalle oOPDNDetalle = new OPDNDetalle();
+                        oOPDNDetalle.Resta = Convert.ToInt32(drd["Resta"].ToString());
+                        oOPDNDetalle.DescripcionArticulo = drd["DescripcionArticulo"].ToString();
+                        lstOPDNDetalle.Add(oOPDNDetalle);
+                       
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstOPDNDetalle;
+        }
+        public int ExtornoConfirmado(int IdOPDn,string EsServicio, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {                    
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_ExtornoConfirmadoOPDN", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdOPDN", IdOPDn);
+                        da.SelectCommand.Parameters.AddWithValue("@EsServicio", EsServicio);
+
+
+                        int rpta = da.SelectCommand.ExecuteNonQuery();
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+                }
+            }
+        }
+        public List<OpdnDTO> ValidaTipoProductoOPDN(int ArticuloMuestra, ref string mensaje_error)
+        {
+            List<OpdnDTO> lstOPDNDTO = new List<OpdnDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ValidaTipoProductoOPDN", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@ArticuloMuestra", ArticuloMuestra);
+
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        OpdnDTO oOpdnDTO = new OpdnDTO();                   
+                        oOpdnDTO.TipoArticulos = drd["TipoArticulos"].ToString();
+                        lstOPDNDTO.Add(oOpdnDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstOPDNDTO;
+        }
     }
 }

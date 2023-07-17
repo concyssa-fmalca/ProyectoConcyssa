@@ -45,6 +45,7 @@ namespace DAO
                         oSemanaDTO.Obra =drd["Obra"].ToString();
                         oSemanaDTO.Fondo = Convert.ToDecimal(drd["Fondo"].ToString());
                         oSemanaDTO.Descripcion ="Semana"+ drd["NumSemana"].ToString() +" del "+ oSemanaDTO.FechaI.ToString("dd/MM") + " al " + oSemanaDTO.FechaF.ToString("dd/MM");
+                        oSemanaDTO.Correlativo = Convert.ToInt32(drd["Correlativo"].ToString());
 
                        
 
@@ -89,7 +90,8 @@ namespace DAO
 
                             var FechaI = Convert.ToDateTime(drd["FechaI"].ToString());
                             var FechaF = Convert.ToDateTime(drd["FechaF"].ToString());
-                            oSemanaDTO.Descripcion = "Semana " + drd["NumSemana"].ToString() + " del " + FechaI.ToString("dd/MM") + " al " + FechaF.ToString("dd/MM");
+                            string CorrelatvioUsar = drd["Correlativo"].ToString().PadLeft(3, '0'); ;
+                            oSemanaDTO.Descripcion = CorrelatvioUsar +  " - Semana " + drd["NumSemana"].ToString() + " del " + FechaI.ToString("dd/MM") + " al " + FechaF.ToString("dd/MM");
                             lstSemanaDTO.Add(oSemanaDTO);
                         }
                                 
@@ -174,6 +176,8 @@ namespace DAO
                         oSemanaDTO.IdObra = HelperDao.conversionInt(drd,"IdObra");
                        
                         oSemanaDTO.Fondo = Convert.ToDecimal(drd["Fondo"].ToString());
+
+                        oSemanaDTO.Correlativo = Convert.ToInt32(drd["Correlativo"].ToString());
                         lstSemanaDTO.Add(oSemanaDTO);
                     }
                     drd.Close();
@@ -219,6 +223,7 @@ namespace DAO
 
                         oSemanaDTO.Fondo = Convert.ToDecimal(drd["Fondo"].ToString());
                         oSemanaDTO.Descripcion = (drd["Descripcion"].ToString());
+                        oSemanaDTO.Correlativo = Convert.ToInt32(drd["Correlativo"].ToString());
                         lstSemanaDTO.Add(oSemanaDTO);
                     }
                     drd.Close();

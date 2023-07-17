@@ -192,6 +192,17 @@ namespace ConcyssaWeb.Controllers
 
             return resultado;
         }
+        public int UpdateCondicionPagoProveedor(ProveedorDTO proveedorDTO)
+        {
+            ProveedorDAO oProveedorDAO = new ProveedorDAO();
+            int resultado = oProveedorDAO.UpdateCondicionPagoProveedor(proveedorDTO);
+            if (resultado != 0)
+            {
+               return resultado;
+            }
 
+            return resultado;
+
+        }
     }
 }

@@ -175,6 +175,32 @@ function llenarComboObra(lista, idCombo, primerItem) {
     if (cbo != null) cbo.innerHTML = contenido;
 }
 
+function ObtenerObraTodas() {
+    let IdBase = $("#IdBase").val();
+    $.ajaxSetup({ async: false });
+    $.post("/Obra/ObtenerObra", function (data, status) {
+        let obra = JSON.parse(data);
+        llenarComboObraTodas(obra, "IdObra", "Seleccione")
+    });
+}
+
+
+
+function llenarComboObraTodas(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdObra + "'>" + lista[i].Descripcion.toUpperCase() + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+}
+
 
 
 function llenarComboObraDestino(lista, idCombo, primerItem) {
@@ -217,7 +243,28 @@ function llenarComboBase(lista, idCombo, primerItem) {
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
 }
+function CargarBaseTodas() {
+    $.ajaxSetup({ async: false });
+    $.post("/Base/ObtenerBase", function (data, status) {
+        let base = JSON.parse(data);
+        llenarComboBaseTodas(base, "IdBase", "Seleccione")
+    });
+}
 
+function llenarComboBaseTodas(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdBase + "'>" + lista[i].Descripcion.toUpperCase() + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+}
 
 
 
@@ -1759,16 +1806,16 @@ function ObtenerDatosxID(IdMovimiento) {
     CargarSucursales();
     CargarMoneda();
 
-    CargarBase();
+    CargarBaseTodas();
     ObtenerObrasDestino();
     setTimeout(() => {
-        ObtenerObraxIdBase()
+        ObtenerObraTodas()
     },100)
 
 
     //CargarObra();
     CargarVehiculos();
-
+    
 
     $("#lblTituloModal").html("Editar Transferencia");
     AbrirModal("modal-form");
@@ -1835,7 +1882,7 @@ function ObtenerDatosxID(IdMovimiento) {
             $("#txtFechaDocumento").val((movimiento.FechaDocumento).split("T")[0])
 
             $("#txtFechaContabilizacion").val((movimiento.FechaContabilizacion).split("T")[0])
-
+            $("#txtComentarios").html(movimiento.Comentario)
 
 
             $("#Peso").val(movimiento.Peso)
@@ -2953,22 +3000,36 @@ function disabledmodal(valorbolean) {
 }
 
 function GenerarReporte(id) {
-    $.ajaxSetup({ async: false });
-    $.post("/EntradaMercancia/GenerarReporte", { 'NombreReporte': 'TransferenciaMercancia', 'Formato': 'PDF', 'Id': id }, function (data, status) {
-        let datos;
-        if (validadJson(data)) {
-            let datobase64;
-            datobase64 = "data:application/octet-stream;base64,"
-            datos = JSON.parse(data);
-            //datobase64 += datos.Base64ArchivoPDF;
-            //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
-            //$("#reporteRPT").attr("href", datobase64);
-            //$("#reporteRPT")[0].click();
-            verBase64PDF(datos);
-        } else {
-            respustavalidacion
-        }
+    Swal.fire({
+        title: "Generando Reporte...",
+        text: "Por favor espere",
+        showConfirmButton: false,
+        allowOutsideClick: false
     });
+
+    setTimeout(() => {
+        $.ajaxSetup({ async: false });
+        $.post("/EntradaMercancia/GenerarReporte", { 'NombreReporte': 'TransferenciaMercancia', 'Formato': 'PDF', 'Id': id }, function (data, status) {
+            let datos;
+            if (validadJson(data)) {
+                let datobase64;
+                datobase64 = "data:application/octet-stream;base64,"
+                datos = JSON.parse(data);
+                //datobase64 += datos.Base64ArchivoPDF;
+                //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
+                //$("#reporteRPT").attr("href", datobase64);
+                //$("#reporteRPT")[0].click();
+                verBase64PDF(datos);
+                Swal.fire(
+                    'Correcto',
+                    'Reporte Generado Correctamente',
+                    'success'
+                )
+            } else {
+                respustavalidacion
+            }
+        });
+    }, 100)
 }
 function NumeracionDinamica() {
     var i = 1;

@@ -15,6 +15,7 @@ namespace ConcyssaWeb.Controllers
 
         public string UpdateInsertMovimientoFinal(MovimientoDTO oMovimientoDTO)
         {
+           
             string mensaje_error = "";
             int ValidarSoloSalida = 0;
 
@@ -42,7 +43,7 @@ namespace ConcyssaWeb.Controllers
                 for (int i = 0; i < oMovimientoDTO.detalles.Count; i++)
                 {
                     oMovimientoDTO.detalles[i].IdMovimiento = respuesta;
-                    respuesta = oMovimimientoDAO.InsertUpdateMovimientoDetalleIngreso(oMovimientoDTO.detalles[i], oMovimientoDTO.detalles[i].ValidarIngresoSalidaOAmbos, ref mensaje_error);
+                    int respuesta2 = oMovimimientoDAO.InsertUpdateMovimientoDetalleIngreso(oMovimientoDTO.detalles[i], oMovimientoDTO.detalles[i].ValidarIngresoSalidaOAmbos, ref mensaje_error);
 
                 }
 

@@ -129,7 +129,7 @@ function llenarComboSemanaFiltro(lista, idCombo, primerItem) {
     var campos;
     for (var i = 0; i < nRegistros; i++) {
 
-        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdSemana + "'>" + lista[i].Descripcion + "</option>"; }
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdSemana + "'>" + lista[i].Correlativo.toString().padStart(3, '0') + " - " + lista[i].Descripcion + "</option>"; }
         else { }
     }
     var cbo = document.getElementById(idCombo);
@@ -186,25 +186,41 @@ function ObtenerReporte() {
     let varIdObraReporte = $("#cboObraFiltro").val();
     let varAnioReporte = $("#cboPeriodo").val();
     let varIdSemanaReporte = $("#cboSemana").val();
-    $.ajaxSetup({ async: false });
-    $.post("GenerarReporte", {
-        'NombreReporte': 'InformeCajaChica', 'Formato': 'PDF', 'IdObra': varIdObraReporte, 'Anio': varAnioReporte, 'IdSemana': varIdSemanaReporte
-    }, function (data, status) {
-        let datos;
-        if (validadJson(data)) {
-            let datobase64;
-            datobase64 = "data:application/octet-stream;base64,"
-            datos = JSON.parse(data);
-            //datobase64 += datos.Base64ArchivoPDF;
-            //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
-            //$("#reporteRPT").attr("href", datobase64);
-            //$("#reporteRPT")[0].click();
-            verBase64PDF(datos)
-        } else {
-            console.log("error");
-        }
+    if (varIdSemanaReporte == 0 || varIdSemanaReporte == null) {
+        swal("Error!", "Seleccione una semana")
+        return;
+    }
+    Swal.fire({
+        title: "Generando Reporte...",
+        text: "Por favor espere",
+        showConfirmButton: false,
+        allowOutsideClick: false
     });
-
+    setTimeout(() => {
+        $.ajaxSetup({ async: false });
+        $.post("GenerarReporte", {
+            'NombreReporte': 'InformeCajaChica', 'Formato': 'PDF', 'IdObra': varIdObraReporte, 'Anio': varAnioReporte, 'IdSemana': varIdSemanaReporte
+        }, function (data, status) {
+            let datos;
+            if (validadJson(data)) {
+                let datobase64;
+                datobase64 = "data:application/octet-stream;base64,"
+                datos = JSON.parse(data);
+                //datobase64 += datos.Base64ArchivoPDF;
+                //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
+                //$("#reporteRPT").attr("href", datobase64);
+                //$("#reporteRPT")[0].click();
+                verBase64PDF(datos)
+                Swal.fire(
+                    'Correcto',
+                    'Reporte Generado Correctamente',
+                    'success'
+                )
+            } else {
+                console.log("error");
+            }
+        });
+    }, 100)
 
 
     //$.ajaxSetup({ async: false });

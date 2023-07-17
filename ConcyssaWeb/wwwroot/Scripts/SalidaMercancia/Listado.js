@@ -1859,7 +1859,7 @@ function ObtenerDatosxID(IdMovimiento) {
 
     CargarVehiculos();
 
-   
+    let EstaExtornado = false
 
     $.post('../Movimientos/ObtenerDatosxIdMovimientoOLD', {
         'IdMovimiento': IdMovimiento,
@@ -1874,6 +1874,9 @@ function ObtenerDatosxID(IdMovimiento) {
             console.log("XDDD");
             console.log(movimiento);
             console.log("XDDD");
+            if (movimiento.IdDocExtorno != 0) {
+                EstaExtornado = true
+            }
 
             $("#cboAlmacen").val(movimiento.IdAlmacen);
             $("#cboSerie").val(movimiento.IdSerie);
@@ -2088,7 +2091,14 @@ function ObtenerDatosxID(IdMovimiento) {
 
     });
     
-    
+
+    if (EstaExtornado == true) {
+        $("#btnExtorno").hide();
+        $("#btnEditar").hide();
+    } else {
+        $("#btnExtorno").show();
+        $("#btnEditar").show();
+    }
     //$("#SerieNumeroRef").prop("disabled", false)
     //$("#IdTipoDocumentoRef").prop("disabled", false)
     //$("#IdCuadrilla").prop("disabled", false)
@@ -3536,43 +3546,61 @@ function OcultarCampos() {
 
 
 function GenerarReporte(id, idextorno) {
-    if (idextorno == 1) {
-        console.log("extornado")
-        $.ajaxSetup({ async: false });
-        $.post("/EntradaMercancia/GenerarReporte", { 'NombreReporte': 'SalidaMercanciaExtornado', 'Formato': 'PDF', 'Id': id }, function (data, status) {
-            let datos;
-            if (validadJson(data)) {
-                let datobase64;
-                datobase64 = "data:application/octet-stream;base64,"
-                datos = JSON.parse(data);
-                //datobase64 += datos.Base64ArchivoPDF;
-                //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
-                //$("#reporteRPT").attr("href", datobase64);
-                //$("#reporteRPT")[0].click();
-                verBase64PDF(datos)
-            } else {
-                respustavalidacion
-            }
-        });
-    }
-    else {
-        $.ajaxSetup({ async: false });
-        $.post("/EntradaMercancia/GenerarReporte", { 'NombreReporte': 'SalidaMercancia', 'Formato': 'PDF', 'Id': id }, function (data, status) {
-            let datos;
-            if (validadJson(data)) {
-                let datobase64;
-                datobase64 = "data:application/octet-stream;base64,"
-                datos = JSON.parse(data);
-                //datobase64 += datos.Base64ArchivoPDF;
-                //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
-                //$("#reporteRPT").attr("href", datobase64);
-                //$("#reporteRPT")[0].click();
-                verBase64PDF(datos)
-            } else {
-                respustavalidacion
-            }
-        });
-    }
+    Swal.fire({
+        title: "Generando Reporte...",
+        text: "Por favor espere",
+        showConfirmButton: false,
+        allowOutsideClick: false
+    });
+    setTimeout(() => {
+        if (idextorno == 1) {
+            console.log("extornado")
+            $.ajaxSetup({ async: false });
+            $.post("/EntradaMercancia/GenerarReporte", { 'NombreReporte': 'SalidaMercanciaExtornado', 'Formato': 'PDF', 'Id': id }, function (data, status) {
+                let datos;
+                if (validadJson(data)) {
+                    let datobase64;
+                    datobase64 = "data:application/octet-stream;base64,"
+                    datos = JSON.parse(data);
+                    //datobase64 += datos.Base64ArchivoPDF;
+                    //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
+                    //$("#reporteRPT").attr("href", datobase64);
+                    //$("#reporteRPT")[0].click();
+                    verBase64PDF(datos)
+                    Swal.fire(
+                        'Correcto',
+                        'Reporte Generado Correctamente',
+                        'success'
+                    )
+                } else {
+                    respustavalidacion
+                }
+            });
+        }
+        else {
+            $.ajaxSetup({ async: false });
+            $.post("/EntradaMercancia/GenerarReporte", { 'NombreReporte': 'SalidaMercancia', 'Formato': 'PDF', 'Id': id }, function (data, status) {
+                let datos;
+                if (validadJson(data)) {
+                    let datobase64;
+                    datobase64 = "data:application/octet-stream;base64,"
+                    datos = JSON.parse(data);
+                    //datobase64 += datos.Base64ArchivoPDF;
+                    //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
+                    //$("#reporteRPT").attr("href", datobase64);
+                    //$("#reporteRPT")[0].click();
+                    verBase64PDF(datos)
+                    Swal.fire(
+                        'Correcto',
+                        'Reporte Generado Correctamente',
+                        'success'
+                    )
+                } else {
+                    respustavalidacion
+                }
+            });
+        }
+    }, 100)
 }
 
 
@@ -3608,8 +3636,12 @@ function ObtenerCapataz() {
     let IdCuadrilla = $("#IdCuadrilla").val();
    /* setTimeout(() => {*/
     $.post("/Empleado/ObtenerCapatazXCuadrilla", { 'IdCuadrilla': IdCuadrilla }, function (data, status) {
-        let capataz = JSON.parse(data);
-        $("#EntregadoA").select2("val", capataz[0].IdEmpleado);
+        try {
+            let capataz = JSON.parse(data);
+            $("#EntregadoA").select2("val", capataz[0].IdEmpleado);
+        } catch (e) {
+            console.log("sin cuadrilla")
+        }
     })
      /*}, 1000);*/
 

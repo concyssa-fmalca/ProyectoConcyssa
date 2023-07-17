@@ -77,9 +77,26 @@ function listarPedidoDt() {
                 targets: -1,
                 orderable: false,
                 render: function (data, type, full, meta) {
+                    let ExtrasBtn = ""
+
+                    //COFIRMADO Y CERRADO
+                    if (full.EstadoOC == 3 && full.Conformidad == 1) {
+                        ExtrasBtn = ""
+                    } else if (full.EstadoOC != 3 && full.Conformidad == 1) {
+                        //COFIRMADO Y SIN CERRAR
+                        ExtrasBtn = "<button class='btn btn-primary juntos  btn-xs' onclick='AnularOC(" + full.IdPedido + ")'>ANULAR</button>"
+                        ExtrasBtn += " <button class='btn btn-primary juntos  btn-xs' onclick='CerrarOC(" + full.IdPedido + ")'>CERRAR</button>"
+                    } else if (full.Conformidad == 2) {
+                        //LIBERADO
+                        ExtrasBtn = ""
+                    } else if (full.EstadoOC == 1) {
+                        //ANULADO
+                        ExtrasBtn = "<button class='btn btn-primary juntos  btn-xs' onclick='LiberarOC(" + full.IdPedido + ")'>LIBERAR</button>"
+                    }
 
                     return `<button class="btn btn-primary editar  juntos fa fa-eye  btn-xs" style="width:30px;height:30px"  onclick="ObtenerDatosxID(` + full.IdPedido + `)"></button>
-                            <button class="btn btn-danger  reporte  juntos fa fa-file-pdf-o btn-xs" onclick="ReporteOrdenComrpa(` + full.IdPedido + `,`+full.Conformidad+ `)"></button>`
+                            <button class="btn btn-danger  reporte  juntos fa fa-file-pdf-o btn-xs" onclick="ReporteOrdenComrpa(` + full.IdPedido + `,` + full.Conformidad + `)"></button>`+ExtrasBtn
+                           
                 },
             },
             {
@@ -128,7 +145,11 @@ function listarPedidoDt() {
                 targets: 5,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.NombSerie + '-' + full.Correlativo
+                    if (full.EstadoOC == 2) {
+                        return '<p style="color:red">' + full.NombSerie + '-' + full.Correlativo +'<p>' 
+                    } else {
+                        return full.NombSerie + '-' + full.Correlativo
+                    }
                 },
             },
             
@@ -150,12 +171,33 @@ function listarPedidoDt() {
                         return "SIN CONFIRMAR"
                     } else {
                         if (full.Conformidad == 1) {
-                            return "Confirmado"
+                            return "CONFIRMADO"
+                        }else if (full.Conformidad == 2) {
+                            return "OBSERVADO"
                         } else{
-                            return "Rechazado"
+                            return "RECHAZADO"
                         }
                     }
                    
+                },
+            },
+            {
+                data: null,
+                targets: 8,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    if (full.EstadoOC == 0) {
+                        return "-"
+                    } else {
+                        if (full.EstadoOC == 1) {
+                            return "ANULADO"
+                        } else if (full.EstadoOC == 2) {
+                            return "LIBERADO"
+                        } else {
+                            return "CERRADO"
+                        }
+                    }
+
                 },
             }
 
@@ -185,41 +227,59 @@ function ReporteCuadroComparativo(id) {
 }
 
 function ReporteOrdenComrpa(id, conformidad) {
-    if (conformidad == 0) {
-        $.ajaxSetup({ async: false });
-        $.post("GenerarReporte", { 'NombreReporte': 'OrdenCompraNoValido', 'Formato': 'PDF', 'Id': id }, function (data, status) {
-            let datos;
-            if (validadJson(data)) {
-                let datobase64;
-                datobase64 = "data:application/octet-stream;base64,"
-                datos = JSON.parse(data);
-                //datobase64 += datos.Base64ArchivoPDF;
-                //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
-                //$("#reporteRPT").attr("href", datobase64);
-                //$("#reporteRPT")[0].click();
-                verBase64PDF(datos)
-            } else {
-                console.log("error");
-            }
-        });
-    } else {
-        $.ajaxSetup({ async: false });
-        $.post("GenerarReporte", { 'NombreReporte': 'OrdenCompra', 'Formato': 'PDF', 'Id': id }, function (data, status) {
-            let datos;
-            if (validadJson(data)) {
-                let datobase64;
-                datobase64 = "data:application/octet-stream;base64,"
-                datos = JSON.parse(data);
-                //datobase64 += datos.Base64ArchivoPDF;
-                //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
-                //$("#reporteRPT").attr("href", datobase64);
-                //$("#reporteRPT")[0].click();
-                verBase64PDF(datos)
-            } else {
-                respustavalidacion
-            }
-        });
-    }
+    Swal.fire({
+        title: "Abriendo Orden de Compra...",
+        text: "Por favor espere",
+        showConfirmButton: false,
+        allowOutsideClick: false
+    });
+    setTimeout(() => {
+        if (conformidad == 0) {
+            $.ajaxSetup({ async: false });
+            $.post("GenerarReporte", { 'NombreReporte': 'OrdenCompraNoValido', 'Formato': 'PDF', 'Id': id }, function (data, status) {
+                let datos;
+                if (validadJson(data)) {
+                    let datobase64;
+                    datobase64 = "data:application/octet-stream;base64,"
+                    datos = JSON.parse(data);
+                    //datobase64 += datos.Base64ArchivoPDF;
+                    //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
+                    //$("#reporteRPT").attr("href", datobase64);
+                    //$("#reporteRPT")[0].click();
+                    verBase64PDF(datos)
+                    Swal.fire(
+                        'Correcto',
+                        'Orden Encontrada',
+                        'success'
+                    )
+                } else {
+                    console.log("error");
+                }
+            });
+        } else {
+            $.ajaxSetup({ async: false });
+            $.post("GenerarReporte", { 'NombreReporte': 'OrdenCompra', 'Formato': 'PDF', 'Id': id }, function (data, status) {
+                let datos;
+                if (validadJson(data)) {
+                    let datobase64;
+                    datobase64 = "data:application/octet-stream;base64,"
+                    datos = JSON.parse(data);
+                    //datobase64 += datos.Base64ArchivoPDF;
+                    //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
+                    //$("#reporteRPT").attr("href", datobase64);
+                    //$("#reporteRPT")[0].click();
+                    verBase64PDF(datos)
+                    Swal.fire(
+                        'Correcto',
+                        'Orden Encontrada',
+                        'success'
+                    )
+                } else {
+                    respustavalidacion
+                }
+            });
+        }
+    }, 100)
 
 
 
@@ -509,7 +569,7 @@ function llenarComboProveedor(lista, idCombo, primerItem) {
     var campos;
     for (var i = 0; i < nRegistros; i++) {
 
-        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdProveedor + "'>" + lista[i].RazonSocial + "</option>"; }
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdProveedor + "'>" +lista[i].NumeroDocumento +" - "+ lista[i].RazonSocial + "</option>"; }
         else { }
     }
     var cbo = document.getElementById(idCombo);
@@ -1304,7 +1364,15 @@ function GuardarPedido() {
         )
         return;
     }
-
+    if ($("#txtTotal").val() == '-') {
+        Swal.fire(
+            'Error!',
+            'Verifique la Moneda',
+            'error'
+        )
+        return;
+    }
+ 
 
 
 
@@ -1730,7 +1798,7 @@ function ObtenerDatosxID(id) {
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td ><input  class="form-control" type="text" value="" id="txtReferencia`+ contador + `" name="txtReferencia[]" disabled></td>
-            <td><button class="btn btn-xs btn-danger borrar fa fa-trash" onclick="eliminartrpedidos(`+contador+`)"></button></td>
+            <td><button class="btn btn-xs btn-danger borrar fa fa-trash" style="background-color:gray" onclick="eliminartrpedidos(`+contador+`)" disabled></button></td>
           </tr>`;
 
             $("#tabla").find('tbody').append(tr);
@@ -2884,7 +2952,7 @@ function llenarCondicionPagoAP(lista, idCombo, primerItem) {
     var campos;
     for (var i = 0; i < nRegistros; i++) {
 
-        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdCondicionPago + "'>" + lista[i].Descripcion + "</option>"; }
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdCondicionPago + "'>" + lista[i].Descripcion.toUpperCase() + "</option>"; }
         else { }
     }
     var cbo = document.getElementById(idCombo);
@@ -2966,7 +3034,7 @@ function addprecioproductoproveedor() {
     } else {
         varIdObra = $("#ObraArticulo").val()
     }
-
+    ActualizarCondicionPago() 
     $.post("/Articulo/SavePrecioProveedorNuevo", {
         "IdArticulo": IdArticulo,
         "IdProveedor": IdProveedor,
@@ -2988,6 +3056,27 @@ function addprecioproductoproveedor() {
         
         
     });
+    
+}
+function ActualizarCondicionPago() {
+    let IdProveedorActualizarCP = $("#IdProveedorAsignar").val()
+    let CPaActualizar = $("#IdCondicionPagoProveedor").val()
+    $.post('/Proveedor/UpdateCondicionPagoProveedor', {
+        'IdProveedor': IdProveedorActualizarCP,
+        'CondicionPago': CPaActualizar,
+    }, function (data, status) {
+
+        if (data != 0) {
+            console.log("CONDICION DE PAGO ACTUALIZADA")
+        
+        } else {
+            console.log("ERROR AL ACTUALIZAR CONDICION DE PAGO")
+           
+        }
+
+    });
+
+
 }
 function LimpiarModalItemProveedor() {
 
@@ -3313,4 +3402,55 @@ function llenarComboObraArt(lista, idCombo, primerItem) {
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
+}
+function AnularOC(IdPedido) {
+    alertify.confirm('Confirmar', '¿Desea Anular Esta OC?', function () {
+        $.ajax({
+            url: 'AnularPedido',
+            type: 'POST',
+            data: { 'IdPedido': IdPedido },
+            success: function (data) {
+                swal("Exito!", "Proceso Realizado Correctamente", "success")
+                listarPedidoDt()
+            },
+            error: function () {
+                swal("Error!", "El Proceso Falló", "error")
+            }
+        })
+
+    }, function () { });
+}
+function LiberarOC(IdPedido) {
+    alertify.confirm('Confirmar', '¿Desea Liberar Esta OC?', function () {
+        $.ajax({
+            url: 'LiberarPedido',
+            type: 'POST',
+            data: { 'IdPedido': IdPedido },
+            success: function (data) {
+                swal("Exito!", "Proceso Realizado Correctamente", "success")
+                listarPedidoDt()
+            },
+            error: function () {
+                swal("Error!", "El Proceso Falló", "error")
+            }
+        })
+
+    }, function () { });
+}
+function CerrarOC(IdPedido) {
+    alertify.confirm('Confirmar', '¿Desea Cerrar Esta OC?', function () {
+        $.ajax({
+            url: 'CerrarPedido',
+            type: 'POST',
+            data: { 'IdPedido': IdPedido },
+            success: function (data) {
+                swal("Exito!", "Proceso Realizado Correctamente", "success")
+                listarPedidoDt()
+            },
+            error: function () {
+                swal("Error!", "El Proceso Falló", "error")
+            }
+        })
+
+    }, function () { });
 }

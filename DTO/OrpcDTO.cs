@@ -85,6 +85,8 @@ namespace DTO
 
         public string NumProveedor { get; set; }
         public string NombProveedor { get; set; }
+        public string NombUsuarioEdicion { get; set; }
+        public DateTime FechaEdicion { get; set; }
 
     }
 

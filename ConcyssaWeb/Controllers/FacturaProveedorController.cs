@@ -280,7 +280,118 @@ namespace ConcyssaWeb.Controllers
             return Resultado;
 
         }
+        public string UpdateOPCH(OpchDTO oOpchDTO)
+        {
 
+            string mensaje_error = "";
+            OpchDAO oOpchDAO = new OpchDAO();
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            int respuesta = oOpchDAO.UpdateOPCH(IdUsuario, oOpchDTO, ref mensaje_error);
+
+            if (mensaje_error.Length > 0)
+            {
+                return mensaje_error;
+            }
+            else
+            {
+                if (respuesta == 1)
+                {
+                    return "1";
+                }
+                else
+                {
+                    return "error";
+                }
+            }
+
+        }
+        public string UpdateCuadrillas(OPCHDetalle oOPCHDetalle)
+        {
+
+            string mensaje_error = "";
+            OpchDAO oOpchDAO = new OpchDAO();
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            int respuesta = oOpchDAO.UpdateCuadrillas(oOPCHDetalle, ref mensaje_error);
+
+            if (mensaje_error.Length > 0)
+            {
+                return mensaje_error;
+            }
+            else
+            {
+                if (respuesta == 1)
+                {
+                    return "1";
+                }
+                else
+                {
+                    return "error";
+                }
+            }
+
+        }
+        public string ObtenerOrigenesFactura(int IdOPCH)
+        {
+            string mensaje_error = "";
+            OpchDAO oOpchDAO = new OpchDAO();
+         
+            List<OpchDTO> lstOpchDTO = oOpchDAO.ObtenerOrigenesFactura(IdOPCH, ref mensaje_error);
+            if (lstOpchDTO.Count >= 0 && mensaje_error.Length == 0)
+            {
+              
+                return JsonConvert.SerializeObject(lstOpchDTO);
+
+            }
+            else
+            {
+                return mensaje_error;
+
+            }
+        }
+        public string ValidarStockExtorno(int IdOPCH)
+        {
+            string mensaje_error = "";
+            OpchDAO oOpchDAO = new OpchDAO();
+            List<string> SinStock = new List<string>();
+            List<OPCHDetalle> lstoOpchDTO = oOpchDAO.ObtenerStockParaExtornoOPCH(IdOPCH, ref mensaje_error);
+            for (int i = 0; i < lstoOpchDTO.Count; i++)
+            {
+                if (lstoOpchDTO[i].Resta == -1) SinStock.Add("No hay Stock para " + lstoOpchDTO[i].DescripcionArticulo);
+            }
+            if (SinStock.Count != 0)
+            {
+                return JsonConvert.SerializeObject(SinStock);
+            }
+            else
+            {
+                return "bien";
+            }
+
+        }
+        public string ExtornoConfirmado(int IdOPCH, string EsServicio, string TablaOrigen)
+        {
+
+            string mensaje_error = "";
+            OpchDAO oOpchDAO = new OpchDAO();
+            int respuesta = oOpchDAO.ExtornoConfirmado(IdOPCH, EsServicio, TablaOrigen, ref mensaje_error);
+
+            if (mensaje_error.Length > 0)
+            {
+                return mensaje_error;
+            }
+            else
+            {
+                if (respuesta == 1)
+                {
+                    return "1";
+                }
+                else
+                {
+                    return "error";
+                }
+            }
+
+        }
 
     }
 }

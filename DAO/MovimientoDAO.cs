@@ -928,6 +928,7 @@ namespace DAO
                         oMovimientoDTO.DescripcionMotivoTrasladoSunat = (String.IsNullOrEmpty(drd["DescripcionMotivoTrasladoSunat"].ToString()) ? "" : drd["DescripcionMotivoTrasladoSunat"].ToString());
                         oMovimientoDTO.FechaEdicion = Convert.ToDateTime(String.IsNullOrEmpty(drd["FechaEdicion"].ToString()) ? "1990/01/01" : drd["FechaEdicion"].ToString());
                         oMovimientoDTO.NombUsuarioEdicion = (String.IsNullOrEmpty(drd["NombUsuarioEdicion"].ToString()) ? "" : drd["NombUsuarioEdicion"].ToString());
+                        oMovimientoDTO.IdDocExtorno = Convert.ToInt32(drd["IdDocExtorno"].ToString());
                     }
                     drd.Close();
 
@@ -1134,6 +1135,8 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@IdTipoRegistro", oOpchDTO.IdTipoRegistro);
                         da.SelectCommand.Parameters.AddWithValue("@IdSemana", oOpchDTO.IdSemana);
                         da.SelectCommand.Parameters.AddWithValue("@IdGlosaContable", oOpchDTO.IdGlosaContable);
+                        da.SelectCommand.Parameters.AddWithValue("@TablaOrigen", oOpchDTO.TablaOrigen);
+                        da.SelectCommand.Parameters.AddWithValue("@IdOrigen", oOpchDTO.IdOrigen);
 
                         int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
                         transactionScope.Complete();
@@ -1653,7 +1656,7 @@ namespace DAO
                         oMovimientoDTO.CodigoAnexoLlegada = (String.IsNullOrEmpty(drd["AnexoLlegada"].ToString()) ? "" : drd["AnexoLlegada"].ToString());
                         oMovimientoDTO.DistritoLlegada = (String.IsNullOrEmpty(drd["DistritoLlegada"].ToString()) ? "" : drd["DistritoLlegada"].ToString());
                         oMovimientoDTO.DireccionLlegada = (String.IsNullOrEmpty(drd["DireccionLlegada"].ToString()) ? "" : drd["DireccionLlegada"].ToString());
-
+                        oMovimientoDTO.IdDocExtorno = Convert.ToInt32(drd["IdDocExtorno"].ToString());
                     }
                     drd.Close();
 

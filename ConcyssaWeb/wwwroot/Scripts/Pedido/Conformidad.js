@@ -91,7 +91,7 @@ function listarPedidoDtConfirmidad() {
                 targets: 6,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.NombMoneda
+                    return full.NombTipoPedido.toUpperCase()
                 },
             },
             {
@@ -99,12 +99,20 @@ function listarPedidoDtConfirmidad() {
                 targets: 7,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return formatNumberDecimales(full.total_venta, 2)
+                    return full.NombMoneda
                 },
             },
             {
                 data: null,
                 targets: 8,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return formatNumberDecimales(full.total_venta, 2)
+                },
+            },
+            {
+                data: null,
+                targets: 9,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     if (full.Conformidad == 0) {
@@ -179,61 +187,94 @@ function verBase64PDF(datos) {
     // y de esta manera simplemente lo abro en una nueva ventana:
     window.open(url, '_blank');
 }
-function MostrarOC(id,conformidad) {
-    if (conformidad == 0) {
+function MostrarOC(id, conformidad) {
+    Swal.fire({
+        title: "Buscando Orden de Compra...",
+        text: "Por favor espere",
+        showConfirmButton: false,
+        allowOutsideClick: false
+    });
+    setTimeout(() => {
+        if (conformidad == 0) {
+            $.ajaxSetup({ async: false });
+            $.post("GenerarReporte", { 'NombreReporte': 'OrdenCompraNoValido', 'Formato': 'PDF', 'Id': id }, function (data, status) {
+                let datos;
+                if (validadJson(data)) {
+                    let datobase64;
+                    datobase64 = "data:application/octet-stream;base64,"
+                    datos = JSON.parse(data);
+                    //datobase64 += datos.Base64ArchivoPDF;
+                    //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
+                    //$("#reporteRPT").attr("href", datobase64);
+                    //$("#reporteRPT")[0].click();
+                    verBase64PDF(datos)
+                    Swal.fire(
+                        'Correcto',
+                        'Orden de Compra Encontrada',
+                        'success'
+                    )
+                } else {
+                    console.log("error");
+                }
+            });
+        } else {
+            $.ajaxSetup({ async: false });
+            $.post("GenerarReporte", { 'NombreReporte': 'OrdenCompra', 'Formato': 'PDF', 'Id': id }, function (data, status) {
+                let datos;
+                if (validadJson(data)) {
+                    let datobase64;
+                    datobase64 = "data:application/octet-stream;base64,"
+                    datos = JSON.parse(data);
+                    //datobase64 += datos.Base64ArchivoPDF;
+                    //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
+                    //$("#reporteRPT").attr("href", datobase64);
+                    //$("#reporteRPT")[0].click();
+                    verBase64PDF(datos)
+                    Swal.fire(
+                        'Correcto',
+                        'Orden de Compra Encontrada',
+                        'success'
+                    )
+                } else {
+                    respustavalidacion
+                }
+            });
+        }
+    }, 100)
+}
+function MostrarCC(id) {
+    Swal.fire({
+        title: "Buscando Cuadro Comparativo...",
+        text: "Por favor espere",
+        showConfirmButton: false,
+        allowOutsideClick: false
+    });
+    setTimeout(() => {
         $.ajaxSetup({ async: false });
-        $.post("GenerarReporte", { 'NombreReporte': 'OrdenCompraNoValido', 'Formato': 'PDF', 'Id': id }, function (data, status) {
+        $.post("GenerarReporte", { 'NombreReporte': 'CuadroComparativo', 'Formato': 'PDF', 'Id': id }, function (data, status) {
             let datos;
             if (validadJson(data)) {
                 let datobase64;
                 datobase64 = "data:application/octet-stream;base64,"
                 datos = JSON.parse(data);
-                //datobase64 += datos.Base64ArchivoPDF;
+                /*datobase64 += datos.Base64ArchivoPDF;*/
                 //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
                 //$("#reporteRPT").attr("href", datobase64);
                 //$("#reporteRPT")[0].click();
                 verBase64PDF(datos)
-            } else {
-                console.log("error");
-            }
-        });
-    } else {
-        $.ajaxSetup({ async: false });
-        $.post("GenerarReporte", { 'NombreReporte': 'OrdenCompra', 'Formato': 'PDF', 'Id': id }, function (data, status) {
-            let datos;
-            if (validadJson(data)) {
-                let datobase64;
-                datobase64 = "data:application/octet-stream;base64,"
-                datos = JSON.parse(data);
-                //datobase64 += datos.Base64ArchivoPDF;
-                //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
-                //$("#reporteRPT").attr("href", datobase64);
-                //$("#reporteRPT")[0].click();
-                verBase64PDF(datos)
+
+                Swal.fire(
+                    'Correcto',
+                    'Cuadro Comparativo Encontrado',
+                    'success'
+                )
+
             } else {
                 respustavalidacion
             }
         });
-    }
-}
-function MostrarCC(id) {
-    $.ajaxSetup({ async: false });
-    $.post("GenerarReporte", { 'NombreReporte': 'CuadroComparativo', 'Formato': 'PDF', 'Id': id }, function (data, status) {
-        let datos;
-        if (validadJson(data)) {
-            let datobase64;
-            datobase64 = "data:application/octet-stream;base64,"
-            datos = JSON.parse(data);
-            /*datobase64 += datos.Base64ArchivoPDF;*/
-            //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
-            //$("#reporteRPT").attr("href", datobase64);
-            //$("#reporteRPT")[0].click();
-            verBase64PDF(datos)
+    }, 100)
 
-        } else {
-            respustavalidacion
-        }
-    });
 }
 
 
@@ -272,8 +313,8 @@ function abrirModalPedidoConformidad(data) {
             tabletr += `<tr>
                     <td>`+ pedido.detalles[i].CodigoProducto + `</td>
                     <td>`+ pedido.detalles[i].DescripcionArticulo + `</td>
-                    <td>`+ pedido.detalles[i].Cantidad + `</td>
-                    <td>`+ pedido.detalles[i].valor_unitario + `</td>`;
+                    <td>`+ formatNumberDecimales(pedido.detalles[i].Cantidad,2) + `</td>
+                    <td>`+ formatNumberDecimales(pedido.detalles[i].valor_unitario,2) + `</td>`;
             if (pedido.IdMoneda == 1) {
                 tabletr += `<td>Soles</td>`;
             } else {
@@ -281,7 +322,7 @@ function abrirModalPedidoConformidad(data) {
             }
             
 
-            tabletr += `<td>` + pedido.detalles[i].total_valor_item +`</td>
+            tabletr += `<td>` + formatNumberDecimales(pedido.detalles[i].total_valor_item,2) +`</td>
                     <td>`+ pedido.NombCondicionPago+`</td>
                     <td>`+ pedido.detalles[i].Referencia+`</td>
                     <td>

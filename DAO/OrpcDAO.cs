@@ -66,6 +66,8 @@ namespace DAO
                         oOrpcDTO.CreatedAt = Convert.ToDateTime(drd["CreatedAt"].ToString());
                         oOrpcDTO.IdTipoRegistro = Convert.ToInt32(drd["IdTipoRegistro"].ToString());
                         oOrpcDTO.IdSemana = Convert.ToInt32(drd["IdSemana"].ToString());
+                        oOrpcDTO.FechaEdicion = Convert.ToDateTime(String.IsNullOrEmpty(drd["FechaEdicion"].ToString()) ? "1990/01/01" : drd["FechaEdicion"].ToString());
+                        oOrpcDTO.NombUsuarioEdicion = (String.IsNullOrEmpty(drd["NombUsuarioEdicion"].ToString()) ? "" : drd["NombUsuarioEdicion"].ToString());
 
                     }
                     drd.Close();
@@ -192,6 +194,8 @@ namespace DAO
                         oORPCDetalle.CodigoArticulo = drd["CodigoArticulo"].ToString();
                         oORPCDetalle.NombCuadrilla = drd["NombCuadrilla"].ToString();
                         oORPCDetalle.NombResponsable = drd["NombResponsable"].ToString();
+                        oORPCDetalle.IdCuadrilla = Convert.ToInt32((String.IsNullOrEmpty(drd["IdCuadrilla"].ToString())) ? "0" : drd["IdCuadrilla"].ToString());
+                        oORPCDetalle.IdResponsable = Convert.ToInt32((String.IsNullOrEmpty(drd["IdResponsable"].ToString())) ? "0" : drd["IdResponsable"].ToString());
                         lstORPCDetalle.Add(oORPCDetalle);
                     }
                     drd.Close();
@@ -272,7 +276,78 @@ namespace DAO
 
 
         }
+        public int UpdateORPC(int IdUsuario, OrpcDTO OrpcDTO, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        string comentario = OrpcDTO.Comentario == null ? " " : OrpcDTO.Comentario;
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_UpdateORPC", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdORPC", OrpcDTO.IdORPC);
+                        da.SelectCommand.Parameters.AddWithValue("@IdTipoDocumentoRef", OrpcDTO.IdTipoDocumentoRef);
+                        da.SelectCommand.Parameters.AddWithValue("@NumSerieTipoDocumentoRef", OrpcDTO.NumSerieTipoDocumentoRef);
+                        da.SelectCommand.Parameters.AddWithValue("@IdTipoDocumento", OrpcDTO.IdTipoDocumento);
+                        da.SelectCommand.Parameters.AddWithValue("@IdCondicionPago", OrpcDTO.idCondicionPago);
+                        da.SelectCommand.Parameters.AddWithValue("@IdTipoRegistro", OrpcDTO.IdTipoRegistro);
+                        da.SelectCommand.Parameters.AddWithValue("@IdSemana", OrpcDTO.IdSemana);
+                        da.SelectCommand.Parameters.AddWithValue("@Comentario", comentario);
+                        da.SelectCommand.Parameters.AddWithValue("@UsuarioEdicion", IdUsuario);
 
+
+                        int rpta = da.SelectCommand.ExecuteNonQuery();
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+                }
+            }
+        }
+
+        public int UpdateCuadrillas(ORPCDetalle oORPCDetalle, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_UpdateORPCCuadrillas", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdORPCDetalle", oORPCDetalle.IdORPCDetalle);
+                        da.SelectCommand.Parameters.AddWithValue("@IdCuadrilla", oORPCDetalle.IdCuadrilla);
+                        da.SelectCommand.Parameters.AddWithValue("@IdResponsable", oORPCDetalle.IdResponsable);
+
+
+                        int rpta = da.SelectCommand.ExecuteNonQuery();
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+                }
+            }
+        }
 
 
     }

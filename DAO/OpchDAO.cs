@@ -74,7 +74,10 @@ namespace DAO
                         oOpchDTO.IdGlosaContable = Convert.ToInt32(drd["IdGlosaContable"].ToString());
                         oOpchDTO.NombUsuario = (drd["NombUsuario"].ToString());
                         oOpchDTO.CreatedAt = Convert.ToDateTime(drd["CreatedAt"].ToString());
-
+                        oOpchDTO.FechaEdicion = Convert.ToDateTime(String.IsNullOrEmpty(drd["FechaEdicion"].ToString()) ? "1990/01/01" : drd["FechaEdicion"].ToString());
+                        oOpchDTO.NombUsuarioEdicion = (String.IsNullOrEmpty(drd["NombUsuarioEdicion"].ToString()) ? "" : drd["NombUsuarioEdicion"].ToString());
+                        oOpchDTO.IdDocExtorno = Convert.ToInt32(drd["IdDocExtorno"].ToString());
+                        oOpchDTO.TablaOrigen = drd["TablaOrigen"].ToString();
 
                     }
                     drd.Close();
@@ -146,7 +149,7 @@ namespace DAO
                         oOpchDTO.NumSerieTipoDocumentoRef = drd["NumSerieTipoDocumentoRef"].ToString();
                         oOpchDTO.Proveedor = drd["Proveedor"].ToString();
                         oOpchDTO.TipoDocumentoRef = drd["TipoDocumentoRef"].ToString();
-
+                        oOpchDTO.IdDocExtorno = Convert.ToInt32(drd["IdDocExtorno"].ToString());
                         lstOPCHDTO.Add(oOpchDTO);
                     }
                     drd.Close();
@@ -286,6 +289,8 @@ namespace DAO
                         oOPCHDetalle.NombCuadrilla = drd["NombCuadrilla"].ToString();
                         oOPCHDetalle.NombResponsable = drd["NombResponsable"].ToString();
                         oOPCHDetalle.TipoServicio = drd["TipoServicio"].ToString();
+                        oOPCHDetalle.IdCuadrilla = Convert.ToInt32((String.IsNullOrEmpty(drd["IdCuadrilla"].ToString())) ? "0" : drd["IdCuadrilla"].ToString());
+                        oOPCHDetalle.IdResponsable = Convert.ToInt32((String.IsNullOrEmpty(drd["IdResponsable"].ToString())) ? "0" : drd["IdResponsable"].ToString());
 
 
 
@@ -374,9 +379,173 @@ namespace DAO
 
 
         }
+        public int UpdateOPCH(int IdUsuario, OpchDTO OOpchDTO, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        string comentario = OOpchDTO.Comentario == null ? " " : OOpchDTO.Comentario;
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_UpdateOPCH", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdOPCH", OOpchDTO.IdOPCH);
+                        da.SelectCommand.Parameters.AddWithValue("@IdTipoDocumentoRef", OOpchDTO.IdTipoDocumentoRef);
+                        da.SelectCommand.Parameters.AddWithValue("@NumSerieTipoDocumentoRef", OOpchDTO.NumSerieTipoDocumentoRef);
+                        da.SelectCommand.Parameters.AddWithValue("@IdTipoDocumento", OOpchDTO.IdTipoDocumento);
+                        da.SelectCommand.Parameters.AddWithValue("@IdCondicionPago", OOpchDTO.idCondicionPago);
+                        da.SelectCommand.Parameters.AddWithValue("@IdTipoRegistro", OOpchDTO.IdTipoRegistro);
+                        da.SelectCommand.Parameters.AddWithValue("@IdSemana", OOpchDTO.IdSemana);
+                        da.SelectCommand.Parameters.AddWithValue("@Comentario", comentario);
+                        da.SelectCommand.Parameters.AddWithValue("@UsuarioEdicion", IdUsuario);
 
 
+                        int rpta = da.SelectCommand.ExecuteNonQuery();
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+                }
+            }
+        }
+
+        public int UpdateCuadrillas(OPCHDetalle oOPCHDetalle, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {        
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_UpdateOPCHCuadrillas", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdOPCHDetalle", oOPCHDetalle.IdOPCHDetalle);
+                        da.SelectCommand.Parameters.AddWithValue("@IdCuadrilla", oOPCHDetalle.IdCuadrilla);
+                        da.SelectCommand.Parameters.AddWithValue("@IdResponsable", oOPCHDetalle.IdResponsable);
 
 
+                        int rpta = da.SelectCommand.ExecuteNonQuery();
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+                }
+            }
+        }
+        public List<OpchDTO> ObtenerOrigenesFactura(int IdOPCH, ref string mensaje_error)
+        {
+            List<OpchDTO> lstOPCHDTO = new List<OpchDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerOrigenesFactura", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdOPCH", IdOPCH);         
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        OpchDTO oOpchDTO = new OpchDTO();
+                        oOpchDTO.TablaOrigen = drd["TablaOrigen"].ToString();
+                        oOpchDTO.IdOrigen = drd["IdOrigen"].ToString();
+                        oOpchDTO.NombSerie = drd["NombSerie"].ToString();
+                        lstOPCHDTO.Add(oOpchDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstOPCHDTO;
+        }
+        public List<OPCHDetalle> ObtenerStockParaExtornoOPCH(int IdOPCH, ref string mensaje_error)
+        {
+            List<OPCHDetalle> lstOPCHDetalle = new List<OPCHDetalle>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerStockParaExtornoOPCH", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdOPCH", IdOPCH);
+
+
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        OPCHDetalle oOPCHDetalle = new OPCHDetalle();
+                        oOPCHDetalle.Resta = Convert.ToInt32(drd["Resta"].ToString());
+                        oOPCHDetalle.DescripcionArticulo = drd["DescripcionArticulo"].ToString();
+                        lstOPCHDetalle.Add(oOPCHDetalle);
+
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstOPCHDetalle;
+        }
+        public int ExtornoConfirmado(int IdOPCH, string EsServicio,string TablaOrigen, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_ExtornoConfirmadoOPCH", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdOPDN", IdOPCH);
+                        da.SelectCommand.Parameters.AddWithValue("@EsServicio", EsServicio);
+                        da.SelectCommand.Parameters.AddWithValue("@TablaOrigen", TablaOrigen);
+
+
+                        int rpta = da.SelectCommand.ExecuteNonQuery();
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+                }
+            }
+        }
     }
 }

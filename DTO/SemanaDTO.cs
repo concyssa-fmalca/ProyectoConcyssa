@@ -21,6 +21,7 @@ namespace DTO
         public string? Obra { get; set; }
         public string? Descripcion { get; set; }
         public decimal Fondo { get; set; }
+        public int Correlativo { get; set; }
 
 
     }

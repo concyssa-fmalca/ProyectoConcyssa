@@ -74,6 +74,12 @@
         public int IdCondicionPago { get; set; }
         public string NombProveedor { get; set; }
         public IList<AnexoDTO> AnexoDetalle { get; set; }
+        public DateTime FechaEdicion { get; set; }
+        public string NombUsuarioEdicion { get; set; }
+        public int IdDocExtorno { get; set; }
+        public string NOC { get; set; }
+        public string TipoArticulos { get; set; }
+        public int IdPedido { get; set; }
 
     }
 
@@ -134,6 +140,7 @@
         public string NombCuadrilla { get; set; }
         public string NombResponsable { get; set; }
         public string TipoServicio { get; set; }
+        public int Resta { get; set; }
 
     }
 }

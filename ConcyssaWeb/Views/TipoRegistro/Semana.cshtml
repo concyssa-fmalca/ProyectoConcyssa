@@ -60,6 +60,7 @@
                         <th>Obra</th>
                         <th>Año</th>
                         <th>Semana</th>
+                        <th>Codigo</th>
                         <th>Fecha Inicial </th>
                         <th>Fecha Final </th>
                         <th>Fondo </th>
@@ -158,6 +159,14 @@
                                             <label for="DateFechaFinal" class="col-sm-3 col-form-label">Fecha Final</label>
                                             <div class="col-sm-9">
                                                 <input id="DateFechaFinal" value="@DateTime.Now.ToString("yyyy-MM-dd")" type="date" class="form-control input-sm" tabindex="10">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class='form-group-sm'>
+                                            <label for="txtCorrelativo" class="col-sm-3 col-form-label">Código</label>
+                                            <div class="col-sm-9">
+                                                <input id="txtCorrelativo" value="Autogenerado" type="text" class="form-control input-sm" tabindex="10" disabled>
                                             </div>
                                         </div>
                                     </div>

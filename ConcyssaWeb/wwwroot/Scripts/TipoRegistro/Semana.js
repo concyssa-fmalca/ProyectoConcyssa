@@ -107,6 +107,7 @@ function llenarComboTipoRegistroFiltro(lista, idCombo, primerItem) {
 }
 function ModalNuevo() {
     $("#lblTituloModal").html("Semana Nueva");
+    $("#txtCorrelativo").val("Autogenerado")
     $("#chkActivo").prop("checked",true)
     AbrirModal("modal-form");
    
@@ -215,6 +216,7 @@ function ObtenerSemanas() {
         columnDefs: [
             { "className": "text-center", "targets": "_all" },
             {
+                data:null,
                 targets: -1,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -225,6 +227,7 @@ function ObtenerSemanas() {
                 },
             },
             {
+                data: null,
                 targets: 0,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -232,6 +235,7 @@ function ObtenerSemanas() {
                 },
             },
             {
+                data: null,
                 targets: 1,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -239,6 +243,7 @@ function ObtenerSemanas() {
                 },
             },
             {
+                data: null,
                 targets: 2,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -246,6 +251,7 @@ function ObtenerSemanas() {
                 },
             },
             {
+                data: null,
                 targets: 3,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -253,6 +259,7 @@ function ObtenerSemanas() {
                 },
             },
             {
+                data: null,
                 targets: 4,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -260,7 +267,16 @@ function ObtenerSemanas() {
                 },
             },
             {
+                data: null,
                 targets: 5,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return (full.Correlativo).toString().padStart(3, '0');
+                },
+            },
+            {
+                data: null,
+                targets: 6,
                 orderable: false,
                 render: function (data, type, full, meta) {
                    
@@ -268,7 +284,8 @@ function ObtenerSemanas() {
                 },
             },
             {
-                targets: 6,
+                data: null,
+                targets: 7,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     let dateI = new Date(full.FechaF);
@@ -276,7 +293,8 @@ function ObtenerSemanas() {
                 },
             },
             {
-                targets: 7,
+                data: null,
+                targets: 8,
                 orderable: false,
                 render: function (data, type, full, meta) {
                    
@@ -284,7 +302,8 @@ function ObtenerSemanas() {
                 },
             },
             {
-                targets:8,
+                data: null,
+                targets:9,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     if (full.Estado) {
@@ -337,7 +356,8 @@ function ObtenerDatosxID(Id) {
             $("#cboObra").val(dato.IdObra);
             $("#DateFechaInicial").val(formatear(dateI));
             $("#DateFechaFinal").val(formatear(dateF));
-            $("#txtFondo").val(FormatMiles( dato.Fondo));
+            $("#txtFondo").val(FormatMiles(dato.Fondo));
+            $("#txtCorrelativo").val(dato.Correlativo.toString().padStart(3, '0'))
             if (dato.Estado) {
                 $("#chkActivo").prop('checked', true);  
             } else {

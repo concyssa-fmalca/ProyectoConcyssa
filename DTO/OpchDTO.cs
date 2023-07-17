@@ -85,6 +85,11 @@ namespace DTO
         public string Moneda {get;set;}
 
         public IList<AnexoDTO> AnexoDetalle { get; set; }
+        public string NombUsuarioEdicion { get; set; }
+        public DateTime FechaEdicion { get; set; }
+        public string TablaOrigen { get; set; }
+        public string IdOrigen { get; set; }
+        public int IdDocExtorno { get; set; }
 
     }
 
@@ -142,6 +147,7 @@ namespace DTO
         public string NombCuadrilla { get; set; }
         public string NombResponsable { get; set; }
         public string TipoServicio { get; set; }
+        public int Resta { get; set; }
 
     }
 }

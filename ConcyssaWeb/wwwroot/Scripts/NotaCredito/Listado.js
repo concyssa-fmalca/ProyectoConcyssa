@@ -511,6 +511,7 @@ function ConsultaServidor(url) {
 
 
 function ModalNuevo() {
+    $("#btnEditar").hide()
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth() + 1).padStart(2, '0');
@@ -1012,6 +1013,8 @@ function AgregarLinea() {
         ObtenerEmpleadosxIdCuadrillaTabla(contador)
         $(".cboCuadrillaTabla").select2()
         $(".cboResponsableTabla").select2()
+        $("#cboCuadrillaTablaId").val($("#IdCuadrilla").val()).change()
+        $("#cboResponsableTablaId").val($("#IdResponsable").val()).change()
         LimpiarModalItem();
         NumeracionDinamica();
         $("#cboClaseArticulo").prop("disabled", true)
@@ -1040,7 +1043,7 @@ function CargarSeries() {
     $.ajaxSetup({ async: false });
     $.post("/Serie/ObtenerSeries", { estado: 1 }, function (data, status) {
         let series = JSON.parse(data);
-        llenarComboSerie(series, "cboSerie", "Seleccione")
+        llenarComboSerie(series, "cboSerie")
     });
 }
 
@@ -1653,7 +1656,28 @@ function GuardarSolicitud() {
             arrayTipoServicio.push($(elemento).val());
         });
 
+        for (var i = 0; i < arrayCboCuadrillaTabla.length; i++) {
+            if ($("#cboCuadrillaTablaId" + (i + 1)).val() == 0 || $("#cboCuadrillaTablaId" + (i + 1)).val() == null) {
+                Swal.fire(
+                    'Error!',
+                    'Complete el campo de Cuadrilla de la Fila N°' + (i + 1),
+                    'error'
+                )
+                return;
+            }
 
+        }
+        for (var i = 0; i < arrayCboCuadrillaTabla.length; i++) {
+            if ($("#cboResponsableTablaId" + (i + 1)).val() == 0 || $("#cboResponsableTablaId" + (i + 1)).val() == null) {
+                Swal.fire(
+                    'Error!',
+                    'Complete el campo de Responsable de la Fila N°' + (i + 1),
+                    'error'
+                )
+                return;
+            }
+
+        }
 
         //Cabecera
         let IdAlmacen = $("#cboAlmacen").val();
@@ -2134,6 +2158,7 @@ function GuardarSolicitud() {
         });
 
     }
+    validarseriescontable()
 }
 
 function limpiarDatos() {
@@ -2371,8 +2396,10 @@ function AgregarLineaDetalle(contador, detalle) {
     tr += `</select>
         </td>
 
-  <td><input class="form-control" value="`+ detalle.NombCuadrilla + `" disabled></input></td>
-        <td><input class="form-control" value="`+ detalle.NombResponsable +`" disabled></input></td>
+            <td><select class="form-control cboCuadrillaTabla" onchange="SeleccionarEmpleadosTabla(`+ contador + `)" id="cboCuadrillaTablaId` + contador + `"></select></td>
+            <td><select class="form-control cboResponsableTabla" id="cboResponsableTablaId`+ contador + `"></select></td>
+            <td style="display:none"><input style="200px" class="form-control txtIdNotaCreditoDetalle" value="`+ detalle.IdORPCDetalle +`" ></input></td>
+
 
 
 
@@ -2401,7 +2428,12 @@ function AgregarLineaDetalle(contador, detalle) {
 
     $("#tabla").find('tbody').append(tr);
     //$("#cboPrioridadDetalle" + contador).val(Prioridad);
-
+    ObtenerCuadrillasTabla(contador)
+    ObtenerEmpleadosxIdCuadrillaTabla(contador)
+    $(".cboCuadrillaTabla").select2()
+    $(".cboResponsableTabla").select2()
+    $("#cboCuadrillaTablaId" + contador).val(detalle.IdCuadrilla).change()
+    $("#cboResponsableTablaId" + contador).val(detalle.IdResponsable).change()
     NumeracionDinamica();
 
 
@@ -3867,6 +3899,8 @@ function listarOrpc() {
 
 
 function ObtenerDatosxIDORPC(IdOrpc) {
+
+    $("#btnEditar").show()
     $("#IdSemana").prop("disabled",true)
     $("#IdGiro").prop("disabled",true)
     $("#IdTipoRegistro").prop("disabled",true)
@@ -3937,7 +3971,17 @@ function ObtenerDatosxIDORPC(IdOrpc) {
             $("#cboAlmacen").val(movimiento.IdAlmacen);
             $("#IdProveedor").val(movimiento.IdProveedor).change();
 
+            if (movimiento.NombUsuarioEdicion == "") {
+                $("#NombUsuarioEdicion").html("-")
+            } else {
+                $("#NombUsuarioEdicion").html(movimiento.NombUsuarioEdicion)
+            }
 
+            if (movimiento.FechaEdicion == '1990-01-01T00:00:00') {
+                $("#EditedAt").html("-")
+            } else {
+                $("#EditedAt").html(movimiento.FechaEdicion.replace("T", " "))
+            }
 
             $("#CreatedAt").html(movimiento.CreatedAt.replace("T", " "));
             $("#NombUsuario").html(movimiento.NombUsuario);
@@ -3966,7 +4010,7 @@ function ObtenerDatosxIDORPC(IdOrpc) {
                 $("#cboIndicadorImpuestoDetalle" + i).val(Detalle[i].IdIndicadorImpuesto);
             }
 
-
+            $("#txtComentarios").html(movimiento.Comentario)
             $("#IdCuadrilla").val("")
             $("#IdResponsable").val("")
             //AnxoDetalle
@@ -3997,7 +4041,16 @@ function ObtenerDatosxIDORPC(IdOrpc) {
 
     });
     disabledmodal(true);
-
+    $("#cboTipoDocumentoOperacion").prop("disabled", true)
+    $("#IdTipoDocumentoRef").prop("disabled", true)
+    $("#SerieNumeroRef").prop("disabled", false)
+    $("#IdCuadrilla").prop("disabled", false)
+    $("#IdResponsable").prop("disabled", false)
+    $("#IdCondicionPago").prop("disabled", false)
+    $("#IdTipoRegistro").prop("disabled", false)
+    $("#IdSemana").prop("disabled", false)
+    $("#txtComentarios").prop("disabled", false)
+    validarseriescontable()
 }
 
 function ValidacionesCheckOPDN() {
@@ -4956,10 +5009,10 @@ function ObtenerCuadrillasTabla(contador) {
     $.ajaxSetup({ async: false });
     $.post("/Cuadrilla/ObtenerCuadrillaxIdObra", { 'IdObra': IdObra }, function (data, status) {
         let cuadrilla = JSON.parse(data);
-        llenarComboCuadrillaTabla(cuadrilla, "cboCuadrillaTablaId" + contador, "Seleccione")
+        llenarComboCuadrillaTabla(cuadrilla, "cboCuadrillaTablaId" + contador, "Seleccione",contador)
     });
 }
-function llenarComboCuadrillaTabla(lista, idCombo, primerItem) {
+function llenarComboCuadrillaTabla(lista, idCombo, primerItem, contador) {
     var contenido = "";
     if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
     var nRegistros = lista.length;
@@ -4982,11 +5035,11 @@ function ObtenerEmpleadosxIdCuadrillaTabla(contador) {
     $.ajaxSetup({ async: false });
     $.post("/Empleado/ObtenerEmpleadosPorUsuarioBase", function (data, status) {
         let empleados = JSON.parse(data);
-        llenarComboEmpleadosTabla(empleados, "cboResponsableTablaId" + contador, "Seleccione")
+        llenarComboEmpleadosTabla(empleados, "cboResponsableTablaId" + contador, "Seleccione", contador)
     });
 }
 
-function llenarComboEmpleadosTabla(lista, idCombo, primerItem) {
+function llenarComboEmpleadosTabla(lista, idCombo, primerItem, contador) {
     var contenido = "";
     if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
     var nRegistros = lista.length;
@@ -5010,15 +5063,15 @@ function SetCuadrillaTabla() {
     $(".cboCuadrillaTabla").val(SetCuadrilla).change()
 }
 function SeleccionarEmpleadosTabla(contador) {
-
+    let valorActual = $("#cboResponsableTablaId" + contador).val()
     $.ajaxSetup({ async: false });
     $.post("/Empleado/ObtenerEmpleadosPorUsuarioBase", function (data, status) {
         let empleados = JSON.parse(data);
-        llenarComboEmpleadosTablaFila(empleados, "cboResponsableTablaId" + contador, "Seleccione", contador)
+        llenarComboEmpleadosTablaFila(empleados, "cboResponsableTablaId" + contador, "Seleccione", contador, valorActual)
     });
 
 }
-function llenarComboEmpleadosTablaFila(lista, idCombo, primerItem, contador) {
+function llenarComboEmpleadosTablaFila(lista, idCombo, primerItem, contador, valorActual) {
     var contenido = "";
     if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
     var nRegistros = lista.length;
@@ -5034,14 +5087,18 @@ function llenarComboEmpleadosTablaFila(lista, idCombo, primerItem, contador) {
     $("#cboResponsableTablaId" + contador).html(contenido)
 
 
-    ObtenerCapatazTablaFila(contador)
+    ObtenerCapatazTablaFila(contador, valorActual)
 }
-function ObtenerCapatazTablaFila(contador) {
+function ObtenerCapatazTablaFila(contador, valorActual) {
     let IdCuadrillaFila = $("#cboCuadrillaTablaId" + contador).val();
     /* setTimeout(() => {*/
     $.post("/Empleado/ObtenerCapatazXCuadrilla", { 'IdCuadrilla': IdCuadrillaFila }, function (data, status) {
-        let capataz = JSON.parse(data);
-        $("#cboResponsableTablaId" + contador).val(capataz[0].IdEmpleado).change();
+        try {
+            let capataz = JSON.parse(data);
+            $("#cboResponsableTablaId" + contador).val(capataz[0].IdEmpleado).change();
+        } catch (e) {
+            $("#cboResponsableTablaId" + contador).val(valorActual).change();
+        }
     })
     /*}, 1000);*/
 
@@ -5049,4 +5106,98 @@ function ObtenerCapatazTablaFila(contador) {
 function SetearEmpleadosEnTabla() {
     $(".cboResponsableTabla").val($("#IdResponsable").val()).change();
 
+}
+function Editar() {
+    let varIdORPC = $("#txtId").val();
+    let varTipoDocumentoOperacion = $("#cboTipoDocumentoOperacion").val();
+    let varIdTipoDocumentoRef = $("#IdTipoDocumentoRef").val();
+    let varNumSerieTipoDocumentoRef = $("#SerieNumeroRef").val();
+    let varIdCondicionPago = $("#IdCondicionPago").val();
+    let varIdTipoRegistro = $("#IdTipoRegistro").val();
+    let varIdSemana = $("#IdSemana").val();
+    let varComentario = $("#txtComentarios").val();
+
+    //let varIdCuadrilla = $("#IdCuadrilla").val();
+    //let varIdResponsable = $("#IdResponsable").val();
+
+    let arrayCboCuadrillaTabla = new Array();
+    $(".cboCuadrillaTabla").each(function (indice, elemento) {
+        arrayCboCuadrillaTabla.push($(elemento).val());
+    });
+
+    let arrayCboResponsableTabla = new Array();
+    $(".cboResponsableTabla").each(function (indice, elemento) {
+        arrayCboResponsableTabla.push($(elemento).val());
+    });
+    let arraytxtIdNotaCreditoDetalle = new Array();
+    $(".txtIdNotaCreditoDetalle").each(function (indice, elemento) {
+        arraytxtIdNotaCreditoDetalle.push($(elemento).val());
+    });
+
+
+
+    for (var i = 0; i < arrayCboCuadrillaTabla.length; i++) {
+        if ($("#cboCuadrillaTablaId" + i).val() == 0 || $("#cboCuadrillaTablaId" + i).val() == null) {
+            Swal.fire(
+                'Error!',
+                'Complete el campo de Cuadrilla de la Fila N°' + (i + 1),
+                'error'
+            )
+            return;
+        }
+
+    }
+    for (var i = 0; i < arrayCboCuadrillaTabla.length; i++) {
+        if ($("#cboResponsableTablaId" + i).val() == 0 || $("#cboResponsableTablaId" + i).val() == null) {
+            Swal.fire(
+                'Error!',
+                'Complete el campo de Responsable de la Fila N°' + (i + 1),
+                'error'
+            )
+            return;
+        }
+
+    }
+
+
+    $.post('UpdateORPC', {
+        'IdORPC': varIdORPC,
+        'IdTipoDocumentoRef': varIdTipoDocumentoRef,
+        'NumSerieTipoDocumentoRef': varNumSerieTipoDocumentoRef,
+        'Comentario': varComentario,
+        'IdTipoDocumento': varTipoDocumentoOperacion,
+        'IdCondicionPago': varIdCondicionPago,
+        'IdTipoRegistro': varIdTipoRegistro,
+        'IdSemana': varIdSemana,
+
+    }, function (data, status) {
+
+        if (data != 0) {
+            for (var i = 0; i < arraytxtIdNotaCreditoDetalle.length; i++) {
+                $.post('UpdateCuadrillas', {
+                    'IdORPCDetalle': arraytxtIdNotaCreditoDetalle[i],
+                    'IdCuadrilla': arrayCboCuadrillaTabla[i],
+                    'IdResponsable': arrayCboResponsableTabla[i],
+
+                }, function (data, status) {
+                    if (data != 0) {
+                        swal("Exito!", "Proceso Realizado Correctamente", "success")
+                        CerrarModal()
+                        listarOrpc()
+                    } else {
+                        swal("Error!", "Ocurrio un Error")
+                        CerrarModal()
+                    }
+
+                });
+
+
+
+            }
+        } else {
+            swal("Error!", "Ocurrio un Error")
+            CerrarModal()
+        }
+
+    });
 }

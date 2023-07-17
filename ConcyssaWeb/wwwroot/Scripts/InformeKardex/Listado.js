@@ -17,6 +17,23 @@ let DecimalesCantidades = 0;
 let DecimalesPorcentajes = 0;
 
 
+function getCurrentDate() {
+    var currentDate = new Date();
+    var year = currentDate.getFullYear();
+    var month = ('0' + (currentDate.getMonth() + 1)).slice(-2);
+    var formattedDate = year + '-' + month + '-' + '01';
+    return formattedDate;
+}
+function getCurrentDateFinal() {
+    var date = new Date();
+
+    var ultimoDia = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    var year = date.getFullYear();
+    var month = ('0' + (date.getMonth() + 1)).slice(-2);
+    var formattedDate = year + '-' + month + '-' + ultimoDia.getDate();
+    return formattedDate
+}
+
 function formatNumber(num) {
     if (!num || num == 'NaN') return '-';
     if (num == 'Infinity') return '&#x221e;';
@@ -42,7 +59,8 @@ window.onload = function () {
     CargarAlmacen();
     $("#IdArticulo").select2();
     $("#IdAlmacen").select2();
-
+    $("#FechaInicio").val(getCurrentDate())
+    $("#FechaTermino").val(getCurrentDateFinal())
 
     //tablekardex = $("#table_id").dataTable();
 
@@ -199,11 +217,17 @@ function ListarDatatableKardexDT(url, IdArticulo, IdAlmacen, FechaInicio, FechaT
    
 
     tablekardex = $('#table_id').dataTable({
-        language: lenguaje_data,
+        language: {
+            lenguaje_data,
+            loadingRecords: "No se Encontraron datos para este Artículo",
+        },
         responsive: true,
         ajax: {
             url: url,
             type: 'POST',
+            error: function (xhr, status, error) {
+                console.error(error);
+            },
             data: {
                 'IdArticulo': IdArticulo,
                 'IdAlmacen': IdAlmacen,
@@ -211,7 +235,7 @@ function ListarDatatableKardexDT(url, IdArticulo, IdAlmacen, FechaInicio, FechaT
                 'FechaTermino': FechaTermino,
                 pagination: {
                     perpage: 50,
-                },
+                },                
             },
         },
 

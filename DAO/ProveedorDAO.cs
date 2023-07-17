@@ -433,5 +433,35 @@ namespace DAO
                 }
             }
         }
+        public int UpdateCondicionPagoProveedor(ProveedorDTO proveedorDTO)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_UpdateCondicionPagoProveedor", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdProveedor", proveedorDTO.IdProveedor);
+                        da.SelectCommand.Parameters.AddWithValue("@IdCondicionPago", proveedorDTO.CondicionPago);                      
+                        //int rpta = da.SelectCommand.ExecuteNonQuery();
+                        int rpta = Convert.ToInt32(da.SelectCommand.ExecuteNonQuery());
+                        transactionScope.Complete();
+
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        return 0;
+                    }
+                }
+            }
+        }
     }
 }

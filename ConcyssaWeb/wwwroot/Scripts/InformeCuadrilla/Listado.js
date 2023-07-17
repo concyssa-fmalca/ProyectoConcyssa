@@ -229,9 +229,7 @@ function QuitarTodasCuadrillas() {
         $("#cboCuadrillaSeleccionada").empty();
     }
 }
-
 function GenerarReporte() {
-
     // Obtiene todos los elementos del select "llenar"
     var elementos = $("#cboCuadrillaSeleccionada option");
 
@@ -281,27 +279,88 @@ function GenerarReporte() {
         swal("Error!", "Seleccione al menos una Casilla de la Sección 'Incluir'")
         return;
     }
-
-    $.ajaxSetup({ async: false });
-    $.post("GenerarReporte", {                                                                                                                                    
-        'NombreReporte': 'InformeCuadrillas', 'Formato': 'PDF', 'Cuadrillas': varCuadrillasRPT, 'Materiales': varMaterialesRPT, 'Auxiliares': varAuxiliaresRPT, 'Servicios': varServiciosRPT, 'Extornos': varExtornosRPT, 'FechaInicioS': varFechaInicioRPT, 'FechaFin': varFechaFinRPT
-    },
-        
-        function (data, status) {
-        let datos;
-        if (validadJson(data)) {
-            let datobase64;
-            datobase64 = "data:application/octet-stream;base64,"
-            datos = JSON.parse(data);
-            //datobase64 += datos.Base64ArchivoPDF;
-            //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
-            //$("#reporteRPT").attr("href", datobase64);
-            //$("#reporteRPT")[0].click();
-            verBase64PDF(datos)
-        } else {
-            console.log("error");
-        }
+    Swal.fire({
+        title: "Generando Reporte...",
+        text: "Por favor espere",
+        showConfirmButton: false,
+        allowOutsideClick: false
     });
+    setTimeout(() => {
+        $.ajax({
+            url: "GenerarReporte",
+            type: "POST",
+            async: false,
+            data: {
+                'NombreReporte': 'InformeCuadrillas', 'Formato': 'PDF', 'Cuadrillas': varCuadrillasRPT, 'Materiales': varMaterialesRPT, 'Auxiliares': varAuxiliaresRPT, 'Servicios': varServiciosRPT, 'Extornos': varExtornosRPT, 'FechaInicioS': varFechaInicioRPT, 'FechaFin': varFechaFinRPT
+            },
+            beforeSend: function () {
+                Swal.fire({
+                    title: "Cargando...",
+                    text: "Por favor espere",
+                    showConfirmButton: false,
+                    allowOutsideClick: false
+                });
+            },
+            success: function (data) {
+                Swal.fire({
+                    title: "Cargando...",
+                    text: "Por favor espere",
+                    showConfirmButton: false,
+                    allowOutsideClick: false
+                });
+                let datos;
+                if (validadJson(data)) {
+                    let datobase64;
+                    datobase64 = "data:application/octet-stream;base64,"
+                    datos = JSON.parse(data);
+                    //datobase64 += datos.Base64ArchivoPDF;
+                    //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
+                    //$("#reporteRPT").attr("href", datobase64);
+                    //$("#reporteRPT")[0].click();
+                
+                    verBase64PDF(datos)
+                    Swal.fire(
+                        'Correcto',
+                        'Reporte Generado Correctamente',
+                        'success'
+                    )
+                } else {
+                    console.log("error");
+                }
+
+            },
+            error: function () {
+                Swal.fire(
+                    'Error!',
+                    'Comunicarse con el Area Soporte: smarcode@smartcode.pe !',
+                    'error'
+                )
+            }
+        });
+
+    },100)
+
+
+    //$.ajaxSetup({ async: false });
+    //$.post("GenerarReporte", {                                                                                                                                    
+    //    'NombreReporte': 'InformeCuadrillas', 'Formato': 'PDF', 'Cuadrillas': varCuadrillasRPT, 'Materiales': varMaterialesRPT, 'Auxiliares': varAuxiliaresRPT, 'Servicios': varServiciosRPT, 'Extornos': varExtornosRPT, 'FechaInicioS': varFechaInicioRPT, 'FechaFin': varFechaFinRPT
+    //},
+        
+    //    function (data, status) {
+    //    let datos;
+    //    if (validadJson(data)) {
+    //        let datobase64;
+    //        datobase64 = "data:application/octet-stream;base64,"
+    //        datos = JSON.parse(data);
+    //        //datobase64 += datos.Base64ArchivoPDF;
+    //        //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
+    //        //$("#reporteRPT").attr("href", datobase64);
+    //        //$("#reporteRPT")[0].click();
+    //        verBase64PDF(datos)
+    //    } else {
+    //        console.log("error");
+    //    }
+    //});
 }
 
 function verBase64PDF(datos) {

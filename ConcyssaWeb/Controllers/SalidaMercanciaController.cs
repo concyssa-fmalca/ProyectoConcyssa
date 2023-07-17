@@ -121,6 +121,7 @@ namespace ConcyssaWeb.Controllers
                 oMovimientoDTO.IdTipoDocumento = 335;
                 oMovimientoDTO.Comentario = "EXTORNO DEL SALIDA " + oMovimientoDTO.NombSerie + "-" + +oMovimientoDTO.Correlativo;
                 oMovimientoDTO.IdMovimiento = 0;
+                oMovimientoDTO.IdSerie = 20006;
                 //for (int i = 0; i < oMovimientoDTO.detalles.Count; i++)
                 //{
                 //    oMovimientoDTO.detalles[i].IdMovimientoDetalle = 0;

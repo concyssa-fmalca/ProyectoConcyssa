@@ -101,6 +101,7 @@
                         <th>#</th>
                         <th>Fecha Documento</th>
                         <th>Tipo Documento</th>
+                        <th>Num OC/OS</th>
                         <th>Proveedor</th>
                         <th>Numero de Entrega</th>
                         <th>Serie y Numero</th>
@@ -383,7 +384,7 @@
                                                 <th style="width:140px">Cantidad Pedida</th>
                                                 <th>Precio Unitario</th>
                                                 <th>Indicador de Impuestos</th>
-                                                <th>Cuadrilla</th>
+                                                <th>Centro de Costo</th>
                                                 <th>Responsable</th>
                                                 <th>Total</th>
                                                 <th style="display:none">Almacen</th>
@@ -530,10 +531,10 @@
                                     <hr style="margin: 0px 0px 5px 0px" />
                                     <p>Serie y Numero:  <input id="SerieNumeroRef" type="text" class="form-control huser-20" tabindex="16"> </p>
                                     <hr style="margin: 0px 0px 5px 0px" />
-
+                                    <div style="display:none">
                                     <p class="ocultarDiv">
                                         Cuadrilla:
-                                        <select style="height: 20px" id="IdCuadrilla" type="text" class="form-control input-sm" tabindex="0" onchange="SetCuadrillaTabla();ObtenerEmpleadosxIdCuadrilla()">
+                                        <select style="height: 20px" id="IdCuadrillaOLD" type="text" class="form-control input-sm" tabindex="0" onchange="SetCuadrillaTabla();ObtenerEmpleadosxIdCuadrilla()">
                                             <option value="0">SELECCIONE CUADRILLAS </option>
                                         </select>
                                     </p>
@@ -541,10 +542,11 @@
 
                                     <p class="ocultarDiv">
                                         Responsable:
-                                        <select style="height: 20px" id="IdResponsable" type="text" class="form-control input-sm" tabindex="0" onchange="SetearEmpleadosEnTabla()">
+                                        <select style="height: 20px" id="IdResponsableOLD" type="text" class="form-control input-sm" tabindex="0" onchange="SetearEmpleadosEnTabla()">
                                             <option value="0">SELECCIONE Responsable </option>
                                         </select>
                                     </p>
+                                    </div>
                                     <hr style="margin: 0px 0px 5px 0px" />
                                     <select style="height: 20px;display:none" id="IdCondicionPago" type="text" class="form-control input-sm" tabindex="0">
                                             <option value="1"> - Condicion Pago - </option>
@@ -575,6 +577,8 @@
                     <p style="margin: 0px 0px 0px 0px">TOTAL DE ITEMS:  <span id="total_items"></span> </p>
                     <p style="margin: 0px 0px 0px 0px">USUARIO: <span id="NombUsuario"></span> </p>
                     <p style="margin: 0px 0px 0px 0px">FECHA DE  CREACION: <span id="CreatedAt"></span> </p>
+                    <p style="margin: 0px 0px 0px 0px">FECHA DE  EDICION: <span id="EditedAt"></span> </p>
+                    <p style="margin: 0px 0px 0px 0px">EDITADO POR: <span id="NombUsuarioEdicion"></span> </p>
                 </div>
 
                 <div class="col-sm-6">
@@ -591,9 +595,11 @@
                             </ul>
                         </div>
 
+                        <button type="button" id="btnEditar" onclick="Editar()" class="btn btn-primary pull-right plu">Grabar</button>
                         <button type="button" id="btnNuevo" onclick="nuevo()" class="btn btn-primary pull-right plu">Nuevo</button>
+                        <button type="button" id="btnExtorno" onclick="Extornar()" class="btn btn-primary pull-right plu">Extornar</button>
                         <button type="button" id="btnGrabar" onclick="GuardarSolicitud()" class="btn btn-primary pull-right plu">Crear</button>
-                        <button type="button" id="btnCancelar" onclick="CerrarModal()" class="btn btn-danger pull-right" style="background-color:orange;">Cancelar</button>
+                        <button type="button" id="btnCancelar" onclick="CerrarModal()" class="btn btn-danger pull-right" style="background-color:orange;">Cerrar</button>
                     </div>
                 </div>
             </div>
@@ -713,26 +719,48 @@
                                             <input id="txtPrecioUnitarioItem" type="text" class="form-control input-sm" tabindex="4">
                                         </div>
                                     </div>
-
-                                </div>
-                                <div class="row">
-
-                                    <div class='form-group-sm'>
-                                        <label for="txtStockAlmacenItem" class="control-label col-sm-2 left-align">Stock en Almacen</label>
-                                        <div class="col-sm-4">
-                                            <input id="txtStockAlmacenItem" type="text" class="form-control input-sm" tabindex="5" disabled>
-                                        </div>
-                                    </div>
-
-                                    <div class='form-group-sm'>
+                                      <div class='form-group-sm'>
                                         <label for="txtCantidadItem" class="control-label col-sm-2 left-align">Cantidad</label>
                                         <div class="col-sm-4">
                                             <input id="txtCantidadItem" max="5" type="number" class="form-control input-sm" tabindex="6" onkeyup="ValidarDecimalesCantidades('txtCantidadItem')">
                                         </div>
                                     </div>
-
-
                                 </div>
+                                <div class="row">
+
+                                    <div class='form-group-sm'>
+                                        <label id="lblStockItem" for="txtStockAlmacenItem" class="control-label col-sm-2 left-align">Stock en Almacen</label>
+                                        <div class="col-sm-4">
+                                            <input id="txtStockAlmacenItem" type="text" class="form-control input-sm" tabindex="5" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+
+                                    <div class='form-group-sm'>
+                                        <label id="lblStockItem" for="IdCuadrilla" class="control-label col-sm-2 left-align">Centro de Costo</label>
+                                        <div class="col-sm-10">
+                                            <select id="IdCuadrilla" type="text" class="form-control input-sm" tabindex="0" onchange="ObtenerEmpleadosxIdCuadrilla()">
+                                            <option value="0">SELECCIONE CUADRILLAS </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+
+                                    <div class='form-group-sm'>
+                                        <label id="lblStockItem" for="IdResponsable" class="control-label col-sm-2 left-align">Responsable</label>
+                                        <div class="col-sm-10">
+                                           <select id="IdResponsable" type="text" class="form-control input-sm" tabindex="0">
+                                            <option value="0">SELECCIONE Responsable </option>
+                                        </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+
+
+
 
 
                                 <div class="row" style="display:none">

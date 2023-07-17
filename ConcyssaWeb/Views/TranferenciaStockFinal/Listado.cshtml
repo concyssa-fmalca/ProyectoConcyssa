@@ -132,7 +132,7 @@
                 <div class='col s12 m12 '>
                     <div class='container-fluid row'>
                        
-                        <div class='form-horizontal col-10 col-sm-10'>
+                        <div class='form-horizontal col-10 col-sm-12'>
                             <div class="form-group-sm" style="display:none;">
                                 <input placeholder='' id='txtId' type='text' style="display:none;">
                                 @*<input placeholder='' id='txtEstado' type='text' style="display:none;">*@
@@ -421,17 +421,27 @@
                                 </div>
 
                                 <div class='form-group-sm'>
-                                    <label for="txtComentarios" class="control-label col-sm-2 left-align">Comentarios</label>
+                                    <label for="txtComentarios" class="control-label col-sm-2 left-align">Comentarios del envío</label>
                                     <div class="col-sm-4">
                                         @*<input id="txtComentarios" type="date" class="form-control input-sm" tabindex="14">*@
                                         <textarea class="form-control" id="txtComentarios" name="txtComentarios" rows="5" cols="30" tabindex="14"></textarea>
                                     </div>
                                 </div>
+                                
+
 
                                 <div class='form-group-sm' style="display:none">
                                     <label for="txtTotalAntesDescuento" class="control-label col-sm-2 left-align">Sub Total</label>
                                     <div class="col-sm-4">
                                         <input id="txtTotalAntesDescuento" type="number" class="form-control input-sm" tabindex="12" disabled>
+                                    </div>
+                                </div>
+
+                                <div class='form-group-sm'>
+                                    <label for="txtComentariosAceptar" class="control-label col-sm-2 left-align">Comentarios de la Recepción</label>
+                                    <div class="col-sm-4">
+                                        @*<input id="txtComentarios" type="date" class="form-control input-sm" tabindex="14">*@
+                                        <textarea class="form-control" id="txtComentariosAceptar" name="txtComentariosAceptar" rows="5" cols="30" tabindex="14"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -441,7 +451,7 @@
                                     <div class="col-sm-6">
                                     </div>
                                 </div>
-
+                             
                                 <div class='form-group-sm' style="display:none">
                                     <label for="txtImpuesto" class="control-label col-sm-2 left-align">Impuesto</label>
                                     <div class="col-sm-4">
@@ -469,7 +479,7 @@
 
                         </div>
 
-                        <div class='form-horizontal col-2 col-sm-2' >
+                        <div class='form-horizontal col-2 col-sm-2' style="display:none">
                             
                             <div class="row"  id="global" style="font-size:10px">
                                 <div class='container-fluid' id="mensajes">

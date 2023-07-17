@@ -100,7 +100,7 @@ function llenarComboObra(lista, idCombo, primerItem) {
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
-    $("#cboObraFiltro").prop("selectedIndex", 0);
+    $("#cboObraFiltro").prop("selectedIndex", 1);
     ConsultaServidor()
 }
 
@@ -160,7 +160,7 @@ function ConsultaServidor() {
 
 
 function ObtenerDatosxID(IdMovimiento) {
-
+    
     validarGuardado = 0;
 
     $("#txtId").val(IdMovimiento)
@@ -230,7 +230,7 @@ function ObtenerDatosxID(IdMovimiento) {
             $("#NumIdentidadConductor").val(movimiento.NumIdentidadConductor)
             $("#Peso").val(movimiento.Peso)
             $("#Bulto").val(movimiento.Bulto)
-
+            $("#txtComentarios").html(movimiento.Comentario)
             $("#cboTipoDocumentoOperacion").val(333)
 
             if (movimiento.existeObraDestinoUsuario == 0) {
@@ -282,7 +282,6 @@ function ObtenerDatosxID(IdMovimiento) {
     disabledmodal(true);
     BloquearDatos()
 
-    
 
 
 }
@@ -690,7 +689,7 @@ function GuardarSolicitud() {
     let FechaContabilizacion = $("#txtFechaContabilizacion").val();
     let FechaDocumento = $("#txtFechaDocumento").val();
     let IdCentroCosto = $("#cboCentroCosto").val();
-    let Comentario = $("#txtComentarios").val();
+    let Comentario = $("#txtComentariosAceptar").val();
     let SubTotal = $("#txtTotalAntesDescuento").val();
     let Impuesto = $("#txtImpuesto").val();
     let Total = $("#txtTotal").val();

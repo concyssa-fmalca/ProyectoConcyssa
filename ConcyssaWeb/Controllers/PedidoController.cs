@@ -768,5 +768,79 @@ Favor de prever lo mencionado para no generar demoras en la logística.
         }
 
 
+        public string CerrarPedido(PedidoDTO oPedidoDTO)
+        {
+
+            string mensaje_error = "";
+            PedidoDAO oPedidoDAO = new PedidoDAO();
+            int respuesta = oPedidoDAO.CerrarPedido(oPedidoDTO, ref mensaje_error);
+
+            if (mensaje_error.Length > 0)
+            {
+                return mensaje_error;
+            }
+            else
+            {
+                if (respuesta == 1)
+                {
+                    return "1";
+                }
+                else
+                {
+                    return "error";
+                }
+            }
+
+        }
+        public string LiberarPedido(PedidoDTO oPedidoDTO)
+        {
+
+            string mensaje_error = "";
+            PedidoDAO oPedidoDAO = new PedidoDAO();
+            int respuesta = oPedidoDAO.LiberarPedido(oPedidoDTO, ref mensaje_error);
+
+            if (mensaje_error.Length > 0)
+            {
+                return mensaje_error;
+            }
+            else
+            {
+                if (respuesta == 1)
+                {
+                    return "1";
+                }
+                else
+                {
+                    return "error";
+                }
+            }
+
+        }
+        public string AnularPedido(PedidoDTO oPedidoDTO)
+        {
+
+            string mensaje_error = "";
+            PedidoDAO oPedidoDAO = new PedidoDAO();
+            int respuesta = oPedidoDAO.AnularPedido(oPedidoDTO, ref mensaje_error);
+
+            if (mensaje_error.Length > 0)
+            {
+                return mensaje_error;
+            }
+            else
+            {
+                if (respuesta == 1)
+                {
+                    return "1";
+                }
+                else
+                {
+                    return "error";
+                }
+            }
+
+        }
+
+
     }
 }

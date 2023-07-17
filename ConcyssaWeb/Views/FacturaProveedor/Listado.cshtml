@@ -214,7 +214,23 @@
                                         <select id="cboMoneda" type="text" class="form-control input-sm" tabindex="3" onchange="ValidarMonedaBase()" disabled></select>
                                     </div>
                                 </div>
+                                <div id="Origenes">
+                                <div class='form-group-sm'>
+                                    @*<label for="cboMoneda" class="control-label col-sm-2 left-align">Tipo de Cambio</label>*@
+                                  
+                                    <div class="col-sm-4">
+                                        <input id="txtOrigen" type="text" class="form-control input-sm"   disabled></input>
+                                    </div>
+                                </div>
 
+                                <div class='form-group-sm'>
+                                    @*<label for="cboMoneda" class="control-label col-sm-2 left-align">Tipo de Cambio</label>*@
+                                
+                                    <div class="col-sm-4">
+                                        <input id="txtOrigenId" type="text" class="form-control input-sm"   disabled></input>
+                                    </div>
+                                </div>
+                                </div>
                             </div>
 
 
@@ -389,7 +405,7 @@
                                
                                                 <th id="PrecioEditar">Precio Unitario</th>
                                                 <th>Indicador de Impuestos</th>
-                                                <th style="min-width:200px">Cuadrilla</th>
+                                                <th style="min-width:200px">Centro de Costo</th>
                                                 <th style="min-width:200px">Responsable</th>
                                                 <th>Total</th>
                                                 <th style="display:none">Almacen</th>
@@ -551,10 +567,10 @@
                                     <hr style="margin: 0px 0px 5px 0px" />
                                     <p>Serie y Numero:  <input id="SerieNumeroRef" type="text" class="form-control huser-20" tabindex="16"> </p>
                                     <hr style="margin: 0px 0px 5px 0px" />
-
+                                    <div style="display:none">
                                     <p>
                                         Cuadrilla:
-                                        <select style="height: 20px" id="IdCuadrilla" type="text" class="form-control input-sm" tabindex="0" onchange="SetCuadrillaTabla();ObtenerEmpleadosxIdCuadrilla()">
+                                        <select style="height: 20px" id="IdCuadrillaOLD" type="text" class="form-control input-sm" tabindex="0" onchange="SetCuadrillaTabla();ObtenerEmpleadosxIdCuadrilla()">
                                             <option value="0">SELECCIONE CUADRILLAS </option>
                                         </select>
                                     </p>
@@ -562,12 +578,12 @@
 
                                     <p>
                                         Responsable:
-                                        <select style="height: 20px" id="IdResponsable" type="text" class="form-control input-sm" tabindex="0" onchange="SetearEmpleadosEnTabla()">
+                                        <select style="height: 20px" id="IdResponsableOLD" type="text" class="form-control input-sm" tabindex="0" onchange="SetearEmpleadosEnTabla()">
                                             <option value="0">SELECCIONE Responsable </option>
                                         </select>
                                     </p>
                                     <hr style="margin: 0px 0px 5px 0px" />
-
+                                    </div>
                                     <p>
                                         Forma de Pago:
                                         <select style="height: 20px" id="IdCondicionPago" type="text" class="form-control input-sm" tabindex="0">
@@ -619,6 +635,8 @@
                     <p style="margin: 0px 0px 0px 0px">TOTAL DE ITEMS:  <span id="total_items"></span> </p>
                     <p style="margin: 0px 0px 0px 0px">USUARIO: <span id="NombUsuario"></span> </p>
                     <p style="margin: 0px 0px 0px 0px">FECHA DE  CREACION: <span id="CreatedAt"></span> </p>
+                      <p style="margin: 0px 0px 0px 0px">FECHA DE  EDICION: <span id="EditedAt"></span> </p>
+                    <p style="margin: 0px 0px 0px 0px">EDITADO POR: <span id="NombUsuarioEdicion"></span> </p>
                 </div>
 
                 <div class="col-sm-6" >
@@ -638,6 +656,8 @@
 
                     
                         <button type="button" id="btnGrabar" onclick="GuardarSolicitud()" class="btn btn-primary pull-right plu">Crear</button>
+                        <button type="button" id="btnEditar" onclick="Editar()" class="btn btn-primary pull-right plu">Grabar</button>
+                        <button type="button" id="btnExtornar" onclick="Extornar()" class="btn btn-primary pull-right plu">Extornar</button>
                         <button type="button" id="btnCancelar" onclick="CerrarModal()" class="btn btn-danger pull-right" style="background-color:orange;">Cerrar</button>
                     </div>
                 </div>
@@ -786,10 +806,32 @@
                                         </div>
                                     </div>
 
+
                                 </div>
 
                          
-                   
+                                    <div class="row">
+
+                                        <div class='form-group-sm'>
+                                            <label id="lblStockItem" for="IdCuadrilla" class="control-label col-sm-2 left-align">Centro de Costo</label>
+                                            <div class="col-sm-10">
+                                                <select id="IdCuadrilla" type="text" class="form-control input-sm" tabindex="0" onchange="ObtenerEmpleadosxIdCuadrilla()">
+                                                <option value="0">SELECCIONE CUADRILLAS </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+
+                                        <div class='form-group-sm'>
+                                            <label id="lblStockItem" for="IdResponsable" class="control-label col-sm-2 left-align">Responsable</label>
+                                            <div class="col-sm-10">
+                                               <select id="IdResponsable" type="text" class="form-control input-sm" tabindex="0">
+                                                <option value="0">SELECCIONE Responsable </option>
+                                            </select>
+                                            </div>
+                                        </div>
+                                    </div>
 
 
                                 <div class="row" style="display:none">
@@ -1294,6 +1336,53 @@
             </div>
         </div>
     </div>
+
+      <!-- Modal Docs Origen-->
+    <div class="modal fade" data-backdrop="static"
+         data-keyboard="false" id="ModalDocsOrigen" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered allcp-form" style="margin-top:120px" role="document">
+            <div class="modal-content">
+
+
+                <div class="panel" style="margin-bottom:0px">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="lblTituloModalDocsOrigen">Anexos</h5>
+                    </div>
+                    <div class="panel-body ">
+                        <div class='col s12 m12 '>
+                            <div class='container-fluid'>
+
+
+                                <div class="table-responsive">
+                                    <table class="table" id="tabla_DocsOrigen">
+                                        <thead>
+                                            <tr>
+                                                <th>Origen</th>
+                                                <th>Nro Doc</th>
+                                                <th>Ver Reporte</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbody_ModalDocsOrigen"></tbody>
+                                    </table>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger pull-right" style="background-color:orange;" data-dismiss="modal" >Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
    @* MODAL PROVEEDOR*@
     <div class="modal fade" data-backdrop="static"
          data-keyboard="false" id="ModalProveedores" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
