@@ -434,8 +434,8 @@ function SeleccionarItemListado() {
 function ListarStockTodasObras(IdArticulo) {
     $.post("/Articulo/ObtenerArticulosConStockObras", { 'IdArticulo': IdArticulo }, function (data, status) {
 
-        //console.log(data);
-        if (data == "error") {
+        console.log(data);
+        if (data == "error" || data=="") {
             tableStock = $("#table_id").DataTable(lenguaje);
             return;
         }
@@ -451,7 +451,7 @@ function ListarStockTodasObras(IdArticulo) {
                 '<td></td>' +
                 '<td>' + area[i].Descripcion1 + '</td>' +
                 '<td>' + area[i].Obra + '</td>' +
-                '<td>' + area[i].Almacen + '</td>' +
+                //'<td>' + area[i].Almacen + '</td>' +
                 '<td>' + area[i].Stock + '</td>' +
                 '</tr>';
         }
@@ -659,7 +659,7 @@ function AgregarLinea() {
 
 
     var newRow1 = $(`<tr>`).
-        append(`<td></td>`).
+        /*append(`<td></td>`).*/
         append(`<td></td>`).
         append(`<td>` + CodigoItem + `
                     <input  input style="display:none;" class="form-control omitir" type="text" value="0" id="txtIdSolicitudDespachoDetalle" name="txtIdSolicitudDespachoDetalle[]"/>
@@ -692,7 +692,7 @@ function AgregarLinea() {
 
 
     
-    NumeracionDinamica();
+    //NumeracionDinamica();
     LimpiarModalItem();
     
 
@@ -1116,7 +1116,7 @@ function AgregarLineaDetalle(Id, CodigoArticulo, IdItem, Descripcion, Cantidad, 
 
  
     var newRow1 = $(`<tr>`).
-        append(`<td></td>`).
+        /*append(`<td></td>`).*/
         append(`<td></td>`).
         append(`<td>` + CodigoArticulo + `
                 <input input style="display:none;" class="form-control omitir" type="text" value="`+ Id + `" id="txtIdSolicitudDespachoDetalle" name="txtIdSolicitudDespachoDetalle[]"/>
@@ -1140,7 +1140,7 @@ function AgregarLineaDetalle(Id, CodigoArticulo, IdItem, Descripcion, Cantidad, 
 
     tt.row.add(newRow1).draw();
 
-    NumeracionDinamica();
+    //NumeracionDinamica();
 
 
 }
