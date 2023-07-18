@@ -262,11 +262,11 @@ namespace FE
             try
             {
                 //C:\Users\Dell\Documents\GitHub\ProyectoConcyssa\ConcyssaWeb\wwwroot\Archivos
-                //File.WriteAllBytes(@"C:\SMC\Binario\ProyectoConcyssa\wwwroot\Archivos\" + gr.N_DOC + ".pdf", Convert.FromBase64String(pdf1));
-                //File.WriteAllBytes(@"C:\SMC\Binario\ProyectoConcyssa\wwwroot\Archivos\" + gr.N_DOC + ".xml", Convert.FromBase64String(xml1));
+                File.WriteAllBytes(@"C:\SMC\Binario\ProyectoConcyssa\wwwroot\Archivos\" + gr.N_DOC + ".pdf", Convert.FromBase64String(pdf1));
+                File.WriteAllBytes(@"C:\SMC\Binario\ProyectoConcyssa\wwwroot\Archivos\" + gr.N_DOC + ".xml", Convert.FromBase64String(xml1));
 
-                File.WriteAllBytes(@"C:\Users\Dell\Documents\GitHub\ProyectoConcyssa\ConcyssaWeb\wwwroot\Archivos\" + gr.N_DOC + ".pdf", Convert.FromBase64String(pdf1));
-                File.WriteAllBytes(@"C:\Users\Dell\Documents\GitHub\ProyectoConcyssa\ConcyssaWeb\wwwroot\Archivos\" + gr.N_DOC + ".xml", Convert.FromBase64String(xml1));
+                //File.WriteAllBytes(@"C:\Users\Dell\Documents\GitHub\ProyectoConcyssa\ConcyssaWeb\wwwroot\Archivos\" + gr.N_DOC + ".pdf", Convert.FromBase64String(pdf1));
+                //File.WriteAllBytes(@"C:\Users\Dell\Documents\GitHub\ProyectoConcyssa\ConcyssaWeb\wwwroot\Archivos\" + gr.N_DOC + ".xml", Convert.FromBase64String(xml1));
 
                 lstAnexoDTO.Add(new AnexoDTO
                 {
