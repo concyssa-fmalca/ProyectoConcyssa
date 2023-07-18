@@ -530,7 +530,7 @@ namespace DAO
                         cn.Open();
                         SqlDataAdapter da = new SqlDataAdapter("SMC_ExtornoConfirmadoOPCH", cn);
                         da.SelectCommand.CommandType = CommandType.StoredProcedure;
-                        da.SelectCommand.Parameters.AddWithValue("@IdOPDN", IdOPCH);
+                        da.SelectCommand.Parameters.AddWithValue("@IdOPCH", IdOPCH);
                         da.SelectCommand.Parameters.AddWithValue("@EsServicio", EsServicio);
                         da.SelectCommand.Parameters.AddWithValue("@TablaOrigen", TablaOrigen);
 

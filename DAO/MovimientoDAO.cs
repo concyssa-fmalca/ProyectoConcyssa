@@ -911,7 +911,7 @@ namespace DAO
 
                         oMovimientoDTO.DireccionLlegada = (String.IsNullOrEmpty(drd["DireccionLlegadaFirme"].ToString()) ? "" : drd["DireccionLlegadaFirme"].ToString());
                         oMovimientoDTO.CodigoUbigeoLlegada = (String.IsNullOrEmpty(drd["CodigoUbigeoLlegadaFirme"].ToString()) ? "" : drd["CodigoUbigeoLlegadaFirme"].ToString());
-                        oMovimientoDTO.CodigoAnexoLlegada = (String.IsNullOrEmpty(drd["CodigoAnexoLlegadaFirme"].ToString()) ? "" : drd["CodigoAnexoLlegadaFirme"].ToString());
+                        oMovimientoDTO.CodigoAnexoLlegada = (String.IsNullOrEmpty(drd["CodigoAnexoLlegadaFirme"].ToString()) ? "0000" : drd["CodigoAnexoLlegadaFirme"].ToString());
 
                         oMovimientoDTO.SerieGuiaElectronica = (String.IsNullOrEmpty(drd["SerieGuiaElectronica"].ToString()) ? "" : drd["SerieGuiaElectronica"].ToString());
                         oMovimientoDTO.NumeroGuiaElectronica = Convert.ToInt32(String.IsNullOrEmpty(drd["NumeroGuiaElectronica"].ToString()) ? "0" : drd["NumeroGuiaElectronica"].ToString());

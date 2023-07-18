@@ -26,5 +26,6 @@ namespace DTO
         public bool Extornos;
         public string FechaFin;
         public string FechaInicioS;
+        public int IdOPDN;
     }
 }

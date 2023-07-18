@@ -556,7 +556,7 @@ namespace ConcyssaWeb.Controllers
 
 
         
-        public string GenerarReporteOcPendiente(string NombreReporte, string Formato, int IdProveedor, int IdBase)
+        public string GenerarReporteOcPendiente(string NombreReporte, string Formato, int IdProveedor,int IdPedido, int IdBase)
         {
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
@@ -568,7 +568,7 @@ namespace ConcyssaWeb.Controllers
             string mensaje_error;
             try
             {
-                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdProveedor=" + IdProveedor + "&IdBase=" + IdBase;
+                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdProveedor=" + IdProveedor + "&IdBase=" + IdBase + "&IdPedido=" + IdPedido;
                 cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteOcPendiente";
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteOcPendiente";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);

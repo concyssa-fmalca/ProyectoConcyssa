@@ -159,13 +159,15 @@ function ObtenerProveedorxId() {
             limpiarDatos();
         } else {
 
+            try {
+                let proveedores = JSON.parse(data);
 
-            let proveedores = JSON.parse(data);
-
-            $("#Direccion").val(proveedores[0].DireccionFiscal);
-            $("#Telefono").val(proveedores[0].Telefono);
-            $("#IdCondicionPago").val(proveedores[0].CondicionPago);
-
+                $("#Direccion").val(proveedores[0].DireccionFiscal);
+                $("#Telefono").val(proveedores[0].Telefono);
+                $("#IdCondicionPago").val(proveedores[0].CondicionPago);
+            } catch (e) {
+                console.log("1")
+            }
 
 
         }
@@ -517,6 +519,12 @@ function ConsultaServidor(url) {
 
 
 function ModalNuevo() {
+    contador = 0
+
+    $("#IdProveedor").val(0).change()
+    $("#Direccion").val("").change()
+    arrayCboCuadrillaTabla = []
+    arrayCboResponsableTabla = []
     $("#btnEditar").hide()
     $("#btnExtornar").hide()
     var today = new Date();
@@ -624,6 +632,10 @@ function OpenModalItem() {
             $("#SNinguno").prop('checked', true) 
             $("#txtStockAlmacenItem").hide();
             $("#lblStockItem").hide();
+            $("#IdResponsable").prop("disabled", false)
+            $("#IdCuadrilla").prop("disabled", false)
+          
+           
         } else if (ClaseArticulo == 3) { //activo
             $("#BtnBuscarListadoAlmacen").prop("disabled", false);
             $("#BtnBuscarCodigoProducto").prop("disabled", false);
@@ -636,6 +648,10 @@ function OpenModalItem() {
             $("#SNinguno").prop('checked', false) 
             $("#txtStockAlmacenItem").show();
             $("#lblStockItem").show();
+            $("#IdCuadrilla").val(2582).change();
+            $("#IdResponsable").prop("disabled",true)
+            $("#IdCuadrilla").prop("disabled",true)
+
         } else {//Producto
             $("#txtDescripcionItem").prop("disabled", true);
             $("#BtnBuscarListadoAlmacen").prop("disabled", false);
@@ -647,6 +663,9 @@ function OpenModalItem() {
             $("#SNinguno").prop('checked', false) 
             $("#txtStockAlmacenItem").show();
             $("#lblStockItem").show();
+            $("#IdCuadrilla").val(2582).change();
+            $("#IdResponsable").prop("disabled", true)
+            $("#IdCuadrilla").prop("disabled", true)
         }
         $("#cboAlmacenItem").val($("#cboAlmacen").val()); // que salga el almacen por defecto
 
@@ -1412,6 +1431,8 @@ function CerrarModal() {
     $("#btn_agregar_item").prop("disabled", false)
     $("#cboClaseArticulo").val(0)
     $("#IdTipoProducto").val(0)
+    arrayCboCuadrillaTabla = []
+    arrayCboResponsableTabla = []
 
 }
 
@@ -1874,6 +1895,8 @@ function GuardarSolicitud() {
                 'error'
             )
         });
+        arrayCboCuadrillaTabla = []
+        arrayCboResponsableTabla = []
 
     } else {
         //function GuardarSolicitud() RENDICION
@@ -2426,10 +2449,10 @@ function AgregarLineaDetalle(contador, detalle) {
              <select class="form-control" name="cboUnidadMedida[]" disabled>`;
     tr += `  <option value="0">Seleccione</option>`;
     for (var i = 0; i < UnidadMedida.length; i++) {
-        if (UnidadMedida[i].IdDefinicionGrupo == IdDefinicionGrupoUnidad) {
-            tr += `  <option value="` + UnidadMedida[i].IdDefinicionGrupoUnidad + `" selected>` + UnidadMedida[i].DescUnidadMedidaAlt + `</option>`;
+        if (UnidadMedida[i].IdDefinicionGrupo == IdUnidadMedida) {
+            tr += `  <option value="` + UnidadMedida[i].IdDefinicionGrupo + `" >` + UnidadMedida[i].DescUnidadMedidaAlt + `</option>`;
         } else {
-            tr += `  <option value="` + UnidadMedida[i].IdDefinicionGrupoUnidad + `">` + UnidadMedida[i].DescUnidadMedidaAlt + `</option>`;
+            tr += `  <option value="` + UnidadMedida[i].IdDefinicionGrupo + `"selected>` + UnidadMedida[i].DescUnidadMedidaAlt + `</option>`;
         }
     }
     tr += `</select>
@@ -3274,6 +3297,7 @@ function AgregarPedidoToEntradaMercancia(data) {
     }
 
     $("#IdBase").val(data['IdBase']).change();
+    let TipoPedido = (data['NombTipoPedido'])
     $("#IdObra").val(data['IdObra']).change();
     $("#cboAlmacen").val(data['IdAlmacen']).change();
     $("#IdProveedor").val(data['IdProveedor']).change();
@@ -3527,6 +3551,9 @@ function AgregarPedidoToEntradaMercancia(data) {
         console.log(datos);
         $("#txtTotal").val((TotalFinal).toFixed(DecimalesPrecios))
         console.log("agregado total con ig")
+        if (TipoPedido == 'Orden Compra') {
+            $(".cboCuadrillaTabla").val(2582).change()
+        }
         /*AGREGAR LINEA*/
 
     });
@@ -3804,9 +3831,11 @@ function AgregarOPNDDetalle(data) {
             $(".cboResponsableTabla").select2()
             if (IdCuadrillaParaTabla != 0) {
                 $("#cboCuadrillaTablaId" + contador).val(IdCuadrillaParaTabla).change();
-            }
-            if (IdResponsableParaTabla != 0) {
-              $("#cboResponsableTablaId" + contador).val(IdResponsableParaTabla).change();              
+                if (IdResponsableParaTabla != 0) {
+                    $("#cboResponsableTablaId" + contador).val(IdResponsableParaTabla).change();
+                }
+            } else {
+                $("#cboCuadrillaTablaId" + contador).val(2582).change();
             }
             $("#cboCentroCostos" + contador).val(CentroCostoItem);
 
@@ -5346,11 +5375,119 @@ function Extornar() {
                     },
                     success: function (data) {
                         if (data == 'bien') {
-                            Swal.fire(
-                                'Todo bien!',
-                                'Yupi',
-                                'success'
-                            )
+                            if (TipoProductos != 'Servicio') {
+                                //CREAR LA SALIDA
+                                $.ajax({
+                                    url: "/SalidaMercancia/UpdateInsertMovimiento",
+                                    type: "POST",
+                                    async: true,
+                                    data: {
+                                        detalles,
+                                        AnexoDetalle,
+                                        //cabecera
+                                        'IdAlmacen': $("#cboAlmacen").val(),
+                                        'IdTipoDocumento': 1341,
+                                        'IdSerie': 20007,
+                                        'Correlativo': '',
+                                        'IdMoneda': $("#cboMoneda").val(),
+                                        'TipoCambio': $("#txtTipoCambio").val(),
+                                        'FechaContabilizacion': $("#txtFechaContabilizacion").val(),
+                                        'FechaDocumento': $("#txtFechaDocumento").val(),
+                                        'IdCentroCosto': 7,
+                                        'Comentario': $("#txtComentarios").val(),
+                                        'SubTotal': SubTotal,
+                                        'Impuesto': Impuesto,
+                                        'Total': Total,
+                                        'IdCuadrilla': 2582,
+                                        'EntregadoA': 24151,
+                                        'IdTipoDocumentoRef': 10,
+                                        'NumSerieTipoDocumentoRef': 'Extorno de la Factura FP' + anio + '-' + $("#txtNumeracion").val(),
+                                        'IdDestinatario': '',
+                                        'IdMotivoTraslado': '',
+                                        'IdTransportista': '',
+                                        'PlacaVehiculo': '',
+                                        'MarcaVehiculo': '',
+                                        'NumIdentidadConductor': '',
+
+                                        'NombreConductor': '',
+                                        'ApellidoConductor': '',
+                                        'LicenciaConductor': '',
+                                        'TipoTransporte': '',
+
+                                        'Peso': 0,
+                                        'Bulto': 0,
+
+                                        'SGI': '',
+                                        'CodigoAnexoLlegada': '',
+                                        'CodigoUbigeoLlegada': '',
+                                        'DistritoLlegada': '',
+                                        'DireccionLlegada': ''
+
+
+                                    },
+                                    //beforeSend: function () {
+                                    //    Swal.fire({
+                                    //        title: "Cargando Cambios de Extorno...",
+                                    //        text: "Por favor espere",
+                                    //        showConfirmButton: false,
+                                    //        allowOutsideClick: false
+                                    //    });
+                                    //},
+                                    success: function (data) {
+                                        if (data > 0) {
+                                            $.post('ExtornoConfirmado', {
+                                                'IdOPCH': IdOPCH,
+                                                'EsServicio': TipoProductos,
+                                                'TablaOrigen': TablaOrigen,
+                                            }, function (data, status) {
+
+                                                if (data != 0) {
+                                                    swal("Exito!", "Proceso Realizado Correctamente", "success")
+                                                    CerrarModal()
+                                                    listarOpch()
+                                                } else {
+                                                    swal("Error!", "Ocurrio un Error al Extornar el Pedido")
+                                                    CerrarModal()
+                                                }
+
+                                            });
+
+
+                                        } else {
+                                            Swal.fire(
+                                                'Error!',
+                                                'Ocurrio un Error al Generar la Salida!',
+                                                'error'
+                                            )
+
+                                        }
+
+                                    }
+                                }).fail(function () {
+                                    Swal.fire(
+                                        'Error!',
+                                        'Comunicarse con el Area Soporte: smarcode@smartcode.pe !',
+                                        'error'
+                                    )
+                                });
+                            } else {
+                                $.post('ExtornoConfirmado', {
+                                    'IdOPCH': IdOPCH,
+                                    'EsServicio': TipoProductos,
+                                    'TablaOrigen': TablaOrigen,
+                                }, function (data, status) {
+
+                                    if (data != 0) {
+                                        swal("Exito!", "Proceso Realizado Correctamente", "success")
+                                        CerrarModal()
+                                        listarOpch()
+                                    } else {
+                                        swal("Error!", "Ocurrio un Error")
+                                        CerrarModal()
+                                    }
+
+                                });
+                            }
                         } else {
                             Swal.fire(
                                 'Error!',
@@ -5368,11 +5505,22 @@ function Extornar() {
                 });
             }
             else {
-                Swal.fire(
-                    'Todo bien!',
-                    'Esta no revisa Stock',
-                    'success'
-                )
+                $.post('ExtornoConfirmado', {
+                    'IdOPCH': IdOPCH,
+                    'EsServicio': TipoProductos,
+                    'TablaOrigen':TablaOrigen,
+                }, function (data, status) {
+
+                    if (data != 0) {
+                        swal("Exito!", "Proceso Realizado Correctamente", "success")
+                        CerrarModal()
+                        listarOpch()
+                    } else {
+                        swal("Error!", "Ocurrio un Error Al Extornar la Factura de Entrega")
+                        CerrarModal()
+                    }
+
+                });
             }
          
 

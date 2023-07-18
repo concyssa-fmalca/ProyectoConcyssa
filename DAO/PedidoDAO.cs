@@ -1004,7 +1004,7 @@ namespace DAO
         }
 
 
-        public int UpdateInsertPedidoConformidadPedido(ConformidadPedidoDTO oConformidadPedidoDTO, ref string mensaje_error)
+        public int UpdateInsertPedidoConformidadPedido(ConformidadPedidoDTO oConformidadPedidoDTO,int UsuarioConformidad, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
@@ -1022,6 +1022,7 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@IdPedido", oConformidadPedidoDTO.IdPedido);
                         da.SelectCommand.Parameters.AddWithValue("@Conformidad", oConformidadPedidoDTO.Conformidad);
                         da.SelectCommand.Parameters.AddWithValue("@ComentarioConformidad",(String.IsNullOrEmpty(oConformidadPedidoDTO.ComentarioConformidad) ? "" : oConformidadPedidoDTO.ComentarioConformidad.ToString()));
+                        da.SelectCommand.Parameters.AddWithValue("@UsuarioConformidad", UsuarioConformidad);
                         int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
                         
                         cn.Close();
@@ -1165,7 +1166,7 @@ namespace DAO
                         SqlDataAdapter da = new SqlDataAdapter("SMC_AnularPedido", cn);
                         da.SelectCommand.CommandType = CommandType.StoredProcedure;
                         da.SelectCommand.Parameters.AddWithValue("@IdPedido", oPedidoDTO.IdPedido);
-                        int rpta = da.SelectCommand.ExecuteNonQuery();
+                        int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
                         transactionScope.Complete();
                         return rpta;
                     }

@@ -59,7 +59,7 @@ function listarPedidoDtConfirmidad() {
                 targets: 2,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.NombSerie + '-' + full.Correlativo
+                    return '<a style="color:blue;text-decoration:underline;cursor:pointer" onclick="abrirModalPedidoConformidad(`' + full.NombSerie + '`,' + full.Correlativo +',`' + full.NombreProveedor.toString() +'`,`'+ full.FechaDocumento + '`,`' + full.NombAlmacen + '`,' + full.IdPedido +',`'+full.Conformidad+'`)">' + full.NombSerie + '-' + full.Correlativo +'</a>' 
                 },
             },
             {
@@ -132,25 +132,25 @@ function listarPedidoDtConfirmidad() {
         "bDestroy": true
     }).DataTable();
 
-    $('#table_id tbody').unbind("dblclick");
-    $('#table_id tbody').on('dblclick', 'tr', function () {
-        var data = table.row(this).data();
-        console.log(data);
-        if (ultimaFila != null) {
-            ultimaFila.css('background-color', colorOriginal)
-        }
-        $("#IdProveedor").val(data["IdProveedor"]).change();
-        colorOriginal = $("#" + data["DT_RowId"]).css('background-color');
-        $("#" + data["DT_RowId"]).css('background-color', '#dde5ed');
-        ultimaFila = $("#" + data["DT_RowId"]);
-        abrirModalPedidoConformidad(data);
-        //AgregarOPNDDetalle(data);
-        //$('#ModalListadoEntrega').modal('hide');
-        //tableentrega.ajax.reload()
-        //$("#tbody_detalle").find('tbody').empty();
-        //AgregarItemTranferir(((table.row(this).index()) + 1), data["IdArticulo"], data["Descripcion"], (data["CantidadEnviada"] - data["CantidadTranferida"]), data["Stock"]);
+    //$('#table_id tbody').unbind("dblclick");
+    //$('#table_id tbody').on('dblclick', 'tr', function () {
+    //    var data = table.row(this).data();
+    //    console.log(data);
+    //    if (ultimaFila != null) {
+    //        ultimaFila.css('background-color', colorOriginal)
+    //    }
+    //    $("#IdProveedor").val(data["IdProveedor"]).change();
+    //    colorOriginal = $("#" + data["DT_RowId"]).css('background-color');
+    //    $("#" + data["DT_RowId"]).css('background-color', '#dde5ed');
+    //    ultimaFila = $("#" + data["DT_RowId"]);
+    //    abrirModalPedidoConformidad(data);
+    //    //AgregarOPNDDetalle(data);
+    //    //$('#ModalListadoEntrega').modal('hide');
+    //    //tableentrega.ajax.reload()
+    //    //$("#tbody_detalle").find('tbody').empty();
+    //    //AgregarItemTranferir(((table.row(this).index()) + 1), data["IdArticulo"], data["Descripcion"], (data["CantidadEnviada"] - data["CantidadTranferida"]), data["Stock"]);
 
-    });
+    //});
 }
 function validadJson(json) {
     try {
@@ -278,20 +278,87 @@ function MostrarCC(id) {
 }
 
 
-function abrirModalPedidoConformidad(data) {
-    $("#npedido").val(data.NombSerie + "-" + data.Correlativo);
-    $("#nombproveedor").val(data.NombreProveedor);
-    $("#fechapedido").val(data.FechaDocumento.split("T")[0]);
-    $("#almacen").val(data.NombAlmacen);
-    $("#IdPedido").val(data.IdPedido);
+//function abrirModalPedidoConformidad(data) {
+//    console.log(data)
+//    $("#npedido").val(data.NombSerie + "-" + data.Correlativo);
+//    $("#nombproveedor").val(data.NombreProveedor);
+//    $("#fechapedido").val(data.FechaDocumento.split("T")[0]);
+//    $("#almacen").val(data.NombAlmacen);
+//    $("#IdPedido").val(data.IdPedido);
 
-    let Conformidad = data.Conformidad;
-    $("#ConformidadModal").val(data.Conformidad);
+//    let Conformidad = data.Conformidad;
+//    $("#ConformidadModal").val(data.Conformidad);
+//    if (Conformidad != 0) {
+//        $("#ConformidadModal").prop('disabled', true);
+//        $("#comentarioconformidad").prop('disabled', true);
+//        $("#btnGrabar").hide();
+
+
+//    } else {
+//        $("#ConformidadModal").prop('disabled', false);
+//        $("#comentarioconformidad").prop('disabled', false);
+//        $("#btnGrabar").show();
+
+//    }
+
+
+//    $.post('/Pedido/ObtenerDatosxID', { 'IdPedido': data.IdPedido }, function (data, status) {
+//        let pedido = JSON.parse(data);
+//        console.log(pedido);
+//        $("#CreatedAt").html(pedido.CreatedAt)
+//        $("#NombUsuario").html(pedido.NombUsuario)
+//        $("#total_items").html(pedido.detalles.length)
+//        $("#comentarioconformidad").html(pedido.ComentarioConformidad)
+//        let tabletr = "";
+//        for (var i = 0; i < pedido.detalles.length; i++) {
+//            tabletr += `<tr>
+//                    <td>`+ pedido.detalles[i].CodigoProducto + `</td>
+//                    <td>`+ pedido.detalles[i].DescripcionArticulo + `</td>
+//                    <td>`+ formatNumberDecimales(pedido.detalles[i].Cantidad,2) + `</td>
+//                    <td>`+ formatNumberDecimales(pedido.detalles[i].valor_unitario,2) + `</td>`;
+//            if (pedido.IdMoneda == 1) {
+//                tabletr += `<td>Soles</td>`;
+//            } else {
+//                tabletr += `<td>Dolares</td>`;
+//            }
+
+
+//            tabletr += `<td>` + formatNumberDecimales(pedido.detalles[i].total_valor_item,2) +`</td>
+//                    <td>`+ pedido.NombCondicionPago+`</td>
+//                    <td>`+ pedido.detalles[i].Referencia+`</td>
+//                    <td>
+
+//                        <input type="hidden" name="IdPedidoDetalle[]" id="IdPedidoDetalle`+ pedido.detalles[i].IdPedidoDetalle +`" value="`+pedido.detalles[i].IdPedidoDetalle+`"/>
+//                        <textarea class="form-contorl input-sm" name="comentarioconformidaddetalle[]" rows="2" id="comentarioconformidaddetalle`+ pedido.detalles[i].IdPedidoDetalle + `" style="width:100%">
+//                         `+ pedido.detalles[i].ComentarioConformidad+`</textarea>
+//                    </td>
+//                </tr>`
+//            //console.log(pedido.detalles[i].ComentarioConformidad);
+//            //$("#comentarioconformidaddetalle" + pedido.detalles[i].IdPedidoDetalle).html(pedido.detalles[i].ComentarioConformidad);
+//        }
+
+//        $("#tbody_pedidomodal").html(tabletr);
+//    });
+
+//    AbrirModal("modal-form");
+//    $("#IdPedido").val(data.IdPedido);
+
+// /*   $('#modal-form').modal('show');*/
+//}
+function abrirModalPedidoConformidad(NombSerie, Correlativo, NombreProveedor, FechaDocumento, NombAlmacen, IdPedido,Conformidad) {
+    $("#npedido").val(NombSerie + "-" + Correlativo);
+    $("#nombproveedor").val(NombreProveedor);
+    $("#fechapedido").val(FechaDocumento.split("T")[0]);
+    $("#almacen").val(NombAlmacen);
+    $("#IdPedido").val(IdPedido);
+
+
+    $("#ConformidadModal").val(Conformidad);
     if (Conformidad != 0) {
         $("#ConformidadModal").prop('disabled', true);
         $("#comentarioconformidad").prop('disabled', true);
         $("#btnGrabar").hide();
-        
+
 
     } else {
         $("#ConformidadModal").prop('disabled', false);
@@ -299,9 +366,9 @@ function abrirModalPedidoConformidad(data) {
         $("#btnGrabar").show();
 
     }
-   
 
-    $.post('/Pedido/ObtenerDatosxID', { 'IdPedido': data.IdPedido }, function (data, status) {
+
+    $.post('/Pedido/ObtenerDatosxID', { 'IdPedido': IdPedido }, function (data, status) {
         let pedido = JSON.parse(data);
         console.log(pedido);
         $("#CreatedAt").html(pedido.CreatedAt)
@@ -313,36 +380,36 @@ function abrirModalPedidoConformidad(data) {
             tabletr += `<tr>
                     <td>`+ pedido.detalles[i].CodigoProducto + `</td>
                     <td>`+ pedido.detalles[i].DescripcionArticulo + `</td>
-                    <td>`+ formatNumberDecimales(pedido.detalles[i].Cantidad,2) + `</td>
-                    <td>`+ formatNumberDecimales(pedido.detalles[i].valor_unitario,2) + `</td>`;
+                    <td>`+ formatNumberDecimales(pedido.detalles[i].Cantidad, 2) + `</td>
+                    <td>`+ formatNumberDecimales(pedido.detalles[i].valor_unitario, 2) + `</td>`;
             if (pedido.IdMoneda == 1) {
                 tabletr += `<td>Soles</td>`;
             } else {
                 tabletr += `<td>Dolares</td>`;
             }
-            
 
-            tabletr += `<td>` + formatNumberDecimales(pedido.detalles[i].total_valor_item,2) +`</td>
-                    <td>`+ pedido.NombCondicionPago+`</td>
-                    <td>`+ pedido.detalles[i].Referencia+`</td>
+
+            tabletr += `<td>` + formatNumberDecimales(pedido.detalles[i].total_valor_item, 2) + `</td>
+                    <td>`+ pedido.NombCondicionPago + `</td>
+                    <td>`+ pedido.detalles[i].Referencia + `</td>
                     <td>
 
-                        <input type="hidden" name="IdPedidoDetalle[]" id="IdPedidoDetalle`+ pedido.detalles[i].IdPedidoDetalle +`" value="`+pedido.detalles[i].IdPedidoDetalle+`"/>
+                        <input type="hidden" name="IdPedidoDetalle[]" id="IdPedidoDetalle`+ pedido.detalles[i].IdPedidoDetalle + `" value="` + pedido.detalles[i].IdPedidoDetalle + `"/>
                         <textarea class="form-contorl input-sm" name="comentarioconformidaddetalle[]" rows="2" id="comentarioconformidaddetalle`+ pedido.detalles[i].IdPedidoDetalle + `" style="width:100%">
-                         `+ pedido.detalles[i].ComentarioConformidad+`</textarea>
+                         `+ pedido.detalles[i].ComentarioConformidad + `</textarea>
                     </td>
                 </tr>`
             //console.log(pedido.detalles[i].ComentarioConformidad);
             //$("#comentarioconformidaddetalle" + pedido.detalles[i].IdPedidoDetalle).html(pedido.detalles[i].ComentarioConformidad);
         }
-       
+
         $("#tbody_pedidomodal").html(tabletr);
     });
 
     AbrirModal("modal-form");
-    $("#IdPedido").val(data.IdPedido);
+    $("#IdPedido").val(IdPedido);
 
- /*   $('#modal-form').modal('show');*/
+    /*   $('#modal-form').modal('show');*/
 }
 
 function GuardarPedidoConformidad() {

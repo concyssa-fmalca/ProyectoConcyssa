@@ -4,7 +4,7 @@
 
     let respustavalidacion = "";
     $.ajaxSetup({ async: false });
-    $.post("GenerarReporteOcPendiente", { 'NombreReporte': 'OcPendiente', 'Formato': 'PDF', 'IdProveedor': IdProveedor, 'IdBase': IdBase }, function (data, status) {
+    $.post("GenerarReporteOcPendiente", { 'NombreReporte': 'OcPendiente', 'Formato': 'PDF', 'IdProveedor': IdProveedor, 'IdBase': IdBase, 'IdPedido': 0 }, function (data, status) {
         let datos;
         if (validadJson(data)) {
             let datobase64;

@@ -875,7 +875,7 @@ function AgregarLinea() {
             </td>
             <td input style="display:none;"><input class="form-control TipoCambioDeCabecera" type="number" name="txtTipoCambio[]" id="txtTipoCambioDetalle`+ contador + `" disabled></td>
             <td><input class="form-control" id="txtCantidadBloq`+ contador + `" disabled></input></td>
-            <td><input class="form-control" type="number" name="txtCantidadNecesaria[]" value="0" id="txtCantidadNecesaria`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)"></td>
+            <td><input class="form-control" type="text" name="txtCantidadNecesaria[]" value="0" id="txtCantidadNecesaria`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)"></td>
             <td><input class="form-control" type="text" name="txtPrecioInfo[]" value="0" id="txtPrecioInfo`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled></td>
             <td >
             <select class="form-control ImpuestoCabecera" name="cboIndicadorImpuestoDetalle[]" id="cboIndicadorImpuestoDetalle`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled>`;
@@ -3169,7 +3169,7 @@ function AgregarPedidoToEntradaMercancia(data) {
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td ><input class="form-control" type="text" value="" id="txtReferencia`+ contador + `" name="txtReferencia[]"></td>
             <td style="display:none"><input style="width:50px" class="form-control" type="text" value="" id="txtTipoServicio`+ contador + `" name="txtTipoServicio[]"></input></td>
-            <td><button class="btn btn-xs btn-danger borrar fa fa-trash" onclick="borrartditem(`+ contador + `)"></button></td>
+            <td><button class="btn btn-xs btn-danger borrar fa fa-trash" onclick="borrartditem(`+ contador + `);CalcularTotales()"></button></td>
           </tr>`;
             if (pasardato==0) {
 
@@ -3318,7 +3318,8 @@ function listaropdnDT() {
                 targets: 5,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.NombSerie + '-' + full.Correlativo
+                    return '<a style="color:blue;text-decoration:underline;cursor:pointer" onclick="GenerarReporteOPDN(' + full.IdOPDN + ')">' + full.NombSerie + '-' + full.Correlativo + '</a>'   
+                    
                 },
             },
             {
@@ -4099,4 +4100,43 @@ function verBase64PDF(datos) {
 
     // y de esta manera simplemente lo abro en una nueva ventana:
     window.open(url, '_blank');
+}
+
+function GenerarReporteOPDN(IdOPDN) {
+    Swal.fire({
+        title: "Generando Reporte...",
+        text: "Por favor espere",
+        showConfirmButton: false,
+        allowOutsideClick: false
+    });
+
+    setTimeout(() => {
+
+        $.ajaxSetup({ async: false });
+        $.post("GenerarReporteOPDN", { 'NombreReporte': 'EntregaMercancia', 'Formato': 'PDF', 'IdOPDN': IdOPDN }, function (data, status) {
+            let datos;
+            if (validadJson(data)) {
+                let datobase64;
+                datobase64 = "data:application/octet-stream;base64,"
+                datos = JSON.parse(data);
+                //datobase64 += datos.Base64ArchivoPDF;
+                //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
+                //$("#reporteRPT").attr("href", datobase64);
+                //$("#reporteRPT")[0].click();
+                verBase64PDF(datos)
+                Swal.fire(
+                    'Correcto',
+                    'Reporte Generado Correctamente',
+                    'success'
+                )
+            } else {
+                Swal.fire(
+                    'Error',
+                    'Ocurrió un error',
+                    'error'
+                )
+            }
+        });
+
+    }, 100)
 }

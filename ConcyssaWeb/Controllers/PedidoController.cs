@@ -447,11 +447,12 @@ namespace ConcyssaWeb.Controllers
             return JsonConvert.SerializeObject(lstAsignadoPedidoRequeridoDTO);
         }
 
-        public string updatedInsertConformidadPedido(ConformidadPedidoDTO oConformidadPedidoDTO)
+        public string updatedInsertConformidadPedido(ConformidadPedidoDTO oConformidadPedidoDTO,int UsuarioConformidad)
         {
+            UsuarioConformidad = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             PedidoDAO oPedidoDAO = new PedidoDAO();
             string mensaje_error = "";
-            int respuesta = oPedidoDAO.UpdateInsertPedidoConformidadPedido(oConformidadPedidoDTO, ref mensaje_error);
+            int respuesta = oPedidoDAO.UpdateInsertPedidoConformidadPedido(oConformidadPedidoDTO, UsuarioConformidad, ref mensaje_error);
             return respuesta.ToString();
         }
 
@@ -832,6 +833,9 @@ Favor de prever lo mencionado para no generar demoras en la logística.
                 if (respuesta == 1)
                 {
                     return "1";
+                }
+                else if (respuesta == 2) {
+                    return "2";
                 }
                 else
                 {

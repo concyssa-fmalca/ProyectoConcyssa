@@ -78,24 +78,39 @@ function listarPedidoDt() {
                 orderable: false,
                 render: function (data, type, full, meta) {
                     let ExtrasBtn = ""
-
-                    //COFIRMADO Y CERRADO
-                    if (full.EstadoOC == 3 && full.Conformidad == 1) {
-                        ExtrasBtn = ""
-                    } else if (full.EstadoOC != 3 && full.Conformidad == 1) {
-                        //COFIRMADO Y SIN CERRAR
+                    if (full.EstadoOC == 0 && full.Conformidad == 1) {
                         ExtrasBtn = "<button class='btn btn-primary juntos  btn-xs' onclick='AnularOC(" + full.IdPedido + ")'>ANULAR</button>"
                         ExtrasBtn += " <button class='btn btn-primary juntos  btn-xs' onclick='CerrarOC(" + full.IdPedido + ")'>CERRAR</button>"
-                    } else if (full.Conformidad == 2) {
-                        //LIBERADO
-                        ExtrasBtn = ""
+                    } else if (full.EstadoOC == 0 && full.Conformidad != 1) {
+                        ExtrasBtn = "<button class='btn btn-primary juntos  btn-xs' onclick='AnularOC(" + full.IdPedido + ")'>ANULAR</button>"
+                    }else if (full.EstadoOC == 3) {
+                        ExtrasBtn = "";
                     } else if (full.EstadoOC == 1) {
-                        //ANULADO
                         ExtrasBtn = "<button class='btn btn-primary juntos  btn-xs' onclick='LiberarOC(" + full.IdPedido + ")'>LIBERAR</button>"
                     }
 
+
+
+
+
+                    ////COFIRMADO Y CERRADO
+                    //if (full.EstadoOC == 3 && full.Conformidad == 1) {
+                    //    ExtrasBtn = ""
+                    //} else if (full.EstadoOC != 3 && full.Conformidad == 1) {
+                    //    //COFIRMADO Y SIN CERRAR
+                    //    ExtrasBtn = "<button class='btn btn-primary juntos  btn-xs' onclick='AnularOC(" + full.IdPedido + ")'>ANULAR</button>"
+                    //    ExtrasBtn += " <button class='btn btn-primary juntos  btn-xs' onclick='CerrarOC(" + full.IdPedido + ")'>CERRAR</button>"
+                    //} else if (full.Conformidad == 2) {
+                    //    //LIBERADO
+                    //    ExtrasBtn = ""
+                    //} else if (full.EstadoOC == 1) {
+                    //    //ANULADO
+                    //    ExtrasBtn = "<button class='btn btn-primary juntos  btn-xs' onclick='LiberarOC(" + full.IdPedido + ")'>LIBERAR</button>"
+                    //}
+
                     return `<button class="btn btn-primary editar  juntos fa fa-eye  btn-xs" style="width:30px;height:30px"  onclick="ObtenerDatosxID(` + full.IdPedido + `)"></button>
-                            <button class="btn btn-danger  reporte  juntos fa fa-file-pdf-o btn-xs" onclick="ReporteOrdenComrpa(` + full.IdPedido + `,` + full.Conformidad + `)"></button>`+ExtrasBtn
+                            <button class="btn btn-danger  reporte  juntos fa fa-file-pdf-o btn-xs" onclick="ReporteOrdenComrpa(` + full.IdPedido + `,` + full.Conformidad + `)"></button>
+                           `+ ExtrasBtn
                            
                 },
             },
@@ -192,11 +207,20 @@ function listarPedidoDt() {
                         if (full.EstadoOC == 1) {
                             return "ANULADO"
                         } else if (full.EstadoOC == 2) {
-                            return "LIBERADO"
+                            return "ANULADO"
                         } else {
                             return "CERRADO"
                         }
                     }
+
+                },
+            },
+             {
+                data: null,
+                targets: 9,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return `<button class="btn btn-primary btn-xs" onclick="ReportePendiente(` + full.IdPedido +`)">ENTREGAS</button>`
 
                 },
             }
@@ -3404,14 +3428,20 @@ function llenarComboObraArt(lista, idCombo, primerItem) {
     if (cbo != null) cbo.innerHTML = contenido;
 }
 function AnularOC(IdPedido) {
-    alertify.confirm('Confirmar', '¿Desea Anular Esta OC?', function () {
+    alertify.confirm('Confirmar', '¿Desea Anular Esta OC?, Se verificará que no se hayan realizado entregas relacionadas a esta OC', function () {
         $.ajax({
             url: 'AnularPedido',
             type: 'POST',
             data: { 'IdPedido': IdPedido },
             success: function (data) {
-                swal("Exito!", "Proceso Realizado Correctamente", "success")
-                listarPedidoDt()
+                if (data == '1') {
+                    swal("Exito!", "Proceso Realizado Correctamente", "success")
+                    listarPedidoDt()
+                } else if (data == '2') {
+                    swal("Error!", "La OC ya cuenta con entregas, para mas información consulte el reporte de entregas por OC", "error")
+                } else {
+                    swal("Error!", "Ocurrío un error interno", "error")
+                }
             },
             error: function () {
                 swal("Error!", "El Proceso Falló", "error")
@@ -3453,4 +3483,32 @@ function CerrarOC(IdPedido) {
         })
 
     }, function () { });
+}
+function ReportePendiente(IdPedido) {
+    Swal.fire({
+        title: "Generando Reporte...",
+        text: "Por favor espere",
+        showConfirmButton: false,
+        allowOutsideClick: false
+    });
+    setTimeout(() => { 
+    let respustavalidacion = "";
+    $.post("/ReporteLogistica/GenerarReporteOcPendiente", { 'NombreReporte': 'OcPendiente', 'Formato': 'PDF', 'IdProveedor': 0, 'IdBase': 0,'IdPedido' : IdPedido }, function (data, status) {
+        let datos;
+        if (validadJson(data)) {
+            let datobase64;
+            datobase64 = "data:application/octet-stream;base64,"
+            datos = JSON.parse(data);
+            //datobase64 += datos.Base64ArchivoPDF;
+            //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
+            //$("#reporteRPT").attr("href", datobase64);
+            //$("#reporteRPT")[0].click();
+            verBase64PDF(datos)
+            Swal.fire("Exito!", "Reporte Generado Correctamente", "success")
+        } else {
+            respustavalidacion;
+            Swal.fire("Error!", "Ocurrió un error", "error")
+        }
+    });
+    },200)
 }
