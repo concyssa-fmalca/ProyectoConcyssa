@@ -431,6 +431,13 @@ function ModalNuevo() {
     var mm = String(today.getMonth() + 1).padStart(2, '0');
     var yyyy = today.getFullYear();
 
+    $("#MarcaVehiculo").val("");
+    $("#NumIdentidadConductor").val("");
+    $("#NombreConductor").val("");
+    $("#ApellidoConductor").val("");
+    $("#LicenciaConductor").val("");
+    
+
     today = yyyy + '-' + mm + '-' + dd;
     $("#txtFechaDocumento").val(today)
     $("#txtFechaContabilizacion").val(today)
