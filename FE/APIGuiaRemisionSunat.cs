@@ -122,7 +122,11 @@ namespace FE
                             mov.UpdateEstadoGuia(IdMovimiento, ref mensaje_error);
                         }
                         resultado.Message = respuesta.Message;
-                       
+
+                        if (respuesta.Message != null && respuesta.Message.Contains("El comprobante fue registrado previamente con otros datos"))
+                        {
+                            mov.UpdateEstadoGuia(IdMovimiento, ref mensaje_error);
+                        }
                         
                         if (respuesta.DetalleAnexo != null)
                         {
