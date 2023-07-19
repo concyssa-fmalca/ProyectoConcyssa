@@ -2050,7 +2050,10 @@ function GuardarSolicitud() {
             arrayReferencia.push($(elemento).val());
         });
 
-
+        let arrayTipoServicio = new Array();
+        $("input[name='txtTipoServicio[]']").each(function (indice, elemento) {
+            arrayTipoServicio.push($(elemento).val());
+        });
 
         let arrayImpuestosItem = new Array();
         $("select[name='cboIndicadorImpuestoDetalle[]']").each(function (indice, elemento) {
@@ -2060,6 +2063,15 @@ function GuardarSolicitud() {
         let arraytxtIdOrigen = new Array();
         $("input[name='txtIdOrigen[]']").each(function (indice, elemento) {
             arraytxtIdOrigen.push($(elemento).val());
+        });
+        let arrayCboCuadrillaTabla = new Array();
+        $(".cboCuadrillaTabla").each(function (indice, elemento) {
+            arrayCboCuadrillaTabla.push($(elemento).val());
+        });
+
+        let arrayCboResponsableTabla = new Array();
+        $(".cboResponsableTabla").each(function (indice, elemento) {
+            arrayCboResponsableTabla.push($(elemento).val());
         });
 
         //Cabecera
@@ -2076,7 +2088,9 @@ function GuardarSolicitud() {
         let SubTotal = $("#txtTotalAntesDescuento").val();
         let Impuesto = $("#txtImpuesto").val();
         let Total = $("#txtTotal").val();
-
+        let TablaOrigen = $("#txtOrigen").val();
+        let IdOrigen = $("#txtOrigenId").val();
+        IdOrigen = IdOrigen.substring(0, IdOrigen.length - 1);
         let Redondeo = StringReplace($("#txtRedondeo").val(), ',', '');
 
 
@@ -2133,7 +2147,9 @@ function GuardarSolicitud() {
                     'Referencia': arrayReferencia[i],
                     'NombTablaOrigen': NombTablaOrigen,
                     'IdOrigen': arraytxtIdOrigen[i],
-
+                    'IdCuadrilla': arrayCboCuadrillaTabla[i],
+                    'IdResponsable': arrayCboResponsableTabla[i],
+                    'TipoServicio': arrayTipoServicio[i],
 
                 })
             }
@@ -2185,6 +2201,8 @@ function GuardarSolicitud() {
                 'IdCondicionPago': $("#IdCondicionPago").val(),
                 'IdTipoRegistro': $("#IdTipoRegistro").val(),
                 'IdSemana': $("#IdGiro").val(),
+                'TablaOrigen': TablaOrigen,
+                'IdOrigen': IdOrigen,
             },
             beforeSend: function () {
                 Swal.fire({
@@ -3141,7 +3159,7 @@ function listarentregadt() {
                 targets: 3,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.NombSerie + '-' + full.Correlativo
+                    return '<a style="color:blue !important;text-decoration:underline;cursor:pointer" onclick="AbrirOPDN(' + full.IdOPDN + ')" >'+ full.NombSerie + '-' + full.Correlativo
                 },
             },
             {
@@ -3241,7 +3259,7 @@ function listarpedidosdt() {
                 targets: 2,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.NombSerie + '-' + full.Correlativo
+                    return '<a style="color:blue !important;text-decoration:underline;cursor:pointer" onclick="VerOC(' + full.IdPedido + ')">' + full.NombSerie + '-' + full.Correlativo +'</a>' 
                 },
             },
             {
@@ -5162,6 +5180,8 @@ function VerDocsOrigen(IdOPCH) {
                 tr += `<td>` + datos[i].NombSerie + `</td>`;
                 if (datos[i].TablaOrigen == 'Pedido') {
                     tr += `<td><button class="btn btn-primary btn-xs" onclick=VerOC(`+datos[i].IdOrigen+`)>Ver Documento</button></td>`;
+                } else if (datos[i].TablaOrigen == 'Entrega') {
+                    tr += `<td><button class="btn btn-primary btn-xs" onclick=AbrirOPDN(` + datos[i].IdOrigen + `)>Ver Documento</button></td>`;
                 } else {
                     tr += `<td>-</td>`;
                 }
@@ -5210,6 +5230,42 @@ function VerOC(IdPedido) {
                 });
           
         
+    }, 100)
+}
+function AbrirOPDN(IdOPDN) {
+    Swal.fire({
+        title: "Buscando Reporte Entrega...",
+        text: "Por favor espere",
+        showConfirmButton: false,
+        allowOutsideClick: false
+    });
+
+    setTimeout(() => {
+
+
+        $.ajaxSetup({ async: false });
+        $.post("/EntradaMercancia/GenerarReporteOPDN", { 'NombreReporte': 'EntregaMercancia', 'Formato': 'PDF', 'IdOPDN': IdOPDN }, function (data, status) {
+            let datos;
+            if (validadJson(data)) {
+                let datobase64;
+                datobase64 = "data:application/octet-stream;base64,"
+                datos = JSON.parse(data);
+                //datobase64 += datos.Base64ArchivoPDF;
+                //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
+                //$("#reporteRPT").attr("href", datobase64);
+                //$("#reporteRPT")[0].click();
+                verBase64PDF(datos)
+                Swal.fire(
+                    'Correcto',
+                    'Orden Encontrada',
+                    'success'
+                )
+            } else {
+                respustavalidacion
+            }
+        });
+
+
     }, 100)
 }
 function verBase64PDF(datos) {

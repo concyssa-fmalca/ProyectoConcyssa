@@ -4755,10 +4755,19 @@ function AgregarOpchDetalle(datos) {
             $.post("../Almacen/ObtenerAlmacen", function (data, status) {
                 Almacen = JSON.parse(data);
             });
+            let IdCuadrillaParaTabla = 0
+            let IdResponsableParaTabla = 0
 
+            if (detalles[d]['IdCuadrilla'] != 0) {
+                IdCuadrillaParaTabla = detalles[d]['IdCuadrilla']
+                console.log(IdCuadrillaParaTabla)
+            }
+            if (detalles[d]['IdResponsable'] != 0) {
+                IdResponsableParaTabla = detalles[d]['IdResponsable']
+            }
             contador++;
             let tr = '';
-
+           
 
             //PARA EL DETALLE
             let Cantidad = detalles[d].Cantidad - detalles[d].CantidadNotaCredito;
@@ -4865,14 +4874,24 @@ function AgregarOpchDetalle(datos) {
             ObtenerEmpleadosxIdCuadrillaTabla(contador)
             $(".cboCuadrillaTabla").select2()
             $(".cboResponsableTabla").select2()
+            if (IdCuadrillaParaTabla != 0) {
+                $("#cboCuadrillaTablaId" + contador).val(IdCuadrillaParaTabla).change();
+                console.log("CONTADOR V" + contador)
+                console.log("VUELTA" + IdCuadrillaParaTabla)
+                if (IdResponsableParaTabla != 0) {
+                    $("#cboResponsableTablaId" + contador).val(IdResponsableParaTabla).change();
+                }
+            } else {
+                $("#cboCuadrillaTablaId" + contador).val(2582).change();
+            }
             NumeracionDinamica();
         }
 
     });
-    ObtenerCuadrillasTabla(contador)
-    ObtenerEmpleadosxIdCuadrillaTabla(contador)
-    $(".cboCuadrillaTabla").select2()
-    $(".cboResponsableTabla").select2()
+    //ObtenerCuadrillasTabla(contador)
+    //ObtenerEmpleadosxIdCuadrillaTabla(contador)
+    //$(".cboCuadrillaTabla").select2()
+    //$(".cboResponsableTabla").select2()
 }
 
 

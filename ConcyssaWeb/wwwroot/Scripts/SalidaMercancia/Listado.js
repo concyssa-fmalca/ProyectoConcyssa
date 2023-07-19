@@ -3103,7 +3103,7 @@ function GenerarGuia() {
 
                     CerrarModal();
                     ObtenerDatosxID(IdMovimiento);
-
+                    ConsultaServidor()
 
                     //if (data == 1) {
                     //    Swal.fire(
