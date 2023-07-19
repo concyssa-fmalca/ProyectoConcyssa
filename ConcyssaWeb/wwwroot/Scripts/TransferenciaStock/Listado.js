@@ -621,7 +621,7 @@ function EliminarAnexo(Id, dato) {
 
     alertify.confirm('Confirmar', '¿Desea eliminar este item?', function () {
 
-        $.post("EliminarAnexoSolicitud", { 'IdSolicitudRQAnexos': Id }, function (data, status) {
+        $.post("/SolicitudRQ/EliminarAnexoSolicitud", { 'IdSolicitudRQAnexos': Id }, function (data, status) {
 
             if (data == 0) {
                 swal("Error!", "Ocurrio un Error")
@@ -3140,6 +3140,9 @@ function GenerarPDF() {
             'Correcto',
             data.message,
             'success')
+
+        CerrarModal();
+        ObtenerDatosxID(IdMovimiento);
 
         return;
 
