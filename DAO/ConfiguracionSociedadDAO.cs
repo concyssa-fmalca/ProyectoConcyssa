@@ -31,6 +31,7 @@ namespace DAO
                         oConfiguracionSociedadDTO.Ruc = (drd["Ruc"].ToString());
                         oConfiguracionSociedadDTO.RazonSocial = (drd["RazonSocial"].ToString());
                         oConfiguracionSociedadDTO.Direccion = (drd["Direccion"].ToString());
+                        oConfiguracionSociedadDTO.NombreBDSAP = (drd["NombreBDSAP"].ToString());
                         lstConfiguracionSociedadDTO.Add(oConfiguracionSociedadDTO);
                     }
                     drd.Close();
@@ -65,6 +66,7 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@Ruc", oConfiguracionSociedadDTO.Ruc);
                         da.SelectCommand.Parameters.AddWithValue("@RazonSocial", (oConfiguracionSociedadDTO.RazonSocial) == null ? "": oConfiguracionSociedadDTO.RazonSocial);
                         da.SelectCommand.Parameters.AddWithValue("@Direccion", oConfiguracionSociedadDTO.Direccion == null ? "": oConfiguracionSociedadDTO.Direccion);
+                        da.SelectCommand.Parameters.AddWithValue("@NombreBDSAP", oConfiguracionSociedadDTO.NombreBDSAP == null ? "": oConfiguracionSociedadDTO.NombreBDSAP);
                         da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();

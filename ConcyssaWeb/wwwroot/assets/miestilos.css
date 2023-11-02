@@ -406,6 +406,27 @@ span.cerrar {
     .res{
         margin-top:15px !important;
     }
+    #sidebar_left_toggle {
+        display:none;
+    }
+    #NombreResponsive {
+        display: block !important;
+    }
+    #EmpresaResponsive {
+        display: none !important;
+    }
+    #BtnHomeResponsive {
+        display: inline-block !important;
+        width: 180px;
+        font-size: 1.5rem;
+        background-color: lightslategrey;
+    }
+    #BtnSalirResponsive {
+        width: 180px;
+        font-size: 1.5rem;
+        background-color: lightslategrey;
+    }
+
 
     /*.navi {
         display: none;

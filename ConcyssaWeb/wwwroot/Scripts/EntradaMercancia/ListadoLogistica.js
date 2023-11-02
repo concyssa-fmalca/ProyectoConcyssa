@@ -16,10 +16,14 @@ function ObtenerProveedorxId() {
             swal("Error!", "Ocurrio un error")
             limpiarDatos();
         } else {
-            let proveedores = JSON.parse(data);
-            $("#Direccion").val(proveedores[0].DireccionFiscal);
-            $("#Telefono").val(proveedores[0].Telefono);
-
+            try {
+                let proveedores = JSON.parse(data);
+                $("#Direccion").val(proveedores[0].DireccionFiscal);
+                $("#Telefono").val(proveedores[0].Telefono);
+            }
+            catch (e) {
+                console.log("No hay Proveedor Seleccionado")
+            }
         }
 
     });
@@ -462,6 +466,7 @@ function ModalNuevo() {
     $("#btnEditar").hide()
     $("#btnExtorno").hide()
     $("#btnGrabar").show()
+    $("#IdProveedor").val(0).change()
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth() + 1).padStart(2, '0');
@@ -2179,8 +2184,10 @@ function AgregarLineaDetalle(contador, detalle) {
                 }
                 tr += `</select>
         </td>
-        <td><input style="width:250px" class="form-control" value="`+ detalle.NombCuadrilla + `" disabled></input></td>
-        <td><input style="width:250px" class="form-control" value="`+ detalle.NombResponsable +`" disabled></input></td>
+            <td><select class="form-control cboCuadrillaTabla" onchange="SeleccionarEmpleadosTabla(`+ contador + `)" id="cboCuadrillaTablaId` + contador + `"></select></td>
+            <td><select class="form-control cboResponsableTabla" id="cboResponsableTablaId`+ contador + `"></select></td>
+            <td style="display:none"><input style="200px" class="form-control txtIdEntregaDetalle" value="`+ detalle.IdOPDNDetalle +`" ></input></td>
+
         <td>
             <input class="form-control changeTotal" type="text" style="width:100px" value="`+ formatNumber(detalle.total_item.toFixed(DecimalesPrecios)) + `" name="txtItemTotal[]" id="txtItemTotal` + contador + `" onchange="CalcularTotales()" disabled>
         </td>
@@ -2206,6 +2213,19 @@ function AgregarLineaDetalle(contador, detalle) {
 
     $("#tabla").find('tbody').append(tr);
     //$("#cboPrioridadDetalle" + contador).val(Prioridad);
+    ObtenerCuadrillasTabla(contador)
+    ObtenerEmpleadosxIdCuadrillaTabla(contador)
+    $(".cboCuadrillaTabla").select2()
+    $(".cboResponsableTabla").select2()
+    $("#cboCuadrillaTablaId" + contador).val(detalle.IdCuadrilla).change()
+    $("#cboResponsableTablaId" + contador).val(detalle.IdResponsable).change()
+    if (detalle.TipoServicio == 'No Aplica') {
+        $("#cboCuadrillaTablaId" + contador).prop("disabled", true)
+        $("#cboResponsableTablaId" + contador).prop("disabled", true)
+    } else {
+        $("#cboCuadrillaTablaId" + contador).prop("disabled", false)
+        $("#cboResponsableTablaId" + contador).prop("disabled", false)
+    }
     NumeracionDinamica();
 
 
@@ -2848,7 +2868,7 @@ function listarpedidosdt() {
                 orderable: false,
                 render: function (data, type, full, meta) {
                     return `
-                        <input type="checkbox" id="CheckIdPedido`+ full.IdPedido + `" value="` + full.IdPedido + `" IdProveedor="` + full.IdProveedor+`" onchange="ValidacionesCheckPedido()" class="checkIdPedidos"> <label for="cbox2"></label>`
+                        <input type="checkbox" id="CheckIdPedido`+ full.IdPedido + `" value="` + full.IdPedido + `" IdProveedor="` + full.IdProveedor + `" NombTipoPedido="` + full.NombTipoPedido + `" onchange="ValidacionesCheckPedido()" class="checkIdPedidos"> <label for="cbox2"></label>`
                 },
             },
             {
@@ -3464,12 +3484,22 @@ function ValidacionesCheckPedido() {
     let checkSeleccionados = 0;
     let IdProveedor = 0;
     let sumaproveedor = 0;
+    let TipoPedido = 0;
+    let SumaTipoPedido = 0;
     $('.checkIdPedidos').each(function () {
         if (this.checked) {
             
             checkSeleccionados++
             sumaproveedor += parseInt($(this).attr('IdProveedor'));
             IdProveedor = parseInt($(this).attr('IdProveedor'));
+            console.log($(this).attr('NombTipoPedido'))
+            if ($(this).attr('NombTipoPedido') == 'Orden Compra') {
+                SumaTipoPedido += 1
+                TipoPedido = 1
+            } else {
+                SumaTipoPedido += 2
+                TipoPedido = 2
+            }
         }
     });
     if (!((checkSeleccionados * IdProveedor) == sumaproveedor)) {
@@ -3477,7 +3507,14 @@ function ValidacionesCheckPedido() {
         $("#btn_checkSeleccionados").hide();
         return;
     } 
-
+    if (!((checkSeleccionados * TipoPedido) == SumaTipoPedido)) {
+        swal("Error!", "No puede Combiar Ordenes de Compra con Ordenes de Servicio")
+        $("#btn_checkSeleccionados").hide();
+        return;
+    } 
+   
+ 
+   
     if (checkSeleccionados > 0) {
         $("#btn_checkSeleccionados").show();
     } else {
@@ -3710,8 +3747,12 @@ function ObtenerCapatazTablaFila(contador) {
     /* setTimeout(() => {*/
     console.log(222222222)
     $.post("/Empleado/ObtenerCapatazXCuadrilla", { 'IdCuadrilla': IdCuadrillaFila }, function (data, status) {
-        let capataz = JSON.parse(data);
-        $("#cboResponsableTablaId" + contador).val(capataz[0].IdEmpleado).change();
+        try {
+            let capataz = JSON.parse(data);
+            $("#cboResponsableTablaId" + contador).val(capataz[0].IdEmpleado).change();
+        } catch (e) {
+            console.log('sin capataz')
+        }
     })
     /*}, 1000);*/
 
@@ -3726,7 +3767,19 @@ function Editar() {
     let varNumSerieTipoDocumentoRef = $("#SerieNumeroRef").val();
     let varComentario = $("#txtComentarios").val();
 
+    let arrayCboCuadrillaTabla = new Array();
+    $(".cboCuadrillaTabla").each(function (indice, elemento) {
+        arrayCboCuadrillaTabla.push($(elemento).val());
+    });
 
+    let arrayCboResponsableTabla = new Array();
+    $(".cboResponsableTabla").each(function (indice, elemento) {
+        arrayCboResponsableTabla.push($(elemento).val());
+    });
+    let arraytxtIdEntregaDetalle = new Array();
+    $(".txtIdEntregaDetalle").each(function (indice, elemento) {
+        arraytxtIdEntregaDetalle.push($(elemento).val());
+    });
 
     $.post('UpdateOPDN', {
         'IdOPDN': varIdOPDN,
@@ -3737,9 +3790,27 @@ function Editar() {
     }, function (data, status) {
 
         if (data != 0) {
-            swal("Exito!", "Proceso Realizado Correctamente", "success")
-            CerrarModal()
-            listaropdnDT()
+            for (var i = 0; i < arraytxtIdEntregaDetalle.length; i++) {
+                $.post('UpdateCuadrillasOPDN', {
+                    'IdOPDNDetalle': arraytxtIdEntregaDetalle[i],
+                    'IdCuadrilla': arrayCboCuadrillaTabla[i],
+                    'IdResponsable': arrayCboResponsableTabla[i],
+
+                }, function (data, status) {
+                    if (data != 0) {
+                        swal("Exito!", "Proceso Realizado Correctamente", "success")
+                        CerrarModal()
+                        listaropdnDT()
+                    } else {
+                        swal("Error!", "Ocurrio un Error")
+                        CerrarModal()
+                    }
+
+                });
+
+
+
+            }
         } else {
             swal("Error!", "Ocurrio un Error")
             CerrarModal()

@@ -25,6 +25,7 @@ function ObtenerTipoRegistro() {
         columnDefs: [
             { "className": "text-center", "targets": "_all" },
             {
+                data: null,
                 targets: -1,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -35,6 +36,7 @@ function ObtenerTipoRegistro() {
                 },
             },
             {
+                data: null,
                 targets: 0,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -42,6 +44,7 @@ function ObtenerTipoRegistro() {
                 },
             },
             {
+                data: null,
                 targets: 1,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -49,6 +52,7 @@ function ObtenerTipoRegistro() {
                 },
             },
             {
+                data: null,
                 targets: 2,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -122,6 +126,7 @@ function Eliminar(Id) {
 function ModalNuevo() {
     $("#modaltiporegistro").modal('show')
     $("#lblTituloModal").html("Nuevo Registro");
+    $('#chkActivo').prop('checked', true)
 }
 
 function Grabar() {

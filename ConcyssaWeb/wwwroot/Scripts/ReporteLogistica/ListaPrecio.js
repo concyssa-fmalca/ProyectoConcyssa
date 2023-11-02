@@ -5,7 +5,7 @@
 
     let respustavalidacion = "";
     $.ajaxSetup({ async: false });
-    $.post("GenerarReporteListaPrecio", { 'NombreReporte': 'ListaPrecios', 'Formato': 'PDF', 'IdDivision': IdDivision, 'IdTipoProducto': IdTipoProducto, 'IdArticulo': IdArticulo }, function (data, status) {
+    $.post("GenerarReporteListaPrecio", { 'NombreReporte': 'ListaPrecios', 'Formato': 'PDF', 'IdArticulo': IdArticulo }, function (data, status) {
         let datos;
         if (validadJson(data)) {
             let datobase64;
@@ -37,7 +37,7 @@ function CargarArticulos() {
     $.ajaxSetup({ async: false });
     $.post("/Articulo/ObtenerArticulosxSociedad", { estado: 1 }, function (data, status) {
         let articulo = JSON.parse(data);
-        llenarComboArticulo(articulo, "IdArticulo", "Seleccione")
+        llenarComboArticulo(articulo, "IdArticulo", "Todos")
     });
 }
 

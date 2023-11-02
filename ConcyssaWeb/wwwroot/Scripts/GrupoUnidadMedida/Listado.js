@@ -127,14 +127,6 @@ function ModalNuevo() {
 
 
 
-$(document).on('click', '.borrar', function (event) {
-    event.preventDefault();
-    $(this).closest('tr').remove();
-
-    let filas = $("#tabla").find('tbody tr').length;
-    console.log("filas");
-    console.log(filas);
-});
 
 
 

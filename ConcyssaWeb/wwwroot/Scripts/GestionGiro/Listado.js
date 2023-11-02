@@ -13,6 +13,36 @@ function Proveedores() {
     CargarEncargado(2)
 }
 
+function CargarSeries() {
+    $.ajaxSetup({ async: false });
+    $.post("/Serie/ObtenerSeries", { estado: 1 }, function (data, status) {
+        let series = JSON.parse(data);
+        llenarComboSerie(series, "cboSerie", "Seleccione")
+    });
+}
+
+function llenarComboSerie(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    let ultimoindice = 0;
+    for (var i = 0; i < nRegistros; i++) {
+        if (lista[i].Documento == 8) {
+            if (lista.length > 0) { contenido += "<option value='" + lista[i].IdSerie + "'>" + lista[i].Serie + "</option>"; ultimoindice = i }
+            else { }
+        }
+
+    }
+
+
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+    $("#" + idCombo).val(lista[ultimoindice].IdSerie).change
+}
+
+
 function CargarEncargado(tipo = 0) {
 
     if (tipo == 2) {
@@ -406,6 +436,7 @@ function onchangeObra() {
 window.onload = function () {
     $("#cboEstadosGiroCol").hide();
     cargarUpload();
+    CargarSeries()
 
     CargarObra();
     CargarTipoRegistro();
@@ -584,6 +615,7 @@ function Guardar() {
         'IdSolicitante': IdSocilitante,
         'IdEstadoGiro': IdEstadoGiro,
         'Estado': true,
+        'IdSerie': $("#cboSerie").val(),
         'DetalleGiro': ArrayGeneral
     }, function (data, status) {
         if (data != "") {
@@ -935,9 +967,14 @@ function ObtenerGiros() {
                 orderable: false,
                 width: "100px",
                 render: function (data, type, full, meta) {
-                    let button = `
-                                  <button class="btn btn-danger editar juntos  fa fa-edit btn-xs " onclick="ObtenerDatosxID(` + full.IdGiro + `)"></button>
-                                  <button class="btn btn-danger borrar btn-xs fa fa-trash " onclick="eliminar(` + full.IdGiro + `)"></button>`;
+                    let eliminado = ""
+                    if (full.Eliminado == true) {
+                        eliminado = ' Eliminado'
+                    } else {
+                        eliminado = `<button class="btn btn-danger borrar btn-xs fa fa-trash " onclick="eliminar(` + full.IdGiro + `)"></button>`
+                    }
+                    let button = `<button class="btn btn-danger editar juntos  fa fa-edit btn-xs " onclick="ObtenerDatosxID(` + full.IdGiro + `)"></button>`+eliminado
+                                  ;
                     //`<button class="btn btn-danger btn-xs fa fa-trash" onclick="eliminar(` + full[i].IdSerie + `)"></button>`;
                     return button;
 
@@ -1068,6 +1105,7 @@ function ObtenerGiroDetalles() {
                 targets: -1,
                 width: "100px",
                 orderable: false,
+                data: null,
                 render: function (data, type, full, meta) {
                     //let button = `<button class="btn btn-danger editar  fa fa-edit btn-xs " onclick="ObtenerGiroDetallexID(` + full.IdGiroDetalle + `)"></button><button class="btn btn-danger borrar btn-xs fa fa-trash juntos" onclick="EliminarDetalle(` + full.IdGiroDetalle + `)"></button>`;
                     //`<button class="btn btn-danger btn-xs fa fa-trash" onclick="eliminar(` + full[i].IdSerie + `)"></button>`;
@@ -1078,6 +1116,7 @@ function ObtenerGiroDetalles() {
             },
             {
                 targets: 0,
+                data: null,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     let td = `<input hidden name="txtIdProveedor[]" value="` + full.IdProveedor + `"/><input hidden name="txtId[]" value="` + full.IdGiroDetalle + `"/>`;
@@ -1087,6 +1126,7 @@ function ObtenerGiroDetalles() {
 
             {
                 targets: 1,
+                data: null,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     let td = `<input hidden name="txtIdTipoDocumento[]" value="` + full.IdTipoDocumento + `" />`;
@@ -1096,6 +1136,7 @@ function ObtenerGiroDetalles() {
 
             {
                 targets: 2,
+                data: null,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     let td = `<input hidden name="txtNumeroDocumento[]" value="` + full.NroDocumento + `" />`;
@@ -1104,6 +1145,7 @@ function ObtenerGiroDetalles() {
             },
             {
                 targets: 3,
+                data: null,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     let td = `<input hidden name="txtIdMoneda[]" value="` + full.IdMoneda + `" />`;
@@ -1112,6 +1154,7 @@ function ObtenerGiroDetalles() {
             },
             {
                 targets: 4,
+                data: null,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     let td = `<input hidden name="txtMonto[]" value="` + full.Monto + `" />`;
@@ -1121,6 +1164,7 @@ function ObtenerGiroDetalles() {
 
             {
                 targets: 5,
+                data: null,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     let td = `<input hidden name="txtComentario[]" value="` + full.Comentario + `" />`;
@@ -1129,6 +1173,7 @@ function ObtenerGiroDetalles() {
             },
             {
                 targets: 6,
+                data: null,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     return '<input hidden name="txtAnexo[]" value="' + escapeTags(full.Documento) + '" /> <strong><a href="/Requerimiento/' + escapeTags(full.Documento) + '"target="_blank" > ' + escapeTags(full.Documento) + '</a></strong> ';
@@ -1417,4 +1462,9 @@ function verBase64PDF(datos) {
 
     // y de esta manera simplemente lo abro en una nueva ventana:
     window.open(url, '_blank');
+}
+function CopiarProveedor() {
+    let aCopiar = $("#cboEncargado").val()
+    console.log(aCopiar)
+    $("#IdProveedor").val(aCopiar).change()
 }

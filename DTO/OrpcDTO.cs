@@ -48,6 +48,8 @@ namespace DTO
         public string Moneda { get; set; }
         public int IdTipoRegistro { get; set; }
         public int IdSemana { get; set; }
+        public string SerieDocBase { get; set; }
+        public int SerieSAP { get; set; }
 
 
         public IList<ORPCDetalle> detalles { get; set; }
@@ -87,6 +89,8 @@ namespace DTO
         public string NombProveedor { get; set; }
         public string NombUsuarioEdicion { get; set; }
         public DateTime FechaEdicion { get; set; }
+        public int IdDocExtorno { get; set; }
+        public int OrigenORPC { get; set; }
 
     }
 
@@ -143,5 +147,6 @@ namespace DTO
         public string NombCuadrilla { get; set; }
         public string NombResponsable { get; set; }
         public string TipoServicio { get; set; }
+        public int Resta { get; set; }
     }
 }

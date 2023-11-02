@@ -49,6 +49,7 @@ function ConsultaServidor(url) {
 
 
 function ModalNuevo() {
+    $("#chkActivo").prop('checked', true)
     $("#lblTituloModal").html("Nueva Base");
     AbrirModal("modal-form");
 }
@@ -179,7 +180,7 @@ function limpiarDatos() {
     $("#txtId").val("");
     $("#txtCodigo").val("");
     $("#txtDescripcion").val("");
-    $("#cboDivision").val("");
+    $("#cboDivision").val(0);
     $("#txtSerieGuiaElectronica").val("");
     $("#txtNumeroInicialGuiaElectronica").val("");
     $("#chkActivo").prop('checked', false);

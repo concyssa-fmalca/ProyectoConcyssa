@@ -75,7 +75,13 @@
     /*.mfp-slideDown.mfp-ready.mfp-bg{
         opacity:0;
     }*/
+    .selectSize{
+        display:inline;
+    }
 
+    .selectSize .select2-selection__rendered {
+        font-size: 1.5rem !important;
+    }
 
 </style>
 
@@ -109,16 +115,24 @@
     </div>
     <div class="panel">
         <div class="container-fluid">
+            <label>Estado de Solicitud:</label>
+            <select id="cboEstado" class="form-control" onchange="ConsultaServidor()">
+                <option value="0">Pendiente</option>
+                <option value="1">Atendido Parcialmente</option>
+                <option value="2">Cerrado</option>
+            </select>
+            <br />
             <div class="table-responsive">
                 <table id="table_id" class="table" style="width:100%">
                     <thead>
                         <tr>
                             <th style="min-width:15px"></th>
-                            <th>#</th>
-                            <th>Ver</th>
-                            <th style="min-width:5px">Numero</th>
+                           @* <th>#</th>*@
+                            <th>Ver Datos</th>
+                         
                             <th>Fecha</th>
-                            <th>Cuadrilla</th>
+                            <th>Estado</th>
+                           @* <th>Centro de Costo</th>*@
 
                         </tr>
                     </thead>
@@ -173,21 +187,21 @@
 
                             <div class="row">
                                 <div class='form-group-sm'>
-                                    <label for="IdCuadrilla" class="control-label col-sm-2 left-align">Cuadrilla</label>
+                                    <label for="IdObra" style="font-size:1.5rem" class="control-label col-sm-2 left-align">Obra</label>
                                     <div class="col-sm-4">
-                                        <select id="IdCuadrilla" class="form-control input-sm" tabindex="0" onchange="CargarObraBasexUsuario()">
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class='form-group-sm'>
-                                    <label for="IdObra" class="control-label col-sm-2 left-align">Obra</label>
-                                    <div class="col-sm-4">
-                                        <select id="IdObra" onchange="CargarProductosTodos()" disabled class="form-control input-sm" tabindex="0">
+                                        <select id="IdObra" style="font-size:1.5rem;height:30px" onchange="CargarProductosTodos()" disabled class="form-control input-sm" tabindex="0">
         
                                         </select>
                                     </div>
                                 </div>
+                                <div class='form-group-sm'>
+                                    <label for="IdCuadrilla" style="font-size:1.5rem" class="control-label col-sm-2 left-align">Centro de Costo</label>
+                                    <div class="selectSize">
+                                        <select id="IdCuadrilla" style="font-size:1.5rem;height:30px" class="form-control input-sm" tabindex="0" onchange="CargarObraBasexUsuario()">
+                                        </select>
+                                    </div>
+                                </div>
+
 
   
                             </div>
@@ -224,39 +238,24 @@
                             <div class="row">
 
                                 <div class='form-group-sm'>
-                                    <label for="txtFechaDocumento" class="control-label col-sm-2 col-xs-12 left-align">Fecha Documento</label>
+                                    <label for="txtFechaDocumento" style="font-size:1.5rem" class="control-label col-sm-2 col-xs-12 left-align">Fecha Documento</label>
                                     <div class="col-sm-4 col-xs-12">
-                                        <input id="txtFechaDocumento" value="@DateTime.Now.ToString("yyyy-MM-dd")" type="date" class="form-control input-sm" tabindex="10">
+                                        <input id="txtFechaDocumento" style="font-size:1.5rem !important;height:30px" value="@DateTime.Now.ToString("yyyy-MM-dd")" type="date" class="form-control input-sm" tabindex="10">
                                     </div>
                                 </div>
 
 
                                 <div class='form-group-sm' style="display:none">
                                     <label for="txtFechaContabilizacion" class="control-label col-sm-2 col-xs-12 left-align">Fecha Contabilizacion</label>
-                                    <div class="col-sm-4 col-xs-12">
+                                    <div class="selectSize">
                                         <input id="txtFechaContabilizacion" value="@DateTime.Now.ToString("yyyy-MM-dd")" type="date" class="form-control input-sm" tabindex="6">
                                     </div>
                                 </div>
-                                
-                                
-                            </div>
 
-
-
-
-                            <br />
-                            <br />
-
-                            <div class="tab">
-                                <button class="tablinks active" onclick="openContenido(event, 'Contenido')">Contenido</button>
-                                @*<button class="tablinks" onclick="openContenido(event, 'Anexos')">Anexos</button>*@
-
-                            </div>
-
-                            <div id="Contenido" class="tabcontent" style="display: block;">
                                 <div class='form-group-sm' style="display:none">
-                                    <div class="col-sm-4">
-                                        <select class="form-control" id="cboClaseArticulo" style="margin-bottom:10px;margin-top:5px">
+                                    <label for="cboClaseArticulo" class="control-label col-sm-2 col-xs-12 left-align">Tipo Articulo</label>
+                                    <div class="col-sm-4 col-xs-12">
+                                        <select class="form-control" style="font-size:1.5rem;height:30px" id="cboClaseArticulo" style="margin-bottom:10px;margin-top:5px">
                                             @*<option value="0">Seleccione</option>*@
                                             <option value="1">Producto</option>
                                             @*<option value="2">Servicio</option>*@
@@ -264,41 +263,77 @@
                                         </select>
                                     </div>
                                 </div>
-
                                 <div class='form-group-sm'>
-                                    <div class="col-sm-4">
-                                        <select class="form-control" id="IdTipoProducto" onchange="CambiarTipoProducto()" style="margin-bottom:10px;margin-top:5px">
+                                    <label for="IdTipoProducto" style="font-size:1.5rem" class="control-label col-sm-2 col-xs-12 left-align">Tipo Producto</label>
+                                    <div class="col-sm-4 col-xs-12">
+                                         <select class="form-control" id="IdTipoProducto" onchange="CambiarTipoProducto()" style="margin-bottom:10px;margin-top:5px;font-size:1.5rem;height:30px">
                                             <option value="0">Seleccione</option>
                                             <option value="1" selected >MATERIALES</option>
                                             <option value="2">AUXILIARES</option>
                                         </select>
                                     </div>
                                 </div>
-
-                                @*combo productos*@
-                                <div class='form-group-sm'>
-                                    <div class="col-sm-4">
-                                        <select class="form-control" onchange="ObtenerDetalleProducto()" id="cboProductosTodos" style="margin-bottom:10px;margin-top:5px">
+                                 <div class='form-group-sm'>
+                                    <label for="cboProductosTodos" style="font-size:1.5rem" class="control-label col-sm-2 col-xs-12 left-align">Producto</label>
+                                    <div class="selectSize">
+                                        <select class="form-control"  onchange="ObtenerDetalleProducto()" id="cboProductosTodos" style="font-size:1.5rem;height:30px;margin-bottom:10px;margin-top:5px">
     
-                                        </select>
-                                    </div>
-                                </div>
-                                @*combo productos*@
-
+                                            </select>
+                                      </div>
+                                 </div>
                                 <div class='form-group-sm'>
-                                    <label for="IdTxtCantidad" class="control-label col-sm-2 col-xs-12 left-align">Cantidad</label>
-                                    <div class="col-sm-4 col-xs-10">
-                                        <input class="form-control" type="number" id="IdTxtCantidad" value="0" />
+                                    <label for="IdTxtCantidad" style="font-size:1.5rem" class="control-label col-sm-2 col-xs-12 left-align">Cantidad</label>
+                                    <div class="col-sm-4 col-xs-12">
+                                        <input class="form-control" style="font-size:1.5rem;height:30px" type="number" id="IdTxtCantidad" value="0" />
                                     </div>
                                 </div>
+                            </div>
 
 
+
+
+                            <br />
+   
+                            <div class="row">
+                                <div style="width:100%;display:flex;align-items:center;justify-content:center">
+                                    <div class="col-sm-4 col-xs-5" >
+                                        <button class="btn btn-xs btn-info" style="font-size:1.5rem;border-radius:2px;height:35px;width:130px" onclick="VerStockxProducto()"> Ver Stock</button>
+                                    </div>
+                                    <div class="col-sm-4 col-xs-5" >
+                                        <button id="OpenModalItem" style="font-size:1.5rem;border-radius:2px;height:35px;width:130px" class="btn btn-xs btn-info" onclick="AgregarLinea()" type="button">Agregar Item</button>
+                                     </div>
+
+                                </div>
+                            </div>
+                            <br />
+                            <div class="row">
+                                <div class="">
+                                    <div class="table-responsive">
+                                        <table class="table" id="tabla" width="100%">
+                                            <thead>
+                                                <tr>
+                                                    
+                                                    @*<th>Item</th>*@
+                                                    <th>Codigo</th>
+                                                    <th>Descripcion</th>
+                                                    @*<th style="min-width:80px">UM</th>*@
+                                                    <th>Cantidad</th>
+                                                    <th id="UltimaCol">Accion</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tbody_detalle"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                                 <div class='form-group-sm'>
-                                    <div class="col-sm-4 col-xs-2" style="display:flex;justify-content:center">
-                                        <button class="btn btn-xs btn-info" style="border-radius:2px;height:25px" onclick="VerStockxProducto()">Stock</button>
-                                    </div>
+                                    
+                                    
                                 </div>
-
+                                 <div class='form-group-sm'>
+                                   
+                                   
+                                </div>
 
                                 <div class='form-group-sm' style="display:none">
                                     <div class="col-sm-4">
@@ -308,71 +343,11 @@
 
 
                                 <div class='form-group-sm'>
-                                    <div class="col-sm-12 col-xs-12" style="display:flex;justify-content:center">
-                                        @*<button id="OpenModalItem" style="margin-bottom:15px;margin-top:15px;border-radius:10px"  class="btn btn-xs btn-info" onclick="OpenModalItem()" type="button">Agregar Item</button>*@
-                                        <button id="OpenModalItem" style="margin-bottom:15px;margin-top:15px;border-radius:10px" class="btn btn-xs btn-info" onclick="AgregarLinea()" type="button">Agregar Item</button>
-                                    </div>
+                                    
                                 </div>
-                                <div class="container-fluid">
-                                    <div class="table-responsive">
-                                        <table class="table" id="tabla" width="100%">
-                                            <thead>
-                                                <tr>
-                                                    <th>#</th>
-                                                    @*<th>Item</th>*@
-                                                    <th>Codigo</th>
-                                                    <th>Descripcion de Articulo</th>
-                                                    @*<th style="min-width:80px">UM</th>*@
-                                                    <th>Cantidad</th>
-                                                    <th>Accion</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="tbody_detalle"></tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                
-                            </div>
+                               
+                        
 
-                            <div id="Anexos" class="tabcontent">
-
-                                @using (Html.BeginForm("GuardarFile", "SolicitudRQ", FormMethod.Post, new { id = "SubirAnexos", enctype = "multipart/form-data" }))
-                                {
-                                    <div class="row">
-                                        <div class=''>
-                                            <div class="col-sm-8">
-                                                @*<label for="file">Subir Anexos</label>*@
-                                                <input type="file" name="file" id="file" class="form-control" />
-                                            </div>
-                                        </div>
-                                        <div class='form-group-sm'>
-                                            <div class="col-sm-4">
-                                                @*<label for="file">Subir Anexos</label>*@
-                                                <input type="submit" value="Subir Archivo" class="btn btn-primary" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <br />
-                                    @ViewBag.Message
-                                    <br />
-                                    <div class="table-responsive">
-                                        <table class="table" id="tabla_files">
-                                            <thead>
-                                                <tr>
-                                                    <th>Nombre</th>
-                                                    <th>Descargar</th>
-                                                    <th>Accion</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody></tbody>
-
-   
-                                        </table>
-
-                                    </div>
-                                }
-
-                            </div>
 
                             <br />
                             <div class="row">
@@ -420,6 +395,7 @@
         <div class="panel-footer text-right">
             <div class="row">
                 <button type="button" id="btnGrabar" onclick="GuardarSolicitud()" class="btn btn-primary pull-right plu">Grabar</button>
+                <button type="button" id="btnCerrar" onclick="CerrarSolicitud()" class="btn btn-primary pull-right plu">Cerrar Solicitud</button>
                 @*<button type="button" id="btnExtorno" onclick="GenerarGuia()" class="btn btn-primary pull-right plu">Generar Guia</button>*@
 
                 <button type="button" id="btnGenerarGuia" onclick="GenerarGuia()" style="display:none" class="btn btn-primary pull-right plu">Generar Guia</button>
@@ -714,19 +690,20 @@
                 <div class="panel" style="margin-bottom:0px">
                     <div class="modal-header">
                         <h5 class="modal-title" id="lblTituloModalItem">Stock Almacenes</h5>
+                        <h7 class="modal-title" id="lblDescripcionArticulo">NombreArticulo</h7>
                     </div>
                     <div class="panel-body ">
                         @*<div class='col s12 m12 '>*@
                            @* <div class='container-fluid'>*@
                                 @*<div class="table-responsive">*@
-
+                                   
                                @* <div class="row">*@
                                     <div class="table-responsive">
                                         <table class="table" width="100%" id="tablaStockOtrosAlmacenes">
                                             <thead>
                                                 <tr>
                                                     <th>#</th>
-                                                    <th>Descripcion de Articulo</th>
+                                                 @*   <th>Descripcion</th>*@
                                                     <th>Obra</th>
                                                     @*<th>Almacen</th>*@
                                                     <th>Stock</th>

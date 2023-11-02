@@ -63,21 +63,21 @@
 
 
             <div class="table-responsive" style="border:0px">
-                <table id="table_id" class="table text-center" style="width:100%">
+                <table id="table_id" class="table" style="width:100%">
                     <thead>
                         <tr>
-                            <th class="txt-center">Nro</th>
-                            <th class="txt-center">Serie y Numero</th>
-                            <th class="txt-center">Obra</th>
-                            <th class="txt-center">Semana</th>
-                            <th class="txt-center">Orden Giro</th>
-                            <th class="txt-center">Fecha</th>
-                            <th class="txt-center">Total Soles</th>
-                            <th class="txt-center">Total Dolares</th>
-                            <th class="txt-center">Estado Giro</th>
-                            <th class="txt-center">Historial</th>
+                            <th>Nro</th>
+                            <th>Serie y Numero</th>
+                            <th>Obra</th>
+                            <th>Semana</th>
+                            <th>Orden Giro</th>
+                            <th>Fecha</th>
+                            <th>Total Soles</th>
+                            <th>Total Dolares</th>
+                            <th>Estado Giro</th>
+                            <th>Historial</th>
 
-                            <th class="txt-center">Acciones</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="tbody_SolicitudAutorizacion"></tbody>
@@ -129,6 +129,16 @@
                                     </div>
                                 </div>
 
+                                 <div class="col-md-4">
+                                    <div class='form-group-sm '>
+
+                                        <label for="cboSerie" class="control-label col-sm-2 left-align">Serie</label>
+                                        <div class="col-sm-10">
+                                            <select id="cboSerie" type="text" class="form-control input-sm" tabindex="3"></select>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
                             <div class="row pl30 pr30">
 
@@ -164,7 +174,7 @@
                                     <div class='form-group-sm col-md-6' id="divProveedor">
                                         <label for="cboEncargado" class="control-label col-sm-0 left-align"></label>
                                         <div class="col-sm-10">
-                                            <select id="cboEncargado" type="text" class="form-control input-sm" tabindex="3"></select>
+                                            <select id="cboEncargado" type="text" class="form-control input-sm" tabindex="3" onchange="CopiarProveedor()"></select>
                                         </div>
                                     </div>
 

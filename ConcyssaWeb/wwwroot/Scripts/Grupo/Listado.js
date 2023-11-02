@@ -17,7 +17,7 @@ function listarObraFiltro() {
         cache: false,
         contentType: false,
         success: function (datos) {
-            $("#IdObra").html('');
+            $("#IdObrafiltro").html('');
             let options = `<option value="0">Seleccione</option>`;
             if (datos.length > 0) {
 
@@ -25,6 +25,8 @@ function listarObraFiltro() {
                     options += `<option value="` + datos[i].IdObra + `">` + datos[i].Descripcion + `</option>`;
                 }
                 $("#IdObrafiltro").html(options);
+                $("#IdObrafiltro").prop('selectedIndex', 1)
+                ConsultaServidor()
             }
         }
     });
@@ -32,7 +34,7 @@ function listarObraFiltro() {
 
 function listarObras() {
     $.ajax({
-        url: "/Obra/ObtenerObraxIdUsuarioSessionFiltro",
+        url: "/Obra/ObtenerObraxIdUsuarioSession",
         type: "GET",
         contentType: "application/json",
         dataType: "json",
@@ -148,7 +150,7 @@ function GuardarGrupo() {
 function ObtenerDatosxID(varIdGrupo) {
     $("#lblTituloModal").html("Editar Grupo");
     AbrirModal("modal-form");
-
+    listarObras()
     //console.log(varIdUsuario);
 
     $.post('ObtenerDatosxID', {
@@ -160,6 +162,7 @@ function ObtenerDatosxID(varIdGrupo) {
             limpiarDatos();
         } else {
             let grupo = JSON.parse(data);
+            console.log(grupo)
             //console.log(usuarios);
             $("#txtId").val(grupo[0].IdGrupo);
             $("#txtCodigo").val(grupo[0].Codigo);

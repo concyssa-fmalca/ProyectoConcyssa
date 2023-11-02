@@ -53,6 +53,7 @@ function ConsultaServidor(url) {
 function ModalNuevo() {
     $("#lblTituloModal").html("Nueva Glosa Contable");
     AbrirModal("modal-form");
+    $("#chkActivo").prop("checked", true)
 }
 
 function GuardarGlosaContable() {
@@ -61,6 +62,7 @@ function GuardarGlosaContable() {
     let varCodigo = $("#txtCodigo").val();
     let varCuentaContable = $("#txtCuentaContable").val();
     let varDescripcion = $("#txtDescripcion").val();
+    let varClasif = $("#cboClasif").val();
     let varEstado = false;
 
     if ($('#chkActivo')[0].checked) {
@@ -100,7 +102,8 @@ function GuardarGlosaContable() {
         'Codigo': varCodigo,
         'CuentaContable': varCuentaContable,
         'Descripcion': varDescripcion,
-        'Estado': varEstado
+        'Estado': varEstado,
+        'IdClasif': varClasif
     }, function (data, status) {
 
         if (data == 1) {
@@ -137,6 +140,7 @@ function ObtenerDatosxID(varIdGlosaContable) {
             $("#cboDivision").val(division[0].IdDivision);
             $("#txtCuentaContable").val(division[0].CuentaContable);
             $("#txtDescripcion").val(division[0].Descripcion);
+            $("#cboClasif").val(division[0].IdClasif);
             if (division[0].Estado) {
                 $("#chkActivo").prop('checked', true);
             }
@@ -201,6 +205,7 @@ function limpiarDatos() {
     $("#txtCodigo").val("");
     $("#txtDescripcion").val("");
     $("#txtCuentaContable").val("");
+    $("#cboClasif").val(0);
     $("#chkActivo").prop('checked', false);
 
 

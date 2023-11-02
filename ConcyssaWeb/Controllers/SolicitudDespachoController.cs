@@ -153,8 +153,108 @@ namespace ConcyssaWeb.Controllers
             public int recordsfiltered;
             public List<T> data;
         }
+        public string ObtenerSolicitudesDespachoxObra(int IdObra)
+        {
+            SolicitudDespachoDAO oSolicitudDespachoDAO = new SolicitudDespachoDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            //DataTableParameter dtp = JsonConvert.DeserializeObject<DataTableParameter>(ClientParameters);
+
+            List<SolicitudDespachoDetalleDTO> lstSolicitudDespachoDetalleDTO = oSolicitudDespachoDAO.ObtenerSolicitudesDespachoxObra(IdSociedad,IdObra);
 
 
+
+            if (lstSolicitudDespachoDetalleDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstSolicitudDespachoDetalleDTO);
+            }
+            else
+            {
+                return "error";
+            }
+        }
+        public string ObtenerSolicitudesDespachoAtender(int IdBase, DateTime FechaInicio, DateTime FechaFin, int EstadoSolicitud, int SerieFiltro)
+        {
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            SolicitudDespachoDAO oSolicitudDespachoDAO = new SolicitudDespachoDAO();
+            List<SolicitudDespachoDTO> lstSolicitudDespachoDTO = oSolicitudDespachoDAO.ObtenerSolicitudesDespachoAtender(IdSociedad, IdBase,FechaInicio,FechaFin,EstadoSolicitud, SerieFiltro);
+
+            if (lstSolicitudDespachoDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstSolicitudDespachoDTO);
+            }
+            else
+            {
+                return "error";
+            }
+
+        }
+        public int UpdateInsertSolicitudDespachoDetalle(SolicitudDespachoDetalleDTO oSolicitudDespachoDetalleDTO)
+        {
+            string mensaje_error = "";
+            SolicitudDespachoDAO oSolicitudDespachoDAO = new SolicitudDespachoDAO();
+            int respuesta = oSolicitudDespachoDAO.UpdateInsertSolicitudDespachoDetalle(oSolicitudDespachoDetalleDTO,ref mensaje_error);
+
+            if (mensaje_error.Length > 0)
+            {
+                return 0;
+            }
+            else
+            {
+                if (respuesta == 0)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return respuesta;
+                }
+            }
+        }
+        public int AtencionConfirmada(int Cantidad, int IdSolicitud, int IdArticulo, int EstadoSolicitud)
+        {
+            string mensaje_error = "";
+            SolicitudDespachoDAO oSolicitudDespachoDAO = new SolicitudDespachoDAO();
+            int respuesta = oSolicitudDespachoDAO.AtencionConfirmada(Cantidad, IdSolicitud, IdArticulo,EstadoSolicitud, ref mensaje_error);
+
+            if (mensaje_error.Length > 0)
+            {
+                return 0;
+            }
+            else
+            {
+                if (respuesta == 0)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return respuesta;
+                }
+            }
+        }
+        public int CerrarSolicitud(int IdSolicitud)
+        {
+            string mensaje_error = "";
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            SolicitudDespachoDAO oSolicitudDespachoDAO = new SolicitudDespachoDAO();
+            int respuesta = oSolicitudDespachoDAO.CerrarSolicitud(IdSolicitud, IdUsuario, ref mensaje_error);
+
+            if (mensaje_error.Length > 0)
+            {
+                return 0;
+            }
+            else
+            {
+                if (respuesta == 0)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return respuesta;
+                }
+            }
+        }
 
     }
 }

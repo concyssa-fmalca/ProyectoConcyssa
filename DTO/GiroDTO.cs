@@ -40,6 +40,6 @@ namespace DTO
         public string NombSerie { get; set; }
         public int Correlativo { get; set; }
         public string Serie { get; set; }
-
+        public bool Eliminado { get; set; }
     }
 }

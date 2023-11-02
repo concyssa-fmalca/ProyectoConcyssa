@@ -49,6 +49,7 @@ function ConsultaServidor(url) {
 function ModalNuevo() {
     $("#lblTituloModal").html("Nueva Categoria");
     AbrirModal("modal-form");
+    $("#chkActivo").prop('checked', true)
 }
 
 

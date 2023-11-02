@@ -18,5 +18,6 @@ namespace DTO
         public string? Descripcion { get; set; }
         public string? CuentaContable { get; set; }
         public bool Estado { get; set; }
+        public int IdClasif { get; set; }
     }
 }

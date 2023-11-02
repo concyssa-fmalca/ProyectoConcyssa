@@ -17,7 +17,7 @@ namespace DAO
                     cn.Open();
                     SqlDataAdapter da = new SqlDataAdapter("SMC_ListarSerie", cn);
                     da.SelectCommand.Parameters.AddWithValue("@IdSociedad", int.Parse(IdSociedad));
-                    da.SelectCommand.Parameters.AddWithValue("@Estado", 3);
+                    da.SelectCommand.Parameters.AddWithValue("@Estado", 1);
 
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
                     SqlDataReader drd = da.SelectCommand.ExecuteReader();

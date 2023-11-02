@@ -12,5 +12,6 @@ namespace DTO
         public string Ruc { get; set; } = "";
         public string RazonSocial { get; set; }="";
         public string Direccion { get; set; }="";
+        public string NombreBDSAP { get; set; }="";
     }
 }

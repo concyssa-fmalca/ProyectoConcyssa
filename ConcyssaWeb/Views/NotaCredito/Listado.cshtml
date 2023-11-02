@@ -215,7 +215,23 @@
                                         <select id="cboMoneda" type="text" class="form-control input-sm" tabindex="3" onchange="ValidarMonedaBase()" disabled></select>
                                     </div>
                                 </div>
+                                <div id="Origenes" style="display:none">
+                                    <div class='form-group-sm'>
+                                        @*<label for="cboMoneda" class="control-label col-sm-2 left-align">Tipo de Cambio</label>*@
 
+                                        <div class="col-sm-4">
+                                            <input id="txtOrigen" type="text" class="form-control input-sm" disabled></input>
+                                        </div>
+                                    </div>
+
+                                    <div class='form-group-sm'>
+                                        @*<label for="cboMoneda" class="control-label col-sm-2 left-align">Tipo de Cambio</label>*@
+
+                                        <div class="col-sm-4">
+                                            <input id="txtOrigenId" type="text" class="form-control input-sm" disabled></input>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
 
@@ -233,6 +249,20 @@
                                         <input id="txtTipoCambio" type="text" class="form-control input-sm" onkeyup="EnviarTipoCambioDetalle()" tabindex="4" disabled>
                                     </div>
                                 </div>
+                                 <div class='form-group-sm'>
+                                    <label for="serieDocBase" class="control-label col-sm-2 left-align">Basado En N° Doc:</label>
+                                    <div class="col-sm-4">
+                                        <input id="txtserieDocBase" type="text" class="form-control input-sm" tabindex="4">
+                                    </div>
+                                </div>
+                                  <div class='form-group-sm' style="display:none">
+                                    <label for="txtSerieSAP" class="control-label col-sm-2 left-align">Serie SAP</label>
+                                    <div class="col-sm-4">
+                                        <input id="txtSerieSAP" type="number" class="form-control input-sm" tabindex="4" value="0">
+                                    </div>
+                                </div>
+
+                               
 
 
                                 @*<div class='form-group-sm'>
@@ -283,7 +313,7 @@
                                         <select id="cboGlosaContable" type="text" class="form-control input-sm" tabindex="3"></select>
                                     </div>
                                 </div>
-
+                                
                             </div>
 
                             <hr style="margin:6px" />
@@ -645,6 +675,7 @@
                         </div>
 
 
+                        <button type="button" id="btnExtornar" onclick="Extornar()" class="btn btn-primary pull-right plu">Extornar</button>
                         <button type="button" id="btnEditar" onclick="Editar()" class="btn btn-primary pull-right plu">Grabar</button>
                         <button type="button" id="btnGrabar" onclick="GuardarSolicitud()" class="btn btn-primary pull-right plu">Crear</button>
 
@@ -1414,7 +1445,7 @@
 
                     </div>
                     <div class="modal-footer">
-                        @*<button type="button" id="btn_checkSeleccionados" class="btn btn-danger pull-right" style="background-color:#005457;" onclick="AgregarSeleccionadOPDN()">Agregar Seleccionados</button>*@
+                        <button type="button" id="btn_checkSeleccionados" class="btn btn-danger pull-right" style="background-color:#005457;" onclick="AgregarSeleccionadOPCH()">Agregar Seleccionados</button>
                         <button type="button" class="btn btn-danger pull-right" style="background-color:orange;" data-dismiss="modal">Cerrar</button>
                     </div>
                 </div>

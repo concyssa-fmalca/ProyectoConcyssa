@@ -50,11 +50,11 @@ function GuardarSerie() {
 
 
         if (data == 1) {
-            swal("Exito!", "Proceso Realizado Correctamente", "success")
-    
+            Swal.fire("Exito!", "Proceso Realizado Correctamente", "success")
+
             limpiarDatos();
         } else {
-            swal("Error!", "Ocurrio un Error")
+            Swal.fire("Error!", "Ocurrio un Error")
             limpiarDatos();
         }
         ObtenerSeriesDT()
@@ -78,7 +78,7 @@ function GuardarSerie() {
 
 
 //        if (data == "Error") {
-//            swal("Error!", "Ocurrio un error")
+//            Swal.fire("Error!", "Ocurrio un error")
 //            limpiarDatos();
 //        } else {
 //            let serie = JSON.parse(data);
@@ -115,7 +115,7 @@ function ObtenerDatosxIDNew(varIdDocumento) {
             data: {
                 'IdDocumento': varIdDocumento,
                 pagination: {
-                    
+
                     perpage: 50,
                 },
             },
@@ -124,16 +124,18 @@ function ObtenerDatosxIDNew(varIdDocumento) {
         columnDefs: [
             { "className": "text-center", "targets": "_all" },
             {
+                data: null,
                 targets: -1,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    let button = `<button class="btn btn-info  fa fa-pencil btn-xs" onclick="guardar(1,` + full.IdSerie + `)"></button><button class="btn btn-danger btn-xs fa fa-trash" onclick="eliminar()"></button>`;
+                    let button = `<button class="btn btn-primary  fa fa-floppy-o btn-xs" onclick="guardar(1,` + full.IdSerie + `)"></button><button class="btn btn-danger btn-xs fa fa-trash" onclick="eliminar(` + full.IdSerie + `)"></button>`;
                     `<button class="btn btn-danger btn-xs fa fa-trash" onclick="eliminar(` + full.IdSerie + `)"></button>`;
                     return button;
 
                 },
             },
             {
+                data: null,
                 targets: 0,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -141,6 +143,7 @@ function ObtenerDatosxIDNew(varIdDocumento) {
                 },
             },
             {
+                data: null,
                 targets: 1,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -148,6 +151,7 @@ function ObtenerDatosxIDNew(varIdDocumento) {
                 },
             },
             {
+                data: null,
                 targets: 2,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -155,6 +159,7 @@ function ObtenerDatosxIDNew(varIdDocumento) {
                 },
             },
             {
+                data: null,
                 targets: 3,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -162,29 +167,32 @@ function ObtenerDatosxIDNew(varIdDocumento) {
                 },
             },
             {
+                data: null,
                 targets: 4,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     if (full.IsArticulo) {
-                        return `<input class="form-control input-sm" id="IsArticulo`+full.IdSerie+`" type="checkbox" checked>`
+                        return `<input class="form-check-input " id="IsArticulo` + full.IdSerie + `" type="checkbox" checked>`
                     } else {
-                        return `<input class="form-control input-sm" id="IsArticulo` + full.IdSerie +`" type="checkbox">`
+                        return `<input class="form-check-input " id="IsArticulo` + full.IdSerie + `" type="checkbox">`
                     }
                 },
             },
             {
+                data: null,
                 targets: 5,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     if (full.IsServicio) {
-                        return `<input class="form-control input-sm" id="IsServicio` + full.IdSerie +`" type="checkbox" checked>`
+                        return `<input class="form-check-input " id="IsServicio` + full.IdSerie + `" type="checkbox" checked>`
                     } else {
-                        return `<input class="form-control input-sm" id="IsServicio` + full.IdSerie +`" type="checkbox">`
+                        return `<input class="form-check-input " id="IsServicio` + full.IdSerie + `" type="checkbox">`
                     }
-                   
+
                 },
             },
             {
+                data: null,
                 targets: 6,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -192,13 +200,14 @@ function ObtenerDatosxIDNew(varIdDocumento) {
                 },
             },
             {
+                data: null,
                 targets: 7,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     if (full.Estado) {
-                        return `<input class="form-control input-sm" id="Estado` + full.IdSerie +`"   type="checkbox" checked>`
+                        return `<input class="form-check-input" id="Estado` + full.IdSerie + `"   type="checkbox" checked>`
                     } else {
-                        return `<input class="form-control input-sm" id="Estado` + full.IdSerie +`"  type="checkbox">`
+                        return `<input class="form-check-input" id="Estado` + full.IdSerie + `"  type="checkbox">`
                     }
                 },
             }
@@ -213,27 +222,43 @@ function ObtenerDatosxIDNew(varIdDocumento) {
 function eliminar(varIdSerie) {
 
 
-    alertify.confirm('Confirmar', '¿Desea eliminar esta serie?', function () {
-        $.post("EliminarSerie", { 'IdSerie': varIdSerie }, function (data) {
 
-            var errorEmpresa = validarEmpresaUpdateInsert(data);
-            if (errorEmpresa) {
-                return;
-            }
+    Swal.fire({
+        title: 'Desea Eliminar este Registro?',
+        text: 'No podras revertir esta opcion',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        cancelButtonText: 'No, cancelar',
+        confirmButtonText: 'Si, Eliminar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.post("EliminarSerie", { 'IdSerie': varIdSerie }, function (data) {
+
+                var errorEmpresa = validarEmpresaUpdateInsert(data);
+                if (errorEmpresa) {
+                    return;
+                }
 
 
-            if (data == 0) {
-                swal("Error!", "Ocurrio un Error")
-                limpiarDatos();
-            } else {
-                swal("Exito!", "Serie Eliminada", "success")
-              
-            }
-            ObtenerSeriesDT()
-            closePopup();
-        });
+                if (data == 0) {
+                    Swal.fire("Error!", "Ocurrio un Error")
+                    limpiarDatos();
+                } else {
+                    Swal.fire("Exito!", "Serie Eliminada", "success")
 
-    }, function () { });
+                }
+                ObtenerSeriesDT()
+                closePopup();
+            });
+            Swal.fire(
+                'Eliminado!',
+                'El Registro Fue Eliminado',
+                'success'
+            )
+        }
+    })
 
 }
 
@@ -282,18 +307,20 @@ function ObtenerSeriesDT() {
         },
 
         columnDefs: [
-             {"className": "text-center", "targets": "_all"},
+            { "className": "text-center", "targets": "_all" },
             {
+                data: null,
                 targets: -1,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    let button = `<button class="btn btn-info  fa fa-pencil btn-xs" onclick="ObtenerDatosxIDNew(` + full.IdDocumento + `)"></button><button class="btn btn-danger btn-xs fa fa-trash" onclick="eliminar(` + full.IdSerie + `)"></button>`;
+                    let button = `<button class="btn btn-primary  fa fa-eye btn-xs" onclick="ObtenerDatosxIDNew(` + full.IdDocumento + `)"></button>`;
                     //`<button class="btn btn-danger btn-xs fa fa-trash" onclick="eliminar(` + full[i].IdSerie + `)"></button>`;
                     return button;
-                        
+
                 },
             },
             {
+                data: null,
                 targets: 0,
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -301,28 +328,32 @@ function ObtenerSeriesDT() {
                 },
             },
             {
+                data: null,
                 targets: 1,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     return full.NombDocumento
                 },
             },
+            //{
+            //    data: null,
+            //    targets: 2,
+            //    orderable: false,
+            //    render: function (data, type, full, meta) {
+            //        return full.SerieDefecto
+            //    },
+            //},
             {
+                data: null,
                 targets: 2,
-                orderable: false,
-                render: function (data, type, full, meta) {
-                    return full.SerieDefecto
-                },
-            },
-            {
-                targets: 3,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     return full.NumeroInicial
                 },
             },
             {
-                targets: 4,
+                data: null,
+                targets: 3,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     return full.NumeroFinal
@@ -341,26 +372,26 @@ function ObtenerSeriesDT() {
 function addtrserie() {
     let tr = "";
     tr = `
-    <tr id="tr`+ contador +`">    
+    <tr id="tr`+ contador + `">    
         <td>-</td>
-        <td> <input class="form-control input-sm" value="" id="serietr`+contador+`"/> </td>
-        <td> <input class="form-control input-sm" value="" id="numeroitr`+ contador +`"/> </td>
-        <td> <input class="form-control input-sm" value="" id="numeroftr`+ contador +`"/> </td>
-        <td> <input class="form-control input-sm" type="checkbox" id="articulo`+contador+`" value=""> </td>
-        <td> <input class="form-control input-sm" type="checkbox" id="servicio`+ contador +`"> </td>
-         <td> <select class="form-control" id="IdIndicadorPeriodo`+contador+`"> <option value="0">SELECCIONE PERIODO</option> </select> </td>
-         <td> <input class="form-control input-sm" type="checkbox" id="estado`+ contador +`" checked> </td>
+        <td> <input class="form-control input-sm" value="" id="serietr`+ contador + `"/> </td>
+        <td> <input class="form-control input-sm" value="" id="numeroitr`+ contador + `"/> </td>
+        <td> <input class="form-control input-sm" value="" id="numeroftr`+ contador + `"/> </td>
+        <td> <input class="form-check-input " type="checkbox" id="articulo`+ contador + `" value=""> </td>
+        <td> <input class="form-check-input "  type="checkbox" id="servicio`+ contador + `"> </td>
+         <td> <select class="form-control" id="IdIndicadorPeriodo`+ contador + `"> <option value="0">SELECCIONE PERIODO</option> </select> </td>
+         <td> <input class="form-check-input " type="checkbox" id="estado`+ contador + `" checked> </td>
         <td>
-            <button style="margin:0px 0px 0px 0px;" class="btn btn-danger" onclick="removetr(`+ contador +`)"> - </button> 
-            <button style="margin:0px 0px 0px 0px;"class="btn btn-success" onclick="guardar(0,`+ contador +`)"> + </button>
+            <button style="margin:0px 0px 0px 0px;" class="btn btn-danger fa fa-times" onclick="removetr(`+ contador + `)"></button> 
+            <button style="margin:0px 0px 0px 0px;"class="btn btn-success fa fa-floppy-o" onclick="guardar(0,`+ contador + `)"></button>
         </td>
     </tr>`
 
-    
+
     $("#table_serienew tbody").append(tr);
     listarindicadorperiodo(contador);
     contador++
-   
+
 }
 
 function listarindicadorperiodo(idcontador) {
@@ -389,16 +420,16 @@ function guardar(bd, id) {
     let Serie = "";
     let NumeroInicial;
     let NumeroFinal;
-    let Estado=false;
+    let Estado = false;
     let Documento;
-    let IsArticulo=false;
-    let IsServicio=false;
+    let IsArticulo = false;
+    let IsServicio = false;
     let IdIndicadorPeriodo;
     Documento = $("#IdDocumentoModal").val();
 
     if (bd == 1) {
         IdSerie = id;
-        if ($('#IsArticulo'+id).prop('checked')) {
+        if ($('#IsArticulo' + id).prop('checked')) {
             IsArticulo = true;
         }
         if ($('#IsServicio' + id).prop('checked')) {
@@ -435,11 +466,12 @@ function guardar(bd, id) {
         'IdPeriodo': IdIndicadorPeriodo,
         'Documento': Documento
     }, function (data, status) {
-        if (data>0) {
-            swal("Exito!", "Proceso Realizado Correctamente", "success")
+        if (data > 0) {
+            Swal.fire("Exito!", "Proceso Realizado Correctamente", "success")
+            $("#modal-form").modal('hide')
             limpiarDatos();
         } else {
-            swal("Error!", "Ocurrio un Error")
+            Swal.fire("Error!", "Ocurrio un Error")
             limpiarDatos();
         }
         ObtenerSeriesDT()

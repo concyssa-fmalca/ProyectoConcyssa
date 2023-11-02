@@ -301,5 +301,53 @@ namespace ConcyssaWeb.Controllers
             }
 
         }
+        public string ValidarStockParaNotaCredito(int IdArticulo, int IdAlmacen, int Cantidad)
+        {
+            string mensaje_error = "";
+            OrpcDAO oOrpcDAO = new OrpcDAO();      
+            string respuesta = oOrpcDAO.ValidarStockParaNotaCredito(IdArticulo, IdAlmacen, Cantidad, ref mensaje_error);
+
+            if (mensaje_error.Length > 0)
+            {
+                return mensaje_error;
+            }
+            else
+            {
+                return respuesta;
+            }
+
+        }
+        public string AccionesPorNotaCredito(string TablaOrigen, string IdOrigen, int IdORPC)
+        {
+            string mensaje_error = "";
+            OrpcDAO oOrpcDAO = new OrpcDAO();
+            string respuesta = oOrpcDAO.AccionesPorNotaCredito(TablaOrigen, IdOrigen, IdORPC, ref mensaje_error);
+
+            if (mensaje_error.Length > 0)
+            {
+                return mensaje_error;
+            }
+            else
+            {
+                return respuesta;
+            }
+
+        }
+        public string ExtornarORPC(int IdORPC, string TipoProducto, int IdOrigen)
+        {
+            string mensaje_error = "";
+            OrpcDAO oOrpcDAO = new OrpcDAO();
+            string respuesta = oOrpcDAO.ExtornarORPC(IdORPC, TipoProducto, IdOrigen, ref mensaje_error);
+
+            if (mensaje_error.Length > 0)
+            {
+                return mensaje_error;
+            }
+            else
+            {
+                return respuesta;
+            }
+
+        }
     }
 }

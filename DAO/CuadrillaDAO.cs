@@ -214,6 +214,36 @@ namespace DAO
             return lstCuadrillaDTO;
         }
 
+        public List<CuadrillaDTO> ObtenerNuevoCodigo(int CodigoUsar, int IdObra, ref string mensaje_error)
+        {
+            List<CuadrillaDTO> lstCuadrillaDTO = new List<CuadrillaDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerNuevoCodigo", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@CodigoUsar", CodigoUsar);
+                    da.SelectCommand.Parameters.AddWithValue("@IdObra", IdObra);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        CuadrillaDTO oCuadrillaDTO = new CuadrillaDTO();
+                        oCuadrillaDTO.Codigo = (drd["Codigo"].ToString());
+                        lstCuadrillaDTO.Add(oCuadrillaDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstCuadrillaDTO;
+        }
 
     }
 }

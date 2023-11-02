@@ -99,6 +99,22 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
+        public string ObtenerNuevoCodigo(int CodigoUsar,int IdObra)
+        {
+            string mensaje_error = "";
+            CuadrillaDAO oCuadrillaDAO = new CuadrillaDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            List<CuadrillaDTO> lstCuadrillaDTO = oCuadrillaDAO.ObtenerNuevoCodigo(CodigoUsar,IdObra, ref mensaje_error);
+            if (lstCuadrillaDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstCuadrillaDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
+
 
 
     }

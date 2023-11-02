@@ -760,5 +760,30 @@ namespace ConcyssaWeb.Controllers
 
             return "";
         }
+        public string UpdateCuadrillasOPDN(OPDNDetalle oOPDNDetalle)
+        {
+
+            string mensaje_error = "";
+            OpdnDAO oOpdnDAO = new OpdnDAO();
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            int respuesta = oOpdnDAO.UpdateCuadrillas(oOPDNDetalle, ref mensaje_error);
+
+            if (mensaje_error.Length > 0)
+            {
+                return mensaje_error;
+            }
+            else
+            {
+                if (respuesta == 1)
+                {
+                    return "1";
+                }
+                else
+                {
+                    return "error";
+                }
+            }
+
+        }
     }
 }

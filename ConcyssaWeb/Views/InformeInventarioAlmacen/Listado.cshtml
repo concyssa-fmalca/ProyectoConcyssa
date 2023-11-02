@@ -1,4 +1,8 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Http
+@using Karambolo.AspNetCore.Bundling.ViewHelpers
+@addTagHelper *, Karambolo.AspNetCore.Bundling
+@inject IHttpContextAccessor Accessor
+@{
     ViewBag.Title = "Listado";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -39,7 +43,7 @@
                 </div>
                 <button class="btn btn-xs btn-primary res" style="margin-top:3px;border-radius:5px;margin-left:0" onclick="ObtenerStockxAlmacen()">Buscar</button>
             </div>
-      
+            <input style="display:none" type="text" id="txtIdPerfil"  value="@Accessor.HttpContext.Session.GetInt32("IdPerfil").ToString()"/>
 
         </div>
 
@@ -64,8 +68,24 @@
             </div>
             
         </div>
-    </div>
 
+        <div class="container-fluid">
+            <div class="table-resposive">
+                <table id="table_id2" class="table ocultartabla2" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>CodProducto</th>
+                            <th>Producto</th>
+                            <th>Stock</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody_division2"></tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
 
 
 

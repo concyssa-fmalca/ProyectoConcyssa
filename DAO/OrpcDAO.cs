@@ -68,7 +68,10 @@ namespace DAO
                         oOrpcDTO.IdSemana = Convert.ToInt32(drd["IdSemana"].ToString());
                         oOrpcDTO.FechaEdicion = Convert.ToDateTime(String.IsNullOrEmpty(drd["FechaEdicion"].ToString()) ? "1990/01/01" : drd["FechaEdicion"].ToString());
                         oOrpcDTO.NombUsuarioEdicion = (String.IsNullOrEmpty(drd["NombUsuarioEdicion"].ToString()) ? "" : drd["NombUsuarioEdicion"].ToString());
-
+                        oOrpcDTO.IdDocExtorno = Convert.ToInt32(drd["IdDocExtorno"].ToString());
+                        oOrpcDTO.OrigenORPC = Convert.ToInt32(drd["OrigenORPC"].ToString());
+                        oOrpcDTO.SerieSAP = Convert.ToInt32(drd["SerieSAP"].ToString());
+                        oOrpcDTO.SerieDocBase = drd["SerieDocBase"].ToString();
                     }
                     drd.Close();
 
@@ -140,7 +143,7 @@ namespace DAO
                         oOrpcDTO.TipoDocumentoRef = drd["TipoDocumentoRef"].ToString();
                         oOrpcDTO.Moneda = drd["Moneda"].ToString();
                         oOrpcDTO.NumSerieTipoDocumentoRef = drd["NumSerieTipoDocumentoRef"].ToString();
-
+                        oOrpcDTO.IdDocExtorno = Convert.ToInt32(drd["IdDocExtorno"].ToString());
                         lstOrpcDTO.Add(oOrpcDTO);
                     }
                     drd.Close();
@@ -299,6 +302,7 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@IdCondicionPago", OrpcDTO.idCondicionPago);
                         da.SelectCommand.Parameters.AddWithValue("@IdTipoRegistro", OrpcDTO.IdTipoRegistro);
                         da.SelectCommand.Parameters.AddWithValue("@IdSemana", OrpcDTO.IdSemana);
+                        da.SelectCommand.Parameters.AddWithValue("@SerieSAP", OrpcDTO.SerieSAP);
                         da.SelectCommand.Parameters.AddWithValue("@Comentario", comentario);
                         da.SelectCommand.Parameters.AddWithValue("@UsuarioEdicion", IdUsuario);
 
@@ -349,6 +353,99 @@ namespace DAO
             }
         }
 
+        public string ValidarStockParaNotaCredito(int IdArticulo,int IdAlmacen,int Cantidad, ref string mensaje_error)
+        {
+            string RespuestaStock = "";
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerStockParaNotaCredito", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdArticulo", IdArticulo);
+                    da.SelectCommand.Parameters.AddWithValue("@IdAlmacen", IdAlmacen);
+                    da.SelectCommand.Parameters.AddWithValue("@Cantidad", Cantidad);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        RespuestaStock = drd["RespuestaStock"].ToString();
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return RespuestaStock;
+        }
+        public string AccionesPorNotaCredito(string TablaOrigen, string IdOrigen, int IdORPC, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_AccionesPorNotaCredito", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@TablaOrigen", TablaOrigen);
+                        da.SelectCommand.Parameters.AddWithValue("@IdOrigen", IdOrigen);
+                        da.SelectCommand.Parameters.AddWithValue("@IdORPC", IdORPC);
+
+
+                        int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
+                        transactionScope.Complete();
+                        return rpta.ToString();
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return "0";
+                    }
+                }
+            }
+        }
+        public string ExtornarORPC(int IdORPC, string TipoProducto, int IdOrigen, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_ExtornarORPC", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdORPC", IdORPC);
+                        da.SelectCommand.Parameters.AddWithValue("@TipoProducto", TipoProducto);
+                        da.SelectCommand.Parameters.AddWithValue("@IdOrigen", IdOrigen);
+
+
+                        int rpta = da.SelectCommand.ExecuteNonQuery();
+                        transactionScope.Complete();
+                        return rpta.ToString();
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return "0";
+                    }
+                }
+            }
+        }
 
     }
 }

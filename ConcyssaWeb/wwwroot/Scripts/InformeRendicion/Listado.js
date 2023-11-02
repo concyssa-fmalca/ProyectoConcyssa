@@ -187,7 +187,7 @@ function ObtenerReporte() {
     let varAnioReporte = $("#cboPeriodo").val();
     let varIdSemanaReporte = $("#cboSemana").val();
     if (varIdSemanaReporte == 0 || varIdSemanaReporte == null) {
-        swal("Error!", "Seleccione un Giro")
+        Swal.fire("Error!", "Seleccione un Giro")
         return;
     }
     Swal.fire({

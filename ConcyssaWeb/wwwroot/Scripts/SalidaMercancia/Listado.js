@@ -1810,7 +1810,7 @@ function limpiarDatos() {
     //$("#txtFechaDocumento").val(strDate);
     $("#cboTitular").val('');
     $("#txtTotalAntesDescuento").val('');
-    $("#txtComentarios").val('');
+    $("#txtComentarios").html('');
     $("#txtImpuesto").val('');
     $("#txtTotal").val('');
     $("#txtEstado").val(1);
@@ -1897,6 +1897,7 @@ function ObtenerDatosxID(IdMovimiento) {
             $("#IdBase").val(movimiento.IdBase).change();
             $("#IdObra").val(movimiento.IdObra).change();
             $("#cboAlmacen").val(movimiento.IdAlmacen);
+            $("#txtComentarios").html(movimiento.Comentario)
             if (movimiento.NombUsuarioEdicion == "") {
                 $("#NombUsuarioEdicion").html("-")
             } else {
@@ -2114,7 +2115,7 @@ function CalcularTotalDetalle(contador) {
     let varCantidadNecesaria = $("#txtCantidadNecesaria" + contador).val();
     console.log(stockdetalleproducto + '<' + varCantidadNecesaria)
     if (parseFloat(stockdetalleproducto) < parseFloat(varCantidadNecesaria)) {
-        swal("Informacion!", "La Cantidad Supera al stock" + stockdetalleproducto);
+        swal("Informacion!", "La Cantidad Supera al stock :" + stockdetalleproducto);
         $("#txtCantidadNecesaria" + contador).val(stockdetalleproducto).change();
         return true;
     }
@@ -2664,7 +2665,7 @@ function validarStock() {
     let stockalmacen = $("#txtStockAlmacenItem").val();
     let txtCantidadItem = $("#txtCantidadItem").val();
     if (parseFloat(stockalmacen) < parseFloat(txtCantidadItem)) {
-        swal("Informacion!", "La Cantidad Supera al stock" + stockalmacen);
+        swal("Informacion!", "La Cantidad Supera al stock :" + stockalmacen);
         $("#txtCantidadItem").val(stockalmacen);
     }
 }

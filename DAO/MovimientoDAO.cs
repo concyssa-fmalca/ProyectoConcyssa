@@ -243,6 +243,10 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@DireccionLlegada", oMovimientoDTO.DireccionLlegada);
 
 
+                        //Nuevo de Despacho
+                        da.SelectCommand.Parameters.AddWithValue("@OrigenDespacho", oMovimientoDTO.OrigenDespacho);
+
+
                         int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
                         transactionScope.Complete();
                         return rpta;
@@ -1137,6 +1141,13 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@IdGlosaContable", oOpchDTO.IdGlosaContable);
                         da.SelectCommand.Parameters.AddWithValue("@TablaOrigen", oOpchDTO.TablaOrigen);
                         da.SelectCommand.Parameters.AddWithValue("@IdOrigen", oOpchDTO.IdOrigen);
+                        da.SelectCommand.Parameters.AddWithValue("@ConsumoM3", oOpchDTO.ConsumoM3);
+                        da.SelectCommand.Parameters.AddWithValue("@ConsumoHW", oOpchDTO.ConsumoHW);
+                        da.SelectCommand.Parameters.AddWithValue("@TasaDetraccion", oOpchDTO.TasaDetraccion);
+                        da.SelectCommand.Parameters.AddWithValue("@GrupoDetraccion", oOpchDTO.GrupoDetraccion);
+                        da.SelectCommand.Parameters.AddWithValue("@SerieSAP", oOpchDTO.SerieSAP);
+                        da.SelectCommand.Parameters.AddWithValue("@CondicionPagoDet", oOpchDTO.CondicionPagoDet);
+
 
                         int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
                         transactionScope.Complete();
@@ -1393,6 +1404,8 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@IdGlosaContable", oOrpcDTO.IdGlosaContable);
                         da.SelectCommand.Parameters.AddWithValue("@IdTipoRegistro", oOrpcDTO.IdTipoRegistro);
                         da.SelectCommand.Parameters.AddWithValue("@IdSemana", oOrpcDTO.IdSemana);
+                        da.SelectCommand.Parameters.AddWithValue("@SerieDocBase", oOrpcDTO.SerieDocBase);
+                        da.SelectCommand.Parameters.AddWithValue("@SerieSAP", oOrpcDTO.SerieSAP);
 
                         int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
                         transactionScope.Complete();

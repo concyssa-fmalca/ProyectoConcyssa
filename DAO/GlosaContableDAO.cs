@@ -111,6 +111,7 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@Descripcion", oGlosaContableDTO.Descripcion);
                         da.SelectCommand.Parameters.AddWithValue("@IdSociedad", oGlosaContableDTO.IdSociedad);
                         da.SelectCommand.Parameters.AddWithValue("@Estado", oGlosaContableDTO.Estado);
+                        da.SelectCommand.Parameters.AddWithValue("@IdClasif", oGlosaContableDTO.IdClasif);
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
                         return rpta;
@@ -146,6 +147,7 @@ namespace DAO
                         oGlosaContableDTO.CuentaContable = drd["CuentaContable"].ToString();
                         oGlosaContableDTO.Estado = bool.Parse(drd["Estado"].ToString());
                         oGlosaContableDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
+                        oGlosaContableDTO.IdClasif = int.Parse(drd["IdClasif"].ToString());
                         lstGlosaContableDTO.Add(oGlosaContableDTO);
                     }
                     drd.Close();

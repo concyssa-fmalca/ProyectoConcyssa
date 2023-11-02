@@ -21,7 +21,7 @@ window.onload = function () {
 
 
 function ConsultaServidor() {
-
+    let EstadoSoli = $("#cboEstado").val()
     $.ajax({
         url: "/SolicitudDespacho/ObtenerSolicitudesDespacho",
         type: "POST",
@@ -40,19 +40,45 @@ function ConsultaServidor() {
                 console.log(datos);
 
                 var tr = '';
+              
+                //for (var i = 0; i < datos.length; i++) {
+                //    tr += `<tr>
+                //            <td></td>
+                //            <td>`+ (i + 1) +`</td>
+                //            <td><button class="btn btn-primary btn-sm fa fa-edit" style="border-radius:10px" onclick="ObtenerDatosxID(`+ datos[i].Id +`)"></button></td>
+                //            <td><input type="hidden" value="`+ datos[i].Numero+`" />`+ datos[i].Numero +`</td>
+                //            <td><input type="hidden" value="`+ datos[i].FechaDocumento.split("T")[0] + `" />` + datos[i].FechaDocumento.split("T")[0] +`</td>
+                //            <td><input type="hidden" value="`+ datos[i].DescripcionCuadrilla + `" />` + datos[i].DescripcionCuadrilla +`</td>
 
+                //            </tr>`;
+                //}
+                console.log(EstadoSoli)
                 for (var i = 0; i < datos.length; i++) {
-                    tr += `<tr>
-                            <td></td>
-                            <td>`+ (i + 1) +`</td>
-                            <td><button class="btn btn-primary btn-sm fa fa-edit" style="border-radius:10px" onclick="ObtenerDatosxID(`+ datos[i].Id +`)"></button></td>
-                            <td><input type="hidden" value="`+ datos[i].Numero+`" />`+ datos[i].Numero +`</td>
-                            <td><input type="hidden" value="`+ datos[i].FechaDocumento.split("T")[0] + `" />` + datos[i].FechaDocumento.split("T")[0] +`</td>
-                            <td><input type="hidden" value="`+ datos[i].DescripcionCuadrilla + `" />` + datos[i].DescripcionCuadrilla +`</td>
+                    if (EstadoSoli == datos[i].EstadoSolicitud) {        
+                        let EstadoS
+                        if (datos[i].EstadoSolicitud == 0) {
+                            EstadoS = 'PENDIENTE'
+                        } else if (datos[i].EstadoSolicitud == 1) {
+                            EstadoS = 'ATEND. PARCIAL'
+                        } else {
+                            EstadoS = 'CERRADO'
+                        }
+                        let fecha = datos[i].FechaDocumento.split("T")[0]
+                        let fechaMostrar = fecha.split("-")[2] + "-" + fecha.split("-")[1]
 
-                            </tr>`;
+                        tr += `<tr>
+                                <td></td>
+                           
+                                <td><button class="btn btn-primary btn-sm fa fa-edit" style="border-radius:10px" onclick="ObtenerDatosxID(`+ datos[i].Id + `)">  ` + datos[i].Numero + ` </button></td>
+                          
+                                <td><input type="hidden" value="`+ fechaMostrar + `" />` + fechaMostrar + `</td>
+                                <td>`+ EstadoS + `</td>
+                            
+
+                                </tr>`;
+                    }
                 }
-
+                if (table) { table.destroy() }
                 $("#tbody_Solicitudes").html(tr);
                 table = $("#table_id").DataTable(lenguaje);
 
@@ -87,10 +113,15 @@ function ModalNuevo() {
     $("#IdTipoProducto").prop('disabled', false);
 
     $("#lblTituloModal").html("Nuevo");
-    $("#IdCuadrilla").select2();
+    //$("#IdCuadrilla").select2();
 
     CargarCuadrillaxUsuario();
-    $("#IdCuadrilla").val("0").change();
+    $("#IdCuadrilla").select2()
+    var segundoElemento = $("#IdCuadrilla option:first-child + option");
+
+    // Establecer el valor seleccionado al del segundo elemento
+    $("#IdCuadrilla").val(segundoElemento.val()).trigger("change");
+    //$("#IdCuadrilla").prop("selectedIndex", 1);
 
   
 }
@@ -128,11 +159,13 @@ function llenarComboCuadrilla(lista, idCombo, primerItem) {
     var campos;
     for (var i = 0; i < nRegistros; i++) {
 
-        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdCuadrilla + "'>" + lista[i].DescripcionCuadrilla.toUpperCase() + "</option>"; }
+        if (lista.length > 0) { contenido += "<option value=" + lista[i].IdCuadrilla + ">" + lista[i].DescripcionCuadrilla.toUpperCase() + "</option>"; }
         else { }
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
+
+    
 }
 
 function llenarComboObra(lista, idCombo, primerItem) {
@@ -173,15 +206,18 @@ function CargarObraBasexUsuario() {
 
     $.ajaxSetup({ async: false });
     $.post("/SolicitudDespacho/ObtenerObraBasexCuadrilla", { 'IdCuadrilla':IdCuadrilla }, function (data, status) {
+        try {
+            var datos = JSON.parse(data);
+            console.log(datos);
 
-        var datos = JSON.parse(data);
-        console.log(datos);
-
-        llenarComboObra(datos, "IdObra", "Seleccione");
-        llenarComboBase(datos, "IdBase", "Seleccione");
-        //let sociedades = JSON.parse(data);
-        //llenarComboCuadrilla(datos, "IdCuadrilla", "Seleccione")
-
+            llenarComboObra(datos, "IdObra", "Seleccione");
+            llenarComboBase(datos, "IdBase", "Seleccione");
+            //let sociedades = JSON.parse(data);
+            //llenarComboCuadrilla(datos, "IdCuadrilla", "Seleccione")
+        }
+        catch (e) {
+            console.log("sin datos")
+        }
     });
 
     $("#IdObra").change();
@@ -445,11 +481,11 @@ function ListarStockTodasObras(IdArticulo) {
         let area = JSON.parse(data);
 
         for (var i = 0; i < area.length; i++) {
-
+            
 
             tr += '<tr>' +
                 '<td></td>' +
-                '<td>' + area[i].Descripcion1 + '</td>' +
+              /*  '<td>' + area[i].Descripcion1 + '</td>' +*/
                 '<td>' + area[i].Obra + '</td>' +
                 //'<td>' + area[i].Almacen + '</td>' +
                 '<td>' + area[i].Stock + '</td>' +
@@ -458,7 +494,7 @@ function ListarStockTodasObras(IdArticulo) {
         if (tableStock) {
             tableStock.destroy();
         }
-
+        $("#lblDescripcionArticulo").html(area[0].Descripcion1)
         $("#tbody_stockOtrosAlmacenes").html(tr);
 
         tableStock = $("#tablaStockOtrosAlmacenes").DataTable(lenguaje1);
@@ -660,7 +696,7 @@ function AgregarLinea() {
 
     var newRow1 = $(`<tr>`).
         /*append(`<td></td>`).*/
-        append(`<td></td>`).
+       
         append(`<td>` + CodigoItem + `
                     <input  input style="display:none;" class="form-control omitir" type="text" value="0" id="txtIdSolicitudDespachoDetalle" name="txtIdSolicitudDespachoDetalle[]"/>
                     <input style="display:none;" class="form-control omitir" type="text" value="`+ IdItem +`" id="txtIdArticulo`+ contador + `" name="txtIdArticulo[]" />
@@ -1019,6 +1055,20 @@ function ObtenerDatosxID(IdSolicitudDespacho) {
 
             $("#cboClaseArticulo").val(solicitudes[0].IdClaseProducto);
             $("#IdTipoProducto").val(solicitudes[0].IdTipoProducto);
+            let sinAtender
+            if (solicitudes[0].EstadoSolicitud != 0) {
+                $("#btnGrabar").hide();
+                sinAtender = false
+            } else {
+                $("#btnGrabar").show();
+                sinAtender = true
+            }
+            if (solicitudes[0].EstadoSolicitud == 2) {
+                $("#btnCerrar").hide();
+            } else {
+                $("#btnCerrar").show();
+            }
+           
             //CargarSeries();
             //CargarMoneda();
             //CargarImpuestos();
@@ -1045,8 +1095,9 @@ function ObtenerDatosxID(IdSolicitudDespacho) {
                     Detalle[i].Cantidad,
                     Detalle[i].IdUnidadMedida,
                     Detalle[i].IdGrupoUnidadMedida,
-                    Detalle[i].IdDefinicionGrupoUnidad
-                    );
+                    Detalle[i].IdDefinicionGrupoUnidad,
+                    Detalle[i].CantidadAtendida,
+                    sinAtender);
 
                 contador++;
             }
@@ -1080,7 +1131,7 @@ function ObtenerDatosxID(IdSolicitudDespacho) {
 
 
 
-function AgregarLineaDetalle(Id, CodigoArticulo, IdItem, Descripcion, Cantidad, IdUnidadMedida, IdGrupoUnidadMedida, IdDefinicionGrupoUnidad) {
+function AgregarLineaDetalle(Id, CodigoArticulo, IdItem, Descripcion, Cantidad, IdUnidadMedida, IdGrupoUnidadMedida, IdDefinicionGrupoUnidad,CantidadAtendida,noAtendido) {
 
 
     let UnidadMedida;
@@ -1113,25 +1164,47 @@ function AgregarLineaDetalle(Id, CodigoArticulo, IdItem, Descripcion, Cantidad, 
 
 
     tt = $('#tabla').DataTable(lenguaje1);
-
- 
-    var newRow1 = $(`<tr>`).
-        /*append(`<td></td>`).*/
-        append(`<td></td>`).
-        append(`<td>` + CodigoArticulo + `
+    if (noAtendido == true) {
+        $("#UltimaCol").text('ACCION')
+        var newRow1 = $(`<tr>`).
+            /*append(`<td></td>`).*/
+            /* append(`<td></td>`).*/
+            append(`<td>` + CodigoArticulo + `
                 <input input style="display:none;" class="form-control omitir" type="text" value="`+ Id + `" id="txtIdSolicitudDespachoDetalle" name="txtIdSolicitudDespachoDetalle[]"/>
                 <input style="display:none;" class="form-control omitir" type="text" value="`+ IdItem + `" id="txtIdArticulo` + contador + `" name="txtIdArticulo[]" />
                 <input style="display:none;" class="form-control" type="text" value="`+ CodigoArticulo + `" id="txtCodigoArticulo` + contador + `" name="txtCodigoArticulo[]" />
             </td>`).
-        append(`<td>` + Descripcion + `<input disabled style="display:none;" class="form-control" type="text" value="` + Descripcion + `" id="txtDescripcionArticulo` + contador + `" name="txtDescripcionArticulo[]"/></td>`).
-        append(`<td>
+            append(`<td>` + Descripcion + `<input disabled style="display:none;" class="form-control" type="text" value="` + Descripcion + `" id="txtDescripcionArticulo` + contador + `" name="txtDescripcionArticulo[]"/></td>`).
+            append(`<td>
                <input class="form-control" type="number" name="txtCantidad[]" value="`+ Cantidad + `" id="txtCantidad` + contador + `">
                </td>`).
-        append(`<td><button style="background: red;padding: 10px;border-radius: 3px;" class="btn btn-xs btn-danger fa fa-trash" onclick="EliminarDetalle(` + Id + `,this)"></button>
+            append(`<td><button style="background: red;padding: 10px;border-radius: 3px;" class="btn btn-xs btn-danger fa fa-trash" onclick="EliminarDetalle(` + Id + `,this)"></button>
 
         <input type="hidden" value="`+ UnidadMed + `" id="inputUnidadMedida` + contador + `" />
                  `+ combo1 + `
         </td>`);
+    } else {
+        $("#UltimaCol").text('CANT. ENTREGADA')
+        var newRow1 = $(`<tr>`).
+            /*append(`<td></td>`).*/
+            /* append(`<td></td>`).*/
+            append(`<td>` + CodigoArticulo + `
+                <input input style="display:none;" class="form-control omitir" type="text" value="`+ Id + `" id="txtIdSolicitudDespachoDetalle" name="txtIdSolicitudDespachoDetalle[]"/>
+                <input style="display:none;" class="form-control omitir" type="text" value="`+ IdItem + `" id="txtIdArticulo` + contador + `" name="txtIdArticulo[]" />
+                <input style="display:none;" class="form-control" type="text" value="`+ CodigoArticulo + `" id="txtCodigoArticulo` + contador + `" name="txtCodigoArticulo[]" />
+            </td>`).
+            append(`<td>` + Descripcion + `<input disabled style="display:none;" class="form-control" type="text" value="` + Descripcion + `" id="txtDescripcionArticulo` + contador + `" name="txtDescripcionArticulo[]"/></td>`).
+            append(`<td>
+               `+ Cantidad + `
+               </td>`).
+            append(`<td>
+        `+CantidadAtendida+`
+        <input type="hidden" value="`+ UnidadMed + `" id="inputUnidadMedida` + contador + `" />
+                 `+ combo1 + `
+        </td>`);
+    }
+ 
+    
 
 
     newRow1.attr('id', 'tr' + contador);
@@ -1144,7 +1217,33 @@ function AgregarLineaDetalle(Id, CodigoArticulo, IdItem, Descripcion, Cantidad, 
 
 
 }
+function CerrarSolicitud() {
+    let IdSolicitudCerrar = $("#txtId").val()
+    console.log(IdSolicitudCerrar)
+    alertify.confirm('Confirmar', '¿Desea Cerrar Esta Solicitud?, No se podrá volver a atender la solicitud', function () {
+        $.ajax({
+            url: "/SolicitudDespacho/CerrarSolicitud",
+            type: 'POST',
+            async: false,
+            dataType: 'json',
+            data: {
+                'IdSolicitud': IdSolicitudCerrar,
+            },
+            success: function (datos) {
+                //console.log(datos);
+                if (datos > 0) {
+                    Swal.fire("Exito!", "Se Cerró la Solicitud", "success");
+                    CerrarModal()
+                    ConsultaServidor()
+                } else { Swal.fire("Error!", "Ocurrió un Error", "error"); }
+            },
+            error: function () {
+                Swal.fire("Error!", "Ocurrió un Error", "error");
+            }
+        })
 
+    }, function () { });
+}
 
 
 

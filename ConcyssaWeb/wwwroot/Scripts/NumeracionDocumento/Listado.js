@@ -54,6 +54,7 @@ function ConsultaServidor(url) {
 function ModalNuevo() {
     $("#lblTituloModal").html("Nueva Glosa Contable");
     AbrirModal("modal-form");
+    $("#chkActivo").prop('checked', true)
 }
 
 function GuardarNumeracion() {

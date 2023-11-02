@@ -51,6 +51,7 @@ function ConsultaServidor(url) {
 function ModalNuevo() {
     $("#lblTituloModal").html("Nueva Grupo articulo");
     AbrirModal("modal-form");
+    $("#chkActivo").prop("checked", true)
 }
 
 

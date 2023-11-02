@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Helpers", "Helpers\Helpers.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FE", "FE\FE.csproj", "{6C1B62FD-194E-400C-BC75-C6C1534CDF50}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ISAP", "ISAP\ISAP.csproj", "{D72D4035-80F6-43AA-A233-D3F7FC8B6B5D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{6C1B62FD-194E-400C-BC75-C6C1534CDF50}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C1B62FD-194E-400C-BC75-C6C1534CDF50}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C1B62FD-194E-400C-BC75-C6C1534CDF50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D72D4035-80F6-43AA-A233-D3F7FC8B6B5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D72D4035-80F6-43AA-A233-D3F7FC8B6B5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D72D4035-80F6-43AA-A233-D3F7FC8B6B5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D72D4035-80F6-43AA-A233-D3F7FC8B6B5D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

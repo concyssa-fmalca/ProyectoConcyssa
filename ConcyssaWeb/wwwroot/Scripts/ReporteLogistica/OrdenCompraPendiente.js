@@ -1,19 +1,18 @@
 ﻿function GenerarReporteOcPendiente() {
     let IdProveedor = $("#IdProveedor").val();
     let IdBase = $("#IdBase").val();
+    let IdObra = $("#IdObra").val();
+    let FechaInicial = $("#txtFechaInicio").val();
+    let FechaFinal = $("#txtFechaFin").val();
 
     let respustavalidacion = "";
     $.ajaxSetup({ async: false });
-    $.post("GenerarReporteOcPendiente", { 'NombreReporte': 'OcPendiente', 'Formato': 'PDF', 'IdProveedor': IdProveedor, 'IdBase': IdBase, 'IdPedido': 0 }, function (data, status) {
+    $.post("GenerarReporteOcPendiente", { 'NombreReporte': 'OcPendiente', 'Formato': 'PDF', 'IdProveedor': IdProveedor, 'IdBase': IdBase, 'IdObra': IdObra, 'FechaInicial': FechaInicial, 'FechaFinal': FechaFinal }, function (data, status) {
         let datos;
         if (validadJson(data)) {
             let datobase64;
             datobase64 = "data:application/octet-stream;base64,"
             datos = JSON.parse(data);
-            //datobase64 += datos.Base64ArchivoPDF;
-            //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
-            //$("#reporteRPT").attr("href", datobase64);
-            //$("#reporteRPT")[0].click();
             verBase64PDF(datos) 
         } else {
             respustavalidacion;
@@ -37,7 +36,7 @@ function CargarProveedor() {
     $.ajaxSetup({ async: false });
     $.post("/Proveedor/ObtenerProveedores", { estado: 1 }, function (data, status) {
         let proveedores = JSON.parse(data);
-        llenarComboProveedor(proveedores, "IdProveedor", "Seleccione")
+        llenarComboProveedor(proveedores, "IdProveedor", "TODOS")
     });
 }
 
@@ -62,7 +61,7 @@ function CargarBase() {
     $.ajaxSetup({ async: false });
     $.post("/Base/ObtenerBase", { estado: 1 }, function (data, status) {
         let bases = JSON.parse(data);
-        llenarComboBase(bases, "IdBase", "Seleccione")
+        llenarComboBase(bases, "IdBase", "TODOS")
     });
 }
 
@@ -81,11 +80,41 @@ function llenarComboBase(lista, idCombo, primerItem) {
     if (cbo != null) cbo.innerHTML = contenido;
 }
 
+function CargarObra() {
+    $.ajaxSetup({ async: false });
+    $.post("/Obra/ObtenerObraxIdBase", { IdBase: $("#IdBase").val() }, function (data, status) {
+        try {
+        let bases = JSON.parse(data);
+        llenarComboObra(bases, "IdObra", "TODOS")
+        } catch (e) {
+            $("#IdObra").html("<option value='0'>TODOS</option>")
+        }
+    });
+}
+
+function llenarComboObra(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdObra + "'>" + lista[i].Descripcion + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+}
+
 window.onload = function () {
     CargarProveedor();
     CargarBase();
+    CargarObra() 
     $("#IdProveedor").select2();
     $("#IdBase").select2();
+    $("#txtFechaInicio").val(getCurrentDate())
+    $("#txtFechaFin").val(getCurrentDateFinal())
 };
 
 function verBase64PDF(datos) {
@@ -114,4 +143,20 @@ function verBase64PDF(datos) {
 
     // y de esta manera simplemente lo abro en una nueva ventana:
     window.open(url, '_blank');
+}
+function getCurrentDate() {
+    var currentDate = new Date();
+    var year = currentDate.getFullYear();
+    var month = ('0' + (currentDate.getMonth() + 1)).slice(-2);
+    var formattedDate = year + '-' + month + '-' + '01';
+    return formattedDate;
+}
+function getCurrentDateFinal() {
+    var date = new Date();
+
+    var ultimoDia = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    var year = date.getFullYear();
+    var month = ('0' + (date.getMonth() + 1)).slice(-2);
+    var formattedDate = year + '-' + month + '-' + ultimoDia.getDate();
+    return formattedDate
 }

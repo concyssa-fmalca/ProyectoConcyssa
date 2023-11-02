@@ -49,6 +49,7 @@ function ConsultaServidor(url) {
 function ModalNuevo() {
     $("#lblTituloModal").html("Nueva Marca");
     AbrirModal("modal-form");
+    $("#chkActivo").prop('checked',true)
 }
 
 

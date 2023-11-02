@@ -24,6 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\DAO\DAO.csproj" />
     <ProjectReference Include="..\FE\FE.csproj" />
+    <ProjectReference Include="..\ISAP\ISAP.csproj" />
   </ItemGroup>
 
   <ItemGroup>

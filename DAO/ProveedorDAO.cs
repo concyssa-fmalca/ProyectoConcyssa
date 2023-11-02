@@ -108,6 +108,7 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@Tipo", proveedorDTO.Tipo);
                         da.SelectCommand.Parameters.AddWithValue("@IdSociedad", int.Parse(IdSociedad));
                         da.SelectCommand.Parameters.AddWithValue("@DiasEntrega", proveedorDTO.DiasEntrega);
+                        da.SelectCommand.Parameters.AddWithValue("@Afecto4ta", proveedorDTO.Afecto4ta);
                         //int rpta = da.SelectCommand.ExecuteNonQuery();
                         int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
                         transactionScope.Complete();
@@ -166,6 +167,7 @@ namespace DAO
                         oProveedorDTO.Observacion = drd["Observacion"].ToString();
                         oProveedorDTO.Estado = bool.Parse(drd["Estado"].ToString());
                         oProveedorDTO.DiasEntrega = int.Parse(drd["DiasEntrega"].ToString());
+                        oProveedorDTO.Afecto4ta = bool.Parse(drd["Afecto4ta"].ToString());
                         
                     }
                     drd.Close();
@@ -273,6 +275,7 @@ namespace DAO
                         oProveedorDTO.Observacion = drd["Observacion"].ToString();
                         oProveedorDTO.Estado = bool.Parse(drd["Estado"].ToString());
                         oProveedorDTO.DiasEntrega = int.Parse(drd["DiasEntrega"].ToString());
+                        oProveedorDTO.Afecto4ta = bool.Parse(drd["Afecto4ta"].ToString());
                         lstProveedorDTO.Add(oProveedorDTO);
                     }
                     drd.Close();

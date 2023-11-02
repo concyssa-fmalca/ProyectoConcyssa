@@ -139,9 +139,13 @@ function GuardarProveedor() {
     let varDiasEntrega = $("#txtDiasEntrega").val();
     let varTipo = 2; // proveedor
     let varEstado = false;
+    let varAfecto = false;
 
     if ($('#chkActivo')[0].checked) {
         varEstado = true;
+    }
+    if ($('#chk4ta')[0].checked) {
+        varAfecto = true;
     }
     let arrayTxtNombreAnexo = new Array();
     $("input[name='txtNombreAnexo[]']").each(function (indice, elemento) {
@@ -185,7 +189,8 @@ function GuardarProveedor() {
         'Observacion': varObservacion,
         'Tipo': varTipo,
         'Estado': varEstado,
-        'DiasEntrega' : varDiasEntrega
+        'DiasEntrega': varDiasEntrega,
+        'Afecto4ta' : varAfecto
     }, function (data, status) {
 
         if (data !== 0) {
@@ -223,7 +228,7 @@ function ObtenerDatosxID(varIdProveedor) {
 
             CargarTipoPersona();
             $("#cboTipoPersona").val(proveedores.TipoPersona);
-
+            
             CargarTipoDocumento();
             $("#cboTipoDocumento").val(proveedores.TipoDocumento);
 
@@ -250,6 +255,7 @@ function ObtenerDatosxID(varIdProveedor) {
 
             $("#txtFechaIngreso").val(fecha);
             $("#txtObservacion").val(proveedores.Observacion);
+            changeTipoPersona()
             //AnxoDetalle
             let AnexoDetalle = proveedores.AnexoDetalle;
             let trAnexo = '';
@@ -293,6 +299,10 @@ function ObtenerDatosxID(varIdProveedor) {
 
             if (proveedores.Estado) {
                 $("#chkActivo").prop('checked', true);
+            }
+
+            if (proveedores.Afecto4ta) {
+                $("#chk4ta").prop('checked', true);
             }
 
         }
@@ -608,6 +618,7 @@ function limpiarDatos() {
     $("#cboCondicionPago").val("");
 
     $("#chkActivo").prop('checked', true);
+    $("#chk4ta").prop('checked', false);
     var f = new Date();
     fecha = f.getFullYear() + '-' + pad(f.getMonth(), 2) + '-' + f.getDate();
     $("#txtFechaIngreso").val(fecha)
@@ -747,3 +758,13 @@ function eliminarProvRub(Id, IdProveedor) {
     }, function () { });
 }
 
+function changeTipoPersona() {
+
+    let inicioRuc = $("#txtNroDocumento").val()
+
+    if (inicioRuc.substring(0, 2) == '10' ) {
+        $("#div4ta").show;
+    } else {
+        $("#div4ta").hide;
+    }
+}

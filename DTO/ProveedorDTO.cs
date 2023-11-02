@@ -73,6 +73,7 @@ namespace DTO
         public int DiasEntrega { get; set; }
         public IList<AnexoDTO> AnexoDetalle { get; set; }
         public int IdSociedad { get; set; }
+        public bool Afecto4ta { get; set; }
     }
     public class RubroXProveedorDTO
     {

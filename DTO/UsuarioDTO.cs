@@ -45,5 +45,13 @@ namespace DTO
         public int CountAlmacen { get; set; }
 
     }
+    public class UsuarioMobileDTO
+    {
+        public string? Usuario { get; set; }
+      
+        public string? Password { get; set; }
+        public int IdPerfil { get; set; }
+ 
+    }
 
 }

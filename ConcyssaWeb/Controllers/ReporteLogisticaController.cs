@@ -375,7 +375,7 @@ namespace ConcyssaWeb.Controllers
         }
 
 
-        public string GenerarReporteListaPrecio(string NombreReporte, string Formato, int IdDivision, int IdTipoProducto, int IdArticulo)
+        public string GenerarReporteListaPrecio(string NombreReporte, string Formato, int IdArticulo)
         {
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
@@ -387,7 +387,7 @@ namespace ConcyssaWeb.Controllers
             string mensaje_error;
             try
             {
-                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdDivision=" + IdDivision + "&IdTipoProducto=" + IdTipoProducto + "&IdArticulo=" + IdArticulo;
+                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdArticulo=" + IdArticulo;
                 cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteListaPrecios";
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteListaPrecios";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
@@ -556,7 +556,7 @@ namespace ConcyssaWeb.Controllers
 
 
         
-        public string GenerarReporteOcPendiente(string NombreReporte, string Formato, int IdProveedor,int IdPedido, int IdBase)
+        public string GenerarReporteOcPendiente(string NombreReporte, string Formato, int IdProveedor,int IdPedido, int IdBase,int IdObra , string FechaInicial, string FechaFinal)
         {
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
@@ -568,7 +568,7 @@ namespace ConcyssaWeb.Controllers
             string mensaje_error;
             try
             {
-                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdProveedor=" + IdProveedor + "&IdBase=" + IdBase + "&IdPedido=" + IdPedido;
+                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdProveedor=" + IdProveedor + "&IdBase=" + IdBase + "&IdObra=" + IdObra + "&FechaInicial=" + FechaInicial + "&FechaFinal=" + FechaFinal;
                 cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteOcPendiente";
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteOcPendiente";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);

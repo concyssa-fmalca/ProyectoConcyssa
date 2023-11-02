@@ -393,5 +393,31 @@ namespace ConcyssaWeb.Controllers
 
         }
 
+        public string ListarOPCHxIdObra(int IdObra, DateTime FechaInicio, DateTime FechaFin)
+        {
+            string mensaje_error = "";
+            OpchDAO oOpchDAO = new OpchDAO();
+
+            DataTableDTO oDataTableDTO = new DataTableDTO();
+            List<OpchDTO> lstOpchDTO = oOpchDAO.ObtenerOPCHxIdObra(IdObra, FechaInicio, FechaFin, ref mensaje_error);
+            if (lstOpchDTO.Count >= 0 && mensaje_error.Length == 0)
+            {
+                oDataTableDTO.sEcho = 1;
+                oDataTableDTO.iTotalDisplayRecords = lstOpchDTO.Count;
+                oDataTableDTO.iTotalRecords = lstOpchDTO.Count;
+                oDataTableDTO.aaData = (lstOpchDTO);
+                //return oDataTableDTO;
+                return JsonConvert.SerializeObject(oDataTableDTO);
+
+            }
+            else
+            {
+                return mensaje_error;
+
+            }
+        }
+
+
+
     }
 }

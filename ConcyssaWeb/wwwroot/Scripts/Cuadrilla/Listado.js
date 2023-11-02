@@ -6,6 +6,7 @@ window.onload = function () {
     listarObraFiltro()
     listarArea();
     listarEmpleados();
+    
 };
 
 
@@ -168,6 +169,7 @@ function listarObra() {
         data: {
             'estado': 1
         },
+        async: false,
         cache: false,
         contentType: false,
         success: function (datos) {
@@ -182,6 +184,7 @@ function listarObra() {
             }
         }
     });
+    $("#cboObras").prop("selectedIndex", 1)
 }
 function listarObraFiltro() {
     $.ajax({
@@ -192,6 +195,7 @@ function listarObraFiltro() {
         data: {
             'estado': 1
         },
+        async:false,
         cache: false,
         contentType: false,
         success: function (datos) {
@@ -203,9 +207,12 @@ function listarObraFiltro() {
                     options += `<option value="` + datos[i].IdObra + `">` + datos[i].Codigo + " - " + datos[i].Descripcion + `</option>`;
                 }
                 $("#cboObras").html(options);
+               
             }
         }
     });
+    $("#cboObras").prop("selectedIndex", 1)
+    ConsultaServidor()
 }
 
 function listarGrupo() {
@@ -357,6 +364,7 @@ function limpiarDatos() {
 }
 function colocarCodigo() {
     console.log($("#IdSubGrupo").val())
+    let CodigoUsar = 
     $.post('../Grupo/ObtenerSubGrupoxID', {
         'IdSubGrupo': $("#IdSubGrupo").val(),
     }, function (data, status) {
@@ -366,10 +374,26 @@ function colocarCodigo() {
             limpiarDatos();
         } else {
             let grupo = JSON.parse(data);
-            $("#txtCodigo").val(grupo[0].Codigo);
+            CodigoUsar = (grupo[0].Codigo);
+
+            $.post('ObtenerNuevoCodigo', {
+                'CodigoUsar': CodigoUsar,
+                'IdObra': $("#IdObra").val()
+            }, function (data, status) {
+
+                if (data == "Error") {
+                    swal("Error!", "Ocurrio un error")
+                    limpiarDatos();
+                } else {
+                    let grupo = JSON.parse(data);
+                    $("#txtCodigo").val(grupo[0].Codigo) 
+                }
+
+            });
         }
 
     });
+
 }
 
 

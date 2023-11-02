@@ -145,7 +145,7 @@
                                 <div class='form-group-sm'>
                                     <label for="cboTipoPersona" class="control-label col-sm-2 left-align" style="font-weight:600;text-decoration: underline;">Tipo Persona</label>
                                     <div class="col-sm-4">
-                                        <select id="cboTipoPersona" class="form-control input-sm" tabindex="1"></select>
+                                        <select id="cboTipoPersona" class="form-control input-sm" tabindex="1" ></select>
                                     </div>
                                 </div>
                             </div>
@@ -159,7 +159,7 @@
                                 <div class='form-group-sm' id="divDocumento">
                                     <label for="txtNroDocumento" class="control-label col-sm-1 left-align" style="font-weight:600;text-decoration: underline;">N°</label><label id="lblDocumento" class="control-label col-sm-1 left-align" style="font-weight:600;text-decoration: underline;">Documento</label>
                                     <div class="col-sm-4">
-                                        <input id="txtNroDocumento" type="text" onchange="CrearCodigo()" class="form-control input-sm" tabindex="3" onkeypress="soloEnteros(event, this);" maxlength="11">
+                                        <input id="txtNroDocumento" type="text" onchange="CrearCodigo();changeTipoPersona()" class="form-control input-sm" tabindex="3" onkeypress="soloEnteros(event, this);" maxlength="11">
                                     </div>
                                 </div>
                             </div>
@@ -354,19 +354,22 @@
                                     <input id="txtDiasEntrega" type="number" class="form-control date input-sm" tabindex="22">
                                 </div>
                             </div>
-                            @*<div class='form-group-sm'>
-                                    <div class="checkbox-custom col-xs-4">
-                                        <input type="checkbox" id="chkEmpleado" />
-                                        <label for="chkEmpleado">Empleado</label>
-                                    </div>
-                                </div>*@
+                            <div class='form-group-sm'>
+                                <div class="checkbox-custom col-xs-4" id="div4ta">
+                                    <input type="checkbox" id="chk4ta" />
+                                    <label for="chk4ta">Afecto 4ta Categoria</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class='form-group-sm'>
                                 <div class="checkbox-custom col-xs-4">
                                     <input type="checkbox" id="chkActivo" />
                                     <label for="chkActivo">Activo</label>
                                 </div>
                             </div>
-                        </div>
+
+                        </div>    
                         <div class="row">
                             <div class='form-group-sm'>
                                 <label for="txtObservacion" class="control-label col-sm-2 left-align">Observacion</label>

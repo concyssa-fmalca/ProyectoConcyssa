@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -48,14 +49,17 @@ namespace DTO
         public bool Eliminado { get; set; }
         public string TipoDocumentoRef { get; set; }
         public string Proveedor { get; set; }
-
+        public bool Inventario { get; set; }
 
         public IList<OPCHDetalle> detalles { get; set; }
 
-
+        public decimal ConsumoM3 { get; set; }
+        public decimal ConsumoHW { get; set; }
+        public int TasaDetraccion { get; set; }
+        public int GrupoDetraccion { get; set; }
 
         //Campos Adicionales
-
+        public int CondicionPagoDet { get; set; }
         public string NombTipoDocumentoOperacion { get; set; }
 
 
@@ -90,6 +94,7 @@ namespace DTO
         public string TablaOrigen { get; set; }
         public string IdOrigen { get; set; }
         public int IdDocExtorno { get; set; }
+        public int SerieSAP { get; set; }
 
     }
 
@@ -148,6 +153,10 @@ namespace DTO
         public string NombResponsable { get; set; }
         public string TipoServicio { get; set; }
         public int Resta { get; set; }
+        public int DocEntry { get; set; }
+        public int EnviadoPor { get; set; }
+        public string ItemCode { get; set; }
+        public int LineNum { get; set; }
 
     }
 }

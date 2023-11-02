@@ -18,9 +18,51 @@
         <div class="container-fluid">
 
             <a id="reporteRPT" style="display:none"></a>
-            <div class="panel-footer text-right">
+            <div class="panel-footer">
                 <div class="row">
-                    <select class="input-sm form-control" id="IdProyecto"></select>
+                    <div class='form-group-sm'>
+                        <label for="txtFechaInicio" class="control-label col-sm-2 left-align">Fecha Inicio</label>
+                        <div class="col-sm-4">
+                            <input class="form-control input-sm" type="date" id="txtFechaInicio" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class='form-group-sm'>
+                        <label for="txtFechaFin" class="control-label col-sm-2 rigth-align">Fecha Fin</label>
+                        <div class="col-sm-4">
+                            <input class="form-control input-sm" type="date" id="txtFechaFin" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class='form-group-sm'>
+                        <label for="IdBase" class="control-label col-sm-2 left-align">Base</label>
+                        <div class="col-sm-4">
+                            <select class="form-control input-sm" id="IdBase" onchange="CargarObra()"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class='form-group-sm'>
+                        <label for="IdObra" class="control-label col-sm-2 left-align">Obra</label>
+                        <div class="col-sm-4">
+                            <select class="form-control input-sm" id="IdObra"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class='form-group-sm'>
+                        <label for="cboTipoPersona" class="control-label col-sm-2 rigth-align">Proveedor</label>
+                        <div class="col-sm-4">
+                            <select id="IdProveedor" class="form-control input-sm" tabindex="1">
+                                <option value="1">Materiales</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+          
                     <button type="button" id="btnReporte" class="btn btn-primary pull-centers plu" onclick="GenerarReporteOsPendiente()">Generar Reporte</button>
 
                 </div>

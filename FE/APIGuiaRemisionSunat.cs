@@ -118,6 +118,7 @@ namespace FE
                         var respuesta = RespuestaConsultaTicket(resultado.Ticket,gr);
                         if (respuesta.Success)
                         {
+                           
                             resultado.DetalleAnexo = respuesta.DetalleAnexo;
                             mov.UpdateEstadoGuia(IdMovimiento, ref mensaje_error);
                         }
@@ -151,6 +152,7 @@ namespace FE
                                     var respuesta = RespuestaConsultaTicket(TicketObtenido, gr);
                                     if (respuesta.Success)
                                     {
+                                        resultado.Message = respuesta.Message;
                                         resultado.Success = respuesta.Success;
                                         resultado.DetalleAnexo = respuesta.DetalleAnexo;
                                         mov.UpdateEstadoGuia(IdMovimiento, ref mensaje_error);
@@ -183,6 +185,7 @@ namespace FE
 
         private string ConsultaTicket(string Ticket)
         {
+            Thread.Sleep(5000);
             var fullpath = "https://apiandes.andessystems.com/ApiSUNAT/api/send-gre/v1/checkTicket/"+ Ticket;
             var myUri = new Uri(fullpath);
             var myWebRequest = WebRequest.Create(myUri);

@@ -438,6 +438,20 @@ namespace ConcyssaWeb.Controllers
                 return mensaje_error;
             }
         }
+        public string ObtenerStockxProducto(int IdArticulo, int IdAlmacen)
+        {
+            string mensaje_error = "";
+            ArticuloDAO oArticuloDAO = new ArticuloDAO();          
+            List<ArticuloDTO> lstArticuloDTO = oArticuloDAO.ObtenerStockxProducto(IdArticulo, IdAlmacen, ref mensaje_error);
+            if (lstArticuloDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstArticuloDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
 
     }
 }

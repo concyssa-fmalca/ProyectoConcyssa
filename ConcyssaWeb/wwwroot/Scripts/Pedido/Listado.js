@@ -108,8 +108,7 @@ function listarPedidoDt() {
                     //    ExtrasBtn = "<button class='btn btn-primary juntos  btn-xs' onclick='LiberarOC(" + full.IdPedido + ")'>LIBERAR</button>"
                     //}
 
-                    return `<button class="btn btn-primary editar  juntos fa fa-eye  btn-xs" style="width:30px;height:30px"  onclick="ObtenerDatosxID(` + full.IdPedido + `)"></button>
-                            <button class="btn btn-danger  reporte  juntos fa fa-file-pdf-o btn-xs" onclick="ReporteOrdenComrpa(` + full.IdPedido + `,` + full.Conformidad + `)"></button>
+                    return `<button class="btn btn-primary editar  juntos fa fa-eye  btn-xs" style="width:30px;height:30px"  onclick="ObtenerDatosxID(` + full.IdPedido + `)"></button>                          
                            `+ ExtrasBtn
                            
                 },
@@ -160,10 +159,10 @@ function listarPedidoDt() {
                 targets: 5,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    if (full.EstadoOC == 2) {
+                    if (full.EstadoOC == 2 || full.EstadoOC == 1 ) {
                         return '<p style="color:red">' + full.NombSerie + '-' + full.Correlativo +'<p>' 
                     } else {
-                        return full.NombSerie + '-' + full.Correlativo
+                        return '<a style="color:blue;text-decoration:underline;cursor:pointer" onclick="ReporteOrdenComrpa(' + full.IdPedido + ',' + full.Conformidad + ')" >' + full.NombSerie + '-' + full.Correlativo +'</a>'
                     }
                 },
             },
@@ -220,7 +219,7 @@ function listarPedidoDt() {
                 targets: 9,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return `<button class="btn btn-primary btn-xs" onclick="ReportePendiente(` + full.IdPedido +`)">ENTREGAS</button>`
+                    return `<a style="color:blue;text-decoration:underline;cursor:pointer" onclick="ReportePendiente(` + full.IdPedido +`)">ENTREGAS</a>`
 
                 },
             }

@@ -16,6 +16,7 @@ function ConsultaServidor(url) {
         $("#txtRazonSocial").val(datos[0].RazonSocial);
         $("#txtDireccion").val(datos[0].Direccion);
         $("#txtId").val(datos[0].Id);
+        $("#txtNombreBaseDatosSap").val(datos[0].NombreBDSAP);
         //console.log(data);
 
 
@@ -29,13 +30,15 @@ function GuardarConfiguracion() {
     let Ruc = $("#txtRuc").val();
     let RazonSocial = $("#txtRazonSocial").val();
     let Direccion =$("#txtDireccion").val();
+    let NombreBDSAP = $("#txtNombreBaseDatosSap").val();
 
 
     $.post('UpdateInsertConfiguracionSociedad', {
         'Id': Id,
         'Ruc': Ruc,
         'RazonSocial': RazonSocial,
-        'Direccion': Direccion
+        'Direccion': Direccion,
+        'NombreBDSAP': NombreBDSAP,
        
     }, function (data, status) {
 

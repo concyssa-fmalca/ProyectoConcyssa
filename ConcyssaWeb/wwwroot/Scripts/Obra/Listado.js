@@ -278,6 +278,7 @@ function CargarCatalogoProductoxIdObra(IdObra) {
 function ModalNuevo() {
     $("#lblTituloModal").html("Nueva Obra");
     AbrirModal("modal-form");
+    $("#chkActivo").prop('checked', true)
 }
 
 
@@ -446,6 +447,8 @@ function limpiarDatos() {
     $("#txtCodigo").val("");
     $("#txtDescripcion").val("");
     $("#chkActivo").prop('checked', false);
+    $("#chkIntranet").prop('checked', false);
+    $("#chkContrato").prop('checked', false);
 
     $("#IdBase").val(0);
     $("#txtDescripcionCorta").val("");

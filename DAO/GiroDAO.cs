@@ -60,6 +60,7 @@ namespace DAO
                         olstGiroDTO.NombSerie = (drd["NombSerie"].ToString());
                         olstGiroDTO.IdSerie = Convert.ToInt32(drd["IdSerie"].ToString());
                         olstGiroDTO.Correlativo = Convert.ToInt32(drd["Correlativo"].ToString());
+                        olstGiroDTO.Eliminado = Convert.ToBoolean(drd["Eliminado"].ToString());
                         
                         lstGiroDTO.Add(olstGiroDTO);
                     }
@@ -100,6 +101,8 @@ namespace DAO
                         oGiroDTO.IdSemana = Convert.ToInt32(drd["IdSemana"].ToString());
                         oGiroDTO.IdTipoRegistro = Convert.ToInt32(drd["IdTipoRegistro"].ToString());
                         oGiroDTO.IdEstadoGiro = Convert.ToInt32(drd["IdEstadoGiro"].ToString());
+                        oGiroDTO.NombSerie = drd["NombSerie"].ToString();
+                        oGiroDTO.Correlativo = Convert.ToInt32(drd["Correlativo"].ToString());
                         oGiroDTO.IdCreador = Convert.ToInt32((drd["IdCreador"].ToString()== null ? 0 : drd["IdCreador"].ToString()));
 
                         lstGiroDTO.Add(oGiroDTO);
@@ -307,6 +310,7 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@IdEstadoGiro", oGiroDTO.IdEstadoGiro);
                         da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
                         da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
+                        da.SelectCommand.Parameters.AddWithValue("@IdSerie", oGiroDTO.IdSerie);
 
 
                         string? rpta = "";

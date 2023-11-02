@@ -49,6 +49,7 @@ function ConsultaServidor(url) {
 function ModalNuevo() {
     $("#lblTituloModal").html("Nueva TiposDocumentos");
     AbrirModal("modal-form");
+    $('#chkActivo').prop('checked',true)
 }
 
 

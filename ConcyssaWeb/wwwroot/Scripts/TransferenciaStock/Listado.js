@@ -800,7 +800,7 @@ function AgregarLinea() {
         }
         tr += `</select>
             </td>
-            <td><input class="form-control changeTotal" type="number" style="width:100px" name="txtItemTotal[]" id="txtItemTotal`+ contador + `" onchange="CalcularTotales()" disabled></td>
+            <td><input class="form-control changeTotal" type="text" style="width:100px" name="txtItemTotal[]" id="txtItemTotal`+ contador + `" onchange="CalcularTotales()" disabled></td>
             
             <td>
             <select class="form-control" style="width:100px" id="cboAlmacenOrigen`+ contador + `" name="cboAlmacenOrigen[]" onchange="BuscarStockAlmacen(` + contador + `)">`;
@@ -895,7 +895,7 @@ function AgregarLinea() {
 
         $("#cboAlmacenOrigen" + contador).val(AlmacenOrigen);
         $("#cboAlmacen" + contador).val(AlmacenDestino);
-
+        $("#txtItemTotal" + contador).val(formatNumberDecimales($("#txtItemTotal" + contador).val(),2))
         LimpiarModalItem();
         NumeracionDinamica();
     }
@@ -1460,7 +1460,7 @@ function GuardarSolicitud() {
 
     let arrayCantidadNecesaria = new Array();
     $("input[name='txtCantidadNecesaria[]']").each(function (indice, elemento) {
-        arrayCantidadNecesaria.push($(elemento).val());
+        arrayCantidadNecesaria.push(($(elemento).val()).replace(/,/g, ""));
     });
 
     let arrayStock = new Array();
@@ -1471,12 +1471,12 @@ function GuardarSolicitud() {
 
     let arrayPrecioInfo = new Array();
     $("input[name='txtPrecioInfo[]']").each(function (indice, elemento) {
-        arrayPrecioInfo.push($(elemento).val());
+        arrayPrecioInfo.push(($(elemento).val()).replace(/,/g, ""));
     });
 
     let arrayTotal = new Array();
     $("input[name='txtItemTotal[]']").each(function (indice, elemento) {
-        arrayTotal.push($(elemento).val());
+        arrayTotal.push(($(elemento).val()).replace(/,/g, ""));
     });
 
     let arrayAlmacenOrigen = new Array();
@@ -1538,7 +1538,7 @@ function GuardarSolicitud() {
     let Comentario = $("#txtComentarios").val();
     let SubTotal = $("#txtTotalAntesDescuento").val();
     let Impuesto = $("#txtImpuesto").val();
-    let Total = $("#txtTotal").val();
+    let Total = ($("#txtTotal").val()).replace(/,/g, "");
     let IdTipoProducto = $("#IdTipoProducto").val();
     let IdCuadrilla = $("#IdCuadrilla").val();
     let IdAlmacenDestino = $("#IdAlmacenDestino").val();
@@ -1850,7 +1850,7 @@ function ObtenerDatosxID(IdMovimiento) {
             $("#TipoCambio").val(movimiento.TipoCambio);
             $("#txtTotalAntesDescuento").val(movimiento.SubTotal)
             $("#txtImpuesto").val(movimiento.Impuesto)
-            $("#txtTotal").val(movimiento.Total)
+            $("#txtTotal").val(formatNumberDecimales( movimiento.Total,2))
            
             $("#txtNumeracion").val(movimiento.Correlativo)
             $("#IdBase").val(movimiento.IdBase)
@@ -2038,11 +2038,11 @@ function ObtenerDatosxID(IdMovimiento) {
 
 function CalcularTotalDetalle(contador) {
 
-    let varIndicadorImppuesto = $("#cboIndicadorImpuestoDetalle" + contador).val();
+    let varIndicadorImppuesto = ($("#cboIndicadorImpuestoDetalle" + contador).val()).replace(/,/g, "");
     let varPorcentaje = $('option:selected', "#cboIndicadorImpuestoDetalle" + contador).attr("impuesto");
 
-    let varCantidadNecesaria = $("#txtCantidadNecesaria" + contador).val();
-    let varPrecioInfo = $("#txtPrecioInfo" + contador).val();
+    let varCantidadNecesaria = ($("#txtCantidadNecesaria" + contador).val()).replace(/,/g, "");
+    let varPrecioInfo = ($("#txtPrecioInfo" + contador).val()).replace(/,/g, "");
 
     let subtotal = varCantidadNecesaria * varPrecioInfo;
 
@@ -2068,16 +2068,16 @@ function CalcularTotales() {
     let arrayTotal = new Array();
 
     $("input[name='txtCantidadNecesaria[]']").each(function (indice, elemento) {
-        arrayCantidadNecesaria.push($(elemento).val());
+        arrayCantidadNecesaria.push(($(elemento).val()).replace(/,/g, ""));
     });
     $("input[name='txtPrecioInfo[]']").each(function (indice, elemento) {
-        arrayPrecioInfo.push($(elemento).val());
+        arrayPrecioInfo.push(($(elemento).val()).replace(/,/g, ""));
     });
     $("select[name='cboIndicadorImpuesto[]']").each(function (indice, elemento) {
         arrayIndicadorImpuesto.push($('option:selected', elemento).attr("impuesto"));
     });
     $("input[name='txtItemTotal[]']").each(function (indice, elemento) {
-        arrayTotal.push(Number($(elemento).val()));
+        arrayTotal.push(($(elemento).val()).replace(/,/g, ""));
     });
 
     //console.log(arrayTotal);
@@ -2099,7 +2099,7 @@ function CalcularTotales() {
 
     $("#txtTotalAntesDescuento").val(subtotal.toFixed(2));
     $("#txtImpuesto").val(impuesto.toFixed(2));
-    $("#txtTotal").val(total.toFixed(2));
+    $("#txtTotal").val(formatNumberDecimales(total,2));
 
 }
 
@@ -2149,13 +2149,13 @@ function AgregarLineaDetalle(contador, detalle) {
             <input class="form-control" type="number" name="txtStock[]" value="0" id="txtStock` + contador + `" disabled>
         </td>
         <td>
-            <input class="form-control" type="number" name="txtCantidadNecesaria[]" value="`+ detalle.Cantidad + `" id="txtCantidadNecesaria` + contador + `" onkeyup="CalcularTotalDetalle(` + contador + `)" disabled>
+            <input class="form-control" type="text" name="txtCantidadNecesaria[]" value="`+ formatNumberDecimales(detalle.Cantidad,2) + `" id="txtCantidadNecesaria` + contador + `" onkeyup="CalcularTotalDetalle(` + contador + `)" disabled>
         </td>
         <td>
-            <input class="form-control" type="number" name="txtPrecioInfo[]" value="`+ detalle.PrecioUnidadTotal + `" id="txtPrecioInfo` + contador + `" onkeyup="CalcularTotalDetalle(` + contador + `)" disabled>
+            <input class="form-control" type="text" name="txtPrecioInfo[]" value="`+ formatNumberDecimales(detalle.PrecioUnidadTotal,2) + `" id="txtPrecioInfo` + contador + `" onkeyup="CalcularTotalDetalle(` + contador + `)" disabled>
         </td>
         <td>
-            <input class="form-control changeTotal" type="number" style="width:100px" value="`+ detalle.Total + `" name="txtItemTotal[]" id="txtItemTotal` + contador + `" onchange="CalcularTotales()" disabled>
+            <input class="form-control changeTotal" type="text" style="width:100px" value="`+ formatNumberDecimales(detalle.Total,2) + `" name="txtItemTotal[]" id="txtItemTotal` + contador + `" onchange="CalcularTotales()" disabled>
         </td>
 
         <td>

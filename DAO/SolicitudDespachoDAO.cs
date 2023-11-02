@@ -40,6 +40,7 @@ namespace DAO
                         oSolicitudDespachoDTO.DescripcionBase = (drd["DescripcionBase"].ToString());
                         oSolicitudDespachoDTO.FechaDocumento = Convert.ToDateTime(drd["FechaDocumento"].ToString());
                         oSolicitudDespachoDTO.FechaContabilizacion = Convert.ToDateTime(drd["FechaContabilizacion"].ToString());
+                        oSolicitudDespachoDTO.EstadoSolicitud = int.Parse(drd["EstadoSolicitud"].ToString());
                        
                         lstSolicitudDespachoDTO.Add(oSolicitudDespachoDTO);
                     }
@@ -84,6 +85,7 @@ namespace DAO
                         oSolicitudDespachoDTO.FechaDocumento = Convert.ToDateTime(drd["FechaDocumento"].ToString());
                         oSolicitudDespachoDTO.FechaContabilizacion = Convert.ToDateTime(drd["FechaContabilizacion"].ToString());
                         oSolicitudDespachoDTO.Comentario = (String.IsNullOrEmpty(drd["Comentario"].ToString()) ? "" : drd["Comentario"].ToString());
+                        oSolicitudDespachoDTO.EstadoSolicitud = int.Parse(drd["EstadoSolicitud"].ToString());
 
 
 
@@ -139,6 +141,7 @@ namespace DAO
                         oSolicitudDespachoDetalleDTO.IdGrupoUnidadMedida = int.Parse((String.IsNullOrEmpty(drd["IdGrupoUnidadMedida"].ToString()) ? "0" : drd["IdGrupoUnidadMedida"].ToString()));
                         oSolicitudDespachoDetalleDTO.IdDefinicionGrupoUnidad = int.Parse((String.IsNullOrEmpty(drd["IdDefinicionUnidadMedida"].ToString()) ? "0" : drd["IdDefinicionUnidadMedida"].ToString()));
                         oSolicitudDespachoDetalleDTO.Cantidad = decimal.Parse(drd["Cantidad"].ToString());
+                        oSolicitudDespachoDetalleDTO.CantidadAtendida = decimal.Parse(drd["CantidadAtendida"].ToString());
 
 
 
@@ -411,9 +414,266 @@ namespace DAO
             }
         }
 
+        public List<SolicitudDespachoDetalleDTO> ObtenerSolicitudesDespachoxObra(int IdSociedad, int IdObra)
+        {
+            List<SolicitudDespachoDetalleDTO> lstSolicitudDespachoDetalleDTO = new List<SolicitudDespachoDetalleDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarSolicitudDespachoxObra", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
+                    da.SelectCommand.Parameters.AddWithValue("@IdObra",IdObra);
+
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        SolicitudDespachoDetalleDTO oSolicitudDespachoDetalleDTO = new SolicitudDespachoDetalleDTO();
+                        oSolicitudDespachoDetalleDTO.Id = int.Parse(drd["Id"].ToString());
+                        oSolicitudDespachoDetalleDTO.FechaContabilizacion = Convert.ToDateTime(drd["FechaContabilizacion"].ToString());
+                        oSolicitudDespachoDetalleDTO.IdSolicitudDespacho = int.Parse(drd["IdSolicitudDespacho"].ToString());
+                        oSolicitudDespachoDetalleDTO.IdItem = int.Parse(drd["IdItem"].ToString());
+                        oSolicitudDespachoDetalleDTO.Descripcion = drd["Descripcion"].ToString();
+                        oSolicitudDespachoDetalleDTO.SerieyNum = drd["SerieyNum"].ToString();
+                        oSolicitudDespachoDetalleDTO.IdUnidadMedida = int.Parse(drd["IdUnidadMedida"].ToString());
+                        oSolicitudDespachoDetalleDTO.IdGrupoUnidadMedida = int.Parse(drd["IdGrupoUnidadMedida"].ToString());
+                        oSolicitudDespachoDetalleDTO.IdDefinicionGrupoUnidad = int.Parse(drd["IdDefinicionUnidadMedida"].ToString());
+                        oSolicitudDespachoDetalleDTO.Cantidad = Convert.ToDecimal(drd["Cantidad"].ToString());
+                        oSolicitudDespachoDetalleDTO.CantidadAtendida = Convert.ToDecimal(drd["CantidadAtendida"].ToString());
+                        oSolicitudDespachoDetalleDTO.CantidadAtendida = Convert.ToDecimal(drd["CantidadAtendida"].ToString());
+                        oSolicitudDespachoDetalleDTO.IdTipoProducto = int.Parse(drd["IdTipoProducto"].ToString());
+                        oSolicitudDespachoDetalleDTO.IdObra = int.Parse(drd["IdObra"].ToString());
+                        oSolicitudDespachoDetalleDTO.NombCuadrilla = drd["NombCuadrilla"].ToString();
+
+                        lstSolicitudDespachoDetalleDTO.Add(oSolicitudDespachoDetalleDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            return lstSolicitudDespachoDetalleDTO;
+        }
+        public List<SolicitudDespachoDTO> ObtenerSolicitudesDespachoAtender(int IdSociedad, int IdBase,DateTime FechaInicio,DateTime FechaFin, int EstadoSolicitud,int SerieFiltro)
+        {
+            List<SolicitudDespachoDTO> lstSolicitudDespachoDTO = new List<SolicitudDespachoDTO>();
+
+           
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarSolicitudDespachoCabezera", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
+                    da.SelectCommand.Parameters.AddWithValue("@IdBase", IdBase);
+                    da.SelectCommand.Parameters.AddWithValue("@FechaInicio", FechaInicio);
+                    da.SelectCommand.Parameters.AddWithValue("@FechaFin", FechaFin);
+                    da.SelectCommand.Parameters.AddWithValue("@EstadoSolicitud", EstadoSolicitud);
+                    da.SelectCommand.Parameters.AddWithValue("@SerieFiltro", SerieFiltro);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        SolicitudDespachoDTO oSolicitudDespachoDTO = new SolicitudDespachoDTO();
+                        oSolicitudDespachoDTO.Id = int.Parse(drd["Id"].ToString());
+                        oSolicitudDespachoDTO.IdSerie = int.Parse(drd["IdSerie"].ToString());
+                        oSolicitudDespachoDTO.Serie = drd["Serie"].ToString();
+                        oSolicitudDespachoDTO.Numero = int.Parse(drd["Numero"].ToString());
+                        oSolicitudDespachoDTO.IdClaseProducto = int.Parse(drd["IdClaseProducto"].ToString());
+                        oSolicitudDespachoDTO.IdTipoProducto = int.Parse(drd["IdTipoProducto"].ToString());
+                        oSolicitudDespachoDTO.IdCuadrilla = int.Parse(drd["IdCuadrilla"].ToString());
+                        oSolicitudDespachoDTO.IdObra = int.Parse(drd["IdObra"].ToString());
+                        oSolicitudDespachoDTO.IdBase = int.Parse(drd["IdBase"].ToString());
+                        oSolicitudDespachoDTO.FechaDocumento = Convert.ToDateTime(drd["FechaDocumento"].ToString());
+                        oSolicitudDespachoDTO.FechaContabilizacion = Convert.ToDateTime(drd["FechaContabilizacion"].ToString());
+                        oSolicitudDespachoDTO.Comentario = (String.IsNullOrEmpty(drd["Comentario"].ToString()) ? "" : drd["Comentario"].ToString());
+                        oSolicitudDespachoDTO.NombCuadrilla = drd["NombCuadrilla"].ToString();
+                        oSolicitudDespachoDTO.SerieyNum = drd["SerieyNum"].ToString();
+                        oSolicitudDespachoDTO.IdSolicitante = int.Parse(drd["IdSolicitante"].ToString());
+                        oSolicitudDespachoDTO.EstadoSolicitud = int.Parse(drd["EstadoSolicitud"].ToString());
+
+
+
+                        int IdSolicitudDespacho = int.Parse(drd["Id"].ToString());
+                        Int32 filasdetalle = 0;
+                        using (SqlConnection cn2 = new Conexion().conectar())
+                        {
+                            try
+                            {
+                                cn2.Open();
+                                SqlDataAdapter da2 = new SqlDataAdapter("SMC_ListarSolicitudDespachoDetallexID", cn2);
+                                da2.SelectCommand.Parameters.AddWithValue("@IdSolicitudDespacho", IdSolicitudDespacho);
+                                da2.SelectCommand.CommandType = CommandType.StoredProcedure;
+                                SqlDataReader dr2 = da2.SelectCommand.ExecuteReader();
+                                while (dr2.Read())
+                                {
+                                    filasdetalle++;
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                            }
+                        }
+
+                        oSolicitudDespachoDTO.Detalles = new SolicitudDespachoDetalleDTO[filasdetalle];
+                        using (SqlConnection cn3 = new Conexion().conectar())
+                        {
+                            try
+                            {
+                                cn3.Open();
+                                SqlDataAdapter da3 = new SqlDataAdapter("SMC_ListarSolicitudDespachoDetallexID", cn3);
+                                da3.SelectCommand.Parameters.AddWithValue("@IdSolicitudDespacho", IdSolicitudDespacho);
+                                da3.SelectCommand.CommandType = CommandType.StoredProcedure;
+                                SqlDataReader drd3 = da3.SelectCommand.ExecuteReader();
+                                Int32 posicion = 0;
+                                while (drd3.Read())
+                                {
+                                    SolicitudDespachoDetalleDTO oSolicitudDespachoDetalleDTO = new SolicitudDespachoDetalleDTO();
+                                    oSolicitudDespachoDetalleDTO.Id = int.Parse(drd3["Id"].ToString());
+                                    oSolicitudDespachoDetalleDTO.IdItem = int.Parse(drd3["IdItem"].ToString());
+                                    oSolicitudDespachoDetalleDTO.CodigoArticulo = (drd3["CodigoArticulo"].ToString());
+                                    oSolicitudDespachoDetalleDTO.Descripcion = (drd3["Descripcion"].ToString());
+                                    oSolicitudDespachoDetalleDTO.IdUnidadMedida = int.Parse(drd3["IdUnidadMedida"].ToString());
+                                    oSolicitudDespachoDetalleDTO.IdGrupoUnidadMedida = int.Parse((String.IsNullOrEmpty(drd3["IdGrupoUnidadMedida"].ToString()) ? "0" : drd3["IdGrupoUnidadMedida"].ToString()));
+                                    oSolicitudDespachoDetalleDTO.IdDefinicionGrupoUnidad = int.Parse((String.IsNullOrEmpty(drd3["IdDefinicionUnidadMedida"].ToString()) ? "0" : drd3["IdDefinicionUnidadMedida"].ToString()));
+                                    oSolicitudDespachoDetalleDTO.Cantidad = decimal.Parse(drd3["Cantidad"].ToString());
+                                    oSolicitudDespachoDetalleDTO.CantidadAtendida = decimal.Parse(drd3["CantidadAtendida"].ToString());
+
+
+
+                                    oSolicitudDespachoDTO.Detalles[posicion] = oSolicitudDespachoDetalleDTO;
+                                    posicion = posicion + 1;
+                                }
+
+                            }
+                            catch (Exception ex)
+                            {
+                            }
+
+                            lstSolicitudDespachoDTO.Add(oSolicitudDespachoDTO);
+
+                        }
 
 
 
 
+                    }
+                    drd.Close();
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+
+            return lstSolicitudDespachoDTO;
+        }
+
+        public int UpdateInsertSolicitudDespachoDetalle(SolicitudDespachoDetalleDTO oSolicitudDespachoDetalleDTO, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter dad = new SqlDataAdapter("SMC_UpdateInsertSolicitudDespachoDetalle", cn);
+                        dad.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        dad.SelectCommand.Parameters.AddWithValue("@IdSolicitudDespachoDetalle", oSolicitudDespachoDetalleDTO.Id);
+                        dad.SelectCommand.Parameters.AddWithValue("@IdSolicitudDespacho", oSolicitudDespachoDetalleDTO.IdSolicitudDespacho);
+                        dad.SelectCommand.Parameters.AddWithValue("@IdItem", oSolicitudDespachoDetalleDTO.IdItem);
+                        dad.SelectCommand.Parameters.AddWithValue("@Descripcion", oSolicitudDespachoDetalleDTO.Descripcion);
+                        dad.SelectCommand.Parameters.AddWithValue("@IdUnidadMedida", oSolicitudDespachoDetalleDTO.IdUnidadMedida);
+                        dad.SelectCommand.Parameters.AddWithValue("@Cantidad", oSolicitudDespachoDetalleDTO.Cantidad);
+                        int rpta = Convert.ToInt32(dad.SelectCommand.ExecuteNonQuery());
+                        transactionScope.Complete();
+                        return rpta;
+
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+                }
+
+            }
+        }
+
+        public int AtencionConfirmada(int Cantidad,int IdSolicitud,int IdArticulo, int EstadoSolicitud, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter dad = new SqlDataAdapter("SMC_SolicitudAtendida", cn);
+                        dad.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        dad.SelectCommand.Parameters.AddWithValue("@Cantidad", Cantidad);
+                        dad.SelectCommand.Parameters.AddWithValue("@IdSolicitud", IdSolicitud);
+                        dad.SelectCommand.Parameters.AddWithValue("@IdArticulo", IdArticulo);
+                        dad.SelectCommand.Parameters.AddWithValue("@EstadoSolicitud", EstadoSolicitud);
+                        int rpta = Convert.ToInt32(dad.SelectCommand.ExecuteNonQuery());
+                        transactionScope.Complete();
+                        return rpta;
+
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+                }
+
+            }
+        }
+        public int CerrarSolicitud(int IdSolicitud,int IdUsuario, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter dad = new SqlDataAdapter("SMC_CerrarSolicitud", cn);
+                        dad.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        dad.SelectCommand.Parameters.AddWithValue("@IdSolicitud", IdSolicitud);
+                        dad.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
+                        int rpta = Convert.ToInt32(dad.SelectCommand.ExecuteNonQuery());
+                        transactionScope.Complete();
+                        return rpta;
+
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+                }
+
+            }
+        }
     }
 }

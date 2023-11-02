@@ -1,8 +1,12 @@
 ﻿function GenerarReporteEntrega() {
-    let Anno = $("#yearentrega").val();
+    let IdProveedor = $("#IdProveedor").val();
+    let IdBase = $("#IdBase").val();
+    let IdObra = $("#IdObra").val();
+    let FechaInicial = $("#txtFechaInicio").val();
+    let FechaFinal = $("#txtFechaFin").val();
     let respustavalidacion = "";
     $.ajaxSetup({ async: false });
-    $.post("GenerarReporteEntrega", { 'NombreReporte': 'ReporteEntrega', 'Formato': 'PDF', 'Anno': Anno }, function (data, status) {
+    $.post("GenerarReporteOcPendiente", { 'NombreReporte': 'ReporteEntrega', 'Formato': 'PDF', 'IdProveedor': IdProveedor, 'IdBase': IdBase, 'IdObra': IdObra, 'FechaInicial': FechaInicial, 'FechaFinal': FechaFinal }, function (data, status) {
         let datos;
         if (validadJson(data)) {
             let datobase64;
@@ -18,6 +22,80 @@
         }
     });
 }
+function CargarProveedor() {
+    $.ajaxSetup({ async: false });
+    $.post("/Proveedor/ObtenerProveedores", { estado: 1 }, function (data, status) {
+        let proveedores = JSON.parse(data);
+        llenarComboProveedor(proveedores, "IdProveedor", "TODOS")
+    });
+}
+
+function llenarComboProveedor(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdProveedor + "'>" + lista[i].RazonSocial + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+}
+
+
+
+function CargarBase() {
+    $.ajaxSetup({ async: false });
+    $.post("/Base/ObtenerBase", { estado: 1 }, function (data, status) {
+        let bases = JSON.parse(data);
+        llenarComboBase(bases, "IdBase", "TODOS")
+    });
+}
+
+function llenarComboBase(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdBase + "'>" + lista[i].Descripcion + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+}
+
+function CargarObra() {
+    $.ajaxSetup({ async: false });
+    $.post("/Obra/ObtenerObraxIdBase", { IdBase: $("#IdBase").val() }, function (data, status) {
+        try {
+            let bases = JSON.parse(data);
+            llenarComboObra(bases, "IdObra", "TODOS")
+        } catch (e) {
+            $("#IdObra").html("<option value='0'>TODOS</option>")
+        }
+    });
+}
+
+function llenarComboObra(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdObra + "'>" + lista[i].Descripcion + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+}
 
 
 
@@ -29,10 +107,31 @@ function validadJson(json) {
         return false;
     }
 }
+function getCurrentDate() {
+    var currentDate = new Date();
+    var year = currentDate.getFullYear();
+    var month = ('0' + (currentDate.getMonth() + 1)).slice(-2);
+    var formattedDate = year + '-' + month + '-' + '01';
+    return formattedDate;
+}
+function getCurrentDateFinal() {
+    var date = new Date();
 
+    var ultimoDia = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    var year = date.getFullYear();
+    var month = ('0' + (date.getMonth() + 1)).slice(-2);
+    var formattedDate = year + '-' + month + '-' + ultimoDia.getDate();
+    return formattedDate
+}
 
 window.onload = function () {
-
+    CargarProveedor();
+    CargarBase();
+    CargarObra()
+    $("#IdProveedor").select2();
+    $("#IdBase").select2();
+    $("#txtFechaInicio").val(getCurrentDate())
+    $("#txtFechaFin").val(getCurrentDateFinal())
 };
 function verBase64PDF(datos) {
     //var b64 = "JVBERi0xLjcNCiWhs8XXDQoxIDAgb2JqDQo8PC9QYWdlcyAyIDAgUiAvVHlwZS9DYXRhbG9nPj4NCmVuZG9iag0KMiAwIG9iag0KPDwvQ291bnQgMS9LaWRzWyA0IDAgUiBdL1R5cGUvUGFnZXM+Pg0KZW5kb2JqDQozIDAgb2JqDQo8PC9DcmVhdGlvbkRhdGUoRDoyMDIyMDkyODE2NDAzMCkvQ3JlYXRvcihQREZpdW0pL1Byb2R1Y2VyKFBERml1bSk+Pg0KZW5kb2JqDQo0IDAgb2JqDQo8PC9Db250ZW50cyA1IDAgUiAvTWVkaWFCb3hbIDAgMCA2MTIgNzkyXS9QYXJlbnQgMiAwIFIgL1Jlc291cmNlczw8L0ZvbnQ8PC9GMSA2IDAgUiA+Pi9Qcm9jU2V0IDcgMCBSID4+L1R5cGUvUGFnZT4+DQplbmRvYmoNCjUgMCBvYmoNCjw8L0ZpbHRlci9GbGF0ZURlY29kZS9MZW5ndGggMzExPj5zdHJlYW0NCnicvZPNasMwEITvBr/DHFtot7LiH/mYtMmhECjU9C5i2VGw5WDJpfTpayckhUCDSqGSDjsHfcPOshzPYbAowoBhun0dBg+rCIzxDEUVBklGsyxhyDgnLhhDUYbBDeZ41e2+UXh5WmGlx+IWxS4MlsWRdmRE7MBIc+LJ+DUVglImToxiqy3GJ2Fb2TQoVdsZ63rpdGdA+7JCNZHvvdhpTBmLT+zdYB2qrsdgFbSB2yq86d4NssFabbbS6I2FG1zXa9lYwrrrFZz6cIS5KdFO0sc24ZQl/GR7AfCRPiZckIjPuf0K/5P0sY1SEnl6tbfFmJ+p7/A5HR9zH18WUx6fR/nnVr1zTnJOec79cvbhjQUT/z63ZNzZaHZ9bhdy+a7MQRMeO+O0GVSJcQn3slbgIKJv3y8shB6ADQplbmRzdHJlYW0NCmVuZG9iag0KNiAwIG9iag0KPDwvQmFzZUZvbnQvSGVsdmV0aWNhL0VuY29kaW5nL1dpbkFuc2lFbmNvZGluZy9OYW1lL0YxL1N1YnR5cGUvVHlwZTEvVHlwZS9Gb250Pj4NCmVuZG9iag0KNyAwIG9iag0KWy9QREYvVGV4dF0NCmVuZG9iag0KeHJlZg0KMCA4DQowMDAwMDAwMDAwIDY1NTM1IGYNCjAwMDAwMDAwMTcgMDAwMDAgbg0KMDAwMDAwMDA2NiAwMDAwMCBuDQowMDAwMDAwMTIyIDAwMDAwIG4NCjAwMDAwMDAyMDkgMDAwMDAgbg0KMDAwMDAwMDM0MyAwMDAwMCBuDQowMDAwMDAwNzI2IDAwMDAwIG4NCjAwMDAwMDA4MjUgMDAwMDAgbg0KdHJhaWxlcg0KPDwNCi9Sb290IDEgMCBSDQovSW5mbyAzIDAgUg0KL1NpemUgOC9JRFs8NEY2MkQwQTkwNDlFOUM1N0NGQzRCODEzRTVCNjhDNUI+PDRGNjJEMEE5MDQ5RTlDNTdDRkM0QjgxM0U1QjY4QzVCPl0+Pg0Kc3RhcnR4cmVmDQo4NTUNCiUlRU9GDQo=";

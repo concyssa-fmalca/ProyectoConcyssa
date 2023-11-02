@@ -288,7 +288,7 @@ function ConsultaServidor() {
             /* tr += '<td><a href="/SolicitudRQAutorizacion/GenerarPDF?Id=' + solicitudes[i].IdSolicitudRQ + '" target=”_blank” class="btn btn-danger btn-xs reporte fa fa-file-pdf-o fa-lg "></a></td>';*/
             if (solicitudes[i].Usuario == solicitudes[i].IdSolicitante) {
                 if (solicitudes[i].Estado == 1) {
-                    tr += '<td><button class="btn btn-danger btn-xs editar fa fa-edit" onclick="ObtenerDatosxID(' + solicitudes[i].IdSolicitudRQ + ')"><img src="/assets/img/fa_pencil.png" height ="15" width="15" /></button></td>';
+                    tr += '<td><button class="btn btn-danger btn-xs editar fa fa-pencil" onclick="ObtenerDatosxID(' + solicitudes[i].IdSolicitudRQ + ')"></button></td>';
                 } else {
                     tr += '<td><button class="btn btn-danger btn-xs  mostrar fa fa-eye fa-lg" onclick="ObtenerDatosxID(' + solicitudes[i].IdSolicitudRQ + ')"></button></td>';
                 }
@@ -454,6 +454,10 @@ function OpenModalItem() {
             $("#txtStockAlmacenItem").show();
             $("#lblStockItem").show();
         } else {//Producto
+            if ($("#IdTipoProducto").val() == 0) {
+                swal("Informacion!", "Debe Seleccionar Un Tipo de Producto!");
+                return;
+            }
             $("#txtDescripcionItem").prop("disabled", true);
             $("#BtnBuscarListadoAlmacen").prop("disabled", false);
             $("#BtnBuscarCodigoProducto").prop("disabled", false);

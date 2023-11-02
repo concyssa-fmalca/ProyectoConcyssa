@@ -99,6 +99,7 @@ window.onload = function () {
     CargarBaseFiltro();
 
     $(".ocultartabla").hide();
+    $(".ocultartabla2").hide();
     //setTimeout(function () {
     //    ObtenerStockxAlmacen();
     //}, 2000);
@@ -142,85 +143,150 @@ function llenarComboAlmacen(lista, idCombo, primerItem) {
 
 
 function ObtenerStockxAlmacen() {
+    if ($("#txtIdPerfil").val() != 1021) {
+        $(".ocultartabla").show();
 
-    $(".ocultartabla").show();
+        table = $('#table_id').dataTable({
+            language: lenguaje_data,
+            responsive: true,
+            ajax: {
+                url: 'ListarInventarioxAlmacen',
+                type: 'POST',
+                data: {
+                    'IdAlmacen': $("#cboAlmacenFiltro").val(),
+                    pagination: {
+                        perpage: 50,
+                    },
+                },
+            },
 
-    table = $('#table_id').dataTable({
-        language: lenguaje_data,
-        responsive: true,
-        ajax: {
-            url: 'ListarInventarioxAlmacen',
-            type: 'POST',
-            data: {
-                'IdAlmacen': $("#cboAlmacenFiltro").val(),
-                pagination: {
-                    perpage: 50,
-                },
-            },
-        },
+            columnDefs: [
+                // {"className": "text-center", "targets": "_all"},
+                //{
+                //    targets: -1,
+                //    orderable: false,
+                //    render: function (data, type, full, meta) {
 
-        columnDefs: [
-            // {"className": "text-center", "targets": "_all"},
-            //{
-            //    targets: -1,
-            //    orderable: false,
-            //    render: function (data, type, full, meta) {
+                //        return 1
+                //    },
+                //},
+                {
+                    data: null,
+                    targets: 0,
+                    orderable: false,
+                    render: function (data, type, full, meta) {
+                        return meta.row + 1
+                    },
+                },
+                {
+                    data: null,
+                    targets: 1,
+                    orderable: false,
+                    render: function (data, type, full, meta) {
+                        return full.Codigo.toUpperCase()
+                    },
+                },
+                {
+                    data: null,
+                    targets: 2,
+                    orderable: false,
+                    render: function (data, type, full, meta) {
+                        return full.NombArticulo.toUpperCase()
+                    },
+                },
+                {
+                    data: null,
+                    targets: 3,
+                    orderable: false,
+                    render: function (data, type, full, meta) {
+                        return formatNumber(full.Stock)
+                    },
+                },
+                {
+                    data: null,
+                    targets: 4,
+                    orderable: false,
+                    render: function (data, type, full, meta) {
+                        return formatNumber(full.PrecioPromedio)
+                    },
+                },
+                {
+                    data: null,
+                    targets: 5,
+                    orderable: false,
+                    render: function (data, type, full, meta) {
+                        return formatNumber(parseFloat(parseFloat(full.PrecioPromedio) * parseFloat(full.Stock)))
+                    },
+                }
 
-            //        return 1
-            //    },
-            //},
-            {
-                data: null,
-                targets: 0,
-                orderable: false,
-                render: function (data, type, full, meta) {
-                    return meta.row + 1
-                },
-            },
-            {
-                data: null,
-                targets: 1,
-                orderable: false,
-                render: function (data, type, full, meta) {
-                    return full.Codigo.toUpperCase()
-                },
-            },
-            {
-                data: null,
-                targets: 2,
-                orderable: false,
-                render: function (data, type, full, meta) {
-                    return full.NombArticulo.toUpperCase()
-                },
-            },
-            {
-                data: null,
-                targets: 3,
-                orderable: false,
-                render: function (data, type, full, meta) {
-                    return formatNumber(full.Stock)
-                },
-            },
-            {
-                data: null,
-                targets: 4,
-                orderable: false,
-                render: function (data, type, full, meta) {
-                    return formatNumber(full.PrecioPromedio)
-                },
-            },
-            {
-                data: null,
-                targets: 5,
-                orderable: false,
-                render: function (data, type, full, meta) {
-                    return formatNumber(parseFloat(parseFloat(full.PrecioPromedio) * parseFloat(full.Stock)))
-                },
-            }
+            ],
+            "bDestroy": true
+        }).DataTable();
+    } else {
+        $(".ocultartabla2").show();
 
-        ],
-        "bDestroy": true
-    }).DataTable();
+        table = $('#table_id2').dataTable({
+            language: lenguaje_data,
+            responsive: true,
+            ajax: {
+                url: 'ListarInventarioxAlmacen',
+                type: 'POST',
+                data: {
+                    'IdAlmacen': $("#cboAlmacenFiltro").val(),
+                    pagination: {
+                        perpage: 50,
+                    },
+                },
+            },
+
+            columnDefs: [
+                // {"className": "text-center", "targets": "_all"},
+                //{
+                //    targets: -1,
+                //    orderable: false,
+                //    render: function (data, type, full, meta) {
+
+                //        return 1
+                //    },
+                //},
+                {
+                    data: null,
+                    targets: 0,
+                    orderable: false,
+                    render: function (data, type, full, meta) {
+                        return meta.row + 1
+                    },
+                },
+                {
+                    data: null,
+                    targets: 1,
+                    orderable: false,
+                    render: function (data, type, full, meta) {
+                        return full.Codigo.toUpperCase()
+                    },
+                },
+                {
+                    data: null,
+                    targets: 2,
+                    orderable: false,
+                    render: function (data, type, full, meta) {
+                        return full.NombArticulo.toUpperCase()
+                    },
+                },
+                {
+                    data: null,
+                    targets: 3,
+                    orderable: false,
+                    render: function (data, type, full, meta) {
+                        return formatNumber(full.Stock)
+                    },
+                },
+                
+
+            ],
+            "bDestroy": true
+        }).DataTable();
+    }
 }
 
 function validadJson(json) {

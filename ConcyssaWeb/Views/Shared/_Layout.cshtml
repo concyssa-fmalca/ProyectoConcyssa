@@ -153,19 +153,29 @@
 
                 <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown dropdown-fuse">
-                        <a href="#" class="dropdown-toggle fw600" data-toggle="dropdown">
+                        <a href="#" class="dropdown-toggle fw600" data-toggle="dropdown" id="EmpresaResponsive">
 
-                            <span class="hidden-xs"><name>Concyssa</name> </span>
+                            <span ><name>Concyssa</name></span>
 
-                            <span class="fa fa-caret-down hidden-xs mr15"></span>
+                            <span class="fa fa-caret-down  mr15"></span>
+                        </a>
+                        <a href="#" class="dropdown-toggle fw600" data-toggle="dropdown" style="display:none" id="NombreResponsive">
+
+                            <p> Usuario: @Accessor.HttpContext.Session.GetString("NombUsuario").ToString()</p>
+
+                            <span class="fa fa-caret-down  mr15"></span>
                         </a>
                         <ul class="dropdown-menu list-group keep-dropdown fw600" role="menu" style="background-color:#173e60;">
                             <li class="dropdown-footer text-center">
-                                <a href="/Home/CerrarSesion" class="btn btn-primary btn-sm btn-bordered">
+                                <a href="/Responsive/Index" class="btn btn-primary btn-sm btn-bordered" id="BtnHomeResponsive" style="display:none">
+                                    <span class="fa fa-home pr5"></span> Ir al Inicio
+                                </a>
+                            </li>
+                            <li class="dropdown-footer text-center">
+                                <a href="/Home/CerrarSesion" class="btn btn-primary btn-sm btn-bordered" id="BtnSalirResponsive">
                                     <span class="fa fa-power-off pr5"></span> Logout
                                 </a>
                             </li>
-
                         </ul>
                     </li>
                 </ul>
@@ -272,6 +282,8 @@
              document.addEventListener("DOMContentLoaded", function (event) {
                 setTimeout(showPage, 1000);
             });
+
+
 
             function showPage() {
                 document.getElementById("loader") != null ? document.getElementById("loader").style.display = "none" : "";

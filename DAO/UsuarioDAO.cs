@@ -385,6 +385,37 @@ namespace DAO
             }
         }
 
+        public List<UsuarioMobileDTO> ObtenerUsuariosMobile(ref string mensaje_error)
+        {
+            List<UsuarioMobileDTO> lstUsuarioDTO = new List<UsuarioMobileDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerUsuariosMobile", cn);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        UsuarioMobileDTO oUsuarioDTO = new UsuarioMobileDTO();
+                        oUsuarioDTO.Usuario = drd["Usuario"].ToString();
+                        oUsuarioDTO.Password = drd["Password"].ToString();
+                        oUsuarioDTO.IdPerfil = int.Parse(drd["IdPerfil"].ToString());
+
+                        lstUsuarioDTO.Add(oUsuarioDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstUsuarioDTO;
+        }
 
     }
 }

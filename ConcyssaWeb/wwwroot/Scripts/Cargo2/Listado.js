@@ -47,6 +47,7 @@ function ConsultaServidor(url) {
 
 
 function ModalNuevo() {
+    $("#chkActivo").prop('checked', true)
     $("#lblTituloModal").html("Nueva Cargo");
     AbrirModal("modal-form");
 }

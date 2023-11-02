@@ -23,7 +23,10 @@ namespace DTO
         public string Comentario { get; set; }
         public DateTime FechaDocumento { get; set; }
         public DateTime FechaContabilizacion { get; set; }
-
+        public string SerieyNum { get; set; }
+        public string NombCuadrilla { get; set; }
+        public int IdSolicitante { get; set; }
+        public int EstadoSolicitud { get; set; }
         public List<SolicitudDespachoDetalleDTO> Detalle { get; set; }
         public IList<SolicitudDespachoDetalleDTO> Detalles { get; set; }
 
@@ -42,6 +45,12 @@ namespace DTO
         public int IdGrupoUnidadMedida { get; set; }
         public int IdDefinicionGrupoUnidad { get; set; }
         public decimal Cantidad { get; set; }
+        public DateTime FechaContabilizacion { get; set; }
+        public string SerieyNum { get; set; }
+        public decimal CantidadAtendida { get; set; }
+        public int IdTipoProducto { get; set; }
+        public int IdObra { get; set; }
+        public string NombCuadrilla { get; set; }
 
     }
 

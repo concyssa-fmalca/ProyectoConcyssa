@@ -49,7 +49,7 @@ namespace DTO
         public string TDocumento { get; set; }
 
 
-        public IList<MovimientoDetalleDTO> detalles  { get; set; }
+        public IList<MovimientoDetalleDTO> detalles { get; set; }
 
         public IList<AnexoDTO> AnexoDetalle { get; set; }
 
@@ -79,7 +79,7 @@ namespace DTO
         public string DescCuadrilla { get; set; }
         public string NombObra { get; set; }
 
-        public int IdDestinatario { get; set; }=0;
+        public int IdDestinatario { get; set; } = 0;
         public int IdMotivoTraslado { get; set; } = 0;
         public int IdTransportista { get; set; } = 0;
 
@@ -124,6 +124,7 @@ namespace DTO
         public DateTime FechaEdicion { get; set; }
         public string SGI { get; set; }
         public string DistritoLlegada { get; set; }
+        public string OrigenDespacho { get; set; }
 
     }
 

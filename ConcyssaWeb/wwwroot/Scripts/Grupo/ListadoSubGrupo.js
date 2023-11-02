@@ -27,6 +27,7 @@ function listarObraFiltro() {
                     options += `<option value="` + datos[i].IdObra + `">` + datos[i].Descripcion + `</option>`;
                 }
                 $("#IdObrafiltro").html(options);
+                $("#IdObrafiltro").prop('selectedIndex',1).change()
             }
         }
     });
@@ -53,6 +54,8 @@ function listarGrupoFiltro() {
                     options += `<option value="` + datos[i].IdGrupo + `">` + datos[i].Descripcion + `</option>`;
                 }
                 $("#IdGrupoFiltro").html(options);
+                $("#IdGrupoFiltro").prop('selectedIndex', 1).change()
+                ConsultaServidor()
             }
         }
     });

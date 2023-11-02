@@ -313,7 +313,7 @@ function ListarDatatableKardexDT(url, IdArticulo, IdAlmacen, FechaInicio, FechaT
                     if (full.NumSerieTipoDocumentoRef == '-0') {
                         return '-'
                     } else {
-                        return full.NumSerieTipoDocumentoRef
+                        return full.NumSerieTipoDocumentoRef.toUpperCase()
                     }
                   
                 },
