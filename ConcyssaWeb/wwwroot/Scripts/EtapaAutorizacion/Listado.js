@@ -93,6 +93,24 @@ function GuardarEtapaAutorizacion() {
 
     //console.log(arrayGeneral);
 
+
+    if (varNombreEtapa == "" || varNombreEtapa == undefined) {
+        Swal.fire("Error", "El Campo Nombre Etapa es Obligatorio", "info")
+        return
+    }
+    if (varDescripcionEtapa == "" || varDescripcionEtapa == undefined) {
+        Swal.fire("Error", "El Campo Descripcion Etapa es Obligatorio", "info")
+        return
+    }
+    if (varAutorizacionesRequeridas == "" || varAutorizacionesRequeridas == undefined) {
+        Swal.fire("Error", "El Campo Autorizaciones Requeridas es Obligatorio", "info")
+        return
+    }
+    if (varRechazosRequeridos == "" || varRechazosRequeridos == undefined) {
+        Swal.fire("Error", "El Campo Rechazos Requeridos es Obligatorio", "info")
+        return
+    }
+
     $.post('UpdateInsertEtapaAutorizacion', {
         'IdEtapaAutorizacion': varIdEtapaAutorizacion,
         'NombreEtapa': varNombreEtapa,

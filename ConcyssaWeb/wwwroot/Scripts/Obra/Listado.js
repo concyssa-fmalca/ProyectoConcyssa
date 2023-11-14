@@ -313,6 +313,32 @@ function GuardarObra() {
         Estado = true;
     }
 
+    if (IdBase == 0 || IdBase == undefined) {
+        Swal.fire("Error", "El Campo Base es Obligatorio", "info")
+        return
+    }
+    if (txtCodigo == "" || txtCodigo == undefined) {
+        Swal.fire("Error", "El Campo Codigo es Obligatorio", "info")
+        return
+    }
+    if (txtDescripcion == "" || txtDescripcion == undefined) {
+        Swal.fire("Error", "El Campo Descripcion es Obligatorio", "info")
+        return
+    }
+    if (Direccion == "" || Direccion == undefined) {
+        Swal.fire("Error", "El Campo Dirección es Obligatorio", "info")
+        return
+    }
+    if (IdTipoObra == 0 || IdTipoObra == undefined) {
+        Swal.fire("Error", "El Campo Tipo Obra es Obligatorio", "info")
+        return
+    }
+    if (IdDivision == 0 || IdDivision == undefined) {
+        Swal.fire("Error", "El Campo Division es Obligatorio", "info")
+        return
+    }
+
+
     $.post('UpdateInsertObra', {
         'IdObra': varIdObra,
         'IdBase': IdBase,

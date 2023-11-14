@@ -138,6 +138,17 @@ function GuardarModeloAutorizacion() {
     }
     //condicion
 
+    if (varNombreModelo == "" || varNombreModelo == undefined) {
+        Swal.fire("Error", "El Campo Nombre Modelo es Obligatorio", "info")
+        return
+    }
+    if (varDescripcionModelo == "" || varDescripcionModelo == undefined) {
+        Swal.fire("Error", "El Campo Descripcion Modelo es Obligatorio", "info")
+        return
+    }
+
+
+
     $.post('UpdateInsertModeloAutorizacion', {
         'IdModeloAutorizacion': varIdModeloAutorizacion,
         'NombreModelo': varNombreModelo,
@@ -318,7 +329,7 @@ function AgregarLineaDocumentos() {
                   <input type="checkbox" id="chkSolicitudGiro" />
                   <label for="chkSolicitudGiro">Solicitud de Giro</label>
               </div>
-
+                
             </td>
             </tr>`;
 

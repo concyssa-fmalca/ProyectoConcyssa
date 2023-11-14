@@ -41,7 +41,7 @@ namespace DTO
         public decimal Total { get; set; }
         public int IdAlmacen { get; set; }
         public int IdSerie { get; set; }
-        public int Correlativo { get; set; }
+        public int Correlativo { get; set; } = 0;
         public int IdSociedad { get; set; }
         public bool Estado { get; set; }
         public bool Eliminado { get; set; }

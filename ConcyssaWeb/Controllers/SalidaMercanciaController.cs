@@ -94,7 +94,7 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
-        public string GenerarSalidaExtorno(int IdMovimiento)
+        public string GenerarSalidaExtorno(int IdMovimiento, int Serie, DateTime FechaDoc, DateTime FechaCont)
         {
             string mensaje_error = "";
             MovimientoDAO oMovimientoDAO = new MovimientoDAO();
@@ -121,7 +121,9 @@ namespace ConcyssaWeb.Controllers
                 oMovimientoDTO.IdTipoDocumento = 335;
                 oMovimientoDTO.Comentario = "EXTORNO DEL SALIDA " + oMovimientoDTO.NombSerie + "-" + +oMovimientoDTO.Correlativo;
                 oMovimientoDTO.IdMovimiento = 0;
-                oMovimientoDTO.IdSerie = 20006;
+                oMovimientoDTO.IdSerie = Serie;
+                oMovimientoDTO.FechaDocumento = FechaDoc;
+                oMovimientoDTO.FechaContabilizacion = FechaCont;
                 //for (int i = 0; i < oMovimientoDTO.detalles.Count; i++)
                 //{
                 //    oMovimientoDTO.detalles[i].IdMovimientoDetalle = 0;

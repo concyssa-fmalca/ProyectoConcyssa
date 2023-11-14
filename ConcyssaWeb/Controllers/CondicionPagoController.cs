@@ -33,10 +33,6 @@ namespace ConcyssaWeb.Controllers
             CondicionPagoDAO oCondicionPagoDAO = new CondicionPagoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             int resultado = oCondicionPagoDAO.UpdateInsertCondicionPago(CondicionPagoDTO, IdSociedad.ToString(), Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")));
-            if (resultado != 0)
-            {
-                resultado = 1;
-            }
 
             return resultado;
 

@@ -79,7 +79,30 @@ function GuardarVehiculo() {
     if ($('#chkActivo')[0].checked) {
         Estado = true;
     }
-
+    if (Placa == "" || Placa == undefined) {
+        Swal.fire("Error", "El Campo Placa es Obligatorio", "info")
+        return
+    }
+    if (CertificadoInscripcion == "" || CertificadoInscripcion == undefined) {
+        Swal.fire("Error", "El Campo Certificado Inscripcion es Obligatorio", "info")
+        return
+    }
+    if (IdMarca == 0 || IdMarca == undefined) {
+        Swal.fire("Error", "El Campo Marca Inscripcion es Obligatorio", "info")
+        return
+    }
+    if (IdBase == 0 || IdBase == undefined) {
+        Swal.fire("Error", "El Campo Base Inscripcion es Obligatorio", "info")
+        return
+    }
+    if (Condicion == 0 || Condicion == undefined) {
+        Swal.fire("Error", "El Campo Condicion Inscripcion es Obligatorio", "info")
+        return
+    }
+    if (IdChofer == 0 || IdChofer == undefined) {
+        Swal.fire("Error", "El Campo Chofer Inscripcion es Obligatorio", "info")
+        return
+    }
     $.post('UpdateInsertVehiculo', {
         IdVehiculo, IdMarca, IdBase, Condicion, CertificadoInscripcion, IdChofer, Placa, Estado
     }, function (data, status) {

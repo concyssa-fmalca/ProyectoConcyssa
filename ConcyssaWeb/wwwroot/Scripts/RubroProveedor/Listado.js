@@ -64,6 +64,14 @@ function GuardarRubroProveedor() {
     if ($('#chkActivo')[0].checked) {
         varEstado = true;
     }
+    if (varCodigo == "" || varCodigo == undefined) {
+        Swal.fire("Error", "El Campo Codigo es Obligatorio", "info")
+        return
+    }
+    if (varDescripcion == "" || varDescripcion == undefined) {
+        Swal.fire("Error", "El Campo Descripcion es Obligatorio", "info")
+        return
+    }
 
     $.post('UpdateInsertRubroProveedor', {
         'IdRubroProveedor': varIdRubroProveedor,

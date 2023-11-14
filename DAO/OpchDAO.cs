@@ -84,6 +84,7 @@ namespace DAO
                         oOpchDTO.GrupoDetraccion = int.Parse(drd["GrupoDetraccion"].ToString());
                         oOpchDTO.SerieSAP = int.Parse(drd["SerieSAP"].ToString());
                         oOpchDTO.CondicionPagoDet = int.Parse(drd["CondicionPagoDet"].ToString());
+                        oOpchDTO.IdUsuario = int.Parse(drd["IdUsuario"].ToString());
 
                     }
                     drd.Close();

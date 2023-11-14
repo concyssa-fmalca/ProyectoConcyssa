@@ -29,6 +29,7 @@ namespace DTO
 
         //Adicionales
         public string DescArticulo { get; set; }
+        public string CodigoArticulo { get; set; }
         public string DescSerie { get; set; }
         public int Correlativo { get; set; }
         public string TipoTransaccion { get; set; }

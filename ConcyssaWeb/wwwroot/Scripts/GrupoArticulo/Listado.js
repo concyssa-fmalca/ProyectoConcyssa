@@ -66,7 +66,14 @@ function GuardarGrupoArticulo() {
     if ($('#chkActivo')[0].checked) {
         varEstado = true;
     }
-
+    if (varCodigo == "" || varCodigo == undefined) {
+        Swal.fire("Error", "El Campo Codigo es Obligatorio", "info")
+        return
+    }
+    if (varDescripcion == "" || varDescripcion == undefined) {
+        Swal.fire("Error", "El Campo Descripcion es Obligatorio", "info")
+        return
+    }
     $.post('UpdateInsertGrupoArticulo', {
         'IdGrupoArticulo': varIdGrupoArticulo,
         'Codigo': varCodigo,
@@ -140,17 +147,13 @@ function eliminar(varIdGrupoArticulo) {
 }
 
 
+
+
 function limpiarDatos() {
-    console.log("hola");
     $("#txtId").val("");
     $("#txtCodigo").val("");
     $("#txtDescripcion").val("");
     $("#chkActivo").prop('checked', false);
-}
-
-
-
-function limpiarDatos() {
     $("#txtdescripcion").val("");
     $("#txtCtaAjusteStockNegativo").val("");
     $("#txtCtaAumento").val("");

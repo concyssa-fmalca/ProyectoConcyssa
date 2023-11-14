@@ -200,6 +200,33 @@ function GuardarUsuario() {
         MovimientoInventario = true;
     }
 
+
+    if (varNombre == "" || varNombre == undefined) {
+        Swal.fire("Error", "El Campo Nombre es Obligatorio", "info")
+        return
+    }
+    if (varUsuario == "" || varUsuario == undefined) {
+        Swal.fire("Error", "El Campo Usuario es Obligatorio", "info")
+        return
+    }
+    if (varContraseña == "" || varContraseña == undefined) {
+        Swal.fire("Error", "El Campo Contraseña es Obligatorio", "info")
+        return
+    }
+    if (varPerfil == 0 || varPerfil == undefined) {
+        Swal.fire("Error", "El Campo Perfil es Obligatorio", "info")
+        return
+    }
+    if (varDepartamento == 0 || varDepartamento == undefined) {
+        Swal.fire("Error", "El Campo Area Solicitante es Obligatorio", "info")
+        return
+    }
+    if (varSociedad == 0 || varSociedad == undefined) {
+        Swal.fire("Error", "El Campo Sociedad es Obligatorio", "info")
+        return
+    }
+
+
     $.post('UpdateInsertUsuario', {
         'IdUsuario': varIdUsuario,
         'Nombre': varNombre,

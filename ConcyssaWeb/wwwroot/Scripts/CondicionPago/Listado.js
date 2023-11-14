@@ -76,11 +76,13 @@ function GuardarCondicionPago() {
         'Estado': varEstado
     }, function (data, status) {
 
-        if (data == 1) {
+        if (data > 0) {
             swal("Exito!", "Proceso Realizado Correctamente", "success")
             table.destroy();
             ConsultaServidor("ObtenerCondicionPagos");
             limpiarDatos();
+        } else if (data == -1) {
+            Swal.fire("Error","Ya existe un Item con ese Código","info")
         } else {
             swal("Error!", "Ocurrio un Error")
             limpiarDatos();

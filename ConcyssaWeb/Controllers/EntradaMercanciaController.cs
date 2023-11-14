@@ -9,6 +9,10 @@ using System.Xml;
 using System.Xml.Serialization;
 using System.Web.Helpers;
 using System.Runtime.Intrinsics.X86;
+using ISAP;
+using System.ComponentModel;
+using OfficeOpenXml;
+using System.Linq;
 
 namespace ConcyssaWeb.Controllers
 {
@@ -49,7 +53,7 @@ namespace ConcyssaWeb.Controllers
             return mensaje_error;
         }
 
-        public string ListarOPDNDTModalOPCH(string EstadoOPDN = "ABIERTO")
+        public string ListarOPDNDTModalOPCH(int IdProveedor,string EstadoOPDN = "ABIERTO")
         {
             string mensaje_error = "";
             OpdnDAO oOpdnDAO = new OpdnDAO();
@@ -58,6 +62,26 @@ namespace ConcyssaWeb.Controllers
 
             DataTableDTO oDataTableDTO = new DataTableDTO();
             List<OpdnDTO> lstOpdnDTO = oOpdnDAO.ListarOPDNDTModalOPCH(IdSociedad, ref mensaje_error, EstadoOPDN, IdUsuario);
+            List<OpdnDTO> newListOpdnDTO = new List<OpdnDTO>();
+
+
+            if (IdProveedor > 0)
+            {
+                for (int i = 0; i < lstOpdnDTO.Count; i++)
+                {
+                    if (lstOpdnDTO[i].IdProveedor == IdProveedor)
+                    {
+                        newListOpdnDTO.Add(lstOpdnDTO[i]);
+                    }                
+                }
+                oDataTableDTO.sEcho = 1;
+                oDataTableDTO.iTotalDisplayRecords = newListOpdnDTO.Count;
+                oDataTableDTO.iTotalRecords = newListOpdnDTO.Count;
+                oDataTableDTO.aaData = (newListOpdnDTO);
+                return JsonConvert.SerializeObject(oDataTableDTO);
+            }
+
+
             if (lstOpdnDTO.Count >= 0 && mensaje_error.Length == 0)
             {
                 oDataTableDTO.sEcho = 1;
@@ -285,8 +309,97 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
+        public string UpdateInsertMovimientoDesdeString(string JsonDatosEnviar)
+        {
+            JsonDatosEnviar = JsonDatosEnviar.Remove(JsonDatosEnviar.Length - 1, 1);
+            JsonDatosEnviar = JsonDatosEnviar.Remove(0, 1);
 
-        public string GenerarIngresoExtorno(int IdMovimiento)
+            var settings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                MissingMemberHandling = MissingMemberHandling.Ignore
+            };
+
+            MovimientoDTO oMovimientoDTO = JsonConvert.DeserializeObject<MovimientoDTO>(JsonDatosEnviar,settings);
+
+            string mensaje_error = "";
+            if (oMovimientoDTO.IdMoneda == 1)
+            {
+                oMovimientoDTO.TipoCambio = 1;
+            }
+            //oMovimientoDTO.TipoCambio=0
+            int IdSociedad = Convert.ToInt32((String.IsNullOrEmpty(oMovimientoDTO.IdSociedad.ToString())) ? Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad")) : oMovimientoDTO.IdSociedad);
+            int IdUsuario = Convert.ToInt32((String.IsNullOrEmpty(oMovimientoDTO.IdUsuario.ToString())) ? Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad")) : oMovimientoDTO.IdUsuario);
+
+            if (IdSociedad == 0)
+            {
+                IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            }
+
+            if (IdUsuario == 0)
+            {
+                IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            }
+
+
+            //int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            //int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+
+            oMovimientoDTO.IdSociedad = IdSociedad;
+            oMovimientoDTO.IdUsuario = IdUsuario;
+            MovimientoDAO oMovimimientoDAO = new MovimientoDAO();
+            int respuesta = oMovimimientoDAO.InsertUpdateMovimiento(oMovimientoDTO, ref mensaje_error);
+            int respuesta1 = 0;
+            if (mensaje_error.Length > 0)
+            {
+                return mensaje_error;
+            }
+            if (respuesta > 0)
+            {
+                for (int i = 0; i < oMovimientoDTO.detalles.Count; i++)
+                {
+                    oMovimientoDTO.detalles[i].IdMovimiento = respuesta;
+                    oMovimientoDTO.detalles[i].IdMovimientoDetalle = 0;
+                    respuesta1 = oMovimimientoDAO.InsertUpdateMovimientoDetalle(oMovimientoDTO.detalles[i], 0, ref mensaje_error);
+                    int respuesta2 = oMovimimientoDAO.InsertUpdateMovimientoDetalleCuadrilla(respuesta1, oMovimientoDTO.detalles[i], ref mensaje_error);
+
+                }
+
+                if (oMovimientoDTO.AnexoDetalle != null)
+                {
+                    for (int i = 0; i < oMovimientoDTO.AnexoDetalle.Count; i++)
+                    {
+                        oMovimientoDTO.AnexoDetalle[i].ruta = "/Anexos/" + oMovimientoDTO.AnexoDetalle[i].NombreArchivo;
+                        oMovimientoDTO.AnexoDetalle[i].IdSociedad = oMovimientoDTO.IdSociedad;
+                        oMovimientoDTO.AnexoDetalle[i].Tabla = "Movimiento";
+                        oMovimientoDTO.AnexoDetalle[i].IdTabla = respuesta;
+
+                        oMovimimientoDAO.InsertAnexoMovimiento(oMovimientoDTO.AnexoDetalle[i], ref mensaje_error);
+                    }
+                }
+
+
+            }
+
+            if (mensaje_error.Length > 0)
+            {
+                return mensaje_error;
+            }
+            else
+            {
+                if (respuesta > 0)
+                {
+                    return respuesta.ToString();
+                }
+                else
+                {
+                    return mensaje_error;
+                }
+            }
+        }
+
+
+        public string GenerarIngresoExtorno(int IdMovimiento, int Serie, DateTime FechaDoc, DateTime FechaCont)
         {
             string mensaje_error = "";
             MovimientoDAO oMovimientoDAO = new MovimientoDAO();
@@ -313,7 +426,10 @@ namespace ConcyssaWeb.Controllers
                 oMovimientoDTO.IdTipoDocumento = 334;
                 oMovimientoDTO.Comentario = "EXTORNO DEL INGRESO " + oMovimientoDTO.NombSerie + "-" + +oMovimientoDTO.Correlativo;
                 oMovimientoDTO.IdMovimiento = 0;
-                oMovimientoDTO.IdSerie = 20007;
+                oMovimientoDTO.IdSerie = Serie;
+                oMovimientoDTO.FechaDocumento = FechaDoc;
+                oMovimientoDTO.FechaContabilizacion = FechaCont;
+               
                 oSalidaMercanciaController.UpdateInsertMovimiento(oMovimientoDTO);
 
 
@@ -622,6 +738,17 @@ namespace ConcyssaWeb.Controllers
             return Valida;
 
         }
+
+        public int ValidarFacturaOPDN(int IdOPDN)
+        {
+            int Valida = 1;
+            string mensaje_error = "";
+            OpdnDAO oOpdnDAO = new OpdnDAO();
+            Valida = oOpdnDAO.ValidarOPDNTieneFactura(IdOPDN, ref mensaje_error);
+
+            return Valida;
+
+        }
         public string GenerarOPDNExtorno(int IdOPDN)
         {
             string mensaje_error = "";
@@ -783,6 +910,94 @@ namespace ConcyssaWeb.Controllers
                     return "error";
                 }
             }
+
+        }
+
+        public string ProcesarExcel(string archivo,int IdAlmacen, int ClaseArticulo, int TipoArticulo)
+        {
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+
+            string mensaje_error = "";
+
+            ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
+
+            string filePath = "wwwroot/Anexos/" + archivo;
+
+            List<ExcelDTO> Datos = new List<ExcelDTO>();
+
+            // Leer el archivo Excel
+            using (var package = new ExcelPackage(new FileInfo(filePath)))
+            {
+
+                var worksheet = package.Workbook.Worksheets[0];
+
+                int rowCount = worksheet.Dimension.Rows;
+
+                List<string> codigosExistentes = new List<string>();
+
+                try
+                {
+                    for (int row = 2; row <= rowCount; row++)
+                    {
+
+                        ExcelDTO excelDTO = new ExcelDTO();
+                        excelDTO.Codigo = (worksheet.Cells[row, 1].Value.ToString().Trim());
+                        excelDTO.Articulo = (worksheet.Cells[row, 2].Value.ToString().Trim());
+                        excelDTO.Cantidad = decimal.Parse(worksheet.Cells[row, 3].Value.ToString().Trim());
+                        excelDTO.PrecioUnitario = decimal.Parse(worksheet.Cells[row, 4].Value.ToString().Trim());
+                        Datos.Add(excelDTO);
+                    }
+
+                    if (Datos.Count > 100)
+                    {
+                        return "El Archivo no Debe contener mas de 100 articulos";
+                    }
+
+                    ArticuloDAO oArticuloDAO = new ArticuloDAO();
+                    List<ArticuloDTO> lstArticuloDTO = new List<ArticuloDTO>();                           
+                    List<string> ArticulosObtenidos = new List<string>();
+                    if (ClaseArticulo == 1)
+                    {
+                        lstArticuloDTO = oArticuloDAO.ListarArticulosCatalogoxSociedadxAlmacenStockxIdTipoProducto(IdSociedad, IdAlmacen, TipoArticulo, ref mensaje_error, 1);
+                    }
+                    else
+                    {
+                        lstArticuloDTO = oArticuloDAO.ObtenerArticulosActivoFijo(1, ref mensaje_error);
+                    }
+
+                    string NoExisten = "";
+                              
+
+                    for (int i = 0; i < lstArticuloDTO.Count; i++)
+                    {
+                        codigosExistentes.Add(lstArticuloDTO[i].Codigo);
+                    }
+
+
+                    for (int i = 0; i < Datos.Count; i++)
+                    {
+                        if (!codigosExistentes.Contains(Datos[i].Codigo))
+                        {
+                            NoExisten += "No Existe el Codigo " + Datos[i].Codigo + " En su Almacen </br>";
+                        }
+                    }
+
+                    if(NoExisten != "")
+                    {
+                        return NoExisten;
+                    }
+
+                    return JsonConvert.SerializeObject(Datos);
+
+                }
+                catch (Exception e)
+                {
+                    return mensaje_error = "error";
+                }
+
+            }
+
+
 
         }
     }

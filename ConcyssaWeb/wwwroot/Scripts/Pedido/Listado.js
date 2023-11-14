@@ -214,12 +214,21 @@ function listarPedidoDt() {
 
                 },
             },
-             {
+            {
                 data: null,
                 targets: 9,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     return `<a style="color:blue;text-decoration:underline;cursor:pointer" onclick="ReportePendiente(` + full.IdPedido +`)">ENTREGAS</a>`
+
+                },
+            },
+            {
+                data: null,
+                targets: 10,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return `<button class="btn btn-xs btn-danger" onclick="verCuadroComparativo(`+ full.IdPedido+`)">CC</button>`
 
                 },
             }
@@ -229,6 +238,41 @@ function listarPedidoDt() {
     }).DataTable();
 
 }
+function verCuadroComparativo(Id) {
+    Swal.fire({
+        title: "Buscando Cuadro Comparativo...",
+        text: "Por favor espere",
+        showConfirmButton: false,
+        allowOutsideClick: false
+    });
+
+    setTimeout(() => {
+
+      $.ajaxSetup({ async: false });
+      $.post("GenerarReporte", { 'NombreReporte': 'CuadroComparativo', 'Formato': 'PDF', 'Id': Id }, function (data, status) {
+          let datos;
+          if (validadJson(data)) {
+              let datobase64;
+              datobase64 = "data:application/octet-stream;base64,"
+              datos = JSON.parse(data);
+              //datobase64 += datos.Base64ArchivoPDF;
+              //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
+              //$("#reporteRPT").attr("href", datobase64);
+              //$("#reporteRPT")[0].click();
+              verBase64PDF(datos)
+              Swal.fire(
+                  'Correcto',
+                  'Orden Encontrada',
+                  'success'
+              )
+          } else {
+              console.log("error");
+          }
+      });
+    }, 200)
+}
+
+
 
 function ReporteCuadroComparativo(id) {
     $.ajaxSetup({ async: false });
@@ -3200,9 +3244,9 @@ function disabledmodal(valorbolean) {
     $("#IdObra").prop('disabled', valorbolean);
     $("#IdAlmacen").prop('disabled', valorbolean);
     //$("#IdSerie").prop('disabled', valorbolean);
-    $("#IdProveedor").prop('disabled', valorbolean);
-    $("#Direccion").prop('disabled', valorbolean);
-    $("#Telefono").prop('disabled', valorbolean);
+    //$("#IdProveedor").prop('disabled', valorbolean);
+    //$("#Direccion").prop('disabled', valorbolean);
+    //$("#Telefono").prop('disabled', valorbolean);
     $("#IdTipoPedido").prop('disabled', valorbolean);
     $("#LugarEntrega").prop('disabled', valorbolean);
     $("#SerieNumeroRef").prop('disabled', valorbolean);
@@ -3492,7 +3536,7 @@ function ReportePendiente(IdPedido) {
     });
     setTimeout(() => { 
     let respustavalidacion = "";
-    $.post("/ReporteLogistica/GenerarReporteOcPendiente", { 'NombreReporte': 'OcPendiente', 'Formato': 'PDF', 'IdProveedor': 0, 'IdBase': 0,'IdPedido' : IdPedido }, function (data, status) {
+        $.post("GenerarReporte", { 'NombreReporte': 'EntregasxIdPedido', 'Formato': 'PDF','Id' : IdPedido }, function (data, status) {
         let datos;
         if (validadJson(data)) {
             let datobase64;

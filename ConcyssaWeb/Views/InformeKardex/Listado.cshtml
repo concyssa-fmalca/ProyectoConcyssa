@@ -19,34 +19,77 @@
         @*    <div class="col-xs-6 right">
            
             </div>
+            
 *@
+            <br />
+
             <div class="row">
-                 <div class="col-sm-1"></div>
+    
                 <div class='form-group-sm'>
-                    <label for="txtDescripcionItem" class="control-label col-sm-2 left-right">Producto</label>
+                    <label for="txtPrecioUnitarioItem" class="control-label col-sm-1 left-right">Almacen</label>
+                    <div class="col-sm-3">
+                        <select id="IdAlmacen" class="form-control input-sm" tabindex="0" onchange="ValidarAlmacen()"></select>
+                    </div>
+                </div>
+                </div>
+
+            <div class="row">
+
+                <div class='form-group-sm'>
+                    <label for="cboClaseArticulo" class="control-label col-sm-1 left-right">Tipo Articulo</label>
+                    <div class="col-sm-3">
+                        <select id="cboClaseArticulo" class="form-control input-sm" tabindex="0" onchange="ValidarTipoArticulo()" disabled>
+                            <option value="0">Seleccione</option>
+                            <option value="1">PRODUCTO</option>
+                            @*<option value="2">Servicio</option>*@
+                            <option value="3">ACTIVO</option>
+                        </select>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="row" id="divOcultar">
+
+                <div class='form-group-sm'>
+                    <label for="IdTipoProducto" class="control-label col-sm-1 left-right">Tipo Producto</label>
+                    <div class="col-sm-3">
+                        <select id="IdTipoProducto" class="form-control input-sm" tabindex="0" onchange="BuscarCodigoProducto()" disabled>
+
+                            <option value="0">Seleccione</option>
+                            <option value="1">MATERIALES</option>
+                            <option value="2">AUXILIARES</option>
+                        </select>
+
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="row">
+             
+                <div class='form-group-sm'>
+                    <label for="txtDescripcionItem" class="control-label col-sm-1 left-right">Producto</label>
                     <div class="col-sm-3">
                          <select id="IdArticulo" class="form-control input-sm" tabindex="0" ></select>
                         
                     </div>
                 </div>
-                <div class="col-sm-1"></div>
-                <div class='form-group-sm'>
-                    <label for="txtPrecioUnitarioItem" class="control-label col-sm-1 left-right">Almacen</label>
-                    <div class="col-sm-3">
-                           <select id="IdAlmacen" class="form-control input-sm" tabindex="0" ></select>
-                    </div>
-                </div>
+              
             </div>
 
             <div class="row">
-                 <div class="col-sm-1"></div>
+              
                 <div class='form-group-sm'>
-                    <label for="txtDescripcionItem" class="control-label col-sm-2 left-right">Fecha Inicio:</label>
+                    <label for="txtDescripcionItem" class="control-label col-sm-1 left-right">Fecha Inicio:</label>
                     <div class="col-sm-3">
                         <input id="FechaInicio" type="date" class="form-control input-sm" >
                     </div>
                 </div>
-                <div class="col-sm-1"></div>
+                </div>
+            <div class="row">
+            
                 <div class='form-group-sm'>
                     <label for="txtPrecioUnitarioItem" class="control-label col-sm-1 left-right">Fecha Termino:</label>
                     <div class="col-sm-3">
@@ -57,7 +100,8 @@
             <div class="row text-center">
                 <div class="col-sm-12">
                     <a id="reporteRPT" style="display:none" download="" href="data:application/octet-stream;base64,R0lGODdhAQABAPAAAP8AAAAAACwAAAAAAQABAAACAkQBADs=">download image</a>
-                    <button class="btn btn-success" onclick="ReporteKardex()">Reporte</button>
+       @*             <button class="btn btn-success" onclick="ReporteKardex()">Reporte</button>*@
+                    <button class="btn btn-success" onclick="ImportarExcel()">Importar a Excel</button>
                     <button class="btn btn-info" onclick="BuscarKardex()">Buscar</button>
                 </div>
             </div>
@@ -73,12 +117,15 @@
                     <tr>
                         <th>#</th>
                         <th>Modulo</th>
+                        <th>Codigo</th>
+                        <th>Articulo</th>
                   
                         <th>Fecha y Hora de Transaccion</th>
                         <th>Tipo Transaccion</th>
                         <th>Numero</th>
                      
-                        <th>Fecha Emision</th>
+                        <th>Fecha Documento</th>
+                        <th>Fecha Contabilizacion</th>
                         <th>Tipo Documento</th>
                         <th>Serie y Numero</th>
                         <th>Unidad Medida</th>

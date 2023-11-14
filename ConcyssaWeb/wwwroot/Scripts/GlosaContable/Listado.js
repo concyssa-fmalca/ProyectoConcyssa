@@ -78,6 +78,14 @@ function GuardarGlosaContable() {
         )
         return;
     }
+    if (varClasif == 0 || varClasif == null) {
+        Swal.fire(
+            'Error!',
+            'Complete el campo de Clasificacion',
+            'error'
+        )
+        return;
+    }
     if (varCodigo == '' || varCodigo == null) {
         Swal.fire(
             'Error!',
@@ -90,6 +98,14 @@ function GuardarGlosaContable() {
         Swal.fire(
             'Error!',
             'Complete el campo de Cuenta Contable',
+            'error'
+        )
+        return;
+    }
+    if (varDescripcion == '' || varDescripcion == null) {
+        Swal.fire(
+            'Error!',
+            'Complete el campo de Cuenta Descripcion',
             'error'
         )
         return;

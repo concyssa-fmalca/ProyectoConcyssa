@@ -79,7 +79,38 @@ function GuardarCuadrilla() {
         EsTercero = true;
     }
 
-    
+    if (varCodigo == "" || varCodigo == undefined) {
+        Swal.fire("Error", "El Campo Codigo es Obligatorio", "info")
+        return
+    }
+    if (varDescripcion == "" || varDescripcion == undefined) {
+        Swal.fire("Error", "El Campo Descripcion es Obligatorio", "info")
+        return
+    }
+    if (IdObra == 0 || IdObra == undefined) {
+        Swal.fire("Error", "El Campo Obra es Obligatorio", "info")
+        return
+    }
+    if (IdGrupo == 0 || IdGrupo == undefined) {
+        Swal.fire("Error", "El Campo Grupo es Obligatorio", "info")
+        return
+    }
+    if (IdSubGrupo == 0 || IdSubGrupo == undefined) {
+        Swal.fire("Error", "El Campo SubGrupo es Obligatorio", "info")
+        return
+    }
+    if (IdCapataz == 0 || IdCapataz == undefined) {
+        Swal.fire("Error", "El Campo Capataz es Obligatorio", "info")
+        return
+    }
+    if (IdSupervisor == 0 || IdSupervisor == undefined) {
+        Swal.fire("Error", "El Campo Supervisor es Obligatorio", "info")
+        return
+    }
+    if (IdArea == 0 || IdArea == undefined) {
+        Swal.fire("Error", "El Campo Area es Obligatorio", "info")
+        return
+    }
 
     $.post('UpdateInsertCuadrilla', {
         'IdCuadrilla': varIdCuadrilla,

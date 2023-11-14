@@ -1505,11 +1505,44 @@ function ObtenerNumeracion() {
     //});
 
 }
+function validarseriescontableParaCrear() {
+    let IdSerie = $("#cboSerie").val();
+    let IdDocumento = 1;
+    let Fecha = $("#txtFechaContabilizacion").val();
+    let Orden = 1;
+    let datosrespuesta;
+    let estado = 0;
+    datosrespuesta = ValidarFechaContabilizacionxDocumentoM(IdSerie, IdDocumento, Fecha, Orden);
+    console.log(datosrespuesta);
+    if (datosrespuesta.FechaRelacion.length == 0) {
 
+        return false;
+    }
+
+    if (datosrespuesta.FechaRelacion.length > 0) {
+        for (var i = 0; i < datosrespuesta.FechaRelacion.length; i++) {
+            console.log(datosrespuesta.FechaRelacion[i]);
+            if (datosrespuesta.FechaRelacion[i].StatusPeriodo == 1) {
+                estado = 1;
+            }
+        }
+
+    }
+
+    if (estado == 0) {
+        return false;
+    }
+    return true
+}
 
 let QuitoItems = 0
 
 function GuardarSolicitud() {
+
+    if (validarseriescontableParaCrear() == false) {
+        Swal.fire("Error!", "No Puede Crear este Documento en una Fecha No Habilitada", "error")
+        return
+    }
 
     $("#cboCentroCosto").val(7)
     if ($("#cboTipoDocumentoOperacion").val() == 0 || $("#cboTipoDocumentoOperacion").val() == null) {
@@ -3713,6 +3746,7 @@ function ObtenerDatosxIDORPC(IdOrpc) {
     AbrirModal("modal-form");
 
 
+    let IdUsuario = 0;
 
 
 
@@ -3727,6 +3761,7 @@ function ObtenerDatosxIDORPC(IdOrpc) {
         } else {
             let movimiento = JSON.parse(data);
             console.log(movimiento);
+            IdUsuario = movimiento.IdUsuario,
             $("#txtOrigenId").val(movimiento.OrigenORPC)
             $("#cboAlmacen").val(movimiento.IdAlmacen);
             $("#cboSerie").val(movimiento.IdSerie);
@@ -3777,7 +3812,7 @@ function ObtenerDatosxIDORPC(IdOrpc) {
             } else {
                 $("#IdGiro").val(movimiento.IdSemana)
             }
-            if (movimiento.IdDocExtorno == 1) {
+            if (movimiento.IdDocExtorno == 1 || IdUsuario !== +$("#IdUsuarioSesion").val()) {
                 $("#btnExtornar").hide()
                 $("#btnEditar").hide()
             } else {
@@ -5014,12 +5049,47 @@ function Editar() {
 
     });
 }
+function llenarComboSerieExtorno(lista, idCombo, primerItem) {
+
+    $("#FechDocExtorno").val($("#txtFechaDocumento").val())
+    $("#FechContExtorno").val($("#txtFechaContabilizacion").val())
+
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    let ultimoindice = 0;
+
+    for (var i = 0; i < nRegistros; i++) {
+        if (lista[i].Documento == 1) {
+            if (lista.length > 0) { contenido += "<option value='" + lista[i].IdSerie + "'>" + lista[i].Serie + "</option>"; ultimoindice = i }
+            else { }
+        }
+
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+
+    $("#" + idCombo).val(lista[ultimoindice].IdSerie).change();
+}
 function Extornar() {
 
     let IdORPC = $("#txtId").val()
     Swal.fire({
         title: 'DESEA GENERAR EXTORNO?',
-        text: "Esta Acción no se puede revertir",
+        html: "Se validara si los productos ingresados se encuentran con Stock </br>" +
+            "</br>" +
+            "Serie Para Extorno </br>" +
+            "<Select id='cboSerieExtorno' class='form-control'></select>" +
+            "</br>" +
+            "Fecha De Documento para Extorno  </br>" +
+            "<input id='FechDocExtorno' type='date' class='form-control'/>" +
+            "</br>" +
+            "Fecha de Contabilizacion para Extorno  </br>" +
+            "<input id='FechContExtorno' type='date' class='form-control'/>" +
+            "</br>" +
+            "<p>* Las Fechas que se muestran por defecto son las mismas que el documento seleccionado</p>",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -5154,12 +5224,12 @@ function Extornar() {
                         //cabecera
                         'IdAlmacen': IdAlmacen,
                         'IdTipoDocumento': 1342,
-                        'IdSerie': 20006,
+                        'IdSerie': $("#cboSerieExtorno").val(),
                         'Correlativo': '',
                         'IdMoneda': IdMoneda,
                         'TipoCambio': TipoCambio,
-                        'FechaContabilizacion': FechaContabilizacion,
-                        'FechaDocumento': FechaDocumento,
+                        'FechaContabilizacion': $("#FechContExtorno").val(),
+                        'FechaDocumento': $("#FechDocExtorno").val(),
                         'IdCentroCosto': IdCentroCosto,
                         'Comentario': Comentario,
                         'SubTotal': SubTotal,
@@ -5271,7 +5341,10 @@ function Extornar() {
             }
         }
     })
-   
+    $.post("/Serie/ObtenerSeries", { estado: 1 }, function (data, status) {
+        let series = JSON.parse(data);
+        llenarComboSerieExtorno(series, "cboSerieExtorno", "Seleccione")
+    });
 
 }
 

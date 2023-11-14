@@ -1,7 +1,9 @@
 ﻿@model List<string>
+@using Microsoft.AspNetCore.Http;
 @{
     ViewBag.Title = "Listado";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    HttpContextAccessor httpContextAccessor = new HttpContextAccessor();
 }
 
 
@@ -66,6 +68,7 @@
 </style>
 
 <div class="container-fluid" style="height:93%;">
+    <input style="display:none" id="IdUsuarioSesion" type="text" value="@httpContextAccessor.HttpContext.Session.GetInt32("IdUsuario")"/>
     <div class="panel">
         <div class="container-fluid">
             <div class="topbar-left col-xs-6">
@@ -83,7 +86,7 @@
                 @*<button class="btn btn-sm  btn-success pull-right plu" id="btnPdf" style="margin-left:10px;">Descargar PDF</button>
                 <button class="btn btn-sm btn-info pull-right plu" id="btnExcel" style="margin-left:10px;">Descargar Excel</button>*@
             </div>
-             <div class="col-xs-12 right">
+            <div class="col-xs-12 right">
                 <label class="col-sm-1" for="cboBaseFiltro">Base</label>
                 <div class="col-sm-3">
                     <select class="form-control" id="cboBaseFiltro"></select>
@@ -134,7 +137,7 @@
                             <div class="form-group-sm" style="display:none;">
                                 <input placeholder='' id='txtId' type='text' style="display:none;">
                                 <input id='IdPedido' type='text' style="display:none;">
-                                <input  id='IdOPDN' type='text' style="display:none;">
+                                <input id='IdOPDN' type='text' style="display:none;">
 
                                 @*<input placeholder='' id='txtEstado' type='text' style="display:none;">*@
                             </div>
@@ -214,22 +217,22 @@
                                         <select id="cboMoneda" type="text" class="form-control input-sm" tabindex="3" onchange="ValidarMonedaBase()" disabled></select>
                                     </div>
                                 </div>
-                                <div id="Origenes" style="display:none" >
-                                <div class='form-group-sm'>
-                                    @*<label for="cboMoneda" class="control-label col-sm-2 left-align">Tipo de Cambio</label>*@
-                                  
-                                    <div class="col-sm-4">
-                                        <input id="txtOrigen" type="text" class="form-control input-sm"   disabled></input>
-                                    </div>
-                                </div>
+                                <div id="Origenes" style="display:none">
+                                    <div class='form-group-sm'>
+                                        @*<label for="cboMoneda" class="control-label col-sm-2 left-align">Tipo de Cambio</label>*@
 
-                                <div class='form-group-sm'>
-                                    @*<label for="cboMoneda" class="control-label col-sm-2 left-align">Tipo de Cambio</label>*@
-                                
-                                    <div class="col-sm-4">
-                                        <input id="txtOrigenId" type="text" class="form-control input-sm"   disabled></input>
+                                        <div class="col-sm-4">
+                                            <input id="txtOrigen" type="text" class="form-control input-sm" disabled></input>
+                                        </div>
                                     </div>
-                                </div>
+
+                                    <div class='form-group-sm'>
+                                        @*<label for="cboMoneda" class="control-label col-sm-2 left-align">Tipo de Cambio</label>*@
+
+                                        <div class="col-sm-4">
+                                            <input id="txtOrigenId" type="text" class="form-control input-sm" disabled></input>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -299,7 +302,7 @@
                                         <select id="cboCentroCosto" class="form-control input-sm" tabindex="0"></select>
                                     </div>
                                 </div>
-                                <div class="form-group-sm">
+                                <div class="form-group-sm" id="divGlosasss">
                                     <label for="cboGlosaContable" class="control-label col-sm-2 left-align">Glosa Contable</label>
                                     <div class="col-sm-4">
                                         <select id="cboGlosaContable" type="text" class="form-control input-sm" tabindex="3"></select>
@@ -309,12 +312,12 @@
                             </div>
 
                             <hr style="margin:6px" />
-                            
+
                             <div class="row">
                                 <div class='form-group-sm'>
                                     <label for="txtNumeracion" class="control-label col-sm-2 left-align">Proveedor</label>
                                     <div class="col-sm-10">
-                                        <select id="IdProveedor" type="text" class="form-control input-sm" tabindex="3" onchange="ObtenerProveedorxId()" ></select>
+                                        <select id="IdProveedor" type="text" class="form-control input-sm" tabindex="3" onchange="ObtenerProveedorxId()"></select>
                                     </div>
                                 </div>
                             </div>
@@ -336,7 +339,7 @@
                                     </div>
                                 </div>
                                 <div class='form-group-sm'>
-                                   
+
                                     <div class="col-sm-4">
                                         <button id="btn_nuevo_proveedor" onclick="modalProveedor()" class="btn btn-primary" style="margin-top:0px">Agregar Proveedor</button>
                                     </div>
@@ -409,7 +412,7 @@
                                                 <th style="display:none">Moneda</th>
                                                 <th style="display:none">Tipo Cambio</th>*@
                                                 <th>Cantidad</th>
-                               
+
                                                 <th id="PrecioEditar">Precio Unitario</th>
                                                 <th>Indicador de Impuestos</th>
                                                 <th style="min-width:200px">Centro de Costo</th>
@@ -494,21 +497,21 @@
                                 </div>
 
 
-                                <div class='form-group-sm' >
+                                <div class='form-group-sm'>
                                     <label for="txtTotalAntesDescuento" class="control-label col-sm-2 left-align">Sub Total</label>
                                     <div class="col-sm-4">
                                         <input id="txtTotalAntesDescuento" type="text" class="form-control input-sm" tabindex="12" disabled>
                                     </div>
                                 </div>
                             </div>
-                           
+
                             <div class="row">
                                 <div class='form-group-sm'>
                                     <div class="col-sm-6">
                                     </div>
                                 </div>
 
-                                <div class='form-group-sm' >
+                                <div class='form-group-sm'>
                                     <label for="txtImpuesto" class="control-label col-sm-2 left-align">Impuesto</label>
                                     <div class="col-sm-4">
                                         <input id="txtImpuesto" type="text" class="form-control input-sm" tabindex="15" disabled>
@@ -575,21 +578,21 @@
                                     <p>Serie y Numero:  <input id="SerieNumeroRef" type="text" class="form-control huser-20" tabindex="16"> </p>
                                     <hr style="margin: 0px 0px 5px 0px" />
                                     <div style="display:none">
-                                    <p>
-                                        Cuadrilla:
-                                        <select style="height: 20px" id="IdCuadrillaOLD" type="text" class="form-control input-sm" tabindex="0" onchange="SetCuadrillaTabla();ObtenerEmpleadosxIdCuadrilla()">
-                                            <option value="0">SELECCIONE CUADRILLAS </option>
-                                        </select>
-                                    </p>
-                                    <hr style="margin: 0px 0px 5px 0px" />
+                                        <p>
+                                            Cuadrilla:
+                                            <select style="height: 20px" id="IdCuadrillaOLD" type="text" class="form-control input-sm" tabindex="0" onchange="SetCuadrillaTabla();ObtenerEmpleadosxIdCuadrilla()">
+                                                <option value="0">SELECCIONE CUADRILLAS </option>
+                                            </select>
+                                        </p>
+                                        <hr style="margin: 0px 0px 5px 0px" />
 
-                                    <p>
-                                        Responsable:
-                                        <select style="height: 20px" id="IdResponsableOLD" type="text" class="form-control input-sm" tabindex="0" onchange="SetearEmpleadosEnTabla()">
-                                            <option value="0">SELECCIONE Responsable </option>
-                                        </select>
-                                    </p>
-                                    <hr style="margin: 0px 0px 5px 0px" />
+                                        <p>
+                                            Responsable:
+                                            <select style="height: 20px" id="IdResponsableOLD" type="text" class="form-control input-sm" tabindex="0" onchange="SetearEmpleadosEnTabla()">
+                                                <option value="0">SELECCIONE Responsable </option>
+                                            </select>
+                                        </p>
+                                        <hr style="margin: 0px 0px 5px 0px" />
                                     </div>
                                     <p>
                                         Forma de Pago:
@@ -622,92 +625,92 @@
                                         <hr style="margin: 0px 0px 5px 0px" />
                                         <p id="DivConsumoM3">
                                             Consumo en M3:
-                                            <input type="text" id="consumomM3" class="form-control huser-20"/>
+                                            <input type="text" id="consumomM3" class="form-control huser-20" />
                                         </p>
                                         <hr style="margin: 0px 0px 5px 0px" />
                                         <p id="DivConsumoHW">
                                             Consumo en HW:
                                             <input type="text" id="consumomHW" class="form-control huser-20" />
                                         </p>
-                                             
-                                    @*<p>Ref1  <input id="txtTotal" type="number" class="form-control huser-20" tabindex="16" > </p>
-                                    <hr style="margin: 0px 0px 5px 0px"/>
-                                    <p>Ref1  <input id="txtTotal" type="number" class="form-control huser-20" tabindex="16" > </p>*@
 
-                                     </div>
-                                      <div id="divDetraccion">
-                                            <hr style="margin: 0px 0px 5px 0px" />
-                                            <p id="DivTasaDet">
-                                                Tasa detracción:
-                                                 <select style="height: 20px" id="TasaDet" type="text" class="form-control input-sm" tabindex="0" onchange="CargarCondPagoDet()">
-                                                    
-                                                 </select>
-                                            </p>
-                                               <p id="DivCondicionPagoDet">
-                                                Condición Pago Detracción:
-                                                 <select style="height: 20px" id="CondicionPagoDet" type="text" class="form-control input-sm" tabindex="0">
-                                                    <option value="0">seleccione</option>
-                                                 </select>
-                                            </p>
-                                            <hr style="margin: 0px 0px 5px 0px" />
-                                            <p id="DivGrupoDet">
-                                                Grupo detracción:
-                                                  <select style="height: 20px" id="GrupoDet" type="text" class="form-control input-sm" tabindex="0">
-                                                   
-                                                 </select>
-                                            </p>
-                                    <div />
+                                        @*<p>Ref1  <input id="txtTotal" type="number" class="form-control huser-20" tabindex="16" > </p>
+                                        <hr style="margin: 0px 0px 5px 0px"/>
+                                        <p>Ref1  <input id="txtTotal" type="number" class="form-control huser-20" tabindex="16" > </p>*@
+
+                                    </div>
+                                    <div id="divDetraccion">
+                                        <hr style="margin: 0px 0px 5px 0px" />
+                                        <p id="DivTasaDet">
+                                            Tasa detracción:
+                                            <select style="height: 20px" id="TasaDet" type="text" class="form-control input-sm" tabindex="0" onchange="CargarCondPagoDet()">
+                                            </select>
+                                        </p>
+                                        <p id="DivCondicionPagoDet">
+                                            Condición Pago Detracción:
+                                            <select style="height: 20px" id="CondicionPagoDet" type="text" class="form-control input-sm" tabindex="0">
+                                                <option value="0">seleccione</option>
+                                            </select>
+                                        </p>
+                                        <hr style="margin: 0px 0px 5px 0px" />
+                                        <p id="DivGrupoDet">
+                                            Grupo detracción:
+                                            <select style="height: 20px" id="GrupoDet" type="text" class="form-control input-sm" tabindex="0">
+                                            </select>
+                                        </p>
+                                        <div />
 
 
 
+                                    </div>
+
+                                </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="panel-footer">
-            <div class="row">
-                <div class="col-sm-6" style="color: red;font-weight: bold">
-                    <p style="margin: 0px 0px 0px 0px">TOTAL DE ITEMS:  <span id="total_items"></span> </p>
-                    <p style="margin: 0px 0px 0px 0px">USUARIO: <span id="NombUsuario"></span> </p>
-                    <p style="margin: 0px 0px 0px 0px">FECHA DE  CREACION: <span id="CreatedAt"></span> </p>
-                      <p style="margin: 0px 0px 0px 0px">FECHA DE  EDICION: <span id="EditedAt"></span> </p>
-                    <p style="margin: 0px 0px 0px 0px">EDITADO POR: <span id="NombUsuarioEdicion"></span> </p>
-                </div>
-
-                <div class="col-sm-6" >
-                    <div class='form-group-sm'>
-                        <!-- Single button -->
-                        <div class="btn btn-group dropup pull-right plu" id="div_copiarde">
-                            <button type="button" class="btn btn-info pull-right plu">COPIAR DE</button>
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="caret"></span>
-                                <span class="sr-only">Toggle Dropdown</span>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li onclick="AbrirModalPedidos()">Pedido</li>
-                                <li onclick="AbrirModalEntregas()">Entrega</li>
-                            </ul>
+                <div class="panel-footer">
+                    <div class="row">
+                        <div class="col-sm-6" style="color: red;font-weight: bold">
+                            <p style="margin: 0px 0px 0px 0px">TOTAL DE ITEMS:  <span id="total_items"></span> </p>
+                            <p style="margin: 0px 0px 0px 0px">USUARIO: <span id="NombUsuario"></span> </p>
+                            <p style="margin: 0px 0px 0px 0px">FECHA DE  CREACION: <span id="CreatedAt"></span> </p>
+                            <p style="margin: 0px 0px 0px 0px">FECHA DE  EDICION: <span id="EditedAt"></span> </p>
+                            <p style="margin: 0px 0px 0px 0px">EDITADO POR: <span id="NombUsuarioEdicion"></span> </p>
                         </div>
 
-                    
-                        <button type="button" id="btnGrabar" onclick="GuardarSolicitud()" class="btn btn-primary pull-right plu">Crear</button>
-                        <button type="button" id="btnEditar" onclick="Editar()" class="btn btn-primary pull-right plu">Grabar</button>
-                        <button type="button" id="btnExtornar" onclick="Extornar()" class="btn btn-primary pull-right plu">Extornar</button>
-                        <button type="button" id="btnCancelar" onclick="CerrarModal()" class="btn btn-danger pull-right" style="background-color:orange;">Cerrar</button>
+                        <div class="col-sm-6">
+                            <div class='form-group-sm'>
+                                <!-- Single button -->
+                                <div class="btn btn-group dropup pull-right plu" id="div_copiarde">
+                                    <button type="button" class="btn btn-info pull-right plu">COPIAR DE</button>
+                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span class="caret"></span>
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li onclick="AbrirModalPedidos()">Pedido</li>
+                                        <li onclick="AbrirModalEntregas()">Entrega</li>
+                                    </ul>
+                                </div>
+
+
+                                <button type="button" id="btnGrabar" onclick="GuardarSolicitud()" class="btn btn-primary pull-right plu">Grabar</button>
+                                <button type="button" id="btnEditar" onclick="Editar()" class="btn btn-primary pull-right plu">Grabar</button>
+                                <button type="button" id="btnExtornar" onclick="Extornar()" class="btn btn-primary pull-right plu">Extornar</button>
+                                <button type="button" id="btnCancelar" onclick="CerrarModal()" class="btn btn-danger pull-right" style="background-color:orange;">Cerrar</button>
+                            </div>
+                        </div>
                     </div>
+
+
+
+
+                    @*<div class="row">
+                    <button type="button" id="btnGrabar" onclick="GuardarSolicitud()" class="btn btn-primary pull-right plu">Grabar</button>
+                    <button type="button" id="btnCancelar" onclick="CerrarModal()" class="btn btn-danger pull-right" style="background-color:orange;">Cancelar</button>
+                    </div>*@
                 </div>
             </div>
-
-
-
-
-            @*<div class="row">
-            <button type="button" id="btnGrabar" onclick="GuardarSolicitud()" class="btn btn-primary pull-right plu">Grabar</button>
-            <button type="button" id="btnCancelar" onclick="CerrarModal()" class="btn btn-danger pull-right" style="background-color:orange;">Cancelar</button>
-            </div>*@
         </div>
     </div>
 
@@ -798,7 +801,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                   <div class="row">
+                                <div class="row">
 
                                     <div class='form-group-sm'>
                                         <label for="txtDescripcionItem" class="control-label col-sm-2 left-align">Descripcion</label>
@@ -819,7 +822,7 @@
                                             <input id="txtPrecioUnitarioItem" type="text" class="form-control input-sm" tabindex="4">
                                         </div>
                                     </div>
-                                    
+
                                     <div class='form-group-sm'>
                                         <label for="IdIndicadorImpuesto" class="control-label col-sm-2 left-align">Indicador Impuesto</label>
                                         <div class="col-sm-4">
@@ -836,7 +839,7 @@
                                             <input id="txtCantidadItem" max="5" type="number" class="form-control input-sm" tabindex="6" onkeyup="ValidarDecimalesCantidades('txtCantidadItem')">
                                         </div>
                                     </div>
-                                    
+
                                     <div class='form-group-sm'>
                                         <label id="lblStockItem" for="txtStockAlmacenItem" class="control-label col-sm-2 left-align">Stock en Almacen</label>
                                         <div class="col-sm-4">
@@ -847,29 +850,29 @@
 
                                 </div>
 
-                         
-                                    <div class="row">
 
-                                        <div class='form-group-sm'>
-                                            <label id="lblStockItem" for="IdCuadrilla" class="control-label col-sm-2 left-align">Centro de Costo</label>
-                                            <div class="col-sm-10">
-                                                <select id="IdCuadrilla" type="text" class="form-control input-sm" tabindex="0" onchange="ObtenerEmpleadosxIdCuadrilla()">
+                                <div class="row">
+
+                                    <div class='form-group-sm'>
+                                        <label id="lblStockItem" for="IdCuadrilla" class="control-label col-sm-2 left-align">Centro de Costo</label>
+                                        <div class="col-sm-10">
+                                            <select id="IdCuadrilla" type="text" class="form-control input-sm" tabindex="0" onchange="ObtenerEmpleadosxIdCuadrilla()">
                                                 <option value="0">SELECCIONE CUADRILLAS </option>
-                                                </select>
-                                            </div>
+                                            </select>
                                         </div>
                                     </div>
-                                    <div class="row">
+                                </div>
+                                <div class="row">
 
-                                        <div class='form-group-sm'>
-                                            <label id="lblStockItem" for="IdResponsable" class="control-label col-sm-2 left-align">Responsable</label>
-                                            <div class="col-sm-10">
-                                               <select id="IdResponsable" type="text" class="form-control input-sm" tabindex="0">
+                                    <div class='form-group-sm'>
+                                        <label id="lblStockItem" for="IdResponsable" class="control-label col-sm-2 left-align">Responsable</label>
+                                        <div class="col-sm-10">
+                                            <select id="IdResponsable" type="text" class="form-control input-sm" tabindex="0">
                                                 <option value="0">SELECCIONE Responsable </option>
                                             </select>
-                                            </div>
                                         </div>
                                     </div>
+                                </div>
 
 
                                 <div class="row" style="display:none">
@@ -1331,7 +1334,7 @@
         </div>
     </div>
 
-    
+
     <div class="modal fade" data-backdrop="static"
          data-keyboard="false" id="ModalListadoEntrega" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered allcp-form modal-lg" style="margin-top:120px" role="document">
@@ -1375,10 +1378,10 @@
         </div>
     </div>
 
-      <!-- Modal Docs Origen-->
+@*    <!-- Modal Docs Origen-->
     <div class="modal fade" data-backdrop="static"
-         data-keyboard="false" id="ModalDocsOrigen" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered allcp-form" style="margin-top:120px" role="document">
+         data-keyboard="false" id="" tabindex="-2" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered allcp-form" style="margin-top:120px">
             <div class="modal-content">
 
 
@@ -1410,8 +1413,43 @@
 
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-danger pull-right" style="background-color:orange;" data-dismiss="modal" >Cerrar</button>
+                        <button type="button" class="btn btn-danger pull-right" style="background-color:orange;" data-dismiss="modal">Cerrar</button>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+*@
+    <div id="ModalDocsOrigen" class="popup-sm allcp-form mfp-with-anim mfp-hide">
+        <div class="panel">
+            <div class="panel-heading">
+                 <h5 class="modal-title" id="lblTituloModalDocsOrigen">Anexos</h5>
+            </div>
+            <div class="panel-body ">
+              <div class='col s12 m12 '>
+                            <div class='container-fluid'>
+
+
+                                <div class="table-responsive">
+                                    <table class="table" id="tabla_DocsOrigen">
+                                        <thead>
+                                            <tr>
+                                                <th>Origen</th>
+                                                <th>Nro Doc</th>
+                                                <th>Ver Reporte</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbody_ModalDocsOrigen"></tbody>
+                                    </table>
+                                </div>
+
+
+                            </div>
+                        </div>
+            </div>
+            <div class="panel-footer text-right">
+                <div class="row">
+                    <button type="button" class="btn btn-danger pull-right" style="background-color:orange;" onclick="closePopup()" data-dismiss="modal">Cerrar</button>
                 </div>
             </div>
         </div>
@@ -1420,8 +1458,7 @@
 
 
 
-
-   @* MODAL PROVEEDOR*@
+    @* MODAL PROVEEDOR*@
     <div class="modal fade" data-backdrop="static"
          data-keyboard="false" id="ModalProveedores" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered allcp-form modal-lg" style="margin-top:120px" role="document">
@@ -1434,30 +1471,30 @@
                     </div>
                     <div class="panel-body ">
                         <div class='col s12 m12 '>
-                         
+
                             <div class="form-group-sm" style="display:none;">
                                 <input placeholder='' id='txtIdMP' type='text' style="display:none;">
                             </div>
                             <div class="row">
-                                    <div class='form-group-sm'>
-                                        <label for="txtCodigo" class="control-label col-sm-2 left-align">Codigo Proveedor</label>
-                                        <div class="col-sm-4">
-                                            <input id="txtCodigoMP" type="text" class="form-control input-sm" tabindex="0" disabled>
-                                        </div>
+                                <div class='form-group-sm'>
+                                    <label for="txtCodigo" class="control-label col-sm-2 left-align">Codigo Proveedor</label>
+                                    <div class="col-sm-4">
+                                        <input id="txtCodigoMP" type="text" class="form-control input-sm" tabindex="0" disabled>
                                     </div>
-                                    <div class='form-group-sm'>
-                                        <label for="cboTipoPersona" class="control-label col-sm-2 left-align">Tipo Persona</label>
-                                        <div class="col-sm-4">
+                                </div>
+                                <div class='form-group-sm'>
+                                    <label for="cboTipoPersona" class="control-label col-sm-2 left-align">Tipo Persona</label>
+                                    <div class="col-sm-4">
                                         <select id="cboTipoPersonaMP" class="form-control input-sm" tabindex="1" onchange="changeTipoPersona()"></select>
-                                        </div>
                                     </div>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class='form-group-sm'>
                                     <label for="cboTipoDocumento" class="control-label col-sm-2 left-align">Tipo de Documento</label>
-                                     <div class="col-sm-4">
-                                         <select id="cboTipoDocumentoMP" class="form-control input-sm" tabindex="2"></select>
-                                     </div>
+                                    <div class="col-sm-4">
+                                        <select id="cboTipoDocumentoMP" class="form-control input-sm" tabindex="2"></select>
+                                    </div>
                                 </div>
                                 <div class='form-group-sm' id="divDocumentoMP">
                                     <label for="txtNroDocumento" class="control-label col-sm-1 left-align">N°</label><label id="lblDocumentoMP" class="control-label col-sm-1 left-align">Documento</label>
@@ -1504,19 +1541,19 @@
                                         <input id="txtFechaIngresoMP" type="date" class="form-control date input-sm" tabindex="21">
                                     </div>
                                 </div>
-                               
+
                                 <div class='form-group-sm'>
                                     <label for="cboCondicionPago" class="control-label col-sm-1 left-align" style="font-weight:600;text-decoration: underline;">Condicion Pago</label>
                                     <div class="col-sm-3">
                                         <select id="cboCondicionPagoMP" class="form-control input-sm" tabindex="13"></select>
                                     </div>
                                 </div>
-                                 <div class='form-group-sm'>
-                                     <label for="txtDiasEntrega" class="control-label col-sm-2 left-align" style="font-weight:600;text-decoration: underline;">Dias Entrega</label>
-                                     <div class="col-sm-2">
+                                <div class='form-group-sm'>
+                                    <label for="txtDiasEntrega" class="control-label col-sm-2 left-align" style="font-weight:600;text-decoration: underline;">Dias Entrega</label>
+                                    <div class="col-sm-2">
                                         <input id="txtDiasEntregaMP" type="number" class="form-control date input-sm" tabindex="22">
-                                     </div>
-                                 </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class='form-group-sm'>
@@ -1526,7 +1563,7 @@
                                     </div>
                                 </div>
                             </div>
-                             <div class="row">
+                            <div class="row">
                                 <div class='form-group-sm' id="div4taMP">
                                     <label for="chk4taMP" class="control-label col-sm-2 left-align">Afecto 4ta Categoria </label>
                                     <div class="col-sm-2">
@@ -1534,36 +1571,38 @@
                                     </div>
                                 </div>
                             </div>
-                            </div>
-                            <div class="row">
-                                <div class='form-group-sm'>
-                                    <label for="txtObservacion" class="control-label col-sm-2 left-align">Observacion</label>
-                                    <div class="col-sm-10">
-                                        <input id="txtObservacionMP" type="text" class="form-control input-sm" tabindex="22">
-                                    </div>
+                        </div>
+                        <div class="row">
+                            <div class='form-group-sm'>
+                                <label for="txtObservacion" class="control-label col-sm-2 left-align">Observacion</label>
+                                <div class="col-sm-10">
+                                    <input id="txtObservacionMP" type="text" class="form-control input-sm" tabindex="22">
                                 </div>
-                            </div>
-
-
-
                             </div>
                         </div>
 
+
+
                     </div>
                     <div class="modal-footer">
-                    <button type="button" id="btn_agregarProveedorbd" class="btn btn-danger pull-right" style="background-color:#005457;" onclick="GuardarProveedor()">Agregar Proveedor</button>
+                        <button type="button" id="btn_agregarProveedorbd" class="btn btn-danger pull-right" style="background-color:#005457;" onclick="GuardarProveedor()">Agregar Proveedor</button>
                         <button type="button" class="btn btn-danger pull-right" style="background-color:orange;" data-dismiss="modal">Cerrar</button>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
 </div>
 
 
+@{
+    Random rnd = new Random();
+}
 
 
-<script src="~/Scripts/FacturaProveedor/Listado.js"></script>
+
+<script src="~/Scripts/FacturaProveedor/Listado.js?v=@rnd.Next(1, 1000 + 1)"></script>
 <script src="~/Scripts/General.js"></script>
 <script src="~/js/pdf/jspdf.min.js"></script>
 <script src="~/js/pdf/faker.min.js"></script>

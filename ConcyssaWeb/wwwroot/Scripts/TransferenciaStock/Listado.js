@@ -1402,6 +1402,35 @@ function ObtenerNumeracion() {
     });
 
 }
+function validarseriescontableParaCrear() {
+    let IdSerie = $("#cboSerie").val();
+    let IdDocumento = 1;
+    let Fecha = $("#txtFechaContabilizacion").val();
+    let Orden = 1;
+    let datosrespuesta;
+    let estado = 0;
+    datosrespuesta = ValidarFechaContabilizacionxDocumentoM(IdSerie, IdDocumento, Fecha, Orden);
+    console.log(datosrespuesta);
+    if (datosrespuesta.FechaRelacion.length == 0) {
+
+        return false;
+    }
+
+    if (datosrespuesta.FechaRelacion.length > 0) {
+        for (var i = 0; i < datosrespuesta.FechaRelacion.length; i++) {
+            console.log(datosrespuesta.FechaRelacion[i]);
+            if (datosrespuesta.FechaRelacion[i].StatusPeriodo == 1) {
+                estado = 1;
+            }
+        }
+
+    }
+
+    if (estado == 0) {
+        return false;
+    }
+    return true
+}
 
 
 function GuardarSolicitud() {
@@ -1629,7 +1658,10 @@ function GuardarSolicitud() {
             'NombreArchivo': arrayTxtNombreAnexo[i]
         });
     }
-
+    if (validarseriescontableParaCrear() == false) {
+        Swal.fire("Error!", "No Puede Crear este Documento en una Fecha No Habilitada", "error")
+        return
+    }
 
 
     if (validarGuardado == 0) {

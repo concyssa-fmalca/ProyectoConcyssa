@@ -65,6 +65,17 @@ function GuardarArea() {
         varEstado = true;
     }
 
+    if (varCodigo == "" || varCodigo == undefined) {
+        Swal.fire("Error", "El Campo Codigo es Obligatorio", "info")
+        return
+    }
+
+    if (varDescripcion == "" || varDescripcion == undefined) {
+        Swal.fire("Error", "El Campo Descripcion es Obligatorio", "info")
+        return
+    }
+
+
     $.post('UpdateInsertArea', {
         'IdArea': varIdArea,
         'Codigo': varCodigo,

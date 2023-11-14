@@ -118,6 +118,25 @@ function GuardarAlmacen() {
         varEstado = true;
     }
 
+    if (IdObra == 0 || IdObra == undefined) {
+        Swal.fire("Error", "El Campo Obra es Obligatorio", "info")
+        return
+    }
+
+
+    if (varCodigo == "" || varCodigo == undefined) {
+        Swal.fire("Error", "El Campo Codigo es Obligatorio", "info")
+        return
+    }
+    if (varDescripcion == "" || varDescripcion == undefined) {
+        Swal.fire("Error", "El Campo Descripcion es Obligatorio", "info")
+        return
+    }
+    if (varDireccion == "" || varDireccion == undefined) {
+        Swal.fire("Error", "El Campo Direccion es Obligatorio", "info")
+        return
+    }
+
     $.post('UpdateInsertAlmacen', {
         'IdAlmacen': varIdAlmacen,
         'IdObra': IdObra,

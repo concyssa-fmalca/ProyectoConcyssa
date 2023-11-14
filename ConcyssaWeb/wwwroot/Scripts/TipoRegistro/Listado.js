@@ -135,6 +135,11 @@ function Grabar() {
     if ($('#chkActivo')[0].checked) {
         Estado = true;
     }
+
+    if (NombTipoRegistro == "" || NombTipoRegistro == undefined) {
+        Swal.fire("Error", "El Campo Codigo es Tipo Registro", "info")
+        return
+    }
     $.post('UpdateInsertTipoRegistro', {
         'IdTipoRegistro': +$("#txtId").val(),
         'Estado': Estado,
@@ -152,5 +157,8 @@ function Grabar() {
     });
 }
 function limpiarDatos() {
+    $("#NombTipoRegistro").val('');
+}
+function CerrarModalListadoItems() {
     $("#NombTipoRegistro").val('');
 }

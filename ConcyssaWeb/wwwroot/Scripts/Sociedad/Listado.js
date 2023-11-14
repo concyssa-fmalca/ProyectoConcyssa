@@ -57,6 +57,20 @@ function GuardarSociedad() {
     let varNumeroDocumento = $("#txtNumeroDocumento").val();
     let varEstado = false;
 
+
+    if (varNombreSociedad == "" || varNombreSociedad == undefined) {
+        Swal.fire("Error", "El Campo Nombre Sociedad es Obligatorio", "info")
+        return
+    }
+    if (varDescripcion == "" || varDescripcion == undefined) {
+        Swal.fire("Error", "El Campo Descripcion es Obligatorio", "info")
+        return
+    }
+    if (varNumeroDocumento == "" || varNumeroDocumento == undefined) {
+        Swal.fire("Error", "El Campo Numero Documento es Obligatorio", "info")
+        return
+    }
+
     if ($('#chkActivo')[0].checked) {
         varEstado = true;
     }

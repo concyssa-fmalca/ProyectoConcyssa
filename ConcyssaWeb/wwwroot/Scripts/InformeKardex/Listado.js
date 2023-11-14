@@ -55,7 +55,6 @@ function formatNumber(num) {
 window.onload = function () {
 
     console.log('ddddddddddddddddddddd');
-    CargarArticulos();
     CargarAlmacen();
     $("#IdArticulo").select2();
     $("#IdAlmacen").select2();
@@ -66,6 +65,67 @@ window.onload = function () {
 
 };
 
+function BuscarCodigoProducto() {
+
+    let TipoItem = $("#cboClaseArticulo").val();
+    let IdAlmacen = $("#IdAlmacen").val();
+    let IdTipoProducto = $("#IdTipoProducto").val();
+    if (IdAlmacen == 0) {
+        swal("Informacion!", "Debe Seleccionar Almacen!");
+        return;
+    }
+
+    $("#ModalListadoItem").modal();
+    if (TipoItem == 1) {
+        $.post("/Articulo/ListarArticulosCatalogoxSociedadxAlmacenStockxIdTipoProducto", { 'IdTipoProducto': IdTipoProducto, 'IdAlmacen': IdAlmacen, 'Estado': 1, }, function (data, status) {
+
+            if (data == "error") {
+                swal("Informacion!", "No se encontro Articulo")
+            } else {
+                let articulo = JSON.parse(data);
+                llenarComboArticulo(articulo, "IdArticulo", "TODOS")
+            }
+
+        });
+    } else {
+        $.post("/Articulo/ObtenerArticulosActivoFijo",
+
+            function (data, status) {
+
+                if (data == "error") {
+                    swal("Informacion!", "No se encontro Articulo")
+
+                } else {
+
+                    let articulo = JSON.parse(data);
+                    llenarComboArticulo(articulo, "IdArticulo", "TODOS")
+                }
+
+            });
+    }
+}
+function ValidarAlmacen() {
+    if ($("#IdAlmacen").val() !== '0') {
+        $("#cboClaseArticulo").prop('disabled',false)
+        $("#IdTipoProducto").prop('disabled',true)
+    } else {
+        $("#cboClaseArticulo").prop('disabled', true)
+        $("#IdTipoProducto").prop('disabled', true)
+    }
+}
+function ValidarTipoArticulo() {
+    if ($("#cboClaseArticulo").val() == '0') {
+        $("#IdTipoProducto").prop('disabled', true)
+        $("#divOcultar").show()
+    } else if ($("#cboClaseArticulo").val() == '1') {
+        $("#IdTipoProducto").prop('disabled', false)
+        $("#divOcultar").show()
+
+    } else if ($("#cboClaseArticulo").val() == '3') {
+        BuscarCodigoProducto()
+        $("#divOcultar").hide()
+    }
+}
 
 function CargarAlmacen() {
     $.ajaxSetup({ async: false });
@@ -96,6 +156,7 @@ function llenarComboArticulo(lista, idCombo, primerItem) {
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
+    $("#IdArticulo").prop('selectedIndex', 0).change();
 }
 
 
@@ -128,10 +189,7 @@ function BuscarKardex() {
     if (FechaTermino == '') {
         FechaTermino = '2050-01-01'
     }
-    if ($("#IdArticulo").val()==0) {
-        swal("Informacion!", "Seleccione un Articulo");
-        return;
-    } if ($("#IdAlmacen").val()==0) {
+    if ($("#IdAlmacen").val()==0) {
         swal("Informacion!", "Seleccione un Almacen");
         return;
     } if ($("#FechaInicio").val()=='') {
@@ -209,182 +267,253 @@ function ListarDatatableKardex(url, IdArticulo, IdAlmacen, FechaInicio, FechaTer
 
 function ListarDatatableKardexDT(url, IdArticulo, IdAlmacen, FechaInicio, FechaTermino) {
 
-    //if (tablekardex) {
-    //    tablekardex.destroy();
-    //    //$('#table_id').destroy();
-    //}
+    Swal.fire({
+        title: "Cargando...",
+        text: "Por favor espere",
+        showConfirmButton: false,
+        allowOutsideClick: false
+    });
+
+    setTimeout(() => {
+
+        tablekardex = $('#table_id').dataTable({
+        
+
+            language: {
+                lenguaje_data,
+                loadingRecords: "No se Encontraron datos para este Artículo",
+            },
+            responsive: false,
+            scrollX: true,
+            ajax: {
+                url: url,
+                type: 'POST',
+                error: function (xhr, status, error) {
+                    console.error(error);
+                },
+                data: {
+                    'IdArticulo': IdArticulo,
+                    'IdAlmacen': IdAlmacen,
+                    'FechaInicio': FechaInicio,
+                    'FechaTermino': FechaTermino,
+                    'ClaseArticulo': $("#cboClaseArticulo").val(),
+                    'TipoArticulo': $("#IdTipoProducto").val(),
+                    pagination: {
+                        perpage: 50,
+                    },                
+                },
+            },
+
+            columnDefs: [
+                // {"className": "text-center", "targets": "_all"},
+                //{
+                //    targets: -1,
+                //    orderable: false,
+                //    render: function (data, type, full, meta) {
+
+                //        return 0
+                //    },
+                //},
+                {
+                    data: null,
+                    targets: 0,
+                    orderable: false,
+                    render: function (data, type, full, meta) {
+                        return "<input style='display:none' type='text' value='" + meta.row + 1 +"' class='datos'/>"+ (meta.row + 1)
+                    },
+                },
+                {
+                    data: null,
+                    targets: 1,
+                    orderable: false,
+                    render: function (data, type, full, meta) {
+                        return full.Modulo
+                    },
+                },
+                {
+                    data: null,
+                    targets: 2,
+                    orderable: false,
+                    render: function (data, type, full, meta) {
+                        return full.CodigoArticulo
+                    },
+                },
+                {
+                    data: null,
+                    targets: 3,
+                    orderable: false,
+                    render: function (data, type, full, meta) {
+                        return full.DescArticulo
+                    },
+                },
+                {
+                    data: null,
+                    targets: 4,
+                    orderable: false,
+                    render: function (data, type, full, meta) {
+                        let fecha = full.FechaRegistro.split('T')[0]
+                        if(fecha == "1999-01-01") return '-'
+                        return fecha.split('-')[2] + '-'+fecha.split('-')[1] + '-' + fecha.split('-')[0]+' '+ full.FechaRegistro.split('T')[1]
+                    },
+                },
+                {
+                    data: null,
+                    targets: 5,
+                    orderable: false,
+                    render: function (data, type, full, meta) {
+                        return full.TipoTransaccion
+                    },
+                },
+                {
+                    data: null,
+                    targets: 6,
+                    orderable: false,
+                    render: function (data, type, full, meta) {
+                        if(full.DescSerie == '-') return '-'
+                        return full.DescSerie.toUpperCase() + `-` + full.Correlativo
+                    },
+                },
+                {
+                    data: null,
+                    targets: 7,
+                    orderable: false,
+                    render: function (data, type, full, meta) {
+                        let fechaDoc = full.FechaDocumento.split('T')[0]
+                        if (fechaDoc == "1999-01-01") return '-'
+                        return fechaDoc.split('-')[2] + '-' + fechaDoc.split('-')[1] + '-' + fechaDoc.split('-')[0] 
+                    },
+                },
+                {
+                    data: null,
+                    targets:8,
+                    orderable: false,
+                    render: function (data, type, full, meta) {
+                        let fechaCont = full.FechaContabilizacion.split('T')[0]
+                        if (fechaCont == "1999-01-01") return '-'
+                        return fechaCont.split('-')[2] + '-' + fechaCont.split('-')[1] + '-' + fechaCont.split('-')[0]
+                    },
+                },
+                {
+                    data: null,
+                    targets: 9,
+                    orderable: false,
+                    render: function (data, type, full, meta) {
+                        return full.TipoDocumentoRef
+                    },
+                },
+                {
+                    data: null,
+                    targets: 10,
+                    orderable: false,
+                    render: function (data, type, full, meta) {
+                        if (full.NumSerieTipoDocumentoRef == '-0') {
+                            return '-'
+                        } else {
+                            return full.NumSerieTipoDocumentoRef.toUpperCase()
+                        }
+                  
+                    },
+                },
+                {
+                    data: null,
+                    targets: 11,
+                    orderable: false,
+                    render: function (data, type, full, meta) {
+                        return full.DescUnidadMedidaBase
+                    },
+                },
+                {
+                    data: null,
+                    targets: 12,
+                    orderable: false,
+                    render: function (data, type, full, meta) {
+                        return formatNumber(full.CantidadBase)
+                    },
+                },
+                {
+                    data: null,
+                    targets: 13,
+                    orderable: false,
+                    render: function (data, type, full, meta) {
+                        return formatNumber(full.PrecioBase)
+                    },
+                },
+                {
+                    data: null,
+                    targets: 14,
+                    orderable: false,
+                    render: function (data, type, full, meta) {
+                        return formatNumber((full.CantidadBase * full.PrecioBase))
+                    },
+                },
+                {
+                    data: null,
+                    targets: 15,
+                    orderable: false,
+                    render: function (data, type, full, meta) {
+                        return full.Saldo
+                    },
+                },
+                {
+                    data: null,
+                    targets: 16,
+                    orderable: false,
+                    render: function (data, type, full, meta) {
+                        return formatNumberDecimales(full.PrecioPromedio, 2)
+                    },
+                },
+                {
+                    data: null,
+                    targets: 17,
+                    orderable: false,
+                    render: function (data, type, full, meta) {
+                        return formatNumber(Math.abs(full.PrecioPromedio * full.Saldo))
+                    },
+                },
+                {
+                    data: null,
+                    targets: 18,
+                    orderable: false,
+                    render: function (data, type, full, meta) {
+                        return full.NombUsuario
+                    },
+                },   
+            ],
+            //"drawCallback": function (settings) {
+            //    var api = this.api();
+
+            //    // Iterar a través de las filas de la tabla
+            //    api.rows().every(function (rowIdx, tableLoop, rowLoop) {
+            //        var row = this.node();
+
+            //        // Obtener el valor de la columna 3 (índice 2) usando "render"
+            //        var valorColumna3 = api.cell({ row: rowIdx, column: 3 }).render().CodigoArticulo;
+            //        console.log(valorColumna3)
+
+            //        // Comprobar si el valor ha cambiado
+            //        if (valorColumna3 !== $(row).data('valorColumna3')) {
+            //            // Cambiar el color de fondo de la fila
+            //            $(row).css('background-color', 'lemonchiffon');
+
+            //            // Actualizar el valor de referencia para futuras comparaciones
+            //            $(row).data('valorColumna3', valorColumna3);
+            //        } else {
+            //            // Restablecer el color de fondo
+            //            $(row).css('background-color', '');
+            //        }
+            //    });
+            //},
+    
+            "bDestroy": true
+        });
+        Swal.close()
+    }, 200)
     
    
 
-    tablekardex = $('#table_id').dataTable({
-        language: {
-            lenguaje_data,
-            loadingRecords: "No se Encontraron datos para este Artículo",
-        },
-        responsive: true,
-        ajax: {
-            url: url,
-            type: 'POST',
-            error: function (xhr, status, error) {
-                console.error(error);
-            },
-            data: {
-                'IdArticulo': IdArticulo,
-                'IdAlmacen': IdAlmacen,
-                'FechaInicio': FechaInicio,
-                'FechaTermino': FechaTermino,
-                pagination: {
-                    perpage: 50,
-                },                
-            },
-        },
 
-        columnDefs: [
-            // {"className": "text-center", "targets": "_all"},
-            //{
-            //    targets: -1,
-            //    orderable: false,
-            //    render: function (data, type, full, meta) {
 
-            //        return 0
-            //    },
-            //},
-            {
-                data: null,
-                targets: 0,
-                orderable: false,
-                render: function (data, type, full, meta) {
-                    return meta.row + 1
-                },
-            },
-            {
-                data: null,
-                targets: 1,
-                orderable: false,
-                render: function (data, type, full, meta) {
-                    return full.Modulo
-                },
-            },
-            {
-                data: null,
-                targets: 2,
-                orderable: false,
-                render: function (data, type, full, meta) {
-                    return full.FechaRegistro
-                },
-            },
-            {
-                data: null,
-                targets: 3,
-                orderable: false,
-                render: function (data, type, full, meta) {
-                    return full.TipoTransaccion
-                },
-            },
-            {
-                data: null,
-                targets: 4,
-                orderable: false,
-                render: function (data, type, full, meta) {
-                    return full.DescSerie.toUpperCase() + `-` + full.Correlativo
-                },
-            },
-            {
-                data: null,
-                targets: 5,
-                orderable: false,
-                render: function (data, type, full, meta) {
-                    return full.FechaDocumento.split('T')[0]
-                },
-            },
-            {
-                data: null,
-                targets: 6,
-                orderable: false,
-                render: function (data, type, full, meta) {
-                    return full.TipoDocumentoRef
-                },
-            },
-            {
-                data: null,
-                targets: 7,
-                orderable: false,
-                render: function (data, type, full, meta) {
-                    if (full.NumSerieTipoDocumentoRef == '-0') {
-                        return '-'
-                    } else {
-                        return full.NumSerieTipoDocumentoRef.toUpperCase()
-                    }
-                  
-                },
-            },
-            {
-                data: null,
-                targets: 8,
-                orderable: false,
-                render: function (data, type, full, meta) {
-                    return full.DescUnidadMedidaBase
-                },
-            },
-            {
-                data: null,
-                targets: 9,
-                orderable: false,
-                render: function (data, type, full, meta) {
-                    return formatNumber(full.CantidadBase)
-                },
-            },
-            {
-                data: null,
-                targets: 10,
-                orderable: false,
-                render: function (data, type, full, meta) {
-                    return formatNumber(full.PrecioBase)
-                },
-            },
-            {
-                data: null,
-                targets: 11,
-                orderable: false,
-                render: function (data, type, full, meta) {
-                    return formatNumber((full.CantidadBase * full.PrecioBase))
-                },
-            },
-            {
-                data: null,
-                targets: 12,
-                orderable: false,
-                render: function (data, type, full, meta) {
-                    return full.Saldo
-                },
-            },
-            {
-                data: null,
-                targets: 13,
-                orderable: false,
-                render: function (data, type, full, meta) {
-                    return formatNumberDecimales(full.PrecioPromedio, 2)
-                },
-            },
-            {
-                data: null,
-                targets: 14,
-                orderable: false,
-                render: function (data, type, full, meta) {
-                    return formatNumber(Math.abs(full.PrecioPromedio * full.Saldo))
-                },
-            },
-            {
-                data: null,
-                targets: 15,
-                orderable: false,
-                render: function (data, type, full, meta) {
-                    return full.NombUsuario
-                },
-            },   
-        ],
-        "bDestroy": true
-    });
+       
 
     //$('#tabla_listado_pedidos tbody').on('dblclick', 'tr', function () {
     //    var data = tablepedido.row(this).data();
@@ -628,4 +757,42 @@ function verBase64PDF(datos) {
 
     // y de esta manera simplemente lo abro en una nueva ventana:
     window.open(url, '_blank');
+}
+
+function ImportarExcel() {
+
+    let contadorDatos = 0;
+    $(".datos").each(function (indice, elemento) {
+        contadorDatos++
+    });
+
+    if (contadorDatos == 0) {
+        Swal.fire("No se encontraron Datos en la Tabla")
+        return
+    }
+
+
+    let IdArticulo = $("#IdArticulo").val();
+    let IdAlmacen = $("#IdAlmacen").val();
+    let FechaInicio = $("#FechaInicio").val();
+    let FechaTermino = $("#FechaTermino").val();
+
+    $.post('GenerarExcel', {
+        'IdArticulo': IdArticulo,
+        'IdAlmacen': IdAlmacen,
+        'FechaInicio': FechaInicio,
+        'FechaTermino': FechaTermino,
+        'ClaseArticulo': $("#cboClaseArticulo").val(),
+        'TipoArticulo': $("#IdTipoProducto").val(),
+        'NombreAlmacen': $("#IdAlmacen option:selected").text()
+    }, function (data, status) {
+        0
+    
+        if (data) {
+            window.open("/Anexos/"+ data+".xlsx", '_blank', 'noreferrer');
+        }
+    });
+
+
+   
 }

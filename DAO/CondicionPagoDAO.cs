@@ -63,7 +63,7 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@IdSociedad", int.Parse(IdSociedad));
                         da.SelectCommand.Parameters.AddWithValue("@UsuarioCreacion", IdUsuario);
                         da.SelectCommand.Parameters.AddWithValue("@UsuarioActualizacion", IdUsuario);
-                        int rpta = da.SelectCommand.ExecuteNonQuery();
+                        int rpta = int.Parse(da.SelectCommand.ExecuteScalar().ToString());
                         transactionScope.Complete();
                         return rpta;
                     }

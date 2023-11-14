@@ -3,6 +3,8 @@ using DTO;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net;
+using System.Net.Mail;
+using System.Xml;
 
 namespace ConcyssaWeb.Controllers
 {
@@ -154,8 +156,15 @@ namespace ConcyssaWeb.Controllers
             }
             else
             {
-                if (respuesta > 0)
+                if (respuesta > 0)      
                 {
+                    string tabla = oOpchDTO.TablaOrigen;
+                    int tipo = oOpchDTO.IdTipoDocumento;
+                    if (tabla != "Entrega" && tipo == 18 )
+                    {
+                        enviarCorreo(respuesta);
+                    }
+                  
                     return respuesta.ToString();
                 }
                 else
@@ -418,6 +427,153 @@ namespace ConcyssaWeb.Controllers
         }
 
 
+        public int enviarCorreo(int IdOpch) {
+            try
+            {
+
+                string base64;
+                string html = @"";
+                string mensaje_error = "";
+
+                int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+
+                string body;
+                body = "BASE PRUBAS";
+
+
+                OpchDAO oOpchDAO = new OpchDAO();
+                OpchDTO oOpchDTO = oOpchDAO.ObtenerDatosxIdOpch(IdOpch, ref mensaje_error);
+                if (mensaje_error.ToString().Length == 0)
+                {
+                    List<OPCHDetalle> lstOPCHDetalle = new List<OPCHDetalle>();
+                    lstOPCHDetalle = oOpchDAO.ObtenerDetalleOpch(IdOpch, ref mensaje_error);
+                    oOpchDTO.detalles = new OPCHDetalle[lstOPCHDetalle.Count()];
+                    for (int i = 0; i < lstOPCHDetalle.Count; i++)
+                    {
+                        oOpchDTO.detalles[i] = lstOPCHDetalle[i];
+                    }
+
+                }      
+
+                //solo para pruebas
+                //oPedidoDTO.EmailProveedor = "fperez@smartcode.pe";
+               
+                string msge = "";
+                string from = "concyssa.smc@gmail.com";
+                string correo = from;
+                string password = "tlbvngkvjcetzunr";
+                string displayName = "CONCYSSA NOTIFICACION: FACTURA " + oOpchDTO.NombSerie + "-" + oOpchDTO.Correlativo + " MOVIÓ STOCK";
+                MailMessage mail = new MailMessage();
+                mail.From = new MailAddress(from, displayName);
+
+
+           
+                mail.To.Add("cristhian.chacaliaza@smartcode.pe");
+                mail.To.Add("fperez@smartcode.pe");
+                //mail.To.Add("fmalca@concyssa.com");
+                //mail.To.Add("compras@concyssa.com ");
+                mail.Subject = "CONCYSSA NOTIFICACION: FACTURA " + oOpchDTO.NombSerie + "-" + oOpchDTO.Correlativo +" MOVIÓ STOCK";
+                //mail.CC.Add(new MailAddress("camala145@gmail.com"));
+                mail.Body = TemplateEmail(oOpchDTO);
+
+                mail.IsBodyHtml = true;
+                SmtpClient client = new SmtpClient("smtp.gmail.com", 587); //Aquí debes sustituir tu servidor SMTP y el puerto
+                client.Credentials = new NetworkCredential(from, password);
+                client.EnableSsl = true;//En caso de que tu servidor de correo no utilice cifrado SSL,poner en false
+               
+                //Attachment att = new Attachment(new MemoryStream(archivopdf), "OrdenCompra.pdf");
+                //mail.Attachments.Add(att);
+                client.Send(mail);
+            }
+            catch (WebException e)
+            {
+                using (WebResponse responses = e.Response)
+                {
+                    HttpWebResponse httpResponse = (HttpWebResponse)responses;
+                    using (Stream data = responses.GetResponseStream())
+                    using (var reader = new StreamReader(data))
+                    {
+                        var dd = reader.ReadToEnd();
+                    }
+                }
+                string err = e.ToString();
+            }
+            return 0;
+
+        }
+
+        public string TemplateEmail(OpchDTO oOpchDTO)
+        {
+            ProveedorDAO oProveedorDAO = new ProveedorDAO();
+            List<ProveedorDTO> lstProveedorDTO = oProveedorDAO.ObtenerDatosxID(oOpchDTO.IdProveedor);
+
+            string Plantilla = @"
+            <html>
+
+            <head>
+                <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>
+                <title></title>
+                <style>
+                    table {     font-family: Sans-Serif;
+                        font-size: 12px;    margin: 10px;     width: 480px; text-align: left;    border-collapse: collapse; }
+
+                    th {     font-size: 13px;     font-weight: normal;     padding: 8px;     background: #b9c9fe;
+                        border-top: 4px solid #aabcfe;    border-bottom: 1px solid #fff; color: #039; }
+
+                    td {    padding: 8px;     background: #e8edff;     border-bottom: 1px solid #fff;
+                        color: #669;    border-top: 1px solid transparent; }
+
+                    tr:hover td { background: #d0dafd; color: #339; }
+                </style>
+            </head>
+
+            <body>
+                <p>Estimado Almacenero</p>
+
+                <p>Se le notifica que se acaba de crear una Factura con Nro de Doc: <b>" + oOpchDTO.NombSerie + "-" + oOpchDTO.Correlativo + @"</b> , la cual acaba de realizar ingresos en su Almacen: <b> " + oOpchDTO.NombAlmacen + @"</b> </p>
+
+                <p><b>RUC Proveedor: </b>" + lstProveedorDTO[0].NumeroDocumento + @"</p>
+                <p><b>Razón Social Proveedor: </b>" + lstProveedorDTO[0].RazonSocial + @"</p>
+                <p><b>Fecha Documento: </b>" + oOpchDTO.FechaDocumento+ @"</p>
+                <p><b>Fecha Contabilizacion: </b> " + oOpchDTO.FechaContabilizacion+ @"</p>
+                <p><b>Fecha Creacion del Doc: </b>" + oOpchDTO.CreatedAt+ @"</p>
+                <p><b>Usuario Registro Factura: </b>" + oOpchDTO.NombUsuario+@"</p>
+
+
+                <table>
+                    <caption>Datos de la Factura</caption>
+                    <thead>
+                        <tr>
+                            <th>Codigo</th>
+                            <th>Articulo</th>
+                            <th>Cantidad</th>
+                            <th>Precio Unitario</th>
+                        </tr>
+                    </thead>
+                    <tbody>";
+
+                    for (int i = 0; i < oOpchDTO.detalles.Count; i++)
+                    {
+                        Plantilla += @"
+                                        <tr>
+                                            <td>" + oOpchDTO.detalles[i].CodigoArticulo+@"</td>
+                                            <td>"+ oOpchDTO.detalles[i].DescripcionArticulo+ @"</td>
+                                            <td>"+decimal.Round(oOpchDTO.detalles[i].Cantidad,2) +@"</td>
+                                            <td>"+decimal.Round(oOpchDTO.detalles[i].valor_unitario,2) +@"</td>
+                                        </tr>
+                                    ";
+                    }
+
+                    Plantilla +=@"</tbody>
+                </table>
+
+
+            </body>
+
+            </html>";
+
+            return Plantilla;
+        }
 
     }
 }

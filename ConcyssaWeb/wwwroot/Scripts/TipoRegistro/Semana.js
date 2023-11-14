@@ -123,6 +123,37 @@ function Guardar() {
     if ($('#chkActivo')[0].checked) {
         Estado = true;
     }
+
+    if (+$("#cboTipoRegistro").val() == 0 || +$("#cboTipoRegistro").val() == undefined) {
+        Swal.fire("Error", "El Campo Tipo Registro es Obligatorio", "info")
+        return
+    }
+    if (+$("#cboObra").val() == 0 || +$("#cboObra").val() == undefined) {
+        Swal.fire("Error", "El Campo Obra es Obligatorio", "info")
+        return
+    }
+
+    if (Anio == "" || Anio == undefined) {
+        Swal.fire("Error", "El Campo Año es Obligatorio", "info")
+        return
+    }
+    if (NroSemana == "" || NroSemana == undefined) {
+        Swal.fire("Error", "El Campo Nro Semana es Obligatorio", "info")
+        return
+    }
+    if (DateFechaInicial == "" || DateFechaInicial == undefined) {
+        Swal.fire("Error", "El Campo Fecha Inicial es Obligatorio", "info")
+        return
+    }
+    if (DateFechaFinal == "" || DateFechaFinal == undefined) {
+        Swal.fire("Error", "El Campo Fecha Final es Obligatorio", "info")
+        return
+    }
+    if (Fondo == "" || Fondo == undefined) {
+        Fondo = 0
+    }
+
+
     $.post('UpdateInsertSemana', {
         'IdSemana': +$("#txtId").val(),
         'Anio': +Anio,
@@ -320,7 +351,14 @@ function ObtenerSemanas() {
         "bDestroy": true
     }).DataTable();
 }
-
+function ocultarMonto() {
+    if ($("#cboTipoRegistro").val() == 1) {
+        $("#divFondo").hide()
+        $("#txtFondo").val('0')
+    } else {
+        $("#divFondo").show()
+    }
+}
 
 const formatear = f => {
     const año = f.getFullYear();

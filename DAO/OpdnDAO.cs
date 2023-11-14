@@ -480,6 +480,32 @@ namespace DAO
             }
             return Valida;
         }
+        public int ValidarOPDNTieneFactura(int IdOPDN, ref string mensaje_error)
+        {
+           
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ValidarOPDNTieneFactura", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdOPDN", IdOPDN);
+
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    int rpta = int.Parse(da.SelectCommand.ExecuteScalar().ToString());
+               
+                    return rpta;
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                    return 0;
+                }
+            }
+     
+        }
         public List<OPDNDetalle> ObtenerStockParaExtornoOPDN(int IdOPDN, ref string mensaje_error)
         {
             List<OPDNDetalle> lstOPDNDetalle = new List<OPDNDetalle>();

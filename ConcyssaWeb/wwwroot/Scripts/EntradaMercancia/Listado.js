@@ -270,7 +270,8 @@ function llenarComboCentroCosto(lista, idCombo, primerItem) {
 /*END USANDO */
 
 
-
+let datosGeneral;
+let NombreArchivo = '';
 
 
 
@@ -301,6 +302,78 @@ window.onload = function () {
                 if (data.length > 0) {
                     AgregarLineaAnexo(data[0]);
                 }
+
+            }
+        });
+    });
+
+    $("#CargarExcel").on("submit", function (e) {
+        e.preventDefault();
+        var formData = new FormData($("#CargarExcel")[0]);
+        $.ajax({
+            url: "GuardarFile",
+            type: "POST",
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (datos) {
+                let data = JSON.parse(datos);
+                console.log(data);
+                if (obtenerUltimaParteDespuesDelPunto(data[0]) != 'xlsx') {
+                    Swal.fire("Error!", "Solo puede procesar archivos de Excel", "error")
+                    return
+                }
+
+                NombreArchivo = data[0]
+
+                $.post('ProcesarExcel', {
+                    'archivo': data[0],
+                    'IdAlmacen': $("#cboAlmacen").val(),
+                    'ClaseArticulo': $("#cboClaseArticulo").val() ,
+                    'TipoArticulo': $("#IdTipoProducto").val(),
+                   
+
+
+                }, function (data, status) {
+                    if (data != 'error') {
+                        try {
+                            datos = JSON.parse(data);
+                            datosGeneral = data
+                            console.log(datos)
+
+                            for (var i = 0; i < datos.length; i++) {
+                                $.post('/Articulo/ObtenerArticuloxCodigo', {
+                                    'Codigo': datos[i].Codigo,
+                               
+
+                                }, function (data, status) {
+                                    if (data != 'error') {
+                                       
+                                        let articulo = JSON.parse(data)
+                                        console.log(articulo)
+                                        AgregarLineaDesdeExcel(articulo.IdArticulo, articulo.Codigo, articulo.Descripcion1, datos[i].PrecioUnitario, datos[i].Cantidad, articulo.IdUnidadMedidaInv, articulo.IdGrupoUnidadMedida) 
+                                    } else {
+                                        Swal.fire('Error!', "error", "error")
+                                    }
+                                });
+                            }
+                            $("#ModalImportarDatos").modal('hide')
+                        }
+                        catch (e) {
+                            Swal.fire({
+                                title: "Error",
+                                html: data,
+                                icon: "error"
+                            });
+                        } 
+                    } else {
+                        Swal.fire('Error!', "No se pudo Procesar el Archivo Excel", "error")
+                    }
+
+                });
+
+
 
             }
         });
@@ -682,7 +755,7 @@ function AgregarLinea() {
     for (var J = 0; J < valorfor; J++) {
         console.log("VUELTAAAAAAAAAAA: " + J)
 
-        limitador++
+        //limitador++
         contador++;
         let tr = '';
 
@@ -1389,8 +1462,15 @@ function GuardarSolicitud() {
     let IdTipoDocumento = $("#cboTipoDocumentoOperacion").val();
     let IdSerie = $("#cboSerie").val();
     let Correlativo = $("#txtNumeracion").val();
+
+    if (Correlativo == "") Correlativo = 0
+
+
     let IdMoneda = $("#cboMoneda").val();
     let TipoCambio = $("#txtTipoCambio").val();
+
+    if (TipoCambio == "") TipoCambio = 1
+
     let FechaContabilizacion = $("#txtFechaContabilizacion").val();
     let FechaDocumento = $("#txtFechaDocumento").val();
     let IdCentroCosto = $("#cboCentroCosto").val();
@@ -1449,31 +1529,44 @@ function GuardarSolicitud() {
     }
 
 
+    let MovimientoEnviar = []
+
+    MovimientoEnviar.push({
+        detalles,
+        AnexoDetalle,
+        'IdAlmacen': IdAlmacen,
+        'IdTipoDocumento': IdTipoDocumento,
+        'IdSerie': IdSerie,
+        'Correlativo': Correlativo,
+        'IdMoneda': IdMoneda,
+        'TipoCambio': TipoCambio,
+        'FechaContabilizacion': FechaContabilizacion,
+        'FechaDocumento': FechaDocumento,
+        'IdCentroCosto': IdCentroCosto,
+        'Comentario': Comentario,
+        'SubTotal': SubTotal,
+        'Impuesto': Impuesto,
+        'Total': Total,
+        'IdCuadrilla': null,
+        'IdResponsable': null,
+        'IdTipoDocumentoRef': IdTipoDocumentoRef,
+        'NumSerieTipoDocumentoRef': SerieNumeroRef
+    })
+
+    console.log(MovimientoEnviar)
+
+    if (validarseriescontableParaCrear() == false) {
+        Swal.fire("Error!", "No Puede Crear este Documento en una Fecha No Habilitada", "error")
+        return
+    }
+
+
     $.ajax({
-        url: "UpdateInsertMovimiento",
+        url: "UpdateInsertMovimientoDesdeString",
         type: "POST",
         async: true,
         data: {
-            detalles,
-            AnexoDetalle,
-            //cabecera
-            'IdAlmacen': IdAlmacen,
-            'IdTipoDocumento': IdTipoDocumento,
-            'IdSerie': IdSerie,
-            'Correlativo': Correlativo,
-            'IdMoneda': IdMoneda,
-            'TipoCambio': TipoCambio,
-            'FechaContabilizacion': FechaContabilizacion,
-            'FechaDocumento': FechaDocumento,
-            'IdCentroCosto': IdCentroCosto,
-            'Comentario': Comentario,
-            'SubTotal': SubTotal,
-            'Impuesto': Impuesto,
-            'Total': Total,
-            'IdCuadrilla': null,
-            'IdResponsable': null,
-            'IdTipoDocumentoRef': IdTipoDocumentoRef,
-            'NumSerieTipoDocumentoRef': SerieNumeroRef
+            'JsonDatosEnviar': JSON.stringify(MovimientoEnviar)
             //end cabecera
 
             //DETALLE
@@ -1589,137 +1682,150 @@ function limpiarDatos() {
 
 
 function ObtenerDatosxID(IdMovimiento) {
-    $("#btnEditar").show()
-    $("#btnExtorno").show();
-    $("#txtId").val(IdMovimiento);
-    CargarCentroCosto();
-    listarEmpleados();
-    ObtenerTiposDocumentos()
-    CargarBase()
-    CargarTipoDocumentoOperacion()
-    ObtenerCuadrillas()
-    CargarSeries();
-    CargarSeries();
-    CargarMoneda();
+
+    Swal.fire({
+        title: "Cargando...",
+        text: "Por favor espere",
+        showConfirmButton: false,
+        allowOutsideClick: false
+    });
+    
+    setTimeout(() => {
+        $("#btnEditar").show()
+        $("#btnExtorno").show();
+        $("#txtId").val(IdMovimiento);
+        CargarCentroCosto();
+        listarEmpleados();
+        ObtenerTiposDocumentos()
+        CargarBase()
+        CargarTipoDocumentoOperacion()
+        ObtenerCuadrillas()
+        CargarSeries();
+        CargarSeries();
+        CargarMoneda();
+        let IdUsuario = 0;
+
+        $("#lblTituloModal").html("Editar Ingreso");
+        AbrirModal("modal-form");
 
 
-    $("#lblTituloModal").html("Editar Ingreso");
-    AbrirModal("modal-form");
+        $("#file").val("");
+        let EstaExtornado = false
+
+        $.post('../Movimientos/ObtenerDatosxIdMovimiento', {
+            'IdMovimiento': IdMovimiento,
+        }, function (data, status) {
 
 
-    $("#file").val("");
-    let EstaExtornado = false
-
-    $.post('../Movimientos/ObtenerDatosxIdMovimiento', {
-        'IdMovimiento': IdMovimiento,
-    }, function (data, status) {
-
-
-        if (data == "Error") {
-            swal("Error!", "Ocurrio un error")
-            limpiarDatos();
-        } else {
-            let movimiento = JSON.parse(data);
-            console.log(movimiento);
-            if (movimiento.IdDocExtorno != 0) {
-                EstaExtornado = true
-            }
-            $("#cboAlmacen").val(movimiento.IdAlmacen);
-            $("#cboSerie").val(movimiento.IdSerie);
-            $("#cboMoneda").val(movimiento.IdMoneda);
-            $("#TipoCambio").val(movimiento.TipoCambio);
-            $("#txtTotalAntesDescuento").val(formatNumber(movimiento.SubTotal.toFixed(DecimalesPrecios)))
-            $("#txtImpuesto").val(formatNumber(movimiento.Impuesto.toFixed(DecimalesPrecios)))
-            $("#txtTotal").val(formatNumberDecimales(movimiento.Total, 2))
-
-            $("#cboCentroCosto").val(movimiento.IdCentroCosto)
-            $("#cboTipoDocumentoOperacion").val(movimiento.IdTipoDocumento)
-            $("#IdTipoDocumentoRef").val(movimiento.IdTipoDocumentoRef)
-            $("#SerieNumeroRef").val(movimiento.NumSerieTipoDocumentoRef.toUpperCase())
-
-            $("#txtComentarios").val(movimiento.Comentario)
-            if (movimiento.NombUsuarioEdicion == "") {
-                $("#NombUsuarioEdicion").html("-")
+            if (data == "Error") {
+                swal("Error!", "Ocurrio un error")
+                limpiarDatos();
             } else {
-                $("#NombUsuarioEdicion").html(movimiento.NombUsuarioEdicion)
-            }
+                let movimiento = JSON.parse(data);
+                console.log(movimiento);
+                if (movimiento.IdDocExtorno != 0) {
+                    EstaExtornado = true
+                }
+                IdUsuario = movimiento.IdUsuario,
+                $("#cboAlmacen").val(movimiento.IdAlmacen);
+                $("#cboSerie").val(movimiento.IdSerie);
+                $("#cboMoneda").val(movimiento.IdMoneda);
+                $("#TipoCambio").val(movimiento.TipoCambio);
+                $("#txtTotalAntesDescuento").val(formatNumber(movimiento.SubTotal.toFixed(DecimalesPrecios)))
+                $("#txtImpuesto").val(formatNumber(movimiento.Impuesto.toFixed(DecimalesPrecios)))
+                $("#txtTotal").val(formatNumberDecimales(movimiento.Total, 2))
+
+                $("#cboCentroCosto").val(movimiento.IdCentroCosto)
+                $("#cboTipoDocumentoOperacion").val(movimiento.IdTipoDocumento)
+                $("#IdTipoDocumentoRef").val(movimiento.IdTipoDocumentoRef)
+                $("#SerieNumeroRef").val(movimiento.NumSerieTipoDocumentoRef.toUpperCase())
+
+                $("#txtComentarios").val(movimiento.Comentario)
+                if (movimiento.NombUsuarioEdicion == "") {
+                    $("#NombUsuarioEdicion").html("-")
+                } else {
+                    $("#NombUsuarioEdicion").html(movimiento.NombUsuarioEdicion)
+                }
             
-            if (movimiento.FechaEdicion == '1990-01-01T00:00:00') {
-                $("#EditedAt").html("-")
-            } else {
-                $("#EditedAt").html(movimiento.FechaEdicion.replace("T", " "))
-            }
-            $("#IdBase").val(movimiento.IdBase).change();
-            $("#IdObra").val(movimiento.IdObra).change();
-            $("#cboAlmacen").val(movimiento.IdAlmacen);
-            $("#txtComentarios").html(movimiento.Comentario)
-            $("#txtNumeracion").val(movimiento.Correlativo);
-            $("#txtTipoCambio").val(movimiento.TipoCambio);
-            $("#CreatedAt").html(movimiento.CreatedAt.replace("T", " "));
-            $("#NombUsuario").html(movimiento.NombUsuario);
-            $("#txtFechaDocumento").val((movimiento.FechaDocumento).split("T")[0])
+                if (movimiento.FechaEdicion == '1990-01-01T00:00:00') {
+                    $("#EditedAt").html("-")
+                } else {
+                    $("#EditedAt").html(movimiento.FechaEdicion.replace("T", " "))
+                }
+                $("#IdBase").val(movimiento.IdBase).change();
+                $("#IdObra").val(movimiento.IdObra).change();
+                $("#cboAlmacen").val(movimiento.IdAlmacen);
+                $("#txtComentarios").html(movimiento.Comentario)
+                $("#txtNumeracion").val(movimiento.Correlativo);
+                $("#txtTipoCambio").val(movimiento.TipoCambio);
+                $("#CreatedAt").html(movimiento.CreatedAt.replace("T", " "));
+                $("#NombUsuario").html(movimiento.NombUsuario);
+                $("#txtFechaDocumento").val((movimiento.FechaDocumento).split("T")[0])
 
-            $("#txtFechaContabilizacion").val((movimiento.FechaContabilizacion).split("T")[0])
-            //agrega detalle
-            let tr = '';
-            let Detalle = movimiento.detalles;
-            $("#total_items").html(Detalle.length)
-            console.log(Detalle);
-            console.log("Detalle");
-            for (var i = 0; i < Detalle.length; i++) {
-                AgregarLineaDetalle(i, Detalle[i]);
-                $("#cboImpuesto").val(Detalle[0].IdIndicadorImpuesto);
-                $("#IdCuadrilla").val(Detalle[0].IdCuadrilla).change()
-                $("#IdResponsable").val(Detalle[0].IdResponsable).change()
-            }
+                $("#txtFechaContabilizacion").val((movimiento.FechaContabilizacion).split("T")[0])
+                //agrega detalle
+                let tr = '';
+                let Detalle = movimiento.detalles;
+                $("#total_items").html(Detalle.length)
+                console.log(Detalle);
+                console.log("Detalle");
+                for (var i = 0; i < Detalle.length; i++) {
+                    AgregarLineaDetalle(i, Detalle[i]);
+                    $("#cboImpuesto").val(Detalle[0].IdIndicadorImpuesto);
+                    $("#IdCuadrilla").val(Detalle[0].IdCuadrilla).change()
+                    $("#IdResponsable").val(Detalle[0].IdResponsable).change()
+                }
            
 
 
-            //AnxoDetalle
-            let AnexoDetalle = movimiento.AnexoDetalle;
-            let trAnexo = '';
-            for (var k = 0; k < AnexoDetalle.length; k++) {
-                trAnexo += `
-                <tr>
+                //AnxoDetalle
+                let AnexoDetalle = movimiento.AnexoDetalle;
+                let trAnexo = '';
+                for (var k = 0; k < AnexoDetalle.length; k++) {
+                    trAnexo += `
+                    <tr>
                    
-                    <td>
-                       `+ AnexoDetalle[k].NombreArchivo + `
-                    </td>
-                    <td>
-                       <a target="_blank" href="`+ AnexoDetalle[k].ruta + `"> Descargar </a>
-                    </td>
-                    <td><button class="btn btn-xs btn-danger borrar fa fa-trash" onclick="EliminarAnexo(`+ AnexoDetalle[k].IdAnexo + `,this)"></button></td>
-                </tr>`;
+                        <td>
+                           `+ AnexoDetalle[k].NombreArchivo + `
+                        </td>
+                        <td>
+                           <a target="_blank" href="`+ AnexoDetalle[k].ruta + `"> Descargar </a>
+                        </td>
+                        <td><button class="btn btn-xs btn-danger borrar fa fa-trash" onclick="EliminarAnexo(`+ AnexoDetalle[k].IdAnexo + `,this)"></button></td>
+                    </tr>`;
+                }
+                $("#tabla_files").find('tbody').append(trAnexo);
+
+                //if (validadJson(solicitudes[0].DetallesAnexo)) {
+                //     let DetalleAnexo = solicitudes[0].DetallesAnexo;
+                //for (var i = 0; i < DetalleAnexo.length; i++) {
+                //    AgregarLineaDetalleAnexo(DetalleAnexo[i].IdSolicitudRQAnexos, DetalleAnexo[i].Nombre)
+                //}
+                //}
+
+
+
             }
-            $("#tabla_files").find('tbody').append(trAnexo);
+        });
+        /*DISABLE*/
+        disabledmodal(true)
 
-            //if (validadJson(solicitudes[0].DetallesAnexo)) {
-            //     let DetalleAnexo = solicitudes[0].DetallesAnexo;
-            //for (var i = 0; i < DetalleAnexo.length; i++) {
-            //    AgregarLineaDetalleAnexo(DetalleAnexo[i].IdSolicitudRQAnexos, DetalleAnexo[i].Nombre)
-            //}
-            //}
+        $("#SerieNumeroRef").prop("disabled", false)
+        $("#IdTipoDocumentoRef").prop("disabled", false)
+        $("#IdCuadrilla").prop("disabled", false)
+        $("#IdResponsable").prop("disabled", false)
+        $("#txtComentarios").prop("disabled", false)
 
-
-
+        if (EstaExtornado == true || IdUsuario !== +$("#IdUsuarioSesion").val()) {
+            $("#btnExtorno").hide();
+            $("#btnEditar").hide();
+        } else {
+            $("#btnExtorno").show();
+            $("#btnEditar").show();
         }
-    });
-    /*DISABLE*/
-    disabledmodal(true)
+        Swal.close()
+    },200)
 
-    $("#SerieNumeroRef").prop("disabled", false)
-    $("#IdTipoDocumentoRef").prop("disabled", false)
-    $("#IdCuadrilla").prop("disabled", false)
-    $("#IdResponsable").prop("disabled", false)
-    $("#txtComentarios").prop("disabled", false)
-
-    if (EstaExtornado == true) {
-        $("#btnExtorno").hide();
-        $("#btnEditar").hide();
-    } else {
-        $("#btnExtorno").show();
-        $("#btnEditar").show();
-    }
 }
 
 
@@ -2425,11 +2531,47 @@ function LimpiarModalItem() {
 
 }
 
+function llenarComboSerieExtorno(lista, idCombo, primerItem) {
+
+    $("#FechDocExtorno").val($("#txtFechaDocumento").val())
+    $("#FechContExtorno").val($("#txtFechaContabilizacion").val())
+
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    let ultimoindice = 0;
+
+    for (var i = 0; i < nRegistros; i++) {
+        if (lista[i].Documento == 2) {
+            if (lista.length > 0) { contenido += "<option value='" + lista[i].IdSerie + "'>" + lista[i].Serie + "</option>"; ultimoindice = i }
+            else { }
+        }
+
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+
+    $("#" + idCombo).val(lista[ultimoindice].IdSerie).change();
+}
+
 function GenerarExtorno() {
     let IdMovimiento = $("#txtId").val();
     Swal.fire({
         title: 'DESEA GENERAR EXTORNO?',
-        text: "Se validara si los productos ingresados se encuentran con Stock",
+        html: "Se validara si los productos ingresados se encuentran con Stock </br>" +
+            "</br>" +
+            "Serie Para Extorno </br>" +
+            "<Select id='cboSerieExtorno' class='form-control'></select>" +
+            "</br>" +
+            "Fecha De Documento para Extorno </br>" +
+            "<input id='FechDocExtorno' type='date' class='form-control'/>" +
+            "</br>" +
+            "Fecha de Contabilizacion para Extorno </br>" +
+            "<input id='FechContExtorno' type='date' class='form-control'/>" +
+            "</br>" +
+            "<p>* Las Fechas que se muestran por defecto son las mismas que el documento seleccionado</p>",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -2465,7 +2607,10 @@ function GenerarExtorno() {
                 type: "POST",
                 async: true,
                 data: {
-                    'IdMovimiento': IdMovimiento
+                    'IdMovimiento': IdMovimiento,
+                    'Serie': $("#cboSerieExtorno").val(),
+                    'FechaDoc': $("#FechDocExtorno").val(),
+                    'FechaCont': $("#FechContExtorno").val()
                 },
                 beforeSend: function () {
                     Swal.fire({
@@ -2509,6 +2654,10 @@ function GenerarExtorno() {
             });
         }
     })
+    $.post("/Serie/ObtenerSeries", { estado: 1 }, function (data, status) {
+        let series = JSON.parse(data);
+        llenarComboSerieExtorno(series, "cboSerieExtorno", "Seleccione")
+    });
 }
 
 
@@ -2603,6 +2752,36 @@ function validarseriescontable() {
         return true;
     }
 
+}
+
+function validarseriescontableParaCrear() {
+    let IdSerie = $("#cboSerie").val();
+    let IdDocumento = 1;
+    let Fecha = $("#txtFechaContabilizacion").val();
+    let Orden = 1;
+    let datosrespuesta;
+    let estado = 0;
+    datosrespuesta = ValidarFechaContabilizacionxDocumentoM(IdSerie, IdDocumento, Fecha, Orden);
+    console.log(datosrespuesta);
+    if (datosrespuesta.FechaRelacion.length == 0) {
+       
+        return false;
+    } 
+
+    if (datosrespuesta.FechaRelacion.length > 0) {
+        for (var i = 0; i < datosrespuesta.FechaRelacion.length; i++) {
+            console.log(datosrespuesta.FechaRelacion[i]);
+            if (datosrespuesta.FechaRelacion[i].StatusPeriodo == 1) {
+                estado = 1;
+            }
+        }
+
+    }
+
+    if (estado == 0) {
+        return false;
+    }
+    return true
 }
 
 
@@ -2977,4 +3156,224 @@ function ObtenerCapatazTablaFila(contador) {
 function SetearEmpleadosEnTabla() {
     $(".cboResponsableTabla").val($("#IdResponsable").val())
 
+}
+
+function OpenModalImportacion() { 
+    if ($("#cboClaseArticulo").val() == 1 && $("#IdTipoProducto").val() == 0) {
+        swal("Informacion!", "Debe Seleccionar Tipo de Articulo!");
+        return;
+    }
+
+    $("#ModalImportarDatos").modal('show')
+}
+
+function obtenerUltimaParteDespuesDelPunto(cadena) {
+
+    var partes = cadena.split('.');
+
+    if (partes.length >= 2) {
+
+        var ultimaParte = partes[partes.length - 1];
+        return ultimaParte;
+    } else {
+
+        return cadena;
+    }
+}
+
+function AgregarLineaDesdeExcel(IdItem, CodigoItem, DescripcionItem, PrecioUnitarioItem, CantidadItem, MedidaItem, IdGrupoUnidadMedida) {
+ 
+
+    let ProyectoItem = '';
+    let CentroCostoItem = '';
+    let ReferenciaItem ='Cargado desde Excel';
+    let AlmacenItem = $("#cboAlmacen").val();
+    let PrioridadItem = '';
+
+    //txtReferenciaItem
+
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+
+    today = yyyy + '-' + mm + '-' + dd;
+
+
+    let UnidadMedida;
+    let IndicadorImpuesto;
+    let Almacen;
+    let Proveedor;
+    let LineaNegocio;
+    let CentroCosto;
+    let Proyecto;
+    let Moneda;
+
+    
+
+    //validaciones
+    $.ajaxSetup({ async: false });
+    $.post("/GrupoUnidadMedida/ObtenerDefinicionUnidadMedidaxGrupo", { 'IdGrupoUnidadMedida': IdGrupoUnidadMedida }, function (data, status) {
+        UnidadMedida = JSON.parse(data);
+    });
+
+    $.post("/IndicadorImpuesto/ObtenerIndicadorImpuestos", function (data, status) {
+        IndicadorImpuesto = JSON.parse(data);
+    });
+
+    $.post("../Almacen/ObtenerAlmacen", function (data, status) {
+        Almacen = JSON.parse(data);
+    });
+
+    $.post("/Proveedor/ObtenerProveedores", function (data, status) {
+        Proveedor = JSON.parse(data);
+    });
+
+    //$.post("/LineaNegocio/ObtenerLineaNegocios", function (data, status) {
+    //    LineaNegocio = JSON.parse(data);
+    //});
+
+    //$.post("/CentroCosto/ObtenerCentroCostos", function (data, status) {
+    //    CentroCosto = JSON.parse(data);
+    //});
+
+    //$.post("/Proyecto/ObtenerProyectos", function (data, status) {
+    //    Proyecto = JSON.parse(data);
+    //});
+
+    $.post("/Moneda/ObtenerMonedas", function (data, status) {
+        Moneda = JSON.parse(data);
+    });
+    if (limitador >= 30) {
+        swal("Informacion!", "Solo se pueden agregar Hasta 30 items");
+        return;
+    }
+    for (var J = 0; J < valorfor; J++) {
+        console.log("VUELTAAAAAAAAAAA: " + J)
+
+        //limitador++
+        contador++;
+        let tr = '';
+
+        //<select class="form-control select2" id="cboCodigoArticulo" name="cboCodigoArticulo[]">
+        //    <option value="0">Seleccione</option>
+        //</select>
+        tr += `<tr id="tritem` + contador + `">
+            <td style="display:none;"><input input style="display:none;" class="form-control" type="text" value="0" id="txtIdSolicitudRQDetalle" name="txtIdSolicitudRQDetalle[]"/></td>
+            <td input style="display:none;">
+            <input  class="form-control" type="text" id="txtIdArticulo`+ contador + `" name="txtIdArticulo[]" />
+            <input class="form-control" type="text" id="txtCodigoArticulo`+ contador + `" name="txtCodigoArticulo[]" />
+            </td>
+         
+            <td>`+ CodigoItem + `</td>
+            <td><input class="form-control" type="text" id="txtDescripcionArticulo`+ contador + `" name="txtDescripcionArticulo[]"/></td>
+            <td>
+            <select class="form-control" id="cboUnidadMedida`+ contador + `" name="cboUnidadMedida[]">`;
+        tr += `  <option value="0">Seleccione</option>`;
+        for (var i = 0; i < UnidadMedida.length; i++) {
+            tr += `  <option value="` + UnidadMedida[i].IdDefinicionGrupo + `">` + UnidadMedida[i].DescUnidadMedidaAlt + `</option>`;
+        }
+        tr += `</select>
+            </td>
+           
+           
+            <td input style="display:none;">
+            <select class="form-control MonedaDeCabecera" style="width:100px" name="cboMoneda[]" id="cboMonedaDetalle`+ contador + `" disabled>`;
+        tr += `  <option value="0">Seleccione</option>`;
+        for (var i = 0; i < Moneda.length; i++) {
+            tr += `  <option value="` + Moneda[i].IdMoneda + `">` + Moneda[i].Descripcion + `</option>`;
+        }
+        tr += `</select>
+            </td>
+            <td input style="display:none;"><input class="form-control TipoCambioDeCabecera" type="number" name="txtTipoCambio[]" id="txtTipoCambioDetalle`+ contador + `" disabled></td>
+            <td><input class="form-control"  type="number" name="txtCantidadNecesaria[]" value="0" id="txtCantidadNecesaria`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled></td>
+            <td><input class="form-control" type="number" name="txtPrecioInfo[]" value="0" id="txtPrecioInfo`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled></td>
+            <td style="display:none"><select onchange="SeleccionarEmpleadosTabla(`+ contador + `)" class="form-control cboCuadrillaTabla" id="cboCuadrillaTablaId` + contador + `"></select></td>
+            <td style="display:none"><select class="form-control cboResponsableTabla" id="cboResponsableTablaId`+ contador + `"></select></td>
+            <td input style="display:none;">
+            <select class="form-control ImpuestoCabecera" name="cboIndicadorImpuesto[]" id="cboIndicadorImpuestoDetalle`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)">`;
+        tr += `  <option impuesto="0" value="0">Seleccione</option>`;
+        for (var i = 0; i < IndicadorImpuesto.length; i++) {
+            tr += `  <option impuesto="` + IndicadorImpuesto[i].Porcentaje + `" value="` + IndicadorImpuesto[i].IdIndicadorImpuesto + `">` + IndicadorImpuesto[i].Descripcion + `</option>`;
+        }
+        tr += `</select>
+            </td>
+            <td><input class="form-control changeTotal" type="number" style="width:100px" name="txtItemTotal[]" id="txtItemTotal`+ contador + `" onchange="CalcularTotales()" disabled></td>
+            <td style="display:none">
+            <select class="form-control" style="width:100px" id="cboAlmacen`+ contador + `" name="cboAlmacen[]">`;
+        tr += `  <option value="0">Seleccione</option>`;
+        for (var i = 0; i < Almacen.length; i++) {
+            tr += `  <option value="` + Almacen[i].IdAlmacen + `">` + Almacen[i].Descripcion + `</option>`;
+        }
+        tr += `</select>
+            </td>`
+        tr += `
+            <td input style="display:none;"><input class="form-control" type="text" name="txtNumeroFacbricacion[]"></td>
+            <td input style="display:none;"><input class="form-control" type="text" name="txtNumeroSerie[]"></td>
+            <td input style="display:none;">
+            <select class="form-control" name="cboLineaNegocio[]">`;
+        tr += `  <option value="0">Seleccione</option>`;
+        //for (var i = 0; i < LineaNegocio.length; i++) {
+        //    tr += `  <option value="` + LineaNegocio[i].IdLineaNegocio + `">` + LineaNegocio[i].Descripcion + `</option>`;
+        //}
+        tr += `</select>
+            </td>`;
+        //for (var i = 0; i < CentroCosto.length; i++) {
+        //    tr += `  <option value="` + CentroCosto[i].IdCentroCosto + `">` + CentroCosto[i].Descripcion + `</option>`;
+        //}
+
+        //for (var i = 0; i < Proyecto.length; i++) {
+        //    tr += `  <option value="` + Proyecto[i].IdProyecto + `">` + Proyecto[i].Descripcion + `</option>`;
+        //}
+        tr += `
+            <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
+            <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
+            <td ><input class="form-control" type="text" value="" id="txtReferencia`+ contador + `" name="txtReferencia[]"></td>
+            <td><button class="btn btn-xs btn-danger borrar fa fa-trash fa fa-trash" onclick="borrartditem(`+ contador + `);restarLimitador()"></button></td>
+          </tr>`;
+
+        $("#tabla").find('tbody').append(tr);
+
+
+        let varMoneda = $("#cboMoneda").val();
+        let varTipoCambio = $("#txtTipoCambio").val();
+        let varimpuesto = $("#cboImpuesto").val();
+
+        if (varMoneda) {
+            $(".MonedaDeCabecera").val(varMoneda);
+        }
+        if (varTipoCambio) {
+            $(".TipoCambioDeCabecera").val(varTipoCambio);
+        }
+        if (varimpuesto) {
+            $(".ImpuestoCabecera").val(varimpuesto);
+        }
+
+
+
+        $("#txtIdArticulo" + contador).val(IdItem);
+        $("#txtCodigoArticulo" + contador).val(CodigoItem);
+        $("#txtDescripcionArticulo" + contador).val(DescripcionItem);
+        $("#cboUnidadMedida" + contador).val(MedidaItem);
+        //$("#txtCantidadNecesaria" + contador).val(formatNumber(parseFloat(CantidadItem).toFixed(DecimalesCantidades))).change();
+        $("#txtCantidadNecesaria" + contador).val(CantidadItem).change();
+        $("#txtPrecioInfo" + contador).val(PrecioUnitarioItem).change();
+        $("#cboProyecto" + contador).val(ProyectoItem);
+        $("#cboAlmacen" + contador).val(AlmacenItem);
+        $("#cboPrioridadDetalle" + contador).val(PrioridadItem);
+
+        $("#cboCentroCostos" + contador).val(CentroCostoItem);
+        $("#txtReferencia" + contador).val(ReferenciaItem);
+        //ObtenerCuadrillasTabla()
+        //$(".cboCuadrillaTabla").select2()
+        //$(".cboResponsableTabla").select2()
+        LimpiarModalItem();
+        NumeracionDinamica();
+        ObtenerCuadrillasTabla(contador)
+        ObtenerEmpleadosxIdCuadrillaTabla(contador)
+    }
+}
+
+function DescargarPlantilla() {
+    window.open("/Anexos/PlantillaImportacionConcyssa.xlsx", '_blank', 'noreferrer');
 }

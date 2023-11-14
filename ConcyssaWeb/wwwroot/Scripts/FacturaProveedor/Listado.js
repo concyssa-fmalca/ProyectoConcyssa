@@ -17,6 +17,35 @@ function ObtenerConfiguracionDecimales() {
         DecimalesPorcentajes = datos[0].Porcentajes;
     });
 }
+function validarseriescontableParaCrear() {
+    let IdSerie = $("#cboSerie").val();
+    let IdDocumento = 1;
+    let Fecha = $("#txtFechaContabilizacion").val();
+    let Orden = 1;
+    let datosrespuesta;
+    let estado = 0;
+    datosrespuesta = ValidarFechaContabilizacionxDocumentoM(IdSerie, IdDocumento, Fecha, Orden);
+    console.log(datosrespuesta);
+    if (datosrespuesta.FechaRelacion.length == 0) {
+
+        return false;
+    }
+
+    if (datosrespuesta.FechaRelacion.length > 0) {
+        for (var i = 0; i < datosrespuesta.FechaRelacion.length; i++) {
+            console.log(datosrespuesta.FechaRelacion[i]);
+            if (datosrespuesta.FechaRelacion[i].StatusPeriodo == 1) {
+                estado = 1;
+            }
+        }
+
+    }
+
+    if (estado == 0) {
+        return false;
+    }
+    return true
+}
 
 function ListarBasesxUsuario() {
     $.post("/Usuario/ObtenerBasesxIdUsuario", function (data, status) {
@@ -779,15 +808,7 @@ function AgregarLinea() {
     $("#txtOrigen").val("Factura")
     $("#txtOrigenId").val("0 ")
 
-    for (var i = 0; i < arrayItemsAgregados.length; i++) {
-        if (arrayItemsAgregados[i] == $("#txtCodigoItem").val()) {
-            swal("Informacion!", "El Item Ya Fue Agregado!");
-            return;
-        }
-    }
-
-    arrayItemsAgregados.push($("#txtCodigoItem").val())
-
+  
     let IdItem = $("#txtIdItem").val();
     let CodigoItem = $("#txtCodigoItem").val();
     let MedidaItem = $("#cboMedidaItem").val();
@@ -884,6 +905,14 @@ function AgregarLinea() {
         return;
     }
 
+    for (var i = 0; i < arrayItemsAgregados.length; i++) {
+        if (arrayItemsAgregados[i] == $("#txtCodigoItem").val()) {
+            swal("Informacion!", "El Item Ya Fue Agregado!");
+            return;
+        }
+    }
+
+    arrayItemsAgregados.push($("#txtCodigoItem").val())
 
 
 
@@ -1453,6 +1482,10 @@ function CerrarModal() {
     $("#cboClaseArticulo").prop("disabled", false)
     $("#IdTipoProducto").prop("disabled", false)
     $("#btn_agregar_item").prop("disabled", false)
+    $("#IdProveedor").prop("disabled", false)
+    $("#Direccion").prop("disabled", false)
+    $("#IdCondicionPago").prop("disabled", false)
+    $("#Telefono").prop("disabled", false)
     $("#cboClaseArticulo").val(0)
     $("#IdTipoProducto").val(0)
     arrayCboCuadrillaTabla = []
@@ -1548,6 +1581,12 @@ function ObtenerNumeracion() {
 
 
 function GuardarSolicitud() {
+
+    if (validarseriescontableParaCrear() == false) {
+        Swal.fire("Error!", "No Puede Crear este Documento en una Fecha No Habilitada", "error")
+        return
+    }
+
     if ($("#IdTipoRegistro").val() != 4) {
         //function GuardarSolicitud() PROVISION Y CAJA CHICA
 
@@ -3206,11 +3245,20 @@ function GenerarExtorno() {
 
 
 function AbrirModalPedidos() {
+    if ($("#IdProveedor").val() == 0) {
+        Swal.fire("Aviso", "Debe Seleccionar un Proveedor", "info")
+        return
+    }
+
     $("#ModalListadoPedido").modal();
     listarpedidosdt()
 }
 
 function AbrirModalEntregas() {
+    if ($("#IdProveedor").val() == 0) {
+        Swal.fire("Aviso", "Debe Seleccionar un Proveedor", "info")
+        return
+    }
     $("#cboMedidaItem").val(null);
     $("#ModalListadoEntrega").modal();
     listarentregadt()
@@ -3224,7 +3272,7 @@ function listarentregadt() {
             url: '/EntradaMercancia/ListarOPDNDTModalOPCH',
             type: 'POST',
             data: {
-
+                'IdProveedor' : $("#IdProveedor").val(),
                 pagination: {
                     perpage: 50,
                 },
@@ -3334,7 +3382,7 @@ function listarpedidosdt() {
             url: '/Pedido/ObtenerPedidosEntregaLDT',
             type: 'POST',
             data: {
-
+                'IdProveedor': $("#IdProveedor").val(),
                 pagination: {
                     perpage: 50,
                 },
@@ -3421,7 +3469,7 @@ function AgregarPedidoToEntradaMercancia(data) {
         $("#IdPedido").val(0)
         return;
     }
-
+    t
     
 
     $("#IdBase").val(data['IdBase']).change();
@@ -3717,6 +3765,10 @@ function AgregarOPNDDetalle(data) {
         for (var k = 0; k < datos.length; k++) {
 
             console.log(datos);
+
+            console.log(datos[k]['TipoServicio'])
+
+            if (datos[k]['TipoServicio'] != 'No Aplica') $("#cboClaseArticulo").val(2).change()
 
 
             let pasarsiguiente = 0;
@@ -4206,6 +4258,7 @@ function ObtenerDatosxIDOPCH(IdOpch) {
     /*END NUEVO*/
 
 
+    let IdUsuario = 0;
 
     $("#lblTituloModal").html("Editar Factura Proveedor");
     AbrirModal("modal-form");
@@ -4225,7 +4278,7 @@ function ObtenerDatosxIDOPCH(IdOpch) {
         } else {
             let movimiento = JSON.parse(data);
             console.log(movimiento);
-
+            IdUsuario = movimiento.IdUsuario,
             $("#cboAlmacen").val(movimiento.IdAlmacen);
             $("#cboSerie").val(movimiento.IdSerie);
             $("#cboMoneda").val(movimiento.IdMoneda);
@@ -4266,7 +4319,7 @@ function ObtenerDatosxIDOPCH(IdOpch) {
             } else {
                 $("#EditedAt").html(movimiento.FechaEdicion.replace("T", " "))
             }
-            if (movimiento.IdDocExtorno == 1) {
+            if (movimiento.IdDocExtorno == 1 || IdUsuario !== +$("#IdUsuarioSesion").val()) {
                 $("#btnEditar").hide()
                 $("#btnExtornar").hide()
             } else {
@@ -4433,6 +4486,10 @@ function AgregarSeleccionadOPDN() {
     $("#IdTipoProducto").prop("disabled", true)
     $("#IdTipoProducto").val(0)
     $("#btn_agregar_item").prop("disabled", true)
+    $("#IdProveedor").prop("disabled", true)
+    $("#IdCondicionPago").prop("disabled", true)
+    $("#Direccion").prop("disabled", true)
+    $("#Telefono").prop("disabled", true)
     $("#txtOrigenId").val(IdsOrigen)
 }
 
@@ -4499,6 +4556,10 @@ function AgregarSeleccionadoPedido() {
     $("#cboClaseArticulo").prop("disabled", true)
     $("#IdTipoProducto").prop("disabled", true)
     $("#btn_agregar_item").prop("disabled", true)
+    $("#IdProveedor").prop("disabled", true)
+    $("#IdCondicionPago").prop("disabled", true)
+    $("#Direccion").prop("disabled", true)
+    $("#Telefono").prop("disabled", true)
     $("#IdTipoProducto").val(0)
     $("#txtOrigenId").val(IdsOriginales)
 
@@ -5335,7 +5396,7 @@ function Editar() {
     });
 }
 function VerDocsOrigen(IdOPCH) {
-    $("#ModalDocsOrigen").modal('show')
+    AbrirModal("ModalDocsOrigen");
     $("#lblTituloModalDocsOrigen").html('Documentos de Origen de la Factura N° ')
     $.ajax({
         url: 'ObtenerOrigenesFactura',
@@ -5466,12 +5527,48 @@ function verBase64PDF(datos) {
     window.open(url, '_blank');
 }
 
+function llenarComboSerieExtorno(lista, idCombo, primerItem) {
+
+    $("#FechDocExtorno").val($("#txtFechaDocumento").val())
+    $("#FechContExtorno").val($("#txtFechaContabilizacion").val())
+
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    let ultimoindice = 0;
+
+    for (var i = 0; i < nRegistros; i++) {
+        if (lista[i].Documento == 2) {
+            if (lista.length > 0) { contenido += "<option value='" + lista[i].IdSerie + "'>" + lista[i].Serie + "</option>"; ultimoindice = i }
+            else { }
+        }
+
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+
+    $("#" + idCombo).val(lista[ultimoindice].IdSerie).change();
+}
+
 function Extornar() {
     let IdOPCH = $("#txtId").val();
     let TablaOrigen = $("#txtOrigen").val();
     Swal.fire({
         title: 'DESEA GENERAR EXTORNO?',
-        text: "Se validara si los productos ingresados se encuentran con Stock",
+        html: "Se validara si los productos ingresados se encuentran con Stock </br>" +
+            "</br>" +
+            "Serie Para Extorno </br>" +
+            "<Select id='cboSerieExtorno' class='form-control'></select>" +
+            "</br>" +
+            "Fecha De Documento para Extorno  </br>" +
+            "<input id='FechDocExtorno' type='date' class='form-control'/>" +
+            "</br>" +
+            "Fecha de Contabilizacion para Extorno  </br>" +
+            "<input id='FechContExtorno' type='date' class='form-control'/>" +
+            "</br>" +
+            "<p>* Las Fechas que se muestran por defecto son las mismas que el documento seleccionado</p>",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -5613,12 +5710,12 @@ function Extornar() {
                                         //cabecera
                                         'IdAlmacen': $("#cboAlmacen").val(),
                                         'IdTipoDocumento': 1341,
-                                        'IdSerie': 20007,
+                                        'IdSerie': $("#cboSerieExtorno").val(),
                                         'Correlativo': '',
                                         'IdMoneda': $("#cboMoneda").val(),
                                         'TipoCambio': $("#txtTipoCambio").val(),
-                                        'FechaContabilizacion': $("#txtFechaContabilizacion").val(),
-                                        'FechaDocumento': $("#txtFechaDocumento").val(),
+                                        'FechaContabilizacion': $("#FechContExtorno").val(),
+                                        'FechaDocumento': $("#FechDocExtorno").val(),
                                         'IdCentroCosto': 7,
                                         'Comentario': $("#txtComentarios").val(),
                                         'SubTotal': SubTotal,
@@ -5627,7 +5724,7 @@ function Extornar() {
                                         'IdCuadrilla': 2582,
                                         'EntregadoA': 24151,
                                         'IdTipoDocumentoRef': 10,
-                                        'NumSerieTipoDocumentoRef': 'Extorno de la Factura FP' + anio + '-' + $("#txtNumeracion").val(),
+                                        'NumSerieTipoDocumentoRef': 'Extorno de la Factura ' + $("#cboSerie option:selected").text() + '-' + $("#txtNumeracion").val(),
                                         'IdDestinatario': '',
                                         'IdMotivoTraslado': '',
                                         'IdTransportista': '',
@@ -5752,6 +5849,10 @@ function Extornar() {
 
         }
     })
+    $.post("/Serie/ObtenerSeries", { estado: 1 }, function (data, status) {
+        let series = JSON.parse(data);
+        llenarComboSerieExtorno(series, "cboSerieExtorno", "Seleccione")
+    });
 }
 
 
@@ -5797,7 +5898,13 @@ function changeTipoDocumento() {
         CambiarClaseArticulo()
     } else {
         $("#divServPub").hide()
+    }
 
+    if ($("#cboClaseArticulo").val() == '2') {
+
+        $("#divGlosa").show()
+    } else {
+        $("#divGlosa").hide()
     }
 }
 

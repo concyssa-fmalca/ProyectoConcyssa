@@ -47,6 +47,7 @@ namespace DAO
                         oKardexDTO.IdArticulo = Convert.ToInt32(drd["IdArticulo"].ToString());
                         oKardexDTO.Saldo = Convert.ToDecimal(drd["Saldo"].ToString());
                         oKardexDTO.DescArticulo = (drd["DescArticulo"].ToString());
+                        oKardexDTO.CodigoArticulo = (drd["CodigoArticulo"].ToString());
                         oKardexDTO.DescSerie = (drd["DescSerie"].ToString());
                         oKardexDTO.Correlativo = Convert.ToInt32(drd["Correlativo"].ToString());
                         oKardexDTO.TipoTransaccion = (drd["TipoTransaccion"].ToString());
@@ -73,7 +74,45 @@ namespace DAO
             return lstKardexDTO;
         }
 
-        
+        public List<KardexDTO> ObtenerArticulosEnKardex(int IdAlmacen, DateTime FechaInicio, DateTime FechaTermino, ref string mensaje_error)
+        {
+            List<KardexDTO> lstKardexDTO = new List<KardexDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarArticulosEnKardex", cn);
+   
+                    da.SelectCommand.Parameters.AddWithValue("@IdAlmacen", IdAlmacen);
+              
+                    da.SelectCommand.Parameters.AddWithValue("@FechaInicio", FechaInicio.ToString("yyyyMMdd"));
+                    da.SelectCommand.Parameters.AddWithValue("@FechaTermino", FechaTermino.ToString("yyyyMMdd"));
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        KardexDTO oKardexDTO = new KardexDTO();          
+                  
+                        oKardexDTO.IdArticulo = Convert.ToInt32(drd["IdArticulo"].ToString());
+                    
+
+
+                        lstKardexDTO.Add(oKardexDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstKardexDTO;
+        }
+
+
         public ArticuloStockDTO ObtenerArticuloxIdArticuloxIdAlm(int IdArticulo,int IdAlmacen,ref string mensaje_error)
         {
 

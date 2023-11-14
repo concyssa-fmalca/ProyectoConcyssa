@@ -308,7 +308,62 @@ function Guardar() {
     $("#FechaDocumentoI").val();
     $("#FechaDocumentoF").val();
 
+    if ($("#CodigoPeriodo").val() == "" || $("#CodigoPeriodo").val() == undefined) {
+        Swal.fire("Error", "El Campo Codigo es Obligatorio", "info")
+        return
+    }
+    if ($("#NombrePeriodo").val() == "" || $("#NombrePeriodo").val() == undefined) {
+        Swal.fire("Error", "El Campo Nombre Periodo es Obligatorio", "info")
+        return
+    }
+    if ($("#SubPeriodo").val() == 0 || $("#SubPeriodo").val() == undefined) {
+        Swal.fire("Error", "El Campo Sub Periodo es Obligatorio", "info")
+        return
+    }
+    if ($("#IdIndicadorPeriodo").val() == 0 || $("#IdIndicadorPeriodo").val() == undefined) {
+        Swal.fire("Error", "El Campo Periodo es Obligatorio", "info")
+        return
+    }
+    if ($("#StatusPeriodo").val() == 0 || $("#StatusPeriodo").val() == undefined) {
+        Swal.fire("Error", "El Campo status del Periodo es Obligatorio", "info")
+        return
+    }
 
+    if ($("#FechaContabilizacionI").val() == "" || $("#FechaContabilizacionI").val() == undefined) {
+        Swal.fire("Error", "El Campo Fecha Contabilizacion Inicial es Obligatorio", "info")
+        return
+    }
+    if ($("#FechaContabilizacionF").val() == "" || $("#FechaContabilizacionF").val() == undefined) {
+        Swal.fire("Error", "El Campo Fecha Contabilizacion Final es Obligatorio", "info")
+        return
+    }
+    if ($("#FechaVencimientoI").val() == "" || $("#FechaVencimientoI").val() == undefined) {
+        Swal.fire("Error", "El Campo Fecha Vencimiento Inicial es Obligatorio", "info")
+        return
+    }
+    if ($("#FechaVencimientoF").val() == "" || $("#FechaVencimientoF").val() == undefined) {
+        Swal.fire("Error", "El Campo Fecha Vencimiento Final es Obligatorio", "info")
+        return
+    }
+    if ($("#FechaDocumentoI").val() == "" || $("#FechaDocumentoI").val() == undefined) {
+        Swal.fire("Error", "El Campo Fecha Documento Inicial es Obligatorio", "info")
+        return
+    }
+    if ($("#FechaDocumentoF").val() == "" || $("#FechaDocumentoF").val() == undefined) {
+        Swal.fire("Error", "El Campo Fecha Documento Final es Obligatorio", "info")
+        return
+    }
+
+    if ($("#InicioEjercicio").val() == "" || $("#InicioEjercicio").val() == undefined) {
+        Swal.fire("Error", "El Campo Fecha Inicio Ejercicio es Obligatorio", "info")
+        return
+    }
+    if ($("#Ejercicio").val() == "" || $("#Ejercicio").val() == undefined) {
+        Swal.fire("Error", "El Campo Ejercicio Final es Obligatorio", "info")
+        return
+    }
+
+   
     $.ajax({
         url: "UpdateInsertPeriodoContable",
         type: "POST",

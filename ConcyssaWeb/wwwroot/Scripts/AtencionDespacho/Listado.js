@@ -689,11 +689,7 @@ function GenerarSalida(Num,IdSolicitud,numserie,cuadrilla) {
     //CREAR SALIDA
     let almacen = $("#cboAlmacen" + Num).val()
     let responsable = $("#cboResponsable" + Num).val()
-    var fechaHoy = new Date();
-    var dia = String(fechaHoy.getDate()).padStart(2, "0");
-    var mes = String(fechaHoy.getMonth() + 1).padStart(2, "0");
-    var anio = fechaHoy.getFullYear();
-    let FechaSalida =  dia + "/" + mes + "/" + anio;
+   
 
     let detalles = [];
     if (arrayCantidadEntregar.length == arrayPrecioDetalle.length) {
@@ -730,7 +726,7 @@ function GenerarSalida(Num,IdSolicitud,numserie,cuadrilla) {
     }
     console.log(detalles)
     console.log(TotalGeneral)
-    console.log(FechaSalida)
+  
    
     let EsParcial = 0;
     for (var p = 0; p < arrayCantidadPedidaDetalle.length; p++) {
@@ -740,137 +736,197 @@ function GenerarSalida(Num,IdSolicitud,numserie,cuadrilla) {
     }
     console.log(EsParcial)
 
-    $.ajax({
-        url: "/SalidaMercancia/UpdateInsertMovimiento",
-        type: "POST",
-        async: true,
-        data: {
-            detalles,
-            AnexoDetalle,
-            //cabecera
-            'IdAlmacen': almacen,
-            'IdTipoDocumento': 332,
-            'IdSerie': 20007,
-            'Correlativo': '',
-            'IdMoneda': 1,
-            'TipoCambio': 1,
-            'FechaContabilizacion': FechaSalida,
-            'FechaDocumento': FechaSalida,
-            'IdCentroCosto': 7,
-            'Comentario': 'Generado al Atender la Solicitud de Despacho N° ' + numserie,
-            'SubTotal': TotalGeneral,
-            'Impuesto': 0,
-            'Total': TotalGeneral,
-            'IdCuadrilla': 2582,
-            'EntregadoA': 24151,
-            'IdTipoDocumentoRef': 10,
-            'NumSerieTipoDocumentoRef': '',
-            'IdDestinatario': '',
-            'IdMotivoTraslado': '',
-            'IdTransportista': '',
-            'PlacaVehiculo': '',
-            'MarcaVehiculo': '',
-            'NumIdentidadConductor': '',
+    let IdOPCH = $("#txtId").val();
+    let TablaOrigen = $("#txtOrigen").val();
+    Swal.fire({
+        title: 'DESEA GENERAR LA SALIDA?',
+        html: "Verifique los siguientes campos antes de Proceder</br>" +
+            "</br>" +
+            "Serie Para Extorno </br>" +
+            "<Select id='cboSerieExtorno' class='form-control'></select>" +
+            "</br>" +
+            "Fecha De Documento para Extorno  </br>" +
+            "<input id='FechDocExtorno' type='date' class='form-control'/>" +
+            "</br>" +
+            "Fecha de Contabilizacion para Extorno  </br>" +
+            "<input id='FechContExtorno' type='date' class='form-control'/>",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si Generar!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: "/SalidaMercancia/UpdateInsertMovimiento",
+                type: "POST",
+                async: true,
+                data: {
+                    detalles,
+                    AnexoDetalle,
+                    //cabecera
+                    'IdAlmacen': almacen,
+                    'IdTipoDocumento': 332,
+                    'IdSerie': $("#cboSerieExtorno").val(),
+                    'Correlativo': '',
+                    'IdMoneda': 1,
+                    'TipoCambio': 1,
+                    'FechaContabilizacion': $("#FechContExtorno").val(),
+                    'FechaDocumento': $("#FechDocExtorno").val(),
+                    'IdCentroCosto': 7,
+                    'Comentario': 'Generado al Atender la Solicitud de Despacho N° ' + numserie,
+                    'SubTotal': TotalGeneral,
+                    'Impuesto': 0,
+                    'Total': TotalGeneral,
+                    'IdCuadrilla': 2582,
+                    'EntregadoA': 24151,
+                    'IdTipoDocumentoRef': 10,
+                    'NumSerieTipoDocumentoRef': '',
+                    'IdDestinatario': '',
+                    'IdMotivoTraslado': '',
+                    'IdTransportista': '',
+                    'PlacaVehiculo': '',
+                    'MarcaVehiculo': '',
+                    'NumIdentidadConductor': '',
 
-            'NombreConductor': '',
-            'ApellidoConductor': '',
-            'LicenciaConductor': '',
-            'TipoTransporte': '',
+                    'NombreConductor': '',
+                    'ApellidoConductor': '',
+                    'LicenciaConductor': '',
+                    'TipoTransporte': '',
 
-            'Peso': 0,
-            'Bulto': 0,
+                    'Peso': 0,
+                    'Bulto': 0,
 
-            'SGI': '',
-            'CodigoAnexoLlegada': '',
-            'CodigoUbigeoLlegada': '',
-            'DistritoLlegada': '',
-            'DireccionLlegada': '',
-            'OrigenDespacho': 'Generado al Atender la Solicitud de Despacho N° ' + numserie,
+                    'SGI': '',
+                    'CodigoAnexoLlegada': '',
+                    'CodigoUbigeoLlegada': '',
+                    'DistritoLlegada': '',
+                    'DireccionLlegada': '',
+                    'OrigenDespacho': 'Generado al Atender la Solicitud de Despacho N° ' + numserie,
 
 
-        },
-        success: function (data) {
-            if (data > 0) {
-                let EstadoSolicitud
-                if (EsParcial > 0) {
-                    EstadoSolicitud = 1
-                } else {
-                    EstadoSolicitud = 2
-                }
-                if (NroEliminados > 0) {
-                    EstadoSolicitud = 1
-                }
-                for (var i = 0; i < arrayCantidadEntregar.length; i++) {
-                    $.ajax({
-                        url: "/SolicitudDespacho/AtencionConfirmada",
-                        type: 'POST',
-                        async: false,
-                        dataType: 'json',
-                        data: {
-                            'Cantidad': arrayCantidadEntregar[i],
-                            'IdSolicitud': IdSolicitud,
-                            'IdArticulo': arrayIdItemDetalle[i],
-                            'EstadoSolicitud': EstadoSolicitud,
-                        },
-                        success: function (datos) {
-                            //console.log(datos);
-                            if (datos > 0) {
-                                if (EstadoSolicitud == 1) {
-                                    Swal.fire("Exito!", "Proceso Completado Correctamente,Aún tiene cantidades por atender, La Solicitud se Movió a Entregado Parcialmente", "success");
-                                } else if (EstadoSolicitud == 2) {
-                                    Swal.fire("Exito!", "Proceso Completado Correctamente,Todos los articulos fueron atendidos, La Solicitud Fue Cerrada", "success");
-                                } else {
-                                    Swal.fire("Exito!", "Proceso Completado Correctamente", "success");
-                                }
-                                ConsultaServidor()
-                            } else { Swal.fire("Error!", "Ocurrió un Error en Atender Pedido", "error"); }
-                        },
-                        error: function () {
-                            Swal.fire("Error!", "Ocurrió un Error", "error");
+                },
+                success: function (data) {
+                    if (data > 0) {
+                        let EstadoSolicitud
+                        if (EsParcial > 0) {
+                            EstadoSolicitud = 1
+                        } else {
+                            EstadoSolicitud = 2
                         }
-                    })
-                }
+                        if (NroEliminados > 0) {
+                            EstadoSolicitud = 1
+                        }
+                        for (var i = 0; i < arrayCantidadEntregar.length; i++) {
+                            $.ajax({
+                                url: "/SolicitudDespacho/AtencionConfirmada",
+                                type: 'POST',
+                                async: false,
+                                dataType: 'json',
+                                data: {
+                                    'Cantidad': arrayCantidadEntregar[i],
+                                    'IdSolicitud': IdSolicitud,
+                                    'IdArticulo': arrayIdItemDetalle[i],
+                                    'EstadoSolicitud': EstadoSolicitud,
+                                },
+                                success: function (datos) {
+                                    //console.log(datos);
+                                    if (datos > 0) {
+                                        if (EstadoSolicitud == 1) {
+                                            Swal.fire("Exito!", "Proceso Completado Correctamente,Aún tiene cantidades por atender, La Solicitud se Movió a Entregado Parcialmente", "success");
+                                        } else if (EstadoSolicitud == 2) {
+                                            Swal.fire("Exito!", "Proceso Completado Correctamente,Todos los articulos fueron atendidos, La Solicitud Fue Cerrada", "success");
+                                        } else {
+                                            Swal.fire("Exito!", "Proceso Completado Correctamente", "success");
+                                        }
+                                        ConsultaServidor()
+                                    } else { Swal.fire("Error!", "Ocurrió un Error en Atender Pedido", "error"); }
+                                },
+                                error: function () {
+                                    Swal.fire("Error!", "Ocurrió un Error", "error");
+                                }
+                            })
+                        }
 
 
-                //$.post('ExtornoConfirmado', {
-                //    'IdOPDN': IdOPDN,
-                //    'EsServicio': TipoProductos,
-                //}, function (data, status) {
+                        //$.post('ExtornoConfirmado', {
+                        //    'IdOPDN': IdOPDN,
+                        //    'EsServicio': TipoProductos,
+                        //}, function (data, status) {
 
-                //    if (data != 0) {
+                        //    if (data != 0) {
                         //swal("Exito!", "Proceso Realizado Correctamente", "success")
-                //        CerrarModal()
-                //        listaropdnDT()
-                //    } else {
-                //        swal("Error!", "Ocurrio un Error")
-                //        CerrarModal()
-                //    }
+                        //        CerrarModal()
+                        //        listaropdnDT()
+                        //    } else {
+                        //        swal("Error!", "Ocurrio un Error")
+                        //        CerrarModal()
+                        //    }
 
-                //});
+                        //});
 
 
-            } else {
+                    } else {
+                        Swal.fire(
+                            'Error!',
+                            'Ocurrio un Error!',
+                            'error'
+                        )
+
+                    }
+
+                }
+            }).fail(function () {
                 Swal.fire(
                     'Error!',
-                    'Ocurrio un Error!',
+                    'Comunicarse con el Area Soporte: smarcode@smartcode.pe !',
                     'error'
                 )
-
-            }
-
+            });
         }
-    }).fail(function () {
-        Swal.fire(
-            'Error!',
-            'Comunicarse con el Area Soporte: smarcode@smartcode.pe !',
-            'error'
-        )
-    });
-    
+    })
 
+    
+    $.post("/Serie/ObtenerSeries", { estado: 1 }, function (data, status) {
+        let series = JSON.parse(data);
+        llenarComboSerieExtorno(series, "cboSerieExtorno", "Seleccione")
+    });
 
     console.log('bien')
 }
+
+function llenarComboSerieExtorno(lista, idCombo, primerItem) {
+
+    var fechaHoy = new Date();
+    var dia = String(fechaHoy.getDate()).padStart(2, "0");
+    var mes = String(fechaHoy.getMonth() + 1).padStart(2, "0");
+    var anio = fechaHoy.getFullYear();
+    let FechaSalida = anio + "-" + mes + "-" + dia;
+
+
+    $("#FechDocExtorno").val(FechaSalida)
+    $("#FechContExtorno").val(FechaSalida)
+
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    let ultimoindice = 0;
+
+    for (var i = 0; i < nRegistros; i++) {
+        if (lista[i].Documento == 2) {
+            if (lista.length > 0) { contenido += "<option value='" + lista[i].IdSerie + "'>" + lista[i].Serie + "</option>"; ultimoindice = i }
+            else { }
+        }
+
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+
+    $("#" + idCombo).val(lista[ultimoindice].IdSerie).change();
+}
+
 function ListarSeries() {
     let FechaInicio = $("#txtFechaInicio").val()
     let FechaFin = $("#txtFechaFin").val()

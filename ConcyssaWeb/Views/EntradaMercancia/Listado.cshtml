@@ -1,7 +1,9 @@
 ﻿@model List<string> 
+@using Microsoft.AspNetCore.Http;
 @{
     ViewBag.Title = "Listado";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    HttpContextAccessor httpContextAccessor = new HttpContextAccessor();
 }
 
 
@@ -65,6 +67,7 @@
 </style>
 
 <div class="container-fluid" style="height:93%;">
+    <input style="display:none" id="IdUsuarioSesion" type="text" value="@httpContextAccessor.HttpContext.Session.GetInt32("IdUsuario")"/>
     <div class="panel">
         <div class="container-fluid">
             <div class="topbar-left col-xs-6">
@@ -321,8 +324,11 @@
 
 
                                 <div class='form-group-sm'>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-2">
                                         <button style="margin-bottom:10px;margin-top:5px" class="btn btn-xs btn-info" id="btn_agregaritem" onclick="OpenModalItem()" type="button">Agregar Item</button>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button style="margin-bottom:10px;margin-top:5px" class="btn btn-xs btn-info" id="btn_agregaritem" onclick="OpenModalImportacion()" type="button">Importar Datos</button>
                                     </div>
                                 </div>
                                 <div class="table-responsive">
@@ -536,7 +542,7 @@
                     <div class='form-group-sm'>
                         <button type="button" id="btnEditar" onclick="Editar()" class="btn btn-primary pull-right plu">Grabar</button>
                         <button type="button" id="btnExtorno" onclick="GenerarExtorno()" class="btn btn-primary pull-right plu">Extorno</button>
-                        <button type="button" id="btnGrabar" onclick="GuardarSolicitud()" class="btn btn-primary pull-right plu">Crear</button>
+                        <button type="button" id="btnGrabar" onclick="GuardarSolicitud()" class="btn btn-primary pull-right plu">Grabar</button>
                         <button type="button" id="btnNuevo" onclick="nuevo()" class="btn btn-primary pull-right plu">Nuevo</button>
                         <button type="button" id="btnCancelar" onclick="CerrarModal()" class="btn btn-danger pull-right" style="background-color:orange;">Cerrar</button>
                     </div>
@@ -900,12 +906,71 @@
     </div>
 
 
+     <!-- Modal Importar Datos-->
+    <div class="modal fade" data-backdrop="static"
+         data-keyboard="false" id="ModalImportarDatos" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered allcp-form" style="margin-top:120px" role="document">
+            <div class="modal-content">
+
+
+                <div class="panel" style="margin-bottom:0px">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="lblTituloModalItem">Importar Datos</h5>
+                    </div>
+                    <div id="divSelectFile">
+                        <div class="card-body" style="width:100%;display:flex;justify-content:center">
+
+                            <div style="width:70%;height:300px;display:flex;flex-direction:column;justify-content:center;align-items:center">
+                                <p>Seleccione un Archivo de Excel para Iniciar el Proceso</p>
+                                <br />
+                                <img src="~/assets/img/excel-logo.png" style="width:100px;height:100px" />
+                                <br />
+                                 @using (Html.BeginForm("GuardarFile", "SolicitudRQ", FormMethod.Post, new { id = "CargarExcel", enctype = "multipart/form-data" }))
+                                {
+                                    <div class="col">
+                                        <div class='col-md-12'>
+                                            <div class="col-md-12">
+                                                @*<label for="file">Subir Anexos</label>*@
+                                                <input type="file" name="file" id="file" class="form-control" />
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class='col-md-12' style="display:flex;flex-direction:column;justify-content:center;align-items:center">
+                                            <div class="col-md-6">
+                                                @*<label for="file">Subir Anexos</label>*@
+                                                <input type="submit" value="Procesar Excel" class="btn btn-primary" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    @ViewBag.Message
+
+                                }
+                                <br />
+                                <p>Puede descargar la Plantilla Excel Haciendo <a onclick="DescargarPlantilla()">Click Aqui</a></p>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">                      
+                        <button type="button" class="btn btn-danger pull-right" style="background-color:orange;" data-dismiss="modal" onclick="CerrarModalListadoAlmacen()">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 </div>
 
+@{
+    Random rnd = new Random();
+}
 
 
 
-<script src="~/Scripts/EntradaMercancia/Listado.js"></script>
+<script src="~/Scripts/EntradaMercancia/Listado.js?v=@rnd.Next(1, 1000 + 1)"></script>
 <script src="~/Scripts/General.js"></script>
 <script src="~/js/pdf/jspdf.min.js"></script>
 <script src="~/js/pdf/faker.min.js"></script>

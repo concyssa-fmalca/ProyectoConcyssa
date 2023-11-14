@@ -230,42 +230,83 @@ function listarGrupoArticulo() {
 
 function ConsultaServidor(url) {
 
-    $.post(url, function (data, status) {
-        if (data == "error") {
-            table = $("#table_id").DataTable(lenguaje);
-            return;
-        }
+    table = $('#table_id').dataTable({
+        language: lenguaje_data,
+        //responsive: true,
+        //scrollX: true,
+        ajax: {
+            url: 'ObtenerArticulosxSociedad',
+            type: 'POST',
+            dataSrc: '',
+            data: {
 
-        let tr = '';
+                pagination: {
+                    perpage: 50,
+                },
+            },
+        },
 
-        let articulos = JSON.parse(data);
-        let total_articulos = articulos.length;
+        columnDefs: [
+            {
+                data: null,
+                targets: -1,
+                orderable: false,
+                render: function (data, type, full, meta) {
 
-        for (var i = 0; i < articulos.length; i++) {
 
-            tr += '<tr>' +
-                '<td>' + (i + 1) + '</td>' +
-                '<td>' + articulos[i].Codigo.toUpperCase() + '</td>' +
-                '<td>' + articulos[i].Descripcion1.toUpperCase() + '</td>' +
-                '<td>' + articulos[i].Descripcion2.toUpperCase() + '</td>' +
-                '<td>' + articulos[i].NombUnidadMedida.toUpperCase() + '</td>' +
+                    return `
+                <div class="btn-group" role="group" aria-label="..." style="inline-size: max-content !important; ">
+                    <button  style="margin-top:0px !important;margin-bottom:0px !important;" class="btn btn-primary fa fa-pencil btn-xs" onclick = "ObtenerDatosxID(` + full.IdArticulo + `)" ></button > 
+                    <button  style="margin-top:0px !important;margin-bottom:0px !important;" class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(` + full.IdArticulo + `)"></button>
+                </div>
+                `
 
-                '<td>' +
-             
-                    `<div class="btn-group" role="group" aria-label="..." style="inline-size: max-content !important; ">
-                        <button  style="margin-top:0px !important;margin-bottom:0px !important;" class="btn btn-primary fa fa-pencil btn-xs" onclick = "ObtenerDatosxID(` + articulos[i].IdArticulo + `)" ></button > 
-                        <button  style="margin-top:0px !important;margin-bottom:0px !important;" class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(` + articulos[i].IdArticulo + `)"></button>
-                    </div>
-                </td>`+
-                '</tr>';
-        }
+                },
+            },
+            {
+                data: null,
+                targets: 0,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return meta.row + 1
+                },
+            },
+            {
+                data: null,
+                targets: 1,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.Codigo.toUpperCase()
+                },
+            },
+            {
+                data: null,
+                targets: 2,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.Descripcion1.toUpperCase()
+                },
+            },
 
-        $("#tbody_Articulos").html(tr);
-        $("#spnTotalRegistros").html(total_articulos);
-
-        table = $("#table_id").DataTable(lenguaje);
-
-    });
+            {
+                data: null,
+                targets: 3,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.Descripcion2.toUpperCase()
+                },
+            },
+            {
+                data: null,
+                targets: 4,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.NombUnidadMedida
+                },
+            },
+        ],
+        "bDestroy": true
+    }).DataTable();
 
 }
 
@@ -383,38 +424,56 @@ function GuardarArticulo() {
     let IdGrupoUnidadMedida = $("#IdGrupoUnidadMedida").val();
     let IdUnidadMedidaInv = $("#IdUnidadMedidaInv").val();
 
-    $.post('UpdateInsertArticulo', {
-        'IdArticulo': varIdArticulo,
-        'Codigo': varCodigo,
-        'Descripcion1': varDescripcion1,
-        'Descripcion2': varDescripcion2,
-        'IdUnidadMedida': varIdUnidadMedida,
-        'IdCodigoUbso': IdCodigoUbso,
-        'ActivoFijo': varEstadoActivoFijo,
-        'ActivoCatalogo': varEstadoActivoCatalogo,
-        'Inventario': varEstadoInvetario,
-        'Venta': varVenta,
-        'Compra': varCompra,
-        'Estado': varEstado,
-        'IdGrupoUnidadMedida': IdGrupoUnidadMedida,
-        'IdUnidadMedidaInv': IdUnidadMedidaInv,
-        'IdProveedor': $("#txtProveedor").val()
 
-
-    }, function (data, status) {
-
-        if (data == 1) {
-            swal("Exito!", "Proceso Realizado Correctamente", "success")
-            table.destroy();
-            ConsultaServidor("ObtenerArticulosxSociedad");
-            limpiarDatos();
-        } else {
-            swal("Error!", "Ocurrio un Error")
-            limpiarDatos();
-            ConsultaServidor("ObtenerArticulosxSociedad");
-        }
-
+    if ($("#IdGrupoUnidadMedida").val() == 0 || $("#IdGrupoUnidadMedida").val() == undefined || $("#IdGrupoUnidadMedida").val() == null) {
+        Swal.fire("Debe Llenar el Campo Grupo Unidad Medida Base", "DATOS INVENTARIO -> Grupo Unidad Medida Base", "info")
+        return
+    } 
+    if ($("#IdUnidadMedidaInv").val() == 0 || $("#IdUnidadMedidaInv").val() == undefined || $("#IdUnidadMedidaInv").val() == null) {
+        Swal.fire("Debe Llenar el Campo Unidad Medida", "DATOS INVENTARIO -> Unidad Medida", "info")
+        return
+    } 
+        
+    Swal.fire({
+        title: "Cargando...",
+        text: "Por favor espere",
+        showConfirmButton: false,
+        allowOutsideClick: false
     });
+
+    setTimeout(() => {
+        $.post('UpdateInsertArticulo', {
+            'IdArticulo': varIdArticulo,
+            'Codigo': varCodigo,
+            'Descripcion1': varDescripcion1,
+            'Descripcion2': varDescripcion2,
+            'IdUnidadMedida': varIdUnidadMedida,
+            'IdCodigoUbso': IdCodigoUbso,
+            'ActivoFijo': varEstadoActivoFijo,
+            'ActivoCatalogo': varEstadoActivoCatalogo,
+            'Inventario': varEstadoInvetario,
+            'Venta': varVenta,
+            'Compra': varCompra,
+            'Estado': varEstado,
+            'IdGrupoUnidadMedida': IdGrupoUnidadMedida,
+            'IdUnidadMedidaInv': IdUnidadMedidaInv,
+            'IdProveedor': $("#txtProveedor").val()
+
+
+        }, function (data, status) {
+
+            if (data == 1) {
+                Swal.fire("Exito!", "Proceso Realizado Correctamente", "success")
+                table.destroy();
+                ConsultaServidor("ObtenerArticulosxSociedad");
+                limpiarDatos();
+            } else {
+                Swal.fire("Error!", "Ocurrio un Error","error")
+                limpiarDatos();
+            }
+
+        });
+    },200)
 }
 
 function ObtenerDatosxID(varIdArticulo) {
@@ -641,7 +700,7 @@ function GuardarStock(IdProducto, IdAlmacen) {
         function (data) {
 
             if (data == "1") {
-                swal("Exito!", "Articulo Eliminado", "success")
+                swal("Exito!", "Datos Guardados", "success")
             } else {
                 swal("Error!", "Ocurrio un Error")
             }

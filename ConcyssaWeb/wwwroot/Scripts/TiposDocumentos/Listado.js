@@ -62,6 +62,19 @@ function GuardarTiposDocumentos() {
     let varDescripcion = $("#txtDescripcion").val();
     let varEstado = false;
 
+
+    if (CodSunat == "" || CodSunat == undefined) {
+        Swal.fire("Error", "El Campo Codigo Sunat es Obligatorio", "info")
+        return
+    }
+    if (varCodigo == "" || varCodigo == undefined) {
+        Swal.fire("Error", "El Campo Codigo es Obligatorio", "info")
+        return
+    }
+    if (varDescripcion == "" || varDescripcion == undefined) {
+        Swal.fire("Error", "El Campo Descripcion es Obligatorio", "info")
+        return
+    }
     if ($('#chkActivo')[0].checked) {
         varEstado = true;
     }
@@ -144,6 +157,7 @@ function eliminar(varIdLineaNegocio) {
 function limpiarDatos() {
     $("#txtId").val("");
     $("#txtCodigo").val("");
+    $("#CodigoSunat").val("");
     $("#txtDescripcion").val("");
     $("#chkActivo").prop('checked', false);
 }

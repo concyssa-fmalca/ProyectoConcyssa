@@ -32,7 +32,7 @@ namespace ConcyssaWeb.Controllers
             return View();
         }
 
-        public string ObtenerPedidosEntregaLDT(int IdObra,string EstadoPedido = "ABIERTO")
+        public string ObtenerPedidosEntregaLDT(int IdObra, int IdProveedor,string EstadoPedido = "ABIERTO" )
         {
             string mensaje_error = "";
             PedidoDAO oPedidoDAO = new PedidoDAO();
@@ -41,6 +41,26 @@ namespace ConcyssaWeb.Controllers
 
             DataTableDTO oDataTableDTO = new DataTableDTO();
             List<PedidoDTO> lstPedidoDTO = oPedidoDAO.ObtenerPedidosEntregaLDT(IdSociedad, ref mensaje_error, EstadoPedido, IdObra, IdUsuario);
+            List<PedidoDTO> NewlstPedidoDTO = new List<PedidoDTO>();
+
+
+            if (IdProveedor > 0)
+            {
+                for (int i = 0; i < lstPedidoDTO.Count; i++)
+                {
+                    if (lstPedidoDTO[i].IdProveedor == IdProveedor)
+                    {
+                        NewlstPedidoDTO.Add(lstPedidoDTO[i]);
+                    }
+                }
+                oDataTableDTO.sEcho = 1;
+                oDataTableDTO.iTotalDisplayRecords = NewlstPedidoDTO.Count;
+                oDataTableDTO.iTotalRecords = NewlstPedidoDTO.Count;
+                oDataTableDTO.aaData = (NewlstPedidoDTO);
+                //return oDataTableDTO;
+                return JsonConvert.SerializeObject(oDataTableDTO);
+            }
+
             if (lstPedidoDTO.Count > 0)
             {
                 oDataTableDTO.sEcho = 1;
@@ -99,57 +119,6 @@ namespace ConcyssaWeb.Controllers
                     int respuesta1 = oPedidoDAO.InsertUpdatePedidoDetalle(oPedidoDTO.detalles[i], ref mensaje_error);
                 }
 
-
-                /*INSERTAR CUADRO COMPARATIVO*/
-                RespuestaDTO oRespuestaDTOReporte = new RespuestaDTO();
-                try
-                {
-                    string respuestareporte = GenerarReporte("CuadroComparativo", "PDF", respuesta);
-                    oRespuestaDTOReporte = JsonConvert.DeserializeObject<RespuestaDTO>(respuestareporte);
-                    Byte[] archivoreporte = Convert.FromBase64String(oRespuestaDTOReporte.Base64ArchivoPDF);
-                    string nombrearchivocuadro = "CuadroComparativoPedido" + respuesta + ".pdf";
-
-
-                    if (System.IO.File.Exists("wwwroot\\Anexos\\" + nombrearchivocuadro))
-                        System.IO.File.WriteAllBytes("wwwroot\\Anexos\\" + nombrearchivocuadro, archivoreporte);
-                    else
-                    {
-                        System.IO.File.Delete("wwwroot\\Anexos\\" + nombrearchivocuadro);
-                        System.IO.File.WriteAllBytes("wwwroot\\Anexos\\" + nombrearchivocuadro, archivoreporte);
-                    }
-                    AnexoDTO oPedAnexo = new AnexoDTO();
-                    oPedAnexo.ruta = "/Anexos/" + nombrearchivocuadro;
-                    oPedAnexo.IdSociedad= oPedidoDTO.IdSociedad;
-                    oPedAnexo.Tabla= "Pedido";
-                    oPedAnexo.IdTabla = respuesta;
-                    oPedAnexo.NombreArchivo = nombrearchivocuadro;
-
-                    oMovimientoDAO.InsertAnexoMovimiento(oPedAnexo, ref mensaje_error);
-
-                }
-                catch (Exception ex)
-                {
-
-                    var dd = "";
-                }
-               
-
-                /*INSERTAR CUADRO COMPARATIVO*/
-                if (oPedidoDTO.AnexoDetalle!=null)
-                {
-                    for (int i = 0; i < oPedidoDTO.AnexoDetalle.Count; i++)
-                    {
-                        oPedidoDTO.AnexoDetalle[i].ruta = "/Anexos/" + oPedidoDTO.AnexoDetalle[i].NombreArchivo;
-                        oPedidoDTO.AnexoDetalle[i].IdSociedad = oPedidoDTO.IdSociedad;
-                        oPedidoDTO.AnexoDetalle[i].Tabla = "Pedido";
-                        oPedidoDTO.AnexoDetalle[i].IdTabla = respuesta;
-
-                        oMovimientoDAO.InsertAnexoMovimiento(oPedidoDTO.AnexoDetalle[i], ref mensaje_error);
-                    }
-                }
-               
-                
-
                 oPedidoDAO.UpdateTotalesPedido(respuesta, ref mensaje_error);
 
             }
@@ -162,6 +131,58 @@ namespace ConcyssaWeb.Controllers
             {
                 if (respuesta > 0)
                 {
+
+                    /*INSERTAR CUADRO COMPARATIVO*/
+                    RespuestaDTO oRespuestaDTOReporte = new RespuestaDTO();
+                    try
+                    {
+                        PedidoDTO datosObtenidos = oPedidoDAO.ObtenerPedidoxId(respuesta, ref mensaje_error);
+
+
+                        string respuestareporte = GenerarReporte("CuadroComparativo", "PDF", respuesta);
+                        oRespuestaDTOReporte = JsonConvert.DeserializeObject<RespuestaDTO>(respuestareporte);
+                        Byte[] archivoreporte = Convert.FromBase64String(oRespuestaDTOReporte.Base64ArchivoPDF);
+                        string nombrearchivocuadro = "CuadroComparativoPedido" + datosObtenidos.NombSerie + "-" + datosObtenidos.Correlativo + ".pdf";
+
+
+                        if (System.IO.File.Exists("wwwroot\\Anexos\\" + nombrearchivocuadro))
+                            System.IO.File.WriteAllBytes("wwwroot\\Anexos\\" + nombrearchivocuadro, archivoreporte);
+                        else
+                        {
+                            System.IO.File.Delete("wwwroot\\Anexos\\" + nombrearchivocuadro);
+                            System.IO.File.WriteAllBytes("wwwroot\\Anexos\\" + nombrearchivocuadro, archivoreporte);
+                        }
+                        AnexoDTO oPedAnexo = new AnexoDTO();
+                        oPedAnexo.ruta = "/Anexos/" + nombrearchivocuadro;
+                        oPedAnexo.IdSociedad = oPedidoDTO.IdSociedad;
+                        oPedAnexo.Tabla = "Pedido";
+                        oPedAnexo.IdTabla = respuesta;
+                        oPedAnexo.NombreArchivo = nombrearchivocuadro;
+
+                        oMovimientoDAO.InsertAnexoMovimiento(oPedAnexo, ref mensaje_error);
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                        var dd = "";
+                    }
+
+
+                    /*INSERTAR CUADRO COMPARATIVO*/
+                    if (oPedidoDTO.AnexoDetalle != null)
+                    {
+                        for (int i = 0; i < oPedidoDTO.AnexoDetalle.Count; i++)
+                        {
+                            oPedidoDTO.AnexoDetalle[i].ruta = "/Anexos/" + oPedidoDTO.AnexoDetalle[i].NombreArchivo;
+                            oPedidoDTO.AnexoDetalle[i].IdSociedad = oPedidoDTO.IdSociedad;
+                            oPedidoDTO.AnexoDetalle[i].Tabla = "Pedido";
+                            oPedidoDTO.AnexoDetalle[i].IdTabla = respuesta;
+
+                            oMovimientoDAO.InsertAnexoMovimiento(oPedidoDTO.AnexoDetalle[i], ref mensaje_error);
+                        }
+                    }
+
                     return respuesta.ToString();
                 }
                 else
@@ -530,6 +551,7 @@ namespace ConcyssaWeb.Controllers
 
                 //solo para pruebas
                 oPedidoDTO.EmailProveedor = "fperez@smartcode.pe";
+                //oPedidoDTO.EmailProveedor = "cristhian.chacaliaza@smartcode.pe";
 
                 string msge = "";
                 string from = "concyssa.smc@gmail.com";
@@ -541,8 +563,10 @@ namespace ConcyssaWeb.Controllers
 
 
                 mail.To.Add(oPedidoDTO.EmailProveedor);
-                mail.To.Add("jhuniors.ramos@smartcode.pe");
-                mail.Subject = "CONCYSSA - ENVIO ORDEN COMPRA";
+                //mail.To.Add("cristhian.chacaliaza@smartcode.pe");
+                mail.To.Add("fmalca@concyssa.com");
+                mail.To.Add("compras@concyssa.com ");
+                mail.Subject = "CONCYSSA - ENVIO ORDEN COMPRA " + oPedidoDTO.NombSerie + "-" + oPedidoDTO.Correlativo;
                 //mail.CC.Add(new MailAddress("camala145@gmail.com"));
                 mail.Body = TemplateEmail();
 

@@ -1,0 +1,69 @@
+﻿@using Microsoft.AspNetCore.Http
+@using Karambolo.AspNetCore.Bundling.ViewHelpers
+@addTagHelper *, Karambolo.AspNetCore.Bundling
+@inject IHttpContextAccessor Accessor
+@{
+    ViewBag.Title = "Listado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" style="height:93%;">
+    <div class="panel">
+        <div class="container-fluid">
+            <div class="topbar-left col-xs-12">
+                <h3>Informe De Stock Mínimo</h3>
+            </div>
+        </div>
+        <div class="container-fluid ">
+            <div class="col-xs-12">
+                <div class="topbar-left col-xs-12">
+                    <h4 style="font-size:1.2em;">Total de Registros: <span id="spnTotalRegistros"></span></h4>
+                </div>
+            </div>
+            @*    <div class="col-xs-6 right">
+
+            </div>
+            *@
+            <div class="col-xs-12 right">
+                <label class="col-sm-1" for="cboBaseFiltro">Base</label>
+                <div class="col-sm-3">
+                    <select class="form-control" id="cboBaseFiltro" onchange="ObtenerObraxIdBase()"></select>
+                </div>
+            </div>
+            <div class="col-xs-12 right">
+                <label class="col-sm-1" for="cboObraFiltro">Obra</label>
+                <div class="col-sm-3">
+                    <select class="form-control" id="cboObraFiltro" onchange="ObtenerAlmacenxIdObra()"></select>
+                </div>
+            </div>
+            <div class="col-xs-12 right">
+                <label class="col-sm-1" for="cboObraFiltro">Almacén</label>
+                <div class="col-sm-3">
+                    <select class="form-control" id="cboAlmacenFiltro"></select>
+                </div>
+                <button class="btn btn-xs btn-primary res" style="margin-top:3px;border-radius:5px;margin-left:0" onclick="ObtenerReporte()">Buscar</button>
+            </div>
+            <input style="display:none" type="text" id="txtIdPerfil" value="@Accessor.HttpContext.Session.GetInt32("IdPerfil").ToString()" />
+
+        </div>
+
+
+    </div>
+    
+
+
+
+</div>
+
+@{
+    Random rnd = new Random();
+}
+
+
+<script src="~/Scripts/InformeInventarioAlmacen/StockMinimo.js?v=@rnd.Next(1, 1000 + 1)"></script>
+<script src="~/Scripts/General.js"></script>
+<script src="~/js/pdf/jspdf.min.js"></script>
+<script src="~/js/pdf/faker.min.js"></script>
+<script src="~/js/pdf/jspdf.plugin.autotable.src.js"></script>
+
+

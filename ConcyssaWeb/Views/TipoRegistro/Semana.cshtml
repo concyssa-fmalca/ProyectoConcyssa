@@ -95,7 +95,7 @@
                                             <label for="cboRegistro" class="col-sm-3 col-form-label">Tipo Registro</label>
                                             <div class="col-sm-9">
                                                 
-                                                <select id="cboTipoRegistro" type="text" class="form-control input-sm" tabindex="3"></select>
+                                                <select id="cboTipoRegistro" type="text" class="form-control input-sm" tabindex="3" onchange="ocultarMonto()"></select>
                                             </div>
 
                                         </div>
@@ -124,9 +124,9 @@
                                     </div>
 
                                     <div class="row">
-                                        <div class='form-group-sm'>
+                                        <div class='form-group-sm' id="divFondo">
                                             <label for="txtFondo" class="col-sm-3 col-form-label">Fondo</label>
-                                            <div class="col-sm-9">
+                                            <div class="col-sm-9" >
                                                 <input type="text" class="form-control" id="txtFondo" placeholder="Ingrese Fondo">
                                             </div>
                                         </div>
@@ -202,9 +202,11 @@
 
 </div>
 
+@{
+    Random rnd = new Random();
+}
 
-
-<script src="~/Scripts/TipoRegistro/Semana.js"></script>
+<script src="~/Scripts/TipoRegistro/Semana.js?v=@rnd.Next(1, 1000 + 1)"></script>
 <script src="~/Scripts/General.js"></script>
 <script src="~/js/pdf/jspdf.min.js"></script>
 <script src="~/js/pdf/faker.min.js"></script>

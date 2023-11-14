@@ -62,26 +62,32 @@ $("#frmAcceso").on('submit', function (e) {
 
     $.post("/Home/login", { "usuario": usuario, "password": password, "idsociedad": idsociedad }, function (data) {
         
+        try {
+            let datos = JSON.parse(data);
 
 
-        let datos = JSON.parse(data);
+            if (data) {
+                if (datos.IdPerfil == 1021) {
+                    $(location).attr("href", URLactual + "Responsive/Index");
+                } else {
+                    $(location).attr("href", URLactual + "Home/about");
+                }
 
- 
-        if (data) {
-            if (datos.IdPerfil == 1021) {
-                $(location).attr("href", URLactual + "Responsive/Index");
-            } else {
-                $(location).attr("href", URLactual + "Home/about");
             }
-            
-        }
-        else {
-            
+            else {
+
                 var lblMensaje = document.getElementById("mensajeErr");
                 lblMensaje.style.visibility = 'visible';
                 lblMensaje.innerHTML = "Usuario y Contraseña Incorrectos";
-            
+
+            }
+
+        } catch (e) {
+            var lblMensaje = document.getElementById("mensajeErr");
+            lblMensaje.style.visibility = 'visible';
+            lblMensaje.innerHTML = "Usuario y Contraseña Incorrectos";
         }
+
     });
 
 

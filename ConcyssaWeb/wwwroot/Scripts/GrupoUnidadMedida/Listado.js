@@ -143,7 +143,14 @@ function GuardarGrupoUnidadMedida() {
     let IdGrupoUnidadMedida = $("#IdGrupoUnidadMedida").val();
     let Codigo = $("#Codigo").val();
     let Descripcion = $("#Descripcion").val();
-
+    if (Codigo == "" || Codigo == undefined) {
+        Swal.fire("Error", "El Campo Codigo es Obligatorio", "info")
+        return
+    }
+    if (Descripcion == "" || Descripcion == undefined) {
+        Swal.fire("Error", "El Campo Descripcion es Obligatorio", "info")
+        return
+    }
 
     let CantidadBase = new Array();
     let UnidadMedidaBase = new Array();
@@ -247,6 +254,8 @@ function limpiarDatos() {
     $("#txtComentarios").val('');
     $("#txtImpuesto").val('');
     $("#txtTotal").val('');
+    $("#Codigo").val('');
+    $("#Descripcion").val('');
     $("#txtEstado").val(1);
 }
 

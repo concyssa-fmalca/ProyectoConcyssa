@@ -174,7 +174,22 @@ function GuardarSubGrupo() {
     if ($('#chkActivo')[0].checked) {
         varEstado = true;
     }
-
+    if (varIdGrupo == 0 || varIdGrupo == undefined) {
+        Swal.fire("Error", "El Campo Grupo es Obligatorio", "info")
+        return
+    }
+    if (varIdGrupo == 0 || varCodigo == undefined) {
+        Swal.fire("Error", "El Campo Codigo es Obligatorio", "info")
+        return
+    }
+    if (varCodigo == "" || varCodigo == undefined) {
+        Swal.fire("Error", "El Campo Codigo es Obligatorio", "info")
+        return
+    }
+    if (varDescripcion == "" || varDescripcion == undefined) {
+        Swal.fire("Error", "El Campo Descripcion es Obligatorio", "info")
+        return
+    }
     $.post('UpdateInsertSubGrupo', {
         'IdSubGrupo': varIdSubGrupo,
         'IdGrupo': varIdGrupo,
@@ -272,6 +287,7 @@ function limpiarDatos() {
     $("#txtId").val("");
     $("#txtCodigo").val("");
     $("#txtDescripcion").val("");
+    $("#IdGrupo").val(0);
     $("#chkActivo").prop('checked', true);
 }
 

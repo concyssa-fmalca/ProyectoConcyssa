@@ -64,7 +64,35 @@ function ListarBasesxUsuario() {
     });
 }
 
+function validarseriescontableParaCrear() {
+    let IdSerie = $("#cboSerie").val();
+    let IdDocumento = 1;
+    let Fecha = $("#txtFechaContabilizacion").val();
+    let Orden = 1;
+    let datosrespuesta;
+    let estado = 0;
+    datosrespuesta = ValidarFechaContabilizacionxDocumentoM(IdSerie, IdDocumento, Fecha, Orden);
+    console.log(datosrespuesta);
+    if (datosrespuesta.FechaRelacion.length == 0) {
 
+        return false;
+    }
+
+    if (datosrespuesta.FechaRelacion.length > 0) {
+        for (var i = 0; i < datosrespuesta.FechaRelacion.length; i++) {
+            console.log(datosrespuesta.FechaRelacion[i]);
+            if (datosrespuesta.FechaRelacion[i].StatusPeriodo == 1) {
+                estado = 1;
+            }
+        }
+
+    }
+
+    if (estado == 0) {
+        return false;
+    }
+    return true
+}
 
 
 function Editar() {
@@ -1652,7 +1680,10 @@ function GuardarSolicitud() {
             'NombreArchivo': arrayTxtNombreAnexo[i]
         });
     }
-
+    if (validarseriescontableParaCrear() == false) {
+        Swal.fire("Error!", "No Puede Crear este Documento en una Fecha No Habilitada", "error")
+        return
+    }
 
     $.ajax({
         url: "UpdateInsertMovimiento",
@@ -1861,6 +1892,8 @@ function ObtenerDatosxID(IdMovimiento) {
 
     let EstaExtornado = false
 
+    let IdUsuario = 0;
+
     $.post('../Movimientos/ObtenerDatosxIdMovimientoOLD', {
         'IdMovimiento': IdMovimiento,
     }, function (data, status) {
@@ -1877,7 +1910,7 @@ function ObtenerDatosxID(IdMovimiento) {
             if (movimiento.IdDocExtorno != 0) {
                 EstaExtornado = true
             }
-
+            IdUsuario=movimiento.IdUsuario,
             $("#cboAlmacen").val(movimiento.IdAlmacen);
             $("#cboSerie").val(movimiento.IdSerie);
             $("#cboMoneda").val(movimiento.IdMoneda);
@@ -2093,7 +2126,7 @@ function ObtenerDatosxID(IdMovimiento) {
     });
     
 
-    if (EstaExtornado == true) {
+    if (EstaExtornado == true || IdUsuario !== +$("#IdUsuarioSesion").val()) {
         $("#btnExtorno").hide();
         $("#btnEditar").hide();
     } else {
@@ -2779,7 +2812,18 @@ function GenerarExtorno() {
     let IdMovimiento = $("#txtId").val();
     Swal.fire({
         title: 'DESEA GENERAR EXTORNO?',
-        text: "Se validara si los productos ingresados se encuentran con Stock",
+        html: "Se validara si los productos ingresados se encuentran con Stock </br>" +
+            "</br>" +
+            "Serie Para Extorno </br>" +
+            "<Select id='cboSerieExtorno' class='form-control'></select>" +
+            "</br>" +
+            "Fecha De Documento para Extorno </br>" +
+            "<input id='FechDocExtorno' type='date' class='form-control'/>" +
+            "</br>" +
+            "Fecha de Contabilizacion para Extorno </br>" +
+            "<input id='FechContExtorno' type='date' class='form-control'/>" +
+            "</br>" +
+            "<p>* Las Fechas que se muestran por defecto son las mismas que el documento seleccionado</p>",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -2818,7 +2862,10 @@ function GenerarExtorno() {
                 type: "POST",
                 async: true,
                 data: {
-                    'IdMovimiento': IdMovimiento
+                    'IdMovimiento': IdMovimiento,
+                     'Serie': $("#cboSerieExtorno").val(),
+                    'FechaDoc': $("#FechDocExtorno").val(),
+                    'FechaCont': $("#FechContExtorno").val()
                 },
                 beforeSend: function () {
                     Swal.fire({
@@ -2859,8 +2906,36 @@ function GenerarExtorno() {
             });
         }
     })
+    $.post("/Serie/ObtenerSeries", { estado: 1 }, function (data, status) {
+        let series = JSON.parse(data);
+        llenarComboSerieExtorno(series, "cboSerieExtorno", "Seleccione")
+    });
 }
 
+function llenarComboSerieExtorno(lista, idCombo, primerItem) {
+
+    $("#FechDocExtorno").val($("#txtFechaDocumento").val())
+    $("#FechContExtorno").val($("#txtFechaContabilizacion").val())
+
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    let ultimoindice = 0;
+
+    for (var i = 0; i < nRegistros; i++) {
+        if (lista[i].Documento == 1) {
+            if (lista.length > 0) { contenido += "<option value='" + lista[i].IdSerie + "'>" + lista[i].Serie + "</option>"; ultimoindice = i }
+            else { }
+        }
+
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+
+    $("#" + idCombo).val(lista[ultimoindice].IdSerie).change();
+}
 
 function CargarBasesObraAlmacenSegunAsignado() {
     let respuesta = 'false';

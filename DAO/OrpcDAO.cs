@@ -71,6 +71,7 @@ namespace DAO
                         oOrpcDTO.IdDocExtorno = Convert.ToInt32(drd["IdDocExtorno"].ToString());
                         oOrpcDTO.OrigenORPC = Convert.ToInt32(drd["OrigenORPC"].ToString());
                         oOrpcDTO.SerieSAP = Convert.ToInt32(drd["SerieSAP"].ToString());
+                        oOrpcDTO.IdUsuario = Convert.ToInt32(drd["IdUsuario"].ToString());
                         oOrpcDTO.SerieDocBase = drd["SerieDocBase"].ToString();
                     }
                     drd.Close();

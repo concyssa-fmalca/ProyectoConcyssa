@@ -3,6 +3,7 @@
 
 window.onload = function () {
     listarObraFiltro()
+    listarObras()
 };
 
 function listarObraFiltro() {
@@ -34,7 +35,7 @@ function listarObraFiltro() {
 
 function listarObras() {
     $.ajax({
-        url: "/Obra/ObtenerObraxIdUsuarioSession",
+        url: "/Obra/ObtenerObraxIdUsuarioSessionSinBase",
         type: "GET",
         contentType: "application/json",
         dataType: "json",
@@ -105,7 +106,6 @@ function ConsultaServidor() {
 
 
 function ModalNuevo() {
-    listarObras();
     $("#chkActivo").prop('checked', true);
     $("#lblTituloModal").html("Nueva Grupo");
     AbrirModal("modal-form");
@@ -123,6 +123,18 @@ function GuardarGrupo() {
 
     if ($('#chkActivo')[0].checked) {
         varEstado = true;
+    }
+    if (varCodigo == "" || varCodigo == undefined) {
+        Swal.fire("Error", "El Campo Codigo es Obligatorio", "info")
+        return
+    }
+    if (varDescripcion == "" || varDescripcion == undefined) {
+        Swal.fire("Error", "El Campo Descripcion es Obligatorio", "info")
+        return
+    }
+    if (IdObra == 0 || IdObra == undefined) {
+        Swal.fire("Error", "El Campo Descripcion es Obligatorio", "info")
+        return
     }
 
     $.post('UpdateInsertGrupo', {
@@ -150,7 +162,7 @@ function GuardarGrupo() {
 function ObtenerDatosxID(varIdGrupo) {
     $("#lblTituloModal").html("Editar Grupo");
     AbrirModal("modal-form");
-    listarObras()
+  
     //console.log(varIdUsuario);
 
     $.post('ObtenerDatosxID', {
@@ -205,7 +217,7 @@ function limpiarDatos() {
     $("#txtId").val("");
     $("#txtCodigo").val("");
     $("#txtDescripcion").val("");
-    $("#IdObra").val("");
+    $("#IdObra").val(0);
     $("#chkActivo").prop('checked', true);
 }
 

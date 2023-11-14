@@ -453,5 +453,21 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
+        public string ObtenerArticuloxCodigo(string Codigo)
+        {
+            string mensaje_error = "";
+            ArticuloDAO oArticuloDAO = new ArticuloDAO();
+            ArticuloDTO oArticuloDTO = oArticuloDAO.ObtenerArticuloxCodigo(Codigo, ref mensaje_error);
+            if (oArticuloDTO != null)
+            {
+                return JsonConvert.SerializeObject(oArticuloDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
+
+
     }
 }

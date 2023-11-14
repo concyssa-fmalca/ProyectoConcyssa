@@ -1,0 +1,599 @@
+﻿@{
+    ViewBag.Title = "Listado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    body {
+        font-family: Arial;
+    }
+
+    .huser-20 {
+        height: 20px;
+    }
+
+    #global {
+        height: 500px;
+        border: 1px solid #ddd;
+        background: #f1f1f1;
+        overflow-y: scroll;
+        margin-left: 25px;
+    }
+
+    #mensajes {
+        height: auto;
+    }
+
+    /* Style the tab */
+    .tab {
+        overflow: hidden;
+        border: 1px solid #bcecf1;
+        background-color: #effafc;
+    }
+
+        /* Style the buttons inside the tab */
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 8px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+        }
+
+            /* Change background color of buttons on hover */
+            .tab button:hover {
+                background-color: #baecf5;
+            }
+
+            /* Create an active/current tablink class */
+            .tab button.active {
+                background-color: #baecf5;
+            }
+
+    /* Style the tab content */
+    .tabcontent {
+        display: none;
+        padding: 6px 12px;
+        border: 1px solid #ccc;
+        border-top: none;
+    }
+</style>
+<div class="container-fluid" style="height:93%;">
+    <div class="panel">
+        <div class="container-fluid">
+            <div class="topbar-left col-xs-6">
+                <h3>Instrumentos de Medición</h3>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="col-xs-6">
+                <div class="topbar-left col-xs-6">
+                    <h4 style="font-size:1.2em;">Total de Registros: <span id="spnTotalRegistros"></span></h4>
+                </div>
+            </div>
+            <div class="col-xs-6 right">
+                <button class="btn btn-sm btn-primary pull-right plu" data-target="modal1" onclick="ModalNuevo()" style="margin-left:10px;">Nuevo</button>
+            </div>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="container-fluid">
+            <table id="table_id" class="table" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Obra</th>
+                        <th>Alerta</th>
+                        <th>Nombre</th>
+                        <th>Numero de Serie</th>
+                        <th>Ultima Calibracion</th>
+                        <th>Proxima Calibracion</th>
+                        <th>Marca</th>
+                        <th>Modelo</th>
+                        <th>Periodo Calibracion</th>
+                        <th>Parametro Medicion</th>
+                        <th>Patron Medicion</th>
+                        <th>Area</th>
+                        <th>Responsable</th>
+                        <th>Estado Calibracion</th>
+                        <th>Ubicacion</th>
+                        <th>Tipo Calibracion</th>
+                        <th>Estado Instrumento</th>
+                        <th>Mas</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody_area"></tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div id="modal-form" class="popup-sm allcp-form mfp-with-anim mfp-hide">
+        <div class="panel">
+            <div class="panel-heading">
+                <h5 id='lblTituloModal'></h5>
+            </div>
+            <div class="panel-body ">
+                <div class='col s12 m12 '>
+                    <div class='container-fluid'>
+                        <input id='txtId' name="txtId" type='hidden' class="form-control input-sm">
+                        <div class='form-horizontal'>
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='IdObra' class="control-label col-sm-4 left-align">Obra</label>
+                                    <div class="col-sm-8">
+                                        <select id='IdObra' name="IdObra" class="form-control input-sm" tabindex="1"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='txtNombre' class="control-label col-sm-4 left-align">Nombre</label>
+                                    <div class="col-sm-8">
+                                        <input id='txtNombre' name="txtNombre" type='text' class="form-control input-sm" tabindex="1">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='IdMarca' class="control-label col-sm-4 left-align">Marca</label>
+                                    <div class="col-sm-8">
+                                        <select id='IdMarca' name="IdMarca" class="form-control input-sm" tabindex="1"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='IdModelo' class="control-label col-sm-4 left-align">Modelo</label>
+                                    <div class="col-sm-8">
+                                        <select id='IdModelo' name="IdModelo" class="form-control input-sm" tabindex="1"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='txtNumSerie' class="control-label col-sm-4 left-align">Número de Serie</label>
+                                    <div class="col-sm-8">
+                                        <input id='txtNumSerie' name="txtNumSerie" type='text' class="form-control input-sm" tabindex="2">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='cboPeriodoCalibracion' class="control-label col-sm-4 left-align">Periodo de Calibración</label>
+                                    <div class="col-sm-8">
+                                        <select id='cboPeriodoCalibracion' name="cboPeriodoCalibracion" class="form-control input-sm" tabindex="1">
+                                            <option value="0">Seleccione</option>
+                                            <option value="1">ANUAL</option>
+                                            <option value="2">6 MESES</option>
+                                            <option value="3">NO DEFINIDO</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='ParamMedicion' class="control-label col-sm-4 left-align">Parametro de Medicion</label>
+                                    <div class="col-sm-8">
+                                        <input id='ParamMedicion' name="ParamMedicion" type='text' class="form-control input-sm" tabindex="2">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='PatronMedicion' class="control-label col-sm-4 left-align">Patrón de Medicion</label>
+                                    <div class="col-sm-8">
+                                        <input id='PatronMedicion' name="PatronMedicion" type='text' class="form-control input-sm" tabindex="2">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='IdArea' class="control-label col-sm-4 left-align">Área</label>
+                                    <div class="col-sm-8">
+                                        <select id='IdArea' name="IdArea" class="form-control input-sm" tabindex="1"></select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='txtResponsable' class="control-label col-sm-4 left-align">Responsable</label>
+                                    <div class="col-sm-8">
+                                        <input id='txtResponsable' name="txtResponsable" type='text' class="form-control input-sm" tabindex="2">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='EstadoCalibracion' class="control-label col-sm-4 left-align">Estado de Calibración</label>
+                                    <div class="col-sm-8">
+                                        <select id='EstadoCalibracion' name="EstadoCalibracion" class="form-control input-sm" tabindex="1">
+                                            <option value="0">Seleccione</option>
+                                            <option value="1">CALIBRADO</option>
+                                            <option value="2">EN COTIZACION</option>
+                                            <option value="3">VENCIDO</option>
+                                            <option value="4">NO DEFINIDO</option>
+                                            <option value="5">VERIFICADO</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='txtUbiacion' class="control-label col-sm-4 left-align">Ubicación</label>
+                                    <div class="col-sm-8">
+                                        <input id='txtUbiacion' name="txtUbiacion" type='text' class="form-control input-sm" tabindex="2">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='TipoCalibracion' class="control-label col-sm-4 left-align">Tipo de Calibración</label>
+                                    <div class="col-sm-8">
+                                        <select id='TipoCalibracion' name="TipoCalibracion" class="form-control input-sm" tabindex="1">
+                                            <option value="0">Seleccione</option>
+                                            <option value="1">EXTERNA</option>
+                                            <option value="2">INTERNA</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='EstadoInstrumento' class="control-label col-sm-4 left-align">Estado del Instrumento</label>
+                                    <div class="col-sm-8">
+                                        <select id='EstadoInstrumento' name="EstadoInstrumento" class="form-control input-sm" tabindex="1">
+                                            <option value="0">Seleccione</option>
+                                            <option value="1">NUEVO</option>
+                                            <option value="2">OPERATIVO</option>
+                                            <option value="3">NO DEFINIDO</option>
+                                            <option value="3">INOPERATIVO</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='txtObservacion' class="control-label col-sm-4 left-align">Observación</label>
+                                    <div class="col-sm-8">
+                                        <input id='txtObservacion' type="text" name="txtObservacion" class="form-control input-sm" tabindex="1"/>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class='form-group-sm col-sm-4'></div>
+                                <div class='form-group-sm'>
+                                    <div class="checkbox-custom col-xs-6">
+                                        <input type="checkbox" id="chkActivo" />
+                                        <label for="chkActivo">Activo</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="tab">
+                                <button class="tablinks active" onclick="openContenido(event, 'Anexos')">Anexos</button>
+
+                            </div>
+
+                            <div id="Anexos" class="tabcontent" style="display: block;">
+
+                                @using (Html.BeginForm("GuardarFile", "SolicitudRQ", FormMethod.Post, new { id = "SubirAnexos", enctype = "multipart/form-data" }))
+                                {
+                                    <div class="row">
+                                        <div class=''>
+                                            <div class="col-sm-8">
+                                                <input type="file" name="file" id="file" class="form-control" />
+                                            </div>
+                                        </div>
+                                        <div class='form-group-sm'>
+                                            <div class="col-sm-4">
+                                                <input type="submit" value="Subir Archivo" class="btn btn-primary" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    @ViewBag.Message
+                                    <br />
+                                    <div class="table-responsive">
+                                        <table class="table" id="tabla_files">
+                                            <thead>
+                                                <tr>
+                                                    <th>Nombre</th>
+                                                    <th>Descargar</th>
+                                                    <th>Accion</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>                                 
+                                        </table>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer text-right">
+                <div class="row">
+                    <button type="button" id="btnGrabar" onclick="GuardarRegistro()" class="btn btn-primary pull-right plu">Grabar</button>
+                    <button type="button" id="btnCancelar" class="btn btn-danger pull-right" style="background-color:orange;" onclick="closePopup();">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal Detalles-->
+    <div id="modal-detalles" class="popup-lg allcp-form mfp-with-anim mfp-hide">
+        <div class="panel">
+            <div class="panel-heading">
+                <h5 id='lblTituloModal'></h5>
+            </div>
+            <div class="panel-body ">
+                <div class='col s12 m12 '>
+                    <div class='container-fluid'>
+                        <input id='txtIdCabecera' name="txtIdtxtIdCabecera" type='hidden' class="form-control input-sm">
+                        <div class='form-horizontal'>
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='txtNombreCabecera' class="control-label col-sm-2 left-align">Instrumento</label>
+                                    <div class="col-sm-4">
+                                        <input id='txtNombreCabecera' name="txtNombreCabecera" type='text' class="form-control input-sm" tabindex="2" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='txtPeriodoCalibCabecera' class="control-label col-sm-2 left-align">Periodo de Calibración</label>
+                                    <div class="col-sm-4">
+                                        <input id='txtPeriodoCalibCabecera' name="txtPeriodoCalibCabecera" type='text' class="form-control input-sm" tabindex="2" disabled>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <br />
+                            <div class="col-sm-12">
+                                <button class="btn btn-sm btn-primary" onclick="ModalDetalle()" style="margin-left:10px;">Nueva Calibracion</button>
+                            </div>
+                            <br />
+                                <table id="table_detalle" class="table" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Fecha</th>
+                                            <th>Proxima Fecha</th>
+                                            <th>Observaciones</th>
+                                            <th>Mas</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbody_detalle"></tbody>
+                                </table>
+                          
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer text-right">
+                <div class="row">
+                    <button type="button" id="btnCancelar" class="btn btn-danger pull-right" style="background-color:orange;" onclick="closePopup();">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <!-- Modal ver datos Detalles-->
+    <div class="modal fade" data-backdrop="static"
+         data-keyboard="false" id="ModalDatoDetalle" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered allcp-form modal-xs" style="margin-top:120px" role="document">
+            <div class="modal-content">
+
+
+                <div class="panel" style="margin-bottom:0px">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="lblModalDatoDetalle">Agregar Calibracion</h5>
+                    </div>
+                    <div class="panel-body ">
+                        <div class='col s12 m12 '>
+
+                            <input type="text" id="txtIdDetalle" style="display:none" />
+
+                            <div class="form-group-sm" style="display:none;">
+                                <input placeholder='' id='txtDatoDetalle' type='text' style="display:none;">
+                            </div>
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for="txtInstrumentoDatoDetalle" class="control-label col-sm-2 left-align">Instrumento</label>
+                                    <div class="col-sm-10">
+                                        <input id="txtInstrumentoDatoDetalle" type="text" class="form-control input-sm" tabindex="0" disabled>
+                                    </div>
+                                </div>                            
+                            </div>                    
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for="txtFechaMantenimiento" class="control-label col-sm-2 left-align">Fecha de Mantenimiento</label>
+                                    <div class="col-sm-10">
+                                        <input id="txtFechaMantenimiento" type="date" class="form-control input-sm" tabindex="4" onchange="CalcularFechaCalibracion()">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for="txtFechaProxMant" class="control-label col-sm-2 left-align">Próximo Mantenimiento</label>
+                                    <div class="col-sm-10">
+                                        <input placeholder="" id="txtFechaProxMant" type="date" class="form-control input-sm" tabindex="5">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for="txtObservacion" class="control-label col-sm-2 left-align">Observacion</label>
+                                    <div class="col-sm-10">
+                                        <input id="txtObservacionDatoDetalle" type="text" class="form-control input-sm" tabindex="22">
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="col-sm-12">
+                                <button class="btn btn-sm btn-primary" id="btn_AgregarDocDetalle" onclick="ModalAgregarDocDetalle()">Agregar Documento</button>
+                            </div>
+                            <table id="table_detalleDocs" class="table" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Numero</th>
+                                        <th>Observacion</th>
+                                        <th>Ver Archivo</th>
+                                        <th>Mas</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody_detalleDocs"></tbody>
+                            </table>
+                        </div>
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="btn_agregarProveedorbd" class="btn btn-danger pull-right" style="background-color:#005457;" onclick="GuardarDetalle()">Grabar</button>
+                        <button type="button" class="btn btn-danger pull-right" style="background-color:orange;" onclick="CerrarModalDatoDetalle()">Cerrar</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+     <!-- Modal ver datos Detalles docs-->
+    <div class="modal fade" data-backdrop="static"
+         data-keyboard="false" id="ModalDetalleDocs" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered allcp-form modal-xs" style="margin-top:120px" role="document">
+            <div class="modal-content">
+
+
+                <div class="panel" style="margin-bottom:0px">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="lblModalDetalleDocs">Agregar Documento Anexo</h5>
+                    </div>
+                    <div class="panel-body ">
+                        <div class='col s12 m12 '>
+
+
+
+                            <div class="form-group-sm" style="display:none">
+                                <input placeholder='' id='txtIdDetalleDoc' type='text'>
+                            </div>
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for="txtNumeroDoc" class="control-label col-sm-2 left-align">Nro Doc.</label>
+                                    <div class="col-sm-10">
+                                        <input id="txtNumeroDoc" type="text" class="form-control input-sm" tabindex="0">
+                                    </div>
+                                </div>                            
+                            </div>                    
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for="txtFechaMantenimiento" class="control-label col-sm-2 left-align">Proveedor</label>
+                                    <div class="col-sm-10">
+                                        <select id="IdProveedor" type="date" class="form-control input-sm" tabindex="4"></select>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for="txtObservacion" class="control-label col-sm-2 left-align">Observacion</label>
+                                    <div class="col-sm-10">
+                                        <input id="txtObservacionDetalleDoc" type="text" class="form-control input-sm" tabindex="22">
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="tab">
+                                <button class="tablinks active" onclick="openContenido(event, 'Anexos')">Anexos</button>
+
+                            </div>
+
+                            <div id="Anexos" class="tabcontent" style="display: block;">
+
+                                @using (Html.BeginForm("GuardarFile", "SolicitudRQ", FormMethod.Post, new { id = "SubirAnexosDetalle", enctype = "multipart/form-data" }))
+                                {
+                                    <div class="row">
+                                        <div class=''>
+                                            <div class="col-sm-8">
+                                                <input type="file" name="file" id="file" class="form-control" />
+                                            </div>
+                                        </div>
+                                        <div class='form-group-sm'>
+                                            <div class="col-sm-4">
+                                                <input type="submit" value="Subir Archivo" class="btn btn-primary" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    @ViewBag.Message
+                                    <br />
+                                    <div class="table-responsive">
+                                        <table class="table" id="tabla_filesDetalle">
+                                            <thead>
+                                                <tr>
+                                                    <th>Nombre</th>
+                                                    <th>Descargar</th>
+                                                    <th>Accion</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="btn_agregarProveedorbd" class="btn btn-danger pull-right" style="background-color:#005457;" onclick="GuardarDetalleDoc()">Grabar</button>
+                        <button type="button" class="btn btn-danger pull-right" style="background-color:orange;" onclick="CerrarModalDatoDetalleDocs()">Cerrar</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+@{
+    Random rnd = new Random();
+}
+
+<script src="~/Scripts/InstrumentoMedicion/Listado.js?v=@rnd.Next(1, 1000 + 1)"></script>
+<script src="~/Scripts/General.js"></script>
+<script src="~/js/pdf/jspdf.min.js"></script>
+<script src="~/js/pdf/faker.min.js"></script>
+<script src="~/js/pdf/jspdf.plugin.autotable.src.js"></script>
+
+

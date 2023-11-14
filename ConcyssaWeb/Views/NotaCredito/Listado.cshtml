@@ -1,7 +1,9 @@
 ﻿@model List<string>
+@using Microsoft.AspNetCore.Http;
 @{
     ViewBag.Title = "Listado";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    HttpContextAccessor httpContextAccessor = new HttpContextAccessor();
 }
 
 
@@ -66,6 +68,7 @@
 </style>
 
 <div class="container-fluid" style="height:93%;">
+    <input style="display:none" id="IdUsuarioSesion" type="text" value="@httpContextAccessor.HttpContext.Session.GetInt32("IdUsuario")" />
     <div class="panel">
         <div class="container-fluid">
             <div class="topbar-left col-xs-6">
@@ -677,7 +680,7 @@
 
                         <button type="button" id="btnExtornar" onclick="Extornar()" class="btn btn-primary pull-right plu">Extornar</button>
                         <button type="button" id="btnEditar" onclick="Editar()" class="btn btn-primary pull-right plu">Grabar</button>
-                        <button type="button" id="btnGrabar" onclick="GuardarSolicitud()" class="btn btn-primary pull-right plu">Crear</button>
+                        <button type="button" id="btnGrabar" onclick="GuardarSolicitud()" class="btn btn-primary pull-right plu">Grabar</button>
 
                         <button type="button" id="btnCancelar" onclick="CerrarModal()" class="btn btn-danger pull-right" style="background-color:orange;">Cerrar</button>
                     </div>
@@ -1455,9 +1458,12 @@
 </div>
 
 
+@{
+    Random rnd = new Random();
+}
 
 
-<script src="~/Scripts/NotaCredito/Listado.js"></script>
+<script src="~/Scripts/NotaCredito/Listado.js?v=@rnd.Next(1, 1000 + 1)"></script>
 <script src="~/Scripts/General.js"></script>
 <script src="~/js/pdf/jspdf.min.js"></script>
 <script src="~/js/pdf/faker.min.js"></script>
