@@ -192,7 +192,7 @@
                                 <div class='form-group-sm'>
                                     <label for="txtFechaContabilizacion" class="control-label col-sm-2 left-align">Fecha Contabilizacion</label>
                                     <div class="col-sm-4">
-                                        <input id="txtFechaContabilizacion" value="@DateTime.Now.ToString("yyyy-MM-dd")" onchange="validarseriescontable()" type="date" class="form-control input-sm" tabindex="6">
+                                        <input id="txtFechaContabilizacion" value="@DateTime.Now.ToString("yyyy-MM-dd")" onchange="validarseriescontable()" disabled type="date" class="form-control input-sm" tabindex="6">
                                     </div>
                                 </div>
 
@@ -540,6 +540,7 @@
 
                 <div class="col-sm-6">
                     <div class='form-group-sm'>
+                        <button style="display:none;background-color:forestgreen" type="button" id="btnResalida" onclick="Resalida()" class="btn btn-primary pull-right plu">Resalida</button>
                         <button type="button" id="btnEditar" onclick="Editar()" class="btn btn-primary pull-right plu">Grabar</button>
                         <button type="button" id="btnExtorno" onclick="GenerarExtorno()" class="btn btn-primary pull-right plu">Extorno</button>
                         <button type="button" id="btnGrabar" onclick="GuardarSolicitud()" class="btn btn-primary pull-right plu">Grabar</button>

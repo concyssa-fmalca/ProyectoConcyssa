@@ -245,6 +245,7 @@ namespace DAO
 
                         //Nuevo de Despacho
                         da.SelectCommand.Parameters.AddWithValue("@OrigenDespacho", oMovimientoDTO.OrigenDespacho);
+                        da.SelectCommand.Parameters.AddWithValue("@EsDevolucionAdm", oMovimientoDTO.EsDevolucionAdm);
 
 
                         int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
@@ -933,6 +934,7 @@ namespace DAO
                         oMovimientoDTO.FechaEdicion = Convert.ToDateTime(String.IsNullOrEmpty(drd["FechaEdicion"].ToString()) ? "1990/01/01" : drd["FechaEdicion"].ToString());
                         oMovimientoDTO.NombUsuarioEdicion = (String.IsNullOrEmpty(drd["NombUsuarioEdicion"].ToString()) ? "" : drd["NombUsuarioEdicion"].ToString());
                         oMovimientoDTO.IdDocExtorno = Convert.ToInt32(drd["IdDocExtorno"].ToString());
+                        oMovimientoDTO.EsDevolucionAdm = Convert.ToInt32(drd["EsDevolucionAdm"].ToString());
                     }
                     drd.Close();
 

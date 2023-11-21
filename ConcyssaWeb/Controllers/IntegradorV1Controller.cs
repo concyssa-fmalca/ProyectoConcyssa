@@ -215,6 +215,25 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
+        public string ObtenerClasif()
+        {
+            string mensaje_error = "";
+           
+            IntregadorV1DAO oIntregadorV1DAO = new IntregadorV1DAO();
+            List<IntegradorClasif> lstIntegradorClasif = oIntregadorV1DAO.ObtenerCLABYSADQ(ref mensaje_error);
+            if (lstIntegradorClasif.Count > 0)
+            {
+
+                //return oDataTableDTO;
+                return JsonConvert.SerializeObject(lstIntegradorClasif);
+
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
+
         public string ObtenerGrupoDetSAP()
         {
             string mensaje_error = "";

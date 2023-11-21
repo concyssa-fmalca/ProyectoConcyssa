@@ -50,6 +50,45 @@ namespace DAO
             return lstObraCatalogoDTO;
         }
 
+        public List<ObraCatalogoServicioDTO> ListarServiciosxIdSociedadObra(int IdSociedad, int IdObra, ref string mensaje_error)
+        {
+            List<ObraCatalogoServicioDTO> lstObraCatalogoDTO = new List<ObraCatalogoServicioDTO>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarServiciosxIdSociedadObra", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
+                    da.SelectCommand.Parameters.AddWithValue("@IdObra", IdObra);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        ObraCatalogoServicioDTO oObraCatalogoDTO = new ObraCatalogoServicioDTO();
+                        oObraCatalogoDTO.IdObraCatalogoServicios = int.Parse(drd["IdObraCatalogoServicios"].ToString());
+                        oObraCatalogoDTO.Codigo = (drd["Codigo"].ToString());
+
+                        oObraCatalogoDTO.IdArticulo = int.Parse(drd["IdArticulo"].ToString());
+                        oObraCatalogoDTO.DescripcionArticulo = (drd["DescripcionArticulo"].ToString());
+                        oObraCatalogoDTO.Estado = bool.Parse(drd["Estado"].ToString());
+                        oObraCatalogoDTO.IdObra = int.Parse(drd["IdObra"].ToString());
+                        oObraCatalogoDTO.CuentaContable = (drd["CuentaContable"].ToString());
+
+                        lstObraCatalogoDTO.Add(oObraCatalogoDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstObraCatalogoDTO;
+        }
+
         public List<ObraDTO> ObtenerObra(int IdSociedad, ref string mensaje_error, int Estado = 3)
         {
             List<ObraDTO> lstObraDTO = new List<ObraDTO>();
@@ -210,6 +249,7 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@UsuarioActualizacion", IdUsuario);
                         da.SelectCommand.Parameters.AddWithValue("@CodigoUbigeo", oObraDTO.CodigoUbigeo);
                         da.SelectCommand.Parameters.AddWithValue("@CodigoAnexo", oObraDTO.CodigoAnexo);
+                        da.SelectCommand.Parameters.AddWithValue("@CorreoObra", oObraDTO.CorreoObra);
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
                         return rpta;
@@ -256,6 +296,39 @@ namespace DAO
             }
         }
 
+        public int UpdateInsertObraCatalogoServicio(ObraCatalogoServicioDTO oObraCatalogoServicioDTO, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_UpdateInsertCatalogoServicio", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdObraCatalogoServicios", oObraCatalogoServicioDTO.IdObraCatalogoServicios);
+                        da.SelectCommand.Parameters.AddWithValue("@IdObra", oObraCatalogoServicioDTO.IdObra);
+                        da.SelectCommand.Parameters.AddWithValue("@IdArticulo", oObraCatalogoServicioDTO.IdArticulo);
+                        da.SelectCommand.Parameters.AddWithValue("@Estado", oObraCatalogoServicioDTO.Estado);
+                        da.SelectCommand.Parameters.AddWithValue("@CuentaContable", oObraCatalogoServicioDTO.CuentaContable);
+                        int rpta = da.SelectCommand.ExecuteNonQuery();
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+                }
+            }
+        }
+
         public List<ObraDTO> ObtenerDatosxID(int IdObra, ref string mensaje_error)
         {
             List<ObraDTO> lstObraDTO = new List<ObraDTO>();
@@ -287,6 +360,7 @@ namespace DAO
                         oObraDTO.Direccion = (drd["Direccion"].ToString());
                         oObraDTO.CodigoUbigeo = (String.IsNullOrEmpty(drd["CodigoUbigeo"].ToString())) ? "0" : drd["CodigoUbigeo"].ToString();
                         oObraDTO.CodigoAnexo = (String.IsNullOrEmpty(drd["CodigoAnexo"].ToString())) ? "0" : drd["CodigoAnexo"].ToString();
+                        oObraDTO.CorreoObra = (drd["correo"].ToString());
                         //oObraDTO.DescripcionBase = (drd["DescripcionBase"].ToString());
 
 
@@ -462,6 +536,40 @@ namespace DAO
                 }
             }
             return lstObraDTO;
+        }
+
+        public ObraCatalogoServicioDTO ObtenerDatosCatalogoServicioxId(int IdArticulo, int IdObra, ref string mensaje_error)
+        {
+            ObraCatalogoServicioDTO oObraCatalogoServicioDTO = new ObraCatalogoServicioDTO();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerDatosCatalogoServicioxId", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdArticulo", IdArticulo);
+                    da.SelectCommand.Parameters.AddWithValue("@IdObra", IdObra);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+
+                        oObraCatalogoServicioDTO.IdObraCatalogoServicios = int.Parse(drd["IdObraCatalogoServicios"].ToString());
+                        oObraCatalogoServicioDTO.IdObra = int.Parse(drd["IdObra"].ToString());
+                        oObraCatalogoServicioDTO.IdArticulo = int.Parse(drd["IdArticulo"].ToString());
+                        oObraCatalogoServicioDTO.Estado = bool.Parse(drd["Estado"].ToString());
+                        oObraCatalogoServicioDTO.CuentaContable = (drd["CuentaContable"].ToString());
+
+                        drd.Close();
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return oObraCatalogoServicioDTO;
         }
     }
 

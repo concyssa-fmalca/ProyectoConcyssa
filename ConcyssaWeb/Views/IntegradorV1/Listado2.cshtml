@@ -103,7 +103,7 @@
                         <th>Nro Operacion</th>
                         <th>Tipo Documento</th>
                         <th>Serie y Numero</th>
-                        <th>Glosa Contable</th>
+                        <th>Cuenta Contable</th>
                         <th>Proveedor</th>
                         <th>Total</th>
                         <th>Obra</th>
@@ -1593,10 +1593,14 @@
     </div>
 </div>
 
+@{
+    Random rnd = new Random();
+}
 
 
 
-<script src="~/Scripts/IntegradorV1/Listado2.js"></script>
+
+<script src="~/Scripts/IntegradorV1/Listado2.js?v=@rnd.Next(1, 1000 + 1)"></script>
 <script src="~/Scripts/General.js"></script>
 <script src="~/js/pdf/jspdf.min.js"></script>
 <script src="~/js/pdf/faker.min.js"></script>

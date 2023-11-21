@@ -470,7 +470,7 @@ namespace DAO
                 {
 
                     cn.Open();
-                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarSolicitudDespachoCabezera", cn);
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarSolicitudDespachoCabezeraAprobadas", cn);
                     da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
                     da.SelectCommand.Parameters.AddWithValue("@IdBase", IdBase);
                     da.SelectCommand.Parameters.AddWithValue("@FechaInicio", FechaInicio);
@@ -508,7 +508,7 @@ namespace DAO
                             try
                             {
                                 cn2.Open();
-                                SqlDataAdapter da2 = new SqlDataAdapter("SMC_ListarSolicitudDespachoDetallexID", cn2);
+                                SqlDataAdapter da2 = new SqlDataAdapter("SMC_ListarSolicitudDespachoDetallexIDAprobados", cn2);
                                 da2.SelectCommand.Parameters.AddWithValue("@IdSolicitudDespacho", IdSolicitudDespacho);
                                 da2.SelectCommand.CommandType = CommandType.StoredProcedure;
                                 SqlDataReader dr2 = da2.SelectCommand.ExecuteReader();
@@ -528,7 +528,7 @@ namespace DAO
                             try
                             {
                                 cn3.Open();
-                                SqlDataAdapter da3 = new SqlDataAdapter("SMC_ListarSolicitudDespachoDetallexID", cn3);
+                                SqlDataAdapter da3 = new SqlDataAdapter("SMC_ListarSolicitudDespachoDetallexIDAprobados", cn3);
                                 da3.SelectCommand.Parameters.AddWithValue("@IdSolicitudDespacho", IdSolicitudDespacho);
                                 da3.SelectCommand.CommandType = CommandType.StoredProcedure;
                                 SqlDataReader drd3 = da3.SelectCommand.ExecuteReader();
@@ -543,7 +543,7 @@ namespace DAO
                                     oSolicitudDespachoDetalleDTO.IdUnidadMedida = int.Parse(drd3["IdUnidadMedida"].ToString());
                                     oSolicitudDespachoDetalleDTO.IdGrupoUnidadMedida = int.Parse((String.IsNullOrEmpty(drd3["IdGrupoUnidadMedida"].ToString()) ? "0" : drd3["IdGrupoUnidadMedida"].ToString()));
                                     oSolicitudDespachoDetalleDTO.IdDefinicionGrupoUnidad = int.Parse((String.IsNullOrEmpty(drd3["IdDefinicionUnidadMedida"].ToString()) ? "0" : drd3["IdDefinicionUnidadMedida"].ToString()));
-                                    oSolicitudDespachoDetalleDTO.Cantidad = decimal.Parse(drd3["Cantidad"].ToString());
+                                    oSolicitudDespachoDetalleDTO.Cantidad = decimal.Parse(drd3["CantidadAprobada"].ToString());
                                     oSolicitudDespachoDetalleDTO.CantidadAtendida = decimal.Parse(drd3["CantidadAtendida"].ToString());
 
 
@@ -675,5 +675,159 @@ namespace DAO
 
             }
         }
+
+
+        public int UpdateInsertSolicitudDespachoMovil(SolcitudDespachoMovil oSolcitudDespachoMovil)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        int rpta = 0;
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_InsertSolicitudDespachoMobile", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdTipoProducto", oSolcitudDespachoMovil.IdTipoProducto);
+                        da.SelectCommand.Parameters.AddWithValue("@IdCuadrilla", oSolcitudDespachoMovil.IdCuadrilla);
+                        da.SelectCommand.Parameters.AddWithValue("@IdObra", oSolcitudDespachoMovil.IdObra);
+                        da.SelectCommand.Parameters.AddWithValue("@FechaDocumento", oSolcitudDespachoMovil.FechaDocumento);
+                        da.SelectCommand.Parameters.AddWithValue("@Comentario", oSolcitudDespachoMovil.Comentario);
+                        da.SelectCommand.Parameters.AddWithValue("@IdUsuario", oSolcitudDespachoMovil.UsuarioCreador);
+
+                        int IdInsert = 0;
+                        int rptaDet = 0;
+                        bool EsNuevoIngreso = false;
+
+
+                        IdInsert = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
+                        EsNuevoIngreso = true;
+
+
+                        //int rpta = da.SelectCommand.ExecuteNonQuery();
+                        //int IdInsertDetalle = 0;
+                        for (int i = 0; i < oSolcitudDespachoMovil.Detalles.Count; i++)
+                        {
+                            SqlDataAdapter dad = new SqlDataAdapter("SMC_InsertSolicitudDespachoDetalleMobile", cn);
+                            dad.SelectCommand.CommandType = CommandType.StoredProcedure;
+                            dad.SelectCommand.Parameters.AddWithValue("@IdSolicitudDespacho", IdInsert);
+                            dad.SelectCommand.Parameters.AddWithValue("@IdItem", oSolcitudDespachoMovil.Detalles[i].IdItem);
+                            dad.SelectCommand.Parameters.AddWithValue("@Descripcion", oSolcitudDespachoMovil.Detalles[i].Descripcion);
+                            dad.SelectCommand.Parameters.AddWithValue("@IdUnidadMedida", oSolcitudDespachoMovil.Detalles[i].IdUnidadMedida);
+                            dad.SelectCommand.Parameters.AddWithValue("@Cantidad", oSolcitudDespachoMovil.Detalles[i].Cantidad);
+
+                            rptaDet = dad.SelectCommand.ExecuteNonQuery();
+
+                        }
+
+
+                        transactionScope.Complete();
+
+                        if (rptaDet == 0) return 0;
+
+                        return IdInsert;
+                    }
+                    catch (Exception ex)
+                    {
+                        return 0;
+                    }
+                }
+
+            }
+        }
+
+        public List<SolicitudDetalleMovilAprobacion> ObtenerSolicitudesDespachoDetalleAprobacion(int IdUsuario, DateTime FechaInicio, DateTime FechaFinal, int EstadoPR)
+        {
+            List<SolicitudDetalleMovilAprobacion> lstSolicitudDetalleMovilAprobacion = new List<SolicitudDetalleMovilAprobacion>();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarSolicitudDespachoDetalleAutorizar", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
+                    da.SelectCommand.Parameters.AddWithValue("@FechaInicio", FechaInicio);
+                    da.SelectCommand.Parameters.AddWithValue("@FechaFinal", FechaFinal);
+                    da.SelectCommand.Parameters.AddWithValue("@EstadoPR", EstadoPR);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        SolicitudDetalleMovilAprobacion oSolicitudDetalleMovilAprobacion = new SolicitudDetalleMovilAprobacion();
+                        oSolicitudDetalleMovilAprobacion.IdArticulo = int.Parse(drd["IdArticulo"].ToString());
+                        oSolicitudDetalleMovilAprobacion.IdSolicitud = int.Parse(drd["IdSolicitud"].ToString());
+                        oSolicitudDetalleMovilAprobacion.CodigoArticulo = (drd["CodigoArticulo"].ToString());
+                        oSolicitudDetalleMovilAprobacion.Descripcion1 = drd["Descripcion1"].ToString();
+                        oSolicitudDetalleMovilAprobacion.Numero = int.Parse(drd["Numero"].ToString());
+                        oSolicitudDetalleMovilAprobacion.CantidadSolicitada = decimal.Parse(drd["CantidadSolicitada"].ToString());
+                        oSolicitudDetalleMovilAprobacion.CantidadAprobada = decimal.Parse(drd["CantidadAprobada"].ToString());
+                        oSolicitudDetalleMovilAprobacion.Accion = int.Parse(drd["Accion"].ToString());
+                        oSolicitudDetalleMovilAprobacion.IdSolicitudDespachoModelo = int.Parse(drd["IdSolicitudDespachoModelo"].ToString());
+                        oSolicitudDetalleMovilAprobacion.IdSolicitudDespachoDetalle = int.Parse(drd["IdSolicitudDespachoDetalle"].ToString());
+                        oSolicitudDetalleMovilAprobacion.FechaDocumento = Convert.ToDateTime(drd["FechaDocumento"].ToString());
+                        oSolicitudDetalleMovilAprobacion.EstadoSolicitud = int.Parse(drd["EstadoSolicitud"].ToString());
+                        oSolicitudDetalleMovilAprobacion.IdUsuario = int.Parse(drd["IdUsuario"].ToString());
+                        oSolicitudDetalleMovilAprobacion.IdEtapa = int.Parse(drd["IdEtapa"].ToString());
+                        oSolicitudDetalleMovilAprobacion.Serie = (drd["Serie"].ToString());
+                        oSolicitudDetalleMovilAprobacion.Referencia = (drd["Referencia"].ToString());
+                        oSolicitudDetalleMovilAprobacion.NombUsuario = (drd["NombUsuario"].ToString());
+
+                        lstSolicitudDetalleMovilAprobacion.Add(oSolicitudDetalleMovilAprobacion);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            return lstSolicitudDetalleMovilAprobacion;
+        }
+
+        public int UpdateInsertModeloAprobacionesDespacho(SolicitudDespachoModeloAprobacionesDTO oSolicitudDespachoModeloAprobacionesDTO)
+        {
+         
+                int rpta = 0;
+                
+                    TransactionOptions transactionOptions = default(TransactionOptions);
+                    transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+                    transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+                    TransactionOptions option = transactionOptions;
+                    using (SqlConnection cn = new Conexion().conectar())
+                    {
+                        using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                        {
+                            try
+                            {
+                                cn.Open();
+                                SqlDataAdapter da = new SqlDataAdapter("SMC_UpdateInsertSolicitudDespachoModeloAprobaciones", cn);
+                                da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                                da.SelectCommand.Parameters.AddWithValue("@IdSolicitudModelo", oSolicitudDespachoModeloAprobacionesDTO.IdSolicitudModelo);
+                                da.SelectCommand.Parameters.AddWithValue("@IdAutorizador", oSolicitudDespachoModeloAprobacionesDTO.IdAutorizador);
+                                da.SelectCommand.Parameters.AddWithValue("@IdArticulo", oSolicitudDespachoModeloAprobacionesDTO.IdArticulo);
+                                da.SelectCommand.Parameters.AddWithValue("@Accion", oSolicitudDespachoModeloAprobacionesDTO.Accion);
+                                da.SelectCommand.Parameters.AddWithValue("@IdDetalle", oSolicitudDespachoModeloAprobacionesDTO.IdDetalle);
+                                da.SelectCommand.Parameters.AddWithValue("@CantidadItem", oSolicitudDespachoModeloAprobacionesDTO.CantidadItem);
+                                rpta = da.SelectCommand.ExecuteNonQuery();
+                                transactionScope.Complete();
+
+                            }
+                            catch (Exception ex)
+                            {
+                                return 0;
+                            }
+                        }
+                    }
+                
+                return rpta;
+           
+        }
+
     }
 }

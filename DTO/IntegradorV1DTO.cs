@@ -55,7 +55,7 @@ namespace DTO
         public int IdResponsable { get; set; }
         public int IdTipoDocumentoRef { get; set; }
         public string NumSerieTipoDocumentoRef { get; set; }
-        public string NombGlosa { get; set; }
+        public string CuentaContableDivision { get; set; }
         public int EntregadoA { get; set; }
         public string TablaOriginal { get; set; }
 
@@ -188,5 +188,12 @@ namespace DTO
         public int ObjectCode { get; set; }
         public int Series { get; set; }
         public string SeriesName { get; set; }
+    }
+    public class IntegradorClasif
+    {
+        public int Code { get; set; }
+        public string Name { get; set; }
+
+
     }
 }

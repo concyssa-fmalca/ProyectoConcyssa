@@ -1000,5 +1000,54 @@ namespace ConcyssaWeb.Controllers
 
 
         }
+
+
+        public string GenerarResalida(int IdEntrada, int Serie, DateTime FechaDoc, DateTime FechaCont)
+        {
+            string mensaje_error= "";
+            MovimientoDAO oMovimientoDAO = new MovimientoDAO();
+            ArticuloStockDTO oArticuloStockDTO = new ArticuloStockDTO();
+            MovimientoDTO oMovimientoDTO = oMovimientoDAO.ObtenerMovimientosDetallexIdMovimiento(IdEntrada, ref mensaje_error);
+            KardexDAO oKardexDAO = new KardexDAO();
+
+            int validadStock = 0;
+            for (int i = 0; i < oMovimientoDTO.detalles.Count(); i++)
+            {
+                oArticuloStockDTO = oKardexDAO.ObtenerArticuloxIdArticuloxIdAlm(oMovimientoDTO.detalles[i].IdArticulo, oMovimientoDTO.detalles[i].IdAlmacen, ref mensaje_error);
+                if (oArticuloStockDTO.Stock < oMovimientoDTO.detalles[i].CantidadBase)
+                {
+                    validadStock = 1;
+                }
+            }
+            if (validadStock == 1)
+            {
+                return "No hay suficiente Stock";
+            }
+            SalidaMercanciaController oSalidaMercanciaController = new SalidaMercanciaController();
+            oMovimientoDTO.IdTipoDocumento = 332;
+            oMovimientoDTO.Comentario = "RESALIDA DEL DOC " + oMovimientoDTO.NombSerie + "-" + +oMovimientoDTO.Correlativo;
+            oMovimientoDTO.IdMovimiento = 0;
+            oMovimientoDTO.IdSerie = Serie;
+            oMovimientoDTO.FechaDocumento = FechaDoc;
+            oMovimientoDTO.FechaContabilizacion = FechaCont;
+
+            oSalidaMercanciaController.UpdateInsertMovimiento(oMovimientoDTO);
+
+
+            return "1";
+
+
+        }
+        public int ValidarDevolucionConSalida(int IdMovimiento)
+        {
+            string mensaje_error = "";
+            MovimientoDAO oMovimientoDAO = new MovimientoDAO();
+            MovimientoDTO oMovimientoDTO = oMovimientoDAO.ObtenerMovimientosDetallexIdMovimiento(IdMovimiento, ref mensaje_error);
+            if(oMovimientoDTO.EsDevolucionAdm == 2)
+            {
+                return 1;
+            }
+            return 0;
+        }
     }
 }

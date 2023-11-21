@@ -146,7 +146,7 @@ function consultaServidor() {
                 targets: 8,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.NombGlosa.toUpperCase()
+                    return full.CuentaContableDivision
 
                 },
             },

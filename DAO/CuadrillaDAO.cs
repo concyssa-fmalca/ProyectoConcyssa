@@ -83,6 +83,8 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@IdSociedad", oCuadrillaDTO.IdSociedad);
                         da.SelectCommand.Parameters.AddWithValue("@Estado", oCuadrillaDTO.Estado);
                         da.SelectCommand.Parameters.AddWithValue("@EsTercero", oCuadrillaDTO.EsTercero);
+                        da.SelectCommand.Parameters.AddWithValue("@CuentaServicios", oCuadrillaDTO.CuentaServicios);
+                        da.SelectCommand.Parameters.AddWithValue("@CuentaMateriales", oCuadrillaDTO.CuentaMateriales);
                         da.SelectCommand.Parameters.AddWithValue("@UsuarioCreacion", IdUsuario);
                         da.SelectCommand.Parameters.AddWithValue("@UsuarioActualizacion", IdUsuario);
                         int rpta = da.SelectCommand.ExecuteNonQuery();
@@ -121,6 +123,8 @@ namespace DAO
                         oCuadrillaDTO.IdSubGrupo = Convert.ToInt32(drd["IdSubGrupo"].ToString());
                         oCuadrillaDTO.Codigo = (drd["Codigo"].ToString());
                         oCuadrillaDTO.Descripcion = (drd["Descripcion"].ToString());
+                        oCuadrillaDTO.CuentaMateriales = (drd["CuentaMateriales"].ToString());
+                        oCuadrillaDTO.CuentaServicios = (drd["CuentaServicios"].ToString());
                         oCuadrillaDTO.IdCapataz = Convert.ToInt32(drd["IdCapataz"].ToString());
                         oCuadrillaDTO.IdSupervisor = Convert.ToInt32(drd["IdSupervisor"].ToString());
                         oCuadrillaDTO.IdArea = Convert.ToInt32(drd["IdArea"].ToString());

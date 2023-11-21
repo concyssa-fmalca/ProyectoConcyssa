@@ -58,7 +58,7 @@ function getCurrentDateFinal() {
 }
 function ListarSolicitudes() {
     let IdObra = $("#cboObraFiltro").val()
-    $.post('/SolicitudDespacho/ObtenerSolicitudesDespachoxObra', {'IdObra' : IdObra}, function (data, status) {
+    $.post('/SolicitudDespacho/ObtenerSolicitudesDespachoxObra', { 'IdObra': IdObra }, function (data, status) {
 
         if (data == "error") {
             table = $("#table_id").DataTable(lenguaje);
@@ -69,29 +69,29 @@ function ListarSolicitudes() {
 
         let solicitudes = JSON.parse(data);
         console.log(solicitudes)
-       // let total_solicitudes = solicitudes.length;
+        // let total_solicitudes = solicitudes.length;
 
         for (var i = 0; i < solicitudes.length; i++) {
             let Fecha = (solicitudes[i].FechaContabilizacion).split('T')[0]
             Fecha = Fecha.split('-')[2] + "-" + Fecha.split('-')[1] + "-" + Fecha.split('-')[0]
             solicitudes[i].FechaContabilizacion = Fecha
             tr += '<tr>' +
-                '<td><input type="hidden" value="' + (solicitudes[i].Id) + '" id="txtIdSolicitud' + i +'" class="form-control" style="max-width:60px" >'+(i+1)+'</td>' +
+                '<td><input type="hidden" value="' + (solicitudes[i].Id) + '" id="txtIdSolicitud' + i + '" class="form-control" style="max-width:60px" >' + (i + 1) + '</td>' +
                 '<td>' + solicitudes[i].FechaContabilizacion + '</td>' +
                 '<td>' + solicitudes[i].SerieyNum + '</td>' +
-                '<td><select id="cboArticuloPedido' + i + '" class="form-control cboArticuloPedidoTodo" onchange="CargarProductosTodos(' + i + ',' + solicitudes[i].IdTipoProducto + ',' + solicitudes[i].IdObra +')"></select></td>' +
+                '<td><select id="cboArticuloPedido' + i + '" class="form-control cboArticuloPedidoTodo" onchange="CargarProductosTodos(' + i + ',' + solicitudes[i].IdTipoProducto + ',' + solicitudes[i].IdObra + ')"></select></td>' +
                 '<td>' + solicitudes[i].NombCuadrilla + '</td>' +
                 '<td>' + solicitudes[i].Cantidad + '</td>' +
                 '<td><input type="text" value="' + solicitudes[i].CantidadAtendida + '" id="txtCantidadAtendida' + i + '" class="form-control" style="max-width:60px"></td>' +
-                '<td style="display:none">'+
-                    //ITEM OCULTOS
+                '<td style="display:none">' +
+                //ITEM OCULTOS
                 '<input type="text" value="' + solicitudes[i].IdTipoProducto + '" id="txtIdTipoProducto' + i + '"></input>' +
                 '<input type="text" value="' + solicitudes[i].IdItem + '" id="txtIdArticulo' + i + '"></input>' +
-                '<td> '+
+                '<td> ' +
                 '</tr>';
 
-            LlenarArticuloxPedido(i,solicitudes[i].IdItem)
-            
+            LlenarArticuloxPedido(i, solicitudes[i].IdItem)
+
         }
 
         $("#tbody_Solicitudes").html(tr);
@@ -134,7 +134,7 @@ function LlenarArticuloxPedido(contador, IdArticulo) {
                     data: [
                         {
                             id: datos[0].IdArticulo,
-                            text:datos[0].Descripcion1
+                            text: datos[0].Descripcion1
                         },
 
                     ]
@@ -160,14 +160,14 @@ function LlenarArticuloxPedido(contador, IdArticulo) {
 
 
 
-function CargarProductosTodos(contador, IdTipoProducto,IdObra) {
+function CargarProductosTodos(contador, IdTipoProducto, IdObra) {
 
     let varTipoProducto = IdTipoProducto
     let varIdObra = IdObra
     //console.log(contador)
     //console.log(varTipoProducto);
 
-    $("#cboArticuloPedido"+contador).select2({
+    $("#cboArticuloPedido" + contador).select2({
         language: "es",
         width: '100%',
         //theme: "classic",
@@ -215,7 +215,7 @@ function ConsultaServidor() {
     let EstadoSolicitud = $("#EstadoFiltro").val()
     let SerieFiltro = $("#cboSeries").val()
     $.ajaxSetup({ async: false });
-    $.post('/SolicitudDespacho/ObtenerSolicitudesDespachoAtender', { 'IdBase': IdBase, 'FechaInicio': FechaInicio, 'FechaFin': FechaFin, 'EstadoSolicitud': EstadoSolicitud, 'SerieFiltro': SerieFiltro }, function (data, status) {
+    $.post('/DevolucionAdm/ObtenerDevolucionAdmAtender', { 'IdBase': IdBase, 'FechaInicio': FechaInicio, 'FechaFin': FechaFin, 'EstadoSolicitud': EstadoSolicitud, 'SerieFiltro': SerieFiltro }, function (data, status) {
         if (data != 'error') {
             let SolicitudDespacho = JSON.parse(data);
             //console.log(SolicitudDespacho)
@@ -273,7 +273,7 @@ function ConsultaServidor() {
                                     <div class="col-md-4" style="margin-top:-3px">
                                         <select id="cboResponsable`+ i + `" name="cboResponsableGeneral" class="form-control"></select>
                                     </div>
-                                    <input style="display:none" id="Ocultos`+i+`" value="0"/>
+                                    <input style="display:none" id="Ocultos`+ i + `" value="0"/>
                                 </div>
                                 <div class="row">
                                     <table id="table_id`+ i + `" class="table" style="width:100%">
@@ -334,12 +334,12 @@ function ConsultaServidor() {
                                                     </table>
                                                 </div>
                                             <div class=row>`
-                                                if (SolicitudDespacho[i].EstadoSolicitud != 2) {
-                InsertarHTML+=                  `<button class="btn btn-primary" style="margin-top:0px" onclick="GenerarSalida(`+ i + `,` + SolicitudDespacho[i].Id + `,'` + SolicitudDespacho[i].SerieyNum + `',` + SolicitudDespacho[i].IdCuadrilla + `)">Crear Salida</button>
-                                                <button class="btn btn-primary" style="margin-top:0px" onclick="CerrarSolicitud(`+ SolicitudDespacho[i].Id+`)">Cerrar Solicitud</button>`
+                if (SolicitudDespacho[i].EstadoSolicitud != 2) {
+                    InsertarHTML += `<button class="btn btn-primary" style="margin-top:0px" onclick="GenerarEntrada(` + i + `,` + SolicitudDespacho[i].Id + `,'` + SolicitudDespacho[i].SerieyNum + `',` + SolicitudDespacho[i].IdCuadrilla + `)">Crear Entrada</button>
+                                                <button class="btn btn-primary" style="margin-top:0px" onclick="CerrarSolicitud(`+ SolicitudDespacho[i].Id + `)">Cerrar Devolucion</button>`
 
-                                                 }
-                InsertarHTML +=             `</div>
+                }
+                InsertarHTML += `</div>
                                             </div>
                                             <br/>`;
                 $("#SolicitudesCard").html(InsertarHTML);
@@ -369,9 +369,9 @@ function llenarComboAlmacen(lista, idCombo, primerItem) {
     var nRegistros = lista.length;
     var nCampos;
     var campos;
-   
+
     for (var i = 0; i < nRegistros; i++) {
-  
+
         if (lista.length > 0) { contenido += "<option value='" + lista[i].IdAlmacen + "'>" + lista[i].Descripcion.toUpperCase() + "</option>"; }
         else { }
     }
@@ -402,7 +402,7 @@ function llenarComboEmpleados(lista, idCombo, primerItem, IdEmpleado) {
     }
     var cbo = document.getElementById(idCombo);
     //console.log(cbo)
-    
+
     if (cbo != null) cbo.innerHTML = contenido;
     $("#" + idCombo).val(IdEmpleado)
 }
@@ -417,9 +417,9 @@ function EliminarFilaCreada(IdFila) {
     $("#FilaDetalle" + IdFila).remove();
 }
 function VerificarEntregaStock(IdFila) {
-   
+
     let ValorCantidadEntregar = $(".NoPasarStock" + IdFila).val();
-   
+
     let CantidadEnStock = $("#StockDetalle" + IdFila).text();
     console.log(CantidadEnStock)
     console.log(ValorCantidadEntregar)
@@ -434,16 +434,16 @@ function VerificarEntregaStock(IdFila) {
     }
 }
 function AgregarItem(varIdObra, varTipoProducto, i) {
- 
+
     $("#cboAgregarArticulo").val(0).change()
     $("#cboAgregarArticulo").text('')
     $("#txtIdFila").val(i)
     AbrirModal("modal-form");
-    
+
     $("#cboAgregarArticulo").select2({
         language: "es",
         width: '100%',
-        
+
         //theme: "classic",
         async: false,
         ajax: {
@@ -466,7 +466,7 @@ function AgregarItem(varIdObra, varTipoProducto, i) {
 
                 var results = [];
                 $.each(response, function (index, item) {
-                    results.push({ id: item.IdArticulo, text: item.Codigo +'-'+  item.Descripcion1 })
+                    results.push({ id: item.IdArticulo, text: item.Codigo + '-' + item.Descripcion1 })
                 });
 
 
@@ -482,14 +482,14 @@ function AgregarItem(varIdObra, varTipoProducto, i) {
 }
 let ContadorNuevoDetalle = 0
 function agregarItemDetalle() {
-    if ($("#StockNuevoU").val() == 0) {
-        Swal.fire('Error!', 'No Puede Agregar Articulos Sin Stock', 'error')
-        return;
-    }
-    if (+$("#StockNuevoU").val() < +$("#cantidadNuevo").val()) {
-        Swal.fire('Error!', 'No Puede Ingresar una cantidad Mayor al Stock Actual', 'error')
-        return;
-    }
+    //if ($("#StockNuevoU").val() == 0) {
+    //    Swal.fire('Error!', 'No Puede Agregar Articulos Sin Stock', 'error')
+    //    return;
+    //}
+    //if (+$("#StockNuevoU").val() < +$("#cantidadNuevo").val()) {
+    //    Swal.fire('Error!', 'No Puede Ingresar una cantidad Mayor al Stock Actual', 'error')
+    //    return;
+    //}
     if (+$("#cantidadNuevo").val() <= 0) {
         Swal.fire('Error!', 'La Cantidad no puede ser 0 ni negativo', 'error')
         return;
@@ -499,16 +499,16 @@ function agregarItemDetalle() {
     ContadorNuevoDetalle++
     let trNuevo = ''
     trNuevo += ` <tr id="FilaDetalle` + ContadorNuevoDetalle + `"> 
-                    <td><input style="display:none" type="text" value="` + 0 + `" id="txtIdSolicitud` + ContadorNuevoDetalle + `" class="form-control IdDetalleCol` + nroTabla +`" style="max-width:60px" ></td>
+                    <td><input style="display:none" type="text" value="` + 0 + `" id="txtIdSolicitud` + ContadorNuevoDetalle + `" class="form-control IdDetalleCol` + nroTabla + `" style="max-width:60px" ></td>
                     <td class="DescripcionTabla`+ nroTabla + `">` + $("#NombreCrear").val() + `</td>
-                    <td class="CantidadPedida`+ nroTabla +`">`+ $("#cantidadNuevo").val() + `</td>
+                    <td class="CantidadPedida`+ nroTabla + `">` + $("#cantidadNuevo").val() + `</td>
                     <td>`+ 0 + `</td>
-                    <td><input type="text" value="` + $("#cantidadNuevo").val() + `" id="txtCantidadAtendida` + ContadorNuevoDetalle + `" onchange="VerificarEntregaStock(` + ContadorNuevoDetalle + `);ObtenerStocks(` + nroTabla +`)" class="form-control EntregarDetalle` + nroTabla + ` NoPasarStock` + ContadorNuevoDetalle +`" style="max-width:60px"></td>
-                    <td id="StockDetalle`+ ContadorNuevoDetalle +`" class="ClassStockDetalle`+nroTabla+`"><p id="Stock`+ ContadorNuevoDetalle + `"></p></td>
-                    <td class="PrecioDetalle`+ nroTabla +`">Precio</td>
-                    <td class="TotalDetalle`+ nroTabla +`">Total</td>
+                    <td><input type="text" value="` + $("#cantidadNuevo").val() + `" id="txtCantidadAtendida` + ContadorNuevoDetalle + `" onchange="VerificarEntregaStock(` + ContadorNuevoDetalle + `);ObtenerStocks(` + nroTabla + `)" class="form-control EntregarDetalle` + nroTabla + ` NoPasarStock` + ContadorNuevoDetalle + `" style="max-width:60px"></td>
+                    <td id="StockDetalle`+ ContadorNuevoDetalle + `" class="ClassStockDetalle` + nroTabla + `"><p id="Stock` + ContadorNuevoDetalle + `"></p></td>
+                    <td class="PrecioDetalle`+ nroTabla + `">Precio</td>
+                    <td class="TotalDetalle`+ nroTabla + `">Total</td>
                     <td><button class="btn btn-xs btn-danger fa fa-times" onclick="EliminarFilaCreada(`+ ContadorNuevoDetalle + `)"><button></td>
-                    <td style="display:none" class="IdItemDetalle`+ nroTabla +`">`+ $("#cboAgregarArticulo").val() +`</td>
+                    <td style="display:none" class="IdItemDetalle`+ nroTabla + `">` + $("#cboAgregarArticulo").val() + `</td>
                     </tr>`
     console.log(trNuevo)
     console.log(nroTabla)
@@ -520,11 +520,11 @@ function agregarItemDetalle() {
 
 function ObtenerStocks(Nro) {
     let IdAlmacen = $("#cboAlmacen" + Nro).val()
-    let tablaNro = "table_id"+Nro
+    let tablaNro = "table_id" + Nro
     //console.log(IdAlmacen)
     var elementosColumna = [];
 
-    $("#table_id"+Nro+" tr").each(function () {
+    $("#table_id" + Nro + " tr").each(function () {
         var celda = $(this).find("td:eq(9)"); // eq(1) para la segunda columna
         elementosColumna.push(celda.text());
     });
@@ -549,23 +549,23 @@ function ObtenerStocks(Nro) {
         //console.log(celdasQuintaColumna.eq(j));
         //celdasQuintaColumna.eq(j).text("dsadsadsa");
         $.ajax({
-        url: "/Articulo/ObtenerStockxProducto",
-        type: 'POST',
-        async: false,
-        dataType: 'json',
+            url: "/Articulo/ObtenerStockxProducto",
+            type: 'POST',
+            async: false,
+            dataType: 'json',
             data: { 'IdArticulo': elementosColumna[j], 'IdAlmacen': IdAlmacen },
-        success: function (datos) {
-            //console.log(datos);
-            celdasQuintaColumna.eq(j).text(datos[0].Stock);
-            celdasSextaColumna.eq(j).text(formatNumberDecimales(datos[0].PrecioPromedio, 2));
-            let Total = datos[0].PrecioPromedio * celdasCuartaColumna.eq(j).find("input").val()
-            celdasSeptimaColumna.eq(j).text(formatNumberDecimales(Total,2))
-        },
-        error: function () {
-            Swal("Error!", "Ocurrió un Error", "error");
-        }
+            success: function (datos) {
+                //console.log(datos);
+                celdasQuintaColumna.eq(j).text(datos[0].Stock);
+                celdasSextaColumna.eq(j).text(formatNumberDecimales(datos[0].PrecioPromedio, 2));
+                let Total = datos[0].PrecioPromedio * celdasCuartaColumna.eq(j).find("input").val()
+                celdasSeptimaColumna.eq(j).text(formatNumberDecimales(Total, 2))
+            },
+            error: function () {
+                Swal("Error!", "Ocurrió un Error", "error");
+            }
         })
-    }  
+    }
 
 
 }
@@ -584,7 +584,7 @@ function obtenerStockUnitario() {
         success: function (datos) {
             //console.log(datos);
             $("#StockNuevoU").val(datos[0].Stock);
-            $("#NombreCrear").val(datos[0].Codigo+'-'+datos[0].Descripcion1)
+            $("#NombreCrear").val(datos[0].Codigo + '-' + datos[0].Descripcion1)
         },
         error: function () {
             Swal.fire("Error!", "Ocurrió un Error", "error");
@@ -593,36 +593,36 @@ function obtenerStockUnitario() {
 }
 
 
-function GenerarSalida(Num,IdSolicitud,numserie,cuadrilla) {
+function GenerarEntrada(Num, IdSolicitud, numserie, cuadrilla) {
     let arrayStocks = new Array();
-    $(".ClassStockDetalle"+Num).each(function (indice, elemento) {
+    $(".ClassStockDetalle" + Num).each(function (indice, elemento) {
         arrayStocks.push(+($(elemento).text()));
     });
-    for (var i = 0; i < arrayStocks.length; i++) {
-        if (arrayStocks[i] == 0) {
-            Swal.fire(
-                'Error!',
-                'El Articulo de la Fila N° '+(i+1)+' No cuenta con stock',
-                'error'
-            )
-            return
-        }
-    }
+    //for (var i = 0; i < arrayStocks.length; i++) {
+    //    if (arrayStocks[i] == 0) {
+    //        Swal.fire(
+    //            'Error!',
+    //            'El Articulo de la Fila N° ' + (i + 1) + ' No cuenta con stock',
+    //            'error'
+    //        )
+    //        return
+    //    }
+    //}
     let arrayCantidadEntregar = new Array();
     $(".EntregarDetalle" + Num).each(function (indice, elemento) {
         arrayCantidadEntregar.push(+($(elemento).val()));
     });
 
-    for (var j = 0; j < arrayStocks.length; j++) {
-        if (arrayStocks[j] < arrayCantidadEntregar[j]) {
-            Swal.fire(
-                'Error!',
-                'No hay suficiente Stock para el Articulo de la Fila N° ' + (j + 1),
-                'error'
-            )
-            return
-        }
-    }
+    //for (var j = 0; j < arrayStocks.length; j++) {
+    //    if (arrayStocks[j] < arrayCantidadEntregar[j]) {
+    //        Swal.fire(
+    //            'Error!',
+    //            'No hay suficiente Stock para el Articulo de la Fila N° ' + (j + 1),
+    //            'error'
+    //        )
+    //        return
+    //    }
+    //}
 
     let arrayIdDetalle = new Array();
     $(".IdDetalleCol" + Num).each(function (indice, elemento) {
@@ -642,7 +642,7 @@ function GenerarSalida(Num,IdSolicitud,numserie,cuadrilla) {
     });
     let arrayPrecioDetalle = new Array();
     $(".PrecioDetalle" + Num).each(function (indice, elemento) {
-        arrayPrecioDetalle.push(($(elemento).text()).replace(/,/g,""));
+        arrayPrecioDetalle.push(($(elemento).text()).replace(/,/g, ""));
     });
     let arrayCantidadPedidaDetalle = new Array();
     $(".CantidadPedida" + Num).each(function (indice, elemento) {
@@ -652,7 +652,7 @@ function GenerarSalida(Num,IdSolicitud,numserie,cuadrilla) {
     let arrayTotalDetalle = new Array();
     $(".TotalDetalle" + Num).each(function (indice, elemento) {
         arrayTotalDetalle.push(($(elemento).text()).replace(/,/g, ""));
-        TotalGeneral +=  +($(elemento).text()).replace(/,/g, "")
+        TotalGeneral += +($(elemento).text()).replace(/,/g, "")
     });
     let AnexoDetalle = [];
     let NroEliminados = $("#Ocultos" + Num).val()
@@ -661,35 +661,35 @@ function GenerarSalida(Num,IdSolicitud,numserie,cuadrilla) {
     for (var k = 0; k < arrayIdDetalle.length; k++) {
         if (arrayIdDetalle[k] == 0) {
             $.ajax({
-            url: "/SolicitudDespacho/UpdateInsertSolicitudDespachoDetalle",
-            type: 'POST',
-            async: false,
-            dataType: 'json',
-            data: {
-                'Id': arrayIdDetalle[k],
-                'IdSolicitudDespacho': IdSolicitud,
-                'IdItem': arrayIdItemDetalle[k] ,
-                'Descripcion' : arrayDescripcionItem[k],
-                'IdUnidadMedida' : 1,
-                'Cantidad': arrayCantidadEntregar[k]
-            },
-            success: function (datos) {
-                //console.log(datos);
-                if (datos > 0) {
-                    Swal.fire("Exito!", "Se Registro el Nuevo Detalle", "success");
-                } else { Swal.fire("Error!", "Ocurrió un Error", "error"); }
-            },
-            error: function () {
-                Swal.fire("Error!", "Ocurrió un Error", "error");
-            }
-        })  
+                url: "/SolicitudDespacho/UpdateInsertSolicitudDespachoDetalle",
+                type: 'POST',
+                async: false,
+                dataType: 'json',
+                data: {
+                    'Id': arrayIdDetalle[k],
+                    'IdDevolucionAdm': IdSolicitud,
+                    'IdItem': arrayIdItemDetalle[k],
+                    'Descripcion': arrayDescripcionItem[k],
+                    'IdUnidadMedida': 1,
+                    'Cantidad': arrayCantidadEntregar[k]
+                },
+                success: function (datos) {
+                    //console.log(datos);
+                    if (datos > 0) {
+                        Swal.fire("Exito!", "Se Registro el Nuevo Detalle", "success");
+                    } else { Swal.fire("Error!", "Ocurrió un Error", "error"); }
+                },
+                error: function () {
+                    Swal.fire("Error!", "Ocurrió un Error", "error");
+                }
+            })
         }
     }
-    
+
     //CREAR SALIDA
     let almacen = $("#cboAlmacen" + Num).val()
     let responsable = $("#cboResponsable" + Num).val()
-   
+
 
     let detalles = [];
     if (arrayCantidadEntregar.length == arrayPrecioDetalle.length) {
@@ -726,8 +726,8 @@ function GenerarSalida(Num,IdSolicitud,numserie,cuadrilla) {
     }
     console.log(detalles)
     console.log(TotalGeneral)
-  
-   
+
+
     let EsParcial = 0;
     for (var p = 0; p < arrayCantidadPedidaDetalle.length; p++) {
         if (arrayCantidadEntregar[p] < arrayCantidadPedidaDetalle[p]) {
@@ -739,7 +739,7 @@ function GenerarSalida(Num,IdSolicitud,numserie,cuadrilla) {
     let IdOPCH = $("#txtId").val();
     let TablaOrigen = $("#txtOrigen").val();
     Swal.fire({
-        title: 'DESEA GENERAR LA SALIDA?',
+        title: 'DESEA GENERAR EL INGRESO?',
         html: "Verifique los siguientes campos antes de Proceder</br>" +
             "</br>" +
             "Serie Para Salida </br>" +
@@ -758,7 +758,7 @@ function GenerarSalida(Num,IdSolicitud,numserie,cuadrilla) {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: "/SalidaMercancia/UpdateInsertMovimiento",
+                url: "/EntradaMercancia/UpdateInsertMovimiento",
                 type: "POST",
                 async: true,
                 data: {
@@ -766,7 +766,7 @@ function GenerarSalida(Num,IdSolicitud,numserie,cuadrilla) {
                     AnexoDetalle,
                     //cabecera
                     'IdAlmacen': almacen,
-                    'IdTipoDocumento': 332,
+                    'IdTipoDocumento': 331,
                     'IdSerie': $("#cboSerieExtorno").val(),
                     'Correlativo': '',
                     'IdMoneda': 1,
@@ -774,13 +774,13 @@ function GenerarSalida(Num,IdSolicitud,numserie,cuadrilla) {
                     'FechaContabilizacion': $("#FechContExtorno").val(),
                     'FechaDocumento': $("#FechDocExtorno").val(),
                     'IdCentroCosto': 7,
-                    'Comentario': 'Generado al Atender la Solicitud de Despacho N° ' + numserie,
+                    'Comentario': 'Generado al Atender la Devolucion N° ' + numserie,
                     'SubTotal': TotalGeneral,
                     'Impuesto': 0,
                     'Total': TotalGeneral,
                     'IdCuadrilla': 2582,
                     'EntregadoA': 24151,
-                    'IdTipoDocumentoRef': 1,
+                    'IdTipoDocumentoRef': 10,
                     'NumSerieTipoDocumentoRef': '',
                     'IdDestinatario': '',
                     'IdMotivoTraslado': '',
@@ -802,7 +802,7 @@ function GenerarSalida(Num,IdSolicitud,numserie,cuadrilla) {
                     'CodigoUbigeoLlegada': '',
                     'DistritoLlegada': '',
                     'DireccionLlegada': '',
-                    'OrigenDespacho': 'Generado al Atender la Solicitud de Despacho N° ' + numserie,
+                    'EsDevolucionAdm': 1,
 
 
                 },
@@ -819,15 +819,15 @@ function GenerarSalida(Num,IdSolicitud,numserie,cuadrilla) {
                         }
                         for (var i = 0; i < arrayCantidadEntregar.length; i++) {
                             $.ajax({
-                                url: "/SolicitudDespacho/AtencionConfirmada",
+                                url: "/DevolucionAdm/AtencionConfirmada",
                                 type: 'POST',
                                 async: false,
                                 dataType: 'json',
                                 data: {
                                     'Cantidad': arrayCantidadEntregar[i],
-                                    'IdSolicitud': IdSolicitud,
+                                    'IdDevolucion': IdSolicitud,
                                     'IdArticulo': arrayIdItemDetalle[i],
-                                    'EstadoSolicitud': EstadoSolicitud,
+                                    'EstadoDevolucion': EstadoSolicitud,
                                 },
                                 success: function (datos) {
                                     //console.log(datos);
@@ -886,7 +886,7 @@ function GenerarSalida(Num,IdSolicitud,numserie,cuadrilla) {
         }
     })
 
-    
+
     $.post("/Serie/ObtenerSeries", { estado: 1 }, function (data, status) {
         let series = JSON.parse(data);
         llenarComboSerieExtorno(series, "cboSerieExtorno", "Seleccione")
@@ -915,7 +915,7 @@ function llenarComboSerieExtorno(lista, idCombo, primerItem) {
     let ultimoindice = 0;
 
     for (var i = 0; i < nRegistros; i++) {
-        if (lista[i].Documento == 2) {
+        if (lista[i].Documento == 1) {
             if (lista.length > 0) { contenido += "<option value='" + lista[i].IdSerie + "'>" + lista[i].Serie + "</option>"; ultimoindice = i }
             else { }
         }
@@ -934,7 +934,7 @@ function ListarSeries() {
     let EstadoSolicitud = $("#EstadoFiltro").val()
     let SerieFiltro = 0
     $.ajaxSetup({ async: false });
-    $.post('/SolicitudDespacho/ObtenerSolicitudesDespachoAtender', { 'IdBase': IdBase, 'FechaInicio': FechaInicio, 'FechaFin': FechaFin, 'EstadoSolicitud': EstadoSolicitud, 'SerieFiltro': SerieFiltro }, function (data, status) {
+    $.post('/DevolucionAdm/ObtenerDevolucionAdmAtender', { 'IdBase': IdBase, 'FechaInicio': FechaInicio, 'FechaFin': FechaFin, 'EstadoSolicitud': EstadoSolicitud, 'SerieFiltro': SerieFiltro }, function (data, status) {
         try {
             let Series = JSON.parse(data);
             llenarComboSerieFiltro(Series, "cboSeries", "Todos")
@@ -962,15 +962,15 @@ function llenarComboSerieFiltro(lista, idCombo, primerItem) {
     $("#cboSeries").val($("#cboSeries option:first").val());
     ConsultaServidor();
 }
-function CerrarSolicitud(IdSolicitudCerrar) {
+function CerrarSolicitud(IdDevolucion) {
     alertify.confirm('Confirmar', '¿Desea Cerrar Esta Solicitud?, No se podrá volver a atender la solicitud', function () {
         $.ajax({
-            url: "/SolicitudDespacho/CerrarSolicitud",
+            url: "/DevolucionAdm/CerrarDevolucionAdm",
             type: 'POST',
             async: false,
             dataType: 'json',
             data: {
-                'IdSolicitud': IdSolicitudCerrar,
+                'IdDevolucion': IdDevolucion,
             },
             success: function (datos) {
                 //console.log(datos);
@@ -985,5 +985,5 @@ function CerrarSolicitud(IdSolicitudCerrar) {
         })
 
     }, function () { });
-  
+
 }

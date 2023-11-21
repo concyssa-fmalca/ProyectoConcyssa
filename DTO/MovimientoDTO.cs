@@ -125,6 +125,7 @@ namespace DTO
         public string SGI { get; set; }
         public string DistritoLlegada { get; set; }
         public string OrigenDespacho { get; set; }
+        public int EsDevolucionAdm { get; set; }
 
     }
 

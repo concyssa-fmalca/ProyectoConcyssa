@@ -1266,7 +1266,8 @@ function CerrarModal() {
     $("#tabla_files").find('tbody').empty();
     $.magnificPopup.close();
     limpiarDatos();
-    $("#IdTipoProducto").prop("disabled",false)
+    $("#IdTipoProducto").prop("disabled", false)
+    $("#btnResalida").hide()
 }
 
 
@@ -1711,6 +1712,7 @@ function ObtenerDatosxID(IdMovimiento) {
 
         $("#file").val("");
         let EstaExtornado = false
+        let devolucionAdm = 0
 
         $.post('../Movimientos/ObtenerDatosxIdMovimiento', {
             'IdMovimiento': IdMovimiento,
@@ -1727,7 +1729,7 @@ function ObtenerDatosxID(IdMovimiento) {
                     EstaExtornado = true
                 }
                 IdUsuario = movimiento.IdUsuario,
-                $("#cboAlmacen").val(movimiento.IdAlmacen);
+                    $("#cboAlmacen").val(movimiento.IdAlmacen);
                 $("#cboSerie").val(movimiento.IdSerie);
                 $("#cboMoneda").val(movimiento.IdMoneda);
                 $("#TipoCambio").val(movimiento.TipoCambio);
@@ -1746,12 +1748,15 @@ function ObtenerDatosxID(IdMovimiento) {
                 } else {
                     $("#NombUsuarioEdicion").html(movimiento.NombUsuarioEdicion)
                 }
-            
+
                 if (movimiento.FechaEdicion == '1990-01-01T00:00:00') {
                     $("#EditedAt").html("-")
                 } else {
                     $("#EditedAt").html(movimiento.FechaEdicion.replace("T", " "))
                 }
+
+                devolucionAdm = movimiento.EsDevolucionAdm
+                
                 $("#IdBase").val(movimiento.IdBase).change();
                 $("#IdObra").val(movimiento.IdObra).change();
                 $("#cboAlmacen").val(movimiento.IdAlmacen);
@@ -1823,7 +1828,27 @@ function ObtenerDatosxID(IdMovimiento) {
             $("#btnExtorno").show();
             $("#btnEditar").show();
         }
+
+        if (devolucionAdm > 0) {
+            $("#btnResalida").show()
+            $("#btnExtorno").hide();
+            $("#btnEditar").hide();
+            $.post('ValidarDevolucionConSalida', {
+                'IdMovimiento': IdMovimiento
+            }, function (data, status) {
+
+                if (data == 1) {
+                    $("#btnResalida").prop('disabled', true)
+                } else {
+                    $("#btnResalida").prop('disabled', false)
+                }
+
+            });
+
+        }
+
         Swal.close()
+
     },200)
 
 }
@@ -1837,7 +1862,7 @@ function disabledmodal(valorbolean) {
     $("#cboMoneda").prop('disabled', valorbolean);
     $("#cboSerie").prop('disabled', valorbolean);
     $("#txtFechaDocumento").prop('disabled', valorbolean);
-    $("#txtFechaContabilizacion").prop('disabled', valorbolean);
+    //$("#txtFechaContabilizacion").prop('disabled', valorbolean);
     $("#cboTipoDocumentoOperacion").prop('disabled', valorbolean);
     $("#IdTipoDocumentoRef").prop('disabled', valorbolean);
     $("#SerieNumeroRef").prop('disabled', valorbolean);
@@ -2569,7 +2594,7 @@ function GenerarExtorno() {
             "<input id='FechDocExtorno' type='date' class='form-control'/>" +
             "</br>" +
             "Fecha de Contabilizacion para Extorno </br>" +
-            "<input id='FechContExtorno' type='date' class='form-control'/>" +
+            "<input id='FechContExtorno' type='date' disabled class='form-control'/>" +
             "</br>" +
             "<p>* Las Fechas que se muestran por defecto son las mismas que el documento seleccionado</p>",
         icon: 'warning',
@@ -3376,4 +3401,65 @@ function AgregarLineaDesdeExcel(IdItem, CodigoItem, DescripcionItem, PrecioUnita
 
 function DescargarPlantilla() {
     window.open("/Anexos/PlantillaImportacionConcyssa.xlsx", '_blank', 'noreferrer');
+}
+
+function Resalida() {
+    Swal.fire({
+        title: 'DESEA GENERAR LA SALIDA?',
+        html: "Verifique los siguientes campos antes de Proceder</br>" +
+            "</br>" +
+            "Serie Para Salida </br>" +
+            "<Select id='cboSerieExtorno' class='form-control'></select>" +
+            "</br>" +
+            "Fecha De Documento </br>" +
+            "<input id='FechDocExtorno' type='date' class='form-control'/>" +
+            "</br>" +
+            "Fecha de Contabilizacion </br>" +
+            "<input id='FechContExtorno' disabled type='date' class='form-control'/>",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si Generar!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: "GenerarResalida",
+                type: "POST",
+                async: true,
+                data: {
+                    'IdEntrada': $("#txtId").val(),
+                    'Serie': $("#cboSerieExtorno").val(),
+                    'FechaDoc': $("#FechDocExtorno").val(),
+                    'FechaCont': $("#FechContExtorno").val(),
+
+                },
+                success: function (data) {
+                    if (data == '1') {
+
+
+                        Swal.fire('Exito','Proceso Realizado Correctamente',"success")
+                        CerrarModal()
+
+
+
+                    } else {
+                        Swal.fire('Error!', data, "error");
+                    }
+
+                }
+            }).fail(function () {
+                Swal.fire(
+                    'Error!',
+                    'Comunicarse con el Area Soporte: smarcode@smartcode.pe !',
+                    'error'
+                )
+            });
+        }
+    })
+
+    $.post("/Serie/ObtenerSeries", { estado: 1 }, function (data, status) {
+        let series = JSON.parse(data);
+        llenarComboSerieExtorno(series, "cboSerieExtorno", "Seleccione")
+    });
 }

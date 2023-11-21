@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DTO
 {
-    public class KardexDTO
+    public class IntegradorConsumoDTO
     {
         public int IdKardex { get; set; }
         public int IdDetalleMovimiento { get; set; }
@@ -42,7 +42,5 @@ namespace DTO
         public string Modulo { get; set; } = "";
         public string TipoDocumentoRef { get; set; }
         public string NumSerieTipoDocumentoRef { get; set; }
-        public int DocEntrySap { get; set; }
-
     }
 }

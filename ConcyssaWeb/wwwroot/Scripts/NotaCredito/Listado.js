@@ -4000,7 +4000,7 @@ function disabledmodal(valorbolean) {
     $("#cboMoneda").prop('disabled', valorbolean);
     $("#cboSerie").prop('disabled', valorbolean);
     $("#txtFechaDocumento").prop('disabled', valorbolean);
-    $("#txtFechaContabilizacion").prop('disabled', valorbolean);
+    //$("#txtFechaContabilizacion").prop('disabled', valorbolean);
     $("#cboTipoDocumentoOperacion").prop('disabled', valorbolean);
     $("#IdTipoDocumentoRef").prop('disabled', valorbolean);
     $("#SerieNumeroRef").prop('disabled', valorbolean);
@@ -5087,7 +5087,7 @@ function Extornar() {
             "<input id='FechDocExtorno' type='date' class='form-control'/>" +
             "</br>" +
             "Fecha de Contabilizacion para Extorno  </br>" +
-            "<input id='FechContExtorno' type='date' class='form-control'/>" +
+            "<input id='FechContExtorno' type='date' disabled class='form-control'/>" +
             "</br>" +
             "<p>* Las Fechas que se muestran por defecto son las mismas que el documento seleccionado</p>",
         icon: 'warning',

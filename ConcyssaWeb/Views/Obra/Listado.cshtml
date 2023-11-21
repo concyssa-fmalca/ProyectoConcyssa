@@ -153,6 +153,15 @@
 
                             <div class="row">
                                 <div class='form-group-sm'>
+                                    <label for='correoObra' class="control-label col-sm-4 left-align">Correo</label>
+                                    <div class="col-sm-8">
+                                        <input id='correoObra' name="correoObra" type='text' class="form-control input-sm" tabindex="5">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class='form-group-sm'>
                                     <div class="checkbox-custom col-xs-6">
                                         <input type="checkbox" id="chkContrato" />
                                         <label for="chkContrato">Contrato Mantenimiento</label>
@@ -235,10 +244,58 @@
     </div>
 
 
+    <!-- Modal Catalogo Servicio -->
+    <div id="modal-catalogoservicio" class="popup-sm allcp-form mfp-with-anim mfp-hide">
+        <div class="panel">
+            <div class="panel-heading">
+                <h5 id='lblTituloModal'>Catalogo De Servicios</h5>
+            </div>
+            <div class="panel-body ">
+                <div class='col s12 m12 '>
+                    <div class='container-fluid'>
+                        <input id='txtIdObraCatalogoServicio' name="txtIdObraCatalogoServicio" type='hidden' class="form-control input-sm">
+                        <div class='form-horizontal'>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <table class="table table-responsive table-bordered" id="table_catalogoservicio">
+                                        <thead>
+                                            <tr>
+                                                <td>#</td>
+                                                <td>Codigo</td>
+                                                <td>Descripcion del Servicio</td>
+                                                <td>Activo</td>
+                                                <td>Cuenta Contable</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbody_catalogoservicio"></tbody>
+
+                                    </table>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer text-right">
+                <div class="row">
+                    <button type="button" id="btnGrabar" onclick="GuardarObraCatalogoServicio()" class="btn btn-primary pull-right plu">Grabar</button>
+                    <button type="button" id="btnCancelar" class="btn btn-danger pull-right" style="background-color:orange;" onclick="closePopup();">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 </div>
+@{
+    Random rnd = new Random();
+}
 
-
-<script src="~/Scripts/Obra/Listado.js"></script>
+<script src="~/Scripts/Obra/Listado.js?v=@rnd.Next(1, 1000 + 1)"></script>
 <script src="~/Scripts/General.js"></script>
 <script src="~/js/pdf/jspdf.min.js"></script>
 <script src="~/js/pdf/faker.min.js"></script>

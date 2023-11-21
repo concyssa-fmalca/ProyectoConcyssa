@@ -132,6 +132,31 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
+        public string CargarCatalogoServicioxIdObra(int IdObra)
+        {
+            string mensaje_error = "";
+            ObraDAO oObraDAO = new ObraDAO();
+            DataTableDTO oDataTableDTO = new DataTableDTO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            List<ObraCatalogoServicioDTO> lstObraDTO = oObraDAO.ListarServiciosxIdSociedadObra(IdSociedad, IdObra, ref mensaje_error);
+            if (lstObraDTO.Count > 0)
+            {
+                oDataTableDTO.sEcho = 1;
+                oDataTableDTO.iTotalDisplayRecords = lstObraDTO.Count;
+                oDataTableDTO.iTotalRecords = lstObraDTO.Count;
+                oDataTableDTO.aaData = (lstObraDTO);
+                //return oDataTableDTO;
+                return JsonConvert.SerializeObject(oDataTableDTO);
+
+
+                //return JsonConvert.SerializeObject(lstObraDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
+
         public string ObtenerObraxIdBase(int IdBase)
         {
             string mensaje_error = "";
@@ -196,5 +221,30 @@ namespace ConcyssaWeb.Controllers
                 return mensaje_error;
             }
         }
+
+        public string UpdateInsertObraCatalogoServicio(List<ObraCatalogoServicioDTO> detalles)
+        {
+            string mensaje_error = "";
+            ObraDAO oObraDAO = new ObraDAO();
+            for (int i = 0; i < detalles.Count(); i++)
+            {
+                int respuesta = oObraDAO.UpdateInsertObraCatalogoServicio(detalles[i], ref mensaje_error);
+            }
+
+            if (mensaje_error.Length > 0)
+            {
+
+                return mensaje_error;
+            }
+            else
+            {
+                return "1";
+            }
+
+
+
+        }
+
+        
     }
 }

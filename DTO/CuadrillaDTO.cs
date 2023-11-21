@@ -23,5 +23,7 @@ namespace DTO
         public bool Estado { get; set; }
         public bool Eliminado { get; set; }
         public bool EsTercero { get; set; }
+        public string CuentaServicios { get; set; }
+        public string CuentaMateriales { get; set; }
     }
 }

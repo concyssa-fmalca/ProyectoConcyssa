@@ -57,6 +57,7 @@ namespace DAO
                         oKardexDTO.Modulo = (drd["Modulo"].ToString());
                         oKardexDTO.NumSerieTipoDocumentoRef = drd["NumSerieTipoDocumentoRef"].ToString();
                         oKardexDTO.TipoDocumentoRef = drd["TipoDocumentoRef"].ToString();
+                        oKardexDTO.DocEntrySap = Convert.ToInt32(drd["DocEntrySap"].ToString());
 
 
 
@@ -185,6 +186,7 @@ namespace DAO
             }
             return lstArticuloStockDTO;
         }
+        
 
     }
 }

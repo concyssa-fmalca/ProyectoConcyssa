@@ -119,6 +119,11 @@ function GuardarModeloAutorizacion() {
         varcheckSolicitudGiro = 2;
         arrayGeneralDocumento.push({ 'IdModeloAutorizacionDocumento': varIdModeloAutorizacionDocumento, 'IdDocumento': varcheckSolicitudGiro });
     }
+
+    if ($('#chkSolicitudDespacho')[0].checked) {
+        varcheckSolicitudGiro = 3;
+        arrayGeneralDocumento.push({ 'IdModeloAutorizacionDocumento': varIdModeloAutorizacionDocumento, 'IdDocumento': varcheckSolicitudGiro });
+    }
    
     //documento
 
@@ -329,7 +334,12 @@ function AgregarLineaDocumentos() {
                   <input type="checkbox" id="chkSolicitudGiro" />
                   <label for="chkSolicitudGiro">Solicitud de Giro</label>
               </div>
-                
+               
+
+              <div class="checkbox-custom col-xs-6">
+                  <input type="checkbox" id="chkSolicitudDespacho" />
+              <label for="chkSolicitudDespacho">Solicitud Despacho</label>
+              </div>
             </td>
             </tr>`;
 
@@ -471,7 +481,10 @@ function AgregarLineaDetalleDocumentos(contador, IdModeloAutorizacionDocumento, 
                   <input type="checkbox" id="chkSolicitudGiro" />
                   <label for="chkSolicitudGiro">Solicitud de Giro</label>
               </div>
-
+            <div class="checkbox-custom col-xs-6">
+                  <input type="checkbox" id="chkSolicitudDespacho" />
+                  <label for="chkSolicitudDespacho">Solicitud Despacho</label>
+              </div>
             </td>
             </tr>`;
 
@@ -483,6 +496,10 @@ function AgregarLineaDetalleDocumentos(contador, IdModeloAutorizacionDocumento, 
 
     if (IdDocumento == 2) {
         $('#chkSolicitudGiro').prop('checked', true);
+    }
+
+    if (IdDocumento == 3) {
+        $('#chkSolicitudDespacho').prop('checked', true);
     }
 
 }

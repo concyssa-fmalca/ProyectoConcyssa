@@ -537,10 +537,15 @@ namespace ConcyssaWeb.Controllers
                 PedidoDTO oPedidoDTO = new PedidoDTO();
                 int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
 
+
                 oPedidoDTO = oPedidoDAO.ObtenerPedidoxId(IdPedido, ref mensaje_error);
                 string body;
                 body = "BASE PRUBAS";
 
+                ObraDAO obraDao = new ObraDAO();
+                List<ObraDTO> datosObra = obraDao.ObtenerDatosxID(oPedidoDTO.IdObra, ref mensaje_error);
+                string correoObra = "";
+                if (datosObra.Count > 0) correoObra = datosObra[0].CorreoObra;
                 //body = "<body>" +
                 //    "<h2>Se "+Estado+" una Solicitud</h2>" +
                 //    "<h4>Detalles de Solicitud:</h4>" +
@@ -568,7 +573,7 @@ namespace ConcyssaWeb.Controllers
                 mail.To.Add("compras@concyssa.com ");
                 mail.Subject = "CONCYSSA - ENVIO ORDEN COMPRA " + oPedidoDTO.NombSerie + "-" + oPedidoDTO.Correlativo;
                 //mail.CC.Add(new MailAddress("camala145@gmail.com"));
-                mail.Body = TemplateEmail();
+                mail.Body = TemplateEmail(correoObra);
 
                 mail.IsBodyHtml = true; 
                 SmtpClient client = new SmtpClient("smtp.gmail.com", 587); //Aquí debes sustituir tu servidor SMTP y el puerto
@@ -724,7 +729,7 @@ namespace ConcyssaWeb.Controllers
 
 
 
-        public string TemplateEmail()
+        public string TemplateEmail(string correoObra)
         {
             return @"
 <html><head><meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>
@@ -734,13 +739,7 @@ namespace ConcyssaWeb.Controllers
 <body>
 <p>Estimado proveedor</p>
 
-<p><u>Coordinar las entregas con Almacén y tener presente los siguientes recomendaciones:</u></p>
-
-<p>Antes de proceder con el despacho tienen que haber llenado el formato adjunto, asimismo el vehículo que transporta el material y enviarlos a los correos de <a href='mailto:passante@concyssa.com'>passante@concyssa.com</a> y <a href='mailto:cbartolo@concyssa.com'>cbartolo@concyssa.com</a> para que puedan realizar las coordinaciones con el personal de vigilancia de la puerta principal de la universidad San Marcos y los dejen ingresar.</p>
-
-<p>Sin este requisito ningún proveedor podrá ingresar, es por eso que resulta necesario que la comunicación sea oportuna para evitar falsos fletes.</p>
-
-<p>Criterios de compra al momento del despacho:</p>
+<p>Se adjuntan órdenes de compra/servicio, por favor coordinar las entregas con Almacén y tener presente los siguientes criterios de compra al momento del despacho:</p>
 
 <h3>Equipos de protección personal:</h3>
 
@@ -766,28 +765,8 @@ namespace ConcyssaWeb.Controllers
 <h3>Facturación:</h3>
 
 <ul>
-	<li>Enviar su factura electrónica a l correo: <b>comprobanteelectronico_proveedor@concyssa.com, cbartolo@concyssa.com y passante@concyssa.com</b></li>
+	<li>Enviar su factura electrónica al correo: <b>"+ correoObra + @"</b></li>
 </ul>
-
-<h3>DOCUMENTOS A PRESENTAR PARA LA RECEPCION DE LA FACTURA</h3>
-
-<ul>
-<li>CERTIFICADO DE CALIDAD  (nombre de la obra, listado de productos)</li>
-<li>CERTIFICADO Y/O CARTA DE GARANTIA (nombre de la obra, listado de productos)</li>
-<li>PROTOCOLO DE APROBACION POR SEDAPAL (nombre de la obra, listado de productos)</li>
-<li>FICHA TECNICA DEL PRODUCTO</li>
-<li>HOJADE SEGURIDAD DE LOS PRODUCTOS</li>
-<li>REGISTRO SANITARIO (DIGESA)</li>
-</ul>
-<h3>NOMBRE DE LA OBRA: </h3>
-<p><b>“REUBICACION DE REDES DE AGUA POTABLE Y ALCANTARILLADO EN LA ESTACION JUAN PABLO II – E3    DE LA LINEA 2 Y RAMAL AV. FAUCETT – AV. GAMBETTA DE LA RED BASICA DEL METRO DE LIMA Y CALLAO”</b></p>
-
-Favor de prever lo mencionado para no generar demoras en la logística.
-
-<p>Lugar de entrega:</p>
-<b>UNMSM (Puerta N° 08) av. Oscar R. Benavides cdra. 53, Lima.</b>
-
-
 
 </body></html>";
         }

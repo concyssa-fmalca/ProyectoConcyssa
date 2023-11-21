@@ -184,17 +184,21 @@ namespace ISAP
             //else
             //{
 
-            GlosaContableDAO oGlosaContableDAO = new GlosaContableDAO();
-            var datosGlosa = oGlosaContableDAO.ObtenerDatosxID(auxComprobante.IdGlosaContable,ref errMsg);
-                ObjSAPComprobante.UserFields.Fields.Item("U_EXX_CLABYSADQ").Value = datosGlosa[0].IdClasif.ToString();
+            
 
                 ConsultasSQL oConsultasSQL = new ConsultasSQL();
-                var cuentaContable = oConsultasSQL.ObtenerCuentaContable(datosGlosa[0].CuentaContable);
                 ////ObjSAPComprobante.ControlAccount = cuentaContable;
                 ////}
                 ObraDAO oObraDAO = new ObraDAO();
                 var datosObra = oObraDAO.ObtenerDatosxID(auxComprobante.IdObra, ref errMsg);
 
+                DivisionDAO oDivisionDAO = new DivisionDAO();
+                var datosDivision = oDivisionDAO.ObtenerDatosxID(datosObra[0].IdDivision,ref mensaje_error);
+
+
+               
+                //ObjSAPComprobante.UserFields.Fields.Item("U_EXX_CLABYSADQ").Value = datosDivision[0].IdClasif.ToString();
+                
                 ObjSAPComprobante.Project = datosObra[0].Codigo;
             ObjSAPComprobante.Comments = "Prueba Migracion desde IntegradorV1";
 
@@ -325,13 +329,26 @@ namespace ISAP
 
                 ObjSAPComprobante.Lines.ItemDescription = auxdetalle.DescripcionArticulo;
 
-                ObjSAPComprobante.Lines.ProjectCode = "102";
+                ObjSAPComprobante.Lines.ProjectCode = datosObra[0].Codigo;
                 ObjSAPComprobante.Lines.ShipDate = auxComprobante.FechaDocumento;
 
 
                 ObjSAPComprobante.Lines.Quantity = Convert.ToDouble(auxdetalle.Cantidad);
 
                 ObjSAPComprobante.Lines.UserFields.Fields.Item("U_SMC_CODIGO_ITEM").Value = auxdetalle.CodigoArticulo;
+
+               var cuentaContable = "";
+
+
+                    if (auxComprobante.IdTipoDocumento == 18)
+                    {
+                         cuentaContable = oConsultasSQL.ObtenerCuentaContable(datosDivision[0].CuentaContable);
+                    }
+                    else if (auxComprobante.IdTipoDocumento == 1338)
+                    {
+                        ObraCatalogoServicioDTO oObraCatalogoServicioDTO = oObraDAO.ObtenerDatosCatalogoServicioxId(auxdetalle.IdArticulo, auxComprobante.IdObra, ref mensaje_error);
+                        cuentaContable = oConsultasSQL.ObtenerCuentaContable(oObraCatalogoServicioDTO.CuentaContable);
+                    }
 
                 ObjSAPComprobante.Lines.AccountCode = cuentaContable;
 
@@ -530,16 +547,25 @@ namespace ISAP
                 //else
                 //{
 
-                GlosaContableDAO oGlosaContableDAO = new GlosaContableDAO();
-                var datosGlosa = oGlosaContableDAO.ObtenerDatosxID(auxComprobante.IdGlosaContable, ref errMsg);
+              
 
-                ConsultasSQL oConsultasSQL = new ConsultasSQL();
-                var cuentaContable = oConsultasSQL.ObtenerCuentaContable(datosGlosa[0].CuentaContable);
                 ////ObjSAPComprobante.ControlAccount = cuentaContable;
                 ////}
                 ObraDAO oObraDAO = new ObraDAO();
                 var datosObra = oObraDAO.ObtenerDatosxID(auxComprobante.IdObra, ref errMsg);
 
+                DivisionDAO oDivisionDAO = new DivisionDAO();
+                var datosDivision = oDivisionDAO.ObtenerDatosxID(datosObra[0].IdDivision, ref mensaje_error);
+
+
+                //ObjSAPComprobante.UserFields.Fields.Item("U_EXX_CLABYSADQ").Value = datosDivision[0].IdClasif.ToString();
+
+                ConsultasSQL oConsultasSQL = new ConsultasSQL();
+             
+            
+              
+                
+                
                 ObjSAPComprobante.Project = datosObra[0].Codigo;
                 ObjSAPComprobante.Comments = "Prueba Migracion desde IntegradorV1";
 
@@ -644,13 +670,28 @@ namespace ISAP
 
                     ObjSAPComprobante.Lines.ItemDescription = auxdetalle.DescripcionArticulo;
 
-                    ObjSAPComprobante.Lines.ProjectCode = "102";
+                    ObjSAPComprobante.Lines.ProjectCode = datosObra[0].Codigo;
                     ObjSAPComprobante.Lines.ShipDate = auxComprobante.FechaDocumento;
 
 
                     ObjSAPComprobante.Lines.Quantity = Convert.ToDouble(auxdetalle.Cantidad);
 
                     ObjSAPComprobante.Lines.UserFields.Fields.Item("U_SMC_CODIGO_ITEM").Value = auxdetalle.CodigoArticulo;
+
+
+                    ArticuloDAO articuloDAO = new ArticuloDAO();
+                    List<ArticuloDTO> lstArticulo = articuloDAO.ObtenerDatosxID(auxdetalle.IdArticulo, ref mensaje_error);
+                    var cuentaContable = "";
+
+                    if (lstArticulo[0].Inventario)
+                    {
+                        cuentaContable = oConsultasSQL.ObtenerCuentaContable(datosDivision[0].CuentaContable);
+                    }
+                    else
+                    {
+                        ObraCatalogoServicioDTO oObraCatalogoServicioDTO = oObraDAO.ObtenerDatosCatalogoServicioxId(auxdetalle.IdArticulo, auxComprobante.IdObra, ref mensaje_error);
+                        cuentaContable = oConsultasSQL.ObtenerCuentaContable(oObraCatalogoServicioDTO.CuentaContable);
+                    }
 
                     ObjSAPComprobante.Lines.AccountCode = cuentaContable;
 

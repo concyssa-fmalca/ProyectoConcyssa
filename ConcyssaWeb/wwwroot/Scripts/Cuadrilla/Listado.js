@@ -68,6 +68,8 @@ function GuardarCuadrilla() {
     let IdCapataz = $("#IdCapataz").val();
     let IdSupervisor = $("#IdSupervisor").val();
     let IdArea = $("#IdArea").val();
+    //let CuentaServicios = $("#txtCuentaServicios").val();
+    let CuentaMateriales = $("#txtCuentaMateriales").val();
     let varEstado = false;
     let EsTercero = false;
 
@@ -111,6 +113,14 @@ function GuardarCuadrilla() {
         Swal.fire("Error", "El Campo Area es Obligatorio", "info")
         return
     }
+    //if (CuentaServicios == "" || CuentaServicios == undefined) {
+    //    Swal.fire("Error", "El Campo Cuenta de Consumo - Servicios es Obligatorio", "info")
+    //    return
+    //}
+    if (CuentaMateriales == "" || CuentaMateriales == undefined) {
+        Swal.fire("Error", "El Campo Cuenta de Consumo - Materiales es Obligatorio", "info")
+        return
+    }
 
     $.post('UpdateInsertCuadrilla', {
         'IdCuadrilla': varIdCuadrilla,
@@ -123,12 +133,14 @@ function GuardarCuadrilla() {
         'IdCapataz': IdCapataz,
         'IdArea': IdArea,
         'Estado': varEstado,
-        'EsTercero': EsTercero
+        'EsTercero': EsTercero,
+        //'CuentaServicios': CuentaServicios,
+        'CuentaMateriales': CuentaMateriales
     }, function (data, status) {
 
         if (data == 1) {
             swal("Exito!", "Proceso Realizado Correctamente", "success")
-            table.destroy();
+            //table.destroy();
             ConsultaServidor("ObtenerCuadrilla");
             limpiarDatos();
 
@@ -173,6 +185,9 @@ function ObtenerDatosxID(varIdCuadrilla) {
             $("#IdCapataz").val(cuadrilla[0].IdCapataz);
             $("#IdSupervisor").val(cuadrilla[0].IdSupervisor);
             $("#IdArea").val(cuadrilla[0].IdArea);
+            $("#txtCuentaMateriales").val(cuadrilla[0].CuentaMateriales);
+            //$("#txtCuentaServicios").val(cuadrilla[0].CuentaServicios);
+
             if (cuadrilla[0].Estado) {
                 $("#chkActivo").prop('checked', true);
             } 
@@ -391,6 +406,8 @@ function limpiarDatos() {
     $("#IdCapataz").val(0);
     $("#IdSupervisor").val(0);
     $("#IdArea").val(0);
+    $("#txtCuentaMateriales").val('');
+    //$("#txtCuentaServicios").val('');
     
 }
 function colocarCodigo() {

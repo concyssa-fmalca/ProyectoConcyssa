@@ -67,27 +67,24 @@
     <div class="panel">
         <div class="container-fluid">
             <div class="topbar-left col-xs-6">
-                <h3>Atención de Solicitud de Despacho</h3>
+                <h3>Atención de Devolución Administrativa</h3>
             </div>
         </div>
         <div class="container-fluid">
             <div class="col-xs-6">
                 <div class="topbar-left col-xs-6">
-@*                    <h4 style="font-size:1.2em;">Total de Registros: <span id="spnTotalRegistros"></span></h4>*@
+                    @*                    <h4 style="font-size:1.2em;">Total de Registros: <span id="spnTotalRegistros"></span></h4>*@
                     <br />
                 </div>
             </div>
             <div class="col-xs-6 right">
                 <a id="reporteRPT" style="display:none" download="" href="data:application/octet-stream;base64,R0lGODdhAQABAPAAAP8AAAAAACwAAAAAAQABAAACAkQBADs=">download image</a>
-@*                <button class="btn btn-sm  btn-primary pull-right plu" data-target="modal1" onclick="ModalNuevo()" style="margin-left:10px;">Nuevo</button>
-*@                @*<button class="btn btn-sm  btn-success pull-right plu" id="btnPdf" style="margin-left:10px;">Descargar PDF</button>
-                <button class="btn btn-sm btn-info pull-right plu" id="btnExcel" style="margin-left:10px;">Descargar Excel</button>*@
             </div>
-             <div class="col-xs-12 right">
-                 <label class="col-sm-2" for="cboObraFiltro">Base</label>
-                 <div class="col-sm-3">
-                     <select class="form-control" id="cboObraFiltro"></select>
-                 </div>
+            <div class="col-xs-12 right">
+                <label class="col-sm-2" for="cboObraFiltro">Base</label>
+                <div class="col-sm-3">
+                    <select class="form-control" id="cboObraFiltro"></select>
+                </div>
             </div>
             <div class="col-xs-12 right">
                 <label class="col-sm-2" for="txtFechaInicio">Fecha Inicio</label>
@@ -96,10 +93,10 @@
                 </div>
 
             </div>
-            <div class="col-xs-12 right">             
+            <div class="col-xs-12 right">
                 <label class="col-sm-2" for="txtFechaFin">Fecha Fin</label>
                 <div class="col-sm-3">
-                  <input type="date" class="form-control col-sm-3"  id="txtFechaFin" />    
+                    <input type="date" class="form-control col-sm-3" id="txtFechaFin" />
                 </div>
             </div>
             <div class="col-xs-12 right">
@@ -112,11 +109,10 @@
                     </select>
                 </div>
             </div>
-             <div class="col-xs-12 right">
-                <label class="col-sm-2" for="cboSeries">N° Solicitud</label>
+            <div class="col-xs-12 right">
+                <label class="col-sm-2" for="cboSeries">N° Devolucion</label>
                 <div class="col-sm-3">
                     <select class="form-control" id="cboSeries" onchange="ConsultaServidor()">
-                        
                     </select>
                 </div>
                 <button class="btn btn-primary" style="margin-top:3px" onclick="ConsultaServidor()">Buscar</button>
@@ -126,41 +122,41 @@
     <div class="panel">
         <div class="container-fluid" id="SolicitudesCard">
 
-          @*  <div class="panel" style="background-color:aliceblue">
-                <div class="row">
-                    <label class="col-md-2" style="max-width:130px">Serie y Número:</label>
-                    <p class="col-md-1">"SD-9"</p>
-                    <label class="col-md-2" style="max-width:70px">Fecha:</label>
-                    <p class="col-md-1">"2023-07-10"</p>
-                    <label for="cboAlmacen" class="col-md-1">Almacen:</label>
-                    <div class="col-md-4" style="margin-top:-3px">
-                        <select id="cboAlmacen" class="form-control"></select>
-                    </div>
-                    <button class="btn btn-primary" style="margin-top:0px">Agregar Artículo</button>
-                </div>
-                <div class="row">
-                    <label class="col-md-2" style="max-width:130px">Centro de Costo:</label>
-                    <p class="col-md-5">"RED DE AGUA POTABLE Y CONEXIONES DE EDIFICIO MULTI"</p>
-                    <label for="cboResponsable" class="col-md-2" style="max-width:130px">Entregado A:</label>
-                    <div class="col-md-4" style="margin-top:-3px">
-                        <select id="cboResponsable" class="form-control"></select>
-                    </div>                 
-                </div>
-                <div class="row">
-                    <table id="table_id" class="table" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Articulo</th>
-                                <th style="max-width:60px">Cantidad Solicitada</th>
-                                <th style="max-width:60px">Cantidad Atendida</th>
-                                <th style="max-width:60px">Cantidad A Atender</th>
-                                <th style="max-width:60px">Stock</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbody_Solicitudes"></tbody>
-                    </table>
-                </div>
+            @*  <div class="panel" style="background-color:aliceblue">
+            <div class="row">
+            <label class="col-md-2" style="max-width:130px">Serie y Número:</label>
+            <p class="col-md-1">"SD-9"</p>
+            <label class="col-md-2" style="max-width:70px">Fecha:</label>
+            <p class="col-md-1">"2023-07-10"</p>
+            <label for="cboAlmacen" class="col-md-1">Almacen:</label>
+            <div class="col-md-4" style="margin-top:-3px">
+            <select id="cboAlmacen" class="form-control"></select>
+            </div>
+            <button class="btn btn-primary" style="margin-top:0px">Agregar Artículo</button>
+            </div>
+            <div class="row">
+            <label class="col-md-2" style="max-width:130px">Centro de Costo:</label>
+            <p class="col-md-5">"RED DE AGUA POTABLE Y CONEXIONES DE EDIFICIO MULTI"</p>
+            <label for="cboResponsable" class="col-md-2" style="max-width:130px">Entregado A:</label>
+            <div class="col-md-4" style="margin-top:-3px">
+            <select id="cboResponsable" class="form-control"></select>
+            </div>
+            </div>
+            <div class="row">
+            <table id="table_id" class="table" style="width:100%">
+            <thead>
+            <tr>
+            <th>#</th>
+            <th>Articulo</th>
+            <th style="max-width:60px">Cantidad Solicitada</th>
+            <th style="max-width:60px">Cantidad Atendida</th>
+            <th style="max-width:60px">Cantidad A Atender</th>
+            <th style="max-width:60px">Stock</th>
+            </tr>
+            </thead>
+            <tbody id="tbody_Solicitudes"></tbody>
+            </table>
+            </div>
             </div>
             <br />*@
 
@@ -191,7 +187,7 @@
                             <div class="row">
                                 <label class="col-md-2">Stock</label>
                                 <div class="col-md-10">
-                                    <input id="StockNuevoU" class="form-control" type="number" disabled readonly/>
+                                    <input id="StockNuevoU" class="form-control" type="number" disabled readonly />
                                 </div>
                             </div>
                             <div class="row" style="display:none">
@@ -220,13 +216,17 @@
         </div>
     </div>
 
-  
+
 </div>
+
+
 @{
     Random rnd = new Random();
 }
 
-<script src="~/Scripts/AtencionDespacho/Listado.js?v=@rnd.Next(1, 1000 + 1)"></script>
+
+
+<script src="~/Scripts/DevolucionAdm/Listado.js?v=@rnd.Next(1, 1000 + 1)"></script>
 <script src="~/Scripts/General.js"></script>
 <script src="~/js/pdf/jspdf.min.js"></script>
 <script src="~/js/pdf/faker.min.js"></script>

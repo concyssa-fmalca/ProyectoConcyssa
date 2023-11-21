@@ -192,7 +192,7 @@ namespace DAO
                         oIntegradorV1DTO.IdDocExtorno = Convert.ToInt32(drd["IdDocExtorno"].ToString());
                         oIntegradorV1DTO.Inventario = bool.Parse(drd["Inventario"].ToString());
                         oIntegradorV1DTO.TablaOriginal = drd["TablaOriginal"].ToString();
-                        oIntegradorV1DTO.NombGlosa = drd["NombGlosa"].ToString();
+                        oIntegradorV1DTO.CuentaContableDivision = drd["CuentaContableDivision"].ToString();
                         lstIntegradorV1DTO.Add(oIntegradorV1DTO);
                     }
                     drd.Close();
@@ -812,6 +812,40 @@ namespace DAO
                     mensaje_error = ex.Message.ToString();
                 }
                 return lstIntegradorGrupoDetDTO;
+            }
+        }
+
+        public List<IntegradorClasif> ObtenerCLABYSADQ(ref string mensaje_error)
+        {
+            List<IntegradorClasif> lstIntegradorClasif = new List<IntegradorClasif>();
+
+            using (SqlConnection cn = new ConexionSQLSAP().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarCLABYSADQ", cn);
+
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        IntegradorClasif oIntegradorClasif = new IntegradorClasif();
+                        oIntegradorClasif.Code = Convert.ToInt32(drd["Code"].ToString());
+                        oIntegradorClasif.Name = drd["Name"].ToString();
+                       
+
+                        lstIntegradorClasif.Add(oIntegradorClasif);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+                return lstIntegradorClasif;
             }
         }
 

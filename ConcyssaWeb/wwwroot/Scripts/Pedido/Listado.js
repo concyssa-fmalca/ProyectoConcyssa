@@ -3255,8 +3255,6 @@ function disabledmodal(valorbolean) {
     $("#FechaEntrega").prop('disabled', valorbolean);
     $("#txtComentarios").prop('disabled', valorbolean);
     $("#txtFechaDocumento").prop('disabled', valorbolean);
-    $("#txtFechaContabilizacion").prop('disabled', valorbolean);
-    $("#txtFechaContabilizacion").prop('disabled', valorbolean);
     $("#cboMoneda").prop('disabled', valorbolean);
 
     $("#btn_agregaritem").prop('disabled', valorbolean);

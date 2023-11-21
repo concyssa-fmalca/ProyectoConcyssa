@@ -41,7 +41,7 @@ namespace ConcyssaWeb.Controllers
         {
             string mensaje_error = "";
             DataTableDTO oDataTableDTO = new DataTableDTO();
-            List<KardexDTO> lstKardexDTO = ObtenerDatosKardex(IdArticulo, IdAlmacen, FechaInicio, FechaTermino, ClaseArticulo, TipoArticulo);
+            List<KardexDTO> lstKardexDTO = ObtenerDatosKardex(IdArticulo, IdAlmacen, FechaInicio, FechaTermino, ClaseArticulo, TipoArticulo,0);
 
             if (lstKardexDTO.Count > 0)
             {
@@ -141,7 +141,7 @@ namespace ConcyssaWeb.Controllers
 
             // Datos de ejemplo (pueden provenir de una función o fuente de datos)
 
-            List<KardexDTO> lstKardexDTO = ObtenerDatosKardex(IdArticulo, IdAlmacen, FechaInicio, FechaTermino, ClaseArticulo, TipoArticulo);
+            List<KardexDTO> lstKardexDTO = ObtenerDatosKardex(IdArticulo, IdAlmacen, FechaInicio, FechaTermino, ClaseArticulo, TipoArticulo,0);
 
             ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
             // Crear un nuevo archivo Excel
@@ -243,11 +243,14 @@ namespace ConcyssaWeb.Controllers
             return NombreArchivo;
         }
 
-        public List<KardexDTO> ObtenerDatosKardex(int IdArticulo, int IdAlmacen, DateTime FechaInicio, DateTime FechaTermino, int ClaseArticulo, int TipoArticulo)
+        public List<KardexDTO> ObtenerDatosKardex(int IdArticulo, int IdAlmacen, DateTime FechaInicio, DateTime FechaTermino, int ClaseArticulo, int TipoArticulo, int IdSociedad)
         {
             string mensaje_error = "";
             KardexDAO oKardexDAO = new KardexDAO();
-            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            if(IdSociedad == 0)
+            {
+                IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            }
             DataTableDTO oDataTableDTO = new DataTableDTO();
             List<KardexDTO> lstKardexDTO = new List<KardexDTO>();
 

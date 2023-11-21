@@ -3011,7 +3011,7 @@ function disabledmodal(valorbolean) {
     $("#cboMoneda").prop('disabled', valorbolean);
     $("#cboSerie").prop('disabled', valorbolean);
     $("#txtFechaDocumento").prop('disabled', valorbolean);
-    $("#txtFechaContabilizacion").prop('disabled', valorbolean);
+    //$("#txtFechaContabilizacion").prop('disabled', valorbolean);
     $("#cboTipoDocumentoOperacion").prop('disabled', valorbolean);
     //$("#IdTipoDocumentoRef").prop('disabled', valorbolean);
     //$("#SerieNumeroRef").prop('disabled', valorbolean);

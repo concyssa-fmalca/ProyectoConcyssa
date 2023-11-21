@@ -4,6 +4,7 @@
 window.onload = function () {
     var url = "ObtenerDivision";
     ConsultaServidor(url);
+ 
 };
 
 
@@ -43,7 +44,33 @@ function ConsultaServidor(url) {
 
 }
 
+function CargarIdClasif() {
+    $.ajaxSetup({ async: false });
+    $.post("/IntegradorV1/ObtenerClasif", function (data, status) {
+        let base = JSON.parse(data);
+        llenarComboIdClasif(base, "cboIdClasif", "seleccione")
 
+    });
+
+}
+
+
+function llenarComboIdClasif(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].Code + "'>" + lista[i].Name.toUpperCase() + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+    $("#cboBaseFiltro").prop("selectedIndex", 1);
+    listarOpch();
+}
 
 
 function ModalNuevo() {
@@ -59,6 +86,9 @@ function GuardarDivision() {
     let varIdDivision = $("#txtId").val();
     let varCodigo = $("#txtCodigo").val();
     let varDescripcion = $("#txtDescripcion").val();
+    let varCuentaContable = $("#txtCuentaContable").val();
+    let varCuentaContableInv = $("#txtCuentaContableInv").val();
+
     let varEstado = false;
 
     if ($('#chkActivo')[0].checked) {
@@ -72,11 +102,21 @@ function GuardarDivision() {
         Swal.fire("Error", "El Campo Descripcion es Obligatorio", "info")
         return
     }
+    if (varCuentaContable == "" || varCuentaContable == undefined) {
+        Swal.fire("Error", "El Campo Cuenta Contable Compra es Obligatorio", "info")
+        return
+    }
+    if (varCuentaContableInv == "" || varCuentaContableInv == undefined) {
+        Swal.fire("Error", "El Campo Cuenta Contable Inventario es Obligatorio", "info")
+        return
+    }
     $.post('UpdateInsertDivision', {
         'IdDivision': varIdDivision,
         'Codigo': varCodigo,
         'Descripcion': varDescripcion,
-        'Estado': varEstado
+        'Estado': varEstado,
+        'CuentaContable': varCuentaContable,
+        'CuentaContableInv': varCuentaContableInv
     }, function (data, status) {
 
         if (data == 1) {
@@ -112,6 +152,9 @@ function ObtenerDatosxID(varIdDivision) {
             $("#txtId").val(division[0].IdDivision);
             $("#txtCodigo").val(division[0].Codigo);
             $("#txtDescripcion").val(division[0].Descripcion);
+            $("#txtCuentaContable").val(division[0].CuentaContable);
+            $("#txtCuentaContableInv").val(division[0].CuentaContableInv);
+      
             if (division[0].Estado) {
                 $("#chkActivo").prop('checked', true);
             }
@@ -149,6 +192,9 @@ function limpiarDatos() {
     $("#txtId").val("");
     $("#txtCodigo").val("");
     $("#txtDescripcion").val("");
+    $("#txtCuentaContable").val("");
+    $("#txtCuentaContableInv").val("");
+
     $("#chkActivo").prop('checked', false);
 }
 

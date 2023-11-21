@@ -62,6 +62,9 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@Codigo", oDivisionDTO.Codigo);
                         da.SelectCommand.Parameters.AddWithValue("@Descripcion", oDivisionDTO.Descripcion);
                         da.SelectCommand.Parameters.AddWithValue("@IdSociedad", oDivisionDTO.IdSociedad);
+                        da.SelectCommand.Parameters.AddWithValue("@CuentaContable", oDivisionDTO.CuentaContable);
+                        da.SelectCommand.Parameters.AddWithValue("@CuentaContableInv", oDivisionDTO.CuentaContableInv);
+                       
                         da.SelectCommand.Parameters.AddWithValue("@Estado", oDivisionDTO.Estado);
                         da.SelectCommand.Parameters.AddWithValue("@UsuarioCreacion", IdUsuario);
                         da.SelectCommand.Parameters.AddWithValue("@UsuarioActualizacion", IdUsuario);
@@ -97,7 +100,10 @@ namespace DAO
                         oDivisionDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
                         oDivisionDTO.Codigo = drd["Codigo"].ToString();
                         oDivisionDTO.Descripcion = drd["Descripcion"].ToString();
+                        oDivisionDTO.CuentaContable = drd["CuentaContable"].ToString();
+                        oDivisionDTO.CuentaContableInv = drd["CuentaContableInv"].ToString();
                         oDivisionDTO.Estado = bool.Parse(drd["Estado"].ToString());
+                       
                         lstDivisionDTO.Add(oDivisionDTO);
                     }
                     drd.Close();

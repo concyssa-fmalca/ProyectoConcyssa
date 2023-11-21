@@ -112,6 +112,7 @@ function ConsultaServidor(url) {
                         '<button class="btn btn-primary fa fa-pencil btn-xs" onclick = "ObtenerDatosxID(' + obra[i].IdObra + ')" ></button > ' +
                         '<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + obra[i].IdObra + ')"></button>' +
                         '<button class="btn btn-danger btn-xs" onclick="uicatalogoproducto(' + obra[i].IdObra + ')">C</button>' +
+                        '<button class="btn btn-danger btn-xs" onclick="uicatalogoservicio(' + obra[i].IdObra + ')">S</button>' +
                         //'<button class="btn btn-danger btn-xs" onclick="descargarcatatalogo(' + obra[i].IdObra + ')">D</button>' + 
                     '</td >' +
                     '</tr>';
@@ -124,6 +125,7 @@ function ConsultaServidor(url) {
                     '<td>' + obra[i].DescripcionBase.toUpperCase() + '</td>' +
                     '<td>' +
                     '<button class="btn btn-danger btn-xs" onclick="uicatalogoproducto(' + obra[i].IdObra + ')">C</button>' +
+                    '<button class="btn btn-danger btn-xs" onclick="uicatalogoservicio(' + obra[i].IdObra + ')">S</button>' +
                     '</td >' +
                     '</tr>';
              }
@@ -144,6 +146,8 @@ function uicatalogoproducto(IdObra) {
     CargarCatalogoProductoxIdObra(IdObra);
 
 }
+
+
 
 function CargarCatalogoProductoxIdObra(IdObra) {
     $("#txtIdObraCatalogoProducto").val(IdObra);
@@ -295,7 +299,7 @@ function GuardarObra() {
 
     let varCodigoUbigeo = $("#txtUbigeo").val();
     let varCodigoAnexo = $("#txtAnexo").val();
-
+    let varCorreoObra = $("#correoObra").val()
 
     let Direccion = $("#txtDireccion").val();
     let VisibleInternet = false;
@@ -352,7 +356,8 @@ function GuardarObra() {
         'Estado': Estado,
         'Direccion': Direccion,
         'CodigoUbigeo': varCodigoUbigeo,
-        'CodigoAnexo': varCodigoAnexo
+        'CodigoAnexo': varCodigoAnexo,
+        'CorreoObra' : varCorreoObra
     }, function (data, status) {
 
         if (data == 1) {
@@ -380,6 +385,9 @@ function GuardarObraCatalogo() {
 
         });
     });
+
+    console.log(detalles)
+    return
     $.post('UpdateInsertObraCatalogoProducto', {
         'detalles': detalles
     }, function (data, status) {
@@ -426,6 +434,7 @@ function ObtenerDatosxID(varIdObra) {
 
             $("#txtUbigeo").val(obra[0].CodigoUbigeo);
             $("#txtAnexo").val(obra[0].CodigoAnexo);
+            $("#correoObra").val(obra[0].CorreoObra);
 
             $("#IdTipoObra").val(obra[0].IdTipoObra);
             $("#IdDivision").val(obra[0].IdDivision);
@@ -484,7 +493,119 @@ function limpiarDatos() {
 
     $("#txtUbigeo").val("");
     $("#txtAnexo").val("");
+    $("#correoObra").val("");
 }
 
 
+function uicatalogoservicio(IdObra) {
+    AbrirModal("modal-catalogoservicio");
+    CargarCatalogoServicioxIdObra(IdObra);
+}
+
+function CargarCatalogoServicioxIdObra(IdObra) {
+    $("#txtIdObraCatalogoServicio").val(IdObra);
+    tablecatalogo = $('#table_catalogoservicio').dataTable({
+        language: lenguaje_data,
+        responsive: true,
+        ajax: {
+            url: "../Obra/CargarCatalogoServicioxIdObra",
+            type: 'POST',
+            data: {
+                IdObra: IdObra,
+                pagination: {
+                    perpage: 50,
+                },
+            },
+        },
+
+        columnDefs: [
+            // {"className": "text-center", "targets": "_all"},
+
+            {
+                data: null,
+                targets: 0,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return meta.row + 1
+                },
+            },
+            {
+                data: null,
+                targets: 1,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.Codigo.toUpperCase()
+                },
+            },
+            {
+                data: null,
+                targets: 2,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.DescripcionArticulo.toUpperCase()
+                },
+            },
+            {
+                data: null,
+                targets: 3,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    let checked = "";
+                    if (full.Estado) checked= "checked"
+                    return '<input type="checkbox" class="checkServicio"  idservicio="' + full.IdArticulo + '" IdObraCatalogoServicios="' + full.IdObraCatalogoServicios + '" ' + checked +'/>'
+
+                }
+            },
+            {
+                data: null,
+                targets: 4,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return '<input type="text" class="txtCuentaContable form-control" value="'+full.CuentaContable+'"/>'
+
+                }
+            },
+          
+
+        ],
+        "bDestroy": true
+    }).DataTable();
+}
+
+
+function GuardarObraCatalogoServicio() {
+    let detalles = [];
+    let IdObra = $("#txtIdObraCatalogoServicio").val();
+    $('.checkServicio').each(function (val, obj) { // find unique names         
+        detalles.push({
+            'IdObraCatalogoServicios': parseInt($(obj).attr('IdObraCatalogoServicios')),
+            'IdArticulo': parseInt($(obj).attr('idservicio')),
+            'CuentaContable': '',
+            'Estado': $(obj).prop('checked'),
+            'IdObra': parseInt(IdObra),
+
+        });
+    });
+
+    $('.txtCuentaContable').each(function (val, obj) { // find unique names         
+        detalles[val]['CuentaContable'] = $(obj).val()
+       
+    });
+
+    $.post('UpdateInsertObraCatalogoServicio', {
+        'detalles': detalles
+    }, function (data, status) {
+        if (data == 1) {
+            swal("Exito!", "Proceso Realizado Correctamente", "success")
+            table.destroy();
+            ConsultaServidor("ObtenerObra");
+            limpiarDatos();
+
+        } else {
+            swal("Error!", "Ocurrio un Error")
+            limpiarDatos();
+        }
+
+    });
+}
 
