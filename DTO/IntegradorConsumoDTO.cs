@@ -42,5 +42,14 @@ namespace DTO
         public string Modulo { get; set; } = "";
         public string TipoDocumentoRef { get; set; }
         public string NumSerieTipoDocumentoRef { get; set; }
+        public int IdEnviarSapConsumo { get; set; }
+        public string CuentaConsumo { get; set; }
+        public List<CuentaConsumo> MontoCuentas { get; set; }
+    }
+
+    public class CuentaConsumo
+    {
+        public string NumeroCuenta { get; set; }
+        public decimal Monto { get; set; }
     }
 }

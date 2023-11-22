@@ -148,5 +148,40 @@ namespace DAO
             }
         }
 
+        public DivisionDTO ObtenerDivisionxIdAlmacen(int IdAlmacen, ref string mensaje_error)
+        {
+            DivisionDTO oDivisionDTO = new DivisionDTO();
+            using (SqlConnection cn = new Conexion().conectar())
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerDivisionxIdAlmacen", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdAlmacen", IdAlmacen);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {               
+                        oDivisionDTO.IdDivision = int.Parse(drd["IdDivision"].ToString());
+                        oDivisionDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
+                        oDivisionDTO.Codigo = drd["Codigo"].ToString();
+                        oDivisionDTO.Descripcion = drd["Descripcion"].ToString();
+                        oDivisionDTO.CuentaContable = drd["CuentaContable"].ToString();
+                        oDivisionDTO.CuentaContableInv = drd["CuentaContableInv"].ToString();
+                        oDivisionDTO.Estado = bool.Parse(drd["Estado"].ToString());
+
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return oDivisionDTO;
+        }
+
     }
 }

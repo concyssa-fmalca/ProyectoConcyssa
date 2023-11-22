@@ -1,13 +1,19 @@
 ﻿using DAO;
 using DTO;
+using ISAP;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace ConcyssaWeb.Controllers
 {
     public class IntegradorConsumoController : Controller
     {
         public IActionResult Listado()
+        {
+            return View();
+        }
+        public IActionResult Listado2()
         {
             return View();
         }
@@ -22,13 +28,13 @@ namespace ConcyssaWeb.Controllers
 
             for (int i = 0; i < lstAlmacenDTO.Count; i++)
             {
-                lstKardex.AddRange(ObtenerDatosKardex(0, lstAlmacenDTO[0].IdAlmacen, FechaInicio,  FechaTermino, ClaseArticulo, TipoArticulo));
+                lstKardex.AddRange(ObtenerDatosKardex(0, lstAlmacenDTO[0].IdAlmacen, FechaInicio,  FechaTermino, ClaseArticulo, TipoArticulo,false));
             }
 
             return JsonConvert.SerializeObject(lstKardex);
         }
 
-        public List<KardexDTO> ObtenerDatosKardex(int IdArticulo, int IdAlmacen, DateTime FechaInicio, DateTime FechaTermino, int ClaseArticulo, int TipoArticulo)
+        public List<KardexDTO> ObtenerDatosKardex(int IdArticulo, int IdAlmacen, DateTime FechaInicio, DateTime FechaTermino, int ClaseArticulo, int TipoArticulo,bool SoloNoEnviadas)
         {
             string mensaje_error = "";
             KardexDAO oKardexDAO = new KardexDAO();
@@ -61,7 +67,7 @@ namespace ConcyssaWeb.Controllers
 
                 for (int i = 0; i < ArticulosObtenidos.Count; i++)
                 {
-                    lstKardexDTO.AddRange(oKardexDAO.ObtenerKardex(IdSociedad, ArticulosObtenidos[i], IdAlmacen, FechaInicio, FechaTermino, ref mensaje_error));
+                    lstKardexDTO.AddRange(oKardexDAO.ObtenerKardexMigración(IdSociedad, ArticulosObtenidos[i], IdAlmacen, FechaInicio, FechaTermino, SoloNoEnviadas, ref mensaje_error));
                 }
             return lstKardexDTO;
 
@@ -101,9 +107,14 @@ namespace ConcyssaWeb.Controllers
 
             for (int i = 0; i < lstAlmacenDTO.Count; i++)
             {
-                lstKardex.AddRange(ObtenerDatosKardex(0, lstAlmacenDTO[0].IdAlmacen, FechaInicio, FechaTermino, ClaseArticulo, TipoArticulo));
+                lstKardex.AddRange(ObtenerDatosKardex(0, lstAlmacenDTO[0].IdAlmacen, FechaInicio, FechaTermino, ClaseArticulo, TipoArticulo,true));
             }
             List<int> IdsValidas = new List<int>();
+
+            if (lstKardex.Count == 0)
+            {
+                return -1;
+            }
 
             for (int i = 0; i < lstKardex.Count; i++)
             {
@@ -112,11 +123,149 @@ namespace ConcyssaWeb.Controllers
                     IdsValidas.Add(lstKardex[i].IdKardex);
                 }
             }
-
-
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            IntegradorConsumoDAO oIntegradorConsumoDAO = new IntegradorConsumoDAO();
+            for (int i = 0; i < IdsValidas.Count; i++)
+            {
+                respuesta += oIntegradorConsumoDAO.CopiarKardexEnviarSapConsumo(IdsValidas[i], GrupoCreacion, IdUsuario);
+            }
 
             return respuesta;
 
+        }
+
+        public string ListarEnviarSapConsumo(int GrupoCreacion)
+        {
+            string mensaje_error = "";
+            IntegradorConsumoDAO oIntegradorConsumoDAO = new IntegradorConsumoDAO();
+
+            List<CuentaConsumo> lstCuentaConsumo = new List<CuentaConsumo>();
+
+            List<IntegradorConsumoDTO> lstIntegradorConsumoDTO = oIntegradorConsumoDAO.ListarEnviarSapConsumo(GrupoCreacion, ref mensaje_error);
+            if (lstIntegradorConsumoDTO.Count >= 0 && mensaje_error.Length == 0)
+            {
+
+                return JsonConvert.SerializeObject(lstIntegradorConsumoDTO);
+
+            }
+            else
+            {
+                return mensaje_error;
+
+            }
+        }
+
+        public string ObtenerMontoDeCuentas(int GrupoCreacion)
+        {
+            string mensaje_error = "";
+            IntegradorConsumoDAO oIntegradorConsumoDAO = new IntegradorConsumoDAO();
+
+            List<CuentaConsumo> lstCuentaConsumo = new List<CuentaConsumo>();
+
+            List<IntegradorConsumoDTO> lstIntegradorConsumoDTO = oIntegradorConsumoDAO.ListarEnviarSapConsumo(GrupoCreacion, ref mensaje_error);
+            if (lstIntegradorConsumoDTO.Count >= 0 && mensaje_error.Length == 0)
+            {
+                lstCuentaConsumo = lstIntegradorConsumoDTO.GroupBy(t => t.CuentaConsumo).Select(g => new CuentaConsumo
+                {
+                    NumeroCuenta = g.Key,
+                    Monto = g.Sum(t => t.CantidadBase * t.CantidadRegistro)
+                }).ToList();
+
+                DivisionDAO divisionDAO = new DivisionDAO();
+
+                DivisionDTO divisionDTO = divisionDAO.ObtenerDivisionxIdAlmacen(lstIntegradorConsumoDTO[0].IdAlmacen,ref mensaje_error);
+
+                decimal MontoTotal = 0;
+
+                for (int i = 0; i < lstCuentaConsumo.Count; i++)
+                {
+                    MontoTotal += lstCuentaConsumo[i].Monto;
+                }
+
+                lstCuentaConsumo.Add(new CuentaConsumo
+                {
+                    NumeroCuenta = divisionDTO.CuentaContableInv,
+                    Monto = MontoTotal
+                });
+
+
+                return JsonConvert.SerializeObject(lstCuentaConsumo);
+
+            }
+            else
+            {
+                return mensaje_error;
+
+            }
+        }
+
+        public ObraDTO ObtenerIdObraGrupoCreacion(int GrupoCreacion)
+        {
+            string mensaje_error = "";
+            IntegradorConsumoDAO oIntegradorConsumoDAO = new IntegradorConsumoDAO();
+            ObraDTO oObraDTO = new ObraDTO();
+            List<IntegradorConsumoDTO> lstIntegradorConsumoDTO = oIntegradorConsumoDAO.ListarEnviarSapConsumo(GrupoCreacion, ref mensaje_error);
+            if (lstIntegradorConsumoDTO.Count >= 0 && mensaje_error.Length == 0)
+            {
+
+                ObraDAO oObraDAO = new ObraDAO();
+                oObraDTO = oObraDAO.ObtenerObraxIdAlmacen(lstIntegradorConsumoDTO[0].IdAlmacen, ref mensaje_error);
+                return oObraDTO;
+
+            }
+            else
+            {
+                return oObraDTO;
+
+            }
+        }
+
+        public string ProcesarIntegracion(string CuentaInv,decimal MontoInv,int GrupoCreacion,List<CuentaConsumo> Cuentas)
+        {
+            string respuesta = ConexionSAP.Conectar();
+
+            ObraDTO oObraDTO = ObtenerIdObraGrupoCreacion(GrupoCreacion);
+
+            string respuestaSAP = ".";
+
+            for (int i = 0; i < Cuentas.Count; i++)
+            {
+                if (Cuentas[i].NumeroCuenta is null)
+                {
+                    return "Hay Centros de Costo sin asignar Cuenta contable, asignelas e intente otra vez";
+                }
+               
+            }
+
+            string Mensaje_error = "";
+            try
+            {
+
+                if (respuesta == "true")
+                {
+                    ConexionSAP conexion = new ConexionSAP();
+                    respuestaSAP = conexion.AddAsientoContable( CuentaInv,  MontoInv, oObraDTO.Codigo, Cuentas, GrupoCreacion,ref Mensaje_error);
+                    
+                    ConexionSAP.DesconectarSAP();
+                }
+            }
+            catch (Exception e)
+            {
+                respuestaSAP = e.Message.ToString();
+            }
+
+
+
+            return respuestaSAP;
+
+        }
+
+        public int ValidarEnvioSap(int GrupoCreacion)
+        {
+            IntegradorConsumoDAO oIntegradorConsumoDAO = new IntegradorConsumoDAO();
+            int respuesta = 0;
+            respuesta = oIntegradorConsumoDAO.ValidarEnvioSap(GrupoCreacion);
+            return respuesta;
         }
 
     }

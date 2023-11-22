@@ -855,5 +855,92 @@ namespace ISAP
             // }
         }
 
+        public string AddAsientoContable(string CuentaInv, decimal MontoInv, string CodigoObra, List<CuentaConsumo> Cuentas, int GrupoCreacion,ref string mensaje_error)
+        {
+            try
+            {
+
+                string errMsg = "";
+        
+                SAPbobsCOM.JournalEntries ObjSAPComprobante = null;
+                //if (BorradorFirme == 1)
+                //{
+                //    ObjSAPComprobante = (SAPbobsCOM.Documents)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oDrafts);
+                //}
+                //else
+                //{
+                ObjSAPComprobante = (SAPbobsCOM.JournalEntries)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oJournalEntries);
+                //ObjSAPComprobante = (SAPbobsCOM.JournalEntries)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oDrafts);
+                //}
+
+                ConsultasSQL oConsultasSQL = new ConsultasSQL();
+
+             
+
+                ObjSAPComprobante.ProjectCode = CodigoObra;
+
+                for (int i = 0; i < Cuentas.Count; i++)
+                {
+                    string CodigoCuentaSAP = oConsultasSQL.ObtenerCuentaContable(Cuentas[i].NumeroCuenta);
+
+                    ObjSAPComprobante.TaxDate = DateTime.Now;
+                    ObjSAPComprobante.Lines.AccountCode = CodigoCuentaSAP;                   
+                    ObjSAPComprobante.Lines.Credit = Convert.ToDouble(0);
+                    ObjSAPComprobante.Lines.Debit = Convert.ToDouble(Cuentas[i].Monto);
+                    ObjSAPComprobante.Lines.DueDate = DateTime.Now;
+                    ObjSAPComprobante.Lines.ReferenceDate1 = DateTime.Now; 
+                    ObjSAPComprobante.Lines.TaxDate = DateTime.Now;
+                    ObjSAPComprobante.Lines.Add();
+                }
+
+                string CodigoCuentaSAPInv = oConsultasSQL.ObtenerCuentaContable(CuentaInv);
+                ObjSAPComprobante.TaxDate = DateTime.Now;
+                ObjSAPComprobante.Lines.AccountCode = CodigoCuentaSAPInv;            
+                ObjSAPComprobante.Lines.Credit = Convert.ToDouble(MontoInv);   
+                ObjSAPComprobante.Lines.Debit = Convert.ToDouble(0);
+                ObjSAPComprobante.Lines.DueDate = DateTime.Now;
+                ObjSAPComprobante.Lines.ReferenceDate1 = DateTime.Now;
+                ObjSAPComprobante.Lines.TaxDate = DateTime.Now;
+                ObjSAPComprobante.Lines.Add();
+
+
+
+
+
+                int repuesta = ObjSAPComprobante.Add();
+                string ee = "";
+                if (repuesta != 0)
+                {
+                    errMsg = oCompany.GetLastErrorDescription();
+                    int errCode = oCompany.GetLastErrorCode();
+                    //DesconectarSAP();
+                    mensaje_error = "Error:" + errMsg;
+                    //GC.Collect();
+                }
+                else
+                {
+                    IntegradorConsumoDAO oIntegradorConsumoDAO = new IntegradorConsumoDAO();
+                    var docentry = oCompany.GetNewObjectKey();
+                    var intdocentry = Convert.ToInt32(docentry);
+
+
+                    oIntegradorConsumoDAO.ActualizarEnvioSap(GrupoCreacion, intdocentry);
+                    
+             
+                    mensaje_error = "Enviada a SAP con Exito";
+                    //GC.Collect();
+                    //DesconectarSAP();
+                }
+                return mensaje_error;
+            }
+            catch (Exception e)
+            {
+
+                mensaje_error = e.Message.ToString();
+                return mensaje_error;
+            }
+            // }
+        }
+
     }
 }

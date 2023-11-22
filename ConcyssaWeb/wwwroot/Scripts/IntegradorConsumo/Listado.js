@@ -27,6 +27,7 @@ function llenarComboObra(lista, idCombo, primerItem) {
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
+    $("#cboObraFiltro").prop("selectedIndex", 1)
     
 
 }
@@ -275,6 +276,14 @@ function listarDatos() {
                         return full.NombUsuario
                     },
                 },  
+                {
+                    data: null,
+                    targets: 19,
+                    orderable: false,
+                    render: function (data, type, full, meta) {
+                        return full.DocEntrySap
+                    },
+                },  
 
 
             ],
@@ -355,7 +364,7 @@ function abrirDatosTrabajo() {
             return
         }
 
-        $.post("MoverAEnviarSap", {
+        $.post("MoverKardexAEnviarSapConsumo", {
             'IdObra': varIdObraFiltro,
             'FechaInicio': fechaIn,
             'FechaTermino': fechaFn,
@@ -367,7 +376,10 @@ function abrirDatosTrabajo() {
                     console.log('Copiado')
                     window.location.href = "Listado2?l=" + varGrupoCreacion
 
-                } else {
+                } else if(data == -1) {
+                    console.log('No Copiado')
+                    Swal.fire("Sin Datos!", "No hay Datos Pendientes de Migracion", "error");
+                }else {
                     console.log('No Copiado')
                     Swal.fire("Error!", "Error al crear marco de Trabajo", "error");
                 }
@@ -389,28 +401,28 @@ function cambiarTextoBoton() {
 }
 
 
-function ValidarObra() {
-    if ($("#cboObraFiltro").val() !== '0') {
-        $("#cboClaseArticulo").prop('disabled', false)
-        $("#IdTipoProducto").prop('disabled', true)
-    } else {
-        $("#cboClaseArticulo").prop('disabled', true)
-        $("#IdTipoProducto").prop('disabled', true)
-    }
-}
-function ValidarTipoArticulo() {
-    if ($("#cboClaseArticulo").val() == '0') {
-        $("#IdTipoProducto").prop('disabled', true)
-        $("#divOcultar").show()
-    } else if ($("#cboClaseArticulo").val() == '1') {
-        $("#IdTipoProducto").prop('disabled', false)
-        $("#divOcultar").show()
+//function ValidarObra() {
+//    if ($("#cboObraFiltro").val() !== '0') {
+//        $("#cboClaseArticulo").prop('disabled', false)
+//        $("#IdTipoProducto").prop('disabled', true)
+//    } else {
+//        $("#cboClaseArticulo").prop('disabled', true)
+//        $("#IdTipoProducto").prop('disabled', true)
+//    }
+//}
+//function ValidarTipoArticulo() {
+//    if ($("#cboClaseArticulo").val() == '0') {
+//        $("#IdTipoProducto").prop('disabled', true)
+//        $("#divOcultar").show()
+//    } else if ($("#cboClaseArticulo").val() == '1') {
+//        $("#IdTipoProducto").prop('disabled', false)
+//        $("#divOcultar").show()
 
-    } else if ($("#cboClaseArticulo").val() == '3') {
-        BuscarCodigoProducto()
-        $("#divOcultar").hide()
-    }
-}
+//    } else if ($("#cboClaseArticulo").val() == '3') {
+//        BuscarCodigoProducto()
+//        $("#divOcultar").hide()
+//    }
+//}
 
 function formatNumber(num) {
     if (!num || num == 'NaN') return '-';
