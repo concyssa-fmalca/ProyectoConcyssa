@@ -20,4 +20,11 @@ namespace DTO
 #pragma warning restore CS8618 // El elemento propiedad "Descripcion" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declarar el elemento propiedad como que admite un valor NULL.
         public bool Estado { get; set; }
     }
+
+    public class ConexionesBD
+    {
+        public string BaseDatos { get; set; }
+        public int IdSociedad { get; set; }
+        public string Alias { get; set; }
+    }
 }

@@ -358,6 +358,7 @@ window.onload = function () {
                                     }
                                 });
                             }
+                            $("#cboTipoDocumentoOperacion").val(1343)
                             $("#ModalImportarDatos").modal('hide')
                         }
                         catch (e) {
@@ -714,6 +715,20 @@ function AgregarLinea() {
         swal("Informacion!", "La cantidad ser positivo");
         return;
     }
+
+
+    let arrayIdArticulo = new Array();
+    $("input[name='txtIdArticulo[]']").each(function (indice, elemento) {
+        arrayIdArticulo.push($(elemento).val());
+    });
+
+    for (var i = 0; i < arrayIdArticulo.length; i++) {
+        if (IdItem == arrayIdArticulo[i]) {
+            swal("Informacion!", "Este Item ya fue Agregado");
+            return;
+        }
+    }
+
 
     //validaciones
     $.ajaxSetup({ async: false });
@@ -1551,7 +1566,8 @@ function GuardarSolicitud() {
         'IdCuadrilla': null,
         'IdResponsable': null,
         'IdTipoDocumentoRef': IdTipoDocumentoRef,
-        'NumSerieTipoDocumentoRef': SerieNumeroRef
+        'NumSerieTipoDocumentoRef': SerieNumeroRef,
+        'NroRef':$("#NumRef").val()
     })
 
     console.log(MovimientoEnviar)
@@ -1678,6 +1694,7 @@ function limpiarDatos() {
     $("#txtImpuesto").val('');
     $("#txtTotal").val('');
     $("#txtEstado").val(1);
+    $("#NumRef").val('')
     limitador = 0;
 }
 
@@ -1736,6 +1753,7 @@ function ObtenerDatosxID(IdMovimiento) {
                 $("#txtTotalAntesDescuento").val(formatNumber(movimiento.SubTotal.toFixed(DecimalesPrecios)))
                 $("#txtImpuesto").val(formatNumber(movimiento.Impuesto.toFixed(DecimalesPrecios)))
                 $("#txtTotal").val(formatNumberDecimales(movimiento.Total, 2))
+                $("#NumRef").val(movimiento.NroRef)
 
                 $("#cboCentroCosto").val(movimiento.IdCentroCosto)
                 $("#cboTipoDocumentoOperacion").val(movimiento.IdTipoDocumento)
@@ -1967,6 +1985,7 @@ function Editar() {
         'Comentario': varComentario,
         'IdCuadrilla': varIdCuadrilla,
         'IdResponsable': varIdResponsable,
+        'NroRef' : $("#NumRef").val()
         
     }, function (data, status) {
 
@@ -2104,6 +2123,11 @@ function EnviarTipoCambioDetalle() {
 }
 
 
+function SeleccionTrItem(ItemCodigo) {
+
+    $("#rdSeleccionado" + ItemCodigo).prop("checked", true);
+
+}
 
 
 
@@ -2130,7 +2154,7 @@ function BuscarCodigoProducto() {
 
                 for (var i = 0; i < items.length; i++) {
                     /* if (items[i].Inventario == TipoItem) {*/
-                    tr += '<tr>' +
+                    tr += '<tr onclick="SeleccionTrItem(' + items[i].IdArticulo + ')">' +
                         '<td><input type="radio" clase="" id="rdSeleccionado' + items[i].IdArticulo + '"  name="rdSeleccionado"  value = "' + items[i].IdArticulo + '" ></td>' +
                         '<td>' + items[i].Codigo + '</td>' +
                         '<td>' + items[i].Descripcion1 + '</td>' +
@@ -2166,6 +2190,7 @@ function BuscarCodigoProducto() {
                         "lengthMenu": "Mostrar _MENU_ registros"
                     }
                 });
+               
             }
 
         });
@@ -2185,7 +2210,7 @@ function BuscarCodigoProducto() {
 
                     for (var i = 0; i < items.length; i++) {
                         /* if (items[i].Inventario == TipoItem) {*/
-                        tr += '<tr>' +
+                        tr += '<tr onclick="SeleccionTrItem(' + items[i].IdArticulo + ')">' +
                             '<td><input type="radio" clase="" id="rdSeleccionado' + items[i].IdArticulo + '"  name="rdSeleccionado"  value = "' + items[i].IdArticulo + '" ></td>' +
                             '<td>' + items[i].Codigo + '</td>' +
                             '<td>' + items[i].Descripcion1 + '</td>' +
@@ -2228,6 +2253,7 @@ function BuscarCodigoProducto() {
 
             });
     }
+    $("div.dataTables_filter input").focus();
 }
 
 
@@ -2852,7 +2878,7 @@ function GenerarReporte(id) {
                 )
 
             } else {
-                respustavalidacion
+                Swal.fire("Error!", "No se pudo Cargar el Reporte", "error")
             }
         });
     }, 100)
@@ -2936,7 +2962,12 @@ function listarIngresosDT() {
                 targets: 5,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.TDocumento.toUpperCase()
+                    if (full.EsDevolucionAdm == 0) {
+                        return full.TDocumento.toUpperCase();
+                    } else {
+                        return "APP MOVIL";
+                    }
+
                 },
             },
             {
@@ -2993,6 +3024,14 @@ function listarIngresosDT() {
                 orderable: false,
                 render: function (data, type, full, meta) {
                     return full.NombAlmacen
+                },
+            },
+            {
+                data: null,
+                targets: 11,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.NroRef
                 },
             }
 

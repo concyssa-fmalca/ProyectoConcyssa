@@ -24,6 +24,59 @@ window.onload = function () {
             }
         });
     });
+
+
+    $("#CargarExcelProv").on("submit", function (e) {
+        e.preventDefault();
+        var formData = new FormData($("#CargarExcelProv")[0]);
+        $.ajax({
+            url: "GuardarFile",
+            type: "POST",
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (datos) {
+                let data = JSON.parse(datos);
+                console.log(data);
+
+                if (obtenerUltimaParteDespuesDelPunto(data[0]) != 'xlsx') {
+                    Swal.fire("Error!", "Solo puede procesar archivos de Excel", "error")
+                    return
+                }
+
+                NombreArchivo = data[0]
+
+                $.post('ProcesarExcelProveedores', {
+                    'archivo': data[0]
+                }, function (data, status) {
+                    if (data != 'error') {
+                        try {
+
+                            Swal.fire({
+                                title: "Resultado",
+                                html: data,
+                                icon: "info"
+                            });
+
+
+                            $("#ModalImportarDatosProv").modal('hide')
+                        }
+                        catch (e) {
+                            Swal.fire({
+                                title: "Error",
+                                html: data,
+                                icon: "error"
+                            });
+                        }
+                    } else {
+                        Swal.fire('Error!', "No se pudo Procesar el Archivo Excel", "error")
+                    }
+
+                });
+            }
+        });
+    });
 };
 
 let contadorAnexo = 0;
@@ -105,6 +158,11 @@ function pad(str, max) { str = str.toString(); return str.length < max ? pad("0"
 
 function GuardarProveedor() {
 
+
+
+
+
+
     let varIdProveedor = $("#txtId").val();
     let varCodigo = $("#txtCodigo").val();
     let varTipoPersona = $("#cboTipoPersona").val();
@@ -147,6 +205,54 @@ function GuardarProveedor() {
     if ($('#chk4ta')[0].checked) {
         varAfecto = true;
     }
+
+    if (varTipoPersona == 0 || varTipoPersona == null || varTipoPersona == undefined) {
+        Swal.fire("Advertencia", "Llene el Campo Tipo Persona", "info");
+        return
+    }
+
+    if (varTipoDocumento == 0 || varTipoDocumento == null || varTipoDocumento == undefined) {
+        Swal.fire("Advertencia", "Llene el Campo Tipo Documento", "info");
+        return
+    }
+
+    if (varNumeroDocumento == "" || varNumeroDocumento == null || varNumeroDocumento == undefined) {
+        Swal.fire("Advertencia", "Llene el Campo Numero Documento", "info");
+        return
+    }
+    if (varRazonSocial == "" || varRazonSocial == null || varRazonSocial == undefined) {
+        Swal.fire("Advertencia", "Llene el Campo Razon Social", "info");
+        return
+    }
+    if (varDireccionFiscal == "" || varDireccionFiscal == null || varDireccionFiscal == undefined) {
+        Swal.fire("Advertencia", "Llene el Campo Dirección Fiscal", "info");
+        return
+    }
+    if (varCondicionPago == 0 || varCondicionPago == null || varCondicionPago == undefined) {
+        Swal.fire("Advertencia", "Llene el Campo Condicion de Pago", "info");
+        return
+    }
+    if (varEmail == "" || varEmail == null || varEmail == undefined) {
+        Swal.fire("Advertencia", "Llene el Campo Email", "info");
+        return
+    }
+    if (varFechaIngreso == "" || varFechaIngreso == null || varFechaIngreso == undefined) {
+        Swal.fire("Advertencia", "Llene el Campo Fecha de Ingreso", "info");
+        return
+    }
+    if (varDiasEntrega == "" || varDiasEntrega == null || varDiasEntrega == undefined) {
+        Swal.fire("Advertencia", "Llene el Campo Dias Entrega", "info");
+        return
+    }
+
+
+
+
+
+
+
+
+
     let arrayTxtNombreAnexo = new Array();
     $("input[name='txtNombreAnexo[]']").each(function (indice, elemento) {
         arrayTxtNombreAnexo.push($(elemento).val());
@@ -158,6 +264,11 @@ function GuardarProveedor() {
             'NombreArchivo': arrayTxtNombreAnexo[i]
         });
     }
+
+
+
+
+
 
     $.post('UpdateInsertProveedor', {
         AnexoDetalle,
@@ -766,5 +877,25 @@ function changeTipoPersona() {
         $("#div4ta").show;
     } else {
         $("#div4ta").hide;
+    }
+}
+
+function OpenModalImportacionProv() {
+
+
+    $("#ModalImportarDatosProv").modal('show')
+}
+
+function obtenerUltimaParteDespuesDelPunto(cadena) {
+
+    var partes = cadena.split('.');
+
+    if (partes.length >= 2) {
+
+        var ultimaParte = partes[partes.length - 1];
+        return ultimaParte;
+    } else {
+
+        return cadena;
     }
 }

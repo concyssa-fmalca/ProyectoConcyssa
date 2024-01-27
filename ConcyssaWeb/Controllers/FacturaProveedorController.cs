@@ -5,6 +5,8 @@ using Newtonsoft.Json;
 using System.Net;
 using System.Net.Mail;
 using System.Xml;
+using FE;
+using System.Text;
 
 namespace ConcyssaWeb.Controllers
 {
@@ -20,17 +22,32 @@ namespace ConcyssaWeb.Controllers
             return View();
         }
 
-        public string ListarOPCHDT(int IdBase,string EstadoOPCH = "ABIERTO")
+       // public string ListarOPCHDT(int IdBase,string EstadoOPCH = "ABIERTO")
+        public string ListarOPCHDT(int IdObra,int IdTipoRegistro,int IdSemana,string EstadoOPCH = "ABIERTO")
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             OpchDAO oOpchDAO = new OpchDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
 
             DataTableDTO oDataTableDTO = new DataTableDTO();
-            List<OpchDTO> lstOpchDTO = oOpchDAO.ObtenerOPCHxEstado(IdBase,IdSociedad, ref mensaje_error, EstadoOPCH, IdUsuario);
+            List<OpchDTO> lstOpchDTO = oOpchDAO.ObtenerOPCHxEstado(IdObra,IdTipoRegistro,IdSemana,BaseDatos,ref mensaje_error);
+
+
+            ConfiguracionSociedadDAO oConfiguracionSociedadDAO = new ConfiguracionSociedadDAO();
+            var configuracion = oConfiguracionSociedadDAO.ObtenerConfiguracionSociedad(1, BaseDatos, ref mensaje_error);
+            string BaseDatosSAP = configuracion[0].NombreBDSAP;
+            IntregadorV1DAO intregadorV1DAO = new IntregadorV1DAO();
             if (lstOpchDTO.Count >= 0 && mensaje_error.Length==0)
             {
+
+                for (int i = 0; i < lstOpchDTO.Count; i++)
+                {
+
+                    lstOpchDTO[i].DocNumCont = intregadorV1DAO.ObtenerDocNumOPCH(lstOpchDTO[i].RUCProveedor, lstOpchDTO[i].NumSerieTipoDocumentoRef, BaseDatosSAP, ref mensaje_error);
+                }
+
                 oDataTableDTO.sEcho = 1;
                 oDataTableDTO.iTotalDisplayRecords = lstOpchDTO.Count;
                 oDataTableDTO.iTotalRecords = lstOpchDTO.Count;
@@ -47,14 +64,15 @@ namespace ConcyssaWeb.Controllers
         }
 
 
-        public string ListarOPCHDTModal(string EstadoOPCH = "ABIERTO")
+        public string ListarOPCHDTModal(int IdProveedor,string EstadoOPCH = "ABIERTO")
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             OpchDAO oOpchDAO = new OpchDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             DataTableDTO oDataTableDTO = new DataTableDTO();
-            List<OpchDTO> lstOpchDTO = oOpchDAO.ObtenerOPCHxEstadoModal(IdSociedad, ref mensaje_error, EstadoOPCH, IdUsuario);
+            List<OpchDTO> lstOpchDTO = oOpchDAO.ObtenerOPCHxEstadoModal(IdSociedad, IdProveedor,BaseDatos,ref mensaje_error, EstadoOPCH, IdUsuario);
             if (lstOpchDTO.Count >= 0 && mensaje_error.Length == 0)
             {
                 oDataTableDTO.sEcho = 1;
@@ -75,10 +93,11 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerOPCHDetalle(int IdOPCH)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             OpchDAO oOpchDAO = new OpchDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             DataTableDTO oDataTableDTO = new DataTableDTO();
-            List<OPCHDetalle> lstOPCHDetalle = oOpchDAO.ObtenerDetalleOpch(IdOPCH, ref mensaje_error);
+            List<OPCHDetalle> lstOPCHDetalle = oOpchDAO.ObtenerDetalleOpch(IdOPCH,BaseDatos,ref mensaje_error);
             if (lstOPCHDetalle.Count > 0)
             {
                 //oDataTableDTO.sEcho = 1;
@@ -100,6 +119,7 @@ namespace ConcyssaWeb.Controllers
         public string UpdateInsertMovimientoFacturaProveedor(OpchDTO oOpchDTO)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             int IdSociedad = Convert.ToInt32((String.IsNullOrEmpty(oOpchDTO.IdSociedad.ToString())) ? Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad")) : oOpchDTO.IdSociedad);
             int IdUsuario = Convert.ToInt32((String.IsNullOrEmpty(oOpchDTO.IdUsuario.ToString())) ? Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")) : oOpchDTO.IdUsuario);
             if (IdSociedad == 0)
@@ -117,22 +137,14 @@ namespace ConcyssaWeb.Controllers
             oOpchDTO.IdUsuario = IdUsuario;
             MovimientoDAO oMovimimientoDAO = new MovimientoDAO();
             OpchDAO oOpchDAO = new OpchDAO();
-            int respuesta = oMovimimientoDAO.InsertUpdateMovimientoOPCH(oOpchDTO, ref mensaje_error);
+            int respuesta = oMovimimientoDAO.InsertUpdateMovimientoOPCH(oOpchDTO,BaseDatos,ref mensaje_error);
             int respuesta1 = 0;
             if (mensaje_error.Length > 0)
             {
                 return mensaje_error;
             }
             if (respuesta > 0)
-            {
-                for (int i = 0; i < oOpchDTO.detalles.Count; i++)
-                {
-                    oOpchDTO.detalles[i].IdOPCH = respuesta;
-                    respuesta1 = oMovimimientoDAO.InsertUpdateOPCHDetalle(oOpchDTO.detalles[i], ref mensaje_error);
-                    int respuesta2 = oMovimimientoDAO.InsertUpdateOPCHDetalleCuadrilla(respuesta1, oOpchDTO.detalles[i], ref mensaje_error);
-
-                }
-                oOpchDAO.UpdateTotalesOPCH(respuesta, ref mensaje_error);
+            {             
                 if (oOpchDTO.AnexoDetalle!=null)
                 {
                     for (int i = 0; i < oOpchDTO.AnexoDetalle.Count; i++)
@@ -142,11 +154,9 @@ namespace ConcyssaWeb.Controllers
                         oOpchDTO.AnexoDetalle[i].Tabla = "Opch";
                         oOpchDTO.AnexoDetalle[i].IdTabla = respuesta;
 
-                        oMovimimientoDAO.InsertAnexoMovimiento(oOpchDTO.AnexoDetalle[i], ref mensaje_error);
+                        oMovimimientoDAO.InsertAnexoMovimiento(oOpchDTO.AnexoDetalle[i],BaseDatos,ref mensaje_error);
                     }
                 }
-                
-
 
             }
 
@@ -169,7 +179,86 @@ namespace ConcyssaWeb.Controllers
                 }
                 else
                 {
-                    return mensaje_error;
+                    return respuesta.ToString();
+                }
+            }
+        }
+
+        public string UpdateInsertMovimientoFacturaProveedorString(string JsonDatosEnviar)
+        {
+            JsonDatosEnviar = JsonDatosEnviar.Remove(JsonDatosEnviar.Length - 1, 1);
+            JsonDatosEnviar = JsonDatosEnviar.Remove(0, 1);
+
+            var settings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                MissingMemberHandling = MissingMemberHandling.Ignore
+            };
+
+            OpchDTO oOpchDTO = JsonConvert.DeserializeObject<OpchDTO>(JsonDatosEnviar, settings);
+
+            string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            int IdSociedad = Convert.ToInt32((String.IsNullOrEmpty(oOpchDTO.IdSociedad.ToString())) ? Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad")) : oOpchDTO.IdSociedad);
+            int IdUsuario = Convert.ToInt32((String.IsNullOrEmpty(oOpchDTO.IdUsuario.ToString())) ? Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")) : oOpchDTO.IdUsuario);
+            if (IdSociedad == 0)
+            {
+                IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            }
+            if (IdUsuario == 0)
+            {
+                IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            }
+            //int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            //int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+
+            oOpchDTO.IdSociedad = IdSociedad;
+            oOpchDTO.IdUsuario = IdUsuario;
+            MovimientoDAO oMovimimientoDAO = new MovimientoDAO();
+            OpchDAO oOpchDAO = new OpchDAO();
+            int respuesta = oMovimimientoDAO.InsertUpdateMovimientoOPCH(oOpchDTO, BaseDatos, ref mensaje_error);
+            int respuesta1 = 0;
+            if (mensaje_error.Length > 0)
+            {
+                return mensaje_error;
+            }
+            if (respuesta > 0)
+            {
+                if (oOpchDTO.AnexoDetalle != null)
+                {
+                    for (int i = 0; i < oOpchDTO.AnexoDetalle.Count; i++)
+                    {
+                        oOpchDTO.AnexoDetalle[i].ruta = "/Anexos/" + oOpchDTO.AnexoDetalle[i].NombreArchivo;
+                        oOpchDTO.AnexoDetalle[i].IdSociedad = oOpchDTO.IdSociedad;
+                        oOpchDTO.AnexoDetalle[i].Tabla = "Opch";
+                        oOpchDTO.AnexoDetalle[i].IdTabla = respuesta;
+
+                        oMovimimientoDAO.InsertAnexoMovimiento(oOpchDTO.AnexoDetalle[i], BaseDatos, ref mensaje_error);
+                    }
+                }
+
+            }
+
+            if (mensaje_error.Length > 0)
+            {
+                return mensaje_error;
+            }
+            else
+            {
+                if (respuesta > 0)
+                {
+                    string tabla = oOpchDTO.TablaOrigen;
+                    int tipo = oOpchDTO.IdTipoDocumento;
+                    if (tabla != "Entrega" && tipo == 18)
+                    {
+                        enviarCorreo(respuesta);
+                    }
+
+                    return respuesta.ToString();
+                }
+                else
+                {
+                    return respuesta.ToString();
                 }
             }
         }
@@ -177,12 +266,13 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerDatosxIdOpch(int IdOpch)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             OpchDAO oOpchDAO = new OpchDAO();
-            OpchDTO oOpchDTO = oOpchDAO.ObtenerDatosxIdOpch(IdOpch, ref mensaje_error);
+            OpchDTO oOpchDTO = oOpchDAO.ObtenerDatosxIdOpch(IdOpch,BaseDatos,ref mensaje_error);
             if (mensaje_error.ToString().Length == 0)
             {
                 List<OPCHDetalle> lstOPCHDetalle = new List<OPCHDetalle>();
-                lstOPCHDetalle = oOpchDAO.ObtenerDetalleOpch(IdOpch, ref mensaje_error);
+                lstOPCHDetalle = oOpchDAO.ObtenerDetalleOpch(IdOpch,BaseDatos,ref mensaje_error);
                 oOpchDTO.detalles = new OPCHDetalle[lstOPCHDetalle.Count()];
                 for (int i = 0; i < lstOPCHDetalle.Count; i++)
                 {
@@ -190,7 +280,7 @@ namespace ConcyssaWeb.Controllers
                 }
 
                 List<AnexoDTO> lstAnexoDTO = new List<AnexoDTO>();
-                lstAnexoDTO = oOpchDAO.ObtenerAnexoOpch(IdOpch, ref mensaje_error);
+                lstAnexoDTO = oOpchDAO.ObtenerAnexoOpch(IdOpch,BaseDatos,ref mensaje_error);
                 oOpchDTO.AnexoDetalle = new AnexoDTO[lstAnexoDTO.Count()];
                 for (int i = 0; i < lstAnexoDTO.Count; i++)
                 {
@@ -293,9 +383,10 @@ namespace ConcyssaWeb.Controllers
         {
 
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             OpchDAO oOpchDAO = new OpchDAO();
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
-            int respuesta = oOpchDAO.UpdateOPCH(IdUsuario, oOpchDTO, ref mensaje_error);
+            int respuesta = oOpchDAO.UpdateOPCH(IdUsuario, oOpchDTO,BaseDatos,ref mensaje_error);
 
             if (mensaje_error.Length > 0)
             {
@@ -318,9 +409,10 @@ namespace ConcyssaWeb.Controllers
         {
 
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             OpchDAO oOpchDAO = new OpchDAO();
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
-            int respuesta = oOpchDAO.UpdateCuadrillas(oOPCHDetalle, ref mensaje_error);
+            int respuesta = oOpchDAO.UpdateCuadrillas(oOPCHDetalle,BaseDatos,ref mensaje_error);
 
             if (mensaje_error.Length > 0)
             {
@@ -342,9 +434,10 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerOrigenesFactura(int IdOPCH)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             OpchDAO oOpchDAO = new OpchDAO();
          
-            List<OpchDTO> lstOpchDTO = oOpchDAO.ObtenerOrigenesFactura(IdOPCH, ref mensaje_error);
+            List<OpchDTO> lstOpchDTO = oOpchDAO.ObtenerOrigenesFactura(IdOPCH,BaseDatos,ref mensaje_error);
             if (lstOpchDTO.Count >= 0 && mensaje_error.Length == 0)
             {
               
@@ -360,9 +453,10 @@ namespace ConcyssaWeb.Controllers
         public string ValidarStockExtorno(int IdOPCH)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             OpchDAO oOpchDAO = new OpchDAO();
             List<string> SinStock = new List<string>();
-            List<OPCHDetalle> lstoOpchDTO = oOpchDAO.ObtenerStockParaExtornoOPCH(IdOPCH, ref mensaje_error);
+            List<OPCHDetalle> lstoOpchDTO = oOpchDAO.ObtenerStockParaExtornoOPCH(IdOPCH,BaseDatos,ref mensaje_error);
             for (int i = 0; i < lstoOpchDTO.Count; i++)
             {
                 if (lstoOpchDTO[i].Resta == -1) SinStock.Add("No hay Stock para " + lstoOpchDTO[i].DescripcionArticulo);
@@ -381,8 +475,9 @@ namespace ConcyssaWeb.Controllers
         {
 
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             OpchDAO oOpchDAO = new OpchDAO();
-            int respuesta = oOpchDAO.ExtornoConfirmado(IdOPCH, EsServicio, TablaOrigen, ref mensaje_error);
+            int respuesta = oOpchDAO.ExtornoConfirmado(IdOPCH, EsServicio, TablaOrigen,BaseDatos,ref mensaje_error);
 
             if (mensaje_error.Length > 0)
             {
@@ -405,10 +500,11 @@ namespace ConcyssaWeb.Controllers
         public string ListarOPCHxIdObra(int IdObra, DateTime FechaInicio, DateTime FechaFin)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             OpchDAO oOpchDAO = new OpchDAO();
 
             DataTableDTO oDataTableDTO = new DataTableDTO();
-            List<OpchDTO> lstOpchDTO = oOpchDAO.ObtenerOPCHxIdObra(IdObra, FechaInicio, FechaFin, ref mensaje_error);
+            List<OpchDTO> lstOpchDTO = oOpchDAO.ObtenerOPCHxIdObra(IdObra, FechaInicio, FechaFin,BaseDatos,ref mensaje_error);
             if (lstOpchDTO.Count >= 0 && mensaje_error.Length == 0)
             {
                 oDataTableDTO.sEcho = 1;
@@ -428,6 +524,7 @@ namespace ConcyssaWeb.Controllers
 
 
         public int enviarCorreo(int IdOpch) {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             try
             {
 
@@ -442,22 +539,22 @@ namespace ConcyssaWeb.Controllers
 
 
                 OpchDAO oOpchDAO = new OpchDAO();
-                OpchDTO oOpchDTO = oOpchDAO.ObtenerDatosxIdOpch(IdOpch, ref mensaje_error);
+                OpchDTO oOpchDTO = oOpchDAO.ObtenerDatosxIdOpch(IdOpch, BaseDatos, ref mensaje_error);
                 if (mensaje_error.ToString().Length == 0)
                 {
                     List<OPCHDetalle> lstOPCHDetalle = new List<OPCHDetalle>();
-                    lstOPCHDetalle = oOpchDAO.ObtenerDetalleOpch(IdOpch, ref mensaje_error);
+                    lstOPCHDetalle = oOpchDAO.ObtenerDetalleOpch(IdOpch, BaseDatos, ref mensaje_error);
                     oOpchDTO.detalles = new OPCHDetalle[lstOPCHDetalle.Count()];
                     for (int i = 0; i < lstOPCHDetalle.Count; i++)
                     {
                         oOpchDTO.detalles[i] = lstOPCHDetalle[i];
                     }
 
-                }      
+                }
 
                 //solo para pruebas
                 //oPedidoDTO.EmailProveedor = "fperez@smartcode.pe";
-               
+
                 string msge = "";
                 string from = "concyssa.smc@gmail.com";
                 string correo = from;
@@ -466,10 +563,20 @@ namespace ConcyssaWeb.Controllers
                 MailMessage mail = new MailMessage();
                 mail.From = new MailAddress(from, displayName);
 
+                AlmacenDAO oAlmacenDAO = new AlmacenDAO();
+                List<AlmacenDTO> lstAlmacenDTO = oAlmacenDAO.ObtenerDatosxID(oOpchDTO.IdAlmacen, BaseDatos, ref mensaje_error);
 
-           
-                mail.To.Add("cristhian.chacaliaza@smartcode.pe");
-                mail.To.Add("fperez@smartcode.pe");
+                string CorreoAlmacen = lstAlmacenDTO[0].CorreoAlmacen;
+
+                if (CorreoAlmacen != "")
+                {
+                    mail.To.Add(lstAlmacenDTO[0].CorreoAlmacen);
+
+                }
+
+                
+                
+                //mail.To.Add("fperez@smartcode.pe");
                 //mail.To.Add("fmalca@concyssa.com");
                 //mail.To.Add("compras@concyssa.com ");
                 mail.Subject = "CONCYSSA NOTIFICACION: FACTURA " + oOpchDTO.NombSerie + "-" + oOpchDTO.Correlativo +" MOVIÓ STOCK";
@@ -505,7 +612,8 @@ namespace ConcyssaWeb.Controllers
         public string TemplateEmail(OpchDTO oOpchDTO)
         {
             ProveedorDAO oProveedorDAO = new ProveedorDAO();
-            List<ProveedorDTO> lstProveedorDTO = oProveedorDAO.ObtenerDatosxID(oOpchDTO.IdProveedor);
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            List<ProveedorDTO> lstProveedorDTO = oProveedorDAO.ObtenerDatosxID(oOpchDTO.IdProveedor,BaseDatos);
 
             string Plantilla = @"
             <html>
@@ -573,6 +681,221 @@ namespace ConcyssaWeb.Controllers
             </html>";
 
             return Plantilla;
+        }
+
+
+        public int ActualizarEstadoValidacionSUNAT(int IdOPCH)
+        {
+            string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            OpchDAO oOpchDAO = new OpchDAO();
+            OpchDTO oOpchDTO = oOpchDAO.ObtenerDatosxIdOpch(IdOPCH,BaseDatos,ref mensaje_error);
+
+            ProveedorDAO oProveedorDAO = new ProveedorDAO();
+            List<ProveedorDTO> lstProveedorDTO = oProveedorDAO.ObtenerDatosxID(oOpchDTO.IdProveedor,BaseDatos);
+
+            TiposDocumentosDAO oTiposDocumentosDAO = new TiposDocumentosDAO();
+            List<TiposDocumentosDTO> lstTiposDocumentosDTO = oTiposDocumentosDAO.ObtenerDatosxID(oOpchDTO.IdTipoDocumentoRef,BaseDatos,ref mensaje_error);
+
+            ConfiguracionSociedadDAO oSociedadDAO = new ConfiguracionSociedadDAO();
+            List<ConfiguracionSociedadDTO> sociedad = oSociedadDAO.ObtenerConfiguracionSociedad(oOpchDTO.IdSociedad,BaseDatos,ref mensaje_error);
+
+
+            string RUC = lstProveedorDTO[0].NumeroDocumento;
+            string Serie = oOpchDTO.NumSerieTipoDocumentoRef.Split('-')[0];
+            string Numero = oOpchDTO.NumSerieTipoDocumentoRef.Split('-')[1];
+            DateTime FechaEmision = oOpchDTO.FechaDocumento;
+            string NumDocAdquiriente = sociedad[0].Ruc;
+            string TotalDocumento = oOpchDTO.Total.ToString("N2");
+            string TipoDoc = lstTiposDocumentosDTO[0].CodSunat;
+
+
+            string SunatID = "0a0af984-ae1e-47b3-a200-edc706a14fa0";
+            string SunatClave = "N61pn1uXKGoQZahHzp7B0Q==";
+
+            int respuesta = validar_cpe_sunat(RUC, Serie, Numero, FechaEmision, NumDocAdquiriente, TotalDocumento, TipoDoc, SunatID, SunatClave);
+            
+            if(respuesta >= 0)
+            {
+                int actualizar = oOpchDAO.GuardarValidacionSUNAT(IdOPCH, respuesta,BaseDatos);
+                if (actualizar > 0)
+                {
+                    return respuesta;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else
+            {
+                return respuesta;
+            }
+            
+
+        }
+
+
+        public int validar_cpe_sunat(string RUC, string Serie, string Numero, DateTime FechaEmision, string NumDocAdquiriente,
+            string TotalDocumento, string TipoDoc, string SunatID, string SunatClave)
+        {
+            int respuesta;
+            //ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 |
+            //        (SecurityProtocolType)(0xc0 | 0x300 | 0xc00);
+            string tokenSUNAT;
+            ResponseDocumentoConsultaDTO _reponseDocumento;
+            DocumentoConsultaDTO documento = new DocumentoConsultaDTO();
+            tokenSUNAT = obtenerTokenSUNAT(SunatID, SunatClave);
+            documento.numRuc = RUC;
+            documento.codComp = TipoDoc;
+            documento.numeroSerie = Serie;
+            documento.numero = Numero.ToString().TrimStart('0');
+            documento.fechaEmision = FechaEmision.ToString("dd/MM/yyyy");
+            documento.monto = Convert.ToDecimal(TotalDocumento);
+            _reponseDocumento = consultarCPESUNAT(NumDocAdquiriente, tokenSUNAT, documento);
+            if (_reponseDocumento == null)
+            {
+                
+                respuesta = -1;
+            }
+            else
+            {
+               
+                switch (_reponseDocumento.data.estadoCp)
+                {
+                    //VALIDO
+                    case "1":
+                        respuesta = 1;
+                        break;
+                    //NO EXISTE
+                    case "0":
+                        respuesta = 2;
+                        break;
+                    //ERROR
+                    default:
+                        respuesta = 0;
+                        break;
+                }
+            }
+
+            return respuesta;
+        }
+
+        public ResponseDocumentoConsultaDTO consultarCPESUNAT(string rucClienteFacturacionE, string tokenSUNAT, DocumentoConsultaDTO documento)
+        {
+            WebResponse webResponse;
+            HttpWebRequest request;
+            Uri uri;
+            string cadenaUri;
+            string requestData;
+            string response;
+            ResponseDocumentoConsultaDTO _reponseDocumento = null;
+
+            try
+            {
+                cadenaUri = "https://api.sunat.gob.pe/v1/contribuyente/contribuyentes/" + rucClienteFacturacionE + "/validarcomprobante";
+
+                uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
+                request = (HttpWebRequest)WebRequest.Create(uri);
+                request.Method = "POST";
+                request.ContentType = "application/json";
+                request.Headers.Add("Authorization", "Bearer " + tokenSUNAT);
+
+                requestData = JsonConvert.SerializeObject(documento);
+                StreamWriter requestWriter = new StreamWriter(request.GetRequestStream(), System.Text.Encoding.ASCII);
+                requestWriter.Write(requestData);
+                requestWriter.Close();
+
+                webResponse = request.GetResponse();
+                Stream webStream = webResponse.GetResponseStream();
+                StreamReader responseReader = new StreamReader(webStream);
+                response = responseReader.ReadToEnd();
+                _reponseDocumento = JsonConvert.DeserializeObject<ResponseDocumentoConsultaDTO>(response);
+            }
+            catch (Exception e)
+            {
+                string err = e.ToString();
+            }
+
+            return _reponseDocumento;
+        }
+
+        public string obtenerTokenSUNAT(string client_id, string client_secret)
+        {
+            WebResponse webResponse;
+            HttpWebRequest request;
+            Uri uri;
+            string cadenaUri;
+            string requestData;
+            string response;
+            byte[] bytesData;
+            ResponseTokenSunatDTO _responseTokenSUNAT;
+
+            try
+            {
+                cadenaUri = "https://api-seguridad.sunat.gob.pe/v1/clientesextranet/" + client_id + "/oauth2/token/";
+
+                uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
+                request = (HttpWebRequest)WebRequest.Create(uri);
+                request.Method = "POST";
+                request.ContentType = "application/x-www-form-urlencoded";
+
+                requestData = "grant_type=client_credentials&scope=https://api.sunat.gob.pe/v1/contribuyente/contribuyentes" +
+                              "&client_id=" + client_id +
+                              "&client_secret=" + client_secret;
+                bytesData = Encoding.UTF8.GetBytes(requestData);
+                request.ContentLength = bytesData.Length;
+
+                Stream dataStream = request.GetRequestStream();
+                dataStream.Write(bytesData, 0, bytesData.Length);
+                dataStream.Close();
+
+                webResponse = request.GetResponse();
+                Stream webStream = webResponse.GetResponseStream();
+                StreamReader responseReader = new StreamReader(webStream);
+                response = responseReader.ReadToEnd();
+                _responseTokenSUNAT = JsonConvert.DeserializeObject<ResponseTokenSunatDTO>(response);
+
+                return _responseTokenSUNAT.access_token;
+            }
+            catch (Exception e)
+            {
+                string err = e.ToString();
+            }
+
+            return "";
+        }
+
+        public string ValidacionSunatMasiva(int IdObra, int IdTipoRegistro, int IdSemana)
+        {
+            string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            OpchDAO oOpchDAO = new OpchDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+
+            List<OpchDTO> lstOpchDTO = oOpchDAO.ObtenerOPCHxEstado(IdObra, IdTipoRegistro, IdSemana, BaseDatos, ref mensaje_error);
+
+            List<OpchDTO> PendientesValidar = new List<OpchDTO>();
+            for (int i = 0; i < lstOpchDTO.Count; i++)
+            {
+                if (lstOpchDTO[i].IdTipoDocumentoRef==2 && lstOpchDTO[i].ValidadoSUNAT != 1)
+                {
+                    PendientesValidar.Add(lstOpchDTO[i]);
+                }
+            }
+            for (int i = 0; i < PendientesValidar.Count; i++)
+            {
+                int Respuesta = 0;
+                while (Respuesta == 0)
+                {
+                    Respuesta = ActualizarEstadoValidacionSUNAT(PendientesValidar[i].IdOPCH);
+
+                }
+            }
+
+
+            return "";
         }
 
     }

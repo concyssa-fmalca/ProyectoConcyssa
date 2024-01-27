@@ -107,6 +107,14 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='txtCorreoAlmacen' class="control-label col-sm-4 left-align">Correo Notificaciones</label>
+                                    <div class="col-sm-8">
+                                        <input id='txtCorreoAlmacen' name="txtCorreoAlmacen" type='text' class="form-control input-sm" tabindex="6">
+                                    </div>
+                                </div>
+                            </div>
 
                             <div class="row">
                                 <div class='form-group-sm col-sm-4'></div>
@@ -135,8 +143,11 @@
 
 </div>
 
+@{
+    Random rnd = new Random();
+}
 
-<script src="~/Scripts/Almacen/Listado.js"></script>
+<script src="~/Scripts/Almacen/Listado.js?v=@rnd.Next(1, 1000 + 1)"></script>
 <script src="~/Scripts/General.js"></script>
 <script src="~/js/pdf/jspdf.min.js"></script>
 <script src="~/js/pdf/faker.min.js"></script>

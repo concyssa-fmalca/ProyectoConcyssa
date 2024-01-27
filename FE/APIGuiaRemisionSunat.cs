@@ -24,41 +24,7 @@ namespace FE
             "_IWTsuRA9gcWKdvyHQSwMYUwNajK3VuCZssRyRFO5Luw1UTPYLOxNQWQy0YPSG0cYxNagQlnAkazgW5JytyM" +
             "iB2mnATg35jTWky0vLRoTo8LGwTmnjRV1bcSy6HoJcnA8W3ocxxonozXUBDsnDP06w";
 
-
-        //private readonly string accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIx" +
-        //        "IiwianRpIjoiZDU2MDRlODdkYjE3MmEyODI0NzA5NmEzNTU5NmNmYzVjYTlhMTR" +
-        //        "hNDgyY2MxYjg4ODUxNWE3YzA1YTdkMTI0N2Y5NDRkZGZmMTI1MjI3YzkiLCJpYX" +
-        //        "QiOjE2MzgzMTEyNTMsIm5iZiI6MTYzODMxMTI1MywiZXhwIjoxNjY5ODQ3MjUzLC" +
-        //        "JzdWIiOiIxIiwic2NvcGVzIjpbXX0.YZlzx8DwsMUyN5N7E8S14m7PD2HWwc1yB6" +
-        //        "HUgiLyDv-_ll-xUWTUM68RkjOSNL2v_E26_803RAdwzJj1FXkz1Fs_pLRMd_YoNJ" +
-        //        "S4crvqsiQWNkxlMcLqJbALKk-j6vKLbArLkzE4V8CYUpOpritNVno0mhED2D-WKt" +
-        //        "iVKzeQXJYTxupsR5rmUsmk7erjBLdQPKGmFn6iJSaxOWg67oYVrMMcs9DbKSwxbe" +
-        //        "E4lIY5sKKfLuaPhyECNDKxKpqltc4BSEhvrzmmMP2xr4HoyVDkEtsKgTCSvPgscs" +
-        //        "6dFO_OFzxki4wFS_9cFg5GhclGS0sueXwyIjmpLrcrzaA288A9rEPPfORwWciynQ" +
-        //        "eKcYkgN_VPgjeYxR4-i1QbOF4cZc03fphDDQrhAJF_UXi2-VswBHKZRmvqX9l8ZQ" +
-        //        "c6sLLa7-EIMqdYXAUouno9ejHScDQVlU1_EmDPVGtJYjSsc1FIiv6fM7wdnxZZLY" +
-        //        "nvfAnbK0aYncpoq8VlhR32_w9um0CJhipNP-X0c9ZxYv89gSeNcXhMs39ZRRv3E7" +
-        //        "DCRTbcqjf3Fz5LdVONDfsB8mZF2y8fMEOKEJIK1PERUOL9F9UpzAuHjWkZSlSUWB" +
-        //        "vMiEYHxrxSHUP2lKM3FADHwvM5O5dWOGx-W70KEIynwMUBx1ieyKy-PCtY2iZuh8" +
-        //        "uBjA4Gud4";
-
-
-        //Token para producción
-        //private readonly string accessToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIx" +
-        //    "IiwianRpIjoiZjVjYmQwNGYzNzY5NzdhYmI5ODhhMjc1MDNjNGQxMWJiNjlkOGRlMGJhMGVhY2ZjZjU3Yzc" +
-        //    "5ZmU0M2Y2MzUwMzA4YjkwMGE1ZWU2YzliMDEiLCJpYXQiOjE2NDMzOTA3MTgsIm5iZiI6MTY0MzM5MDcxOC" +
-        //    "wiZXhwIjoxNjc0OTI2NzE4LCJzdWIiOiI4Iiwic2NvcGVzIjpbXX0.SAdqb5Ky5ASPPFgklyfj3LM_PY1wP" +
-        //    "r7TEjp0Tlhy8uQUGgV_ToNaDkyvfoDQVg3mzkB-seG79bzfEXqZS2FZ0yIHNgTnrMrJRoG_Q6vqVULZxfT0" +
-        //    "gufKyKq40Lgkk8UgmhJMtGGffAkWZN_PSSwr8__7rHs7SBmEJHAQ5lWovheXqJKwShn18LKhjeasQcZQctX" +
-        //    "_uyyTTu1W3bE0N680tx9mVvjT54PHwPcayFcQcJbB9AzV-uLUFt_b10jeC7ZS7U0kjYTWQBAYDh1rck_84y" +
-        //    "xB2WDbbzoCSLUg6NycK0r1do8mB97YFJY09dGTbCHi48fuxCU8dQgXPVVVfjcvLFhOQsJwZs4D8cvMBr97J" +
-        //    "B1nj9Uoi781RpCT_23hWcycUNINmtgpObhWJvZZjqOWGUW593P3nzr_6djScdm3nR2zuCLnKdStDWGXIMj9" +
-        //    "bUzLQEg5KA-GSWb-O68UWaxTMBGre7F2tXIUONGWpCjJu9TXJ9QY0e_oULbK3lP-mtwcWw92LoZjTmeTyor" +
-        //    "0s-XoFsq1i1_9UglGPvbmqO6o8Fzwc2P0ZtlCXsHYw-WQ0PIDLN4hyOhi8HUT8pWPJf-pINAf-xI4raWMJm" +
-        //    "tPqS8DxcxiRcBPhAorVfkXZj_PWSJM_GGeZKbC0m4eGl1m-zeVDahSiD8F8AJ1NGQfkeGAs4o";
-
-
-        public ResultadoGRDTO SendGuiaRemision(GRSunatDTO gr,int IdMovimiento)
+        public ResultadoGRDTO SendGuiaRemision(GRSunatDTO gr,int IdMovimiento, string BaseDatos)
         {
 
             //var fullpath = "https://apiandes.andessystems.com/api/send-document";
@@ -114,19 +80,19 @@ namespace FE
                         resultado.Ticket = jsonResponse.registro;
                         resultado.Message = jsonResponse.information;
                         MovimientoDAO mov = new MovimientoDAO();
-                        mov.GuardarTicketUpdateEstadoGuia(IdMovimiento, resultado.Ticket);
+                        mov.GuardarTicketUpdateEstadoGuia(IdMovimiento, resultado.Ticket, BaseDatos);
                         var respuesta = RespuestaConsultaTicket(resultado.Ticket,gr);
                         if (respuesta.Success)
                         {
                            
                             resultado.DetalleAnexo = respuesta.DetalleAnexo;
-                            mov.UpdateEstadoGuia(IdMovimiento, ref mensaje_error);
+                            mov.UpdateEstadoGuia(IdMovimiento,BaseDatos, ref mensaje_error);
                         }
                         resultado.Message = respuesta.Message;
 
                         if (respuesta.Message != null && respuesta.Message.Contains("El comprobante fue registrado previamente con otros datos"))
                         {
-                            mov.UpdateEstadoGuia(IdMovimiento, ref mensaje_error);
+                            mov.UpdateEstadoGuia(IdMovimiento,BaseDatos, ref mensaje_error);
                         }
                         
                         if (respuesta.DetalleAnexo != null)
@@ -146,7 +112,7 @@ namespace FE
                             if (jsonResponse.error.numError.Contains("1033"))
                             {
                                 MovimientoDAO mov = new MovimientoDAO();
-                                var TicketObtenido = mov.ObtenerTicketGuia(IdMovimiento);
+                                var TicketObtenido = mov.ObtenerTicketGuia(IdMovimiento, BaseDatos);
                                 if (TicketObtenido != "")
                                 {
                                     var respuesta = RespuestaConsultaTicket(TicketObtenido, gr);
@@ -155,7 +121,7 @@ namespace FE
                                         resultado.Message = respuesta.Message;
                                         resultado.Success = respuesta.Success;
                                         resultado.DetalleAnexo = respuesta.DetalleAnexo;
-                                        mov.UpdateEstadoGuia(IdMovimiento, ref mensaje_error);
+                                        mov.UpdateEstadoGuia(IdMovimiento,  BaseDatos, ref mensaje_error);
                                     }
                                 }
                             }

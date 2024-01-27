@@ -14,9 +14,10 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerObra(int estado = 3)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             ObraDAO oObraDAO = new ObraDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<ObraDTO> lstObraDTO = oObraDAO.ObtenerObra(IdSociedad, ref mensaje_error, estado);
+            List<ObraDTO> lstObraDTO = oObraDAO.ObtenerObra(IdSociedad,BaseDatos,ref mensaje_error, estado);
             if (lstObraDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstObraDTO);
@@ -31,8 +32,9 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerDatosxID(int IdObra)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             ObraDAO oObraDAO = new ObraDAO();
-            List<ObraDTO> lstCodigoUbsoDTO = oObraDAO.ObtenerDatosxID(IdObra, ref mensaje_error);
+            List<ObraDTO> lstCodigoUbsoDTO = oObraDAO.ObtenerDatosxID(IdObra,BaseDatos,ref mensaje_error);
 
             if (lstCodigoUbsoDTO.Count > 0)
             {
@@ -48,10 +50,11 @@ namespace ConcyssaWeb.Controllers
         {
 
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             ObraDAO oObraDAO = new ObraDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             oObraDTO.IdSociedad = IdSociedad;
-            int respuesta = oObraDAO.UpdateInsertObra(oObraDTO, ref mensaje_error, Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")));
+            int respuesta = oObraDAO.UpdateInsertObra(oObraDTO,BaseDatos,ref mensaje_error, Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")));
 
             if (mensaje_error.Length > 0)
             {
@@ -73,10 +76,11 @@ namespace ConcyssaWeb.Controllers
         public string UpdateInsertObraCatalogoProducto(List<ObraCatalogoDTO> detalles)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             ObraDAO oObraDAO = new ObraDAO();
             for (int i = 0; i < detalles.Count(); i++)
             {
-                int respuesta = oObraDAO.UpdateInsertObraCatalogoProducto(detalles[i], ref mensaje_error);
+                int respuesta = oObraDAO.UpdateInsertObraCatalogoProducto(detalles[i],BaseDatos,ref mensaje_error);
             }
 
             if (mensaje_error.Length>0)
@@ -96,8 +100,9 @@ namespace ConcyssaWeb.Controllers
         public int EliminarObra(int IdObra)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             ObraDAO oObraDAO = new ObraDAO();
-            int resultado = oObraDAO.Delete(IdObra, ref mensaje_error);
+            int resultado = oObraDAO.Delete(IdObra,BaseDatos,ref mensaje_error);
             if (resultado == 0)
             {
                 resultado = 1;
@@ -110,10 +115,11 @@ namespace ConcyssaWeb.Controllers
         public string CargarCatalogoxIdObra(int IdObra)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             ObraDAO oObraDAO = new ObraDAO();
             DataTableDTO oDataTableDTO = new DataTableDTO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<ObraCatalogoDTO> lstObraDTO = oObraDAO.ListarArticulosxIdSociedadObra(IdSociedad, IdObra, ref mensaje_error);
+            List<ObraCatalogoDTO> lstObraDTO = oObraDAO.ListarArticulosxIdSociedadObra(IdSociedad, IdObra,BaseDatos,ref mensaje_error);
             if (lstObraDTO.Count > 0)
             {
                 oDataTableDTO.sEcho = 1;
@@ -135,10 +141,11 @@ namespace ConcyssaWeb.Controllers
         public string CargarCatalogoServicioxIdObra(int IdObra)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             ObraDAO oObraDAO = new ObraDAO();
             DataTableDTO oDataTableDTO = new DataTableDTO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<ObraCatalogoServicioDTO> lstObraDTO = oObraDAO.ListarServiciosxIdSociedadObra(IdSociedad, IdObra, ref mensaje_error);
+            List<ObraCatalogoServicioDTO> lstObraDTO = oObraDAO.ListarServiciosxIdSociedadObra(IdSociedad, IdObra,BaseDatos,ref mensaje_error);
             if (lstObraDTO.Count > 0)
             {
                 oDataTableDTO.sEcho = 1;
@@ -160,9 +167,10 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerObraxIdBase(int IdBase)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             ObraDAO oObraDAO = new ObraDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<ObraDTO> lstObraDTO = oObraDAO.ObtenerObraxIdBase(IdBase, ref mensaje_error);
+            List<ObraDTO> lstObraDTO = oObraDAO.ObtenerObraxIdBase(IdBase,BaseDatos,ref mensaje_error);
             if (lstObraDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstObraDTO);
@@ -176,10 +184,11 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerObraxIdUsuarioSession(int IdBase)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             ObraDAO oObraDAO = new ObraDAO();
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             int IdPerfil = Convert.ToInt32(HttpContext.Session.GetInt32("IdPerfil"));
-            List<ObraDTO> lstObraDTO = oObraDAO.ObtenerObraxIdUsuario(IdPerfil,IdBase,IdUsuario, ref mensaje_error);
+            List<ObraDTO> lstObraDTO = oObraDAO.ObtenerObraxIdUsuario(IdPerfil,IdBase,IdUsuario,BaseDatos,ref mensaje_error);
             if (lstObraDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstObraDTO);
@@ -192,10 +201,11 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerObraxIdUsuarioSessionSinBase()
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             ObraDAO oObraDAO = new ObraDAO();
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             int IdPerfil = Convert.ToInt32(HttpContext.Session.GetInt32("IdPerfil"));
-            List<ObraDTO> lstObraDTO = oObraDAO.ObtenerObraxIdUsuarioSinBase(IdPerfil, IdUsuario, ref mensaje_error);
+            List<ObraDTO> lstObraDTO = oObraDAO.ObtenerObraxIdUsuarioSinBase(IdPerfil, IdUsuario,BaseDatos,ref mensaje_error);
             if (lstObraDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstObraDTO);
@@ -208,10 +218,11 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerObraxIdUsuarioSessionFiltro()
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             ObraDAO oObraDAO = new ObraDAO();
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             int IdPerfil = Convert.ToInt32(HttpContext.Session.GetInt32("IdPerfil"));
-            List<ObraDTO> lstObraDTO = oObraDAO.ObtenerObraxIdUsuarioFiltro(IdPerfil,IdUsuario, ref mensaje_error);
+            List<ObraDTO> lstObraDTO = oObraDAO.ObtenerObraxIdUsuarioFiltro(IdPerfil,IdUsuario,BaseDatos,ref mensaje_error);
             if (lstObraDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstObraDTO);
@@ -225,10 +236,11 @@ namespace ConcyssaWeb.Controllers
         public string UpdateInsertObraCatalogoServicio(List<ObraCatalogoServicioDTO> detalles)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             ObraDAO oObraDAO = new ObraDAO();
             for (int i = 0; i < detalles.Count(); i++)
             {
-                int respuesta = oObraDAO.UpdateInsertObraCatalogoServicio(detalles[i], ref mensaje_error);
+                int respuesta = oObraDAO.UpdateInsertObraCatalogoServicio(detalles[i],BaseDatos,ref mensaje_error);
             }
 
             if (mensaje_error.Length > 0)
@@ -245,6 +257,8 @@ namespace ConcyssaWeb.Controllers
 
         }
 
-        
+
+
+
     }
 }

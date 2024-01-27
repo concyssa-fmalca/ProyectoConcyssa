@@ -12,10 +12,10 @@ namespace DAO
 {
     public class IntegradorConsumoDAO
     {
-        public List<ListaTrabajoDTO> ObtenerListaDatosTrabajo(int IdUsuario)
+        public List<ListaTrabajoDTO> ObtenerListaDatosTrabajo(int IdUsuario, string BaseDatos)
         {
             List<ListaTrabajoDTO> lstListaTrabajoDTO = new List<ListaTrabajoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -48,13 +48,13 @@ namespace DAO
             return lstListaTrabajoDTO;
         }
 
-        public int ObtenerGrupoCreacionEnviarSap()
+        public int ObtenerGrupoCreacionEnviarSap( string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -75,13 +75,13 @@ namespace DAO
             }
         }
 
-        public int CopiarKardexEnviarSapConsumo(int IdKardex, int GrupoCreacion, int IdUsuario)
+        public int CopiarKardexEnviarSapConsumo(int IdKardex, int GrupoCreacion, int IdUsuario, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -105,10 +105,10 @@ namespace DAO
             }
         }
 
-        public List<IntegradorConsumoDTO> ListarEnviarSapConsumo(int GrupoCreacion, ref string mensaje_error)
+        public List<IntegradorConsumoDTO> ListarEnviarSapConsumo(int GrupoCreacion, string BaseDatos, ref string mensaje_error)
         {
             List<IntegradorConsumoDTO> lstIntegradorConsumoDTO = new List<IntegradorConsumoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -166,13 +166,13 @@ namespace DAO
             return lstIntegradorConsumoDTO;
         }
 
-        public int ActualizarEnvioSap(int GrupoCreacion, int intdocentry)
+        public int ActualizarEnvioSap(int GrupoCreacion, int intdocentry, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -195,13 +195,13 @@ namespace DAO
             }
         }
 
-        public int ValidarEnvioSap(int GrupoCreacion)
+        public int ValidarEnvioSap(int GrupoCreacion, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {

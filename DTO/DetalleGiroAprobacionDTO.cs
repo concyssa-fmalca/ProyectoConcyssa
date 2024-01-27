@@ -18,6 +18,7 @@ namespace DTO
         public DateTime Fecha { get; set; }
         public decimal MontoSoles { get; set; }
         public decimal MontoDolares { get; set; }
+        public string SerieNumGiro { get; set; }
     }
 
 
@@ -38,5 +39,6 @@ namespace DTO
         public int Accion { get; set; }
         public int IdUsuario { get; set; }
         public string Comentario { get; set; }
+        public string SerieNumGiro { get; set; }
     }
 }

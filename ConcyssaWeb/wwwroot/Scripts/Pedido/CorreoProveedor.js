@@ -183,7 +183,8 @@ function listarPedidoDtCorreo() {
     
     table = $('#table_id').dataTable({
         language: lenguaje_data,
-        responsive: true,
+        responsive: false,
+        scrollX:true,
         ajax: {
             url: 'ObtenerPedidoDTCorreoProveedor',
             type: 'POST',
@@ -251,7 +252,15 @@ function listarPedidoDtCorreo() {
             },
             {
                 data: null,
-                targets:5,
+                targets: 5,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.EmailProveedor
+                },
+            },
+            {
+                data: null,
+                targets:6,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     return full.NombMoneda
@@ -259,7 +268,7 @@ function listarPedidoDtCorreo() {
             },
             {
                 data: null,
-                targets: 6,
+                targets: 7,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     return full.NombSerie + '-' + full.Correlativo
@@ -268,7 +277,7 @@ function listarPedidoDtCorreo() {
            
             {
                 data: null,
-                targets:7,
+                targets:8,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     return full.LugarEntrega
@@ -276,7 +285,7 @@ function listarPedidoDtCorreo() {
             },
             {
                 data: null,
-                targets: 8,
+                targets: 9,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     return formatNumberDecimales(full.total_venta, 2)
@@ -284,7 +293,7 @@ function listarPedidoDtCorreo() {
             },
             {
                 data: null,
-                targets:9,
+                targets:10,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     if (full.Conformidad == 0) {
@@ -301,7 +310,7 @@ function listarPedidoDtCorreo() {
             },
             {
                 data: null,
-                targets:10,
+                targets:11,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     return `<button class="btn btn-sm btn-danger reporte  fa fa-file-pdf-o" onclick="GenerarReporte(` + full.IdPedido +`)"></button>`

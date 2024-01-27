@@ -12,10 +12,10 @@ namespace DAO
 {
     public class SociedadDAO
     {
-        public List<SociedadDTO> ObtenerSociedades(ref string mensajeError)
+        public List<SociedadDTO> ObtenerSociedades( string BaseDatos,ref string mensajeError)
         {
             List<SociedadDTO> lstSociedadDTO = new List<SociedadDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -43,13 +43,13 @@ namespace DAO
             return lstSociedadDTO;
         }
 
-        public int UpdateInsertSociedad(SociedadDTO oSociedadDTO, ref string error_mensaje,int IdUsuario)
+        public int UpdateInsertSociedad(SociedadDTO oSociedadDTO, string BaseDatos, ref string error_mensaje,int IdUsuario)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -78,10 +78,10 @@ namespace DAO
             }
         }
 
-        public List<SociedadDTO> ObtenerDatosxID(int IdSociedad)
+        public List<SociedadDTO> ObtenerDatosxID(int IdSociedad, string BaseDatos)
         {
             List<SociedadDTO> lstSociedadDTO = new List<SociedadDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -110,6 +110,36 @@ namespace DAO
             }
             return lstSociedadDTO;
         }
+
+        public List<ConexionesBD> CargarConexiones()
+        {
+            List<ConexionesBD> lstConexionesBD = new List<ConexionesBD>();
+            using (SqlConnection cn = new Conexion().conectar("AddonsConcyssa"))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerConexionesBD", cn);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        ConexionesBD oConexionesBD = new ConexionesBD();
+                        oConexionesBD.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
+                        oConexionesBD.BaseDatos = drd["BaseDatos"].ToString();
+                        oConexionesBD.Alias = drd["Alias"].ToString();
+                        lstConexionesBD.Add(oConexionesBD);
+                    }
+                    drd.Close();
+                }
+                catch (Exception ex)
+                {
+                    lstConexionesBD = new List<ConexionesBD>();
+                }
+            }
+            return lstConexionesBD;
+        }
+
 
     }
 }

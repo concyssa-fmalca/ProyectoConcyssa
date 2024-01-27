@@ -67,6 +67,33 @@
                         </div>
                     </div>
 
+                    <div class="row">
+                        <div class='form-group-sm'>
+                            <label for='txtAlias' class="control-label col-sm-4 left-align">Alias Base Datos</label>
+                            <div class="col-sm-5">
+                                <input id='txtAlias' name="txtAlias" type='text' class="form-control input-sm" tabindex="2">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class='form-group-sm'>
+                            <label for='ctaAsocFT' class="control-label col-sm-4 left-align">Cuenta Asociada para Facturas</label>
+                            <div class="col-sm-5">
+                                <input id='ctaAsocFT' name="ctaAsocFT" type='text' class="form-control input-sm" tabindex="2">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class='form-group-sm'>
+                            <label for='ctaAsocNC' class="control-label col-sm-4 left-align">Cuenta Asociada para Nota de Crédito</label>
+                            <div class="col-sm-5">
+                                <input id='ctaAsocNC' name="ctaAsocNC" type='text' class="form-control input-sm" tabindex="2">
+                            </div>
+                        </div>
+                    </div>
+
 
                     <div class="row">
                         <div class='form-group-sm'>
@@ -85,9 +112,12 @@
     </div>
 
 </div>
+@{
+    Random rnd = new Random();
+}
 
 
-<script src="~/Scripts/ConfiguracionSociedad/Index.js"></script>
+<script src="~/Scripts/ConfiguracionSociedad/Index.js?v=@rnd.Next(1, 1000 + 1)"></script>
 @*<script src="~/Scripts/General.js"></script>
 <script src="~/js/pdf/jspdf.min.js"></script>
 <script src="~/js/pdf/faker.min.js"></script>

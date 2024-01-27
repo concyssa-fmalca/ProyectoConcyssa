@@ -13,5 +13,8 @@ namespace DTO
         public string RazonSocial { get; set; }="";
         public string Direccion { get; set; }="";
         public string NombreBDSAP { get; set; }="";
+        public string Alias { get; set; }="";
+        public string ctaAsocFT { get; set; }="";
+        public string ctaAsocNC { get; set; }="";
     }
 }

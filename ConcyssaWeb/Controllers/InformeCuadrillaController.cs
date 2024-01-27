@@ -1,4 +1,5 @@
-﻿using DTO;
+﻿using DAO;
+using DTO;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net;
@@ -12,11 +13,15 @@ namespace ConcyssaWeb.Controllers
         {
             return View();
         }
-        public string GenerarReporte(string NombreReporte, string Formato, string Cuadrillas, bool Materiales, bool Auxiliares, bool Servicios, bool Extornos, string FechaInicioS, string FechaFin)
+        public string GenerarReporte(string NombreReporte, string Formato, string Cuadrillas, bool Materiales, bool Auxiliares, bool Servicios, bool Extornos, string FechaInicioS, string FechaFin,string BaseDatos)
         {
+            if (BaseDatos == "" || BaseDatos == null)
+            {
+                BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            }
             //string[] fechaInicio1 = FechaInicioS.Split(' ');
             //string[] fechaInicio2 = fechaInicio1[0].Split('/');
-         
+
             //string[] FechaFin1 = FechaFin.Split(' ');
             //string[] FechaFin2 = FechaFin1[0].Split('/');
 
@@ -46,7 +51,7 @@ namespace ConcyssaWeb.Controllers
 
             try
             {
-                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&Cuadrillas=" + Cuadrillas + "&Materiales=" + Materiales + "&Auxiliares=" + Auxiliares + "&Servicios=" + Servicios + "&Extornos=" + Extornos + "&FechaInicio=" + FechaInicioS + "&FechaFin=" + FechaFin;
+                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&Cuadrillas=" + Cuadrillas + "&Materiales=" + Materiales + "&Auxiliares=" + Auxiliares + "&Servicios=" + Servicios + "&Extornos=" + Extornos + "&FechaInicio=" + FechaInicioS + "&FechaFin=" + FechaFin +"&BaseDatos="+BaseDatos;
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteInformeConsumoCuadrillas";
                 cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteInformeConsumoCuadrillas";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);

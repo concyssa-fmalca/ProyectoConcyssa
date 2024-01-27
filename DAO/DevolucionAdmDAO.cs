@@ -12,13 +12,13 @@ namespace DAO
 {
     public class DevolucionAdmDAO
     {
-        public int UpdateInsertDevolucionAdm(DevolucionAdmDTO oDevolucionAdmDTO)
+        public int UpdateInsertDevolucionAdm(DevolucionAdmDTO oDevolucionAdmDTO, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -76,13 +76,13 @@ namespace DAO
             }
         }
 
-        public int UpdateInsertDevolucionAdmDetalle(DevolucionAdmDetalle oDevolucionAdmDetalle)
+        public int UpdateInsertDevolucionAdmDetalle(DevolucionAdmDetalle oDevolucionAdmDetalle, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -119,12 +119,12 @@ namespace DAO
             }
         }
 
-        public List<DevolucionAdmDTO> ObtenerDevoluciones(int IdUsuario, int EstadoDevolucion)
+        public List<DevolucionAdmDTO> ObtenerDevoluciones(int IdUsuario, int EstadoDevolucion, string BaseDatos)
         {
             List<DevolucionAdmDTO> lstSolicitudDespachoDTO = new List<DevolucionAdmDTO>();
 
 
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -155,7 +155,7 @@ namespace DAO
 
                         int IdDevolucion = int.Parse(drd["Id"].ToString());
                         Int32 filasdetalle = 0;
-                        using (SqlConnection cn2 = new Conexion().conectar())
+                        using (SqlConnection cn2 = new Conexion().conectar(BaseDatos))
                         {
                             try
                             {
@@ -175,7 +175,7 @@ namespace DAO
                         }
 
                         oDevolucionAdmDTO.Detalles = new DevolucionAdmDetalle[filasdetalle];
-                        using (SqlConnection cn3 = new Conexion().conectar())
+                        using (SqlConnection cn3 = new Conexion().conectar(BaseDatos))
                         {
                             try
                             {
@@ -222,12 +222,12 @@ namespace DAO
             return lstSolicitudDespachoDTO;
         }
 
-        public List<DevolucionAdmDTO> ObtenerDevolucionxId(int Id)
+        public List<DevolucionAdmDTO> ObtenerDevolucionxId(int Id, string BaseDatos)
         {
             List<DevolucionAdmDTO> lstSolicitudDespachoDTO = new List<DevolucionAdmDTO>();
 
 
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -257,7 +257,7 @@ namespace DAO
 
                         int IdDevolucion = int.Parse(drd["Id"].ToString());
                         Int32 filasdetalle = 0;
-                        using (SqlConnection cn2 = new Conexion().conectar())
+                        using (SqlConnection cn2 = new Conexion().conectar(BaseDatos))
                         {
                             try
                             {
@@ -277,7 +277,7 @@ namespace DAO
                         }
 
                         oDevolucionAdmDTO.Detalles = new DevolucionAdmDetalle[filasdetalle];
-                        using (SqlConnection cn3 = new Conexion().conectar())
+                        using (SqlConnection cn3 = new Conexion().conectar(BaseDatos))
                         {
                             try
                             {
@@ -324,14 +324,14 @@ namespace DAO
             return lstSolicitudDespachoDTO;
         }
 
-        public int UpdateDevolucionAdmDet(int Id, decimal Cantidad)
+        public int UpdateDevolucionAdmDet(int Id, decimal Cantidad, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
 
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -370,14 +370,14 @@ namespace DAO
         }
 
 
-        public int CerrarDevolucionAdm(int Id)
+        public int CerrarDevolucionAdm(int Id, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
 
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -414,12 +414,12 @@ namespace DAO
             }
         }
 
-        public List<DevolucionAdmDTO> ObtenerDevolucionesAtender(int IdBase, DateTime FechaInicio, DateTime FechaFin, int EstadoDevolucion, int SerieFiltro)
+        public List<DevolucionAdmDTO> ObtenerDevolucionesAtender(int IdBase, DateTime FechaInicio, DateTime FechaFin, int EstadoDevolucion, int SerieFiltro, string BaseDatos)
         {
             List<DevolucionAdmDTO> lstSolicitudDespachoDTO = new List<DevolucionAdmDTO>();
 
 
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -459,7 +459,7 @@ namespace DAO
 
                         int IdDevolucion = int.Parse(drd["Id"].ToString());
                         Int32 filasdetalle = 0;
-                        using (SqlConnection cn2 = new Conexion().conectar())
+                        using (SqlConnection cn2 = new Conexion().conectar(BaseDatos))
                         {
                             try
                             {
@@ -479,7 +479,7 @@ namespace DAO
                         }
 
                         oDevolucionAdmDTO.Detalles = new DevolucionAdmDetalle[filasdetalle];
-                        using (SqlConnection cn3 = new Conexion().conectar())
+                        using (SqlConnection cn3 = new Conexion().conectar(BaseDatos))
                         {
                             try
                             {
@@ -525,13 +525,13 @@ namespace DAO
             }
             return lstSolicitudDespachoDTO;
         }
-        public int AtencionConfirmada(int Cantidad, int IdDevolucion, int IdArticulo, int EstadoDevolucion, ref string mensaje_error)
+        public int AtencionConfirmada(int Cantidad, int IdDevolucion, int IdArticulo, int EstadoDevolucion, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {

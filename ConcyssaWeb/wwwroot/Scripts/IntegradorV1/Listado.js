@@ -2,9 +2,14 @@
     $("#txtFechaInicio").val(getCurrentDate())
     $("#txtFechaFin").val(getCurrentDateFinal())
     CargarObras()
-    listarOpch()
+    
+    CargarTipoRegistro()
     CargarDatosTrabajo()
 };
+
+
+
+
 
 function CargarObras() {
     $.ajaxSetup({ async: false });
@@ -31,6 +36,101 @@ function llenarComboObra(lista, idCombo, primerItem) {
 
 }
 
+function CargarTipoRegistro() {
+    $.ajaxSetup({ async: false });
+    $.post("/TipoRegistro/ObtenerTipoRegistrosAjax", { 'estado': 1 }, function (data, status) {
+        let tipoRegistros = JSON.parse(data);
+        llenarComboTipoRegistro(tipoRegistros, "cboTipoRegistro", "Seleccione")
+    });
+}
+
+
+function llenarComboTipoRegistro(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdTipoRegistro + "'>" + lista[i].NombTipoRegistro + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+}
+
+
+function changeTipoRegistro() {
+
+    let varIdTipoRegistro = $("#cboTipoRegistro").val();
+    let varIdObra = $("#cboObraFiltro").val();
+    $.ajaxSetup({ async: false });
+    $.post("/TipoRegistro/ObtenerSemanaAjax", { 'estado': 1, 'IdTipoRegistro': varIdTipoRegistro, 'IdObra': varIdObra }, function (data, status) {
+        let tipoRegistros = JSON.parse(data);
+        llenarComboSemana(tipoRegistros, "cboSemana", "Seleccione")
+
+    });
+
+}
+
+function llenarComboSemana(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdSemana + "'>" + lista[i].Descripcion + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+}
+
+function esRendicion() {
+    if ($("#cboTipoRegistro").val() != 4) {
+        $("#DivGiro").hide()
+        $("#DivSemana").show()
+        if ($("#cboTipoRegistro").val() == 5) {
+            $("#cboCondicionPago").val(1)
+        }
+    } else {
+        $("#DivGiro").show()
+        $("#DivSemana").hide()
+        CargarGiros()
+    }
+}
+function CargarGiros() {
+    let obraGiro = $("#cboObraFiltro").val()
+    $.ajaxSetup({ async: false });
+    $.post("/GestionGiro/ObtenerGiroAprobado", { 'IdObra': obraGiro }, function (data, status) {
+        let base = JSON.parse(data);
+        llenarComboGiros(base, "cboGiro", "seleccione")
+
+    });
+
+}
+
+
+function llenarComboGiros(lista, idCombo, primerItem) {
+    console.log(lista)
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdGiro + "'>" + lista[i].Serie.toUpperCase() + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+}
+
+
 function getCurrentDate() {
     var currentDate = new Date();
     var year = currentDate.getFullYear();
@@ -52,17 +152,43 @@ function listarOpch() {
     let varIdObraFiltro = $("#cboObraFiltro").val()
     let fechaIn = $("#txtFechaInicio").val()
     let fechaFn = $("#txtFechaFin").val()
+
+    let IdRegistro = $("#cboTipoRegistro").val()
+    if (IdRegistro == 0) {
+        Swal.fire("Seleccione un Tipo de Registro")
+        return
+    } 
+    let IdSemana = 0
+
+    if (IdRegistro != 4) {
+        IdSemana = $("#cboSemana").val()
+        if (IdSemana == 0) {
+            Swal.fire("Seleccione una Semana")
+            return
+        } 
+    } else {
+        IdSemana = $("#cboGiro").val()
+        if (IdSemana == 0) {
+            Swal.fire("Seleccione una Giro")
+            return
+        } 
+    }
+
+
     tablepedido = $('#table_id').dataTable({
-        pageLength: 50,
+        paging: false,
         language: lenguaje_data,
         responsive: true,
         ajax: {
             url: 'ListarCamposxIdObra',
             type: 'POST',
+            error: function (xhr, status, error) {
+               
+            },
             data: {
                 'IdObra': varIdObraFiltro,
-                'FechaInicio': fechaIn,
-                'FechaFin': fechaFn,
+                'IdTipoRegistro': IdRegistro,
+                'IdSemana': IdSemana,
                 pagination: {
                     perpage: 50,
                 },

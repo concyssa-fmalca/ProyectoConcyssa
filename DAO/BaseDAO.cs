@@ -13,10 +13,10 @@ namespace DAO
     public class BaseDAO
     {
 
-        public List<BaseDTO> ObtenerBase(int IdSociedad, ref string mensaje_error, int Estado = 3)
+        public List<BaseDTO> ObtenerBase(int IdSociedad, string BaseDatos, ref string mensaje_error, int Estado = 3)
         {
             List<BaseDTO> lstBaseDTO = new List<BaseDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -50,13 +50,13 @@ namespace DAO
             return lstBaseDTO;
         }
 
-        public int UpdateInsertBase(BaseDTO oBaseDTO, ref string mensaje_error,int IdUsuario)
+        public int UpdateInsertBase(BaseDTO oBaseDTO, string BaseDatos, ref string mensaje_error,int IdUsuario)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -88,10 +88,10 @@ namespace DAO
             }
         }
 
-        public List<BaseDTO> ObtenerDatosxID(int IdBase, ref string mensaje_error)
+        public List<BaseDTO> ObtenerDatosxID(int IdBase, string BaseDatos, ref string mensaje_error)
         {
             List<BaseDTO> lstBaseDTO = new List<BaseDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -128,13 +128,13 @@ namespace DAO
         }
 
 
-        public int Delete(int IdBase, ref string mensaje_error)
+        public int Delete(int IdBase, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -158,10 +158,10 @@ namespace DAO
         }
 
 
-        public List<BaseDTO> ObtenerBasexIdUsuario(int IdPerfil,int IdUsuario, ref string mensaje_error, int Estado = 3)
+        public List<BaseDTO> ObtenerBasexIdUsuario(int IdPerfil,int IdUsuario, string BaseDatos, ref string mensaje_error, int Estado = 3)
         {
             List<BaseDTO> lstBaseDTO = new List<BaseDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -192,5 +192,46 @@ namespace DAO
             }
             return lstBaseDTO;
         }
+
+
+        public int InsertCatalogoObraMasivo(int IdObra,int IdArticulo,int IdTipoProducto,bool Inventario, string BaseDatos, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_InsertCatalogoObraMasivo", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdObra", IdObra);
+                        da.SelectCommand.Parameters.AddWithValue("@IdArticulo", IdArticulo);
+                        da.SelectCommand.Parameters.AddWithValue("@IdTipoProducto", IdTipoProducto);
+                        int ArticuloInventario = 0;
+                        if (Inventario)
+                        {
+                            ArticuloInventario = 1;
+                        }
+                        da.SelectCommand.Parameters.AddWithValue("@Inventario", ArticuloInventario);
+
+                        int rpta = da.SelectCommand.ExecuteNonQuery();
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+                }
+            }
+        }
+
+
     }
 }

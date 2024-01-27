@@ -14,10 +14,10 @@ namespace DAO
 {
     public class GiroDAO
     {
-        public List<GiroDTO> ObtenerGiro( ref string mensaje_error,int IdSociedad, int IdObra = 0, int IdTipoRegistro = 0, int IdSemana = 0, int IdEstadoGiro = 0,  int Estado = 3, int IdUsuario=0)
+        public List<GiroDTO> ObtenerGiro( string BaseDatos, ref string mensaje_error,int IdSociedad, int IdObra = 0, int IdTipoRegistro = 0, int IdSemana = 0, int IdEstadoGiro = 0,  int Estado = 3, int IdUsuario=0)
         {
             List<GiroDTO> lstGiroDTO = new List<GiroDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -78,10 +78,10 @@ namespace DAO
 
       
 
-        public List<GiroDTO> ObtenerGiroxId(int IdGiro, ref string mensaje_error)
+        public List<GiroDTO> ObtenerGiroxId(int IdGiro, string BaseDatos, ref string mensaje_error)
         {
             List<GiroDTO> lstGiroDTO = new List<GiroDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -120,10 +120,10 @@ namespace DAO
         }
 
 
-        public List<GiroDetalleDTO> ObtenerGiroDetalle(int IdGiro, ref string mensaje_error, int Estado = 3)
+        public List<GiroDetalleDTO> ObtenerGiroDetalle(int IdGiro, string BaseDatos, ref string mensaje_error, int Estado = 3)
         {
             List<GiroDetalleDTO> lstGiroDTO = new List<GiroDetalleDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -166,10 +166,10 @@ namespace DAO
         }
 
 
-        public List<GiroDetalleDTO> ObtenerGiroDetallexId(int IdGiroDetalle, ref string mensaje_error)
+        public List<GiroDetalleDTO> ObtenerGiroDetallexId(int IdGiroDetalle, string BaseDatos, ref string mensaje_error)
         {
             List<GiroDetalleDTO> lstGiroDetalleDTO = new List<GiroDetalleDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -205,10 +205,10 @@ namespace DAO
         }
 
 
-        public List<GlosaContableDTO> ObtenerGlosaContableDivision(int IdSociedad,int Idbase, ref string mensaje_error, int Estado = 3)
+        public List<GlosaContableDTO> ObtenerGlosaContableDivision(int IdSociedad,int Idbase, string BaseDatos, ref string mensaje_error, int Estado = 3)
         {
             List<GlosaContableDTO> lstGlosaContableDTO = new List<GlosaContableDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -244,13 +244,13 @@ namespace DAO
             return lstGlosaContableDTO;
         }
 
-        public int UpdateInsertGiroDetalle(GiroDetalleDTO oGiroDetalleDTO, ref string mensaje_error)
+        public int UpdateInsertGiroDetalle(GiroDetalleDTO oGiroDetalleDTO, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -283,13 +283,13 @@ namespace DAO
             }
         }
 
-        public List<string> UpdateInsertGiro(GiroDTO oGiroDTO, int IdUsuario,int IdSociedad,ref string mensaje_error)
+        public List<string> UpdateInsertGiro(GiroDTO oGiroDTO, int IdUsuario,int IdSociedad,string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -369,7 +369,7 @@ namespace DAO
                             resultados.Add(rpta);
                         }
 
-
+                     
                         transactionScope.Complete();
                         return resultados;
 
@@ -389,10 +389,10 @@ namespace DAO
             }
         }
 
-        public List<GlosaContableDTO> ObtenerDatosxID(int IdGlosaContable, ref string mensaje_error)
+        public List<GlosaContableDTO> ObtenerDatosxID(int IdGlosaContable, string BaseDatos, ref string mensaje_error)
         {
             List<GlosaContableDTO> lstGlosaContableDTO = new List<GlosaContableDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -425,13 +425,13 @@ namespace DAO
             return lstGlosaContableDTO;
         }
 
-        public int DeleteGiro(int IdGiro, ref string mensaje_error)
+        public int DeleteGiro(int IdGiro, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -454,13 +454,13 @@ namespace DAO
             }
         }
 
-        public int DeleteGiroDetalle(int IdGiroDetalle, ref string mensaje_error)
+        public int DeleteGiroDetalle(int IdGiroDetalle, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -490,10 +490,10 @@ namespace DAO
 
 
 
-        public GiroDTO DatosSolicitudRq(int IdGiro)
+        public GiroDTO DatosSolicitudRq(int IdGiro, string BaseDatos)
         {
             GiroDTO oGiroDTO = new GiroDTO();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -529,7 +529,7 @@ namespace DAO
             }
 
             Int32 filasGiroModelo = 0;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -549,7 +549,7 @@ namespace DAO
             }
 
             oGiroDTO.ListGiroModelo = new GiroModeloDTO[filasGiroModelo];
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -583,7 +583,7 @@ namespace DAO
                 for (int i = 0; i < oGiroDTO.ListGiroModelo.Count(); i++)
                 {
                     Int32 filasGiroModeloAprobaciones = 0;
-                    using (SqlConnection cn = new Conexion().conectar())
+                    using (SqlConnection cn = new Conexion().conectar(BaseDatos))
                     {
                         try
                         {
@@ -603,7 +603,7 @@ namespace DAO
                     }
 
                     oGiroDTO.ListGiroModelo[i].ListModeloAprobacionesDTO = new GiroModeloAprobacionesDTO[filasGiroModeloAprobaciones];
-                    using (SqlConnection cn = new Conexion().conectar())
+                    using (SqlConnection cn = new Conexion().conectar(BaseDatos))
                     {
                         try
                         {
@@ -650,10 +650,10 @@ namespace DAO
             return oGiroDTO;
         }
 
-        public List<GiroDTO> ObtenerGiroxAprobado(int IdObra, ref string mensaje_error)
+        public List<GiroDTO> ObtenerGiroxAprobado(int IdObra, string BaseDatos, ref string mensaje_error)
         {
             List<GiroDTO> lstGiroDTO = new List<GiroDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {

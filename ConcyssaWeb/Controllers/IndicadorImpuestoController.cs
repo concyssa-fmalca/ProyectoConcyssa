@@ -15,9 +15,10 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerIndicadorImpuestos(int estado = 3)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             IndicadorImpuestoDAO oIndicadorImpuestoDAO = new IndicadorImpuestoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<IndicadorImpuestoDTO> lstIndicadorImpuestoDTO = oIndicadorImpuestoDAO.ObtenerIndicadorImpuestos(IdSociedad, ref mensaje_error, estado);
+            List<IndicadorImpuestoDTO> lstIndicadorImpuestoDTO = oIndicadorImpuestoDAO.ObtenerIndicadorImpuestos(IdSociedad,BaseDatos,ref mensaje_error, estado);
             if (lstIndicadorImpuestoDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstIndicadorImpuestoDTO);
@@ -31,10 +32,11 @@ namespace ConcyssaWeb.Controllers
         public int UpdateInsertIndicadorImpuesto(IndicadorImpuestoDTO IndicadorImpuestoDTO)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             IndicadorImpuestoDAO oIndicadorImpuestoDAO = new IndicadorImpuestoDAO();
             IndicadorImpuestoDTO.IdSociedad = IdSociedad;
-            int resultado = oIndicadorImpuestoDAO.UpdateInsertIndicadorImpuesto(IndicadorImpuestoDTO,ref mensaje_error);
+            int resultado = oIndicadorImpuestoDAO.UpdateInsertIndicadorImpuesto(IndicadorImpuestoDTO,BaseDatos,ref mensaje_error);
             if (resultado != 0)
             {
                 resultado = 1;
@@ -47,8 +49,9 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerDatosxID(int IdIndicadorImpuesto)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             IndicadorImpuestoDAO oIndicadorImpuestoDAO = new IndicadorImpuestoDAO();
-            List<IndicadorImpuestoDTO> lstIndicadorImpuestoDTO = oIndicadorImpuestoDAO.ObtenerDatosxID(IdIndicadorImpuesto, ref mensaje_error);
+            List<IndicadorImpuestoDTO> lstIndicadorImpuestoDTO = oIndicadorImpuestoDAO.ObtenerDatosxID(IdIndicadorImpuesto,BaseDatos,ref mensaje_error);
 
             if (lstIndicadorImpuestoDTO.Count > 0)
             {
@@ -63,8 +66,9 @@ namespace ConcyssaWeb.Controllers
 
         public int EliminarIndicadorImpuesto(int IdIndicadorImpuesto)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             IndicadorImpuestoDAO oIndicadorImpuestoDAO = new IndicadorImpuestoDAO();
-            int resultado = oIndicadorImpuestoDAO.Delete(IdIndicadorImpuesto);
+            int resultado = oIndicadorImpuestoDAO.Delete(IdIndicadorImpuesto,BaseDatos);
             if (resultado == 0)
             {
                 resultado = 1;

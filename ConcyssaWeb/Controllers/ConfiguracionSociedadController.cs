@@ -16,8 +16,9 @@ namespace ConcyssaWeb.Controllers
         {
             string mensaje_error = "";
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             ConfiguracionSociedadDAO oConfiguracionSociedadDAO = new ConfiguracionSociedadDAO();
-            List<ConfiguracionSociedadDTO> oConfiguracionSociedadDTO = oConfiguracionSociedadDAO.ObtenerConfiguracionSociedad(IdSociedad, ref mensaje_error);
+            List<ConfiguracionSociedadDTO> oConfiguracionSociedadDTO = oConfiguracionSociedadDAO.ObtenerConfiguracionSociedad(IdSociedad,BaseDatos,ref mensaje_error);
 
             if (mensaje_error.ToString().Length == 0)
             {
@@ -33,9 +34,10 @@ namespace ConcyssaWeb.Controllers
         public string UpdateInsertConfiguracionSociedad(ConfiguracionSociedadDTO oConfiguracionSociedadDTO)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             ConfiguracionSociedadDAO oConfiguracionSociedadDAO = new ConfiguracionSociedadDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            int respuesta = oConfiguracionSociedadDAO.UpdateInsertConfiguracionSociedad(oConfiguracionSociedadDTO, IdSociedad, ref mensaje_error);
+            int respuesta = oConfiguracionSociedadDAO.UpdateInsertConfiguracionSociedad(oConfiguracionSociedadDTO, IdSociedad,BaseDatos,ref mensaje_error);
 
             if (mensaje_error.Length > 0)
             {

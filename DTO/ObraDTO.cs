@@ -34,6 +34,7 @@ namespace DTO
         public string CodigoUbigeo { get; set; }
         public string CodigoAnexo { get; set; }
         public string CorreoObra { get; set; }
+        public string CodProyecto { get; set; }
 #pragma warning restore CS8618 // El elemento propiedad "DescripcionBase" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declarar el elemento propiedad como que admite un valor NULL.
 
 

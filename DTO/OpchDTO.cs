@@ -19,6 +19,7 @@ namespace DTO
         public int IdMoneda { get; set; }
 
         public string CodMoneda { get; set; }
+        public string RUCProveedor { get; set; }
 
         public decimal TipoCambio { get; set; }
         public int IdCliente { get; set; }
@@ -65,6 +66,7 @@ namespace DTO
 
         public string NombSerie { get; set; }
         public int IdCuadrilla { get; set; }
+        public int ValidadoSUNAT { get; set; }
         public int IdAlmacenDestino { get; set; }
         public int IdResponsable { get; set; }
         public int IdTipoDocumentoRef { get; set; }
@@ -95,6 +97,7 @@ namespace DTO
         public string IdOrigen { get; set; }
         public int IdDocExtorno { get; set; }
         public int SerieSAP { get; set; }
+        public int DocNumCont { get; set; }
 
     }
 

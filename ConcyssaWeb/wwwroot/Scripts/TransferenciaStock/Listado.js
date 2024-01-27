@@ -646,7 +646,7 @@ function AgregarLinea() {
     let MedidaItem = $("#cboMedidaItem").val();
     let DescripcionItem = $("#txtDescripcionItem").val();
     let PrecioUnitarioItem = $("#txtPrecioUnitarioItem").val();
-    let CantidadItem = $("#txtCantidadItem").val();
+    let CantidadItem = +$("#txtCantidadItem").val();
     let ProyectoItem = $("#cboProyectoItem").val();
     let CentroCostoItem = $("#cboCentroCostoItem").val();
     let ReferenciaItem = $("#txtReferenciaItem").val();
@@ -655,7 +655,7 @@ function AgregarLinea() {
     let IdGrupoUnidadMedida = $("#cboGrupoUnidadMedida").val();
     //txtReferenciaItem
 
-    let Stock = $("#txtStockAlmacenItem").val();
+    let Stock = +$("#txtStockAlmacenItem").val();
 
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
@@ -691,6 +691,10 @@ function AgregarLinea() {
     }
     if (ValidartProducto == 0) {
         swal("Informacion!", "Debe Seleccionar Producto!");
+        return;
+    }
+    if (CantidadItem > Stock) {
+        swal("Informacion!", "La Cantidad Debe ser Menor o igual al stock!");
         return;
     }
 
@@ -3065,7 +3069,7 @@ function GenerarReporte(id) {
                     'success'
                 )
             } else {
-                respustavalidacion
+                Swal.fire("Error!", "No se pudo Cargar el Reporte", "error")
             }
         });
     }, 100)

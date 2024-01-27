@@ -140,8 +140,115 @@ window.onload = function () {
     listarGrupoArticulo();
     CargarGrupoUnidadMedida();
     $("#cboIdCodigoUbso").select2();
-    $("#divObraArticulo").hide()
-    ObtenerObra()
+    $("#divObraArticulo").hide();
+    ObtenerObra();
+
+
+
+    $("#CargarExcel").on("submit", function (e) {
+        e.preventDefault();
+        var formData = new FormData($("#CargarExcel")[0]);
+        $.ajax({
+            url: "GuardarFile",
+            type: "POST",
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (datos) {
+                let data = JSON.parse(datos);
+                console.log(data);
+
+                if (obtenerUltimaParteDespuesDelPunto(data[0]) != 'xlsx') {
+                    Swal.fire("Error!", "Solo puede procesar archivos de Excel", "error")
+                    return
+                }
+
+                NombreArchivo = data[0]
+
+                $.post('ProcesarExcel', {
+                    'archivo': data[0]
+                }, function (data, status) {
+                    if (data != 'error') {
+                        try {
+
+                            Swal.fire({
+                                title: "Resultado",
+                                html: data,
+                                icon: "info"
+                            });
+                            
+                     
+                            $("#ModalImportarDatos").modal('hide')
+                        }
+                        catch (e) {
+                            Swal.fire({
+                                title: "Error",
+                                html: data,
+                                icon: "error"
+                            });
+                        }
+                    } else {
+                        Swal.fire('Error!', "No se pudo Procesar el Archivo Excel", "error")
+                    }
+
+                });
+            }
+        });
+    });
+
+    $("#CargarExcelPrecioProv").on("submit", function (e) {
+        e.preventDefault();
+        var formData = new FormData($("#CargarExcelPrecioProv")[0]);
+        $.ajax({
+            url: "GuardarFile",
+            type: "POST",
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (datos) {
+                let data = JSON.parse(datos);
+                console.log(data);
+
+                if (obtenerUltimaParteDespuesDelPunto(data[0]) != 'xlsx') {
+                    Swal.fire("Error!", "Solo puede procesar archivos de Excel", "error")
+                    return
+                }
+
+                NombreArchivo = data[0]
+
+                $.post('ProcesarExcelProvPrecio', {
+                    'archivo': data[0]
+                }, function (data, status) {
+                    if (data != 'error') {
+                        try {
+
+                            Swal.fire({
+                                title: "Resultado",
+                                html: data,
+                                icon: "info"
+                            });
+
+
+                            $("#ModalImportarDatosPrecioProv").modal('hide')
+                        }
+                        catch (e) {
+                            Swal.fire({
+                                title: "Error",
+                                html: data,
+                                icon: "error"
+                            });
+                        }
+                    } else {
+                        Swal.fire('Error!', "No se pudo Procesar el Archivo Excel", "error")
+                    }
+
+                });
+            }
+        });
+    });
+
   
 };
 
@@ -384,6 +491,23 @@ function llenarComboDefinicionGrupoUnidadItem(lista, idCombo, primerItem) {
 
 
 function GuardarArticulo() {
+
+    if ($("#txtDescripcion1").val() == "" || $("#txtDescripcion1").val() == undefined) {
+        Swal.fire("Error!", "Complete el campo Descripción", "error")
+        return
+    }
+    if ($("#IdGrupoUnidadMedida").val() == 0 || $("#IdGrupoUnidadMedida").val() == undefined) {
+        Swal.fire("Error!", "Selecciona un Grupo Medida Base", "error")
+        return
+    }
+    if ($("#IdUnidadMedidaInv").val() == 0 || $("#IdUnidadMedidaInv").val() == undefined) {
+        Swal.fire("Error!", "Selecciona un Grupo Medida", "error")
+        return
+    }
+    if ($("#cboGrupoArticulo").val() == 0 || $("#IdUnidadMedidaInv").val() == undefined) {
+        Swal.fire("Error!", "Selecciona un Grupo Articulo", "error")
+        return
+    }
 
     let varIdArticulo = $("#txtId").val();
     let varCodigo = $("#txtCodigo").val();
@@ -743,3 +867,37 @@ function llenarComboObra(lista, idCombo, primerItem) {
     if (cbo != null) cbo.innerHTML = contenido;
 }
 
+
+
+
+
+function OpenModalImportacion() {
+
+
+    $("#ModalImportarDatos").modal('show')
+}
+
+function obtenerUltimaParteDespuesDelPunto(cadena) {
+
+    var partes = cadena.split('.');
+
+    if (partes.length >= 2) {
+
+        var ultimaParte = partes[partes.length - 1];
+        return ultimaParte;
+    } else {
+
+        return cadena;
+    }
+}
+
+function DescargarPlantilla() {
+    window.open("/Anexos/PlantillaImportacionProductosConcyssa.xlsx", '_blank', 'noreferrer');
+}
+
+
+function OpenModalImportacionArtProv() {
+
+
+    $("#ModalImportarDatosPrecioProv").modal('show')
+}

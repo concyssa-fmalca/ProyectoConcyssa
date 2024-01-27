@@ -7,10 +7,10 @@ namespace DAO
 {
     public class CondicionPagoDAO
     {
-        public List<CondicionPagoDTO> ObtenerCondicionPagos(string IdSociedad)
+        public List<CondicionPagoDTO> ObtenerCondicionPagos(string IdSociedad, string BaseDatos)
         {
             List<CondicionPagoDTO> lstCondicionPagoDTO = new List<CondicionPagoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -40,13 +40,13 @@ namespace DAO
             return lstCondicionPagoDTO;
         }
 
-        public int UpdateInsertCondicionPago(CondicionPagoDTO oCondicionPagoDTO, string IdSociedad,int IdUsuario)
+        public int UpdateInsertCondicionPago(CondicionPagoDTO oCondicionPagoDTO, string IdSociedad,int IdUsuario, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -75,10 +75,10 @@ namespace DAO
             }
         }
 
-        public List<CondicionPagoDTO> ObtenerDatosxID(int IdCondicionPago)
+        public List<CondicionPagoDTO> ObtenerDatosxID(int IdCondicionPago, string BaseDatos)
         {
             List<CondicionPagoDTO> lstCondicionPagoDTO = new List<CondicionPagoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -109,10 +109,10 @@ namespace DAO
         }
 
 
-        public List<CondicionPagoDTO> ObtenerCondicionxProveedor(int IdProveedor)
+        public List<CondicionPagoDTO> ObtenerCondicionxProveedor(int IdProveedor, string BaseDatos)
         {
             List<CondicionPagoDTO> lstCondicionPagoDTO = new List<CondicionPagoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -140,13 +140,13 @@ namespace DAO
 
 
 
-        public int Delete(int IdCondicionPago)
+        public int Delete(int IdCondicionPago, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {

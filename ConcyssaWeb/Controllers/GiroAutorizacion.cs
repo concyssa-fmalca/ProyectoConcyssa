@@ -20,13 +20,14 @@ namespace ConcyssaWeb.Controllers
         {
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
 
             string Resultado = "";
 
 
             GiroAutorizacionDAO oGiroAutorizacionDAO = new GiroAutorizacionDAO();
             //List<SolicitudRQAutorizacionDTO> lstSolicitudRQAutorizacionDTO = oSolicitudRQAutorizacionDAO.ObtenerSolicitudesxAutorizar(IdUsuario.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado);
-            List<GiroAprobacionDTO> lstGiroAprobacionDTO = oGiroAutorizacionDAO.ObtenerGiroCabeceraAutorizar(IdUsuario.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado);
+            List<GiroAprobacionDTO> lstGiroAprobacionDTO = oGiroAutorizacionDAO.ObtenerGiroCabeceraAutorizar(IdUsuario.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado,BaseDatos);
             if (lstGiroAprobacionDTO.Count > 0)
             {
                 Resultado = JsonConvert.SerializeObject(lstGiroAprobacionDTO);
@@ -48,7 +49,7 @@ namespace ConcyssaWeb.Controllers
         {
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             //string valida = "";
             //valida = validarEmpresaActual();
             //if (valida != "")
@@ -63,7 +64,7 @@ namespace ConcyssaWeb.Controllers
             {
                 GiroAutorizacionDAO oGiroAutorizacionDAO = new GiroAutorizacionDAO();
                 //List<SolicitudRQAutorizacionDTO> lstSolicitudRQAutorizacionDTO = oSolicitudRQAutorizacionDAO.ObtenerSolicitudesxAutorizar(IdAutorizador.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado);
-                List<DetalleGiroAprobacionDTO> lstDetalleGiroAprobacionDTO = oGiroAutorizacionDAO.ObtenerSolicitudesxAutorizarDetalleGiro(IdUsuario.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado,IdGiro);
+                List<DetalleGiroAprobacionDTO> lstDetalleGiroAprobacionDTO = oGiroAutorizacionDAO.ObtenerSolicitudesxAutorizarDetalleGiro(IdUsuario.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado,IdGiro,BaseDatos);
                 if (lstDetalleGiroAprobacionDTO.Count > 0)
                 {
 
@@ -78,7 +79,7 @@ namespace ConcyssaWeb.Controllers
             {
                 GiroAutorizacionDAO oGiroAutorizacionDAO = new GiroAutorizacionDAO();
                 //List<SolicitudRQAutorizacionDTO> lstSolicitudRQAutorizacionDTO = oSolicitudRQAutorizacionDAO.ObtenerSolicitudesxAutorizar(IdUsuario.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado);
-                List<DetalleGiroAprobacionDTO> lstDetalleGiroAprobacionDTO = oGiroAutorizacionDAO.ObtenerSolicitudesxAutorizarDetalleGiro(IdUsuario.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado, IdGiro);
+                List<DetalleGiroAprobacionDTO> lstDetalleGiroAprobacionDTO = oGiroAutorizacionDAO.ObtenerSolicitudesxAutorizarDetalleGiro(IdUsuario.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado, IdGiro,BaseDatos);
                 if (lstDetalleGiroAprobacionDTO.Count > 0)
                 {
                     Resultado = JsonConvert.SerializeObject(lstDetalleGiroAprobacionDTO);
@@ -100,6 +101,7 @@ namespace ConcyssaWeb.Controllers
 
         public int UpdateInsertModeloAprobacionesGiro(List<GiroModeloAprobacionesDTO> giroModeloAprobacionesDTO)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             int valida = 0;
@@ -116,7 +118,7 @@ namespace ConcyssaWeb.Controllers
             GiroModeloDAO oSolicitudRQModeloDAO = new GiroModeloDAO();
             EtapaAutorizacionDAO oEtapaAutorizacionDAO = new EtapaAutorizacionDAO();
             UsuarioDAO oUsuarioDAO = new UsuarioDAO();
-            int resultado = oGiroModeloAprobacionesDAO.UpdateInsertModeloAprobacionesGiro(giroModeloAprobacionesDTO, IdSociedad.ToString());
+            int resultado = oGiroModeloAprobacionesDAO.UpdateInsertModeloAprobacionesGiro(giroModeloAprobacionesDTO, IdSociedad.ToString(),BaseDatos);
             //if (resultado != 0)
             //{
 

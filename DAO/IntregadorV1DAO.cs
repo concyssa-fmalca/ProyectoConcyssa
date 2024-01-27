@@ -12,13 +12,13 @@ namespace DAO
 {
     public class IntregadorV1DAO
     {
-        public int MoverFacturaEnviarSap(int IdOPCH, int IdUsuario, int GrupoCreacion)
+        public int MoverFacturaEnviarSap(int IdOPCH, int IdUsuario, int GrupoCreacion, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -41,13 +41,13 @@ namespace DAO
                 }
             }
         }
-        public int MoverNotaCreditoEnviarSap(int IdORPC, int IdUsuario, int GrupoCreacion)
+        public int MoverNotaCreditoEnviarSap(int IdORPC, int IdUsuario, int GrupoCreacion, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -70,13 +70,13 @@ namespace DAO
                 }
             }
         }
-        public int ObtenerGrupoCreacionEnviarSap()
+        public int ObtenerGrupoCreacionEnviarSap( string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -97,10 +97,10 @@ namespace DAO
             }
         }
 
-        public List<ListaTrabajoDTO> ObtenerListaDatosTrabajo(int IdUsuario)
+        public List<ListaTrabajoDTO> ObtenerListaDatosTrabajo(int IdUsuario, string BaseDatos)
         {
             List<ListaTrabajoDTO> lstListaTrabajoDTO = new List<ListaTrabajoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -133,10 +133,10 @@ namespace DAO
             return lstListaTrabajoDTO;
         }
 
-        public List<IntegradorV1DTO> ListarEnviarSap(int GrupoCreacion, ref string mensaje_error)
+        public List<IntegradorV1DTO> ListarEnviarSap(int GrupoCreacion, string BaseDatos, ref string mensaje_error)
         {
             List<IntegradorV1DTO> lstIntegradorV1DTO = new List<IntegradorV1DTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -207,10 +207,10 @@ namespace DAO
             return lstIntegradorV1DTO;
         }
 
-        public IntegradorV1DTO ObtenerDatosxIdEnviarSap(int IdEnviarSap, ref string mensaje_error)
+        public IntegradorV1DTO ObtenerDatosxIdEnviarSap(int IdEnviarSap, string BaseDatos, ref string mensaje_error)
         {
             IntegradorV1DTO oIntegradorV1DTO = new IntegradorV1DTO();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -295,10 +295,10 @@ namespace DAO
             }
             return oIntegradorV1DTO;
         }
-        public List<IntegradorV1Detalle> ObtenerDatosxIdEnviarSapDetalle(int IdEnviarSap, ref string mensaje_error)
+        public List<IntegradorV1Detalle> ObtenerDatosxIdEnviarSapDetalle(int IdEnviarSap, string BaseDatos, ref string mensaje_error)
         {
             List<IntegradorV1Detalle> lstIntegradorV1Detalle = new List<IntegradorV1Detalle>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -358,10 +358,10 @@ namespace DAO
 
         }
 
-        public List<AnexoDTO> ObtenerAnexoEnviarSap(int IdEnviarSap, ref string mensaje_error)
+        public List<AnexoDTO> ObtenerAnexoEnviarSap(int IdEnviarSap, string BaseDatos, ref string mensaje_error)
         {
             List<AnexoDTO> lstAnexoDTO = new List<AnexoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -394,13 +394,13 @@ namespace DAO
 
 
         }
-        public int DeleteAnexo(int IdEnviarSapAnexos)
+        public int DeleteAnexo(int IdEnviarSapAnexos, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -422,13 +422,13 @@ namespace DAO
             }
         }
 
-        public int EliminarMarcoTrabajo(int GrupoCreacion)
+        public int EliminarMarcoTrabajo(int GrupoCreacion, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -450,13 +450,13 @@ namespace DAO
             }
         }
 
-        public int UpdateEnviarSap(IntegradorV1DTO oIntegradorV1DTO)
+        public int UpdateEnviarSap(IntegradorV1DTO oIntegradorV1DTO, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -491,13 +491,13 @@ namespace DAO
             }
         }
 
-        public int UpdateCuadrillasEnviarSAP(IntegradorV1Detalle oIntegradorV1DTO)
+        public int UpdateCuadrillasEnviarSAP(IntegradorV1Detalle oIntegradorV1DTO, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -521,13 +521,13 @@ namespace DAO
                 }
             }
         }
-        public int UpdateDocEntryEnviarSAP(int IdEnviarSap, int DocEntrySap)
+        public int UpdateDocEntryEnviarSAP(int IdEnviarSap, int DocEntrySap, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -551,13 +551,13 @@ namespace DAO
             }
         }
 
-        public int UpdateDocEntryEnviarSAPDetalle(int IdEnviarSapDetalle, int DocEntrySap, int BorradorFirme)
+        public int UpdateDocEntryEnviarSAPDetalle(int IdEnviarSapDetalle, int DocEntrySap, int BorradorFirme, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -581,13 +581,13 @@ namespace DAO
                 }
             }
         }
-        public int UpdateDocEntryOPCHDetalle(int IdOPCHDetalle, int DocEntrySap, int BorradorFirme)
+        public int UpdateDocEntryOPCHDetalle(int IdOPCHDetalle, int DocEntrySap, int BorradorFirme, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -611,13 +611,13 @@ namespace DAO
                 }
             }
         }
-        public int UpdateDocEntryORPCDetalle(int IdORPCDetalle, int DocEntrySap, int BorradorFirme)
+        public int UpdateDocEntryORPCDetalle(int IdORPCDetalle, int DocEntrySap, int BorradorFirme, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -641,11 +641,11 @@ namespace DAO
                 }
             }
         }
-        public List<OPCHDetalle> ObtenerDocEntryFacturaxNotaCredito(int IdOPCHDetalle)
+        public List<OPCHDetalle> ObtenerDocEntryFacturaxNotaCredito(int IdOPCHDetalle, string BaseDatos)
         {
             string mensaje_error = "";
             List<OPCHDetalle> lstOPCHDetalle = new List<OPCHDetalle>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -673,18 +673,19 @@ namespace DAO
             }
         }
 
-        public List<IntegradorV1DTO> ListarCamposxIdObra(int IdObra, DateTime FechaInicio, DateTime FechaFin, ref string mensaje_error)
+        public List<IntegradorV1DTO> ListarCamposxIdObra(int IdObra, int IdTipoRegistro, int IdSemana, string BaseDatos, ref string mensaje_error)
         {
             List<IntegradorV1DTO> lstIntegradorV1DTO = new List<IntegradorV1DTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
                     cn.Open();
-                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarCamposxObrayFecha", cn);
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarCamposxRegistroSemana", cn);
+                    //SqlDataAdapter da = new SqlDataAdapter("SMC_ListarCamposxObrayFecha", cn);
                     da.SelectCommand.Parameters.AddWithValue("@IdObra", IdObra);
-                    da.SelectCommand.Parameters.AddWithValue("@FechaInicio", FechaInicio);
-                    da.SelectCommand.Parameters.AddWithValue("@FechaFin", FechaFin);
+                    da.SelectCommand.Parameters.AddWithValue("@IdTipoRegistro", IdTipoRegistro);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSemana", IdSemana);
 
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
                     SqlDataReader drd = da.SelectCommand.ExecuteReader();
@@ -749,11 +750,11 @@ namespace DAO
             return lstIntegradorV1DTO;
         }
 
-        public List<IntegradorTasaDetDTO> ObtenerTasaDetSAP(ref string mensaje_error)
+        public List<IntegradorTasaDetDTO> ObtenerTasaDetSAP(string BaseDatos,string BaseDatosSAP, ref string mensaje_error)
         {
             List<IntegradorTasaDetDTO> lstIntegradorTasaDetDTO = new List<IntegradorTasaDetDTO>();
 
-            using (SqlConnection cn = new ConexionSQLSAP().conectar())
+            using (SqlConnection cn = new ConexionSQLSAP().conectar(BaseDatosSAP))
             {
                 try
                 {
@@ -781,11 +782,11 @@ namespace DAO
                 return lstIntegradorTasaDetDTO;
             }
         }
-        public List<IntegradorGrupoDetDTO> ObtenerGrupoDetSAP(ref string mensaje_error)
+        public List<IntegradorGrupoDetDTO> ObtenerGrupoDetSAP(string BaseDatos, string BaseDatosSAP, ref string mensaje_error)
         {
             List<IntegradorGrupoDetDTO> lstIntegradorGrupoDetDTO = new List<IntegradorGrupoDetDTO>();
 
-            using (SqlConnection cn = new ConexionSQLSAP().conectar())
+            using (SqlConnection cn = new ConexionSQLSAP().conectar(BaseDatosSAP))
             {
                 try
                 {
@@ -815,11 +816,11 @@ namespace DAO
             }
         }
 
-        public List<IntegradorClasif> ObtenerCLABYSADQ(ref string mensaje_error)
+        public List<IntegradorClasif> ObtenerCLABYSADQ(string BaseDatos, string BaseDatosSAP, ref string mensaje_error)
         {
             List<IntegradorClasif> lstIntegradorClasif = new List<IntegradorClasif>();
 
-            using (SqlConnection cn = new ConexionSQLSAP().conectar())
+            using (SqlConnection cn = new ConexionSQLSAP().conectar(BaseDatosSAP))
             {
                 try
                 {
@@ -849,11 +850,11 @@ namespace DAO
             }
         }
 
-        public ListaTrabajoDTO ValidarGrupoEnviado(int GrupoCreacion,ref string mensaje_error)
+        public ListaTrabajoDTO ValidarGrupoEnviado(int GrupoCreacion,string BaseDatos, ref string mensaje_error)
         {
 
 
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 ListaTrabajoDTO oListaTrabajoDTO = new ListaTrabajoDTO();
                 try
@@ -884,11 +885,11 @@ namespace DAO
             }
         }
 
-        public List<IntegradorSerieSapDTO> ObtenerSerieSAP(int ObjectCode, ref string mensaje_error)
+        public List<IntegradorSerieSapDTO> ObtenerSerieSAP(int ObjectCode, string BaseDatos, string BaseDatosSAP, ref string mensaje_error)
         {
             List<IntegradorSerieSapDTO> lstIntegradorGrupoDetDTO = new List<IntegradorSerieSapDTO>();
 
-            using (SqlConnection cn = new ConexionSQLSAP().conectar())
+            using (SqlConnection cn = new ConexionSQLSAP().conectar(BaseDatosSAP))
             {
                 try
                 {
@@ -918,11 +919,11 @@ namespace DAO
             }
         }
 
-        public List<IntegradorCondPagoDetDTO> ObtenerCondPagoDetSAP(string GrupoDet,ref string mensaje_error)
+        public List<IntegradorCondPagoDetDTO> ObtenerCondPagoDetSAP(string GrupoDet,string BaseDatos, string BaseDatosSAP, ref string mensaje_error)
         {
             List<IntegradorCondPagoDetDTO> lstIntegradorCondPagoDetDTO = new List<IntegradorCondPagoDetDTO>();
 
-            using (SqlConnection cn = new ConexionSQLSAP().conectar())
+            using (SqlConnection cn = new ConexionSQLSAP().conectar(BaseDatosSAP))
             {
                 try
                 {
@@ -953,13 +954,47 @@ namespace DAO
             }
         }
 
+        public List<IntegradorTipoDocumento> ObtenerTipoDocumentoSAP(string BaseDatosSAP, ref string mensaje_error)
+        {
+            List<IntegradorTipoDocumento> lstIntegradorTipoDocumento = new List<IntegradorTipoDocumento>();
 
-        public List<IntegradorV1DTO> ListarEnviarSapConDetallexGrupoCreacion(int GrupoCreacion)
+            using (SqlConnection cn = new ConexionSQLSAP().conectar(BaseDatosSAP))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerTipoDocumentoSAP", cn);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        IntegradorTipoDocumento oIntegradorTipoDocumento = new IntegradorTipoDocumento();
+                        oIntegradorTipoDocumento.Code = (drd["Code"].ToString());
+                        oIntegradorTipoDocumento.Name = drd["Name"].ToString();
+                        oIntegradorTipoDocumento.Prefijo = (drd["U_EXX_PRETD"].ToString());
+           
+
+                        lstIntegradorTipoDocumento.Add(oIntegradorTipoDocumento);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+                return lstIntegradorTipoDocumento;
+            }
+        }
+
+
+        public List<IntegradorV1DTO> ListarEnviarSapConDetallexGrupoCreacion(int GrupoCreacion, string BaseDatos)
         {
             List<IntegradorV1DTO> lstIntegradorV1DTO = new List<IntegradorV1DTO>();
 
 
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -1018,6 +1053,7 @@ namespace DAO
                         oIntegradorV1DTO.IdTipoRegistro = int.Parse(drd["IdTipoRegistro"].ToString());
                         oIntegradorV1DTO.IdSemana = int.Parse(drd["IdSemana"].ToString());
                         oIntegradorV1DTO.NumOC = drd["NumOC"].ToString();
+                        oIntegradorV1DTO.RUCProveedor = drd["RUCProveedor"].ToString();
                         oIntegradorV1DTO.Inventario = bool.Parse(drd["Inventario"].ToString());
                         oIntegradorV1DTO.ConsumoM3 = decimal.Parse(drd["ConsumoM3"].ToString());
                         oIntegradorV1DTO.ConsumoHW = decimal.Parse(drd["ConsumoHW"].ToString());
@@ -1033,13 +1069,14 @@ namespace DAO
                         oIntegradorV1DTO.SerieDocBaseORPC = drd["SerieDocBaseORPC"].ToString();
                         oIntegradorV1DTO.SerieSAP = int.Parse(drd["SerieSAP"].ToString());
                         oIntegradorV1DTO.CondicionPagoDet = int.Parse(drd["CondicionPagoDet"].ToString());
+                        oIntegradorV1DTO.Redondeo = decimal.Parse(drd["Redondeo"].ToString());
 
 
 
                         int IdEnviarSap = int.Parse(drd["IdEnviarSap"].ToString());
                         Int32 filasdetalle = 0;
                         Int32 filasAnexo = 0;
-                        using (SqlConnection cn2 = new Conexion().conectar())
+                        using (SqlConnection cn2 = new Conexion().conectar(BaseDatos))
                         {
                             try
                             {
@@ -1061,7 +1098,7 @@ namespace DAO
 
 
                         oIntegradorV1DTO.detalles = new IntegradorV1Detalle[filasdetalle];
-                        using (SqlConnection cn3 = new Conexion().conectar())
+                        using (SqlConnection cn3 = new Conexion().conectar(BaseDatos))
                         {
                             try
                             {
@@ -1119,7 +1156,7 @@ namespace DAO
 
                         }
 
-                        using (SqlConnection cn4 = new Conexion().conectar())
+                        using (SqlConnection cn4 = new Conexion().conectar(BaseDatos))
                         {
                             try
                             {
@@ -1139,7 +1176,7 @@ namespace DAO
                         }
 
                         oIntegradorV1DTO.AnexoDetalle = new AnexoDTO[filasAnexo];
-                        using (SqlConnection cn5 = new Conexion().conectar())
+                        using (SqlConnection cn5 = new Conexion().conectar(BaseDatos))
                         {
                             try
                             {
@@ -1184,6 +1221,299 @@ namespace DAO
             }
 
             return lstIntegradorV1DTO;
+        }
+
+        public IntegradorV1DTO ListarEnviarSapConDetallexIdEnviarSAP(int IdEnviarSAP, string BaseDatos)
+        {
+
+
+            IntegradorV1DTO oIntegradorV1DTO = new IntegradorV1DTO();
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarEnviarSapxIdEnviarSAP", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdEnviarSAP", IdEnviarSAP);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                       
+                        oIntegradorV1DTO.IdEnviarSap = Convert.ToInt32(drd["IdEnviarSap"].ToString());
+                        oIntegradorV1DTO.IdTablaOriginal = Convert.ToInt32(drd["IdTablaOriginal"].ToString());
+                        oIntegradorV1DTO.IdTipoDocumento = Convert.ToInt32(drd["IdTipoDocumento"].ToString());
+                        oIntegradorV1DTO.ObjType = (drd["ObjType"].ToString());
+                        oIntegradorV1DTO.IdMoneda = Convert.ToInt32(drd["IdMoneda"].ToString());
+                        oIntegradorV1DTO.CodMoneda = (drd["CodMoneda"].ToString());
+                        oIntegradorV1DTO.TipoCambio = Convert.ToDecimal(drd["TipoCambio"].ToString());
+                        oIntegradorV1DTO.IdCliente = Convert.ToInt32(drd["IdCliente"].ToString());
+                        oIntegradorV1DTO.FechaContabilizacion = Convert.ToDateTime(drd["FechaContabilizacion"].ToString());
+                        oIntegradorV1DTO.FechaDocumento = Convert.ToDateTime(drd["FechaDocumento"].ToString());
+                        oIntegradorV1DTO.FechaVencimiento = Convert.ToDateTime(drd["FechaVencimiento"].ToString());
+                        oIntegradorV1DTO.IdListaPrecios = Convert.ToInt32(drd["IdListaPrecios"].ToString());
+                        oIntegradorV1DTO.Referencia = (drd["Referencia"].ToString());
+                        oIntegradorV1DTO.Comentario = (drd["Comentario"].ToString());
+                        oIntegradorV1DTO.DocEntrySap = Convert.ToInt32(drd["DocEntrySap"].ToString());
+                        oIntegradorV1DTO.DocNumSap = (drd["DocNumSap"].ToString());
+                        oIntegradorV1DTO.IdCentroCosto = Convert.ToInt32(drd["IdCentroCosto"].ToString());
+                        oIntegradorV1DTO.SubTotal = Convert.ToDecimal(drd["SubTotal"].ToString());
+                        oIntegradorV1DTO.Impuesto = Convert.ToDecimal(drd["Impuesto"].ToString());
+                        oIntegradorV1DTO.IdTipoAfectacionIgv = Convert.ToInt32(drd["IdTipoAfectacionIgv"].ToString());
+                        oIntegradorV1DTO.Total = Convert.ToDecimal(drd["Total"].ToString());
+                        oIntegradorV1DTO.IdAlmacen = Convert.ToInt32(drd["IdAlmacen"].ToString());
+                        oIntegradorV1DTO.IdSerie = Convert.ToInt32(drd["IdSerie"].ToString());
+                        oIntegradorV1DTO.Correlativo = Convert.ToInt32(drd["Correlativo"].ToString());
+                        oIntegradorV1DTO.IdSociedad = Convert.ToInt32(drd["IdSociedad"].ToString());
+                        oIntegradorV1DTO.NombTipoDocumentoOperacion = (drd["NombTipoDocumentoOperacion"].ToString());
+                        oIntegradorV1DTO.NombSerie = (drd["NombSerie"].ToString());
+                        oIntegradorV1DTO.Estado = Convert.ToBoolean(drd["Estado"].ToString());
+                        oIntegradorV1DTO.DescCuadrilla = (drd["DescCuadrilla"].ToString());
+                        oIntegradorV1DTO.NombAlmacen = (drd["NombAlmacen"].ToString());
+                        oIntegradorV1DTO.NombObra = (drd["NombObra"].ToString());
+                        oIntegradorV1DTO.IdAlmacen = Convert.ToInt32(drd["IdAlmacen"].ToString());
+                        oIntegradorV1DTO.IdObra = Convert.ToInt32(drd["IdObra"].ToString());
+                        oIntegradorV1DTO.IdBase = Convert.ToInt32(drd["IdBase"].ToString());
+                        oIntegradorV1DTO.Moneda = (drd["Moneda"].ToString());
+                        oIntegradorV1DTO.NombUsuario = (drd["NombUsuario"].ToString());
+                        oIntegradorV1DTO.NumSerieTipoDocumentoRef = drd["NumSerieTipoDocumentoRef"].ToString();
+                        oIntegradorV1DTO.Proveedor = drd["Proveedor"].ToString();
+                        oIntegradorV1DTO.TipoDocumentoRef = drd["TipoDocumentoRef"].ToString();
+                        oIntegradorV1DTO.IdDocExtorno = Convert.ToInt32(drd["IdDocExtorno"].ToString());
+                        oIntegradorV1DTO.Inventario = bool.Parse(drd["Inventario"].ToString());
+                        oIntegradorV1DTO.IdGlosaContable = int.Parse(drd["IdGlosaContable"].ToString());
+                        oIntegradorV1DTO.IdProveedor = int.Parse(drd["IdProveedor"].ToString());
+                        oIntegradorV1DTO.IdTipoRegistro = int.Parse(drd["IdTipoRegistro"].ToString());
+                        oIntegradorV1DTO.IdSemana = int.Parse(drd["IdSemana"].ToString());
+                        oIntegradorV1DTO.NumOC = drd["NumOC"].ToString();
+                        oIntegradorV1DTO.RUCProveedor = drd["RUCProveedor"].ToString();
+                        oIntegradorV1DTO.Inventario = bool.Parse(drd["Inventario"].ToString());
+                        oIntegradorV1DTO.ConsumoM3 = decimal.Parse(drd["ConsumoM3"].ToString());
+                        oIntegradorV1DTO.ConsumoHW = decimal.Parse(drd["ConsumoHW"].ToString());
+                        oIntegradorV1DTO.TasaDetraccion = int.Parse(drd["TasaDetraccion"].ToString());
+                        oIntegradorV1DTO.GrupoDetraccion = int.Parse(drd["GrupoDetraccion"].ToString());
+                        oIntegradorV1DTO.idCondicionPago = int.Parse(drd["IdCondicionPago"].ToString());
+                        oIntegradorV1DTO.ConsumoM3 = decimal.Parse(drd["ConsumoM3"].ToString());
+                        oIntegradorV1DTO.ConsumoHW = decimal.Parse(drd["ConsumoHW"].ToString());
+                        oIntegradorV1DTO.TasaDetraccion = int.Parse(drd["TasaDetraccion"].ToString());
+                        oIntegradorV1DTO.GrupoDetraccion = int.Parse(drd["GrupoDetraccion"].ToString());
+                        oIntegradorV1DTO.IdTipoDocumentoRef = int.Parse(drd["IdTipoDocumentoRef"].ToString());
+                        oIntegradorV1DTO.TablaOriginal = drd["TablaOriginal"].ToString();
+                        oIntegradorV1DTO.SerieDocBaseORPC = drd["SerieDocBaseORPC"].ToString();
+                        oIntegradorV1DTO.SerieSAP = int.Parse(drd["SerieSAP"].ToString());
+                        oIntegradorV1DTO.CondicionPagoDet = int.Parse(drd["CondicionPagoDet"].ToString());
+                        oIntegradorV1DTO.Redondeo = decimal.Parse(drd["Redondeo"].ToString());
+
+
+
+                        int IdEnviarSap = int.Parse(drd["IdEnviarSap"].ToString());
+                        Int32 filasdetalle = 0;
+                        Int32 filasAnexo = 0;
+                        using (SqlConnection cn2 = new Conexion().conectar(BaseDatos))
+                        {
+                            try
+                            {
+                                cn2.Open();
+                                SqlDataAdapter da2 = new SqlDataAdapter("SMC_ListarEnviarSapDetalle", cn2);
+                                da2.SelectCommand.Parameters.AddWithValue("@IdEnviarSap", IdEnviarSap);
+                                da2.SelectCommand.CommandType = CommandType.StoredProcedure;
+                                SqlDataReader dr2 = da2.SelectCommand.ExecuteReader();
+                                while (dr2.Read())
+                                {
+                                    filasdetalle++;
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                            }
+                        }
+
+
+
+                        oIntegradorV1DTO.detalles = new IntegradorV1Detalle[filasdetalle];
+                        using (SqlConnection cn3 = new Conexion().conectar(BaseDatos))
+                        {
+                            try
+                            {
+                                cn3.Open();
+                                SqlDataAdapter da3 = new SqlDataAdapter("SMC_ListarEnviarSapDetalle", cn3);
+                                da3.SelectCommand.Parameters.AddWithValue("@IdEnviarSap", IdEnviarSap);
+                                da3.SelectCommand.CommandType = CommandType.StoredProcedure;
+                                SqlDataReader drd3 = da3.SelectCommand.ExecuteReader();
+                                Int32 posicion = 0;
+                                while (drd3.Read())
+                                {
+                                    IntegradorV1Detalle oIntegradorV1Detalle = new IntegradorV1Detalle();
+                                    oIntegradorV1Detalle.IdEnviarSapDetalle = Convert.ToInt32(drd3["IdEnviarSapDetalle"].ToString());
+                                    oIntegradorV1Detalle.IdEnviarSap = Convert.ToInt32(drd3["IdEnviarSap"].ToString());
+                                    oIntegradorV1Detalle.IdTablaOriginal = Convert.ToInt32(drd3["IdTablaOriginal"].ToString());
+                                    oIntegradorV1Detalle.IdTablaOriginalDetalle = Convert.ToInt32(drd3["IdTablaOriginalDetalle"].ToString());
+                                    oIntegradorV1Detalle.NCIdOPCHDetalle = Convert.ToInt32(drd3["NCIdOPCHDetalle"].ToString());
+                                    oIntegradorV1Detalle.DocEntrySap = Convert.ToInt32(drd3["DocEntrySap"].ToString());
+                                    oIntegradorV1Detalle.DescripcionArticulo = (drd3["DescripcionArticulo"].ToString());
+                                    oIntegradorV1Detalle.IdArticulo = Convert.ToInt32(drd3["IdArticulo"].ToString());
+                                    oIntegradorV1Detalle.IdGrupoUnidadMedida = Convert.ToInt32(drd3["IdGrupoUnidadMedida"].ToString());
+                                    oIntegradorV1Detalle.IdDefinicionGrupoUnidad = Convert.ToInt32(drd3["IdDefinicionGrupoUnidad"].ToString());
+                                    oIntegradorV1Detalle.Cantidad = Convert.ToDecimal(drd3["Cantidad"].ToString());
+                                    oIntegradorV1Detalle.valor_unitario = Convert.ToDecimal(drd3["valor_unitario"].ToString());
+                                    oIntegradorV1Detalle.precio_unitario = Convert.ToDecimal(drd3["precio_unitario"].ToString());
+                                    oIntegradorV1Detalle.total_base_igv = Convert.ToDecimal(drd3["total_base_igv"].ToString());
+                                    oIntegradorV1Detalle.porcentaje_igv = Convert.ToDecimal(drd3["porcentaje_igv"].ToString());
+                                    oIntegradorV1Detalle.total_igv = Convert.ToDecimal(drd3["total_igv"].ToString());
+                                    oIntegradorV1Detalle.total_impuestos = Convert.ToDecimal(drd3["total_impuestos"].ToString());
+                                    oIntegradorV1Detalle.total_valor_item = Convert.ToDecimal(drd3["total_valor_item"].ToString());
+                                    oIntegradorV1Detalle.total_item = Convert.ToDecimal(drd3["total_item"].ToString());
+                                    oIntegradorV1Detalle.IdIndicadorImpuesto = Convert.ToInt32(drd3["IdIndicadorImpuesto"].ToString());
+                                    oIntegradorV1Detalle.CodImpuesto = (drd3["CodImpuesto"].ToString());
+                                    oIntegradorV1Detalle.NombImpuesto = (drd3["NombImpuesto"].ToString());
+                                    oIntegradorV1Detalle.IdGrupoUnidadMedida = Convert.ToInt32(drd3["IdGrupoUnidadMedida"].ToString());
+                                    oIntegradorV1Detalle.PrecioUnidadBase = Convert.ToDecimal(drd3["PrecioUnidadBase"].ToString());
+                                    oIntegradorV1Detalle.CodigoArticulo = (drd3["CodigoArticulo"].ToString());
+                                    oIntegradorV1Detalle.NombCuadrilla = drd3["NombCuadrilla"].ToString();
+                                    oIntegradorV1Detalle.NombResponsable = drd3["NombResponsable"].ToString();
+                                    oIntegradorV1Detalle.TipoServicio = drd3["TipoServicio"].ToString();
+                                    oIntegradorV1Detalle.IdCuadrilla = Convert.ToInt32((String.IsNullOrEmpty(drd3["IdCuadrilla"].ToString())) ? "0" : drd3["IdCuadrilla"].ToString());
+                                    oIntegradorV1Detalle.IdResponsable = Convert.ToInt32((String.IsNullOrEmpty(drd3["IdResponsable"].ToString())) ? "0" : drd3["IdResponsable"].ToString());
+                                    oIntegradorV1Detalle.CantidadNotaCredito = Convert.ToDecimal((String.IsNullOrEmpty(drd3["CantidadNotaCredito"].ToString())) ? "0" : drd3["CantidadNotaCredito"].ToString());
+
+
+
+                                    oIntegradorV1DTO.detalles[posicion] = oIntegradorV1Detalle;
+                                    posicion = posicion + 1;
+                                }
+
+                            }
+                            catch (Exception ex)
+                            {
+                            }
+
+                        }
+
+                        using (SqlConnection cn4 = new Conexion().conectar(BaseDatos))
+                        {
+                            try
+                            {
+                                cn4.Open();
+                                SqlDataAdapter da4 = new SqlDataAdapter("SMC_ObtenerAnexosOpchxIdEnviarSap", cn4);
+                                da4.SelectCommand.Parameters.AddWithValue("@IdEnviarSap", IdEnviarSap);
+                                da4.SelectCommand.CommandType = CommandType.StoredProcedure;
+                                SqlDataReader dr4 = da4.SelectCommand.ExecuteReader();
+                                while (dr4.Read())
+                                {
+                                    filasAnexo++;
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                            }
+                        }
+
+                        oIntegradorV1DTO.AnexoDetalle = new AnexoDTO[filasAnexo];
+                        using (SqlConnection cn5 = new Conexion().conectar(BaseDatos))
+                        {
+                            try
+                            {
+                                cn5.Open();
+                                SqlDataAdapter da5 = new SqlDataAdapter("SMC_ObtenerAnexosOpchxIdEnviarSap", cn5);
+                                da5.SelectCommand.Parameters.AddWithValue("@IdEnviarSap", IdEnviarSap);
+                                da5.SelectCommand.CommandType = CommandType.StoredProcedure;
+                                SqlDataReader drd5 = da5.SelectCommand.ExecuteReader();
+                                Int32 posicion = 0;
+                                while (drd5.Read())
+                                {
+                                    AnexoDTO oAnexoDTO = new AnexoDTO();
+                                    oAnexoDTO.IdAnexo = Convert.ToInt32(drd5["IdAnexo"].ToString());
+                                    oAnexoDTO.ruta = (drd5["ruta"].ToString());
+                                    oAnexoDTO.IdSociedad = Convert.ToInt32(drd5["IdSociedad"].ToString());
+                                    oAnexoDTO.Tabla = (drd5["Tabla"].ToString());
+                                    oAnexoDTO.IdTabla = Convert.ToInt32(drd5["IdTabla"].ToString());
+                                    oAnexoDTO.NombreArchivo = (drd5["NombreArchivo"].ToString());
+
+
+
+                                    oIntegradorV1DTO.AnexoDetalle[posicion] = oAnexoDTO;
+                                    posicion = posicion + 1;
+                                }
+
+                            }
+                            catch (Exception ex)
+                            {
+                            }
+
+                           
+
+                        }
+
+
+                    }
+                    drd.Close();
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+
+            return oIntegradorV1DTO;
+        }
+
+        public int ObtenerDocNumOPCH(string Ruc, string NumSerie,string BaseDatosSAP, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new ConexionSQLSAP().conectar(BaseDatosSAP))
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerDocNumOPCH", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@CardCode", "P" + Ruc);
+                        da.SelectCommand.Parameters.AddWithValue("@NumAtCard", NumSerie);
+                        int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        return -1;
+                    }
+                }
+            }
+
+        }
+
+        public int ValidarExisteProveedorSAP(string Ruc, string BaseDatosSAP, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new ConexionSQLSAP().conectar(BaseDatosSAP))
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_ValidarExisteProveedor", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@CardCode", "P" + Ruc);
+                        int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        return -1;
+                    }
+                }
+            }
+
         }
 
     }

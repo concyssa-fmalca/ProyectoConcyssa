@@ -15,9 +15,10 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerGrupoArticulo(int estado = 3)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             GrupoArticuloDAO oGrupoArticuloDAO = new GrupoArticuloDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<GrupoArticuloDTO> lstGrupoArticuloDTO = oGrupoArticuloDAO.ObtenerGrupoArticulo(IdSociedad, ref mensaje_error, estado);
+            List<GrupoArticuloDTO> lstGrupoArticuloDTO = oGrupoArticuloDAO.ObtenerGrupoArticulo(IdSociedad,BaseDatos,ref mensaje_error, estado);
             if (lstGrupoArticuloDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstGrupoArticuloDTO);
@@ -32,8 +33,9 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerDatosxID(int IdGrupoArticulo)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             GrupoArticuloDAO oGrupoArticuloDAO = new GrupoArticuloDAO();
-            List<GrupoArticuloDTO> lstCodigoUbsoDTO = oGrupoArticuloDAO.ObtenerDatosxID(IdGrupoArticulo, ref mensaje_error);
+            List<GrupoArticuloDTO> lstCodigoUbsoDTO = oGrupoArticuloDAO.ObtenerDatosxID(IdGrupoArticulo,BaseDatos,ref mensaje_error);
 
             if (lstCodigoUbsoDTO.Count > 0)
             {
@@ -52,10 +54,11 @@ namespace ConcyssaWeb.Controllers
         {
 
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             GrupoArticuloDAO oGrupoArticuloDAO = new GrupoArticuloDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             oGrupoArticuloDTO.IdSociedad = IdSociedad;
-            int respuesta = oGrupoArticuloDAO.UpdateInsertGrupoArticulo(oGrupoArticuloDTO, ref mensaje_error);
+            int respuesta = oGrupoArticuloDAO.UpdateInsertGrupoArticulo(oGrupoArticuloDTO,BaseDatos,ref mensaje_error);
 
             if (mensaje_error.Length > 0)
             {
@@ -78,8 +81,9 @@ namespace ConcyssaWeb.Controllers
         public int EliminarGrupoArticulo(int IdGrupoArticulo)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             GrupoArticuloDAO oGrupoArticuloDAO = new GrupoArticuloDAO();
-            int resultado = oGrupoArticuloDAO.Delete(IdGrupoArticulo, ref mensaje_error);
+            int resultado = oGrupoArticuloDAO.Delete(IdGrupoArticulo,BaseDatos,ref mensaje_error);
             if (resultado == 0)
             {
                 resultado = 1;

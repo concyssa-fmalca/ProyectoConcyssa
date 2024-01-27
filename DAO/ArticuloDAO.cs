@@ -2,16 +2,17 @@
 using DTO;
 using System.Data;
 using System.Data.SqlClient;
+using System.Transactions;
 
 namespace DAO
 {
     public class ArticuloDAO
     {
 
-        public List<ArticuloDTO> ListarArticulosxSociedadxAlmacenStockxProducto(int IdSociedad, int IdArticulo, int IdAlmacen, ref string mensaje_error, int Estado = 3)
+        public List<ArticuloDTO> ListarArticulosxSociedadxAlmacenStockxProducto(int IdSociedad, int IdArticulo, int IdAlmacen, string BaseDatos, ref string mensaje_error, int Estado = 3)
         {
             List<ArticuloDTO> lstArticuloDTO = new List<ArticuloDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -58,10 +59,10 @@ namespace DAO
             return lstArticuloDTO;
         }
 
-        public List<ArticuloDTO> ListarArticulosxSociedadxAlmacenStockxProductoConServicios(int IdSociedad, int IdArticulo, int IdAlmacen, ref string mensaje_error, int Estado = 3)
+        public List<ArticuloDTO> ListarArticulosxSociedadxAlmacenStockxProductoConServicios(int IdSociedad, int IdArticulo, int IdAlmacen, string BaseDatos, ref string mensaje_error, int Estado = 3)
         {
             List<ArticuloDTO> lstArticuloDTO = new List<ArticuloDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -107,10 +108,10 @@ namespace DAO
             }
             return lstArticuloDTO;
         }
-        public List<ArticuloDTO> ListarArticulosxSociedadxAlmacenStockxProductoActivoFijo(int IdSociedad, int IdArticulo, int IdAlmacen, ref string mensaje_error, int Estado = 3)
+        public List<ArticuloDTO> ListarArticulosxSociedadxAlmacenStockxProductoActivoFijo(int IdSociedad, int IdArticulo, int IdAlmacen, string BaseDatos, ref string mensaje_error, int Estado = 3)
         {
             List<ArticuloDTO> lstArticuloDTO = new List<ArticuloDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -157,10 +158,10 @@ namespace DAO
             return lstArticuloDTO;
         }
 
-        public List<ArticuloDTO> ObtenerArticulosRequerimientos(int Almacen, int Stock, int TipoItem, int TipoProducto, int IdSociedad, ref string mensaje_error)
+        public List<ArticuloDTO> ObtenerArticulosRequerimientos(int Almacen, int Stock, int TipoItem, int TipoProducto, int IdSociedad, string BaseDatos, ref string mensaje_error)
         {
             List<ArticuloDTO> lstArticuloDTO = new List<ArticuloDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -197,10 +198,10 @@ namespace DAO
         }
 
 
-        public List<ArticuloDTO> ObtenerArticulosRequerimientosSolicitud(int Almacen, int Stock, int TipoItem, int TipoProducto, int IdSociedad, ref string mensaje_error)
+        public List<ArticuloDTO> ObtenerArticulosRequerimientosSolicitud(int Almacen, int Stock, int TipoItem, int TipoProducto, int IdSociedad, string BaseDatos, ref string mensaje_error)
         {
             List<ArticuloDTO> lstArticuloDTO = new List<ArticuloDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -235,10 +236,10 @@ namespace DAO
             }
             return lstArticuloDTO;
         }
-        public List<ArticuloDTO> ObtenerArticulosActivoFijo(int IdSociedad, ref string mensaje_error)
+        public List<ArticuloDTO> ObtenerArticulosActivoFijo(int IdSociedad, string BaseDatos, ref string mensaje_error)
         {
             List<ArticuloDTO> lstArticuloDTO = new List<ArticuloDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -271,10 +272,10 @@ namespace DAO
             return lstArticuloDTO;
         }
 
-        public ArticuloDTO ObtenerArticuloxIdArticuloRequerimiento(int IdArticulo, int IdAlmacen, ref string mensaje_error)
+        public ArticuloDTO ObtenerArticuloxIdArticuloRequerimiento(int IdArticulo, int IdAlmacen, string BaseDatos, ref string mensaje_error)
         {
             ArticuloDTO oArticuloDTO = new ArticuloDTO();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -311,10 +312,10 @@ namespace DAO
 
 
 
-        public ArticuloDTO ObtenerArticuloxIdArticulo(int IdArticulo, ref string mensaje_error)
+        public ArticuloDTO ObtenerArticuloxIdArticulo(int IdArticulo, string BaseDatos, ref string mensaje_error)
         {
             ArticuloDTO oArticuloDTO = new ArticuloDTO();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -347,10 +348,10 @@ namespace DAO
             return oArticuloDTO;
         }
 
-        public ArticuloDTO ObtenerArticuloxCodigo(string Codigo, ref string mensaje_error)
+        public ArticuloDTO ObtenerArticuloxCodigo(string Codigo, string BaseDatos, ref string mensaje_error)
         {
             ArticuloDTO oArticuloDTO = new ArticuloDTO();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -386,10 +387,10 @@ namespace DAO
 
 
 
-        public List<ArticuloDTO> ListarArticulosCatalogoxSociedadxAlmacenStockxIdTipoProducto(int IdSociedad, int IdAlmacen,int IdTipoProducto, ref string mensaje_error, int Estado = 3)
+        public List<ArticuloDTO> ListarArticulosCatalogoxSociedadxAlmacenStockxIdTipoProducto(int IdSociedad, int IdAlmacen,int IdTipoProducto, string BaseDatos, ref string mensaje_error, int Estado = 3)
         {
             List<ArticuloDTO> lstArticuloDTO = new List<ArticuloDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -431,10 +432,10 @@ namespace DAO
             }
             return lstArticuloDTO;
         }
-        public List<ArticuloDTO> ListarArticulosCatalogoxSociedadxAlmacenStockxIdTipoProductoConServicios(int TipoItem,int IdSociedad, int IdAlmacen, int IdTipoProducto, ref string mensaje_error, int Estado = 3)
+        public List<ArticuloDTO> ListarArticulosCatalogoxSociedadxAlmacenStockxIdTipoProductoConServicios(int TipoItem,int IdSociedad, int IdAlmacen, int IdTipoProducto, string BaseDatos, ref string mensaje_error, int Estado = 3)
         {
             List<ArticuloDTO> lstArticuloDTO = new List<ArticuloDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -477,10 +478,10 @@ namespace DAO
             }
             return lstArticuloDTO;
         }
-        public List<ArticuloDTO> ListarArticulosxSociedadxAlmacenStock(int IdSociedad,int IdAlmacen, ref string mensaje_error, int Estado = 3)
+        public List<ArticuloDTO> ListarArticulosxSociedadxAlmacenStock(int IdSociedad,int IdAlmacen, string BaseDatos, ref string mensaje_error, int Estado = 3)
         {
             List<ArticuloDTO> lstArticuloDTO = new List<ArticuloDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -522,10 +523,10 @@ namespace DAO
             return lstArticuloDTO;
         }
 
-        public List<ArticuloDTO> ObtenerticulosxSociedad(int IdSociedad, ref string mensaje_error, int Estado = 3)
+        public List<ArticuloDTO> ObtenerticulosxSociedad(int IdSociedad, string BaseDatos, ref string mensaje_error, int Estado = 3)
         {
             List<ArticuloDTO> lstArticuloDTO = new List<ArticuloDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -569,10 +570,10 @@ namespace DAO
 
 
 
-        public List<ArticuloDTO> ObtenerArticulosSelect2(string searchTerm,string TipoProducto,string IdObra)
+        public List<ArticuloDTO> ObtenerArticulosSelect2(string searchTerm,string TipoProducto,string IdObra, string BaseDatos)
         {
             List<ArticuloDTO> lstArticuloDTO = new List<ArticuloDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -606,52 +607,60 @@ namespace DAO
 
 
 
-        public bool UpdateInsertArticulo(ArticuloDTO oArticuloDTO,ref string mensaje_error)
+        public bool UpdateInsertArticulo(ArticuloDTO oArticuloDTO,string BaseDatos, ref string mensaje_error)
         {
             bool exito = false;
-            using (SqlConnection cn = new Conexion().conectar())
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
-                try
-                {
-                    cn.Open();
-                    SqlDataAdapter da = new SqlDataAdapter("SMC_UpdateInsertArticulo", cn);
-                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
-                    da.SelectCommand.Parameters.AddWithValue("@IdArticulo", oArticuloDTO.IdArticulo);
-                    da.SelectCommand.Parameters.AddWithValue("@Codigo", oArticuloDTO.Codigo);
-                    da.SelectCommand.Parameters.AddWithValue("@Descripcion1", oArticuloDTO.Descripcion1);
-                    da.SelectCommand.Parameters.AddWithValue("@Descripcion2", oArticuloDTO.Descripcion2);
-                    da.SelectCommand.Parameters.AddWithValue("@IdUnidadMedida", oArticuloDTO.IdUnidadMedida);
-                    da.SelectCommand.Parameters.AddWithValue("@ActivoFijo", oArticuloDTO.ActivoFijo);
-                    da.SelectCommand.Parameters.AddWithValue("@ActivoCatalogo", oArticuloDTO.ActivoCatalogo);
-                    da.SelectCommand.Parameters.AddWithValue("@IdCodigoUbso", oArticuloDTO.IdCodigoUbso);
-                    da.SelectCommand.Parameters.AddWithValue("@IdSociedad", oArticuloDTO.IdSociedad);
-                    da.SelectCommand.Parameters.AddWithValue("@Estado", oArticuloDTO.Estado);
-                    da.SelectCommand.Parameters.AddWithValue("@Inventario", oArticuloDTO.Inventario);
-                    da.SelectCommand.Parameters.AddWithValue("@Compra", oArticuloDTO.Compra);
-                    da.SelectCommand.Parameters.AddWithValue("@Venta", oArticuloDTO.Venta);
-                    da.SelectCommand.Parameters.AddWithValue("@IdGrupoUnidadMedida", oArticuloDTO.IdGrupoUnidadMedida);
-                    da.SelectCommand.Parameters.AddWithValue("@IdUnidadMedidaInv", oArticuloDTO.IdUnidadMedidaInv);
-                    da.SelectCommand.Parameters.AddWithValue("@IdProveedor", oArticuloDTO.IdProveedor);
-
-
-                    int i = da.SelectCommand.ExecuteNonQuery();
-                    if (i > 0)
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option)) {
+                
+                    try
                     {
-                        exito = true;
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_UpdateInsertArticulo", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdArticulo", oArticuloDTO.IdArticulo);
+                        da.SelectCommand.Parameters.AddWithValue("@Codigo", oArticuloDTO.Codigo);
+                        da.SelectCommand.Parameters.AddWithValue("@Descripcion1", oArticuloDTO.Descripcion1);
+                        da.SelectCommand.Parameters.AddWithValue("@Descripcion2", oArticuloDTO.Descripcion2);
+                        da.SelectCommand.Parameters.AddWithValue("@IdUnidadMedida", oArticuloDTO.IdUnidadMedida);
+                        da.SelectCommand.Parameters.AddWithValue("@ActivoFijo", oArticuloDTO.ActivoFijo);
+                        da.SelectCommand.Parameters.AddWithValue("@ActivoCatalogo", oArticuloDTO.ActivoCatalogo);
+                        da.SelectCommand.Parameters.AddWithValue("@IdCodigoUbso", oArticuloDTO.IdCodigoUbso);
+                        da.SelectCommand.Parameters.AddWithValue("@IdSociedad", oArticuloDTO.IdSociedad);
+                        da.SelectCommand.Parameters.AddWithValue("@Estado", oArticuloDTO.Estado);
+                        da.SelectCommand.Parameters.AddWithValue("@Inventario", oArticuloDTO.Inventario);
+                        da.SelectCommand.Parameters.AddWithValue("@Compra", oArticuloDTO.Compra);
+                        da.SelectCommand.Parameters.AddWithValue("@Venta", oArticuloDTO.Venta);
+                        da.SelectCommand.Parameters.AddWithValue("@IdGrupoUnidadMedida", oArticuloDTO.IdGrupoUnidadMedida);
+                        da.SelectCommand.Parameters.AddWithValue("@IdUnidadMedidaInv", oArticuloDTO.IdUnidadMedidaInv);
+                        da.SelectCommand.Parameters.AddWithValue("@IdProveedor", oArticuloDTO.IdProveedor);
+
+
+                        int i = da.SelectCommand.ExecuteNonQuery();
+                        if (i > 0)
+                        {
+                            exito = true;
+                        }
+                        transactionScope.Complete();
                     }
-                }
-                catch (Exception ex)
-                {
-                    mensaje_error = ex.Message.ToString();
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                    }
                 }
             }
             return exito;
         }
 
-        public List<ArticuloDTO> ObtenerDatosxID(int IdArticulo, ref string mensaje_error)
+        public List<ArticuloDTO> ObtenerDatosxID(int IdArticulo, string BaseDatos, ref string mensaje_error)
         {
             List<ArticuloDTO> lstArticuloDTO = new List<ArticuloDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -698,10 +707,10 @@ namespace DAO
 
 
         
-        public bool ELiminarArticulo(ArticuloDTO oArticuloDTO, ref string mensaje_error)
+        public bool ELiminarArticulo(ArticuloDTO oArticuloDTO, string BaseDatos, ref string mensaje_error)
         {
             bool exito = false;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -723,10 +732,10 @@ namespace DAO
             return exito;
         }
         
-        public bool EliminarProductoProveedor(int IdProductoProveedor, ref string mensaje_error)
+        public bool EliminarProductoProveedor(int IdProductoProveedor, string BaseDatos, ref string mensaje_error)
         {
             bool exito = false;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -748,10 +757,10 @@ namespace DAO
             return exito;
         }
 
-        public bool InsertStockArticuloAlmacen(int IdProducto, int IdAlmacen, decimal StockMinimo, decimal StockMaximo, decimal StockAlerta, ref string mensaje_error)
+        public bool InsertStockArticuloAlmacen(int IdProducto, int IdAlmacen, decimal StockMinimo, decimal StockMaximo, decimal StockAlerta, string BaseDatos, ref string mensaje_error)
         {
             bool exito = false;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -778,10 +787,10 @@ namespace DAO
             return exito;
         }
 
-        public List<StockArticuloAlmacenDTO> ObtenerStockArticuloXAlmacen(int IdUsuario,int IdArticulo, ref string mensaje_error)
+        public List<StockArticuloAlmacenDTO> ObtenerStockArticuloXAlmacen(int IdUsuario,int IdArticulo, string BaseDatos, ref string mensaje_error)
         {
             List<StockArticuloAlmacenDTO> lstArticuloDTO = new List<StockArticuloAlmacenDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -817,10 +826,10 @@ namespace DAO
         }
 
         
-        public List<ArticuloPrecioProveedorDTO> ListarPrecioProductoProveedor(int IdArticulo,ref string mensaje_error)
+        public List<ArticuloPrecioProveedorDTO> ListarPrecioProductoProveedor(int IdArticulo,string BaseDatos, ref string mensaje_error)
         {
             List<ArticuloPrecioProveedorDTO> lstArticuloPrecioProveedorDTO = new List<ArticuloPrecioProveedorDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -856,10 +865,10 @@ namespace DAO
             }
             return lstArticuloPrecioProveedorDTO;
         }
-        public List<ArticuloPrecioProveedorDTO> ListarPrecioProductoProveedorNuevo(int IdArticulo, ref string mensaje_error)
+        public List<ArticuloPrecioProveedorDTO> ListarPrecioProductoProveedorNuevo(int IdArticulo, string BaseDatos, ref string mensaje_error)
         {
             List<ArticuloPrecioProveedorDTO> lstArticuloPrecioProveedorDTO = new List<ArticuloPrecioProveedorDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -898,10 +907,10 @@ namespace DAO
         }
 
 
-        public bool SavePrecioProveedor(int IdArticulo,int IdProveedor, decimal PrecioSoles, decimal PrecioDolares, int IdCondicionPagoProveedor, int numeroentrega,int IdSociedad, ref string mensaje_error)
+        public bool SavePrecioProveedor(int IdArticulo,int IdProveedor, decimal PrecioSoles, decimal PrecioDolares, int IdCondicionPagoProveedor, int numeroentrega,int IdSociedad, string BaseDatos, ref string mensaje_error)
         {
             bool exito = false;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -930,10 +939,10 @@ namespace DAO
             }
             return exito;
         }
-        public bool SavePrecioProveedorNuevo(int IdArticulo, int IdProveedor, decimal PrecioSoles, decimal PrecioDolares, int IdCondicionPagoProveedor, int numeroentrega, int IdSociedad,int IdObra, ref string mensaje_error)
+        public bool SavePrecioProveedorNuevo(int IdArticulo, int IdProveedor, decimal PrecioSoles, decimal PrecioDolares, int IdCondicionPagoProveedor, int numeroentrega, int IdSociedad,int IdObra, string BaseDatos, ref string mensaje_error)
         {
             bool exito = false;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -963,10 +972,10 @@ namespace DAO
             }
             return exito;
         }
-        public List<ArticuloDTO> ObtenerStockArticuloXAlmacenXPendiente(int IdObra, int IdArticulo, ref string mensaje_error)
+        public List<ArticuloDTO> ObtenerStockArticuloXAlmacenXPendiente(int IdObra, int IdArticulo, string BaseDatos, ref string mensaje_error)
         {
             List<ArticuloDTO> lstArticuloDTO = new List<ArticuloDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -995,10 +1004,10 @@ namespace DAO
             return lstArticuloDTO;
         }
 
-        public List<ArticuloDTO> ObtenerArticulosStockObras(int IdArticulo, ref string mensaje_error)
+        public List<ArticuloDTO> ObtenerArticulosStockObras(int IdArticulo, string BaseDatos, ref string mensaje_error)
         {
             List<ArticuloDTO> lstArticuloDTO = new List<ArticuloDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -1029,10 +1038,10 @@ namespace DAO
             }
             return lstArticuloDTO;
         }
-        public List<ArticuloDTO> ObtenerStockxProducto(int IdArticulo, int IdAlmacen, ref string mensaje_error)
+        public List<ArticuloDTO> ObtenerStockxProducto(int IdArticulo, int IdAlmacen, string BaseDatos, ref string mensaje_error)
         {
             List<ArticuloDTO> lstArticuloDTO = new List<ArticuloDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -1063,5 +1072,111 @@ namespace DAO
             }
             return lstArticuloDTO;
         }
+
+        public int ELiminarArticuloProveedorPrecio(int IdProveedor, int IdArticulo, string BaseDatos)
+        {
+            int respuesta = 0;
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ELiminarArticuloProveedorPrecio", cn);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    da.SelectCommand.Parameters.AddWithValue("@IdProveedor", IdProveedor);
+                    da.SelectCommand.Parameters.AddWithValue("@IdArticulo", IdArticulo);
+                    respuesta = da.SelectCommand.ExecuteNonQuery();
+                
+                }
+                catch (Exception ex)
+                {
+                    return 0;
+                }
+            }
+            return respuesta;
+        }
+
+
+
+        public int InsertArticuloMasivoExcel(ExcelArticuloDTO oExcelArticuloDTO, string BaseDatos, ref string mensaje_error)
+        {
+            int exito = 0;
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_InsertArticuloMasivoExcel", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@Codigo", oExcelArticuloDTO.Codigo);
+                        da.SelectCommand.Parameters.AddWithValue("@Descripcion1", oExcelArticuloDTO.Descripcion1);
+                        da.SelectCommand.Parameters.AddWithValue("@Descripcion2", oExcelArticuloDTO.Descripcion2);
+                        da.SelectCommand.Parameters.AddWithValue("@Inventario", oExcelArticuloDTO.ArticuloInventario);
+                        da.SelectCommand.Parameters.AddWithValue("@Compra", oExcelArticuloDTO.ArticuloCompra);
+                        da.SelectCommand.Parameters.AddWithValue("@Venta", oExcelArticuloDTO.ArticuloVenta);
+                        da.SelectCommand.Parameters.AddWithValue("@ActivoFijo", oExcelArticuloDTO.ActivoFijo);
+                        da.SelectCommand.Parameters.AddWithValue("@ActivoCatalogo", oExcelArticuloDTO.ActivoCatalogo);
+                        da.SelectCommand.Parameters.AddWithValue("@IdGrupoUnidadMedida", oExcelArticuloDTO.GrupoUnidadMedidaBase);
+                        da.SelectCommand.Parameters.AddWithValue("@IdUnidadMedidaInv", oExcelArticuloDTO.UnidadMedida);
+
+                        //int i = da.SelectCommand.ExecuteNonQuery();
+                        int i = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
+                        transactionScope.Complete();
+                        if (i > 0)
+                        {
+                            exito = i;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                    }
+                }
+               
+            }
+            return exito;
+        }
+
+        public List<ArticuloDTO> ObtenerArticuloXCodigo(string Codigo,string BaseDatos,ref string mensaje_error)
+        {
+
+            List<ArticuloDTO> lstArticuloDTO = new List<ArticuloDTO>();
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerArticuloxCodigoMasivo", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@Codigo", Codigo);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        ArticuloDTO oArticuloDTO = new ArticuloDTO();
+                        oArticuloDTO.IdArticulo = int.Parse(drd["IdArticulo"].ToString());
+                        oArticuloDTO.Descripcion1 = (drd["Descripcion1"].ToString());
+                        oArticuloDTO.Estado = bool.Parse(drd["Estado"].ToString());
+
+                        lstArticuloDTO.Add(oArticuloDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstArticuloDTO;
+        }
+
+
     }
 }

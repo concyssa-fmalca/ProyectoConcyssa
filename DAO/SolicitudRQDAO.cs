@@ -1,6 +1,7 @@
 ﻿
 
 using DTO;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Net;
@@ -13,13 +14,13 @@ namespace DAO
     public class SolicitudRQDAO
     {
 
-        public List<SolicitudRQDTO> ObtenerSolicitudesRQ(int Usuario,int IdPerfil,int IdBase,int IdSolicitante, string IdSociedad, string FechaInicio, string FechaFinal, int Estado)
+        public List<SolicitudRQDTO> ObtenerSolicitudesRQ(int Usuario,int IdPerfil,int IdBase,int IdSolicitante, string IdSociedad, string FechaInicio, string FechaFinal, int Estado, string BaseDatos)
         {
             if (IdPerfil == 1018) {
                 IdSolicitante = 999999;
             }
             List<SolicitudRQDTO> lstSolicitudRQDTO = new List<SolicitudRQDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
 
                 try
@@ -86,11 +87,11 @@ namespace DAO
         }
 
 
-        public Decimal ObtenerSolicitudesRQDetallePrecio(int IdSolicitudRqDetalle)
+        public Decimal ObtenerSolicitudesRQDetallePrecio(int IdSolicitudRqDetalle, string BaseDatos)
         {
             Decimal precio = 0;
             //SolicitudRQDetalleDTO oSolicitudRQDetalleDTO = new SolicitudRQDetalleDTO();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -116,13 +117,13 @@ namespace DAO
 
 
 
-        public List<int> UpdateInsertSolicitud(SolicitudRQDTO oSolicitudRQDTO, SolicitudRQDetalleDTO oSolicitudRQDetalleDTO, string IdSociedad)
+        public List<int> UpdateInsertSolicitud(SolicitudRQDTO oSolicitudRQDTO, SolicitudRQDetalleDTO oSolicitudRQDetalleDTO, string IdSociedad, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -255,12 +256,12 @@ namespace DAO
         }
 
 
-        public List<SolicitudRQDTO> ObtenerDatosxIDNuevo(int IdSolicitudRQ, int IdAprobador, int IdEtapa)
+        public List<SolicitudRQDTO> ObtenerDatosxIDNuevo(int IdSolicitudRQ, int IdAprobador, int IdEtapa, string BaseDatos)
         {
             List<SolicitudRQDTO> lstSolicitudRQDTO = new List<SolicitudRQDTO>();
 
             SolicitudRQDTO oSolicitudRQDTO = new SolicitudRQDTO();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -307,7 +308,7 @@ namespace DAO
 
 
             Int32 filasdetalle = 0;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -329,7 +330,7 @@ namespace DAO
             }
 
             oSolicitudRQDTO.Detalle = new SolicitudDetalleDTO[filasdetalle];
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -394,7 +395,7 @@ namespace DAO
 
 
             Int32 filasdetalleAnexo = 0;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -415,7 +416,7 @@ namespace DAO
             }
 
             oSolicitudRQDTO.DetallesAnexo = new SolicitudRQAnexos[filasdetalleAnexo];
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -451,12 +452,12 @@ namespace DAO
             return lstSolicitudRQDTO;
         }
 
-        public List<SolicitudRQDTO> ObtenerDatosxID(int IdSolicitudRQ)
+        public List<SolicitudRQDTO> ObtenerDatosxID(int IdSolicitudRQ, string BaseDatos)
         {
             List<SolicitudRQDTO> lstSolicitudRQDTO = new List<SolicitudRQDTO>();
 
             SolicitudRQDTO oSolicitudRQDTO = new SolicitudRQDTO();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -509,7 +510,7 @@ namespace DAO
 
 
             Int32 filasdetalle = 0;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -529,7 +530,7 @@ namespace DAO
             }
 
             oSolicitudRQDTO.Detalle = new SolicitudDetalleDTO[filasdetalle];
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -602,7 +603,7 @@ namespace DAO
 
 
             Int32 filasdetalleAnexo = 0;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -622,7 +623,7 @@ namespace DAO
             }
 
             oSolicitudRQDTO.AnexoDetalle = new AnexoDTO[filasdetalleAnexo];
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -659,12 +660,12 @@ namespace DAO
             return lstSolicitudRQDTO;
         }
 
-        public List<SolicitudRQDTO> ObtenerDatosxIDV2(int IdUsuario,int IdSolicitudRQ)
+        public List<SolicitudRQDTO> ObtenerDatosxIDV2(int IdUsuario,int IdSolicitudRQ, string BaseDatos)
         {
             List<SolicitudRQDTO> lstSolicitudRQDTO = new List<SolicitudRQDTO>();
 
             SolicitudRQDTO oSolicitudRQDTO = new SolicitudRQDTO();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -718,7 +719,7 @@ namespace DAO
 
 
             Int32 filasdetalle = 0;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -738,7 +739,7 @@ namespace DAO
             }
 
             oSolicitudRQDTO.Detalle = new SolicitudDetalleDTO[filasdetalle];
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -785,8 +786,11 @@ namespace DAO
                         oSolicitudRQDetalleDTO.TotalDespacho = decimal.Parse(drd["TotalDespacho"].ToString());
 
                         oSolicitudRQDetalleDTO.IdDetalle = int.Parse(drd["IdDetalle"].ToString());
+                        oSolicitudRQDetalleDTO.IdAlmacen = (drd["IdAlmacen"].ToString());
                         oSolicitudRQDetalleDTO.NombAlmacen = (drd["NombAlmacen"].ToString());
                         oSolicitudRQDetalleDTO.NombObra = (drd["NombObra"].ToString());
+                        oSolicitudRQDetalleDTO.IdObra = int.Parse(drd["IdObra"].ToString());
+                        oSolicitudRQDetalleDTO.IdBase = int.Parse(drd["IdBase"].ToString());
                         oSolicitudRQDetalleDTO.NombBase = (drd["NombBase"].ToString());
                         oSolicitudRQDetalleDTO.IdTipoProducto = Convert.ToInt32(drd["IdTipoProducto"].ToString());
 
@@ -811,7 +815,7 @@ namespace DAO
 
 
             Int32 filasdetalleAnexo = 0;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -831,7 +835,7 @@ namespace DAO
             }
 
             oSolicitudRQDTO.AnexoDetalle = new AnexoDTO[filasdetalleAnexo];
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -871,13 +875,13 @@ namespace DAO
 
 
 
-        public int Delete(int IdSolicitudRQDetalle)
+        public int Delete(int IdSolicitudRQDetalle, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -900,13 +904,13 @@ namespace DAO
         }
 
 
-        public int DeleteAnexo(int IdSolicitudRQAnexos)
+        public int DeleteAnexo(int IdSolicitudRQAnexos, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -966,13 +970,13 @@ namespace DAO
 
 
 
-        public int AñadirDocNum(string DocNum, string IdSolicitud, int Localidad)
+        public int AñadirDocNum(string DocNum, string IdSolicitud, int Localidad, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -997,7 +1001,7 @@ namespace DAO
         }
 
 
-        public int GuardarMovimiento(List<SolicitudDetalleDTO> detalle, int IdAutor, int TipoTransaccion, string DocNum)
+        public int GuardarMovimiento(List<SolicitudDetalleDTO> detalle, int IdAutor, int TipoTransaccion, string DocNum, string BaseDatos)
         {
             int rpta = 0;
             if (detalle.Count() > 0)
@@ -1008,7 +1012,7 @@ namespace DAO
                     transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
                     transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
                     TransactionOptions option = transactionOptions;
-                    using (SqlConnection cn = new Conexion().conectar())
+                    using (SqlConnection cn = new Conexion().conectar(BaseDatos))
                     {
                         using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                         {
@@ -1038,13 +1042,13 @@ namespace DAO
 
 
 
-        public int CerrarSolicitud(int IdSolictudRQ, string IdSociedad)
+        public int CerrarSolicitud(int IdSolictudRQ, string IdSociedad, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -1068,13 +1072,13 @@ namespace DAO
         }
 
         
-        public int CerrarSolicitudEstado(int IdSolicitud)
+        public int CerrarSolicitudEstado(int IdSolicitud, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -1097,11 +1101,11 @@ namespace DAO
         }
 
 
-        public List<int> ValidaItemsTerminados(int IdSolicitud)
+        public List<int> ValidaItemsTerminados(int IdSolicitud, string BaseDatos)
         {
             List<int> items = new List<int>();
             int valor = 0;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -1127,13 +1131,13 @@ namespace DAO
         }
 
 
-        public int ActualizarEstadoMovimientoRQ(int IdSolictudRQ, int Localidad)
+        public int ActualizarEstadoMovimientoRQ(int IdSolictudRQ, int Localidad, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -1156,13 +1160,13 @@ namespace DAO
             }
         }
 
-        public int SaveDetalleSolicitud(int IdSolicitudDetalle, decimal Cantidad)
+        public int SaveDetalleSolicitud(int IdSolicitudDetalle, decimal Cantidad, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -1185,13 +1189,13 @@ namespace DAO
             }
         }
 
-        public int DeleteDetalleSolicitud(int IdSolicitudRQDetalle)
+        public int DeleteDetalleSolicitud(int IdSolicitudRQDetalle, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -1215,13 +1219,13 @@ namespace DAO
 
 
 
-        public int ValidaSolicitudDetalleAprobado(int IdSolicitudRQDetalle)
+        public int ValidaSolicitudDetalleAprobado(int IdSolicitudRQDetalle, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -1245,10 +1249,10 @@ namespace DAO
 
 
 
-        public SolicitudRQDTO DatosSolicitudRq(int IdSolicitudRq)
+        public SolicitudRQDTO DatosSolicitudRq(int IdSolicitudRq, string BaseDatos)
         {
             SolicitudRQDTO oSolicitudRQDTO = new SolicitudRQDTO();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -1293,7 +1297,7 @@ namespace DAO
             }
 
             Int32 filasSolicitudModelo = 0;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -1313,7 +1317,7 @@ namespace DAO
             }
 
             oSolicitudRQDTO.ListSolicitudRqModelo = new SolicitudRQModeloDTO[filasSolicitudModelo];
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -1347,7 +1351,7 @@ namespace DAO
                 for (int i = 0; i < oSolicitudRQDTO.ListSolicitudRqModelo.Count(); i++)
                 {
                     Int32 filasSolicitudModeloAprobaciones = 0;
-                    using (SqlConnection cn = new Conexion().conectar())
+                    using (SqlConnection cn = new Conexion().conectar(BaseDatos))
                     {
                         try
                         {
@@ -1367,7 +1371,7 @@ namespace DAO
                     }
 
                     oSolicitudRQDTO.ListSolicitudRqModelo[i].ListModeloAprobacionesDTO = new SolicitudRQModeloAprobacionesDTO[filasSolicitudModeloAprobaciones];
-                    using (SqlConnection cn = new Conexion().conectar())
+                    using (SqlConnection cn = new Conexion().conectar(BaseDatos))
                     {
                         try
                         {
@@ -1412,10 +1416,10 @@ namespace DAO
             return oSolicitudRQDTO;
         }
 
-        public List<AnexoDTO> ObtenerAnexosSolicitudRQ(int IdSolicitudRQ)
+        public List<AnexoDTO> ObtenerAnexosSolicitudRQ(int IdSolicitudRQ, string BaseDatos)
         {
             List<AnexoDTO> lstAnexoDTO = new List<AnexoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -1444,6 +1448,48 @@ namespace DAO
             return lstAnexoDTO;
 
         }
+        public List<AnexoDTO> ObtenerAnexosxID( int IdSolicitudRQ, string BaseDatos)
+        {
+
+            List<AnexoDTO> lstAnexoDTO = new List<AnexoDTO>(); 
+ 
+
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerAnexosSolicitudRQxId", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSolicitudRQ", IdSolicitudRQ);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    Int32 posicion = 0;
+                    while (drd.Read())
+                    {
+                        AnexoDTO oAnexoDTO = new AnexoDTO();
+                        oAnexoDTO.IdAnexo = Convert.ToInt32(drd["IdAnexo"].ToString());
+                        oAnexoDTO.ruta = (drd["ruta"].ToString());
+                        oAnexoDTO.IdSociedad = Convert.ToInt32(drd["IdSociedad"].ToString());
+                        oAnexoDTO.Tabla = (drd["Tabla"].ToString());
+                        oAnexoDTO.IdTabla = Convert.ToInt32(drd["IdTabla"].ToString());
+                        oAnexoDTO.NombreArchivo = (drd["NombreArchivo"].ToString());
+                        lstAnexoDTO.Add(oAnexoDTO);
+                        posicion = posicion + 1;
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    lstAnexoDTO = new List<AnexoDTO>();
+                }
+
+            }
+
+
+
+            return lstAnexoDTO;
+        }
+
 
 
     }

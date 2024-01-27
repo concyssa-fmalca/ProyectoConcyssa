@@ -16,7 +16,8 @@ namespace ConcyssaWeb.Controllers
         {
             DepartamentoDAO oDepartamentoDAO = new DepartamentoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<DepartamentoDTO> lstDepartamentoDTO = oDepartamentoDAO.ObtenerDepartamentos(IdSociedad.ToString());
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            List<DepartamentoDTO> lstDepartamentoDTO = oDepartamentoDAO.ObtenerDepartamentos(IdSociedad.ToString(),BaseDatos);
             if (lstDepartamentoDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstDepartamentoDTO);
@@ -32,7 +33,8 @@ namespace ConcyssaWeb.Controllers
 
             DepartamentoDAO oDepartamentoDAO = new DepartamentoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            int resultado = oDepartamentoDAO.UpdateInsertDepartamento(departamentoDTO, IdSociedad.ToString());
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            int resultado = oDepartamentoDAO.UpdateInsertDepartamento(departamentoDTO, IdSociedad.ToString(),BaseDatos);
             if (resultado != 0)
             {
                 resultado = 1;
@@ -45,7 +47,8 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerDatosxID(int IdDepartamento)
         {
             DepartamentoDAO oDepartamentoDAO = new DepartamentoDAO();
-            List<DepartamentoDTO> lstDepartamentoDTO = oDepartamentoDAO.ObtenerDatosxID(IdDepartamento);
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            List<DepartamentoDTO> lstDepartamentoDTO = oDepartamentoDAO.ObtenerDatosxID(IdDepartamento,BaseDatos);
 
             if (lstDepartamentoDTO.Count > 0)
             {
@@ -66,11 +69,11 @@ namespace ConcyssaWeb.Controllers
             //{
             //    return valida;
             //}
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
 
 
             DepartamentoDAO oDepartamentoDAO = new DepartamentoDAO();
-            List<DepartamentoDTO> lstDepartamentoDTO = oDepartamentoDAO.ObtenerDepartamentosxUsuario(IdUsuario);
+            List<DepartamentoDTO> lstDepartamentoDTO = oDepartamentoDAO.ObtenerDepartamentosxUsuario(IdUsuario,BaseDatos);
 
             if (lstDepartamentoDTO.Count > 0)
             {
@@ -85,8 +88,9 @@ namespace ConcyssaWeb.Controllers
 
         public int EliminarDepartamento(int IdDepartamento)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             DepartamentoDAO oDepartamentoDAO = new DepartamentoDAO();
-            int resultado = oDepartamentoDAO.Delete(IdDepartamento);
+            int resultado = oDepartamentoDAO.Delete(IdDepartamento,BaseDatos);
             if (resultado == 0)
             {
                 resultado = 1;

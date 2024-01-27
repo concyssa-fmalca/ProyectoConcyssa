@@ -7,10 +7,10 @@ namespace DAO
     public class KardexDAO
     {
 
-        public List<KardexDTO> ObtenerKardex(int IdSociedad,int IdArticulo,int IdAlmacen, DateTime FechaInicio, DateTime FechaTermino, ref string mensaje_error)
+        public List<KardexDTO> ObtenerKardex(int IdSociedad,int IdArticulo,int IdAlmacen, DateTime FechaInicio, DateTime FechaTermino, string BaseDatos, ref string mensaje_error)
         {
             List<KardexDTO> lstKardexDTO = new List<KardexDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -74,10 +74,10 @@ namespace DAO
             return lstKardexDTO;
         }
 
-        public List<KardexDTO> ObtenerArticulosEnKardex(int IdAlmacen, DateTime FechaInicio, DateTime FechaTermino, ref string mensaje_error)
+        public List<KardexDTO> ObtenerArticulosEnKardex(int IdAlmacen, DateTime FechaInicio, DateTime FechaTermino, string BaseDatos, ref string mensaje_error)
         {
             List<KardexDTO> lstKardexDTO = new List<KardexDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -113,11 +113,11 @@ namespace DAO
         }
 
 
-        public ArticuloStockDTO ObtenerArticuloxIdArticuloxIdAlm(int IdArticulo,int IdAlmacen,ref string mensaje_error)
+        public ArticuloStockDTO ObtenerArticuloxIdArticuloxIdAlm(int IdArticulo,int IdAlmacen,string BaseDatos, ref string mensaje_error)
         {
 
             ArticuloStockDTO oArticuloStockDTO = new ArticuloStockDTO();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -148,11 +148,11 @@ namespace DAO
             return oArticuloStockDTO;
         }
 
-        public List<ArticuloStockDTO> ObtenerStockxAlmacen(int IdAlmacen, ref string mensaje_error)
+        public List<ArticuloStockDTO> ObtenerStockxAlmacen(int IdAlmacen, string BaseDatos, ref string mensaje_error)
         {
 
             List<ArticuloStockDTO> lstArticuloStockDTO = new List<ArticuloStockDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -185,10 +185,10 @@ namespace DAO
             }
             return lstArticuloStockDTO;
         }
-        public List<KardexDTO> ObtenerKardexMigración(int IdSociedad, int IdArticulo, int IdAlmacen, DateTime FechaInicio, DateTime FechaTermino,bool SoloNoEnviadas, ref string mensaje_error)
+        public List<KardexDTO> ObtenerKardexMigración(int IdSociedad, int IdArticulo, int IdAlmacen, DateTime FechaInicio, DateTime FechaTermino,bool SoloNoEnviadas, string BaseDatos, ref string mensaje_error)
         {
             List<KardexDTO> lstKardexDTO = new List<KardexDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {

@@ -14,11 +14,11 @@ namespace DAO
     public class SemanaDAO
     {
 
-        public List<SemanaDTO> ObtenerSemanas(int IdTipoRegistro,int Anio, int IdObra,int IdSociedad, int Estado, ref string mensaje_error)
+        public List<SemanaDTO> ObtenerSemanas(int IdTipoRegistro,int Anio, int IdObra,int IdSociedad, int Estado, string BaseDatos, ref string mensaje_error)
         {
             List<SemanaDTO> lstSemanaDTO = new List<SemanaDTO>();
             mensaje_error = "";
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -63,11 +63,11 @@ namespace DAO
             return lstSemanaDTO;
         }
 
-        public List<SemanaDTO> ObtenerSemanasxIdTipoRegistro(int IdSociedad, int Estado,int IdTipoRegistro,int IdObra, ref string mensaje_error)
+        public List<SemanaDTO> ObtenerSemanasxIdTipoRegistro(int IdSociedad, int Estado,int IdTipoRegistro,int IdObra, string BaseDatos, ref string mensaje_error)
         {
             List<SemanaDTO> lstSemanaDTO = new List<SemanaDTO>();
             mensaje_error = "";
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -108,13 +108,13 @@ namespace DAO
             return lstSemanaDTO;
         }
 
-        public int UpdateInsertSemana(SemanaDTO oSemanaDTO, ref string mensaje_error)
+        public int UpdateInsertSemana(SemanaDTO oSemanaDTO, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -148,10 +148,10 @@ namespace DAO
         }
 
 
-        public List<SemanaDTO> ObtenerDatosxID(int IdTIpoRegistro, ref string mensaje_error)
+        public List<SemanaDTO> ObtenerDatosxID(int IdTIpoRegistro, string BaseDatos, ref string mensaje_error)
         {
             List<SemanaDTO> lstSemanaDTO = new List<SemanaDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -192,10 +192,10 @@ namespace DAO
             return lstSemanaDTO;
         }
 
-        public List<SemanaDTO> ObtenerSemanasXIdObraAnio(int IdObra, int Anio,int IdTipoRegistro, ref string mensaje_error)
+        public List<SemanaDTO> ObtenerSemanasXIdObraAnio(int IdObra, int Anio,int IdTipoRegistro, string BaseDatos, ref string mensaje_error)
         {
             List<SemanaDTO> lstSemanaDTO = new List<SemanaDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -238,13 +238,13 @@ namespace DAO
             return lstSemanaDTO;
         }
 
-        public int Delete(int IdSemana, ref string mensaje_error)
+        public int Delete(int IdSemana, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -261,6 +261,41 @@ namespace DAO
                     catch (Exception ex)
                     {
                         mensaje_error = ex.Message.ToString();
+                        return -1;
+                    }
+                }
+            }
+        }
+
+
+        public int GeneradorMasivoSemanas(DateTime FechaI,DateTime FechaF,int NumSemana,int Anio,int IdTipoRegistro,int IdObra,int Correlativo,string BaseDatos)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_GeneradorMasivoSemanas", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@FechaI", FechaI);
+                        da.SelectCommand.Parameters.AddWithValue("@FechaF", FechaF);
+                        da.SelectCommand.Parameters.AddWithValue("@NumSemana", NumSemana);
+                        da.SelectCommand.Parameters.AddWithValue("@Anio", Anio);
+                        da.SelectCommand.Parameters.AddWithValue("@IdTipoRegistro", IdTipoRegistro);
+                        da.SelectCommand.Parameters.AddWithValue("@IdObra", IdObra);
+                        da.SelectCommand.Parameters.AddWithValue("@Correlativo", Correlativo);
+                        int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
                         return -1;
                     }
                 }

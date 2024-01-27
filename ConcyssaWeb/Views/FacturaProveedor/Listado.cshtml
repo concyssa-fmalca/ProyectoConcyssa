@@ -68,6 +68,7 @@
 </style>
 
 <div class="container-fluid" style="height:93%;">
+    <input style="display:none" id="IdPerfilSesion" type="text" value="@httpContextAccessor.HttpContext.Session.GetInt32("IdPerfil")" disabled></input>
     <input style="display:none" id="IdUsuarioSesion" type="text" value="@httpContextAccessor.HttpContext.Session.GetInt32("IdUsuario")"/>
     <div class="panel">
         <div class="container-fluid">
@@ -82,16 +83,54 @@
                 </div>
             </div>
             <div class="col-xs-6 right">
-                <button class="btn btn-sm  btn-primary pull-right plu" data-target="modal1" onclick="ModalNuevo()" style="margin-left:10px;">Nuevo</button>
+                <button class="btn btn-sm  btn-primary pull-right plu" data-target="modal1" onclick="ModalNuevo()" style="margin-left:10px;">Nuevo</button>              
                 @*<button class="btn btn-sm  btn-success pull-right plu" id="btnPdf" style="margin-left:10px;">Descargar PDF</button>
                 <button class="btn btn-sm btn-info pull-right plu" id="btnExcel" style="margin-left:10px;">Descargar Excel</button>*@
             </div>
-            <div class="col-xs-12 right">
-                <label class="col-sm-1" for="cboBaseFiltro">Base</label>
+           <div class="col-xs-12 right">
+                <label class="col-sm-2" for="cboObraFiltro">Obra</label>
                 <div class="col-sm-3">
-                    <select class="form-control" id="cboBaseFiltro"></select>
+                    <select class="form-control" id="cboObraFiltro" onchange="changeTipoRegistroFiltro();esRendicionFiltro()"></select>
                 </div>
-                <button class="btn btn-primary" style="margin-top:3px" onclick=" listarOpch()">Buscar</button>
+            </div>
+           @* <div class="col-xs-12 right">
+                <label class="col-sm-2" for="txtFechaInicio">Fecha Inicio</label>
+                <div class="col-sm-3">
+                    <input type="date" class="form-control col-sm-3" id="txtFechaInicio" />
+                </div>
+
+            </div>
+            <div class="col-xs-12 right">             
+                <label class="col-sm-2" for="txtFechaFin">Fecha Fin</label>
+                <div class="col-sm-3">
+                  <input type="date" class="form-control col-sm-3"  id="txtFechaFin" />    
+                </div>
+                <button class="btn btn-primary" style="margin-top:3px" onclick="listarOpch()">Buscar</button>
+            </div>*@
+            <div class="col-xs-12 right">
+                <label class="col-sm-2" for="cboTipoRegistro">Tipo de Registro</label>
+                <div class="col-sm-3">
+                    <select class="form-control" id="cboTipoRegistroFiltro" onchange="changeTipoRegistroFiltro();esRendicionFiltro()"></select>
+                </div>
+            </div>
+
+             <div class="col-xs-12 right" id="DivSemana" style="display:none">
+                <label class="col-sm-2" for="cboSemana">Semana</label>
+                <div class="col-sm-3">
+                    <select class="form-control" id="cboSemanaFiltro"></select>
+                </div>
+            </div>
+
+            <div class="col-xs-12 right" id="DivGiro" style="display:none">
+                <label class="col-sm-2" for="cboGiro">Giro</label>
+                <div class="col-sm-3">
+                    <select class="form-control" id="cboGiroFiltro"></select>
+                </div>
+            </div>
+             <div class="col-xs-12" style="display:flex;justify-content:space-between">
+               
+                <button class="btn btn-primary" onclick="listarOpch()"> buscar</button>
+                @*<button class="btn btn-primary" onclick="ValidacionSUNATMasivo()"> Validacion SUNAT Masivo</button>*@
             </div>
         </div>
     </div>
@@ -113,6 +152,8 @@
                         <th>Obra</th>
                         <th>Almacen</th>
                         <th>Moneda</th>
+                        <th>Validado SUNAT</th>
+                        <th>Contabilizado</th>
                         <th>Mas</th>
                     </tr>
                 </thead>
@@ -642,19 +683,19 @@
                                         <hr style="margin: 0px 0px 5px 0px" />
                                         <p id="DivTasaDet">
                                             Tasa detracción:
-                                            <select style="height: 20px" id="TasaDet" type="text" class="form-control input-sm" tabindex="0" onchange="CargarCondPagoDet()">
+                                            <select disabled style="height: 20px" id="TasaDet" type="text" class="form-control input-sm" tabindex="0" onchange="CargarCondPagoDet()">
                                             </select>
                                         </p>
                                         <p id="DivCondicionPagoDet">
                                             Condición Pago Detracción:
-                                            <select style="height: 20px" id="CondicionPagoDet" type="text" class="form-control input-sm" tabindex="0">
+                                            <select disabled style="height: 20px" id="CondicionPagoDet" type="text" class="form-control input-sm" tabindex="0">
                                                 <option value="0">seleccione</option>
                                             </select>
                                         </p>
                                         <hr style="margin: 0px 0px 5px 0px" />
                                         <p id="DivGrupoDet">
                                             Grupo detracción:
-                                            <select style="height: 20px" id="GrupoDet" type="text" class="form-control input-sm" tabindex="0">
+                                            <select disabled style="height: 20px" id="GrupoDet" type="text" class="form-control input-sm" tabindex="0">
                                             </select>
                                         </p>
                                         <div />

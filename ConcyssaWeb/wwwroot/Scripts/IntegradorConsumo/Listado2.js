@@ -6,6 +6,7 @@
     CargarSerieFactura()
     $("#DivGiro").hide();
     ValidarEnvioSap()
+    $("#txtFechaContabilizacion").val(getFechaHoy())
     $("#SubirAnexos").on("submit", function (e) {
         e.preventDefault();
         var formData = new FormData($("#SubirAnexos")[0]);
@@ -28,7 +29,14 @@
     });
 };
 
-
+function getFechaHoy() {
+    var fechaHoy = new Date();
+    var dia = String(fechaHoy.getDate()).padStart(2, "0");
+    var mes = String(fechaHoy.getMonth() + 1).padStart(2, "0");
+    var anio = fechaHoy.getFullYear();
+    let FechaSalida = anio + "-" + mes + "-" + dia;
+    return FechaSalida
+}
 
 function consultaServidor() {
     let GrupoCreacion = $("#txtIdDatosTrabajo").val()
@@ -1774,17 +1782,33 @@ function MontoPorCuentas() {
         $("#tbody_resumenCuentas").empty();
         let datos = JSON.parse(data)
         let tr = "";
-        for (var i = 0; i < datos.length-1; i++) {
+        for (var i = 0; i < datos.length - 1; i++) {
+
+            let MontoDebido = 0;
+            let MontoCredito = 0;
+
+            if (datos[i].Monto <= 0) {
+                MontoDebido = datos[i].Monto * -1
+                MontoDebido = formatNumberDecimales(MontoDebido, 2)
+                if (MontoDebido == '-') MontoDebido = 0
+            } else {
+                MontoCredito = datos[i].Monto;
+                MontoCredito = formatNumberDecimales(MontoCredito, 2)
+                if (MontoCredito == '-') MontoCredito = 0
+            }
+
             tr += '<tr>' +
-                '<td>' + (i + 1) + '</td>' +
-                '<td><input type="text" class="txtNumeroCuenta form-control" value="' + datos[i].NumeroCuenta.toUpperCase() + '"/></td>' +
-                '<td><input type="text" class="txtMontoCuenta form-control" value="' + formatNumberDecimales(datos[i].Monto, 2) + '" disabled /></td>' +
+                '<td>Consumo</td>' +
+                '<td><input type="text" class="txtNumeroCuenta form-control" value="' + datos[i].NumeroCuenta.toUpperCase() + '" disabled/></td>' +
+                '<td><input type="text" class="txtMontoCuentaDebito form-control" value="' + MontoDebido + '" disabled /></td>' +
+                '<td><input type="text" class="txtMontoCuentaCredito form-control" value="' + MontoCredito + '" disabled /></td>' +
                 '</tr>';
         }
         $("#tbody_resumenCuentas").html(tr);
 
-        $("#CuentaInv").val(datos[datos.length-1].NumeroCuenta)
-        $("#MontoCuentaInv").val(formatNumberDecimales(datos[datos.length-1].Monto,2))
+        cargarCuentaInv(datos[datos.length - 1].NumeroCuenta)
+        //$("#CuentaInv").val(datos[datos.length-1].NumeroCuenta)
+        //$("#MontoCuentaInv").val(formatNumberDecimales(datos[datos.length-1].Monto,2))
     });
 }
 
@@ -1795,38 +1819,74 @@ function enviarSAP() {
 }
 
 function ProcesarIntegracion() {
+    Swal.fire({
+        title: "Enviando a SAP...",
+        text: "Por favor espere",
+        showConfirmButton: false,
+        allowOutsideClick: false
+    });
+
 
     let arrayCuenta = new Array();
     $(".txtNumeroCuenta").each(function (indice, elemento) {
         arrayCuenta.push($(elemento).val());
     });
 
-    let arrayMonto = new Array();
-    $(".txtMontoCuenta").each(function (indice, elemento) {
-        arrayMonto.push($(elemento).val());
+    let arrayMontoDebito = new Array();
+    $(".txtMontoCuentaDebito").each(function (indice, elemento) {
+        arrayMontoDebito.push(($(elemento).val()).replace(/,/g, ""));
+    });
+
+    let arrayMontoCredito = new Array();
+    $(".txtMontoCuentaCredito").each(function (indice, elemento) {
+        arrayMontoCredito.push(($(elemento).val()).replace(/,/g, ""));
+    });
+
+    let arrayCuentaInv = new Array();;
+    $(".CuentaInv").each(function (indice, elemento) {
+        arrayCuentaInv.push(($(elemento).val()).replace(/,/g, ""));
+    });
+
+    let arrayDebitoInv = new Array();;
+    $(".TotalDebitoInv").each(function (indice, elemento) {
+        arrayDebitoInv.push(($(elemento).val()).replace(/,/g, ""));
+    });
+
+    let arrayCreditoInv = new Array();;
+    $(".TotalCreditoInv").each(function (indice, elemento) {
+        arrayCreditoInv.push(($(elemento).val()).replace(/,/g, ""));
     });
 
     let ArrayConsumo = [];
 
-    for (var i = 0; i < arrayMonto.length; i++) {
+    for (var i = 0; i < arrayCuenta.length; i++) {
         ArrayConsumo.push({
             'NumeroCuenta': arrayCuenta[i],
-            'Monto': arrayMonto[i].replace(/,/g, "")
+            'MontoDebito': arrayMontoDebito[i],
+            'MontoCredito': arrayMontoCredito[i]
         })
     }
 
+    for (var i = 0; i < arrayCuentaInv.length; i++) {
+        ArrayConsumo.push({
+            'NumeroCuenta': arrayCuentaInv[i],
+            'MontoDebito': (arrayDebitoInv[i]).replace(/,/g, ""),
+            'MontoCredito': (arrayCreditoInv[i]).replace(/,/g, "")
+        })
+    }
+    setTimeout(() => {
+        $.post("ProcesarIntegracion", {
+            'Cuentas': ArrayConsumo,
+            'FechaContabilizacion': $("#txtFechaContabilizacion").val(),
+            'GrupoCreacion': $("#txtIdDatosTrabajo").val()
+        }, function (data, status) {
+            closePopup()
+            ValidarEnvioSap()
+            Swal.fire("Resultados:", data, "info")
+        });
+    },200)
 
 
-    $.post("ProcesarIntegracion", {
-        'Cuentas': ArrayConsumo,
-        'CuentaInv': $("#CuentaInv").val(),
-        'MontoInv': $("#MontoCuentaInv").val(),
-        'GrupoCreacion': $("#txtIdDatosTrabajo").val()
-    }, function (data, status) {
-        closePopup()
-        ValidarEnvioSap()
-        Swal.fire("Resultados:", data, "info")
-    });
 }
 
 function ValidarEnvioSap() {
@@ -1840,3 +1900,41 @@ function ValidarEnvioSap() {
         }
     });
 }
+
+function cargarCuentaInv(NumeroCuenta) {
+    let MontoTotalDebito = 0;
+    $(".txtMontoCuentaDebito").each(function (indice, elemento) {
+        MontoTotalDebito += +($(elemento).val()).replace(/,/g, "");
+    });
+
+    let MontoTotalCredito = 0;
+    $(".txtMontoCuentaCredito").each(function (indice, elemento) {
+        MontoTotalCredito += +($(elemento).val()).replace(/,/g, "");
+    });
+
+    let newTr = "";
+
+
+    if (MontoTotalDebito > 0) {
+        newTr += '<tr>' +
+            '<td>Inventario</td>' +
+            '<td><input type="text" class="form-control CuentaInv"  value="' + NumeroCuenta + '" disabled/></td>' +
+            '<td><input type="text" class="form-control TotalDebitoInv"  value="' + 0 + '" disabled /></td>' +
+            '<td><input type="text" class="form-control TotalCreditoInv"  value="' + MontoTotalDebito + '" disabled /></td>' +
+            '</tr>';
+    }
+
+    if (MontoTotalCredito > 0) {
+        newTr += '<tr>' +
+            '<td>Inventario</td>' +
+            '<td><input type="text" class="form-control CuentaInv"  value="' + NumeroCuenta + '" disabled/></td>' +
+            '<td><input type="text" class="form-control TotalDebitoInv"  value="' + MontoTotalCredito + '" disabled /></td>' +
+            '<td><input type="text" class="form-control TotalCreditoInv"  value="' + 0 + '" disabled /></td>' +
+            '</tr>';
+
+    }
+
+    $("#tbody_resumenCuentas").append(newTr)
+
+}
+

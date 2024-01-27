@@ -18,5 +18,6 @@ namespace DTO
         public string? Obra { get; set; }
         public string? Serie { get; set; }
         public string NombObra { get; set; }
+        public int IdArticuloProveedor { get; set; }
     }
 }

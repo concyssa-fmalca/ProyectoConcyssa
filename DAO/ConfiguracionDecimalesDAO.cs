@@ -12,10 +12,10 @@ namespace DAO
 {
     public class ConfiguracionDecimalesDAO
     {
-        public List<ConfiguracionDecimalesDTO> ObtenerConfiguracionDecimales(int IdSociedad)
+        public List<ConfiguracionDecimalesDTO> ObtenerConfiguracionDecimales(int IdSociedad, string BaseDatos)
         {
             List<ConfiguracionDecimalesDTO> lstConfiguracionDecimalesDTO = new List<ConfiguracionDecimalesDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -48,13 +48,13 @@ namespace DAO
         }
 
 
-        public int UpdateInsertConfiguracionDecimales(ConfiguracionDecimalesDTO oConfiguracionDecimalesDTO, int IdSociedad)
+        public int UpdateInsertConfiguracionDecimales(ConfiguracionDecimalesDTO oConfiguracionDecimalesDTO, int IdSociedad, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {

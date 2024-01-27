@@ -15,10 +15,11 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerIndicadorPeriodoDT(int Estado=3)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             PeriodoDAO oPeriodoDAO = new PeriodoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             DataTableDTO oDataTableDTO = new DataTableDTO();
-            List<IndicadorPeriodoDTO> lstIndicadorPeriodoDTO = oPeriodoDAO.ObtenerIndicadorPeriodo(IdSociedad, Estado, ref mensaje_error);
+            List<IndicadorPeriodoDTO> lstIndicadorPeriodoDTO = oPeriodoDAO.ObtenerIndicadorPeriodo(IdSociedad, Estado,BaseDatos,ref mensaje_error);
             if (lstIndicadorPeriodoDTO.Count >= 0 && mensaje_error.Length == 0)
             {
                 oDataTableDTO.sEcho = 1;
@@ -38,10 +39,11 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerIndicadorPeriodo(int Estado = 3)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             PeriodoDAO oPeriodoDAO = new PeriodoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
         
-            List<IndicadorPeriodoDTO> lstIndicadorPeriodoDTO = oPeriodoDAO.ObtenerIndicadorPeriodo(IdSociedad, Estado, ref mensaje_error);
+            List<IndicadorPeriodoDTO> lstIndicadorPeriodoDTO = oPeriodoDAO.ObtenerIndicadorPeriodo(IdSociedad, Estado,BaseDatos,ref mensaje_error);
             if (lstIndicadorPeriodoDTO.Count >= 0 && mensaje_error.Length == 0)
             {
                 //return oDataTableDTO;
@@ -58,10 +60,11 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerIndicadorPeriodoxId(int IdIndicadorPeriodo)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             PeriodoDAO oPeriodoDAO = new PeriodoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
 
-            IndicadorPeriodoDTO oIndicadorPeriodoDTO = oPeriodoDAO.ObtenerIndicadorPeriodoxId(IdIndicadorPeriodo,ref mensaje_error);
+            IndicadorPeriodoDTO oIndicadorPeriodoDTO = oPeriodoDAO.ObtenerIndicadorPeriodoxId(IdIndicadorPeriodo,BaseDatos,ref mensaje_error);
             if (mensaje_error.Length>0)
             {
                 return mensaje_error;
@@ -75,6 +78,7 @@ namespace ConcyssaWeb.Controllers
         public string UpdateInsertIndicadorPeriodo(IndicadorPeriodoDTO oIndicadorPeriodoDTO)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             int IdSociedad = Convert.ToInt32((String.IsNullOrEmpty(oIndicadorPeriodoDTO.IdSociedad.ToString())) ? Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad")) : oIndicadorPeriodoDTO.IdSociedad);
             int IdUsuario = Convert.ToInt32((String.IsNullOrEmpty(oIndicadorPeriodoDTO.IdUsuario.ToString())) ? Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")) : oIndicadorPeriodoDTO.IdUsuario);
             if (IdSociedad == 0)
@@ -89,7 +93,7 @@ namespace ConcyssaWeb.Controllers
             oIndicadorPeriodoDTO.IdUsuario = IdUsuario;
             PeriodoDAO oPeriodoDAO = new PeriodoDAO();
  
-            int respuesta = oPeriodoDAO.UpdateInsertIndicadorPeriodo(oIndicadorPeriodoDTO, ref mensaje_error);
+            int respuesta = oPeriodoDAO.UpdateInsertIndicadorPeriodo(oIndicadorPeriodoDTO,BaseDatos,ref mensaje_error);
             if (mensaje_error.Length > 0)
             {
                 return mensaje_error;
@@ -108,8 +112,9 @@ namespace ConcyssaWeb.Controllers
         public string EliminarInidicadorPeriodo(int IdIndicadorPeriodo)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             PeriodoDAO oPeriodoDAO = new PeriodoDAO();
-            int resultado = oPeriodoDAO.DeleteIndicadorPeriodo(IdIndicadorPeriodo, ref mensaje_error);
+            int resultado = oPeriodoDAO.DeleteIndicadorPeriodo(IdIndicadorPeriodo,BaseDatos,ref mensaje_error);
             if (mensaje_error.Length>0)
             {
                 return mensaje_error;

@@ -3,6 +3,7 @@ using DTO;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Net;
 using System.Xml;
 
@@ -23,11 +24,12 @@ namespace ConcyssaWeb.Controllers
             {
                 return valida;
             }
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             GiroDAO oGiroDAO = new GiroDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
-            List<GiroDTO> lstSemanaDTO = oGiroDAO.ObtenerGiro(ref mensaje_error, IdSociedad,IdObra, IdTipoRegistro, IdSemana, IdEstadoGiro,  estado, IdUsuario);
+            List<GiroDTO> lstSemanaDTO = oGiroDAO.ObtenerGiro(BaseDatos,ref mensaje_error, IdSociedad,IdObra, IdTipoRegistro, IdSemana, IdEstadoGiro,  estado, IdUsuario);
             DataTableDTO oDataTableDTO = new DataTableDTO();
             if (lstSemanaDTO.Count > 0 || mensaje_error == "")
             {
@@ -39,7 +41,13 @@ namespace ConcyssaWeb.Controllers
             }
             else
             {
-                return "error";
+                List<GiroDTO> lstSemanaDTO1 = new List<GiroDTO>();
+
+                oDataTableDTO.sEcho = 1;
+                oDataTableDTO.iTotalDisplayRecords = 0;
+                oDataTableDTO.iTotalRecords = 0;
+                oDataTableDTO.aaData = (lstSemanaDTO1);
+                return JsonConvert.SerializeObject(oDataTableDTO);
             }
         }
 
@@ -48,8 +56,9 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerGiroxID(int IdGiro)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             GiroDAO oGiroDAO = new GiroDAO();
-            List<GiroDTO> lstSemanaDTO = oGiroDAO.ObtenerGiroxId(IdGiro, ref mensaje_error);
+            List<GiroDTO> lstSemanaDTO = oGiroDAO.ObtenerGiroxId(IdGiro,BaseDatos,ref mensaje_error);
 
             if (lstSemanaDTO.Count > 0)
             {
@@ -69,10 +78,11 @@ namespace ConcyssaWeb.Controllers
             {
                 return valida;
             }
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             GiroDAO oGiroDAO = new GiroDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<GiroDetalleDTO> lstSemanaDTO = oGiroDAO.ObtenerGiroDetalle(IdGiro, ref mensaje_error);
+            List<GiroDetalleDTO> lstSemanaDTO = oGiroDAO.ObtenerGiroDetalle(IdGiro,BaseDatos,ref mensaje_error);
             DataTableDTO oDataTableDTO = new DataTableDTO();
             if (lstSemanaDTO.Count > 0 || mensaje_error == "")
             {
@@ -92,8 +102,9 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerGiroDetallesxID(int IdGiroDetalle)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             GiroDAO oGiroDAO = new GiroDAO();
-            List<GiroDetalleDTO> lstSemanaDTO = oGiroDAO.ObtenerGiroDetallexId(IdGiroDetalle, ref mensaje_error);
+            List<GiroDetalleDTO> lstSemanaDTO = oGiroDAO.ObtenerGiroDetallexId(IdGiroDetalle,BaseDatos,ref mensaje_error);
 
             if (lstSemanaDTO.Count > 0)
             {
@@ -111,10 +122,11 @@ namespace ConcyssaWeb.Controllers
         {
 
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             GiroDAO oSemanaDAO = new GiroDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             //oSemanaDTO.IdSociedad = IdSociedad;
-            int respuesta = oSemanaDAO.UpdateInsertGiroDetalle(oSemanaDTO, ref mensaje_error);
+            int respuesta = oSemanaDAO.UpdateInsertGiroDetalle(oSemanaDTO,BaseDatos,ref mensaje_error);
 
             if (mensaje_error.Length > 0)
             {
@@ -136,24 +148,58 @@ namespace ConcyssaWeb.Controllers
         {
 
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             GiroDAO oSemanaDAO = new GiroDAO();
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+
+            ModeloAutorizacionDAO oModeloAutorizacionDAO = new ModeloAutorizacionDAO();
+            var ModeloAuorizacion = oModeloAutorizacionDAO.VerificarExisteModeloSolicitud(int.Parse(IdSociedad.ToString()), 2, BaseDatos);
+            if (ModeloAuorizacion.Count > 0)
+            {
+                int CantidadAutores = 0;
+                string Modelo = "";
+                for (int i = 0; i < ModeloAuorizacion.Count; i++)
+                {
+                    var ResultadoModelo = oModeloAutorizacionDAO.ObtenerDatosxID(ModeloAuorizacion[i].IdModeloAutorizacion, BaseDatos);
+                    for (int a = 0; a < ResultadoModelo[0].DetallesAutor.Count; a++)
+                    {
+                        if (ResultadoModelo[0].DetallesAutor[a].IdAutor == IdUsuario)
+                        {
+                            CantidadAutores++;
+                        }
+
+                    }
+                }
+
+
+                if (CantidadAutores == 0)
+                {
+                    return "-99";
+                }
+
+
+                if (CantidadAutores > 1)
+                {
+                    return "-98";
+                }
+
+            }
             //oSemanaDTO.IdSociedad = IdSociedad;
-            var resultado = oSemanaDAO.UpdateInsertGiro(oGiroDTO, IdUsuario, IdSociedad, ref mensaje_error);
+            var resultado = oSemanaDAO.UpdateInsertGiro(oGiroDTO, IdUsuario, IdSociedad,BaseDatos,ref mensaje_error);
 
             if (resultado[0] == "5") //es un insert
             {
                 var IdGiroSplit = resultado[1].Split("-");
                 var IdInsert = int.Parse(IdGiroSplit[0]);
                 GiroDAO giro = new GiroDAO();
-                List<GiroDTO> lstGiro = giro.ObtenerGiroxId(IdInsert, ref mensaje_error);
+                List<GiroDTO> lstGiro = giro.ObtenerGiroxId(IdInsert,BaseDatos,ref mensaje_error);
                 oGiroDTO = lstGiro[0];
-                ModeloAutorizacionDAO oModeloAutorizacionDAO = new ModeloAutorizacionDAO();
+          
                 GiroModeloDAO oGiroModeloDAO = new GiroModeloDAO();
                 EtapaAutorizacionDAO oEtapaAutorizacionDAO = new EtapaAutorizacionDAO();
 
-                var ModeloAuorizacion = oModeloAutorizacionDAO.VerificarExisteModeloSolicitud(int.Parse(IdSociedad.ToString()),2);
+               
 
                 //listado de modelos obtenidos
                 if (ModeloAuorizacion.Count > 0)
@@ -162,7 +208,7 @@ namespace ConcyssaWeb.Controllers
                     for (int i = 0; i < ModeloAuorizacion.Count; i++)
                     {
                         //obtengo datos de los modelos obtenidos
-                        var ResultadoModelo = oModeloAutorizacionDAO.ObtenerDatosxID(ModeloAuorizacion[i].IdModeloAutorizacion);
+                        var ResultadoModelo = oModeloAutorizacionDAO.ObtenerDatosxID(ModeloAuorizacion[i].IdModeloAutorizacion,BaseDatos);
                         for (int a = 0; a < ResultadoModelo[0].DetallesAutor.Count; a++)
                         {
                             //valida a que usuarios se le va a aplicar este modelo de autorizacion
@@ -171,7 +217,7 @@ namespace ConcyssaWeb.Controllers
                             {
                                 for (int c = 0; c < ResultadoModelo[0].DetallesCondicion.Count; c++)
                                 {
-                                    var Resultado = oModeloAutorizacionDAO.ObtenerResultadoCondicion(ResultadoModelo[0].DetallesCondicion[c].Condicion, IdInsert,2);
+                                    var Resultado = oModeloAutorizacionDAO.ObtenerResultadoCondicion(ResultadoModelo[0].DetallesCondicion[c].Condicion, IdInsert,2,BaseDatos);
 
                                     if (Resultado[0].EntraAlProcesoAutorizar == 1) //si es una solicitud para autorizar 
                                     {
@@ -187,9 +233,9 @@ namespace ConcyssaWeb.Controllers
                                                 IdEtapa = ResultadoModelo[0].DetallesEtapa[e].IdEtapa,
                                                 Aprobaciones = ResultadoModelo[0].DetallesEtapa[e].AutorizacionesRequeridas,
                                                 Rechazos = ResultadoModelo[0].DetallesEtapa[e].RechazosRequeridos
-                                            }, IdSociedad.ToString());
+                                            }, IdSociedad.ToString(),BaseDatos);
 
-                                            var ResultadoEtapa = oEtapaAutorizacionDAO.ObtenerDatosxID(ResultadoModelo[0].DetallesEtapa[e].IdEtapa);
+                                            var ResultadoEtapa = oEtapaAutorizacionDAO.ObtenerDatosxID(ResultadoModelo[0].DetallesEtapa[e].IdEtapa,BaseDatos);
                                             UsuarioDAO oUsuarioDAO = new UsuarioDAO();
                                             //enviar correo
                                             //string mensaje_error = "";
@@ -197,8 +243,8 @@ namespace ConcyssaWeb.Controllers
                                             {
                                                 for (int k = 0; k < ResultadoEtapa[0].Detalles.Count; k++)
                                                 {
-                                                    var UsersDeEtapa = oUsuarioDAO.ObtenerDatosxID(ResultadoEtapa[0].Detalles[k].IdUsuario, ref mensaje_error);
-                                                    var Solicitante = oUsuarioDAO.ObtenerDatosxID(oGiroDTO.IdSolicitante, ref mensaje_error);
+                                                    var UsersDeEtapa = oUsuarioDAO.ObtenerDatosxID(ResultadoEtapa[0].Detalles[k].IdUsuario,BaseDatos,ref mensaje_error);
+                                                    var Solicitante = oUsuarioDAO.ObtenerDatosxID(oGiroDTO.IdSolicitante,BaseDatos,ref mensaje_error);
                                                     //EnviarCorreo(UsersDeEtapa[0].Correo, Solicitante[0].Nombre, solicitudRQDTO.Serie, solicitudRQDTO.Numero, Resultado[0].Mensaje, solicitudRQDTO);
                                                     //EnviarCorreo("jhuniors.ramos@smartcode.pe", Solicitante[0].Nombre, solicitudRQDTO.Serie, solicitudRQDTO.Numero, Resultado[0].Mensaje);
 
@@ -249,8 +295,9 @@ namespace ConcyssaWeb.Controllers
         public int EliminarGiro(int IdGiro)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             GiroDAO oSemanaDAO = new GiroDAO();
-            int resultado = oSemanaDAO.DeleteGiro(IdGiro, ref mensaje_error);
+            int resultado = oSemanaDAO.DeleteGiro(IdGiro,BaseDatos,ref mensaje_error);
             if (resultado == 0)
             {
                 resultado = 1;
@@ -262,8 +309,9 @@ namespace ConcyssaWeb.Controllers
         public int EliminarGiroDetalle(int IdGiroDetalle)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             GiroDAO oSemanaDAO = new GiroDAO();
-            int resultado = oSemanaDAO.DeleteGiroDetalle(IdGiroDetalle, ref mensaje_error);
+            int resultado = oSemanaDAO.DeleteGiroDetalle(IdGiroDetalle,BaseDatos,ref mensaje_error);
             if (resultado == 0)
             {
                 resultado = 1;
@@ -340,9 +388,10 @@ namespace ConcyssaWeb.Controllers
 
         public string DatosSolicitudModeloAprobaciones(int IdGiro)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             GiroDTO oGiroDTO = new GiroDTO();
             GiroDAO oGiroDAO = new GiroDAO();
-            oGiroDTO = oGiroDAO.DatosSolicitudRq(IdGiro);
+            oGiroDTO = oGiroDAO.DatosSolicitudRq(IdGiro,BaseDatos);
             if (oGiroDTO != null)
             {
                 return JsonConvert.SerializeObject(oGiroDTO);
@@ -473,8 +522,9 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerGiroAprobado(int IdObra)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             GiroDAO oGiroDAO = new GiroDAO();
-            List<GiroDTO> lstSemanaDTO = oGiroDAO.ObtenerGiroxAprobado(IdObra, ref mensaje_error);
+            List<GiroDTO> lstSemanaDTO = oGiroDAO.ObtenerGiroxAprobado(IdObra,BaseDatos,ref mensaje_error);
 
             if (lstSemanaDTO.Count > 0)
             {

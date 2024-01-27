@@ -117,6 +117,7 @@
                         <th>Obra</th>
                         <th>Almacen</th>
                         <th>Proveedor</th>
+                        <th>Correo</th>
                         <th>Moneda</th>
                         <th>N° Pedido</th>
                         
@@ -530,9 +531,11 @@
 
 
 </div>
+@{
+    Random rnd = new Random();
+}
 
-
-<script src="~/Scripts/Pedido/CorreoProveedor.js"></script>
+<script src="~/Scripts/Pedido/CorreoProveedor.js?v=@rnd.Next(1, 1000 + 1)"></script>
 <script src="~/Scripts/General.js"></script>
 <script src="~/js/pdf/jspdf.min.js"></script>
 <script src="~/js/pdf/faker.min.js"></script>

@@ -15,10 +15,11 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerAlmacen(int estado = 3)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             AlmacenDAO oAlmacenDAO = new AlmacenDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             DataTableDTO oDataTableDTO = new DataTableDTO();
-            List<AlmacenDTO> lstAlmacenDTO = oAlmacenDAO.ObtenerAlmacen(IdSociedad, ref mensaje_error, estado);
+            List<AlmacenDTO> lstAlmacenDTO = oAlmacenDAO.ObtenerAlmacen(IdSociedad,BaseDatos,ref mensaje_error, estado);
             if (lstAlmacenDTO.Count > 0)
             {
      
@@ -36,11 +37,12 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerAlmacenxIdUsuario(int estado = 3)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             AlmacenDAO oAlmacenDAO = new AlmacenDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             DataTableDTO oDataTableDTO = new DataTableDTO();
-            List<AlmacenDTO> lstAlmacenDTO = oAlmacenDAO.ObtenerAlmacenxIdUsuario(IdSociedad, IdUsuario, ref mensaje_error, estado);
+            List<AlmacenDTO> lstAlmacenDTO = oAlmacenDAO.ObtenerAlmacenxIdUsuario(IdSociedad, IdUsuario,BaseDatos,ref mensaje_error, estado);
             if (lstAlmacenDTO.Count > 0)
             {
 
@@ -57,10 +59,11 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerAlmacenes(int estado = 3)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             AlmacenDAO oAlmacenDAO = new AlmacenDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             DataTableDTO oDataTableDTO = new DataTableDTO();
-            List<AlmacenDTO> lstAlmacenDTO = oAlmacenDAO.ObtenerAlmacen(IdSociedad, ref mensaje_error, estado);
+            List<AlmacenDTO> lstAlmacenDTO = oAlmacenDAO.ObtenerAlmacen(IdSociedad,BaseDatos,ref mensaje_error, estado);
             if (lstAlmacenDTO.Count > 0)
             {
 
@@ -77,11 +80,12 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerAlmacenDT(int estado = 3)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             AlmacenDAO oAlmacenDAO = new AlmacenDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             
             DataTableDTO oDataTableDTO = new DataTableDTO();
-            List<AlmacenDTO> lstAlmacenDTO = oAlmacenDAO.ObtenerAlmacen(IdSociedad, ref mensaje_error, estado);
+            List<AlmacenDTO> lstAlmacenDTO = oAlmacenDAO.ObtenerAlmacen(IdSociedad,BaseDatos,ref mensaje_error, estado);
             if (lstAlmacenDTO.Count > 0)
             {
                 oDataTableDTO.sEcho = 1;
@@ -102,8 +106,9 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerDatosxID(int IdAlmacen)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             AlmacenDAO oAlmacenDAO = new AlmacenDAO();
-            List<AlmacenDTO> lstCodigoUbsoDTO = oAlmacenDAO.ObtenerDatosxID(IdAlmacen, ref mensaje_error);
+            List<AlmacenDTO> lstCodigoUbsoDTO = oAlmacenDAO.ObtenerDatosxID(IdAlmacen,BaseDatos,ref mensaje_error);
 
             if (lstCodigoUbsoDTO.Count > 0)
             {
@@ -121,10 +126,11 @@ namespace ConcyssaWeb.Controllers
         {
 
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             AlmacenDAO oAlmacenDAO = new AlmacenDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             oAlmacenDTO.IdSociedad = IdSociedad;
-            int respuesta = oAlmacenDAO.UpdateInsertAlmacen(oAlmacenDTO, ref mensaje_error, Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")));
+            int respuesta = oAlmacenDAO.UpdateInsertAlmacen(oAlmacenDTO,BaseDatos,ref mensaje_error, Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")));
 
             if (mensaje_error.Length > 0)
             {
@@ -146,8 +152,9 @@ namespace ConcyssaWeb.Controllers
         public int EliminarAlmacen(int IdAlmacen)
         {
             string mensaje_error="";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             AlmacenDAO oAlmacenDAO = new AlmacenDAO();
-            int resultado = oAlmacenDAO.Delete(IdAlmacen,ref mensaje_error);
+            int resultado = oAlmacenDAO.Delete(IdAlmacen,BaseDatos,ref mensaje_error);
             if (resultado == 0)
             {
                 resultado = 1;
@@ -159,8 +166,9 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerAlmacenxIdObra(int IdObra)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             AlmacenDAO oAlmacenDAO = new AlmacenDAO();
-            List<AlmacenDTO> lstAlmacenDTO = oAlmacenDAO.ObtenerAlmacenxIdObra(IdObra, ref mensaje_error);
+            List<AlmacenDTO> lstAlmacenDTO = oAlmacenDAO.ObtenerAlmacenxIdObra(IdObra,BaseDatos,ref mensaje_error);
 
             if (lstAlmacenDTO.Count > 0)
             {

@@ -35,11 +35,18 @@
                     <h4 style="font-size:1.2em;">Total de Registros: <span id="spnTotalRegistros"></span></h4>
                 </div>
             </div>
-            <div class="col-xs-6 right">
+             <div class="col-sm-2 right">
+                <button class="btn btn-sm btn-info pull-right" id="btn_agregaritem" onclick="OpenModalImportacion()" type="button">Importar Articulos Excel</button>
+             </div>
+            <div class="col-sm-2 right">
+                <button class="btn btn-sm btn-info pull-right" id="btn_agregaritem" onclick="OpenModalImportacionArtProv()" type="button">Importar Precio x Prov Excel</button>
+            </div>
+            <div class="col-xs-2 right">
                 <button class="btn btn-sm  btn-primary pull-right plu" data-target="modal1" onclick="ModalNuevo()" style="margin-left:10px;">Nuevo</button>
                 @*<button class="btn btn-sm  btn-success pull-right plu" id="btnPdf" style="margin-left:10px;">Descargar PDF</button>
                 <button class="btn btn-sm btn-info pull-right plu" id="btnExcel" style="margin-left:10px;">Descargar Excel</button>*@
             </div>
+      
         </div>
     </div>
     <div class="panel">
@@ -546,6 +553,122 @@
             </div>
         </div>
     </div>
+
+
+
+
+    <!-- Modal Importar excel-->
+    <div class="modal fade" data-backdrop="static"
+         data-keyboard="false" id="ModalImportarDatos" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered allcp-form" style="margin-top:120px" role="document">
+            <div class="modal-content">
+
+
+                <div class="panel" style="margin-bottom:0px">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="lblTituloModalItem">Importar Productos</h5>
+                    </div>
+                    <div id="divSelectFile">
+                        <div class="card-body" style="width:100%;display:flex;justify-content:center">
+
+                            <div style="width:70%;height:300px;display:flex;flex-direction:column;justify-content:center;align-items:center">
+                                <p>Seleccione un Archivo de Excel para Iniciar el Proceso</p>
+                                <br />
+                                <img src="~/assets/img/excel-logo.png" style="width:100px;height:100px" />
+                                <br />
+                                @using (Html.BeginForm("GuardarFile", "Articulo", FormMethod.Post, new { id = "CargarExcel", enctype = "multipart/form-data" }))
+                                {
+                                    <div class="col">
+                                        <div class='col-md-12'>
+                                            <div class="col-md-12">
+                                                @*<label for="file">Subir Anexos</label>*@
+                                                <input type="file" name="file" id="file" class="form-control" />
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class='col-md-12' style="display:flex;flex-direction:column;justify-content:center;align-items:center">
+                                            <div class="col-md-6">
+                                                @*<label for="file">Subir Anexos</label>*@
+                                                <input type="submit" value="Procesar Excel" class="btn btn-primary" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    @ViewBag.Message
+
+                                }
+                                <br />
+                                <p>Puede descargar la Plantilla Excel Haciendo <a onclick="DescargarPlantilla()">Click Aqui</a></p>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger pull-right" style="background-color:orange;" data-dismiss="modal" onclick="CerrarModalListadoAlmacen()">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+     <!-- Modal Importar excel-->
+    <div class="modal fade" data-backdrop="static"
+         data-keyboard="false" id="ModalImportarDatosPrecioProv" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered allcp-form" style="margin-top:120px" role="document">
+            <div class="modal-content">
+
+
+                <div class="panel" style="margin-bottom:0px">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Importar Precios Articulo - Proveedor</h5>
+                    </div>
+                    <div id="divSelectFile">
+                        <div class="card-body" style="width:100%;display:flex;justify-content:center">
+
+                            <div style="width:70%;height:300px;display:flex;flex-direction:column;justify-content:center;align-items:center">
+                                <p>Seleccione un Archivo de Excel para Iniciar el Proceso</p>
+                                <br />
+                                <img src="~/assets/img/excel-logo.png" style="width:100px;height:100px" />
+                                <br />
+                                @using (Html.BeginForm("GuardarFile", "Articulo", FormMethod.Post, new { id = "CargarExcelPrecioProv", enctype = "multipart/form-data" }))
+                                {
+                                    <div class="col">
+                                        <div class='col-md-12'>
+                                            <div class="col-md-12">
+                                                @*<label for="file">Subir Anexos</label>*@
+                                                <input type="file" name="file" id="file" class="form-control" />
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class='col-md-12' style="display:flex;flex-direction:column;justify-content:center;align-items:center">
+                                            <div class="col-md-6">
+                                                @*<label for="file">Subir Anexos</label>*@
+                                                <input type="submit" value="Procesar Excel" class="btn btn-primary" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    @ViewBag.Message
+
+                                }
+                                <br />
+                                @*<p>Puede descargar la Plantilla Excel Haciendo <a onclick="DescargarPlantilla()">Click Aqui</a></p>*@
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger pull-right" style="background-color:orange;" data-dismiss="modal" onclick="CerrarModalListadoAlmacen()">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 </div>
 
 

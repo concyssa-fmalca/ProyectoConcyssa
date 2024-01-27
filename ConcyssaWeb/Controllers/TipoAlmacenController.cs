@@ -13,10 +13,11 @@ namespace ConcyssaWeb.Controllers
         }
         public string ObtenerTipoAlmacen(int estado = 3)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             TipoAlmacenDAO oTipoAlmacenDAO = new TipoAlmacenDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<TipoAlmacenDTO> lstTipoAlmacenDTO = oTipoAlmacenDAO.ObtenerTipoAlmacen(IdSociedad, ref mensaje_error, estado);
+            List<TipoAlmacenDTO> lstTipoAlmacenDTO = oTipoAlmacenDAO.ObtenerTipoAlmacen(IdSociedad,BaseDatos,ref mensaje_error, estado);
             if (lstTipoAlmacenDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstTipoAlmacenDTO);
@@ -30,9 +31,10 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerDatosxID(int IdTipoAlmacen)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             TipoAlmacenDAO oTipoAlmacenDAO = new TipoAlmacenDAO();
-            List<TipoAlmacenDTO> lstCodigoUbsoDTO = oTipoAlmacenDAO.ObtenerDatosxID(IdTipoAlmacen, ref mensaje_error);
+            List<TipoAlmacenDTO> lstCodigoUbsoDTO = oTipoAlmacenDAO.ObtenerDatosxID(IdTipoAlmacen,BaseDatos,ref mensaje_error);
 
             if (lstCodigoUbsoDTO.Count > 0)
             {
@@ -48,12 +50,12 @@ namespace ConcyssaWeb.Controllers
 
         public string UpdateInsertTipoAlmacen(TipoAlmacenDTO oTipoAlmacenDTO)
         {
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             TipoAlmacenDAO oTipoAlmacenDAO = new TipoAlmacenDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             oTipoAlmacenDTO.IdSociedad = IdSociedad;
-            int respuesta = oTipoAlmacenDAO.UpdateInsertTipoAlmacen(oTipoAlmacenDTO, ref mensaje_error);
+            int respuesta = oTipoAlmacenDAO.UpdateInsertTipoAlmacen(oTipoAlmacenDTO,BaseDatos,ref mensaje_error);
 
             if (mensaje_error.Length > 0)
             {

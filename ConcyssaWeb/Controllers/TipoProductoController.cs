@@ -13,10 +13,11 @@ namespace ConcyssaWeb.Controllers
         }
         public string ObtenerTipoProducto(int estado = 3)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             TipoProductoDAO oTipoProductoDAO = new TipoProductoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<TipoProductoDTO> lstTipoProductoDTO = oTipoProductoDAO.ObtenerTipoProducto(IdSociedad, ref mensaje_error, estado);
+            List<TipoProductoDTO> lstTipoProductoDTO = oTipoProductoDAO.ObtenerTipoProducto(IdSociedad,BaseDatos,ref mensaje_error, estado);
             if (lstTipoProductoDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstTipoProductoDTO);
@@ -30,9 +31,10 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerDatosxID(int IdTipoProducto)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             TipoProductoDAO oTipoProductoDAO = new TipoProductoDAO();
-            List<TipoProductoDTO> lstCodigoUbsoDTO = oTipoProductoDAO.ObtenerDatosxID(IdTipoProducto, ref mensaje_error);
+            List<TipoProductoDTO> lstCodigoUbsoDTO = oTipoProductoDAO.ObtenerDatosxID(IdTipoProducto,BaseDatos,ref mensaje_error);
 
             if (lstCodigoUbsoDTO.Count > 0)
             {
@@ -48,12 +50,12 @@ namespace ConcyssaWeb.Controllers
 
         public string UpdateInsertTipoProducto(TipoProductoDTO oTipoProductoDTO)
         {
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             TipoProductoDAO oTipoProductoDAO = new TipoProductoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             oTipoProductoDTO.IdSociedad = IdSociedad;
-            int respuesta = oTipoProductoDAO.UpdateInsertTipoProducto(oTipoProductoDTO, ref mensaje_error, Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")));
+            int respuesta = oTipoProductoDAO.UpdateInsertTipoProducto(oTipoProductoDTO,BaseDatos,ref mensaje_error, Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")));
 
             if (mensaje_error.Length > 0)
             {
@@ -74,9 +76,10 @@ namespace ConcyssaWeb.Controllers
 
         public int EliminarTipoProducto(int IdTipoProducto)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             TipoProductoDAO oTipoProductoDAO = new TipoProductoDAO();
-            int resultado = oTipoProductoDAO.Delete(IdTipoProducto, ref mensaje_error);
+            int resultado = oTipoProductoDAO.Delete(IdTipoProducto,BaseDatos,ref mensaje_error);
             if (resultado == 0)
             {
                 resultado = 1;

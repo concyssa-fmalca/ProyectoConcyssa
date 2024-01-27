@@ -13,7 +13,7 @@ namespace DAO
     public class GiroModeloAprobacionesDAO
     {
 
-        public int UpdateInsertModeloAprobacionesGiro(List<GiroModeloAprobacionesDTO> oGiroModeloAprobacionesDTO, string IdSociedad)
+        public int UpdateInsertModeloAprobacionesGiro(List<GiroModeloAprobacionesDTO> oGiroModeloAprobacionesDTO, string IdSociedad, string BaseDatos)
         {
             if (oGiroModeloAprobacionesDTO.Count() > 0)
             {
@@ -24,7 +24,7 @@ namespace DAO
                     transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
                     transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
                     TransactionOptions option = transactionOptions;
-                    using (SqlConnection cn = new Conexion().conectar())
+                    using (SqlConnection cn = new Conexion().conectar(BaseDatos))
                     {
                         using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                         {

@@ -17,6 +17,9 @@ function ConsultaServidor(url) {
         $("#txtDireccion").val(datos[0].Direccion);
         $("#txtId").val(datos[0].Id);
         $("#txtNombreBaseDatosSap").val(datos[0].NombreBDSAP);
+        $("#txtAlias").val(datos[0].Alias);
+        $("#ctaAsocFT").val(datos[0].ctaAsocFT);
+        $("#ctaAsocNC").val(datos[0].ctaAsocNC);
         //console.log(data);
 
 
@@ -31,6 +34,9 @@ function GuardarConfiguracion() {
     let RazonSocial = $("#txtRazonSocial").val();
     let Direccion =$("#txtDireccion").val();
     let NombreBDSAP = $("#txtNombreBaseDatosSap").val();
+    let Alias = $("#txtAlias").val();
+    let ctaAsocFT = $("#ctaAsocFT").val();
+    let ctaAsocNC = $("#ctaAsocNC").val();
 
 
     $.post('UpdateInsertConfiguracionSociedad', {
@@ -39,6 +45,9 @@ function GuardarConfiguracion() {
         'RazonSocial': RazonSocial,
         'Direccion': Direccion,
         'NombreBDSAP': NombreBDSAP,
+        'Alias': Alias,
+        'ctaAsocFT': ctaAsocFT,
+        'ctaAsocNC': ctaAsocNC,
        
     }, function (data, status) {
 

@@ -12,13 +12,13 @@ namespace DAO
 {
     public class InstrumentoMedicionDAO
     {
-        public int UpdateInsertInstrumentoMedicion(InstrumentoMedicionDTO oInstrumentoMedicionDTO, ref string mensaje_error, int IdUsuario)
+        public int UpdateInsertInstrumentoMedicion(InstrumentoMedicionDTO oInstrumentoMedicionDTO, string BaseDatos, ref string mensaje_error, int IdUsuario)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -59,10 +59,10 @@ namespace DAO
             }
         }
 
-        public List<InstrumentoMedicionDTO> ObtenerInstrumentoMedicion(int IdSociedad, ref string mensaje_error)
+        public List<InstrumentoMedicionDTO> ObtenerInstrumentoMedicion(int IdSociedad, string BaseDatos, ref string mensaje_error)
         {
             List<InstrumentoMedicionDTO> lstInstrumentoMedicionDTO = new List<InstrumentoMedicionDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -114,10 +114,10 @@ namespace DAO
             return lstInstrumentoMedicionDTO;
         }
 
-        public List<InstrumentoMedicionDTO> ObtenerDatosxID(int IdInstrumentoMedicion, ref string mensaje_error)
+        public List<InstrumentoMedicionDTO> ObtenerDatosxID(int IdInstrumentoMedicion, string BaseDatos, ref string mensaje_error)
         {
             List<InstrumentoMedicionDTO> lstInstrumentoMedicionDTO = new List<InstrumentoMedicionDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -160,13 +160,13 @@ namespace DAO
             }
             return lstInstrumentoMedicionDTO;
         }
-        public int Delete(int IdInstrumentoMedicion,int IdUsuario, ref string mensaje_error)
+        public int Delete(int IdInstrumentoMedicion,int IdUsuario, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -190,10 +190,10 @@ namespace DAO
             }
         }
 
-        public List<AnexoDTO> ObtenerAnexoInstMedicion(int IdInstrumentoMedicion, ref string mensaje_error)
+        public List<AnexoDTO> ObtenerAnexoInstMedicion(int IdInstrumentoMedicion, string BaseDatos, ref string mensaje_error)
         {
             List<AnexoDTO> lstAnexoDTO = new List<AnexoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -227,13 +227,13 @@ namespace DAO
 
         }
 
-        public int UpdateInsertInstrumentoMedicionDetalle(InstrumentoMedicionDetalleDTO oInstrumentoMedicionDetalleDTO, ref string mensaje_error, int IdUsuario)
+        public int UpdateInsertInstrumentoMedicionDetalle(InstrumentoMedicionDetalleDTO oInstrumentoMedicionDetalleDTO, string BaseDatos, ref string mensaje_error, int IdUsuario)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -261,10 +261,10 @@ namespace DAO
             }
         }
 
-        public List<InstrumentoMedicionDetalleDTO> ObtenerInstrumentoMedicionDetalle(int IdInstrumentoMedicion, ref string mensaje_error)
+        public List<InstrumentoMedicionDetalleDTO> ObtenerInstrumentoMedicionDetalle(int IdInstrumentoMedicion, string BaseDatos, ref string mensaje_error)
         {
             List<InstrumentoMedicionDetalleDTO> lstInstrumentoMedicionDetalleDTO = new List<InstrumentoMedicionDetalleDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -297,10 +297,10 @@ namespace DAO
             return lstInstrumentoMedicionDetalleDTO;
         }
 
-        public List<InstrumentoMedicionDetalleDTO> ObtenerDatosDetallexID(int IdInstrumentoMedicionDetalle, ref string mensaje_error)
+        public List<InstrumentoMedicionDetalleDTO> ObtenerDatosDetallexID(int IdInstrumentoMedicionDetalle, string BaseDatos, ref string mensaje_error)
         {
             List<InstrumentoMedicionDetalleDTO> lstInstrumentoMedicionDetalleDTO = new List<InstrumentoMedicionDetalleDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -333,13 +333,13 @@ namespace DAO
             return lstInstrumentoMedicionDetalleDTO;
         }
 
-        public int DeleteDetalle(int IdInstrumentoMedicionDetalle, int IdUsuario, ref string mensaje_error)
+        public int DeleteDetalle(int IdInstrumentoMedicionDetalle, int IdUsuario, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -364,13 +364,13 @@ namespace DAO
         }
 
 
-        public int UpdateInsertInstrumentoMedicionDetalleDoc(InstrumentoMedicionDetalleDocDTO oInstrumentoMedicionDetalleDocDTO, ref string mensaje_error, int IdUsuario)
+        public int UpdateInsertInstrumentoMedicionDetalleDoc(InstrumentoMedicionDetalleDocDTO oInstrumentoMedicionDetalleDocDTO, string BaseDatos, ref string mensaje_error, int IdUsuario)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -399,10 +399,10 @@ namespace DAO
             }
         }
 
-        public List<InstrumentoMedicionDetalleDocDTO> ObtenerInstrumentoMedicionDetalleDoc(int IdInstrumentoMedicionDetalle, ref string mensaje_error)
+        public List<InstrumentoMedicionDetalleDocDTO> ObtenerInstrumentoMedicionDetalleDoc(int IdInstrumentoMedicionDetalle, string BaseDatos, ref string mensaje_error)
         {
             List<InstrumentoMedicionDetalleDocDTO> lstInstrumentoMedicionDetalleDocDTO = new List<InstrumentoMedicionDetalleDocDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -435,10 +435,10 @@ namespace DAO
             return lstInstrumentoMedicionDetalleDocDTO;
         }
 
-        public List<InstrumentoMedicionDetalleDocDTO> ObtenerDatosDetalleDocxID(int IdInstrumentoMedicionDetalleDoc, ref string mensaje_error)
+        public List<InstrumentoMedicionDetalleDocDTO> ObtenerDatosDetalleDocxID(int IdInstrumentoMedicionDetalleDoc, string BaseDatos, ref string mensaje_error)
         {
             List<InstrumentoMedicionDetalleDocDTO> lstInstrumentoMedicionDetalleDocDTO = new List<InstrumentoMedicionDetalleDocDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -470,10 +470,10 @@ namespace DAO
             return lstInstrumentoMedicionDetalleDocDTO;
         }
 
-        public List<AnexoDTO> ObtenerAnexoInstMedicionDetalleDoc(int IdInstrumentoMedicionDetalleDoc, ref string mensaje_error)
+        public List<AnexoDTO> ObtenerAnexoInstMedicionDetalleDoc(int IdInstrumentoMedicionDetalleDoc, string BaseDatos, ref string mensaje_error)
         {
             List<AnexoDTO> lstAnexoDTO = new List<AnexoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -507,13 +507,13 @@ namespace DAO
 
         }
 
-        public int DeleteDetalleDoc(int IdInstrumentoMedicionDetalleDoc, int IdUsuario, ref string mensaje_error)
+        public int DeleteDetalleDoc(int IdInstrumentoMedicionDetalleDoc, int IdUsuario, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {

@@ -8,10 +8,10 @@ namespace DAO
     public class OpdnDAO
     {
 
-        public OpdnDTO ObtenerDatosxIDOPDN(int IdOpdn, ref string mensaje_error)
+        public OpdnDTO ObtenerDatosxIDOPDN(int IdOpdn, string BaseDatos, ref string mensaje_error)
         {
             OpdnDTO oOpdnDTO = new OpdnDTO();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -62,6 +62,7 @@ namespace DAO
                         oOpdnDTO.NumSerieTipoDocumentoRef = (drd["NumSerieTipoDocumentoRef"].ToString());
                         oOpdnDTO.NombUsuario = (drd["NombUsuario"].ToString());
                         oOpdnDTO.CreatedAt = Convert.ToDateTime(drd["CreatedAt"].ToString());
+                        oOpdnDTO.IdUsuario = Convert.ToInt32(drd["IdUsuario"].ToString());
                         oOpdnDTO.FechaEdicion = Convert.ToDateTime(String.IsNullOrEmpty(drd["FechaEdicion"].ToString()) ? "1990/01/01" : drd["FechaEdicion"].ToString());
                         oOpdnDTO.NombUsuarioEdicion = (String.IsNullOrEmpty(drd["NombUsuarioEdicion"].ToString()) ? "" : drd["NombUsuarioEdicion"].ToString());
                         oOpdnDTO.IdDocExtorno = Convert.ToInt32(drd["IdDocExtorno"].ToString());
@@ -82,10 +83,10 @@ namespace DAO
         }
 
 
-        public List<OpdnDTO> ObtenerOPDNxEstado(int IdBase,int IdSociedad, ref string mensaje_error, string EstadoOPDN, int IdUsuario=0)
+        public List<OpdnDTO> ObtenerOPDNxEstado(int IdBase,int IdSociedad, string BaseDatos, ref string mensaje_error, string EstadoOPDN, int IdUsuario=0)
         {
             List<OpdnDTO> lstOPDNDTO = new List<OpdnDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -154,10 +155,10 @@ namespace DAO
             return lstOPDNDTO;
         }
 
-        public List<OpdnDTO> ListarOPDNDTModalOPCH(int IdSociedad, ref string mensaje_error, string EstadoOPDN,int IdUsuario=0)
+        public List<OpdnDTO> ListarOPDNDTModalOPCH(int IdSociedad, string BaseDatos, ref string mensaje_error, string EstadoOPDN,int IdUsuario=0)
         {
             List<OpdnDTO> lstOPDNDTO = new List<OpdnDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -225,10 +226,10 @@ namespace DAO
             return lstOPDNDTO;
         }
 
-        public List<OPDNDetalle> ObtenerDetalleOpdn(int IdOpdn, ref string mensaje_error)
+        public List<OPDNDetalle> ObtenerDetalleOpdn(int IdOpdn, string BaseDatos, ref string mensaje_error)
         {
             List<OPDNDetalle> lstOPDNDetalle = new List<OPDNDetalle>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -287,10 +288,10 @@ namespace DAO
             }
 
         }
-        public List<OPDNDetalle> ObtenerDetalleOpdnModal(int IdOpdn, ref string mensaje_error)
+        public List<OPDNDetalle> ObtenerDetalleOpdnModal(int IdOpdn, string BaseDatos, ref string mensaje_error)
         {
             List<OPDNDetalle> lstOPDNDetalle = new List<OPDNDetalle>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -346,13 +347,13 @@ namespace DAO
         
 
 
-        public int UpdateTotalesOPDN(int IdOPDN, ref string mensaje_error)
+        public int UpdateTotalesOPDN(int IdOPDN, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -379,10 +380,10 @@ namespace DAO
 
 
 
-        public List<AnexoDTO> ObtenerAnexoOpdn(int IdOpdn, ref string mensaje_error)
+        public List<AnexoDTO> ObtenerAnexoOpdn(int IdOpdn, string BaseDatos, ref string mensaje_error)
         {
             List<AnexoDTO> lstAnexoDTO = new List<AnexoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -416,13 +417,13 @@ namespace DAO
         
         }
 
-        public int UpdateOPDN(int IdUsuario, OpdnDTO oOpdnDTO, ref string mensaje_error)
+        public int UpdateOPDN(int IdUsuario, OpdnDTO oOpdnDTO, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -450,10 +451,10 @@ namespace DAO
                 }
             }
         }
-        public string ValidaExtorno(int IdOPDN, ref string mensaje_error)
+        public string ValidaExtorno(int IdOPDN, string BaseDatos, ref string mensaje_error)
         {
             string Valida = "0";
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -480,10 +481,10 @@ namespace DAO
             }
             return Valida;
         }
-        public int ValidarOPDNTieneFactura(int IdOPDN, ref string mensaje_error)
+        public int ValidarOPDNTieneFactura(int IdOPDN, string BaseDatos, ref string mensaje_error)
         {
            
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -506,10 +507,10 @@ namespace DAO
             }
      
         }
-        public List<OPDNDetalle> ObtenerStockParaExtornoOPDN(int IdOPDN, ref string mensaje_error)
+        public List<OPDNDetalle> ObtenerStockParaExtornoOPDN(int IdOPDN, string BaseDatos, ref string mensaje_error)
         {
             List<OPDNDetalle> lstOPDNDetalle = new List<OPDNDetalle>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -539,13 +540,13 @@ namespace DAO
             }
             return lstOPDNDetalle;
         }
-        public int ExtornoConfirmado(int IdOPDn,string EsServicio, ref string mensaje_error)
+        public int ExtornoConfirmado(int IdOPDn,string EsServicio, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -570,10 +571,10 @@ namespace DAO
                 }
             }
         }
-        public List<OpdnDTO> ValidaTipoProductoOPDN(int ArticuloMuestra, ref string mensaje_error)
+        public List<OpdnDTO> ValidaTipoProductoOPDN(int ArticuloMuestra, string BaseDatos, ref string mensaje_error)
         {
             List<OpdnDTO> lstOPDNDTO = new List<OpdnDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -600,13 +601,13 @@ namespace DAO
             }
             return lstOPDNDTO;
         }
-        public int UpdateCuadrillas(OPDNDetalle oOPDNDetalle, ref string mensaje_error)
+        public int UpdateCuadrillas(OPDNDetalle oOPDNDetalle, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {

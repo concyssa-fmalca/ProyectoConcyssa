@@ -16,12 +16,13 @@ namespace ConcyssaWeb.Controllers
         {
 
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             InstrumentoMedicionDAO oInstrumentoMedicionDAO = new InstrumentoMedicionDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             MovimientoDAO oMovimimientoDAO = new MovimientoDAO();
             oInstrumentoMedicionDTO.IdSociedad = IdSociedad;
-            int respuesta = oInstrumentoMedicionDAO.UpdateInsertInstrumentoMedicion(oInstrumentoMedicionDTO, ref mensaje_error,IdUsuario);
+            int respuesta = oInstrumentoMedicionDAO.UpdateInsertInstrumentoMedicion(oInstrumentoMedicionDTO,BaseDatos,ref mensaje_error,IdUsuario);
 
             if (respuesta > 0)
             {
@@ -34,7 +35,7 @@ namespace ConcyssaWeb.Controllers
                         oInstrumentoMedicionDTO.AnexoDetalle[i].Tabla = "InstrumentoMedicion";
                         oInstrumentoMedicionDTO.AnexoDetalle[i].IdTabla = respuesta;
 
-                        oMovimimientoDAO.InsertAnexoMovimiento(oInstrumentoMedicionDTO.AnexoDetalle[i], ref mensaje_error);
+                        oMovimimientoDAO.InsertAnexoMovimiento(oInstrumentoMedicionDTO.AnexoDetalle[i],BaseDatos,ref mensaje_error);
                     }
                 }
             }
@@ -60,9 +61,10 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerInstrumentoMedicion()
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             InstrumentoMedicionDAO oInstrumentoMedicionDAO = new InstrumentoMedicionDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<InstrumentoMedicionDTO> lstInstrumentoMedicionDTO = oInstrumentoMedicionDAO.ObtenerInstrumentoMedicion(IdSociedad, ref mensaje_error);
+            List<InstrumentoMedicionDTO> lstInstrumentoMedicionDTO = oInstrumentoMedicionDAO.ObtenerInstrumentoMedicion(IdSociedad,BaseDatos,ref mensaje_error);
             if (lstInstrumentoMedicionDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstInstrumentoMedicionDTO);
@@ -76,12 +78,13 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerDatosxID(int IdInstrumentoMedicion)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             InstrumentoMedicionDAO oInstrumentoMedicionDAO = new InstrumentoMedicionDAO();
-            List<InstrumentoMedicionDTO> lstInstrumentoMedicionDTO = oInstrumentoMedicionDAO.ObtenerDatosxID(IdInstrumentoMedicion, ref mensaje_error);
+            List<InstrumentoMedicionDTO> lstInstrumentoMedicionDTO = oInstrumentoMedicionDAO.ObtenerDatosxID(IdInstrumentoMedicion,BaseDatos,ref mensaje_error);
             if (mensaje_error.ToString().Length == 0)
             {
                 List<AnexoDTO> lstAnexoDTO = new List<AnexoDTO>();
-                lstAnexoDTO = oInstrumentoMedicionDAO.ObtenerAnexoInstMedicion(IdInstrumentoMedicion, ref mensaje_error);
+                lstAnexoDTO = oInstrumentoMedicionDAO.ObtenerAnexoInstMedicion(IdInstrumentoMedicion,BaseDatos,ref mensaje_error);
                 lstInstrumentoMedicionDTO[0].AnexoDetalle = new AnexoDTO[lstAnexoDTO.Count()];
                 for (int i = 0; i < lstAnexoDTO.Count; i++)
                 {
@@ -104,9 +107,10 @@ namespace ConcyssaWeb.Controllers
         public int Eliminar(int IdInstrumentoMedicion)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             InstrumentoMedicionDAO oInstrumentoMedicionDAO = new InstrumentoMedicionDAO();
-            int resultado = oInstrumentoMedicionDAO.Delete(IdInstrumentoMedicion,IdUsuario, ref mensaje_error);
+            int resultado = oInstrumentoMedicionDAO.Delete(IdInstrumentoMedicion,IdUsuario,BaseDatos,ref mensaje_error);
             if (resultado == 0)
             {
                 resultado = 1;
@@ -153,10 +157,11 @@ namespace ConcyssaWeb.Controllers
         {
 
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             InstrumentoMedicionDAO oInstrumentoMedicionDAO = new InstrumentoMedicionDAO();
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             MovimientoDAO oMovimimientoDAO = new MovimientoDAO();
-            int respuesta = oInstrumentoMedicionDAO.UpdateInsertInstrumentoMedicionDetalle(oInstrumentoMedicionDetalleDTO, ref mensaje_error, IdUsuario);
+            int respuesta = oInstrumentoMedicionDAO.UpdateInsertInstrumentoMedicionDetalle(oInstrumentoMedicionDetalleDTO,BaseDatos,ref mensaje_error, IdUsuario);
 
           
 
@@ -181,8 +186,9 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerInstrumentoMedicionDetalle(int IdInstrumentoMedicion)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             InstrumentoMedicionDAO oInstrumentoMedicionDAO = new InstrumentoMedicionDAO();
-            List<InstrumentoMedicionDetalleDTO> lstInstrumentoMedicionDetalleDTO = oInstrumentoMedicionDAO.ObtenerInstrumentoMedicionDetalle(IdInstrumentoMedicion,ref mensaje_error);
+            List<InstrumentoMedicionDetalleDTO> lstInstrumentoMedicionDetalleDTO = oInstrumentoMedicionDAO.ObtenerInstrumentoMedicionDetalle(IdInstrumentoMedicion,BaseDatos,ref mensaje_error);
            
             return JsonConvert.SerializeObject(lstInstrumentoMedicionDetalleDTO);
             
@@ -191,8 +197,9 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerDatosDetallexID(int IdInstrumentoMedicionDetalle)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             InstrumentoMedicionDAO oInstrumentoMedicionDAO = new InstrumentoMedicionDAO();
-            List<InstrumentoMedicionDetalleDTO> lstInstrumentoMedicionDetalleDTO = oInstrumentoMedicionDAO.ObtenerDatosDetallexID(IdInstrumentoMedicionDetalle, ref mensaje_error);
+            List<InstrumentoMedicionDetalleDTO> lstInstrumentoMedicionDetalleDTO = oInstrumentoMedicionDAO.ObtenerDatosDetallexID(IdInstrumentoMedicionDetalle,BaseDatos,ref mensaje_error);
          
 
             if (lstInstrumentoMedicionDetalleDTO.Count > 0)
@@ -208,9 +215,10 @@ namespace ConcyssaWeb.Controllers
         public int EliminarDetalle(int IdInstrumentoMedicionDetalle)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             InstrumentoMedicionDAO oInstrumentoMedicionDAO = new InstrumentoMedicionDAO();
-            int resultado = oInstrumentoMedicionDAO.DeleteDetalle(IdInstrumentoMedicionDetalle, IdUsuario, ref mensaje_error);
+            int resultado = oInstrumentoMedicionDAO.DeleteDetalle(IdInstrumentoMedicionDetalle, IdUsuario,BaseDatos,ref mensaje_error);
             if (resultado == 0)
             {
                 resultado = 1;
@@ -224,11 +232,12 @@ namespace ConcyssaWeb.Controllers
         {
 
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             InstrumentoMedicionDAO oInstrumentoMedicionDAO = new InstrumentoMedicionDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             MovimientoDAO oMovimimientoDAO = new MovimientoDAO();
-            int respuesta = oInstrumentoMedicionDAO.UpdateInsertInstrumentoMedicionDetalleDoc(oInstrumentoMedicionDetalleDocDTO, ref mensaje_error, IdUsuario);
+            int respuesta = oInstrumentoMedicionDAO.UpdateInsertInstrumentoMedicionDetalleDoc(oInstrumentoMedicionDetalleDocDTO,BaseDatos,ref mensaje_error, IdUsuario);
 
             if (respuesta > 0)
             {
@@ -240,7 +249,7 @@ namespace ConcyssaWeb.Controllers
                         oInstrumentoMedicionDetalleDocDTO.AnexoDetalle[0].Tabla = "InstrumentoMedicionDetalleDocs";
                         oInstrumentoMedicionDetalleDocDTO.AnexoDetalle[0].IdTabla = respuesta;
 
-                        oMovimimientoDAO.InsertAnexoMovimiento(oInstrumentoMedicionDetalleDocDTO.AnexoDetalle[0], ref mensaje_error);
+                        oMovimimientoDAO.InsertAnexoMovimiento(oInstrumentoMedicionDetalleDocDTO.AnexoDetalle[0],BaseDatos,ref mensaje_error);
                     
                 }
             }
@@ -266,9 +275,10 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerInstrumentoMedicionDetalleDoc(int IdInstrumentoMedicionDetalle)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             InstrumentoMedicionDAO oInstrumentoMedicionDAO = new InstrumentoMedicionDAO();
             
-            List<InstrumentoMedicionDetalleDocDTO> lstInstrumentoMedicionDetalleDocDTO = oInstrumentoMedicionDAO.ObtenerInstrumentoMedicionDetalleDoc(IdInstrumentoMedicionDetalle, ref mensaje_error);
+            List<InstrumentoMedicionDetalleDocDTO> lstInstrumentoMedicionDetalleDocDTO = oInstrumentoMedicionDAO.ObtenerInstrumentoMedicionDetalleDoc(IdInstrumentoMedicionDetalle,BaseDatos,ref mensaje_error);
             if (lstInstrumentoMedicionDetalleDocDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstInstrumentoMedicionDetalleDocDTO);
@@ -283,12 +293,13 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerDatosDetalleDocxID(int IdInstrumentoMedicionDetalleDoc)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             InstrumentoMedicionDAO oInstrumentoMedicionDAO = new InstrumentoMedicionDAO();
-            List<InstrumentoMedicionDetalleDocDTO> lstInstrumentoMedicionDetalleDocDTO = oInstrumentoMedicionDAO.ObtenerDatosDetalleDocxID(IdInstrumentoMedicionDetalleDoc, ref mensaje_error);
+            List<InstrumentoMedicionDetalleDocDTO> lstInstrumentoMedicionDetalleDocDTO = oInstrumentoMedicionDAO.ObtenerDatosDetalleDocxID(IdInstrumentoMedicionDetalleDoc,BaseDatos,ref mensaje_error);
             if (mensaje_error.ToString().Length == 0)
             {
                 List<AnexoDTO> lstAnexoDTO = new List<AnexoDTO>();
-                lstAnexoDTO = oInstrumentoMedicionDAO.ObtenerAnexoInstMedicionDetalleDoc(IdInstrumentoMedicionDetalleDoc, ref mensaje_error);
+                lstAnexoDTO = oInstrumentoMedicionDAO.ObtenerAnexoInstMedicionDetalleDoc(IdInstrumentoMedicionDetalleDoc,BaseDatos,ref mensaje_error);
                 lstInstrumentoMedicionDetalleDocDTO[0].AnexoDetalle = new AnexoDTO[lstAnexoDTO.Count()];
                 for (int i = 0; i < lstAnexoDTO.Count; i++)
                 {
@@ -311,9 +322,10 @@ namespace ConcyssaWeb.Controllers
         public int EliminarDetalleDoc(int IdInstrumentoMedicionDetalleDoc)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             InstrumentoMedicionDAO oInstrumentoMedicionDAO = new InstrumentoMedicionDAO();
-            int resultado = oInstrumentoMedicionDAO.DeleteDetalleDoc(IdInstrumentoMedicionDetalleDoc, IdUsuario, ref mensaje_error);
+            int resultado = oInstrumentoMedicionDAO.DeleteDetalleDoc(IdInstrumentoMedicionDetalleDoc, IdUsuario,BaseDatos,ref mensaje_error);
             if (resultado == 0)
             {
                 resultado = 1;

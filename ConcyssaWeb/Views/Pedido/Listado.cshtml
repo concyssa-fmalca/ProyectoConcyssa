@@ -789,15 +789,15 @@
                                         <table class="table display" id="tabla_listado_itemsaprobados" style="width:100%  !important;">
                                             <thead>
                                                 <tr>
-                                                    <th >#</th>
-                                                    <th >Obra</th>
-                                                    <th style="max-width:50px" >N° Requermiento</th>
-                                                    <th >Fecha</th>
+                                                    <th>#</th>
+                                                    <th>Obra</th>
+                                                    <th>N° Req.</th>
+                                                    <th>Fecha</th>
                                                     
                                                     
-                                                    <th style="min-width:100px" >Producto</th>
-                                                    <th style="max-width:50px">U. Medida</th>
-                                                    <th style="max-width:50px">Cantidad</th>
+                                                    <th>Producto</th>
+                                                    <th>U. Medida</th>
+                                                    <th>Cantidad</th>
                                                     <th >Comentarios</th>
                                                     <th >Proveedor</th>
                                                 </tr>
@@ -861,25 +861,42 @@
                         <div class='col s12 m12'>
                             <div class='container-fluid'>
                                 <div class="row">
-                                    <h4>Ultimas Compras</h4>
-                                    <div class="col-sm-12">
-                                        <div class="table-responsive">
-                                            <table class="table" id="tabla_listado_ultimasventas">
-                                                <thead>
-                                                    <tr>
-                                                        <th scope="col">Proveedor</th>
-                                                        <th scope="col">Precio NAC</th>
-                                                        <th scope="col">Precio EXT</th>
-                                                        <th scope="col">Cantidad</th>
-                                                        <th scope="col">Fecha</th>
-                                                        <th scope="col">Obra</th>
-                                                    </tr>
-                                                </thead>
-                                                  <tbody> </tbody>
-                                            </table>
+                                    <div class="col-md-8">
+                                        <h4>Ultimas Compras</h4>
+                                        <div class="col-sm-12">
+                                            <div class="table-responsive">
+                                                <table class="table" id="tabla_listado_ultimasventas">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">Proveedor</th>
+                                                            <th scope="col">Precio NAC</th>
+                                                            <th scope="col">Precio EXT</th>
+                                                            <th scope="col">Cantidad</th>
+                                                            <th scope="col">Fecha</th>
+                                                            <th scope="col">Obra</th>
+                                                        </tr>
+                                                    </thead>
+                                                      <tbody> </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
-
+                                    <div class="col-md-4">
+                                        <h4>Anexos</h4>
+                                        <div class="col-sm-12">
+                                            <div class="table-responsive">
+                                                <table class="table" id="tabla_listado_anexos_rq">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">Archivo</th>
+                                                            <th scope="col">Ver</th>
+                                                        </tr>
+                                                    </thead>
+                                                      <tbody id="body_anexos_solicitud"> </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
 
                                 </div>
 

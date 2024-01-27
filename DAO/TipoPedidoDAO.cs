@@ -11,10 +11,10 @@ namespace DAO
 {
     public class TipoPedidoDAO
     {
-        public List<TipoPedidoDTO> ObtenerTipoPedido(int IdSociedad, ref string mensaje_error, int Estado = 3)
+        public List<TipoPedidoDTO> ObtenerTipoPedido(int IdSociedad, string BaseDatos, ref string mensaje_error, int Estado = 3)
         {
             List<TipoPedidoDTO> lstTipoPedidoDTO = new List<TipoPedidoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {

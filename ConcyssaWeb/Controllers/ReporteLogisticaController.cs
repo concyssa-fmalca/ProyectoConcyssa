@@ -56,8 +56,13 @@ namespace ConcyssaWeb.Controllers
             return View();
         }
 
-        public string GenerarReporteCompraAnual(string NombreReporte,string Anno,Boolean Detalle, string Formato, int Id)
+        public string GenerarReporteCompraAnual(string NombreReporte,string Anno,Boolean Detalle, string Formato, int Id,string BaseDatos)
         {
+            if (BaseDatos == "" || BaseDatos == null)
+            {
+                BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            }
+
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
             HttpWebRequest request;
@@ -75,7 +80,7 @@ namespace ConcyssaWeb.Controllers
 
             try
             {
-                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&Anno=" + Anno + "&Detalle=" + Detalle;
+                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&Anno=" + Anno + "&Detalle=" + Detalle + "&BaseDatos=" + BaseDatos;
                 cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteCompraAnual";
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteCompraAnual";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
@@ -134,8 +139,13 @@ namespace ConcyssaWeb.Controllers
 
 
 
-        public string GenerarReporteCompraProducto(string NombreReporte, string Formato, int IdArticulo)
+        public string GenerarReporteCompraProducto(string NombreReporte, string Formato, int IdArticulo, string BaseDatos)
         {
+            if (BaseDatos == "" || BaseDatos == null)
+            {
+                BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            }
+
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
             HttpWebRequest request;
@@ -147,7 +157,7 @@ namespace ConcyssaWeb.Controllers
             WebServiceDTO oWebServiceDTO = new WebServiceDTO();
             try
             {
-                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdArticulo=" + IdArticulo;
+                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdArticulo=" + IdArticulo + "&BaseDatos=" + BaseDatos;
                 cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteCompraPorProducto";
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteCompraPorProducto";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
@@ -188,8 +198,13 @@ namespace ConcyssaWeb.Controllers
             return "";
         }
 
-        public string GenerarReporteCompraProveedor(string NombreReporte, string Formato, int IdProveedor,string fechaIni,string fechaFin,int IdTIpo)
+        public string GenerarReporteCompraProveedor(string NombreReporte, string Formato, int IdProveedor,string fechaIni,string fechaFin,int IdTIpo, string BaseDatos)
         {
+            if (BaseDatos == "" || BaseDatos == null)
+            {
+                BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            }
+
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
             HttpWebRequest request;
@@ -204,7 +219,7 @@ namespace ConcyssaWeb.Controllers
             WebServiceDTO oWebServiceDTO = new WebServiceDTO();
             try
             {
-                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdProveedor=" + IdProveedor + "&fechaIni=" + fechaIni + "&fechaFin=" + fechaFin + "&IdTIpo=" + IdTIpo;
+                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdProveedor=" + IdProveedor + "&fechaIni=" + fechaIni + "&fechaFin=" + fechaFin + "&IdTIpo=" + IdTIpo + "&BaseDatos=" + BaseDatos;
                 cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteCompraProveedor";
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteCompraProveedor";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
@@ -246,8 +261,13 @@ namespace ConcyssaWeb.Controllers
         }
 
         
-        public string GenerarReporteEntrega(string NombreReporte, string Formato, string Anno)
+        public string GenerarReporteEntrega(string NombreReporte, string Formato, string Anno, string BaseDatos)
         {
+            if (BaseDatos == "" || BaseDatos == null)
+            {
+                BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            }
+
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
             HttpWebRequest request;
@@ -258,7 +278,7 @@ namespace ConcyssaWeb.Controllers
             string mensaje_error;
             try
             {
-                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&Anno=" + Anno;
+                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&Anno=" + Anno + "&BaseDatos=" + BaseDatos;
                 cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteEntrega";
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteCompraAnual";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
@@ -315,8 +335,13 @@ namespace ConcyssaWeb.Controllers
             return "";
         }
 
-        public string GenerarReporteStockSinConsumo(string NombreReporte, string Formato, int IdObra, int IdTipo, int Meses)
+        public string GenerarReporteStockSinConsumo(string NombreReporte, string Formato, int IdObra, int IdTipo, int Meses, string BaseDatos)
         {
+            if (BaseDatos == "" || BaseDatos == null)
+            {
+                BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            }
+
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
             HttpWebRequest request;
@@ -327,7 +352,7 @@ namespace ConcyssaWeb.Controllers
             string mensaje_error;
             try
             {
-                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdObra=" + IdObra + "&IdTipo=" + IdTipo + "&Meses=" + Meses;
+                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdObra=" + IdObra + "&IdTipo=" + IdTipo + "&Meses=" + Meses + "&BaseDatos=" + BaseDatos;
                 cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteStockSinconsumo";
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteStockSinconsumo";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
@@ -375,8 +400,13 @@ namespace ConcyssaWeb.Controllers
         }
 
 
-        public string GenerarReporteListaPrecio(string NombreReporte, string Formato, int IdArticulo)
+        public string GenerarReporteListaPrecio(string NombreReporte, string Formato, int IdArticulo, string BaseDatos)
         {
+            if (BaseDatos == "" || BaseDatos == null)
+            {
+                BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            }
+
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
             HttpWebRequest request;
@@ -387,7 +417,7 @@ namespace ConcyssaWeb.Controllers
             string mensaje_error;
             try
             {
-                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdArticulo=" + IdArticulo;
+                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdArticulo=" + IdArticulo + "&BaseDatos=" + BaseDatos; ;
                 cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteListaPrecios";
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteListaPrecios";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
@@ -436,8 +466,14 @@ namespace ConcyssaWeb.Controllers
 
 
         
-        public string GenerarReporteProveedorNuevo(string NombreReporte, string Formato, int Anio)
+        public string GenerarReporteProveedorNuevo(string NombreReporte, string Formato, int Anio, string BaseDatos)
         {
+
+            if (BaseDatos == "" || BaseDatos == null)
+            {
+                BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            }
+
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
             HttpWebRequest request;
@@ -448,7 +484,7 @@ namespace ConcyssaWeb.Controllers
             string mensaje_error;
             try
             {
-                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&Anio=" + Anio ;
+                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&Anio=" + Anio + "&BaseDatos=" + BaseDatos; ;
                 cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteProveedoresNuevos";
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteProveedoresNuevos";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
@@ -495,8 +531,13 @@ namespace ConcyssaWeb.Controllers
             return "";
         }
 
-        public string GenerarReporteProveedorUnico(string NombreReporte, string Formato, string FechaIni, string FechaFin)
+        public string GenerarReporteProveedorUnico(string NombreReporte, string Formato, string FechaIni, string FechaFin, string BaseDatos)
         {
+
+            if (BaseDatos == "" || BaseDatos == null)
+            {
+                BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            }
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
             HttpWebRequest request;
@@ -509,7 +550,7 @@ namespace ConcyssaWeb.Controllers
             FechaFin = Convert.ToDateTime(FechaFin).ToString("dd/MM/yyyy");
             try
             {
-                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&FechaIni=" + FechaIni + "&FechaFin=" + FechaFin;
+                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&FechaIni=" + FechaIni + "&FechaFin=" + FechaFin + "&BaseDatos=" + BaseDatos; 
                 cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteProveedoresUnicos";
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteProveedoresUnicos";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
@@ -556,8 +597,13 @@ namespace ConcyssaWeb.Controllers
 
 
         
-        public string GenerarReporteOcPendiente(string NombreReporte, string Formato, int IdProveedor,int IdPedido, int IdBase,int IdObra , string FechaInicial, string FechaFinal)
+        public string GenerarReporteOcPendiente(string NombreReporte, string Formato, int IdProveedor,int IdPedido, int IdBase,int IdObra , string FechaInicial, string FechaFinal, string BaseDatos)
         {
+            if (BaseDatos == "" || BaseDatos == null)
+            {
+                BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            }
+
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
             HttpWebRequest request;
@@ -568,7 +614,7 @@ namespace ConcyssaWeb.Controllers
             string mensaje_error;
             try
             {
-                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdProveedor=" + IdProveedor + "&IdBase=" + IdBase + "&IdObra=" + IdObra + "&FechaInicial=" + FechaInicial + "&FechaFinal=" + FechaFinal;
+                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdProveedor=" + IdProveedor + "&IdBase=" + IdBase + "&IdObra=" + IdObra + "&FechaInicial=" + FechaInicial + "&FechaFinal=" + FechaFinal + "&BaseDatos=" + BaseDatos;
                 cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteOcPendiente";
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteOcPendiente";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
@@ -613,8 +659,12 @@ namespace ConcyssaWeb.Controllers
             return "";
         }
 
-        public string GenerarReporteOsPendiente(string NombreReporte, string Formato, int IdProyecto)
+        public string GenerarReporteOsPendiente(string NombreReporte, string Formato, int IdProyecto, string BaseDatos)
         {
+            if (BaseDatos == "" || BaseDatos == null)
+            {
+                BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            }
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
             HttpWebRequest request;
@@ -625,7 +675,7 @@ namespace ConcyssaWeb.Controllers
             string mensaje_error;
             try
             {
-                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdProyecto=" + IdProyecto;
+                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdProyecto=" + IdProyecto + "&BaseDatos=" + BaseDatos; ;
                 cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteOsPendiente";
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteOsPendiente";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
@@ -673,8 +723,12 @@ namespace ConcyssaWeb.Controllers
 
 
 
-        public string GenerarReporteGuiaSinFactura(string NombreReporte, string Formato, string fechaIni, string fechaFin)
+        public string GenerarReporteGuiaSinFactura(string NombreReporte, string Formato, string fechaIni, string fechaFin, string BaseDatos)
         {
+            if (BaseDatos == "" || BaseDatos == null)
+            {
+                BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            }
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
             HttpWebRequest request;
@@ -689,7 +743,7 @@ namespace ConcyssaWeb.Controllers
             WebServiceDTO oWebServiceDTO = new WebServiceDTO();
             try
             {
-                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&fechaIni=" + fechaIni + "&fechaFin=" + fechaFin;
+                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&fechaIni=" + fechaIni + "&fechaFin=" + fechaFin + "&BaseDatos=" + BaseDatos;
                 cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteGuiaSinFactura";
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteGuiaSinFactura";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);

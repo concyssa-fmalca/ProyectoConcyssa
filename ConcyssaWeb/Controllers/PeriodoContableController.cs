@@ -15,10 +15,11 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerPeriodoContableDT(int Estado = 3)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             PeriodoDAO oPeriodoDAO = new PeriodoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             DataTableDTO oDataTableDTO = new DataTableDTO();
-            List<PeriodoContableDTO> lstPeriodoContableDTO = oPeriodoDAO.ObtenerPeriodoContable(IdSociedad, Estado, ref mensaje_error);
+            List<PeriodoContableDTO> lstPeriodoContableDTO = oPeriodoDAO.ObtenerPeriodoContable(IdSociedad, Estado,BaseDatos,ref mensaje_error);
             if (lstPeriodoContableDTO.Count >= 0 && mensaje_error.Length == 0)
             {
                 oDataTableDTO.sEcho = 1;
@@ -38,9 +39,10 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerPeriodoContable(int Estado = 3)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             PeriodoDAO oPeriodoDAO = new PeriodoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<PeriodoContableDTO> lstPeriodoContableDTO = oPeriodoDAO.ObtenerPeriodoContable(IdSociedad, Estado, ref mensaje_error);
+            List<PeriodoContableDTO> lstPeriodoContableDTO = oPeriodoDAO.ObtenerPeriodoContable(IdSociedad, Estado,BaseDatos,ref mensaje_error);
             if (lstPeriodoContableDTO.Count >= 0 && mensaje_error.Length == 0)
             {
                 return JsonConvert.SerializeObject(lstPeriodoContableDTO);
@@ -55,10 +57,11 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerPeriodoContablexId(int IdPeriodoContable)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             PeriodoDAO oPeriodoDAO = new PeriodoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
 
-            PeriodoContableDTO oPeriodoContableDTO = oPeriodoDAO.ObtenerPeriodoContablexId(IdPeriodoContable, ref mensaje_error);
+            PeriodoContableDTO oPeriodoContableDTO = oPeriodoDAO.ObtenerPeriodoContablexId(IdPeriodoContable,BaseDatos,ref mensaje_error);
             if (mensaje_error.Length > 0)
             {
                 return mensaje_error;
@@ -74,6 +77,7 @@ namespace ConcyssaWeb.Controllers
             ,string FechaVencimientoI, string FechaVencimientoF
             ,string FechaDocumentoI, string FechaDocumentoF)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             List<PeriodoContableFechaDTO> oPeriodoContableFechaDTO = new List<PeriodoContableFechaDTO>();
             oPeriodoContableFechaDTO.Add(new PeriodoContableFechaDTO
@@ -115,7 +119,7 @@ namespace ConcyssaWeb.Controllers
             oPeriodoContableDTO.IdUsuario = IdUsuario;
             PeriodoDAO oPeriodoDAO = new PeriodoDAO();
 
-            int respuesta = oPeriodoDAO.UpdateInsertPeriodoContable(oPeriodoContableDTO, ref mensaje_error);
+            int respuesta = oPeriodoDAO.UpdateInsertPeriodoContable(oPeriodoContableDTO,BaseDatos,ref mensaje_error);
             if (mensaje_error.Length > 0)
             {
                 return mensaje_error;
@@ -127,7 +131,7 @@ namespace ConcyssaWeb.Controllers
                     for (int i = 0; i < oPeriodoContableFechaDTO.Count; i++)
                     {
                         oPeriodoContableFechaDTO[i].IdPeriodoContable = respuesta;
-                        int respuesta2 = oPeriodoDAO.UpdateInsertPeriodoContableFecha(oPeriodoContableFechaDTO[i], ref mensaje_error);
+                        int respuesta2 = oPeriodoDAO.UpdateInsertPeriodoContableFecha(oPeriodoContableFechaDTO[i],BaseDatos,ref mensaje_error);
                     }
 
                     return respuesta.ToString();
@@ -139,9 +143,10 @@ namespace ConcyssaWeb.Controllers
 
         public string EliminarPeriodoContable(int IdPeriodoContable)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             PeriodoDAO oPeriodoDAO = new PeriodoDAO();
-            int resultado = oPeriodoDAO.DeletePeriodoContable(IdPeriodoContable, ref mensaje_error);
+            int resultado = oPeriodoDAO.DeletePeriodoContable(IdPeriodoContable,BaseDatos,ref mensaje_error);
             if (mensaje_error.Length > 0)
             {
                 return mensaje_error;

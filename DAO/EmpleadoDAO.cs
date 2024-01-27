@@ -7,10 +7,10 @@ namespace DAO
 {
     public class EmpleadoDAO
     {
-        public List<EmpleadoDTO> ObtenerEmpleados(string IdSociedad)
+        public List<EmpleadoDTO> ObtenerEmpleados(string IdSociedad, string BaseDatos)
         {
             List<EmpleadoDTO> lstEmpleadoDTO = new List<EmpleadoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -64,13 +64,13 @@ namespace DAO
             return lstEmpleadoDTO;
         }
 
-        public int UpdateInsertEmpleado(EmpleadoDTO EmpleadoDTO, string IdSociedad, int IdUsuario)
+        public int UpdateInsertEmpleado(EmpleadoDTO EmpleadoDTO, string IdSociedad, int IdUsuario, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -126,10 +126,10 @@ namespace DAO
         }
 
 
-        public List<EmpleadoDTO> ObtenerDatosxID(int IdEmpleado)
+        public List<EmpleadoDTO> ObtenerDatosxID(int IdEmpleado, string BaseDatos)
         {
             List<EmpleadoDTO> lstEmpleadoDTO = new List<EmpleadoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -195,13 +195,13 @@ namespace DAO
         }
 
 
-        public int Delete(int IdEmpleado)
+        public int Delete(int IdEmpleado, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -229,10 +229,10 @@ namespace DAO
 
 
 
-        public List<EmpleadoDTO> ObtenerEmpleadosxIdCuadrilla(int IdCuadrilla)
+        public List<EmpleadoDTO> ObtenerEmpleadosxIdCuadrilla(int IdCuadrilla, string BaseDatos)
         {
             List<EmpleadoDTO> lstEmpleadoDTO = new List<EmpleadoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -283,10 +283,10 @@ namespace DAO
             }
             return lstEmpleadoDTO;
         }
-        public List<EmpleadoDTO> ObtenerEmpleadosPorUsuarioBase(int IdUsuario)
+        public List<EmpleadoDTO> ObtenerEmpleadosPorUsuarioBase(int IdUsuario, string BaseDatos)
         {
             List<EmpleadoDTO> lstEmpleadoDTO = new List<EmpleadoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -340,10 +340,10 @@ namespace DAO
             return lstEmpleadoDTO;
         }
 
-        public List<EmpleadoDTO> ObtenerCapatazXCuadrilla(int IdCuadrilla)
+        public List<EmpleadoDTO> ObtenerCapatazXCuadrilla(int IdCuadrilla, string BaseDatos)
         {
             List<EmpleadoDTO> lstEmpleadoDTO = new List<EmpleadoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {

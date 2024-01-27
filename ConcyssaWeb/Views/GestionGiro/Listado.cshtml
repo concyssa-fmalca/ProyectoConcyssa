@@ -36,13 +36,13 @@
                     }
                     else
                     {*@
-                    <label for="cboObra" class="control-label col-sm-1 left-align" style="color:black;margin-top:5px">Obra</label>
+                    <label for="cboObra" class="control-label col-sm-1 left-align" style="color:black;margin-top:5px ">Obra</label>
                     <div class="col-sm-2">
-                        <select id="cboObra" class="form-control" onchange="onchangeObra()"></select>
+                        <select id="cboObra" class="form-control" onchange="onchangeTipoRegistroM()"></select>
                     </div>
                     @*}*@
-                    <label for="cboTipoRegistro" class="control-label col-sm-1 left-align" style="color:black;margin-top:5px">Tipo Registro</label>
-                    <div class="col-sm-2">
+                    <label for="cboTipoRegistro" class="control-label col-sm-1 left-align" style="display:none; color:black;margin-top:5px">Tipo Registro</label>
+                    <div class="col-sm-2" style="display:none">
                         <select id="cboTipoRegistro" class="form-control" onchange="onchangeTipoRegistroM()"></select>
                     </div>
                     <label for="cboSemana" class="control-label col-sm-1 left-align" style="color:black;margin-top:5px">Semana</label>
@@ -405,9 +405,11 @@
 </div>
 
 
-
+@{
+    Random rnd = new Random();
+}
 <script src="~/Scripts/SimpleAjaxUploader.js"></script>
-<script src="~/Scripts/GestionGiro/Listado.js"></script>
+<script src="~/Scripts/GestionGiro/Listado.js?v=@rnd.Next(1, 1000 + 1)"></script>
 <script src="~/Scripts/General.js"></script>
 <script src="~/js/pdf/jspdf.min.js"></script>
 <script src="~/js/pdf/faker.min.js"></script>

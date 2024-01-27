@@ -16,8 +16,12 @@ namespace ConcyssaWeb.Controllers
             return View();
         }
 
-        public string UpdateInsertMovimiento(MovimientoDTO oMovimientoDTO)
+        public string UpdateInsertMovimiento(MovimientoDTO oMovimientoDTO,string BaseDatos="")
         {
+            if (BaseDatos == "")
+            {
+                BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            }
             int IdSociedad = Convert.ToInt32((String.IsNullOrEmpty(oMovimientoDTO.IdSociedad.ToString())) ? Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad")) : oMovimientoDTO.IdSociedad);
             int IdUsuario = Convert.ToInt32((String.IsNullOrEmpty(oMovimientoDTO.IdUsuario.ToString())) ? Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad")) : oMovimientoDTO.IdUsuario);
 
@@ -40,7 +44,7 @@ namespace ConcyssaWeb.Controllers
             oMovimientoDTO.IdSociedad = IdSociedad;
             oMovimientoDTO.IdUsuario = IdUsuario;
             MovimientoDAO oMovimimientoDAO = new MovimientoDAO();
-            int respuesta = oMovimimientoDAO.InsertUpdateMovimiento(oMovimientoDTO, ref mensaje_error);
+            int respuesta = oMovimimientoDAO.InsertUpdateMovimiento(oMovimientoDTO,BaseDatos,ref mensaje_error);
             int respuesta1 = 0;
             if (mensaje_error.Length > 0)
             {
@@ -52,14 +56,14 @@ namespace ConcyssaWeb.Controllers
                 {
                     oMovimientoDTO.detalles[i].IdMovimiento = respuesta;
                     oMovimientoDTO.detalles[i].IdMovimientoDetalle = 0;
-                    respuesta1 = oMovimimientoDAO.InsertUpdateMovimientoDetalle(oMovimientoDTO.detalles[i], 0,ref mensaje_error);
-                    int respuesta2 = oMovimimientoDAO.InsertUpdateMovimientoDetalleCuadrilla(respuesta1, oMovimientoDTO.detalles[i], ref mensaje_error);
+                    respuesta1 = oMovimimientoDAO.InsertUpdateMovimientoDetalle(oMovimientoDTO.detalles[i], 0,BaseDatos,ref mensaje_error);
+                    int respuesta2 = oMovimimientoDAO.InsertUpdateMovimientoDetalleCuadrilla(respuesta1, oMovimientoDTO.detalles[i],BaseDatos,ref mensaje_error);
 
                 }
                 //for (int i = 0; i < oMovimientoDTO.detalles.Count; i++)
                 //{
                 //    oMovimientoDTO.detalles[i].IdMovimientoDetalle = respuesta1;
-                //    int respuesta2 = oMovimimientoDAO.InsertUpdateMovimientoDetalleCuadrilla(respuesta1, oMovimientoDTO.detalles[i], ref mensaje_error);
+                //    int respuesta2 = oMovimimientoDAO.InsertUpdateMovimientoDetalleCuadrilla(respuesta1, oMovimientoDTO.detalles[i],BaseDatos,ref mensaje_error);
                 //}
                 if (oMovimientoDTO.AnexoDetalle != null)
                 {
@@ -70,7 +74,7 @@ namespace ConcyssaWeb.Controllers
                         oMovimientoDTO.AnexoDetalle[i].Tabla = "Movimiento";
                         oMovimientoDTO.AnexoDetalle[i].IdTabla = respuesta;
 
-                        oMovimimientoDAO.InsertAnexoMovimiento(oMovimientoDTO.AnexoDetalle[i], ref mensaje_error);
+                        oMovimimientoDAO.InsertAnexoMovimiento(oMovimientoDTO.AnexoDetalle[i],BaseDatos,ref mensaje_error);
                     }
                 }
                  
@@ -96,10 +100,11 @@ namespace ConcyssaWeb.Controllers
 
         public string GenerarSalidaExtorno(int IdMovimiento, int Serie, DateTime FechaDoc, DateTime FechaCont)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             MovimientoDAO oMovimientoDAO = new MovimientoDAO();
             KardexDAO oKardexDAO = new KardexDAO();
-            MovimientoDTO oMovimientoDTO = oMovimientoDAO.ObtenerMovimientosDetallexIdMovimiento(IdMovimiento, ref mensaje_error);
+            MovimientoDTO oMovimientoDTO = oMovimientoDAO.ObtenerMovimientosDetallexIdMovimiento(IdMovimiento,BaseDatos,ref mensaje_error);
             ArticuloStockDTO oArticuloStockDTO = new ArticuloStockDTO();
 
             if (mensaje_error.ToString().Length == 0)
@@ -107,7 +112,7 @@ namespace ConcyssaWeb.Controllers
                 //int validadStock = 0;
                 //for (int i = 0; i < oMovimientoDTO.detalles.Count(); i++)
                 //{
-                //    oArticuloStockDTO = oKardexDAO.ObtenerArticuloxIdArticuloxIdAlm(oMovimientoDTO.detalles[i].IdArticulo, oMovimientoDTO.detalles[i].IdAlmacen, ref mensaje_error);
+                //    oArticuloStockDTO = oKardexDAO.ObtenerArticuloxIdArticuloxIdAlm(oMovimientoDTO.detalles[i].IdArticulo, oMovimientoDTO.detalles[i].IdAlmacen,BaseDatos,ref mensaje_error);
                 //    if (oArticuloStockDTO.Stock < oMovimientoDTO.detalles[i].CantidadBase)
                 //    {
                 //        validadStock = 1;
@@ -129,7 +134,7 @@ namespace ConcyssaWeb.Controllers
                 //    oMovimientoDTO.detalles[i].IdMovimientoDetalle = 0;
                 //}
 
-                oEntradaMercanciaController.UpdateInsertMovimiento(oMovimientoDTO);
+                oEntradaMercanciaController.UpdateInsertMovimiento(oMovimientoDTO,BaseDatos);
 
 
                 return "1";
@@ -196,11 +201,12 @@ namespace ConcyssaWeb.Controllers
 
         public string ListarSalidaModalDT(int IdAlmacen)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             DataTableDTO oDataTableDTO = new DataTableDTO();
             MovimientoDAO oMovimientoDAO = new MovimientoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<MovimientoDTO> oMovimientoDTO = oMovimientoDAO.ObtenerMovimientosSalidaModal(IdSociedad, IdAlmacen, ref mensaje_error);
+            List<MovimientoDTO> oMovimientoDTO = oMovimientoDAO.ObtenerMovimientosSalidaModal(IdSociedad, IdAlmacen,BaseDatos,ref mensaje_error);
             if (mensaje_error.ToString().Length == 0)
             {
                 oDataTableDTO.sEcho = 1;
@@ -254,10 +260,11 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerSGI(string SGI)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             MovimientoDAO oMovimientoDAO = new MovimientoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<SgiDTO> oSgiDTO = oMovimientoDAO.BuscarSGI(SGI, ref mensaje_error);
+            List<SgiDTO> oSgiDTO = oMovimientoDAO.BuscarSGI(SGI,BaseDatos,ref mensaje_error);
             if (mensaje_error.ToString().Length == 0)
             {
 
@@ -270,6 +277,39 @@ namespace ConcyssaWeb.Controllers
 
         }
 
+        public string ListarDevolucionProveedorModal(int IdProveedor)
+        {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            string mensaje_error = "";
+            MovimientoDAO oMovimientoDAO = new MovimientoDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            DataTableDTO oDataTableDTO = new DataTableDTO();
+            List<MovimientoDTO> lstMovimientoDTO = oMovimientoDAO.ObtenerDevolucionModal(IdSociedad, IdUsuario,IdProveedor,BaseDatos,ref mensaje_error);
+            if (lstMovimientoDTO.Count >= 0 && mensaje_error.Length == 0)
+            {
+                oDataTableDTO.sEcho = 1;
+                oDataTableDTO.iTotalDisplayRecords = lstMovimientoDTO.Count;
+                oDataTableDTO.iTotalRecords = lstMovimientoDTO.Count;
+                oDataTableDTO.aaData = (lstMovimientoDTO);
+                //return oDataTableDTO;
+                return JsonConvert.SerializeObject(oDataTableDTO);
+
+            }
+            else
+            {
+                return mensaje_error;
+
+            }
+        }
+
+        public int ValidarTieneNC(int IdMovimiento)
+        {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            MovimientoDAO oMovimientoDAO = new MovimientoDAO();
+            int respuesta = oMovimientoDAO.ValidarSalidaMercanciaTieneNC(IdMovimiento,BaseDatos);
+            return respuesta;
+        }
 
     }
 }

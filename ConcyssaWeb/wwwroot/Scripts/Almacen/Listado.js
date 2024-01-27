@@ -112,6 +112,7 @@ function GuardarAlmacen() {
     let varDireccion = $("#txtDireccion").val();
     let varCodigoUbigeo = $("#txtCodigoUbigeo").val();
     let varCodigoAnexo = $("#txtCodigoAnexo").val();
+    let varCorreo = $("#txtCorreoAlmacen").val();
     let varEstado = false;
 
     if ($('#chkActivo')[0].checked) {
@@ -136,6 +137,10 @@ function GuardarAlmacen() {
         Swal.fire("Error", "El Campo Direccion es Obligatorio", "info")
         return
     }
+    if (varCorreo == "" || varCorreo == undefined) {
+        Swal.fire("Error", "El Campo Correo es Obligatorio", "info")
+        return
+    }
 
     $.post('UpdateInsertAlmacen', {
         'IdAlmacen': varIdAlmacen,
@@ -145,7 +150,8 @@ function GuardarAlmacen() {
         'Direccion': varDireccion,
         'CodigoUbigeo': varCodigoUbigeo,
         'CodigoAnexo': varCodigoAnexo,
-        'Estado': varEstado
+        'Estado': varEstado,
+        'CorreoAlmacen' : varCorreo
     }, function (data, status) {
 
         if (data == 1) {
@@ -227,6 +233,7 @@ function limpiarDatos() {
     $("#txtCodigoAnexo").val("");
     $("#chkActivo").prop('checked', false);
     $("#IdObra").val(0);
+    $("#txtCorreoAlmacen").val("");
 }
 
 

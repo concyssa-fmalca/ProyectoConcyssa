@@ -31,6 +31,7 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerSolicitudesRQ(int IdBase,string FechaInicio, string FechaFinal, int Estado, int IdSolicitante)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             int IdPerfil = Convert.ToInt32(HttpContext.Session.GetInt32("IdPerfil"));
             int Usuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             string valida = "";
@@ -46,7 +47,7 @@ namespace ConcyssaWeb.Controllers
             {
                 SolicitudRQDAO oSolicitudRQDAO = new SolicitudRQDAO();
                 int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-                List<SolicitudRQDTO> lstSolicitudRQDTO = oSolicitudRQDAO.ObtenerSolicitudesRQ(Usuario,IdPerfil,IdBase,IdSolicitante, IdSociedad.ToString(), FechaInicio, FechaFinal, Estado);
+                List<SolicitudRQDTO> lstSolicitudRQDTO = oSolicitudRQDAO.ObtenerSolicitudesRQ(Usuario,IdPerfil,IdBase,IdSolicitante, IdSociedad.ToString(), FechaInicio, FechaFinal, Estado,BaseDatos);
                 if (lstSolicitudRQDTO.Count > 0)
                 {
                     return JsonConvert.SerializeObject(lstSolicitudRQDTO);
@@ -61,7 +62,7 @@ namespace ConcyssaWeb.Controllers
                 SolicitudRQDAO oSolicitudRQDAO = new SolicitudRQDAO();
                 int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
                 int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
-                List<SolicitudRQDTO> lstSolicitudRQDTO = oSolicitudRQDAO.ObtenerSolicitudesRQ(Usuario,IdPerfil,IdBase,int.Parse(IdUsuario.ToString()), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado);
+                List<SolicitudRQDTO> lstSolicitudRQDTO = oSolicitudRQDAO.ObtenerSolicitudesRQ(Usuario,IdPerfil,IdBase,int.Parse(IdUsuario.ToString()), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado,BaseDatos);
                 if (lstSolicitudRQDTO.Count > 0)
                 {
                     return JsonConvert.SerializeObject(lstSolicitudRQDTO);
@@ -77,6 +78,7 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerDatosxID(int IdSolicitudRQ)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             string valida = "";
             valida = validarEmpresaActual();
@@ -87,7 +89,33 @@ namespace ConcyssaWeb.Controllers
 
 
             SolicitudRQDAO oSerieDAO = new SolicitudRQDAO();
-            List<SolicitudRQDTO> lstSolicitudRQDTO = oSerieDAO.ObtenerDatosxIDV2(IdUsuario,IdSolicitudRQ);
+            List<SolicitudRQDTO> lstSolicitudRQDTO = oSerieDAO.ObtenerDatosxIDV2(IdUsuario,IdSolicitudRQ,BaseDatos);
+
+            if (lstSolicitudRQDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstSolicitudRQDTO);
+            }
+            else
+            {
+                return "error";
+            }
+
+        }
+
+        public string ObtenerAnexoxID(int IdSolicitudRQ)
+        {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            string valida = "";
+            valida = validarEmpresaActual();
+            if (valida != "")
+            {
+                return valida;
+            }
+
+
+            SolicitudRQDAO oSerieDAO = new SolicitudRQDAO();
+            List<AnexoDTO> lstSolicitudRQDTO = oSerieDAO.ObtenerAnexosxID( IdSolicitudRQ, BaseDatos);
 
             if (lstSolicitudRQDTO.Count > 0)
             {
@@ -111,9 +139,9 @@ namespace ConcyssaWeb.Controllers
                 return valida;
             }
 
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             SolicitudRQDAO oSolicitudRQDAO = new SolicitudRQDAO();
-            Decimal precio = oSolicitudRQDAO.ObtenerSolicitudesRQDetallePrecio(IdDetalleRq);
+            Decimal precio = oSolicitudRQDAO.ObtenerSolicitudesRQDetallePrecio(IdDetalleRq,BaseDatos);
             return precio.ToString(); 
             //if (oSolicitudRQDetalleDTO !=null)
             //{
@@ -135,8 +163,9 @@ namespace ConcyssaWeb.Controllers
             {
                 return valida;
             }
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             SolicitudRQDAO oSolicitudRQDAO = new SolicitudRQDAO();
-            int resultado = oSolicitudRQDAO.Delete(IdSolicitudRQDetalle);
+            int resultado = oSolicitudRQDAO.Delete(IdSolicitudRQDetalle,BaseDatos);
             if (resultado == 0)
             {
                 resultado = 1;
@@ -155,9 +184,9 @@ namespace ConcyssaWeb.Controllers
             }
 
 
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             SolicitudRQDAO oSolicitudRQDAO = new SolicitudRQDAO();
-            int resultado = oSolicitudRQDAO.CerrarSolicitudEstado(IdSolicitud);
+            int resultado = oSolicitudRQDAO.CerrarSolicitudEstado(IdSolicitud,BaseDatos);
             if (resultado == 0)
             {
                 resultado = 1;
@@ -177,9 +206,9 @@ namespace ConcyssaWeb.Controllers
                 return valida;
             }
 
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             SolicitudRQDAO oSolicitudRQDAO = new SolicitudRQDAO();
-            int resultado = oSolicitudRQDAO.DeleteAnexo(IdSolicitudRQAnexos);
+            int resultado = oSolicitudRQDAO.DeleteAnexo(IdSolicitudRQAnexos,BaseDatos);
             if (resultado == 0)
             {
                 resultado = 1;
@@ -197,31 +226,68 @@ namespace ConcyssaWeb.Controllers
             {
                 return valida;
             }
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
 
             SolicitudRQDAO oSolicitudRQDAO = new SolicitudRQDAO();
              int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            var resultado = oSolicitudRQDAO.UpdateInsertSolicitud(solicitudRQDTO, solicitudRQDetalleDTO, IdSociedad.ToString());
+
+
+            ModeloAutorizacionDAO oModeloAutorizacionDAO = new ModeloAutorizacionDAO();
+            var ModeloAuorizacion = oModeloAutorizacionDAO.VerificarExisteModeloSolicitud(int.Parse(IdSociedad.ToString()), 1, BaseDatos); //valida si existe alguina modelo aplicado a documento solicitud
+            if (ModeloAuorizacion.Count > 0)
+            {
+                int CantidadAutores = 0;
+                string Modelo = "";
+                for (int i = 0; i < ModeloAuorizacion.Count; i++)
+                {
+                    var ResultadoModelo = oModeloAutorizacionDAO.ObtenerDatosxID(ModeloAuorizacion[i].IdModeloAutorizacion, BaseDatos);
+                    for (int a = 0; a < ResultadoModelo[0].DetallesAutor.Count; a++)
+                    {
+                        if (ResultadoModelo[0].DetallesAutor[a].IdAutor == solicitudRQDTO.IdSolicitante)
+                        {
+                            CantidadAutores++;
+                        }
+
+                    }
+                }
+
+
+                if (CantidadAutores == 0)
+                {
+                    return -99;
+                }
+
+
+                if (CantidadAutores > 1)
+                {
+                    return -98;
+                }
+            
+            }
+
+             var resultado = oSolicitudRQDAO.UpdateInsertSolicitud(solicitudRQDTO, solicitudRQDetalleDTO, IdSociedad.ToString(),BaseDatos);
 
             if (resultado[0] == 5) //es un insert
             {
                 var IdInsert = resultado[1];
 
                 SolicitudRQDAO oSerieDAO = new SolicitudRQDAO();
-                List<SolicitudRQDTO> lstSolicitudRQDTO = oSerieDAO.ObtenerDatosxID(IdInsert);
+                List<SolicitudRQDTO> lstSolicitudRQDTO = oSerieDAO.ObtenerDatosxID(IdInsert,BaseDatos);
                 solicitudRQDTO = lstSolicitudRQDTO[0];
-                ModeloAutorizacionDAO oModeloAutorizacionDAO = new ModeloAutorizacionDAO();
+               
                 SolicitudRQModeloDAO oSolicitudRQModeloDAO = new SolicitudRQModeloDAO();
                 EtapaAutorizacionDAO oEtapaAutorizacionDAO = new EtapaAutorizacionDAO();
-                var ModeloAuorizacion = oModeloAutorizacionDAO.VerificarExisteModeloSolicitud(int.Parse(IdSociedad.ToString()),1); //valida si existe alguina modelo aplicado a documento solicitud
+               
 
                 //listado de modelos obtenidos
                 if (ModeloAuorizacion.Count > 0)
                 {
+
                     for (int i = 0; i < ModeloAuorizacion.Count; i++)
                     {
                         //obtengo datos de los modelos obtenidos
-                        var ResultadoModelo = oModeloAutorizacionDAO.ObtenerDatosxID(ModeloAuorizacion[i].IdModeloAutorizacion);
+                        var ResultadoModelo = oModeloAutorizacionDAO.ObtenerDatosxID(ModeloAuorizacion[i].IdModeloAutorizacion,BaseDatos);
+
                         for (int a = 0; a < ResultadoModelo[0].DetallesAutor.Count; a++)
                         {
                             //valida a que usuarios se le va a aplicar este modelo de autorizacion
@@ -230,7 +296,7 @@ namespace ConcyssaWeb.Controllers
                             {
                                 for (int c = 0; c < ResultadoModelo[0].DetallesCondicion.Count; c++)
                                 {
-                                    var Resultado = oModeloAutorizacionDAO.ObtenerResultadoCondicion(ResultadoModelo[0].DetallesCondicion[c].Condicion, IdInsert,1);
+                                    var Resultado = oModeloAutorizacionDAO.ObtenerResultadoCondicion(ResultadoModelo[0].DetallesCondicion[c].Condicion, IdInsert,1,BaseDatos);
 
                                     if (Resultado[0].EntraAlProcesoAutorizar == 1) //si es una solicitud para autorizar 
                                     {
@@ -246,9 +312,9 @@ namespace ConcyssaWeb.Controllers
                                                     IdEtapa = ResultadoModelo[0].DetallesEtapa[e].IdEtapa,
                                                     Aprobaciones = ResultadoModelo[0].DetallesEtapa[e].AutorizacionesRequeridas,
                                                     Rechazos = ResultadoModelo[0].DetallesEtapa[e].RechazosRequeridos
-                                                }, IdSociedad.ToString());
+                                                }, IdSociedad.ToString(),BaseDatos);
 
-                                                var ResultadoEtapa = oEtapaAutorizacionDAO.ObtenerDatosxID(ResultadoModelo[0].DetallesEtapa[e].IdEtapa);
+                                                var ResultadoEtapa = oEtapaAutorizacionDAO.ObtenerDatosxID(ResultadoModelo[0].DetallesEtapa[e].IdEtapa,BaseDatos);
                                                 UsuarioDAO oUsuarioDAO = new UsuarioDAO();
                                                 //enviar correo
                                                 string mensaje_error = "";
@@ -256,10 +322,10 @@ namespace ConcyssaWeb.Controllers
                                             {
                                                 for (int k = 0; k < ResultadoEtapa[0].Detalles.Count; k++)
                                                 {
-                                                    var UsersDeEtapa = oUsuarioDAO.ObtenerDatosxID(ResultadoEtapa[0].Detalles[k].IdUsuario, ref mensaje_error);
-                                                    var Solicitante = oUsuarioDAO.ObtenerDatosxID(solicitudRQDTO.IdSolicitante, ref mensaje_error);
-                                                    EnviarCorreo(UsersDeEtapa[0].Correo, Solicitante[0].Nombre, solicitudRQDTO.Serie, solicitudRQDTO.Numero, Resultado[0].Mensaje, solicitudRQDTO);
-                                                    //EnviarCorreo("jhuniors.ramos@smartcode.pe", Solicitante[0].Nombre, solicitudRQDTO.Serie, solicitudRQDTO.Numero, Resultado[0].Mensaje);
+                                                    var UsersDeEtapa = oUsuarioDAO.ObtenerDatosxID(ResultadoEtapa[0].Detalles[k].IdUsuario,BaseDatos,ref mensaje_error);
+                                                    var Solicitante = oUsuarioDAO.ObtenerDatosxID(solicitudRQDTO.IdSolicitante,BaseDatos,ref mensaje_error);
+                                                    //EnviarCorreo(UsersDeEtapa[0].Correo, Solicitante[0].Nombre, solicitudRQDTO.Serie, solicitudRQDTO.Numero, Resultado[0].Mensaje, solicitudRQDTO);
+                                                   
 
                                                 }
                                                 //enviar correo
@@ -304,7 +370,7 @@ namespace ConcyssaWeb.Controllers
                 //        solicitudRQDTO.AnexoDetalle[i].Tabla = "SolicitudRQ";
                 //        solicitudRQDTO.AnexoDetalle[i].IdTabla = resultado[1];
 
-                //        oMovimientoDAO.InsertAnexoMovimiento(solicitudRQDTO.AnexoDetalle[i], ref mensaje_error);
+                //        oMovimientoDAO.InsertAnexoMovimiento(solicitudRQDTO.AnexoDetalle[i],BaseDatos,ref mensaje_error);
                 //    }
                 //}
 
@@ -750,6 +816,7 @@ namespace ConcyssaWeb.Controllers
 
         public int CerrarSolicitud(int IdSolictudRQ)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             int valida = 0;
             valida = validarEmpresaActualUpdateInsert();
@@ -761,7 +828,7 @@ namespace ConcyssaWeb.Controllers
 
 
             SolicitudRQDAO solicitudRQDAO = new SolicitudRQDAO();
-            int resultado = solicitudRQDAO.CerrarSolicitud(IdSolictudRQ, IdSociedad.ToString());
+            int resultado = solicitudRQDAO.CerrarSolicitud(IdSolictudRQ, IdSociedad.ToString(),BaseDatos);
             if (resultado != 0)
             {
                 resultado = 1;
@@ -832,9 +899,10 @@ namespace ConcyssaWeb.Controllers
 
         public string DatosSolicitudModeloAprobaciones(int IdSolicitudRQ)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             SolicitudRQDTO oSolicitudRQDTO = new SolicitudRQDTO();
             SolicitudRQDAO oSolicitudRQDAO = new SolicitudRQDAO();
-            oSolicitudRQDTO=oSolicitudRQDAO.DatosSolicitudRq(IdSolicitudRQ);
+            oSolicitudRQDTO=oSolicitudRQDAO.DatosSolicitudRq(IdSolicitudRQ,BaseDatos);
             if (oSolicitudRQDTO!=null)
             {
                 return JsonConvert.SerializeObject(oSolicitudRQDTO);
@@ -848,11 +916,12 @@ namespace ConcyssaWeb.Controllers
 
         public string SaveDetalleSolicitud (int IdSolicitudDetalle, decimal Cantidad)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string respuesta = "";
             int respuetadao;
             SolicitudRQDTO oSolicitudRQDTO = new SolicitudRQDTO();
             SolicitudRQDAO oSolicitudRQDAO = new SolicitudRQDAO();
-            respuetadao = oSolicitudRQDAO.SaveDetalleSolicitud(IdSolicitudDetalle, Cantidad);
+            respuetadao = oSolicitudRQDAO.SaveDetalleSolicitud(IdSolicitudDetalle, Cantidad,BaseDatos);
             if (respuetadao ==1)
             {
                 respuesta = "1";
@@ -873,8 +942,9 @@ namespace ConcyssaWeb.Controllers
             {
                 return valida.ToString();
             }
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             SolicitudRQDAO oSolicitudRQDAO = new SolicitudRQDAO();
-            int resultado = oSolicitudRQDAO.DeleteDetalleSolicitud(IdSolicitudRQDetalle);
+            int resultado = oSolicitudRQDAO.DeleteDetalleSolicitud(IdSolicitudRQDetalle,BaseDatos);
             if (resultado == 0)
             {
                 respuesta = "1";
@@ -899,8 +969,9 @@ namespace ConcyssaWeb.Controllers
             {
                 return valida;
             }
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             SolicitudRQDAO oSolicitudRQDAO = new SolicitudRQDAO();
-            int resultado = oSolicitudRQDAO.ValidaSolicitudDetalleAprobado(IdSolicitudRQDetalle);
+            int resultado = oSolicitudRQDAO.ValidaSolicitudDetalleAprobado(IdSolicitudRQDetalle,BaseDatos);
             if (resultado == 0)
             {
                 respuesta = 0;
@@ -917,10 +988,11 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerAnexosSolicitudRQ(int IdSolicitudRQ)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             SolicitudRQDAO oSolicitudRQDAO = new SolicitudRQDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<AnexoDTO> lstAnexoDTO = oSolicitudRQDAO.ObtenerAnexosSolicitudRQ(IdSolicitudRQ);
+            List<AnexoDTO> lstAnexoDTO = oSolicitudRQDAO.ObtenerAnexosSolicitudRQ(IdSolicitudRQ,BaseDatos);
             if (lstAnexoDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstAnexoDTO);

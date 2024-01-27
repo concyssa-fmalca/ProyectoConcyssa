@@ -17,15 +17,16 @@ namespace ConcyssaWeb.Controllers
             string mensaje_error = "";
             NumeracionDocumentoDAO oNumeracionDocumentoDAO = new NumeracionDocumentoDAO();
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
 
             if (IdBase == 1)
             {
                 UsuarioDAO oUsuarioDAO = new UsuarioDAO();
-                List<UsuarioDTO> lstUsuarioDTO = oUsuarioDAO.ObtenerBasesxIdUsuario(IdUsuario, ref mensaje_error);
+                List<UsuarioDTO> lstUsuarioDTO = oUsuarioDAO.ObtenerBasesxIdUsuario(IdUsuario,BaseDatos,ref mensaje_error);
                 UsuarioDTO usuarioDTO = lstUsuarioDTO[0];
                 IdBase = usuarioDTO.IdBase;   
             }        
-            List<NumeracionDocumentoDTO> lstGlosaContableDTO = oNumeracionDocumentoDAO.Numeracion( IdBase, ref mensaje_error, estado);
+            List<NumeracionDocumentoDTO> lstGlosaContableDTO = oNumeracionDocumentoDAO.Numeracion( IdBase,BaseDatos,ref mensaje_error, estado);
             if (lstGlosaContableDTO.Count > 0 || mensaje_error =="")
             {
                 return JsonConvert.SerializeObject(lstGlosaContableDTO);
@@ -40,8 +41,9 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerDatosxID(int IdNumeracionDocumento)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             NumeracionDocumentoDAO oNumeracionDocumentoDAO = new NumeracionDocumentoDAO();
-            List<NumeracionDocumentoDTO> lstGlosaContableDTO = oNumeracionDocumentoDAO.ObtenerDatosxID(IdNumeracionDocumento, ref mensaje_error);
+            List<NumeracionDocumentoDTO> lstGlosaContableDTO = oNumeracionDocumentoDAO.ObtenerDatosxID(IdNumeracionDocumento,BaseDatos,ref mensaje_error);
 
             if (lstGlosaContableDTO.Count > 0)
             {
@@ -59,9 +61,10 @@ namespace ConcyssaWeb.Controllers
         {
 
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             NumeracionDocumentoDAO oGlosaContableDAO = new NumeracionDocumentoDAO();
           
-            int respuesta = oGlosaContableDAO.UpdateInsertNumeracion(oNumeracionDocumentoDTO, ref mensaje_error);
+            int respuesta = oGlosaContableDAO.UpdateInsertNumeracion(oNumeracionDocumentoDTO,BaseDatos,ref mensaje_error);
 
             if (mensaje_error.Length > 0)
             {
@@ -84,8 +87,9 @@ namespace ConcyssaWeb.Controllers
         public int EliminarNumeracion(int IdNumeracionDocumento)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             NumeracionDocumentoDAO oGlosaContableDAO = new NumeracionDocumentoDAO();
-            int resultado = oGlosaContableDAO.Delete(IdNumeracionDocumento, ref mensaje_error);
+            int resultado = oGlosaContableDAO.Delete(IdNumeracionDocumento,BaseDatos,ref mensaje_error);
             if (resultado == 0)
             {
                 resultado = 1;

@@ -12,13 +12,13 @@ namespace DAO
 {
     public class SolicitudDespachoModeloDAO
     {
-        public int UpdateInsertSolicitudDespachoModelo(SolicitudDespachoModeloDTO oSolicitudDespachoModeloDTO, string IdSociedad)
+        public int UpdateInsertSolicitudDespachoModelo(SolicitudDespachoModeloDTO oSolicitudDespachoModeloDTO, string IdSociedad, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -47,11 +47,11 @@ namespace DAO
         }
 
 
-        public List<SolicitudDespachoModeloDTO> ObtenerDatosxID(int IdSolicitudDespachoModelo, string IdSociedad)
+        public List<SolicitudDespachoModeloDTO> ObtenerDatosxID(int IdSolicitudDespachoModelo, string IdSociedad, string BaseDatos)
         {
             List<SolicitudDespachoModeloDTO> lstSolicitudDespachoModeloDTO = new List<SolicitudDespachoModeloDTO>();
 
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {

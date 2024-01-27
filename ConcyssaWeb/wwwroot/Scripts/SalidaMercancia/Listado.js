@@ -16,18 +16,6 @@ let DecimalesPorcentajes = 0;
 let limitador = 0;
 let valorfor = 1
 
-
-//function ObtenerConfiguracionDecimales() {
-//    $.post("/ConfiguracionDecimales/ObtenerConfiguracionDecimales", function (data, status) {
-
-//        let datos = JSON.parse(data);
-//        DecimalesCantidades = datos[0].Cantidades;
-//        DecimalesImportes = datos[0].Importes;
-//        DecimalesPrecios = datos[0].Precios;
-//        DecimalesPorcentajes = datos[0].Porcentajes;
-//        console.log("PRECIOS "+DecimalesPrecios)
-//    });
-//}
 function EsActivo() {
     let TipoArticulo = $("#cboClaseArticulo").val()
     if (TipoArticulo == 3) {
@@ -160,7 +148,9 @@ function Editar() {
         'CodigoAnexoLlegada': Anexo,
         'CodigoUbigeoLlegada': Ubigeo,
         'DistritoLlegada': DistritoLlegada,
-        'DireccionLlegada': DireccionLlegada
+        'DireccionLlegada': DireccionLlegada,
+        'IdProveedor': $("#cboProveedor").val(),
+        'NroRef': $("#NumRef").val()
     }, function (data, status) {
 
         if (data != 0) {
@@ -456,6 +446,7 @@ function ConsultaServidor() {
                     /*    '<td>' + movimientos[i].NombObra + '</td>' +*/
 
                     '<td>' + movimientos[i].NombAlmacen + '</td>' +
+                    '<td>' + movimientos[i].NroRef + '</td>' +
                     '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + movimientos[i].IdMovimiento + ')"></button>' +
                     // '<button class="btn btn-primary" onclick="GenerarReporte(' + movimientos[i].IdMovimiento + ',' + movimientos[i].IdDocExtorno + ')">R</button></td>' +
                     //'<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + solicitudes[i].IdSolicitudRQ + ')"></button></td >' +
@@ -477,6 +468,7 @@ function ConsultaServidor() {
                     /*    '<td>' + movimientos[i].NombObra + '</td>' +*/
 
                     '<td>' + movimientos[i].NombAlmacen + '</td>' +
+                    '<td>' + movimientos[i].NroRef + '</td>' +
                     '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + movimientos[i].IdMovimiento + ')"></button>' +
                     // '<button class="btn btn-primary" onclick="GenerarReporte(' + movimientos[i].IdMovimiento + ',' + movimientos[i].IdDocExtorno + ')">R</button></td>' +
                     //'<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + solicitudes[i].IdSolicitudRQ + ')"></button></td >' +
@@ -522,7 +514,7 @@ function ModalNuevo() {
     }
 
 
-
+    
     ObtenerTiposDocumentos();
     //listarEmpleados();
     //ObtenerCuadrillas();
@@ -771,6 +763,20 @@ function AgregarLinea() {
     $.post("/Moneda/ObtenerMonedas", function (data, status) {
         Moneda = JSON.parse(data);
     });
+
+    let arrayIdArticulo = new Array();
+    $("input[name='txtIdArticulo[]']").each(function (indice, elemento) {
+        arrayIdArticulo.push($(elemento).val());
+    });
+
+    for (var i = 0; i < arrayIdArticulo.length; i++) {
+        if (IdItem == arrayIdArticulo[i]) {
+            swal("Informacion!", "Este Item ya fue Agregado");
+            return;
+        }
+    }
+
+
     if (limitador >= 30) {
         swal("Informacion!", "Solo se pueden agregar Hasta 30 items");
         return;
@@ -1594,6 +1600,17 @@ function GuardarSolicitud() {
         return;
     }
 
+    if ($("#cboTipoDocumentoOperacion").val() == '329') {
+        if ($("#cboProveedor").val() == 0) {
+            Swal.fire(
+                'Error!',
+                'Complete el campo Proveedor',
+                'error'
+            )
+            return;
+        }
+    }
+
 
 
     if ($("#IdTipoDocumentoRef").val() == 1) {
@@ -1731,7 +1748,9 @@ function GuardarSolicitud() {
             'CodigoAnexoLlegada': Anexo,
             'CodigoUbigeoLlegada': Ubigeo,
             'DistritoLlegada': DistritoLlegada,
-            'DireccionLlegada': DireccionLlegada
+            'DireccionLlegada': DireccionLlegada,
+            'IdProveedor': $("#cboProveedor").val(),
+            'NroRef': $("#NumRef").val()
 
             //end cabecera
 
@@ -1803,6 +1822,19 @@ function GuardarSolicitud() {
                 ObtenerDatosxID(data);
                 //table.destroy();
                 ConsultaServidor();
+                $.post("/EntradaMercancia/GenerarReporte", { 'NombreReporte': 'SalidaMercancia', 'Formato': 'PDF', 'Id': data }, function (data, status) {
+                    let datos;
+                    if (validadJson(data)) {
+                        let datobase64;
+                        datobase64 = "data:application/octet-stream;base64,"
+                        datos = JSON.parse(data);
+                        //datobase64 += datos.Base64ArchivoPDF;
+                        //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
+                        //$("#reporteRPT").attr("href", datobase64);
+                        //$("#reporteRPT")[0].click();
+                        verBase64PDF(datos)                     
+                    } 
+                });
 
 
             } else {
@@ -1841,11 +1873,15 @@ function limpiarDatos() {
     //$("#txtFechaDocumento").val(strDate);
     $("#cboTitular").val('');
     $("#txtTotalAntesDescuento").val('');
-    $("#txtComentarios").html('');
+    $("#txtComentarios").val('');
     $("#txtImpuesto").val('');
     $("#txtTotal").val('');
     $("#txtEstado").val(1);
-
+    $("#total_items").html('-')
+    $("#NombUsuario").html('-')
+    $("#CreatedAt").html('-')
+    $("#EditedAt").html('-')
+    $("#NombUsuarioEdicion").html('-')
     $("#PlacaVehiculo").val('');
     $("#MarcaVehiculo").val('');
     $("#NumIdentidadConductor").val('');
@@ -1854,7 +1890,7 @@ function limpiarDatos() {
     $("#LicenciaConductor").val('');
     $("#cboEstadoFE").val('0');
     $("#SerieNumeroRef").val('');
-    
+    $("#NumRef").val('')
     limitador = 0;
     
     
@@ -1879,13 +1915,16 @@ function ObtenerDatosxID(IdMovimiento) {
     CargarMoneda();
     CargarProveedor();
     CargarMotivoTraslado();
-
+    CargarProveedorDevolucion()
 
     $("#lblTituloModal").html("Editar Salida");
     AbrirModal("modal-form");
     disabledmodal(true);
     CargarProveedor();
     CargarMotivoTraslado();
+
+
+  
 
 
     CargarVehiculos();
@@ -1904,9 +1943,7 @@ function ObtenerDatosxID(IdMovimiento) {
             limpiarDatos();
         } else {
             let movimiento = JSON.parse(data);
-            console.log("XDDD");
-            console.log(movimiento);
-            console.log("XDDD");
+
             if (movimiento.IdDocExtorno != 0) {
                 EstaExtornado = true
             }
@@ -1918,7 +1955,7 @@ function ObtenerDatosxID(IdMovimiento) {
             $("#txtTotalAntesDescuento").val(movimiento.SubTotal)
             $("#txtImpuesto").val(movimiento.Impuesto)
             $("#txtTotal").val(formatNumberDecimales(movimiento.Total, 3))
-
+            $("#NumRef").val(movimiento.NroRef)
             $("#cboCentroCosto").val(7)
             $("#cboTipoDocumentoOperacion").val(movimiento.IdTipoDocumento)
             $("#IdTipoDocumentoRef").val(movimiento.IdTipoDocumentoRef)
@@ -1930,7 +1967,7 @@ function ObtenerDatosxID(IdMovimiento) {
             $("#IdBase").val(movimiento.IdBase).change();
             $("#IdObra").val(movimiento.IdObra).change();
             $("#cboAlmacen").val(movimiento.IdAlmacen);
-            $("#txtComentarios").html(movimiento.Comentario)
+            $("#txtComentarios").val(movimiento.Comentario)
             if (movimiento.NombUsuarioEdicion == "") {
                 $("#NombUsuarioEdicion").html("-")
             } else {
@@ -1944,7 +1981,7 @@ function ObtenerDatosxID(IdMovimiento) {
             }
             $("#CreatedAt").html(movimiento.CreatedAt.replace("T", " "));
             $("#NombUsuario").html(movimiento.NombUsuario);
-            $("#txtComentarios").html(movimiento.Comentario)
+            $("#txtComentarios").val(movimiento.Comentario)
             $("#txtTotal_editar").val(formatNumberDecimales(movimiento.Total, 2))
             $("#txtNumeracion").val(movimiento.Correlativo)
             $("#txtTipoCambio").val(formatNumberDecimales(movimiento.TipoCambio, 2));
@@ -1961,6 +1998,7 @@ function ObtenerDatosxID(IdMovimiento) {
             $("#ApellidoConductor").val(movimiento.ApellidoConductor)
             $("#LicenciaConductor").val(movimiento.LicenciaConductor)
             $("#IdTipoTransporte").val(movimiento.TipoTransporte)
+            $("#cboProveedor").val(movimiento.IdProveedor).change()
 
 
             CargarTodosUbigeo();
@@ -2111,6 +2149,7 @@ function ObtenerDatosxID(IdMovimiento) {
                 AgregarLineaDetalle(i, Detalle[i]);
                 $("#cboImpuesto").val(Detalle[0].IdIndicadorImpuesto);
                 $("#IdCuadrilla").val(Detalle[0].IdCuadrilla).change()
+                console.log(Detalle[0].IdResponsable)
                 $("#EntregadoA").val(Detalle[0].IdResponsable).change()
             }
 
@@ -2138,6 +2177,21 @@ function ObtenerDatosxID(IdMovimiento) {
     //$("#IdCuadrilla").prop("disabled", false)
     //$("#EntregadoA").prop("disabled", false)
     //$("#txtComentarios").prop("disabled", false)
+    if ($("#cboTipoDocumentoOperacion").val() == '329') {
+    
+
+        $("#IdCuadrilla").prop('disabled', true)
+        $("#EntregadoA").prop('disabled', true)
+        $(".devolucion").show()
+        $(".cuadrillas").hide()
+    } else {
+
+        $("#IdCuadrilla").prop('disabled', false)
+        $("#EntregadoA").prop('disabled', false)
+        $(".devolucion").hide()
+        $(".cuadrillas").show()
+    } 
+
 
 }
 
@@ -2364,7 +2418,7 @@ function BuscarCodigoProducto() {
                 for (var i = 0; i < items.length; i++) {
                     /*if (items[i].Inventario == TipoItem) {*/
                     if (items[i].Stock > 0) {
-                        tr += '<tr>' +
+                        tr += '<tr onclick="SeleccionTrItem(' + items[i].IdArticulo + ')">' +
                             '<td><input type="radio" clase="" id="rdSeleccionado' + items[i].IdArticulo + '"  name="rdSeleccionado"  value = "' + items[i].IdArticulo + '" ></td>' +
                             '<td>' + items[i].Codigo + '</td>' +
                             '<td>' + items[i].Descripcion1 + '</td>' +
@@ -2422,7 +2476,7 @@ function BuscarCodigoProducto() {
 
                     for (var i = 0; i < items.length; i++) {
                         /* if (items[i].Inventario == TipoItem) {*/
-                        tr += '<tr>' +
+                        tr += '<tr onclick="SeleccionTrItem(' + items[i].IdArticulo + ')">' +
                             '<td><input type="radio" clase="" id="rdSeleccionado' + items[i].IdArticulo + '"  name="rdSeleccionado"  value = "' + items[i].IdArticulo + '" ></td>' +
                             '<td>' + items[i].Codigo + '</td>' +
                             '<td>' + items[i].Descripcion1 + '</td>' +
@@ -2848,6 +2902,20 @@ function GenerarExtorno() {
                 }
                 
       
+            });
+
+            $.post("ValidarTieneNC", { 'IdMovimiento': IdMovimiento }, function (data, status) {
+
+                if (data > 0) {
+                    Swal.fire(
+                        'Error!',
+                        'Este Documento ya Tiene una Nota de Credito Relacionada',
+                        'error'
+                    )
+                    parar++;
+                }
+
+
             });
 
             if (parar > 0) {
@@ -3649,7 +3717,7 @@ function GenerarReporte(id, idextorno) {
                         'success'
                     )
                 } else {
-                    respustavalidacion
+                    Swal.fire("Error!","No se pudo Cargar el Reporte","error")
                 }
             });
         }
@@ -3672,7 +3740,7 @@ function GenerarReporte(id, idextorno) {
                         'success'
                     )
                 } else {
-                    respustavalidacion
+                    Swal.fire("Error!", "No se pudo Cargar el Reporte", "error")
                 }
             });
         }
@@ -3937,4 +4005,48 @@ function llenarComboUbigeos(lista, idCombo, primerItem) {
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
+}
+
+function ValidarCamposDevolucion() {
+    if ($("#cboTipoDocumentoOperacion").val() == '329') {
+        CargarProveedorDevolucion()
+        $("#IdCuadrilla").val(2582).change()
+        $("#EntregadoA").val(24143).change()
+        $("#IdCuadrilla").prop('disabled',true)
+        $("#EntregadoA").prop('disabled', true)
+        $(".devolucion").show()
+        $(".cuadrillas").hide()
+    } else {
+        $("#IdCuadrilla").val(0).change()
+        $("#EntregadoA").val(0).change()
+        $("#cboProveedor").val(0).change()
+        $("#IdCuadrilla").prop('disabled', false)
+        $("#EntregadoA").prop('disabled', false)
+        $(".devolucion").hide()
+        $(".cuadrillas").show()
+    } 
+}
+
+
+function CargarProveedorDevolucion() {
+    $.post("/Proveedor/ObtenerProveedores", function (data, status) {
+        Proveedor = JSON.parse(data);
+        let option = `<option value="0">SELECCIONE PROVEEDOR</option>`;
+
+        for (var i = 0; i < Proveedor.length; i++) {
+            option += `<option value="` + Proveedor[i].IdProveedor + `">` + Proveedor[i].NumeroDocumento + `-` + Proveedor[i].RazonSocial + `</option>`
+        }
+
+        $("#cboProveedor").html(option);
+
+        $("#cboProveedor").select2();
+
+
+    });
+}
+
+function SeleccionTrItem(ItemCodigo) {
+
+    $("#rdSeleccionado" + ItemCodigo).prop("checked", true);
+
 }

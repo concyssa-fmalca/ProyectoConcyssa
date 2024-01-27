@@ -494,4 +494,6 @@ function GuardarPedidoConformidad() {
 
 function CerrarModal() {
     $.magnificPopup.close();
+    $("#comentarioconformidad").val("")
+
 }

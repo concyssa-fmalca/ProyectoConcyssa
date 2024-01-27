@@ -245,7 +245,9 @@ function ConsultaServidor() {
 
             tr += '<tr>' +
                 '<td>' + (i + 1) + '</td>' +
-                '<td>' + solicitudes[i].Serie + '-' + solicitudes[i].Numero + '</td>' +
+                //'<td>' + solicitudes[i].Serie + '-' + solicitudes[i].Numero + '</td>' +
+                '<td><a style="color:blue;text-decoration:underline;cursor:pointer" onclick = "ImprimitSolicitudRQ(' + solicitudes[i].IdSolicitudRQ + ')" > ' + solicitudes[i].Serie + '-' + solicitudes[i].Numero +'</a ></td>' +
+
                 '<td>' + solicitudes[i].Solicitante.toUpperCase() + '</td>' +
                 '<td>' + solicitudes[i].NombObra.toUpperCase() + '</td>';
 
@@ -301,7 +303,12 @@ function ConsultaServidor() {
                 } else {
                     tr += '<td> <span style="font-color:red">CANCELADO</span> </td>';
                 }
-            } else { tr += '<td> - </td>' }
+            } else {
+                if (solicitudes[i].EstadoSolicitud == 1) {
+                    tr += '<td>-</td>';
+                } else {
+                    tr += '<td> <span style="font-color:red">CANCELADO</span> </td>';
+                } }
 
             //let IdPerfil = $("#IdPerfil").val();
             //if ((IdPerfil == 1 || IdPerfil == 5) && solicitudes[i].Estado == 1) {
@@ -1014,7 +1021,7 @@ function AgregarLinea() {
             $(".ImpuestoCabecera").val(varimpuesto);
         }
 
-        let cantidadround = (Number(CantidadItem)).toFixed(DecimalesCantidades);
+        let cantidadround = CantidadItem;
         let precioround = (Number(PrecioUnitarioItem)).toFixed(DecimalesPrecios);
 
         $("#txtIdArticulo" + contador).val(IdItem);
@@ -1858,7 +1865,7 @@ function GuardarSolicitud() {
             }
 
 
-            if (data == 1) {
+            if (data == '1') {
                 Swal.fire(
                     'Correcto',
                     'Proceso Realizado Correctamente RQ:' + varNumero,
@@ -1869,6 +1876,18 @@ function GuardarSolicitud() {
                 CerrarModal();
                 ConsultaServidor();
 
+            } else if (data == -99) {
+                Swal.fire(
+                    'Error!',
+                    'No Cuenta Con Autorización para Crear este Documento!',
+                    'error'
+                )
+            } else if (data == -98) {
+                Swal.fire(
+                    'Error!',
+                    'El Usuario se encuentra como autor en mas de un modelo de Aut., Contacte a Soporte!',
+                    'error'
+                )
             } else {
                 Swal.fire(
                     'Error!',
@@ -2057,7 +2076,12 @@ function ObtenerDatosxID(IdSolicitudRQ) {
             $("#txtImpuesto").val((Number(solicitudes[0].Impuesto)).toFixed(DecimalesImportes));
             $("#txtTotal").val((Number(solicitudes[0].Total)).toFixed(DecimalesImportes));
 
-            //4 es IGV para CROACIA
+            
+
+
+            $("#IdBase").val(solicitudes[0].Detalle[0].IdBase).change()
+            $("#IdObra").val(solicitudes[0].Detalle[0].IdObra).change()
+            $("#cboAlmacen").val(solicitudes[0].Detalle[0].IdAlmacen)
             $("#cboImpuesto").val(1); //2 titan EXO  //5 CROACIA EXO
 
             //agrega detalle
@@ -2085,8 +2109,8 @@ function ObtenerDatosxID(IdSolicitudRQ) {
                     Detalle[i].IdProyecto,
                     Detalle[i].IdItemMoneda,
                     Detalle[i].ItemTipoCambio,
-                    Detalle[i].CantidadNecesaria.toFixed(DecimalesCantidades),
-                    Detalle[i].CantidadSolicitada.toFixed(DecimalesCantidades),
+                    Detalle[i].CantidadNecesaria,
+                    Detalle[i].CantidadSolicitada,
                     Detalle[i].PrecioInfo.toFixed(DecimalesPrecios),
                     Detalle[i].ItemTotal.toFixed(DecimalesImportes),
                     Detalle[i].NumeroFabricacion,
@@ -3514,25 +3538,25 @@ function ObtenerConfiguracionDecimales() {
 
 function ValidarDecimalesCantidades(input) {
 
-    let cantidad = $("#" + input).val();
-    let separar = cantidad.split(".");
+    //let cantidad = $("#" + input).val();
+    //let separar = cantidad.split(".");
 
-    if (separar.length > 1) {
-        if ((separar[1]).length > DecimalesCantidades) {
-            $("#" + input).val(Number(cantidad).toFixed(DecimalesCantidades));
-        }
-    }
+    //if (separar.length > 1) {
+    //    if ((separar[1]).length > DecimalesCantidades) {
+    //        $("#" + input).val(Number(cantidad).toFixed(DecimalesCantidades));
+    //    }
+    //}
 }
 
 function ValidarDecimalesImportes(input) {
-    let cantidad = $("#" + input).val();
-    let separar = cantidad.split(".");
+    //let cantidad = $("#" + input).val();
+    //let separar = cantidad.split(".");
 
-    if (separar.length > 1) {
-        if ((separar[1]).length > DecimalesCantidades) {
-            $("#" + input).val(Number(cantidad).toFixed(DecimalesImportes));
-        }
-    }
+    //if (separar.length > 1) {
+    //    if ((separar[1]).length > DecimalesCantidades) {
+    //        $("#" + input).val(Number(cantidad).toFixed(DecimalesImportes));
+    //    }
+    //}
 }
 
 
@@ -3942,4 +3966,34 @@ function EliminarEditDetalle(IdSolicitud, IdSolicitudDetalle, contador, objeto) 
 
 function LimpiarAlmacen() {
     $("#cboAlmacen").prop("selectedIndex", 0)
+}
+
+function ImprimitSolicitudRQ(Id) {
+    Swal.fire({
+        title: "Generando Reporte...",
+        text: "Por favor espere",
+        showConfirmButton: false,
+        allowOutsideClick: false
+    });
+
+    setTimeout(() => {
+
+        $.ajaxSetup({ async: false });
+        $.post("/Pedido/GenerarReporte", { 'NombreReporte': 'SolicitudRQ', 'Formato': 'PDF', 'Id': Id }, function (data, status) {
+            let datos;
+            if (validadJson(data)) {
+                let datobase64;
+                datobase64 = "data:application/octet-stream;base64,"
+                datos = JSON.parse(data);
+                //datobase64 += datos.Base64ArchivoPDF;
+                //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
+                //$("#reporteRPT").attr("href", datobase64);
+                //$("#reporteRPT")[0].click();
+                verBase64PDF(datos)
+                Swal.close()
+            } else {
+                console.log("error");
+            }
+        });
+    }, 200)
 }

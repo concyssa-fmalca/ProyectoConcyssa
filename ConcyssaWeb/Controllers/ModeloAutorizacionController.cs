@@ -21,11 +21,11 @@ namespace ConcyssaWeb.Controllers
                 return valida;
             }
 
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             ModeloAutorizacionDAO oModeloAutorizacionDAO = new ModeloAutorizacionDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
 
-            List<ModeloAutorizacionDTO> lstModeloAutorizacionDTO = oModeloAutorizacionDAO.ObtenerModeloAutorizacion(IdSociedad.ToString());
+            List<ModeloAutorizacionDTO> lstModeloAutorizacionDTO = oModeloAutorizacionDAO.ObtenerModeloAutorizacion(IdSociedad.ToString(),BaseDatos);
             if (lstModeloAutorizacionDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstModeloAutorizacionDTO);
@@ -46,11 +46,11 @@ namespace ConcyssaWeb.Controllers
                 return valida;
             }
 
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             ModeloAutorizacionDAO oModeloAutorizacionDAO = new ModeloAutorizacionDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
 
-            int resultado = oModeloAutorizacionDAO.UpdateInsertModeloAutorizacion(modeloAutorizacionDTO,IdSociedad.ToString());
+            int resultado = oModeloAutorizacionDAO.UpdateInsertModeloAutorizacion(modeloAutorizacionDTO,IdSociedad.ToString(),BaseDatos);
             if (resultado != 0)
             {
                 resultado = 1;
@@ -70,9 +70,9 @@ namespace ConcyssaWeb.Controllers
                 return valida;
             }
 
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             ModeloAutorizacionDAO oModeloAutorizacionDAO = new ModeloAutorizacionDAO();
-            List<ModeloAutorizacionDTO> lstModeloAutorizacionDTO = oModeloAutorizacionDAO.ObtenerDatosxID(IdModeloAutorizacion);
+            List<ModeloAutorizacionDTO> lstModeloAutorizacionDTO = oModeloAutorizacionDAO.ObtenerDatosxID(IdModeloAutorizacion,BaseDatos);
 
             if (lstModeloAutorizacionDTO.Count > 0)
             {
@@ -95,9 +95,9 @@ namespace ConcyssaWeb.Controllers
                 return valida;
             }
 
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             ModeloAutorizacionDAO oModeloAutorizacionDAO = new ModeloAutorizacionDAO();
-            int resultado = oModeloAutorizacionDAO.EliminarModeloAutorizacionDetalleEtapa(IdModeloAutorizacionEtapa);
+            int resultado = oModeloAutorizacionDAO.EliminarModeloAutorizacionDetalleEtapa(IdModeloAutorizacionEtapa,BaseDatos);
             if (resultado == 0)
             {
                 resultado = 1;
@@ -115,9 +115,9 @@ namespace ConcyssaWeb.Controllers
                 return valida;
             }
 
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             ModeloAutorizacionDAO oModeloAutorizacionDAO = new ModeloAutorizacionDAO();
-            int resultado = oModeloAutorizacionDAO.EliminarModeloAutorizacionDetalleAutor(IdModeloAutorizacionAutor);
+            int resultado = oModeloAutorizacionDAO.EliminarModeloAutorizacionDetalleAutor(IdModeloAutorizacionAutor,BaseDatos);
             if (resultado == 0)
             {
                 resultado = 1;
@@ -136,9 +136,9 @@ namespace ConcyssaWeb.Controllers
                 return valida;
             }
 
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             ModeloAutorizacionDAO oModeloAutorizacionDAO = new ModeloAutorizacionDAO();
-            int resultado = oModeloAutorizacionDAO.EliminarModeloAutorizacionDetalleCondicion(IdModeloAutorizacionCondicion);
+            int resultado = oModeloAutorizacionDAO.EliminarModeloAutorizacionDetalleCondicion(IdModeloAutorizacionCondicion,BaseDatos);
             if (resultado == 0)
             {
                 resultado = 1;
@@ -182,18 +182,40 @@ namespace ConcyssaWeb.Controllers
                 return valida;
             }
 
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             ModeloAutorizacionDAO oModeloAutorizacionDAO = new ModeloAutorizacionDAO();
-            int resultado = oModeloAutorizacionDAO.EliminarModeloAutorizacion(IdModeloAutorizacion);
+            int resultado = oModeloAutorizacionDAO.EliminarModeloAutorizacion(IdModeloAutorizacion,BaseDatos);
             if (resultado == 0)
             {
                 resultado = 1;
+            }else if(resultado == 1)
+            {
+                return  2;
             }
 
-            return resultado;
+            return 0;
         }
 
+        public string ValidarAutoresxTipoDocumento(int IdAutor, int IdTipoDocumento)
+        {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            ModeloAutorizacionDAO oModeloAutorizacionDAO = new ModeloAutorizacionDAO();
+            List<ModeloAutorizacionDTO> lstModeloAutorizacionDTO = oModeloAutorizacionDAO.ValidarAutoresxTipoDocumento(IdAutor, IdTipoDocumento, BaseDatos);
+            if (lstModeloAutorizacionDTO.Count == 0)
+            {
+                return "ok";
+            }
+            else
+            {
+                string mensaje = "El Usuario ya es autor de los Siguientes Modelos: </br>";
+                for (int i = 0; i < lstModeloAutorizacionDTO.Count; i++)
+                {
+                    mensaje += lstModeloAutorizacionDTO[i].DescripcionModelo +"</br>";
+                }
+                return mensaje;
+            }
 
+        }
 
     }
 }

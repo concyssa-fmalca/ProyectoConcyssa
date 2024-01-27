@@ -12,13 +12,13 @@ namespace DAO
 {
     public class SolicitudRQModeloDAO
     {
-        public int UpdateInsertSolicitudRQModelo(SolicitudRQModeloDTO oSolicitudRQModeloDTO, string IdSociedad)
+        public int UpdateInsertSolicitudRQModelo(SolicitudRQModeloDTO oSolicitudRQModeloDTO, string IdSociedad, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -47,11 +47,11 @@ namespace DAO
         }
 
 
-        public List<SolicitudRQModeloDTO> ObtenerDatosxID(int IdSolicitudRQModelo, string IdSociedad)
+        public List<SolicitudRQModeloDTO> ObtenerDatosxID(int IdSolicitudRQModelo, string IdSociedad, string BaseDatos)
         {
             List<SolicitudRQModeloDTO> lstSolicitudRQModeloDTO = new List<SolicitudRQModeloDTO>();
 
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {

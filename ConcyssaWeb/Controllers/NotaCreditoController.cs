@@ -20,8 +20,9 @@ namespace ConcyssaWeb.Controllers
             OrpcDAO oOrpcDAO = new OrpcDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             DataTableDTO oDataTableDTO = new DataTableDTO();
-            List<OrpcDTO> lstOrpcDTO = oOrpcDAO.ObtenerORPCxEstado(IdBase,IdSociedad, ref mensaje_error, EstadoORPC, IdUsuario);
+            List<OrpcDTO> lstOrpcDTO = oOrpcDAO.ObtenerORPCxEstado(IdBase,IdSociedad,BaseDatos,ref mensaje_error, EstadoORPC, IdUsuario);
             if (lstOrpcDTO.Count >= 0 && mensaje_error.Length == 0)
             {
                 oDataTableDTO.sEcho = 1;
@@ -45,8 +46,9 @@ namespace ConcyssaWeb.Controllers
             string mensaje_error = "";
             OrpcDAO oOrpcDAO = new OrpcDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             DataTableDTO oDataTableDTO = new DataTableDTO();
-            List<ORPCDetalle> lstORPCDetalle = oOrpcDAO.ObtenerDetalleOrpc(IdORPC, ref mensaje_error);
+            List<ORPCDetalle> lstORPCDetalle = oOrpcDAO.ObtenerDetalleOrpc(IdORPC,BaseDatos,ref mensaje_error);
             if (lstORPCDetalle.Count > 0)
             {
                 //oDataTableDTO.sEcho = 1;
@@ -85,7 +87,8 @@ namespace ConcyssaWeb.Controllers
             oOrpcDTO.IdUsuario = IdUsuario;
             MovimientoDAO oMovimimientoDAO = new MovimientoDAO();
             OrpcDAO oOrpcDAO = new OrpcDAO();
-            int respuesta = oMovimimientoDAO.InsertUpdateMovimientoORPC(oOrpcDTO, ref mensaje_error);
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            int respuesta = oMovimimientoDAO.InsertUpdateMovimientoORPC(oOrpcDTO,BaseDatos,ref mensaje_error);
             int respuesta1 = 0;
             if (mensaje_error.Length > 0)
             {
@@ -96,10 +99,10 @@ namespace ConcyssaWeb.Controllers
                 for (int i = 0; i < oOrpcDTO.detalles.Count; i++)
                 {
                     oOrpcDTO.detalles[i].IdORPC = respuesta;
-                    respuesta1 = oMovimimientoDAO.InsertUpdateORPCDetalle(oOrpcDTO.detalles[i], ref mensaje_error);
-                    int respuesta2 = oMovimimientoDAO.InsertUpdateORPCDetalleCuadrilla(respuesta1, oOrpcDTO.detalles[i], ref mensaje_error);
+                    respuesta1 = oMovimimientoDAO.InsertUpdateORPCDetalle(oOrpcDTO.detalles[i],BaseDatos,ref mensaje_error);
+                    int respuesta2 = oMovimimientoDAO.InsertUpdateORPCDetalleCuadrilla(respuesta1, oOrpcDTO.detalles[i],BaseDatos,ref mensaje_error);
                 }
-                oOrpcDAO.UpdateTotalesORPC(respuesta, ref mensaje_error);
+                oOrpcDAO.UpdateTotalesORPC(respuesta,BaseDatos,ref mensaje_error);
                 if (oOrpcDTO.AnexoDetalle!=null)
                 {
                     for (int i = 0; i < oOrpcDTO.AnexoDetalle.Count; i++)
@@ -109,7 +112,7 @@ namespace ConcyssaWeb.Controllers
                         oOrpcDTO.AnexoDetalle[i].Tabla = "Orpc";
                         oOrpcDTO.AnexoDetalle[i].IdTabla = respuesta;
 
-                        oMovimimientoDAO.InsertAnexoMovimiento(oOrpcDTO.AnexoDetalle[i], ref mensaje_error);
+                        oMovimimientoDAO.InsertAnexoMovimiento(oOrpcDTO.AnexoDetalle[i],BaseDatos,ref mensaje_error);
                     }
                 }
                 
@@ -137,12 +140,13 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerDatosxIdOrpc(int IdOrpc)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             OrpcDAO oOrpcDAO = new OrpcDAO();
-            OrpcDTO oOrpcDTO = oOrpcDAO.ObtenerDatosxIdOrpc(IdOrpc, ref mensaje_error);
+            OrpcDTO oOrpcDTO = oOrpcDAO.ObtenerDatosxIdOrpc(IdOrpc,BaseDatos,ref mensaje_error);
             if (mensaje_error.ToString().Length == 0)
             {
                 List<ORPCDetalle> lstORPCDetalle = new List<ORPCDetalle>();
-                lstORPCDetalle = oOrpcDAO.ObtenerDetalleOrpc(IdOrpc, ref mensaje_error);
+                lstORPCDetalle = oOrpcDAO.ObtenerDetalleOrpc(IdOrpc,BaseDatos,ref mensaje_error);
                 oOrpcDTO.detalles = new ORPCDetalle[lstORPCDetalle.Count()];
                 for (int i = 0; i < lstORPCDetalle.Count; i++)
                 {
@@ -151,7 +155,7 @@ namespace ConcyssaWeb.Controllers
 
 
                 List<AnexoDTO> lstAnexoDTO = new List<AnexoDTO>();
-                lstAnexoDTO = oOrpcDAO.ObtenerAnexoOrpc(IdOrpc, ref mensaje_error);
+                lstAnexoDTO = oOrpcDAO.ObtenerAnexoOrpc(IdOrpc,BaseDatos,ref mensaje_error);
                 oOrpcDTO.AnexoDetalle = new AnexoDTO[lstAnexoDTO.Count()];
                 for (int i = 0; i < lstAnexoDTO.Count; i++)
                 {
@@ -255,9 +259,10 @@ namespace ConcyssaWeb.Controllers
         {
 
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             OrpcDAO OOrpcDAO = new OrpcDAO();
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
-            int respuesta = OOrpcDAO.UpdateORPC(IdUsuario, oOrpcDTO, ref mensaje_error);
+            int respuesta = OOrpcDAO.UpdateORPC(IdUsuario, oOrpcDTO,BaseDatos,ref mensaje_error);
 
             if (mensaje_error.Length > 0)
             {
@@ -280,9 +285,10 @@ namespace ConcyssaWeb.Controllers
         {
 
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             OrpcDAO oOrpcDAO = new OrpcDAO();
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
-            int respuesta = oOrpcDAO.UpdateCuadrillas(oORPCDetalle, ref mensaje_error);
+            int respuesta = oOrpcDAO.UpdateCuadrillas(oORPCDetalle,BaseDatos,ref mensaje_error);
 
             if (mensaje_error.Length > 0)
             {
@@ -304,8 +310,9 @@ namespace ConcyssaWeb.Controllers
         public string ValidarStockParaNotaCredito(int IdArticulo, int IdAlmacen, int Cantidad)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             OrpcDAO oOrpcDAO = new OrpcDAO();      
-            string respuesta = oOrpcDAO.ValidarStockParaNotaCredito(IdArticulo, IdAlmacen, Cantidad, ref mensaje_error);
+            string respuesta = oOrpcDAO.ValidarStockParaNotaCredito(IdArticulo, IdAlmacen, Cantidad,BaseDatos,ref mensaje_error);
 
             if (mensaje_error.Length > 0)
             {
@@ -320,8 +327,9 @@ namespace ConcyssaWeb.Controllers
         public string AccionesPorNotaCredito(string TablaOrigen, string IdOrigen, int IdORPC)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             OrpcDAO oOrpcDAO = new OrpcDAO();
-            string respuesta = oOrpcDAO.AccionesPorNotaCredito(TablaOrigen, IdOrigen, IdORPC, ref mensaje_error);
+            string respuesta = oOrpcDAO.AccionesPorNotaCredito(TablaOrigen, IdOrigen, IdORPC,BaseDatos,ref mensaje_error);
 
             if (mensaje_error.Length > 0)
             {
@@ -336,8 +344,9 @@ namespace ConcyssaWeb.Controllers
         public string ExtornarORPC(int IdORPC, string TipoProducto, int IdOrigen)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             OrpcDAO oOrpcDAO = new OrpcDAO();
-            string respuesta = oOrpcDAO.ExtornarORPC(IdORPC, TipoProducto, IdOrigen, ref mensaje_error);
+            string respuesta = oOrpcDAO.ExtornarORPC(IdORPC, TipoProducto, IdOrigen,BaseDatos,ref mensaje_error);
 
             if (mensaje_error.Length > 0)
             {
@@ -348,6 +357,14 @@ namespace ConcyssaWeb.Controllers
                 return respuesta;
             }
 
+        }
+
+        public int ValidarOrigenDevolucion(int IdORPC)
+        {
+            OrpcDAO oOrpcDAO = new OrpcDAO();
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            int respuesta = oOrpcDAO.ExtornarOrigenDevProv(IdORPC,BaseDatos);
+            return respuesta;
         }
     }
 }

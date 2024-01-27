@@ -17,7 +17,8 @@ namespace ConcyssaWeb.Controllers
         {
             EstadosDAO oMonedaDAO = new EstadosDAO();
             string message = "";
-            List<EstadosDTO> lstMonedaDTO = oMonedaDAO.ObtenerEstados(Modulo, ref message);
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            List<EstadosDTO> lstMonedaDTO = oMonedaDAO.ObtenerEstados(Modulo,BaseDatos, ref message);
             if (lstMonedaDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstMonedaDTO);
@@ -31,8 +32,9 @@ namespace ConcyssaWeb.Controllers
         {
             EstadosDAO oMonedaDAO = new EstadosDAO();
             string message = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             int idUsurio= Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
-            List<EstadosDTO> lstMonedaDTO = oMonedaDAO.ObtenerEstadosUsuario(IdGiro, idUsurio, ref message);
+            List<EstadosDTO> lstMonedaDTO = oMonedaDAO.ObtenerEstadosUsuario(IdGiro, idUsurio,BaseDatos, ref message);
             if (lstMonedaDTO.Count > 0 || message=="" )
             {
                 return JsonConvert.SerializeObject(lstMonedaDTO);
@@ -46,8 +48,9 @@ namespace ConcyssaWeb.Controllers
         {
             EstadosDAO oMonedaDAO = new EstadosDAO();
             string message = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             int idUsurio = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
-            List<EstadosDTO> lstMonedaDTO = oMonedaDAO.ObtenerEstadoUsuario( idUsurio, ref message);
+            List<EstadosDTO> lstMonedaDTO = oMonedaDAO.ObtenerEstadoUsuario( idUsurio,BaseDatos, ref message);
             if (lstMonedaDTO.Count > 0 )
             {
                 return JsonConvert.SerializeObject(lstMonedaDTO[0]);

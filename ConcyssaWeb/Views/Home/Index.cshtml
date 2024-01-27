@@ -100,7 +100,8 @@
                                                     <tr class="primary">
                                                         <th>#</th>
                                                         <th>NOMBRE SOCIEDAD</th>
-                                                        <th>NOMBRE BASE DE DATOS</th>
+                                                        <th>NOMBRE BD</th>
+                                              @*          <th>NOMBRE BASE DE DATOS</th>*@
                                                     </tr>
                                                 </thead>
                                                 <tbody id="tbodyDetalle">
@@ -139,6 +140,9 @@
         <!-- -------------- /Main Wrapper -------------- -->
 
     </div>
+    @{
+        Random rnd = new Random();
+    }
     <!-- -------------- /Body Wrap  -------------- -->
     <!-- -------------- Scripts -------------- -->
     <!-- initUrlPages-->
@@ -154,7 +158,7 @@
     <script src="~/assets/js/utility/utility.js"></script>
     <script src="~/assets/js/demo/demo.js"></script>
     <script src="~/assets/js/main.js"></script>
-    <script src="~/Scripts/Login.js"></script>
+    <script src="~/Scripts/Login.js?v=@rnd.Next(1, 1000 + 1)"></script>
     @*<script src="~/scripts/General.js"></script>*@
 
     <!-- -------------- Page JS -------------- -->

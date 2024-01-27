@@ -22,5 +22,6 @@ namespace DTO
         public bool Estado { get; set; }
         public bool Eliminado { get; set; }
         public int IdObra { get; set; }
+        public string CorreoAlmacen { get; set; }
     }
 }

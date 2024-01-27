@@ -10,10 +10,10 @@ namespace DAO
     public class ModeloAutorizacionDAO
     {
 
-        public List<ModeloAutorizacionDTO> ObtenerModeloAutorizacion(string IdSociedad)
+        public List<ModeloAutorizacionDTO> ObtenerModeloAutorizacion(string IdSociedad, string BaseDatos)
         {
             List<ModeloAutorizacionDTO> lstModeloAutorizacionDTO = new List<ModeloAutorizacionDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -45,13 +45,13 @@ namespace DAO
 
 
 
-        public int UpdateInsertModeloAutorizacion(ModeloAutorizacionDTO oModeloAutorizacionDTO, string IdSociedad)
+        public int UpdateInsertModeloAutorizacion(ModeloAutorizacionDTO oModeloAutorizacionDTO, string IdSociedad, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -135,11 +135,11 @@ namespace DAO
 
 
 
-        public List<ModeloAutorizacionDTO> ObtenerDatosxID(int IdModeloAutorizacion)
+        public List<ModeloAutorizacionDTO> ObtenerDatosxID(int IdModeloAutorizacion, string BaseDatos)
         {
             List<ModeloAutorizacionDTO> lstModeloAutorizacionDTO = new List<ModeloAutorizacionDTO>();
             ModeloAutorizacionDTO oModeloAutorizacionDTO = new ModeloAutorizacionDTO();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -167,7 +167,7 @@ namespace DAO
 
             //autor
             Int32 filasdetalle = 0;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -187,7 +187,7 @@ namespace DAO
             }
 
             oModeloAutorizacionDTO.DetallesAutor = new ModeloAutorizacionAutorDTO[filasdetalle];
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -218,7 +218,7 @@ namespace DAO
 
             //etapas
             Int32 filasdetalleEtapas = 0;
-            using (SqlConnection cn1 = new Conexion().conectar())
+            using (SqlConnection cn1 = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -238,7 +238,7 @@ namespace DAO
             }
 
             oModeloAutorizacionDTO.DetallesEtapa = new ModeloAutorizacionEtapaDTO[filasdetalleEtapas];
-            using (SqlConnection cn1 = new Conexion().conectar())
+            using (SqlConnection cn1 = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -273,7 +273,7 @@ namespace DAO
 
             //documentos
             Int32 filasdetalleDocumentos = 0;
-            using (SqlConnection cn2 = new Conexion().conectar())
+            using (SqlConnection cn2 = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -293,7 +293,7 @@ namespace DAO
             }
 
             oModeloAutorizacionDTO.DetallesDocumento = new ModeloAutorizacionDocumentoDTO[filasdetalleDocumentos];
-            using (SqlConnection cn2 = new Conexion().conectar())
+            using (SqlConnection cn2 = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -326,7 +326,7 @@ namespace DAO
 
             //condiciones
             Int32 filasdetalleCondiciones = 0;
-            using (SqlConnection cn2 = new Conexion().conectar())
+            using (SqlConnection cn2 = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -346,7 +346,7 @@ namespace DAO
             }
 
             oModeloAutorizacionDTO.DetallesCondicion = new ModeloAutorizacionCondicionDTO[filasdetalleCondiciones];
-            using (SqlConnection cn2 = new Conexion().conectar())
+            using (SqlConnection cn2 = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -386,13 +386,13 @@ namespace DAO
 
 
 
-        public int EliminarModeloAutorizacionDetalleEtapa(int IdModeloAutorizacionEtapa)
+        public int EliminarModeloAutorizacionDetalleEtapa(int IdModeloAutorizacionEtapa, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -415,13 +415,13 @@ namespace DAO
         }
 
 
-        public int EliminarModeloAutorizacionDetalleCondicion(int IdModeloAutorizacionCondicion)
+        public int EliminarModeloAutorizacionDetalleCondicion(int IdModeloAutorizacionCondicion, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -444,13 +444,13 @@ namespace DAO
         }
 
 
-        public int EliminarModeloAutorizacionDetalleAutor(int IdModeloAutorizacionAutor)
+        public int EliminarModeloAutorizacionDetalleAutor(int IdModeloAutorizacionAutor, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -474,10 +474,10 @@ namespace DAO
 
 
 
-        public List<ModeloAutorizacionDTO> VerificarExisteModeloSolicitud(int IdSociedad,int IdDocumento)
+        public List<ModeloAutorizacionDTO> VerificarExisteModeloSolicitud(int IdSociedad,int IdDocumento, string BaseDatos)
         {
             List<ModeloAutorizacionDTO> lstModeloAutorizacionDTO = new List<ModeloAutorizacionDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -753,10 +753,10 @@ namespace DAO
 
 
 
-        public List<ResultadoCondicionDTO> ObtenerResultadoCondicion(string Procedimiento, int IdSolicitud,int IdDocumento)
+        public List<ResultadoCondicionDTO> ObtenerResultadoCondicion(string Procedimiento, int IdSolicitud,int IdDocumento, string BaseDatos)
         {
             List<ResultadoCondicionDTO> lstResultadoCondicionDTO = new List<ResultadoCondicionDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -792,13 +792,13 @@ namespace DAO
 
 
         
-        public int EliminarModeloAutorizacion(int IdModeloAutorizacion)
+        public int EliminarModeloAutorizacion(int IdModeloAutorizacion, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -822,7 +822,38 @@ namespace DAO
 
 
 
+        public List<ModeloAutorizacionDTO> ValidarAutoresxTipoDocumento(int IdAutor, int IdTipoDocumento, string BaseDatos)
+        {
+            List<ModeloAutorizacionDTO> lstModeloAutorizacionDTO = new List<ModeloAutorizacionDTO>();
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ValidarAutoresModeloxDocumento", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdAutor", (IdAutor));
+                    da.SelectCommand.Parameters.AddWithValue("@IdDocumento", (IdTipoDocumento));
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        ModeloAutorizacionDTO oModeloAutorizacionDTO = new ModeloAutorizacionDTO();
+                        oModeloAutorizacionDTO.IdModeloAutorizacion = int.Parse(drd["Id"].ToString());
+                        oModeloAutorizacionDTO.NombreModelo = drd["NombreModelo"].ToString();
+                        oModeloAutorizacionDTO.DescripcionModelo = drd["DescripcionModelo"].ToString();
+                        oModeloAutorizacionDTO.Estado = bool.Parse(drd["Estado"].ToString());
+                        lstModeloAutorizacionDTO.Add(oModeloAutorizacionDTO);
+                    }
+                    drd.Close();
 
+
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            return lstModeloAutorizacionDTO;
+        }
 
 
     }

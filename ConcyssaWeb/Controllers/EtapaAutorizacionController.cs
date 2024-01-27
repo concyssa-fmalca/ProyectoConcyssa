@@ -21,10 +21,10 @@ namespace ConcyssaWeb.Controllers
             //    return valida;
             //}
 
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             EtapaAutorizacionDAO oEtapaAutorizacionDAO = new EtapaAutorizacionDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<EtapaAutorizacionDTO> lstEtapaAutorizacionDTO = oEtapaAutorizacionDAO.ObtenerEtapaAutorizacion(IdSociedad.ToString());
+            List<EtapaAutorizacionDTO> lstEtapaAutorizacionDTO = oEtapaAutorizacionDAO.ObtenerEtapaAutorizacion(IdSociedad.ToString(),BaseDatos);
             if (lstEtapaAutorizacionDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstEtapaAutorizacionDTO);
@@ -43,11 +43,11 @@ namespace ConcyssaWeb.Controllers
             //{
             //    return valida;
             //}
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
 
             EtapaAutorizacionDAO oEtapaAutorizacionDAO = new EtapaAutorizacionDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            int resultado = oEtapaAutorizacionDAO.UpdateInsertEtapaAutorizacion(etapaAutorizacionDTO, IdSociedad.ToString());
+            int resultado = oEtapaAutorizacionDAO.UpdateInsertEtapaAutorizacion(etapaAutorizacionDTO, IdSociedad.ToString(),BaseDatos);
             if (resultado != 0)
             {
                 resultado = 1;
@@ -68,7 +68,8 @@ namespace ConcyssaWeb.Controllers
 
 
             EtapaAutorizacionDAO oEtapaAutorizacionDAO = new EtapaAutorizacionDAO();
-            List<EtapaAutorizacionDTO> lstEtapaAutorizacionDTO = oEtapaAutorizacionDAO.ObtenerDatosxID(IdEtapaAutorizacion);
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            List<EtapaAutorizacionDTO> lstEtapaAutorizacionDTO = oEtapaAutorizacionDAO.ObtenerDatosxID(IdEtapaAutorizacion,BaseDatos);
 
             if (lstEtapaAutorizacionDTO.Count > 0)
             {
@@ -89,10 +90,10 @@ namespace ConcyssaWeb.Controllers
             {
                 return valida;
             }
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
 
             EtapaAutorizacionDAO oEtapaAutorizacionDAO = new EtapaAutorizacionDAO();
-            int resultado = oEtapaAutorizacionDAO.Delete(IdEtapaAutorizacion);
+            int resultado = oEtapaAutorizacionDAO.Delete(IdEtapaAutorizacion,BaseDatos);
             if (resultado == 0)
             {
                 resultado = 1;
@@ -110,10 +111,10 @@ namespace ConcyssaWeb.Controllers
             {
                 return valida;
             }
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
 
             EtapaAutorizacionDAO oEtapaAutorizacionDAO = new EtapaAutorizacionDAO();
-            int resultado = oEtapaAutorizacionDAO.EliminarDetalleAutorizacion(IdEtapaAutorizacionDetalle);
+            int resultado = oEtapaAutorizacionDAO.EliminarDetalleAutorizacion(IdEtapaAutorizacionDetalle,BaseDatos);
             if (resultado == 0)
             {
                 resultado = 1;

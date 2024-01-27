@@ -7,10 +7,10 @@ namespace DAO
 {
     public class OrpcDAO
     {
-        public OrpcDTO ObtenerDatosxIdOrpc(int IdOrpc, ref string mensaje_error)
+        public OrpcDTO ObtenerDatosxIdOrpc(int IdOrpc, string BaseDatos, ref string mensaje_error)
         {
             OrpcDTO oOrpcDTO = new OrpcDTO();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -85,10 +85,10 @@ namespace DAO
             }
             return oOrpcDTO;
         }
-        public List<OrpcDTO> ObtenerORPCxEstado(int IdBase,int IdSociedad, ref string mensaje_error, string EstadoORPC,int IdUsuario=0)
+        public List<OrpcDTO> ObtenerORPCxEstado(int IdBase,int IdSociedad, string BaseDatos, ref string mensaje_error, string EstadoORPC,int IdUsuario=0)
         {
             List<OrpcDTO> lstOrpcDTO = new List<OrpcDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -160,10 +160,10 @@ namespace DAO
         }
 
 
-        public List<ORPCDetalle> ObtenerDetalleOrpc(int IdORPC, ref string mensaje_error)
+        public List<ORPCDetalle> ObtenerDetalleOrpc(int IdORPC, string BaseDatos, ref string mensaje_error)
         {
             List<ORPCDetalle> lstORPCDetalle = new List<ORPCDetalle>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -217,13 +217,13 @@ namespace DAO
 
 
 
-        public int UpdateTotalesORPC(int IdORPC, ref string mensaje_error)
+        public int UpdateTotalesORPC(int IdORPC, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -246,10 +246,10 @@ namespace DAO
             }
         }
 
-        public List<AnexoDTO> ObtenerAnexoOrpc(int IdOrpc, ref string mensaje_error)
+        public List<AnexoDTO> ObtenerAnexoOrpc(int IdOrpc, string BaseDatos, ref string mensaje_error)
         {
             List<AnexoDTO> lstAnexoDTO = new List<AnexoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -280,13 +280,13 @@ namespace DAO
 
 
         }
-        public int UpdateORPC(int IdUsuario, OrpcDTO OrpcDTO, ref string mensaje_error)
+        public int UpdateORPC(int IdUsuario, OrpcDTO OrpcDTO, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -321,13 +321,13 @@ namespace DAO
             }
         }
 
-        public int UpdateCuadrillas(ORPCDetalle oORPCDetalle, ref string mensaje_error)
+        public int UpdateCuadrillas(ORPCDetalle oORPCDetalle, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -354,10 +354,10 @@ namespace DAO
             }
         }
 
-        public string ValidarStockParaNotaCredito(int IdArticulo,int IdAlmacen,int Cantidad, ref string mensaje_error)
+        public string ValidarStockParaNotaCredito(int IdArticulo,int IdAlmacen,int Cantidad, string BaseDatos, ref string mensaje_error)
         {
             string RespuestaStock = "";
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -383,13 +383,13 @@ namespace DAO
             }
             return RespuestaStock;
         }
-        public string AccionesPorNotaCredito(string TablaOrigen, string IdOrigen, int IdORPC, ref string mensaje_error)
+        public string AccionesPorNotaCredito(string TablaOrigen, string IdOrigen, int IdORPC, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -415,13 +415,13 @@ namespace DAO
                 }
             }
         }
-        public string ExtornarORPC(int IdORPC, string TipoProducto, int IdOrigen, ref string mensaje_error)
+        public string ExtornarORPC(int IdORPC, string TipoProducto, int IdOrigen, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -447,6 +447,37 @@ namespace DAO
                 }
             }
         }
+        public int ExtornarOrigenDevProv(int IdORPC, string BaseDatos)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_ExtornarOrigenDevProv", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdORPC", IdORPC);
+
+
+                        int rpta = da.SelectCommand.ExecuteNonQuery();
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+
+                        return 0;
+                    }
+                }
+            }
+        }
+
 
     }
 }

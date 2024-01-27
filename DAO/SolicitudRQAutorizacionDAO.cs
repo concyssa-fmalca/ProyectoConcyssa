@@ -9,10 +9,10 @@ namespace DAO
     public class SolicitudRQAutorizacionDAO
     {
 
-        public int ValidarSipuedeAprobar(int IdSolicitudRQ, int IdEtapa)
+        public int ValidarSipuedeAprobar(int IdSolicitudRQ, int IdEtapa, string BaseDatos)
         {
             int puedeentrar = 0;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -39,10 +39,10 @@ namespace DAO
 
 
 
-        public int ValidarSipuedeAprobarDetalle(int IdSolicitudRQ, int IdEtapa,int IdDetalle)
+        public int ValidarSipuedeAprobarDetalle(int IdSolicitudRQ, int IdEtapa,int IdDetalle, string BaseDatos)
         {
             int puedeentrar = 0;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -69,10 +69,10 @@ namespace DAO
         }
 
 
-        public List<SolicitudRQAutorizacionDTO> ObtenerSolicitudesxAutorizar(string IdUsuario, string IdSociedad, string FechaInicio, string FechaFinal, int Estado)
+        public List<SolicitudRQAutorizacionDTO> ObtenerSolicitudesxAutorizar(string IdUsuario, string IdSociedad, string FechaInicio, string FechaFinal, int Estado, string BaseDatos)
         {
             List<SolicitudRQAutorizacionDTO> lstSolicitudRQAutorizacionDTO = new List<SolicitudRQAutorizacionDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -128,10 +128,10 @@ namespace DAO
 
 
         
-        public List<DetalleSolicitudRqAprobacionDTO> ObtenerSolicitudesxAutorizarDetalle(string IdUsuario, string IdSociedad, string FechaInicio, string FechaFinal, int Estado)
+        public List<DetalleSolicitudRqAprobacionDTO> ObtenerSolicitudesxAutorizarDetalle(string IdUsuario, string IdSociedad, string FechaInicio, string FechaFinal, int Estado, string BaseDatos)
         {
             List<DetalleSolicitudRqAprobacionDTO> lstDetalleSolicitudRqAprobacionDTO = new List<DetalleSolicitudRqAprobacionDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -151,7 +151,7 @@ namespace DAO
                     while (drd.Read())
                     {
                         aprobar = 0;
-                        aprobar = ValidarSipuedeAprobarDetalle(Convert.ToInt32(drd["IdSolicitud"].ToString()), Convert.ToInt32(drd["IdEtapa"].ToString()), Convert.ToInt32(drd["IdSolicitudRQDetalle"].ToString()));
+                        aprobar = ValidarSipuedeAprobarDetalle(Convert.ToInt32(drd["IdSolicitud"].ToString()), Convert.ToInt32(drd["IdEtapa"].ToString()), Convert.ToInt32(drd["IdSolicitudRQDetalle"].ToString()),BaseDatos);
                         if (aprobar==1)
                         {
                             DetalleSolicitudRqAprobacionDTO oDetalleSolicitudRqAprobacionDTO = new DetalleSolicitudRqAprobacionDTO();
@@ -195,13 +195,13 @@ namespace DAO
         }
 
 
-        public int PasarPendiente(int IdSolicitud)
+        public int PasarPendiente(int IdSolicitud, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -227,7 +227,7 @@ namespace DAO
         //public bool ValidarGuardoAprobacionesDetalle(int IdSolicitud)
         //{
         //    int datos = 0;
-        //    using (SqlConnection cn = new Conexion().conectar())
+        //    using (SqlConnection cn = new Conexion().conectar(BaseDatos))
         //    {
         //        try
         //        {

@@ -239,8 +239,8 @@ function AgregarLinea() {
     tr += `<tr>
             <td><input style="display:none;" class="form-control" type="text" value="0" id="txtIdModeloAutorizacionAutor" name="txtIdModeloAutorizacionAutor[]"/></td>
            <td>
-            <select class="form-control" name="cboUsuario[]" id="cboUsuario`+ contador + `"  onchange="ObtenerDepartamentoUsuario(` + contador + `)" >`;
-    tr += `  <option value="0">Seleccione</option>`;
+            <select class="form-control" name="cboUsuario[]" id="cboUsuario`+ contador + `"  onchange="validacionesAutor(this) ;ObtenerDepartamentoUsuario(` + contador + `);" >`;
+    tr += `  <option value="0">Seleccione</option>`
     for (var i = 0; i < Usuarios.length; i++) {
         tr += `  <option value="` + Usuarios[i].IdUsuario + `">` + Usuarios[i].Nombre + `</option>`;
     }
@@ -306,7 +306,7 @@ function AgregarLineaCondiciones() {
     tr += `<tr>
             <td><input style="display:none;" class="form-control" type="text" value="0" id="txtIdModeloAutorizacionCondicion" name="txtIdModeloAutorizacionCondicion[]"/></td>
            <td>
-            <input class="form-control" type="text" id="txtCondicion" name="txtCondicion[]"/>
+            <input class="form-control" type="text" id="txtCondicion" value="SMC_Validaciones" name="txtCondicion[]"/>
             </td>
             <td><button class="btn btn-xs btn-danger borrar">-</button></td>
             </tr>`;
@@ -726,7 +726,10 @@ function eliminar(IdModelo) {
 
             if (data == "0") {
                 swal("Error!", "No se puede eliminar modelo de autorizacion")
-            } else {
+            } else if (data == "2") {
+                swal("Error!", "Hay Documentos con este modelo pendientes de aprobacion")
+            }
+            else {
                 swal("Exito!", "Se elimino correctamente");
                 table.destroy();
                 ConsultaServidor("ObtenerModeloAutorizacion");
@@ -735,4 +738,36 @@ function eliminar(IdModelo) {
         });
 
     }, function () { });
+}
+
+
+function validacionesAutor(elemento) {
+
+
+    let chkRQ = $("#chkSolicitudCompra").prop("checked")
+    let chkDespacho = $("#chkSolicitudDespacho").prop("checked")
+    let chkGiro = $("#chkSolicitudGiro").prop("checked")
+
+    if (chkRQ == false && chkDespacho == false && chkGiro == false) {
+        Swal.fire("Espere", "Debe seleccionar primero una opción en la Pestaña de Documentos", "info");
+        $(elemento).val(0)
+        return
+    }
+
+    let IdAutor = $(elemento).val()
+
+    let IdTipoDoc;
+
+    if (chkRQ) IdTipoDoc=1
+    if (chkGiro) IdTipoDoc=2
+    if (chkDespacho) IdTipoDoc=3
+
+    $.post("ValidarAutoresxTipoDocumento", { 'IdAutor': IdAutor, 'IdTipoDocumento': IdTipoDoc }, function (data, status) {
+
+        if (data != "ok") {
+            Swal.fire("Error", data, "info")
+            $(elemento).val(0)
+        }
+    });
+
 }

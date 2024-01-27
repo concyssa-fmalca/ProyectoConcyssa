@@ -12,10 +12,10 @@ namespace DAO
 {
     public  class CodigoUbsoDAO
     {
-        public List<CodigoUbsoDTO> ObtenerCodigoUbso(int IdSociedad, ref string mensaje_error, int Estado = 3)
+        public List<CodigoUbsoDTO> ObtenerCodigoUbso(int IdSociedad, string BaseDatos, ref string mensaje_error, int Estado = 3)
         {
             List<CodigoUbsoDTO> lstCodigoUbsoDTO = new List<CodigoUbsoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -47,13 +47,13 @@ namespace DAO
             return lstCodigoUbsoDTO;
         }
         
-        public int UpdateInsertCodigoUbso(CodigoUbsoDTO oCodigoUbsoDTO, ref string mensaje_error,int IdUsuario)
+        public int UpdateInsertCodigoUbso(CodigoUbsoDTO oCodigoUbsoDTO, string BaseDatos, ref string mensaje_error,int IdUsuario)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -82,10 +82,10 @@ namespace DAO
             }
         }
 
-        public List<CodigoUbsoDTO> ObtenerDatosxID(int IdCodigoUbso,ref string mensaje_error)
+        public List<CodigoUbsoDTO> ObtenerDatosxID(int IdCodigoUbso,string BaseDatos, ref string mensaje_error)
         {
             List<CodigoUbsoDTO> lstCodigoUbsoDTO = new List<CodigoUbsoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -117,13 +117,13 @@ namespace DAO
         }
 
 
-        public string Delete(int IdCodigoUbso, ref string mensaje_error)
+        public string Delete(int IdCodigoUbso, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {

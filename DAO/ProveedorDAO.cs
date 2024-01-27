@@ -8,10 +8,10 @@ namespace DAO
 {
     public class ProveedorDAO
     {
-        public List<ProveedorDTO> ObtenerProveedores(string IdSociedad)
+        public List<ProveedorDTO> ObtenerProveedores(string IdSociedad,string BaseDatos)
         {
             List<ProveedorDTO> lstProveedorDTO = new List<ProveedorDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -63,13 +63,13 @@ namespace DAO
             return lstProveedorDTO;
         }
 
-        public int UpdateInsertProveedor(ProveedorDTO proveedorDTO, string IdSociedad)
+        public int UpdateInsertProveedor(ProveedorDTO proveedorDTO, string IdSociedad, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -124,11 +124,11 @@ namespace DAO
         }
 
 
-        public ProveedorDTO ObtenerDatosxIDNuevo(int IdProveedor)
+        public ProveedorDTO ObtenerDatosxIDNuevo(int IdProveedor, string BaseDatos)
         {
             string mensaje_error = "";
             ProveedorDTO oProveedorDTO = new ProveedorDTO();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -180,7 +180,7 @@ namespace DAO
             }
             #region AnexoDetalle
             Int32 filasdetalleAnexo = 0;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -200,7 +200,7 @@ namespace DAO
                 }
             }
             oProveedorDTO.AnexoDetalle = new AnexoDTO[filasdetalleAnexo];
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -232,10 +232,10 @@ namespace DAO
 
             return oProveedorDTO;
         }
-        public List<ProveedorDTO> ObtenerDatosxID(int IdProveedor)
+        public List<ProveedorDTO> ObtenerDatosxID(int IdProveedor, string BaseDatos)
         {
             List<ProveedorDTO> lstProveedorDTO = new List<ProveedorDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -290,13 +290,13 @@ namespace DAO
         }
 
 
-        public int Delete(int IdProveedor)
+        public int Delete(int IdProveedor, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -318,13 +318,13 @@ namespace DAO
             }
         }
 
-        public int DeleteAnexo(int IdAnexo)
+        public int DeleteAnexo(int IdAnexo, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -345,13 +345,13 @@ namespace DAO
                 }
             }
         }
-        public int InsertRubroProveedor_X_Provedor(RubroXProveedorDTO oRubroXProveedorDTO, int IdUsuario)
+        public int InsertRubroProveedor_X_Provedor(RubroXProveedorDTO oRubroXProveedorDTO, int IdUsuario, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -375,10 +375,10 @@ namespace DAO
                 }
             }
         }
-        public List<RubroXProveedorDTO>ListarRubroProveedor_X_Provedor(int IdProveedor, ref string mensaje_error)
+        public List<RubroXProveedorDTO>ListarRubroProveedor_X_Provedor(int IdProveedor, string BaseDatos, ref string mensaje_error)
         {
             List<RubroXProveedorDTO> lstRubroXProveedorDTO = new List<RubroXProveedorDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -408,13 +408,13 @@ namespace DAO
             }
             return lstRubroXProveedorDTO;
         }
-        public int EliminarRubroProveedor_X_Provedor(int Id,int IdUsuario)
+        public int EliminarRubroProveedor_X_Provedor(int Id,int IdUsuario, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -436,13 +436,13 @@ namespace DAO
                 }
             }
         }
-        public int UpdateCondicionPagoProveedor(ProveedorDTO proveedorDTO)
+        public int UpdateCondicionPagoProveedor(ProveedorDTO proveedorDTO, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -466,5 +466,42 @@ namespace DAO
                 }
             }
         }
+
+
+        public List<ProveedorDTO> ObtenerProveedorxNroDoc(string NroDoc, string BaseDatos)
+        {
+            List<ProveedorDTO> lstProveedorDTO = new List<ProveedorDTO>();
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerProveedorxNumDoc", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@NroDoc", NroDoc);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        ProveedorDTO oProveedorDTO = new ProveedorDTO();
+                        oProveedorDTO.IdProveedor = int.Parse(drd["Id"].ToString());
+                        oProveedorDTO.CodigoCliente = drd["CodigoCliente"].ToString();
+                        oProveedorDTO.TipoDocumento = int.Parse(drd["TipoDocumento"].ToString());
+                        oProveedorDTO.NumeroDocumento = drd["NumeroDocumento"].ToString();
+                        oProveedorDTO.RazonSocial = drd["RazonSocial"].ToString();
+                        oProveedorDTO.CondicionPago = int.Parse(drd["CondicionPago"].ToString());
+                        oProveedorDTO.DiasEntrega = int.Parse(drd["DiasEntrega"].ToString());
+                        lstProveedorDTO.Add(oProveedorDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            return lstProveedorDTO;
+        }
+
     }
 }

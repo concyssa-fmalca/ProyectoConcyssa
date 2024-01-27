@@ -28,9 +28,10 @@ namespace ConcyssaWeb.Controllers
         public string ListarInventarioxAlmacen(int IdAlmacen, DateTime FechaInicio, DateTime FechaTermino)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             KardexDAO oKardexDAO = new KardexDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<ArticuloStockDTO> lstArticuloStockDTO = oKardexDAO.ObtenerStockxAlmacen(IdAlmacen, ref mensaje_error);
+            List<ArticuloStockDTO> lstArticuloStockDTO = oKardexDAO.ObtenerStockxAlmacen(IdAlmacen,BaseDatos,ref mensaje_error);
 
             DataTableDTO oDataTableDTO = new DataTableDTO();
             if (lstArticuloStockDTO.Count > 0)
@@ -50,8 +51,12 @@ namespace ConcyssaWeb.Controllers
             return "error";
         }
 
-        public string GenerarReporteStockMinimo(string NombreReporte, string Formato, int IdAlmacen)
+        public string GenerarReporteStockMinimo(string NombreReporte, string Formato, int IdAlmacen, string BaseDatos)
         {
+            if (BaseDatos == "" || BaseDatos == null)
+            {
+                BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            }
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
             HttpWebRequest request;
@@ -69,7 +74,7 @@ namespace ConcyssaWeb.Controllers
 
             try
             {
-                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdAlmacen=" + IdAlmacen;
+                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdAlmacen=" + IdAlmacen + "&BaseDatos=" + BaseDatos;
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteStockMinimo";
                 cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteStockMinimo";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
@@ -125,8 +130,13 @@ namespace ConcyssaWeb.Controllers
 
             return "";
         }
-        public string GenerarReporteFacturaAlmacen(string NombreReporte, string Formato, int IdAlmacen, DateTime FechaInicio, DateTime FechaFin)
+        public string GenerarReporteFacturaAlmacen(string NombreReporte, string Formato, int IdAlmacen, DateTime FechaInicio, DateTime FechaFin, string BaseDatos)
         {
+            if (BaseDatos == "" || BaseDatos == null)
+            {
+                BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            }
+
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
             HttpWebRequest request;
@@ -146,7 +156,7 @@ namespace ConcyssaWeb.Controllers
 
             try
             {
-                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdAlmacen=" + IdAlmacen + "&FechaInicio=" + FechaInicio + "&FechaFin= "+FechaFin;
+                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdAlmacen=" + IdAlmacen + "&FechaInicio=" + FechaInicio + "&FechaFin= "+ FechaFin + "&BaseDatos=" + BaseDatos;
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteFacturaMueveStock";
                 cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteFacturaMueveStock";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);

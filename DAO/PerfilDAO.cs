@@ -12,11 +12,11 @@ namespace DAO
 {
     public class PerfilDAO
     {
-        public List<PerfilDTO> ObtenerPerfiles(int IdSociedad,ref string mensaje_error)
+        public List<PerfilDTO> ObtenerPerfiles(int IdSociedad,string BaseDatos, ref string mensaje_error)
         {
       
             List <PerfilDTO> lstPerfilDTO = new List<PerfilDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -46,13 +46,13 @@ namespace DAO
             return lstPerfilDTO;
         }
 
-        public int UpdateInsertPerfil(PerfilDTO oPerfilDTO)
+        public int UpdateInsertPerfil(PerfilDTO oPerfilDTO, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -78,10 +78,10 @@ namespace DAO
         }
 
 
-        public List<PerfilDTO> ObtenerDatosxID(int IdPerfil)
+        public List<PerfilDTO> ObtenerDatosxID(int IdPerfil, string BaseDatos)
         {
             List<PerfilDTO> lstPerfilDTO = new List<PerfilDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -109,13 +109,13 @@ namespace DAO
             return lstPerfilDTO;
         }
 
-        public int Delete(int IdPerfil)
+        public int Delete(int IdPerfil, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {

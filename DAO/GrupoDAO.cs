@@ -13,10 +13,10 @@ namespace DAO
     public class GrupoDAO
     {
 
-        public List<SubGrupoDTO> ObtenerSubGrupo(int IdSociedad, int IdGrupo, ref string mensaje_error, int Estado = 3)
+        public List<SubGrupoDTO> ObtenerSubGrupo(int IdSociedad, int IdGrupo, string BaseDatos, ref string mensaje_error, int Estado = 3)
         {
             List<SubGrupoDTO> lstSubGrupoDTO = new List<SubGrupoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -49,10 +49,10 @@ namespace DAO
             return lstSubGrupoDTO;
         }
 
-        public List<GrupoDTO> ObtenerGrupo(int IdSociedad, ref string mensaje_error, int Estado = 3)
+        public List<GrupoDTO> ObtenerGrupo(int IdSociedad, string BaseDatos, ref string mensaje_error, int Estado = 3)
         {
             List<GrupoDTO> lstGrupoDTO = new List<GrupoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -84,10 +84,10 @@ namespace DAO
             }
             return lstGrupoDTO;
         }
-        public List<GrupoDTO> ObtenerGrupoxObra(int IdObra, ref string mensaje_error)
+        public List<GrupoDTO> ObtenerGrupoxObra(int IdObra, string BaseDatos, ref string mensaje_error)
         {
             List<GrupoDTO> lstGrupoDTO = new List<GrupoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -119,10 +119,10 @@ namespace DAO
             }
             return lstGrupoDTO;
         }
-        public List<GrupoDTO> ObtenerGrupoxId(int IdGrupo, ref string mensaje_error)
+        public List<GrupoDTO> ObtenerGrupoxId(int IdGrupo, string BaseDatos, ref string mensaje_error)
         {
             List<GrupoDTO> lstGrupoDTO = new List<GrupoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -154,10 +154,10 @@ namespace DAO
             return lstGrupoDTO;
         }
 
-        public List<GrupoDTO> ObtenerDatosxID(int IdGrupo, ref string mensaje_error)
+        public List<GrupoDTO> ObtenerDatosxID(int IdGrupo, string BaseDatos, ref string mensaje_error)
         {
             List<GrupoDTO> lstGrupoDTO = new List<GrupoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -190,10 +190,10 @@ namespace DAO
         }
 
 
-        public List<SubGrupoDTO> ObtenerDatosxIdSubGrupo(int IdSubGrupo, ref string mensaje_error)
+        public List<SubGrupoDTO> ObtenerDatosxIdSubGrupo(int IdSubGrupo, string BaseDatos, ref string mensaje_error)
         {
             List<SubGrupoDTO> lstSubGrupoDTO = new List<SubGrupoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -226,13 +226,13 @@ namespace DAO
             return lstSubGrupoDTO;
         }
 
-        public int UpdateInsertGrupo(GrupoDTO oGrupoDTO, ref string mensaje_error)
+        public int UpdateInsertGrupo(GrupoDTO oGrupoDTO, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -260,13 +260,13 @@ namespace DAO
             }
         }
 
-        public int UpdateInsertSubGrupo(SubGrupoDTO oSubGrupoDTO, ref string mensaje_error)
+        public int UpdateInsertSubGrupo(SubGrupoDTO oSubGrupoDTO, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -293,13 +293,13 @@ namespace DAO
             }
         }
 
-        public int Delete(int IdGrupo)
+        public int Delete(int IdGrupo, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -321,13 +321,13 @@ namespace DAO
             }
         }
 
-        public int DeleteSubGrupo(int IdSubGrupo)
+        public int DeleteSubGrupo(int IdSubGrupo, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -351,10 +351,10 @@ namespace DAO
 
 
         
-        public List<SubGrupoDTO> ObtenerSubGruposxIdGrupo(int IdGrupo, ref string mensaje_error)
+        public List<SubGrupoDTO> ObtenerSubGruposxIdGrupo(int IdGrupo, string BaseDatos, ref string mensaje_error)
         {
             List<SubGrupoDTO> lstSubGrupoDTO = new List<SubGrupoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -383,10 +383,10 @@ namespace DAO
             }
             return lstSubGrupoDTO;
         }
-        public List<SubGrupoDTO> ObtenerSubGrupoxID(int IdSubGrupo, ref string mensaje_error)
+        public List<SubGrupoDTO> ObtenerSubGrupoxID(int IdSubGrupo, string BaseDatos, ref string mensaje_error)
         {
             List<SubGrupoDTO> lstSubGrupoDTO = new List<SubGrupoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {

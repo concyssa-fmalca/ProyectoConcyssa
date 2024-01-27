@@ -215,7 +215,7 @@ function ConsultaServidor() {
     let EstadoSolicitud = $("#EstadoFiltro").val()
     let SerieFiltro = $("#cboSeries").val()
     $.ajaxSetup({ async: false });
-    $.post('/DevolucionAdm/ObtenerDevolucionAdmAtender', { 'IdBase': IdBase, 'FechaInicio': FechaInicio, 'FechaFin': FechaFin, 'EstadoSolicitud': EstadoSolicitud, 'SerieFiltro': SerieFiltro }, function (data, status) {
+    $.post('/DevolucionAdm/ObtenerDevolucionAdmAtender', { 'IdBase': IdBase, 'FechaInicio': FechaInicio, 'FechaFin': FechaFin, 'EstadoDevolucion': EstadoSolicitud, 'SerieFiltro': SerieFiltro }, function (data, status) {
         if (data != 'error') {
             let SolicitudDespacho = JSON.parse(data);
             //console.log(SolicitudDespacho)
@@ -334,7 +334,7 @@ function ConsultaServidor() {
                                                     </table>
                                                 </div>
                                             <div class=row>`
-                if (SolicitudDespacho[i].EstadoSolicitud != 2) {
+                if (SolicitudDespacho[i].EstadoDevolucion != 2) {
                     InsertarHTML += `<button class="btn btn-primary" style="margin-top:0px" onclick="GenerarEntrada(` + i + `,` + SolicitudDespacho[i].Id + `,'` + SolicitudDespacho[i].SerieyNum + `',` + SolicitudDespacho[i].IdCuadrilla + `)">Crear Entrada</button>
                                                 <button class="btn btn-primary" style="margin-top:0px" onclick="CerrarSolicitud(`+ SolicitudDespacho[i].Id + `)">Cerrar Devolucion</button>`
 

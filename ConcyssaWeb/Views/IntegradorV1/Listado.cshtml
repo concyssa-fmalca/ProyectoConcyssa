@@ -89,7 +89,7 @@
                     <select class="form-control" id="cboObraFiltro"></select>
                 </div>
             </div>
-            <div class="col-xs-12 right">
+           @* <div class="col-xs-12 right">
                 <label class="col-sm-2" for="txtFechaInicio">Fecha Inicio</label>
                 <div class="col-sm-3">
                     <input type="date" class="form-control col-sm-3" id="txtFechaInicio" />
@@ -102,7 +102,32 @@
                   <input type="date" class="form-control col-sm-3"  id="txtFechaFin" />    
                 </div>
                 <button class="btn btn-primary" style="margin-top:3px" onclick="listarOpch()">Buscar</button>
+            </div>*@
+            <div class="col-xs-12 right">
+                <label class="col-sm-2" for="cboTipoRegistro">Tipo de Registro</label>
+                <div class="col-sm-3">
+                    <select class="form-control" id="cboTipoRegistro" onchange="changeTipoRegistro();esRendicion()"></select>
+                </div>
             </div>
+
+             <div class="col-xs-12 right" id="DivSemana" style="display:none">
+                <label class="col-sm-2" for="cboSemana">Semana</label>
+                <div class="col-sm-3">
+                    <select class="form-control" id="cboSemana"></select>
+                </div>
+            </div>
+
+            <div class="col-xs-12 right" id="DivGiro" style="display:none">
+                <label class="col-sm-2" for="cboGiro">Giro</label>
+                <div class="col-sm-3">
+                    <select class="form-control" id="cboGiro"></select>
+                </div>
+            </div>
+            <div class="col-xs-12 right">
+               
+                <button class="btn btn-primary" onclick="listarOpch()"> buscar</button>
+            </div>
+
         </div>
     </div>
     <div class="panel">

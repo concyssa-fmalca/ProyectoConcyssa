@@ -15,7 +15,7 @@ namespace ConcyssaWeb.Controllers
 
         public string UpdateInsertMovimientoFinal(MovimientoDTO oMovimientoDTO)
         {
-           
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             int ValidarSoloSalida = 0;
 
@@ -31,19 +31,19 @@ namespace ConcyssaWeb.Controllers
             MovimientoDAO oMovimimientoDAO = new MovimientoDAO();
             int IdMovimientoInicial = oMovimientoDTO.IdMovimiento;
             oMovimientoDTO.IdMovimiento = 0;
-            int respuesta = oMovimimientoDAO.InsertUpdateMovimiento(oMovimientoDTO, ref mensaje_error);
+            int respuesta = oMovimimientoDAO.InsertUpdateMovimiento(oMovimientoDTO,BaseDatos,ref mensaje_error);
             if (mensaje_error.Length > 0)
             {
                 return mensaje_error;
             }
             if (respuesta > 0)
             {
-                var rpt = oMovimimientoDAO.ActualziarJsonTranferencia(oMovimientoDTO, IdMovimientoInicial,ref mensaje_error);
+                var rpt = oMovimimientoDAO.ActualziarJsonTranferencia(oMovimientoDTO, IdMovimientoInicial,BaseDatos,ref mensaje_error);
                 //int respuesta = 0;
                 for (int i = 0; i < oMovimientoDTO.detalles.Count; i++)
                 {
                     oMovimientoDTO.detalles[i].IdMovimiento = respuesta;
-                    int respuesta2 = oMovimimientoDAO.InsertUpdateMovimientoDetalleIngreso(oMovimientoDTO.detalles[i], oMovimientoDTO.detalles[i].ValidarIngresoSalidaOAmbos, ref mensaje_error);
+                    int respuesta2 = oMovimimientoDAO.InsertUpdateMovimientoDetalleIngreso(oMovimientoDTO.detalles[i], oMovimientoDTO.detalles[i].ValidarIngresoSalidaOAmbos,BaseDatos,ref mensaje_error);
 
                 }
 

@@ -88,8 +88,9 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerUsuarios()
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             UsuarioDAO oUsuarioDAO = new UsuarioDAO();
-            List<UsuarioMobileDTO> lstUsuarioDTO = oUsuarioDAO.ObtenerUsuariosMobile(ref mensaje_error);
+            List<UsuarioMobileDTO> lstUsuarioDTO = oUsuarioDAO.ObtenerUsuariosMobile(BaseDatos,ref mensaje_error);
             if (lstUsuarioDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstUsuarioDTO);

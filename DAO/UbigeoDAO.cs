@@ -6,10 +6,10 @@ namespace DAO
 {
     public class UbigeoDAO
     {
-        public List<UbigeoDTO> ObtenerTodosUbigeo()
+        public List<UbigeoDTO> ObtenerTodosUbigeo( string BaseDatos)
         {
             List<UbigeoDTO> lstUbigeoDTO = new List<UbigeoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -37,10 +37,10 @@ namespace DAO
         }
 
 
-        public List<UbigeoDTO> ObtenerDepartamentos()
+        public List<UbigeoDTO> ObtenerDepartamentos(string BaseDatos)
         {
             List<UbigeoDTO> lstUbigeoDTO = new List<UbigeoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -68,10 +68,10 @@ namespace DAO
         }
 
 
-        public List<UbigeoDTO> ObtenerProvincias(string Departamento)
+        public List<UbigeoDTO> ObtenerProvincias(string Departamento, string BaseDatos)
         {
             List<UbigeoDTO> lstUbigeoDTO = new List<UbigeoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -99,10 +99,10 @@ namespace DAO
             return lstUbigeoDTO;
         }
 
-        public List<UbigeoDTO> ObtenerDistritos(string Provincia)
+        public List<UbigeoDTO> ObtenerDistritos(string Provincia, string BaseDatos)
         {
             List<UbigeoDTO> lstUbigeoDTO = new List<UbigeoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {

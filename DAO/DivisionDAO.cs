@@ -8,10 +8,10 @@ namespace DAO
 {
     public class DivisionDAO
     {
-        public List<DivisionDTO> ObtenerDivision(int IdSociedad, ref string mensaje_error, int Estado = 3)
+        public List<DivisionDTO> ObtenerDivision(int IdSociedad, string BaseDatos, ref string mensaje_error, int Estado = 3)
         {
             List<DivisionDTO> lstDivisionDTO = new List<DivisionDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -43,13 +43,13 @@ namespace DAO
             return lstDivisionDTO;
         }
 
-        public int UpdateInsertDivision(DivisionDTO oDivisionDTO, ref string mensaje_error,int IdUsuario)
+        public int UpdateInsertDivision(DivisionDTO oDivisionDTO, string BaseDatos, ref string mensaje_error,int IdUsuario)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -81,10 +81,10 @@ namespace DAO
             }
         }
 
-        public List<DivisionDTO> ObtenerDatosxID(int IdDivision, ref string mensaje_error)
+        public List<DivisionDTO> ObtenerDatosxID(int IdDivision, string BaseDatos, ref string mensaje_error)
         {
             List<DivisionDTO> lstDivisionDTO = new List<DivisionDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -119,13 +119,13 @@ namespace DAO
         }
 
 
-        public int Delete(int IdDivision, ref string mensaje_error)
+        public int Delete(int IdDivision, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -148,10 +148,10 @@ namespace DAO
             }
         }
 
-        public DivisionDTO ObtenerDivisionxIdAlmacen(int IdAlmacen, ref string mensaje_error)
+        public DivisionDTO ObtenerDivisionxIdAlmacen(int IdAlmacen, string BaseDatos, ref string mensaje_error)
         {
             DivisionDTO oDivisionDTO = new DivisionDTO();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {

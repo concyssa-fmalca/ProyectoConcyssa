@@ -5,6 +5,8 @@ using DAO;
 using DTO;
 using Helpers;
 using Newtonsoft.Json;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace ConcyssaWeb.Controllers
 {
@@ -32,7 +34,7 @@ namespace ConcyssaWeb.Controllers
             return View();
         }
 
-        public string login(string usuario, string password,int idsociedad)
+        public string login(string usuario, string password,int idsociedad,string BaseDatos,string Alias)
         {
             bool respuesta = false;
             string mensajeError = "";
@@ -40,7 +42,22 @@ namespace ConcyssaWeb.Controllers
             try
             {
                 UsuarioDAO oUsuarioDAO = new UsuarioDAO();
-                List<UsuarioDTO> lstUsuarioDTO = oUsuarioDAO.ValidarUsuario(usuario, password, idsociedad, ref mensajeError);
+
+                using (SHA512 sha512 = SHA512.Create())
+                {
+                    // Convierte la contraseña en un array de bytes
+                    byte[] passwordBytes = Encoding.UTF8.GetBytes(password.ToUpper());
+
+                    // Calcula el hash de la contraseña
+                    byte[] hashedBytes = sha512.ComputeHash(passwordBytes);
+
+                    // Convierte el hash en una cadena hexadecimal
+                    password = BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
+                }
+
+
+
+                List<UsuarioDTO> lstUsuarioDTO = oUsuarioDAO.ValidarUsuario(usuario, password, idsociedad,BaseDatos, ref mensajeError);
                 oUsuarioDTO = lstUsuarioDTO[0];
                 if (oUsuarioDTO.Estado == true)
                 {
@@ -53,6 +70,8 @@ namespace ConcyssaWeb.Controllers
                     HttpContext.Session.SetString("NombreSociedad", oUsuarioDTO.NombreSociedad);
                     HttpContext.Session.SetString("NumeroDocumento", oUsuarioDTO.NumeroDocumento);
                     HttpContext.Session.SetString("NombBase", oUsuarioDTO.NombBase);
+                    HttpContext.Session.SetString("Alias", Alias);
+                    HttpContext.Session.SetString("BaseDatos", BaseDatos);
 
                     return JsonConvert.SerializeObject(oUsuarioDTO);
                 }
@@ -74,9 +93,10 @@ namespace ConcyssaWeb.Controllers
         public string obtenerMenu()
         {
             string rpta = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             MenuDAO oSeg_MenuBL = new MenuDAO();
             string mensaje_error = "";
-            List<MenuDTO> lbeSeg_MenuDTO = oSeg_MenuBL.ListarxPerfil(Convert.ToInt32(HttpContext.Session.GetInt32("IdPerfil")) , ref mensaje_error);
+            List<MenuDTO> lbeSeg_MenuDTO = oSeg_MenuBL.ListarxPerfil(Convert.ToInt32(HttpContext.Session.GetInt32("IdPerfil")) ,BaseDatos,ref mensaje_error);
             if (mensaje_error.Length>0)
             {
                 return mensaje_error;
@@ -127,6 +147,20 @@ namespace ConcyssaWeb.Controllers
         {
       
             return RedirectToAction("Index", "Home");
+        }
+
+        public string CargarConexiones()
+        {
+            SociedadDAO sociedadDAO = new SociedadDAO();
+            List<ConexionesBD> lstConexionesBD = sociedadDAO.CargarConexiones();
+            if (lstConexionesBD.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstConexionesBD);
+            }
+            else
+            {
+                return "error";
+            }
         }
     }
 }

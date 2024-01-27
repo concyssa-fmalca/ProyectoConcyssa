@@ -207,8 +207,8 @@
                                             <th>Moneda</th>
                                             <th>Total</th>
                                             <th>Pago</th>
-                                            <th>Comentario</th>
-                                            <th>Comentario Conformidad</th>
+                                            <th>Comentario Logistica</th>
+                                            <th>Comentario Aprobador</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbody_pedidomodal"></tbody>
@@ -254,9 +254,12 @@
 
 
 </div>
+@{
+    Random rnd = new Random();
+}
 
 
-<script src="~/Scripts/Pedido/Conformidad.js"></script>
+<script src="~/Scripts/Pedido/Conformidad.js?v=@rnd.Next(1, 1000 + 1)"></script>
 <script src="~/Scripts/General.js"></script>
 <script src="~/js/pdf/jspdf.min.js"></script>
 <script src="~/js/pdf/faker.min.js"></script>

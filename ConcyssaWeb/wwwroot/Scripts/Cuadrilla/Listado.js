@@ -137,8 +137,9 @@ function GuardarCuadrilla() {
         //'CuentaServicios': CuentaServicios,
         'CuentaMateriales': CuentaMateriales
     }, function (data, status) {
-
-        if (data == 1) {
+        if (data == "-1") {
+            swal("Advertencia!", "Este Código de Cuadrilla ya existe, verificar", "info")
+        } else if (data > 0) {
             swal("Exito!", "Proceso Realizado Correctamente", "success")
             //table.destroy();
             ConsultaServidor("ObtenerCuadrilla");
@@ -182,8 +183,8 @@ function ObtenerDatosxID(varIdCuadrilla) {
 
             $("#txtCodigo").val(cuadrilla[0].Codigo);
             $("#txtDescripcion").val(cuadrilla[0].Descripcion);
-            $("#IdCapataz").val(cuadrilla[0].IdCapataz);
-            $("#IdSupervisor").val(cuadrilla[0].IdSupervisor);
+            $("#IdCapataz").val(cuadrilla[0].IdCapataz).change();
+            $("#IdSupervisor").val(cuadrilla[0].IdSupervisor).change();
             $("#IdArea").val(cuadrilla[0].IdArea);
             $("#txtCuentaMateriales").val(cuadrilla[0].CuentaMateriales);
             //$("#txtCuentaServicios").val(cuadrilla[0].CuentaServicios);
@@ -362,7 +363,9 @@ function listarEmpleados() {
                     options += `<option value="` + datos[i].IdEmpleado + `">` + datos[i].RazonSocial + `</option>`;
                 }
                 $("#IdSupervisor").html(options);
+                $("#IdSupervisor").select2();
                 $("#IdCapataz").html(options);
+                $("#IdCapataz").select2();
             }
         }
     });
@@ -403,8 +406,8 @@ function limpiarDatos() {
     $("#IdObra").val(0);
     $("#IdGrupo").val(0);
     $("#IdSubGrupo").val(0);
-    $("#IdCapataz").val(0);
-    $("#IdSupervisor").val(0);
+    $("#IdCapataz").val(0).change();
+    $("#IdSupervisor").val(0).change();
     $("#IdArea").val(0);
     $("#txtCuentaMateriales").val('');
     //$("#txtCuentaServicios").val('');

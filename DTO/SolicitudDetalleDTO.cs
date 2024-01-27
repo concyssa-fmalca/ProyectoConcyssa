@@ -44,6 +44,8 @@ namespace DTO
         public decimal TotalDespacho { get; set; }
 
         public int IdDetalle { get; set; }
+        public int IdObra { get; set; }
+        public int IdBase { get; set; }
 
         public int AprobadoAnterior { get; set; }
 

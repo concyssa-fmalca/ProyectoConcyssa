@@ -7,10 +7,10 @@ namespace DAO
 {
     public class SerieDAO
     {
-        public List<SerieDTO> ObtenerSeries(string IdSociedad)
+        public List<SerieDTO> ObtenerSeries(string IdSociedad, string BaseDatos)
         {
             List<SerieDTO> lstSerieDTO = new List<SerieDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -44,10 +44,10 @@ namespace DAO
         }
 
 
-        public List<SerieDTO> ObtenerSeriesElectronicas(string IdSociedad)
+        public List<SerieDTO> ObtenerSeriesElectronicas(string IdSociedad, string BaseDatos)
         {
             List<SerieDTO> lstSerieDTO = new List<SerieDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -78,10 +78,10 @@ namespace DAO
             return lstSerieDTO;
         }
 
-        public List<SerieDTO> ObtenerSeriesxIdDocumento(int IdSociedad, int IdDocumento)
+        public List<SerieDTO> ObtenerSeriesxIdDocumento(int IdSociedad, int IdDocumento, string BaseDatos)
         {
             List<SerieDTO> lstSerieDTO = new List<SerieDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -120,10 +120,10 @@ namespace DAO
             return lstSerieDTO;
         }
 
-        public List<SerieDTO> ObtenerSeriesNEW(string IdSociedad)
+        public List<SerieDTO> ObtenerSeriesNEW(string IdSociedad, string BaseDatos)
         {
             List<SerieDTO> lstSerieDTO = new List<SerieDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -155,13 +155,13 @@ namespace DAO
             return lstSerieDTO;
         }
 
-        public int UpdateInsertSerie(SerieDTO oSerieDTO, string IdSociedad)
+        public int UpdateInsertSerie(SerieDTO oSerieDTO, string IdSociedad, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -193,10 +193,10 @@ namespace DAO
             }
         }
 
-        public List<SerieDTO> ObtenerDatosxID(int IdSerie)
+        public List<SerieDTO> ObtenerDatosxID(int IdSerie, string BaseDatos)
         {
             List<SerieDTO> lstSerieDTO = new List<SerieDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -229,13 +229,13 @@ namespace DAO
         }
 
 
-        public int Delete(int IdSerie)
+        public int Delete(int IdSerie, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -259,10 +259,10 @@ namespace DAO
 
 
 
-        public List<SerieDTO> ValidarNumeracionSerieSolicitudRQ(int IdSerie)
+        public List<SerieDTO> ValidarNumeracionSerieSolicitudRQ(int IdSerie, string BaseDatos)
         {
             List<SerieDTO> lstSerieDTO = new List<SerieDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -291,10 +291,10 @@ namespace DAO
         }
 
 
-        public SerieDTO ObtenerDatosSerieValidacion(int IdSerie,int IdDocumento,int Orden,string fecha)
+        public SerieDTO ObtenerDatosSerieValidacion(int IdSerie,int IdDocumento,int Orden,string fecha, string BaseDatos)
         {
             SerieDTO oSerieDTO = new SerieDTO();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {

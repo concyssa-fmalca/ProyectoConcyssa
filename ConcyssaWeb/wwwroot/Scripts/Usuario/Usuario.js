@@ -53,6 +53,7 @@ function ConsultaServidor(url) {
 
 function ModalNuevo() {
     $("#lblTituloModal").html("Nuevo Usuario");
+    $("#txtContraseña").attr("type", "text");
     AbrirModal("modal-form");
     CargarPerfiles();
     CargarSociedades();
@@ -259,7 +260,7 @@ function GuardarUsuario() {
 function ObtenerDatosxID(varIdUsuario) {
     $("#lblTituloModal").html("Editar Usuario");
     AbrirModal("modal-form");
-
+    $("#txtContraseña").attr("type", "password");
     //console.log(varIdUsuario);
 
     $.post('ObtenerDatosxID', {
@@ -277,9 +278,9 @@ function ObtenerDatosxID(varIdUsuario) {
             $("#txtId").val(usuarios[0].IdUsuario);
             $("#txtNombre").val(usuarios[0].Nombre);
             $("#txtUsuario").val(usuarios[0].Usuario);
-            $("#txtContraseña").val(usuarios[0].Password);
+            $("#txtContraseña").val("XXXXXXXXXXX");
 
-            $("#txtUsuarioSap").val(usuarios[0].Password);
+            $("#txtUsuarioSap").val(usuarios[0].SapUsuario);
             $("#txtContrasenaSap").val(usuarios[0].SapPassword);
             $("#txtCorreo").val(usuarios[0].Correo);
             $("#cboDepartamento").val(usuarios[0].IdDepartamento);

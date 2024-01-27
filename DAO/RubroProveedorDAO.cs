@@ -7,10 +7,10 @@ namespace DAO
 {
     public class RubroProveedorDAO
     {
-        public List<RubroProveedorDTO> ObtenerRubroProveedor(int IdSociedad, ref string mensaje_error, int Estado = 3)
+        public List<RubroProveedorDTO> ObtenerRubroProveedor(int IdSociedad, string BaseDatos, ref string mensaje_error, int Estado = 3)
         {
             List<RubroProveedorDTO> lstRubroProveedorDTO = new List<RubroProveedorDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -42,13 +42,13 @@ namespace DAO
             return lstRubroProveedorDTO;
         }
 
-        public int UpdateInsertRubroProveedor(RubroProveedorDTO oRubroProveedorDTO, ref string mensaje_error,int IdUsuario)
+        public int UpdateInsertRubroProveedor(RubroProveedorDTO oRubroProveedorDTO, string BaseDatos, ref string mensaje_error,int IdUsuario)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -77,10 +77,10 @@ namespace DAO
             }
         }
 
-        public List<RubroProveedorDTO> ObtenerDatosxID(int IdRubroProveedor, ref string mensaje_error)
+        public List<RubroProveedorDTO> ObtenerDatosxID(int IdRubroProveedor, string BaseDatos, ref string mensaje_error)
         {
             List<RubroProveedorDTO> lstRubroProveedorDTO = new List<RubroProveedorDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -112,13 +112,13 @@ namespace DAO
         }
 
 
-        public int Delete(int IdRubroProveedor, ref string mensaje_error)
+        public int Delete(int IdRubroProveedor, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {

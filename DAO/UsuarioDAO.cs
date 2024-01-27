@@ -9,10 +9,10 @@ namespace DAO
     public class UsuarioDAO
     {
 
-        public List<UsuarioDTO> ValidarUsuario(string Usuario, string Password,int IdSociedad, ref string mensajeError)
+        public List<UsuarioDTO> ValidarUsuario(string Usuario, string Password,int IdSociedad, string BaseDatos, ref string mensajeError)
         {
             List<UsuarioDTO> lstUsuarioDTO = new List<UsuarioDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -54,10 +54,10 @@ namespace DAO
         }
 
 
-        public List<UsuarioDTO> ObtenerUsuarios(ref string mensaje_error)
+        public List<UsuarioDTO> ObtenerUsuarios(string BaseDatos, ref string mensaje_error)
         {
             List<UsuarioDTO> lstUsuarioDTO = new List<UsuarioDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -92,10 +92,10 @@ namespace DAO
         }
 
         
-        public List<UsuarioDTO> ObtenerBasesxIdUsuario(int Idusuario,ref string mensaje_error)
+        public List<UsuarioDTO> ObtenerBasesxIdUsuario(int Idusuario,string BaseDatos, ref string mensaje_error)
         {
             List<UsuarioDTO> lstUsuarioDTO = new List<UsuarioDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -127,13 +127,13 @@ namespace DAO
             return lstUsuarioDTO;
         }
 
-        public int UpdateInsertUsuario(UsuarioDTO oUsuarioDTO, ref string mensaje_error)
+        public int UpdateInsertUsuario(UsuarioDTO oUsuarioDTO, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -171,10 +171,10 @@ namespace DAO
         }
 
 
-        public List<UsuarioDTO> ObtenerDatosxID(int IdUsuario,ref string mensaje_error)
+        public List<UsuarioDTO> ObtenerDatosxID(int IdUsuario,string BaseDatos, ref string mensaje_error)
         {
             List<UsuarioDTO> lstUsuarioDTO = new List<UsuarioDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -219,13 +219,13 @@ namespace DAO
             return lstUsuarioDTO;
         }
 
-        public int Delete(int IdUsuario)
+        public int Delete(int IdUsuario, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -247,13 +247,13 @@ namespace DAO
             }
         }
         
-        public int DeleteUsuarioBase(int IdUsuarioBase)
+        public int DeleteUsuarioBase(int IdUsuarioBase, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -276,10 +276,10 @@ namespace DAO
         }
 
 
-        public List<UsuarioDTO> ObtenerUsuariosAutorizadores(string IdSociedad)
+        public List<UsuarioDTO> ObtenerUsuariosAutorizadores(string IdSociedad, string BaseDatos)
         {
             List<UsuarioDTO> lstUsuarioDTO = new List<UsuarioDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -314,10 +314,10 @@ namespace DAO
             return lstUsuarioDTO;
         }
 
-        public List<UsuarioBaseAlmacenDTO> ObtenerBaseAlmacenxIdUsuario(int IdUsuario, ref string mensaje_error)
+        public List<UsuarioBaseAlmacenDTO> ObtenerBaseAlmacenxIdUsuario(int IdUsuario, string BaseDatos, ref string mensaje_error)
         {
             List<UsuarioBaseAlmacenDTO> lstUsuarioBaseAlmacenDTO = new List<UsuarioBaseAlmacenDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -352,13 +352,13 @@ namespace DAO
         }
 
 
-        public int UpdateInsertUsuarioBaseAlmacen(UsuarioBaseAlmacenDTO oUsuarioBaseAlmacenDTO, ref string mensaje_error)
+        public int UpdateInsertUsuarioBaseAlmacen(UsuarioBaseAlmacenDTO oUsuarioBaseAlmacenDTO, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -385,10 +385,10 @@ namespace DAO
             }
         }
 
-        public List<UsuarioMobileDTO> ObtenerUsuariosMobile(ref string mensaje_error)
+        public List<UsuarioMobileDTO> ObtenerUsuariosMobile(string BaseDatos, ref string mensaje_error)
         {
             List<UsuarioMobileDTO> lstUsuarioDTO = new List<UsuarioMobileDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -416,6 +416,66 @@ namespace DAO
             }
             return lstUsuarioDTO;
         }
+        public int UpdatePassword(int IdUsuario, string Password, string BaseDatos, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_UpdatePassword", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
+                        da.SelectCommand.Parameters.AddWithValue("@Password", Password);
+           
+                        int rpta = da.SelectCommand.ExecuteNonQuery();
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return -1;
+                    }
+                }
+            }
+        }
 
+        public List<UsuarioDTO> ObtenerUsuariosCodificar(int id, string BaseDatos, ref string mensaje_error)
+        {
+            List<UsuarioDTO> lstUsuarioDTO = new List<UsuarioDTO>();
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarUsuariosCodificar", cn);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    da.SelectCommand.Parameters.AddWithValue("@Id", id);
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        UsuarioDTO oUsuarioDTO = new UsuarioDTO();
+                        oUsuarioDTO.IdUsuario = int.Parse(drd["IdUsuario"].ToString());
+                        oUsuarioDTO.Password = (drd["Password"].ToString());
+                        lstUsuarioDTO.Add(oUsuarioDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstUsuarioDTO;
+        }
     }
 }

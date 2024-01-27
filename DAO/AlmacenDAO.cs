@@ -9,10 +9,10 @@ namespace DAO
 {
     public class AlmacenDAO
     {
-        public List<AlmacenDTO> ObtenerAlmacen(int IdSociedad, ref string mensaje_error, int Estado = 3)
+        public List<AlmacenDTO> ObtenerAlmacen(int IdSociedad, string BaseDatos, ref string mensaje_error, int Estado = 3)
         {
             List<AlmacenDTO> lstAlmacenDTO = new List<AlmacenDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -49,10 +49,10 @@ namespace DAO
 
 
 
-        public List<AlmacenDTO> ObtenerAlmacenxIdUsuario(int IdSociedad,int IdUsuario, ref string mensaje_error, int Estado = 3)
+        public List<AlmacenDTO> ObtenerAlmacenxIdUsuario(int IdSociedad,int IdUsuario, string BaseDatos, ref string mensaje_error, int Estado = 3)
         {
             List<AlmacenDTO> lstAlmacenDTO = new List<AlmacenDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -95,13 +95,13 @@ namespace DAO
 
 
 
-        public int UpdateInsertAlmacen(AlmacenDTO oAlmacenDTO, ref string mensaje_error, int IdUsuario)
+        public int UpdateInsertAlmacen(AlmacenDTO oAlmacenDTO, string BaseDatos, ref string mensaje_error, int IdUsuario)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -119,6 +119,7 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@CodigoAnexo", oAlmacenDTO.CodigoAnexo);
                         da.SelectCommand.Parameters.AddWithValue("@IdSociedad", oAlmacenDTO.IdSociedad);
                         da.SelectCommand.Parameters.AddWithValue("@Estado", oAlmacenDTO.Estado);
+                        da.SelectCommand.Parameters.AddWithValue("@CorreoAlmacen", oAlmacenDTO.CorreoAlmacen);
                         da.SelectCommand.Parameters.AddWithValue("@UsuarioCreacion", IdUsuario);
                         da.SelectCommand.Parameters.AddWithValue("@UsuarioActualizacion", IdUsuario);
                         int rpta = da.SelectCommand.ExecuteNonQuery();
@@ -134,10 +135,10 @@ namespace DAO
             }
         }
 
-        public List<AlmacenDTO> ObtenerDatosxID(int IdAlmacen, ref string mensaje_error)
+        public List<AlmacenDTO> ObtenerDatosxID(int IdAlmacen, string BaseDatos, ref string mensaje_error)
         {
             List<AlmacenDTO> lstAlmacenDTO = new List<AlmacenDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -157,6 +158,7 @@ namespace DAO
                         oAlmacenDTO.Direccion = String.IsNullOrEmpty(drd["Direccion"].ToString())?"": drd["Direccion"].ToString();
                         oAlmacenDTO.CodigoUbigeo = String.IsNullOrEmpty(drd["CodigoUbigeo"].ToString())?"": drd["CodigoUbigeo"].ToString();
                         oAlmacenDTO.CodigoAnexo = String.IsNullOrEmpty(drd["CodigoAnexo"].ToString())?"": drd["CodigoAnexo"].ToString();
+                        oAlmacenDTO.CorreoAlmacen = String.IsNullOrEmpty(drd["CorreoAlmacen"].ToString())?"": drd["CorreoAlmacen"].ToString();
                         oAlmacenDTO.Estado = bool.Parse(drd["Estado"].ToString());
                         lstAlmacenDTO.Add(oAlmacenDTO);
                     }
@@ -173,10 +175,10 @@ namespace DAO
         }
 
         
-        public List<AlmacenDTO> ObtenerAlmacenxIdObra(int IdObra, ref string mensaje_error)
+        public List<AlmacenDTO> ObtenerAlmacenxIdObra(int IdObra, string BaseDatos, ref string mensaje_error)
         {
             List<AlmacenDTO> lstAlmacenDTO = new List<AlmacenDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -208,13 +210,13 @@ namespace DAO
             return lstAlmacenDTO;
         }
 
-        public int Delete(int IdAlmacen, ref string mensaje_error)
+        public int Delete(int IdAlmacen, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {

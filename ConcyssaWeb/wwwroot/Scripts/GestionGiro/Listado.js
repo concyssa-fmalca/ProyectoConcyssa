@@ -241,6 +241,8 @@ function llenarComboTipoRegistro(lista, idCombo, primerItem) {
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
+    $("#cboTipoRegistro").val(4).change()
+    $("#cboTipoRegistroM").val(4).change()
     //  $("#cboMoneda").val(1);
 }
 function CargarSemana(Tipo = 0) {
@@ -460,6 +462,8 @@ window.onload = function () {
 
 function ModalNuevo() {
     $("#lblTituloModal").html("Giro Nuevo");
+    limpiarDatos();
+    limpiarDatosDetalle();
     AbrirModal("modal-form");
     nameFile = "";
     $("#cboEstadosGiroCol").hide();
@@ -618,7 +622,19 @@ function Guardar() {
         'IdSerie': $("#cboSerie").val(),
         'DetalleGiro': ArrayGeneral
     }, function (data, status) {
-        if (data != "") {
+        if (data == "-99") {
+            Swal.fire(
+                'Error!',
+                'No Cuenta Con Autorización para Crear este Documento!',
+                'error'
+            )
+        } else if (data == "-98") {
+            Swal.fire(
+                'Error!',
+                'El Usuario se encuentra como autor en mas de un modelo de Aut., Contacte a Soporte!',
+                'error'
+            )
+        }else if (data != "") {
             swal("Exito!", "Proceso Realizado Correctamente", "success")
             let format = data.split('-')
             $("#txtId").val(format[0]);
@@ -644,8 +660,8 @@ function Guardar() {
             $("#cboEncargado").val("0").change();
             $("#txtMonto").val("");
             $("#msgBox").text("");
-
         } else {
+
             swal("Error!", "Ocurrio un Error")
 
         }

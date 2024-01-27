@@ -333,6 +333,7 @@ function ConsultaServidor() {
                 InsertarHTML += `  </tbody>
                                                     </table>
                                                 </div>
+                                            <label class="col-md-2" style="max-width:130px;color:black">Comentario:</label><input disabled value="`+SolicitudDespacho[i].Comentario+`" id="txtComentario`+ i +`" class="form-control" type="text">
                                             <div class=row>`
                                                 if (SolicitudDespacho[i].EstadoSolicitud != 2) {
                 InsertarHTML+=                  `<button class="btn btn-primary" style="margin-top:0px" onclick="GenerarSalida(`+ i + `,` + SolicitudDespacho[i].Id + `,'` + SolicitudDespacho[i].SerieyNum + `',` + SolicitudDespacho[i].IdCuadrilla + `)">Crear Salida</button>
@@ -774,7 +775,7 @@ function GenerarSalida(Num,IdSolicitud,numserie,cuadrilla) {
                     'FechaContabilizacion': $("#FechContExtorno").val(),
                     'FechaDocumento': $("#FechDocExtorno").val(),
                     'IdCentroCosto': 7,
-                    'Comentario': 'Generado al Atender la Solicitud de Despacho N° ' + numserie,
+                    'Comentario': $("#txtComentario"+Num).val() + ' / ' + numserie,
                     'SubTotal': TotalGeneral,
                     'Impuesto': 0,
                     'Total': TotalGeneral,

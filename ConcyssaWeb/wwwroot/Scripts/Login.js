@@ -1,7 +1,7 @@
 ﻿
 window.onload = function () {
-    var url = "Sociedad/ObtenerSociedades";
-    ConsultaServidor(url);
+    
+    ConsultaServidor();
 };
 
 function is_json(str) {
@@ -13,34 +13,35 @@ function is_json(str) {
     return true;
 }
 
-function ConsultaServidor(url) {
+function ConsultaServidor() {
+         $.post('/Home/CargarConexiones', function (data, status) {
 
-    $.post(url, function (data, status) {
+             if (data == "error") {
+                 return;
+             }
 
-        if (data == "error") {
-            return;
-        }
+             let tr = '';
+             if (is_json(data)) {
+                 let sociedades = JSON.parse(data);
 
-        let tr = '';
-        if (is_json(data)) {
-            let sociedades = JSON.parse(data);
+                 for (var i = 0; i < sociedades.length; i++) {
 
-            for (var i = 0; i < sociedades.length; i++) {
+                     let chktxt = "";
+                     if(i==0) chktxt = 'checked'
 
-                tr += '<tr>' +
-                    '<td>  <input type="radio" clase="" id="rdSeleccionado' + sociedades[i].IdSociedad + '" value="' + sociedades[i].IdSociedad + '"  name="rdSeleccionado"  ></td>' +
-                    '<td>' + sociedades[i].NombreSociedad.toUpperCase() + '</td>' +
-                    '<td>' + sociedades[i].Descripcion.toUpperCase() + '</td>' +
-                    '</tr>';
-            }
+                     tr += '<tr onclick="clickCheck('+i+')">' +
+                         '<td>  <input type="radio" clase="" id="rdSeleccionado' + sociedades[i].IdSociedad + '" value="' + sociedades[i].BaseDatos + '" ' + chktxt + ' idSociedad="' + sociedades[i].IdSociedad + '" name="rdSeleccionado" alias="' + sociedades[i].Alias+'"  ></td>' +
+                         '<td>' + sociedades[i].Alias.toUpperCase() + '</td>' +
+                         '<td>' + sociedades[i].BaseDatos.toUpperCase() + '</td>' +
+                         '</tr>';
+                 }
 
-            $("#tbodyDetalle").html(tr);
-        } else {
-            alert(data);
-        }
-        
-    });
+                 $("#tbodyDetalle").html(tr);
+             } else {
+                 alert(data);
+             }
 
+         });    
 }
 
 
@@ -49,7 +50,9 @@ $("#frmAcceso").on('submit', function (e) {
 
     usuario = $("#txtUsuario").val();
     password = $("#txtPassword").val();
-    idsociedad = $('input:radio[name=rdSeleccionado]:checked').val();
+    BaseDatos = $('input:radio[name=rdSeleccionado]:checked').val();
+    idsociedad = $('input:radio[name=rdSeleccionado]:checked').attr('idSociedad');
+    alias = $('input:radio[name=rdSeleccionado]:checked').attr('alias');
     console.log(idsociedad);
 
     if (idsociedad == undefined) {
@@ -60,7 +63,7 @@ $("#frmAcceso").on('submit', function (e) {
     }
 
 
-    $.post("/Home/login", { "usuario": usuario, "password": password, "idsociedad": idsociedad }, function (data) {
+    $.post("/Home/login", { "usuario": usuario, "password": password, "idsociedad": idsociedad, "BaseDatos": BaseDatos, "Alias": alias }, function (data) {
         
         try {
             let datos = JSON.parse(data);

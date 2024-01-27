@@ -10,10 +10,10 @@ namespace DAO
     {
 
 		
-		public List<beCampoString3> obtenerMenuPerfil(int IdPerfil, ref string mensaje_error)
+		public List<beCampoString3> obtenerMenuPerfil(int IdPerfil, string BaseDatos, ref string mensaje_error)
 		{
 			List<beCampoString3> listaAcceso = null;
-			using (SqlConnection cn = new Conexion().conectar())
+			using (SqlConnection cn = new Conexion().conectar(BaseDatos))
 			{
 				try
 				{
@@ -44,10 +44,10 @@ namespace DAO
 		}
 
 
-		public List<MenuDTO> ObtenerMenus()
+		public List<MenuDTO> ObtenerMenus( string BaseDatos)
 		{
 			List<MenuDTO> lstMenuDTO = new List<MenuDTO>();
-			using (SqlConnection cn = new Conexion().conectar())
+			using (SqlConnection cn = new Conexion().conectar(BaseDatos))
 			{
 				try
 				{
@@ -77,10 +77,10 @@ namespace DAO
 		}
 	
 
-		public List<MenuDTO> ListarTodo()
+		public List<MenuDTO> ListarTodo( string BaseDatos)
 		{
 			List<MenuDTO> lstMenuDTO = new List<MenuDTO>();
-			using (SqlConnection cn = new Conexion().conectar())
+			using (SqlConnection cn = new Conexion().conectar(BaseDatos))
 			{
 				try
 				{
@@ -112,10 +112,10 @@ namespace DAO
 			return lstMenuDTO;
 		}
 
-		public List<MenuDTO> ListarxID_Usuario(int idUsuario)
+		public List<MenuDTO> ListarxID_Usuario(int idUsuario, string BaseDatos)
 		{
 			List<MenuDTO> lstMenuDTO = new List<MenuDTO>();
-			using (SqlConnection cn = new Conexion().conectar())
+			using (SqlConnection cn = new Conexion().conectar(BaseDatos))
 			{
 				try
 				{
@@ -147,10 +147,10 @@ namespace DAO
 			return lstMenuDTO;
 		}
 
-		public List<List<decimal>> DashBoard(int periodo)
+		public List<List<decimal>> DashBoard(int periodo, string BaseDatos)
 		{
 			List<List<decimal>> lista = new List<List<decimal>>();
-			using (SqlConnection cn = new Conexion().conectar())
+			using (SqlConnection cn = new Conexion().conectar(BaseDatos))
 			{
 				try
 				{
@@ -189,7 +189,7 @@ namespace DAO
 			return lista;
 		}
 
-		public int UpdateInsert(MenuDTO oSeg_Menu )
+		public int UpdateInsert(MenuDTO oSeg_Menu, string BaseDatos)
 		{
 			TransactionOptions transactionOptions = default(TransactionOptions);
 			transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
@@ -197,7 +197,7 @@ namespace DAO
 			TransactionOptions option = transactionOptions;
 			using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
 			{
-				using (SqlConnection cn = new Conexion().conectar())
+				using (SqlConnection cn = new Conexion().conectar(BaseDatos))
 				{
 					try
 					{
@@ -226,7 +226,7 @@ namespace DAO
 			}
 		}
 
-		public int Delete(MenuDTO oSeg_Menu )
+		public int Delete(MenuDTO oSeg_Menu, string BaseDatos)
 		{
 			TransactionOptions transactionOptions = default(TransactionOptions);
 			transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
@@ -234,7 +234,7 @@ namespace DAO
 			TransactionOptions option = transactionOptions;
 			using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
 			{
-				using (SqlConnection cn = new Conexion().conectar())
+				using (SqlConnection cn = new Conexion().conectar(BaseDatos))
 				{
 					try
 					{
@@ -254,10 +254,10 @@ namespace DAO
 			}
 		}
 
-		public List<MenuDTO> ConsultarMenu_1()
+		public List<MenuDTO> ConsultarMenu_1( string BaseDatos)
 		{
 			List<MenuDTO> lstMenuDTO = new List<MenuDTO>();
-			using (SqlConnection cn = new Conexion().conectar())
+			using (SqlConnection cn = new Conexion().conectar(BaseDatos))
 			{
 				try
 				{
@@ -288,10 +288,10 @@ namespace DAO
 			return lstMenuDTO;
 		}
 
-		public List<MenuDTO> ConsultarMenu_2()
+		public List<MenuDTO> ConsultarMenu_2( string BaseDatos)
 		{
 			List<MenuDTO> lstMenuDTO = new List<MenuDTO>();
-			using (SqlConnection cn = new Conexion().conectar())
+			using (SqlConnection cn = new Conexion().conectar(BaseDatos))
 			{
 				try
 				{
@@ -322,10 +322,10 @@ namespace DAO
 			return lstMenuDTO;
 		}
 
-		public List<MenuDTO> ConsultarMenu_3()
+		public List<MenuDTO> ConsultarMenu_3( string BaseDatos)
 		{
 			List<MenuDTO> lstMenuDTO = new List<MenuDTO>();
-			using (SqlConnection cn = new Conexion().conectar())
+			using (SqlConnection cn = new Conexion().conectar(BaseDatos))
 			{
 				try
 				{
@@ -356,12 +356,12 @@ namespace DAO
 			return lstMenuDTO;
 		}
 
-		public Seg_RolMenuVistaDTO ListarMenurol(int IdUsuario,int IdPerfil,ref string mensaje_error)
+		public Seg_RolMenuVistaDTO ListarMenurol(int IdUsuario,int IdPerfil,string BaseDatos, ref string mensaje_error)
 		{
 			Seg_RolMenuVistaDTO oSeg_RolMenuVistaDTO = new Seg_RolMenuVistaDTO();
 			List<beCampoString> listaRol = new List<beCampoString>();
 			List<MenuDTO> lstMenuDTO = new List<MenuDTO>();
-			using (SqlConnection cn = new Conexion().conectar())
+			using (SqlConnection cn = new Conexion().conectar(BaseDatos))
 			{
 				try
 				{
@@ -409,10 +409,10 @@ namespace DAO
 			return oSeg_RolMenuVistaDTO;
 		}
 
-		public bool GrabarAccesos( string lista, int idUsuario,ref string mensaje_error)
+		public bool GrabarAccesos( string lista, int idUsuario,string BaseDatos, ref string mensaje_error)
 		{
 			bool exito = false;
-			using (SqlConnection cn = new Conexion().conectar())
+			using (SqlConnection cn = new Conexion().conectar(BaseDatos))
 			{
 				try
 				{
@@ -435,10 +435,10 @@ namespace DAO
 			return exito;
 		}
 
-		public List<beCampoString3> obtenerMenuRol(int IdRol,ref string mensajeError)
+		public List<beCampoString3> obtenerMenuRol(int IdRol, string BaseDatos, ref string mensajeError)
 		{
 			List<beCampoString3> listaAcceso = null;
-			using (SqlConnection cn = new Conexion().conectar())
+			using (SqlConnection cn = new Conexion().conectar(BaseDatos))
 			{
 				try
 				{
@@ -467,10 +467,10 @@ namespace DAO
 			return listaAcceso;
 		}
 
-		public List<MenuDTO> ListarxPerfil(int IdPerfil, ref string mensajeError)
+		public List<MenuDTO> ListarxPerfil(int IdPerfil, string BaseDatos, ref string mensajeError)
 		{
 			List<MenuDTO> lstMenuDTO = new List<MenuDTO>();
-			using (SqlConnection cn = new Conexion().conectar())
+			using (SqlConnection cn = new Conexion().conectar(BaseDatos))
 			{
 				try
 				{

@@ -14,10 +14,11 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerVia(int estado = 3)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             ViaDAO oViaDAO = new ViaDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<ViaDTO> lstViaDTO = oViaDAO.ObtenerVia(IdSociedad, ref mensaje_error, estado);
+            List<ViaDTO> lstViaDTO = oViaDAO.ObtenerVia(IdSociedad,BaseDatos,ref mensaje_error, estado);
             if (lstViaDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstViaDTO);
@@ -31,9 +32,10 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerDatosxID(int IdVia)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             ViaDAO oViaDAO = new ViaDAO();
-            List<ViaDTO> lstCodigoUbsoDTO = oViaDAO.ObtenerDatosxID(IdVia, ref mensaje_error);
+            List<ViaDTO> lstCodigoUbsoDTO = oViaDAO.ObtenerDatosxID(IdVia,BaseDatos,ref mensaje_error);
 
             if (lstCodigoUbsoDTO.Count > 0)
             {
@@ -50,12 +52,12 @@ namespace ConcyssaWeb.Controllers
 
         public string UpdateInsertVia(ViaDTO oViaDTO)
         {
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             ViaDAO oViaDAO = new ViaDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             oViaDTO.IdSociedad = IdSociedad;
-            int respuesta = oViaDAO.UpdateInsertVia(oViaDTO, ref mensaje_error, Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")));
+            int respuesta = oViaDAO.UpdateInsertVia(oViaDTO,BaseDatos,ref mensaje_error, Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")));
 
             if (mensaje_error.Length > 0)
             {
@@ -77,9 +79,10 @@ namespace ConcyssaWeb.Controllers
 
         public int EliminarVia(int IdVia)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             ViaDAO oViaDAO = new ViaDAO();
-            int resultado = oViaDAO.Delete(IdVia, ref mensaje_error);
+            int resultado = oViaDAO.Delete(IdVia,BaseDatos,ref mensaje_error);
             if (resultado == 0)
             {
                 resultado = 1;

@@ -14,10 +14,10 @@ namespace DAO
     {
 
 
-        public OpchDTO ObtenerDatosxIdOpch(int IdOpch, ref string mensaje_error)
+        public OpchDTO ObtenerDatosxIdOpch(int IdOpch, string BaseDatos, ref string mensaje_error)
         {
             OpchDTO oOpchDTO = new OpchDTO();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -98,19 +98,19 @@ namespace DAO
             }
             return oOpchDTO;
         }
-        public List<OpchDTO> ObtenerOPCHxEstado(int IdBase,int IdSociedad, ref string mensaje_error, string EstadoOPCH,int IdUsuario=0)
+       // public List<OpchDTO> ObtenerOPCHxEstado(int IdBase,int IdSociedad, string BaseDatos, ref string mensaje_error, string EstadoOPCH,int IdUsuario=0)
+        public List<OpchDTO> ObtenerOPCHxEstado(int IdObra,int IdTipoRegistro,int IdSemana, string BaseDatos, ref string mensaje_error)
         {
             List<OpchDTO> lstOPCHDTO = new List<OpchDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
                     cn.Open();
                     SqlDataAdapter da = new SqlDataAdapter("SMC_ListarOPCHxEstado", cn);
-                    da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
-                    da.SelectCommand.Parameters.AddWithValue("@EstadoOPCH", EstadoOPCH);
-                    da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
-                    da.SelectCommand.Parameters.AddWithValue("@IdBase", IdBase);
+                    da.SelectCommand.Parameters.AddWithValue("@IdObra", IdObra);
+                    da.SelectCommand.Parameters.AddWithValue("@IdTipoRegistro", IdTipoRegistro);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSemana", IdSemana);
 
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
                     SqlDataReader drd = da.SelectCommand.ExecuteReader();
@@ -155,8 +155,11 @@ namespace DAO
                         oOpchDTO.NombUsuario = (drd["NombUsuario"].ToString());
                         oOpchDTO.NumSerieTipoDocumentoRef = drd["NumSerieTipoDocumentoRef"].ToString();
                         oOpchDTO.Proveedor = drd["Proveedor"].ToString();
+                        oOpchDTO.RUCProveedor = drd["RUCProveedor"].ToString();
                         oOpchDTO.TipoDocumentoRef = drd["TipoDocumentoRef"].ToString();
+                        oOpchDTO.IdTipoDocumentoRef = int.Parse(drd["IdTipoDocumentoRef"].ToString());
                         oOpchDTO.IdDocExtorno = Convert.ToInt32(drd["IdDocExtorno"].ToString());
+                        oOpchDTO.ValidadoSUNAT = Convert.ToInt32(drd["ValidadoSUNAT"].ToString());
                         lstOPCHDTO.Add(oOpchDTO);
                     }
                     drd.Close();
@@ -171,10 +174,10 @@ namespace DAO
             return lstOPCHDTO;
         }
 
-        public List<OpchDTO> ObtenerOPCHxEstadoModal(int IdSociedad, ref string mensaje_error, string EstadoOPCH,int IdUsuario=0)
+        public List<OpchDTO> ObtenerOPCHxEstadoModal(int IdSociedad, int IdProveedor,string BaseDatos, ref string mensaje_error, string EstadoOPCH,int IdUsuario=0)
         {
             List<OpchDTO> lstOPCHDTO = new List<OpchDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -183,6 +186,7 @@ namespace DAO
                     da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
                     da.SelectCommand.Parameters.AddWithValue("@EstadoOPCH", EstadoOPCH);
                     da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
+                    da.SelectCommand.Parameters.AddWithValue("@IdProveedor", IdProveedor);
 
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
                     SqlDataReader drd = da.SelectCommand.ExecuteReader();
@@ -256,10 +260,10 @@ namespace DAO
             return lstOPCHDTO;
         }
 
-        public List<OPCHDetalle> ObtenerDetalleOpch(int IdOPCH, ref string mensaje_error)
+        public List<OPCHDetalle> ObtenerDetalleOpch(int IdOPCH, string BaseDatos, ref string mensaje_error)
         {
             List<OPCHDetalle> lstOPCHDetalle = new List<OPCHDetalle>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -320,13 +324,13 @@ namespace DAO
 
 
 
-        public int UpdateTotalesOPCH(int IdOPCH, ref string mensaje_error)
+        public int UpdateTotalesOPCH(int IdOPCH, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -350,10 +354,10 @@ namespace DAO
         }
 
 
-        public List<AnexoDTO> ObtenerAnexoOpch(int IdOpch, ref string mensaje_error)
+        public List<AnexoDTO> ObtenerAnexoOpch(int IdOpch, string BaseDatos, ref string mensaje_error)
         {
             List<AnexoDTO> lstAnexoDTO = new List<AnexoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -386,13 +390,13 @@ namespace DAO
 
 
         }
-        public int UpdateOPCH(int IdUsuario, OpchDTO OOpchDTO, ref string mensaje_error)
+        public int UpdateOPCH(int IdUsuario, OpchDTO OOpchDTO, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -432,13 +436,13 @@ namespace DAO
             }
         }
 
-        public int UpdateCuadrillas(OPCHDetalle oOPCHDetalle, ref string mensaje_error)
+        public int UpdateCuadrillas(OPCHDetalle oOPCHDetalle, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -464,10 +468,10 @@ namespace DAO
                 }
             }
         }
-        public List<OpchDTO> ObtenerOrigenesFactura(int IdOPCH, ref string mensaje_error)
+        public List<OpchDTO> ObtenerOrigenesFactura(int IdOPCH, string BaseDatos, ref string mensaje_error)
         {
             List<OpchDTO> lstOPCHDTO = new List<OpchDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -495,10 +499,10 @@ namespace DAO
             }
             return lstOPCHDTO;
         }
-        public List<OPCHDetalle> ObtenerStockParaExtornoOPCH(int IdOPCH, ref string mensaje_error)
+        public List<OPCHDetalle> ObtenerStockParaExtornoOPCH(int IdOPCH, string BaseDatos, ref string mensaje_error)
         {
             List<OPCHDetalle> lstOPCHDetalle = new List<OPCHDetalle>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -528,13 +532,13 @@ namespace DAO
             }
             return lstOPCHDetalle;
         }
-        public int ExtornoConfirmado(int IdOPCH, string EsServicio,string TablaOrigen, ref string mensaje_error)
+        public int ExtornoConfirmado(int IdOPCH, string EsServicio,string TablaOrigen, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -561,10 +565,10 @@ namespace DAO
             }
         }
 
-        public List<OpchDTO> ObtenerOPCHxIdObra(int IdObra, DateTime FechaInicio, DateTime FechaFin,ref string mensaje_error)
+        public List<OpchDTO> ObtenerOPCHxIdObra(int IdObra, DateTime FechaInicio, DateTime FechaFin,string BaseDatos, ref string mensaje_error)
         {
             List<OpchDTO> lstOPCHDTO = new List<OpchDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -633,5 +637,37 @@ namespace DAO
             }
             return lstOPCHDTO;
         }
+
+        public int GuardarValidacionSUNAT(int IdOPCH, int respuestaSunat, string BaseDatos)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_ActualizarValidSUNATOPCH", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdOPCH", IdOPCH);
+                        da.SelectCommand.Parameters.AddWithValue("@respuestaSunat", respuestaSunat);
+
+
+                        int rpta = da.SelectCommand.ExecuteNonQuery();
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {                    
+                        return 0;
+                    }
+                }
+            }
+        }
+
     }
 }

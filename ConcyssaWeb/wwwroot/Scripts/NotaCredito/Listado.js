@@ -5,6 +5,7 @@ let contarclick = 0;
 var ultimaFila = null;
 let tablesalida;
 let tablefacturaproveedor;
+let tabledevolucionproveedor;
 var colorOriginal;
 let limitador = 0;
 let valorfor = 1
@@ -511,6 +512,10 @@ function ConsultaServidor(url) {
 
 
 function ModalNuevo() {
+    $("#IdProveedor").prop("disabled", false);
+    $("#Direccion").prop("disabled", false);
+    $("#Telefono").prop("disabled", false);
+    $("#cboMoneda").prop("disabled", false);
     $("#btnExtornar").hide()
     contador = 0
     $("#btnEditar").hide()
@@ -1740,9 +1745,9 @@ function GuardarSolicitud() {
     let FechaDocumento = $("#txtFechaDocumento").val();
     let IdCentroCosto = $("#cboCentroCosto").val();
     let Comentario = $("#txtComentarios").val();
-    let SubTotal = $("#txtTotalAntesDescuento").val();
-    let Impuesto = $("#txtImpuesto").val();
-    let Total = $("#txtTotal").val();
+    let SubTotal = ($("#txtTotalAntesDescuento").val()).replace(/,/g, "");;
+    let Impuesto = ($("#txtImpuesto").val()).replace(/,/g, "");;
+    let Total = ($("#txtTotal").val()).replace(/,/g, "");;
     let IdCuadrilla = $("#IdCuadrilla").val();
     let IdResponsable = $("#IdResponsable").val();
     let IdTipoDocumentoRef = 13
@@ -1847,7 +1852,7 @@ function GuardarSolicitud() {
     }
 
     console.log("STOCK REVISION:" + HayStock)
-    if (HayStock == '') {
+    if (HayStock == '' || $("#txtOrigen").val() =='DevProv') {
         $.ajax({
             url: "UpdateInsertMovimientoNotaCredito",
             type: "POST",
@@ -4162,6 +4167,10 @@ function AbrirModalSalida() {
 }
 
 function AbrirModalFacturaProveedor() {
+    if ($("#IdProveedor").val() == 0) {
+        Swal.fire("Aviso", "Debe Seleccionar un Proveedor", "info")
+        return
+    }
     $("#ModalListadoOPCH").modal();
     listarFacturaProveedor()
 }
@@ -4269,10 +4278,6 @@ function listarmodalsalida() {
 
 
 
-function AbrirModalFacturaProveedor() {
-    $("#ModalListadoOPCH").modal();
-    listarFacturaProveedor()
-}
 
 function listarFacturaProveedor() {
     tablefacturaproveedor = $('#tabla_listado_facturaproveedor').dataTable({
@@ -4283,6 +4288,7 @@ function listarFacturaProveedor() {
             type: 'POST',
             data: {
                 IdAlmacen: $("#cboAlmacen").val(),
+                IdProveedor: $("#IdProveedor").val(),
                 pagination: {
                     perpage: 50,
                 },
@@ -5078,7 +5084,7 @@ function Extornar() {
     let IdORPC = $("#txtId").val()
     Swal.fire({
         title: 'DESEA GENERAR EXTORNO?',
-        html: "Se validara si los productos ingresados se encuentran con Stock </br>" +
+        html: "Esta Accion no se puede revertir </br>" +
             "</br>" +
             "Serie Para Extorno </br>" +
             "<Select id='cboSerieExtorno' class='form-control'></select>" +
@@ -5097,6 +5103,22 @@ function Extornar() {
         confirmButtonText: 'Si Generar!'
     }).then((result) => {
         if (result.isConfirmed) {
+
+            let validacionDev = 0
+            $.post('ValidarOrigenDevolucion', { 'IdORPC': $("#txtId").val() }, function (data, status) {
+
+                validacionDev = data;
+
+            });
+
+            if (validacionDev > 0) {
+                CerrarModal()
+                listarOrpc()
+                Swal.fire("Exito", "Doc Extornado Correctamente", "success")
+
+                return
+            }
+
             let arrayIdArticulo = new Array();
             $("input[name='txtIdArticulo[]']").each(function (indice, elemento) {
                 arrayIdArticulo.push($(elemento).val());
@@ -5210,6 +5232,8 @@ function Extornar() {
 
 
             });
+
+            
 
    
 
@@ -5391,6 +5415,341 @@ function AgregarSeleccionadOPCH() {
     $("#IdTipoProducto").val(0);
     $("#IdTipoProducto").prop("disabled", true);
     $("#btn_agregaritem").prop("disabled", true);
+    $("#IdProveedor").prop("disabled", true);
+    $("#Direccion").prop("disabled", true);
+    $("#Telefono").prop("disabled", true);
+    $("#cboMoneda").prop("disabled", true);
     $("#txtOrigen").val("Factura")
   
+}
+
+function AbrirModalDevolucionProveedor() {
+    if ($("#IdProveedor").val() == 0) {
+        Swal.fire("Aviso", "Debe Seleccionar un Proveedor", "info")
+        return
+    }
+    $("#ModalListadoDevolucionProveedor").modal();
+    listarDevolucionProveedor()
+}
+
+function listarDevolucionProveedor() {
+    tabledevolucionproveedor = $('#tabla_listado_devolucionproveedor').dataTable({
+        language: lenguaje_data,
+        responsive: true,
+        ajax: {
+            url: '/SalidaMercancia/ListarDevolucionProveedorModal',
+            type: 'POST',
+            data: {
+                IdAlmacen: $("#cboAlmacen").val(),
+                IdProveedor: $("#IdProveedor").val(),
+                pagination: {
+                    perpage: 50,
+                },
+            },
+        },
+
+        columnDefs: [
+            // {"className": "text-center", "targets": "_all"},
+
+            {
+                data: null,
+                targets: 1,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return meta.row + 1
+                },
+            },
+            {
+                data: null,
+                targets: 0,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return `<input type="checkbox" id="checkIdMov` + full.IdMovimiento + `" value="` + full.IdMovimiento + `" IdProveedor="` + full.IdProveedor + `" onchange="ValidacionesCheckDevProv()" class="checkIdMovimiento"> <label for="cbox2"></label>`
+                },
+            },
+            {
+                data: null,
+                targets: 2,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.NombAlmacen
+                },
+            },
+            {
+                data: null,
+                targets: 3,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.FechaDocumento.split("T")[0].toString()
+                },
+            },
+            {
+                data: null,
+                targets: 4,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.NombProveedor.toUpperCase()
+                },
+            },
+            {
+                data: null,
+                targets: 5,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.NombSerie + '-' + full.Correlativo
+                },
+            },
+            {
+                data: null,
+                targets: 6,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.NumSerieTipoDocumentoRef.toUpperCase()
+                },
+            },
+            {
+                data: null,
+                targets: 7,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return formatNumberDecimales(full.Total, 2)
+                },
+            }
+
+
+        ],
+        "bDestroy": true
+    }).DataTable();
+
+  
+}
+
+function AgregarSeleccionadoDevolucionProv() {
+    for (var i = 0; i < 10; i++) {
+        borrartditem(i);
+    }
+    let checkSeleccionados = 0;
+    let IdProveedor = 0;
+    let sumaproveedor = 0;
+
+    $('.checkIdMovimiento').each(function () {
+        if (this.checked) {
+            checkSeleccionados++
+
+        }
+    });
+
+    if (checkSeleccionados > 0) {
+        let numerospedidos = "";
+        $('.checkIdMovimiento').each(function () {
+            if (this.checked) {
+                var data = tabledevolucionproveedor.row($("#" + ($(this).val()))).data();
+                AgregarDevProvDetalle(data)
+                $("#txtOrigenId").val(data.IdMovimiento)
+                numerospedidos += data['NombSerie'] + '-' + data['Correlativo']+" ";
+            }
+        });
+
+        $("#txtComentarios").html('BASADO EN LA SALIDA ' + numerospedidos + ' / ')
+        $("#txtserieDocBase").val(numerospedidos)
+        $("#txtserieDocBase").prop("disabled", true)
+        $('#ModalListadoDevolucionProveedor').modal('hide');
+        tabledevolucionproveedor.ajax.reload()
+    }
+    $("#cboClaseArticulo").val(0);
+    $("#cboClaseArticulo").prop("disabled", true);
+    $("#IdTipoProducto").val(0);
+    $("#IdTipoProducto").prop("disabled", true);
+    $("#btn_agregaritem").prop("disabled", true);
+    $("#IdProveedor").prop("disabled", true);
+    $("#Direccion").prop("disabled", true);
+    $("#Telefono").prop("disabled", true);
+    //$("#cboMoneda").prop("disabled", true);
+    $("#txtOrigen").val("DevProv")
+
+}
+
+function AgregarDevProvDetalle(datos) {
+  
+    $("#cboClaseArticulo").prop("disabled", true)
+    $("#IdTipoProducto").prop("disabled", true)
+    $("#btn_agregar_limpio").prop("disabled", true)
+    let datarecibida;
+    let detalles;
+    let UnidadMedida;
+
+    $.ajaxSetup({ async: false });
+    $.post("/Movimientos/ObtenerDatosxIdMovimientoOLD", { 'IdMovimiento': datos.IdMovimiento }, function (data, status) {
+
+        datarecibida = JSON.parse(data);
+ 
+        detalles = datarecibida.detalles;
+
+        $("#cboMoneda").val(datarecibida.IdMoneda).change();
+        $("#IdProveedor").val(datarecibida.IdProveedor).change();
+
+        for (var d = 0; d < detalles.length; d++) {
+            console.log("CANTIDAD DE NOTA DE CREDITO : " + detalles[d].CantidadNotaCredito)
+            console.log("CANTIDAD DE LA FACTURA : " + detalles[d].Cantidad)
+            if (detalles[d].CantidadNotaCredito != detalles[d].Cantidad) {
+                let IdGrupoUnidadMedida = detalles[d].IdGrupoUnidadMedida;
+                let serieycorrelativo = datos.NumSerieTipoDocumentoRef
+
+                let UnidadMedida;
+                $.post("/GrupoUnidadMedida/ObtenerDefinicionUnidadMedidaxGrupo", { 'IdGrupoUnidadMedida': IdGrupoUnidadMedida }, function (data, status) {
+                    UnidadMedida = JSON.parse(data);
+                });
+
+                let Moneda;
+                $.post("/Moneda/ObtenerMonedas", function (data, status) {
+                    Moneda = JSON.parse(data);
+                });
+
+                let IndicadorImpuesto;
+                $.post("/IndicadorImpuesto/ObtenerIndicadorImpuestos", function (data, status) {
+                    IndicadorImpuesto = JSON.parse(data);
+                });
+
+                let Almacen
+                $.post("../Almacen/ObtenerAlmacen", function (data, status) {
+                    Almacen = JSON.parse(data);
+                });
+                let IdCuadrillaParaTabla = 0
+                let IdResponsableParaTabla = 0
+
+                if (detalles[d]['IdCuadrilla'] != 0) {
+                    IdCuadrillaParaTabla = detalles[d]['IdCuadrilla']
+                    console.log(IdCuadrillaParaTabla)
+                }
+                if (detalles[d]['IdResponsable'] != 0) {
+                    IdResponsableParaTabla = detalles[d]['IdResponsable']
+                }
+                contador++;
+                let tr = '';
+
+
+                //PARA EL DETALLE
+                let Cantidad = detalles[d].Cantidad - detalles[d].CantidadNotaCredito;
+                let CantidadMaxima = detalles[d].Cantidad - detalles[d].CantidadNotaCredito;
+                //END PARA EL DETALLE
+
+
+
+
+
+
+                //<select class="form-control select2" id="cboCodigoArticulo" name="cboCodigoArticulo[]">
+                //    <option value="0">Seleccione</option>
+                //</select>
+                tr += `<tr id="tritem` + contador + `">
+            <td><input input style="display:none;" class="form-control" type="text" value="0" id="txtIdSolicitudRQDetalle" name="txtIdSolicitudRQDetalle[]"/></td>
+            <td input style="display:none;">
+            <input  class="form-control" type="text" value="`+ detalles[d].IdArticulo + `" id="txtIdArticulo` + contador + `" name="txtIdArticulo[]" />
+            <input class="form-control" type="text" id="txtCodigoArticulo`+ contador + `" name="txtCodigoArticulo[]" value="` + detalles[d].CodigoArticulo + `"/>
+            </td>
+            <td>`+ detalles[d].CodigoArticulo + `</td>   
+            <td><input class="form-control" type="text" id="txtDescripcionArticulo`+ contador + `" name="txtDescripcionArticulo[]" value="` + detalles[d].DescripcionArticulo + `"/></td>
+            <td>
+            <select class="form-control" id="cboUnidadMedida`+ contador + `" name="cboUnidadMedida[]">`;
+                tr += `  <option value="0">Seleccione</option>`;
+                for (var i = 0; i < UnidadMedida.length; i++) {
+                    tr += `  <option value="` + UnidadMedida[i].IdDefinicionGrupo + `">` + UnidadMedida[i].DescUnidadMedidaAlt + `</option>`;
+                }
+                tr += `</select>
+            </td>
+           
+           
+            <td input style="display:none;">
+            <select class="form-control MonedaDeCabecera" style="width:100px" name="cboMoneda[]" id="cboMonedaDetalle`+ contador + `" disabled>`;
+                tr += `  <option value="0">Seleccione</option>`;
+                for (var i = 0; i < Moneda.length; i++) {
+                    tr += `  <option value="` + Moneda[i].IdMoneda + `">` + Moneda[i].Descripcion + `</option>`;
+                }
+                tr += `</select>
+            </td>
+            <td input style="display:none;"><input class="form-control TipoCambioDeCabecera" type="number" name="txtTipoCambio[]" id="txtTipoCambioDetalle`+ contador + `" disabled></td>
+            <td>
+                <input class="form-control" type="number" name="txtCantidadNecesaria[]" value="0" id="txtCantidadNecesaria`+ contador + `" disabled onchange="CalcularTotalDetalle(` + contador + `);CalculaCantidadMaxima(` + contador + `)">
+                <input type="hidden" name="txtCantidadNecesariaMaxima[]" value="`+ CantidadMaxima + `" id="txtCantidadNecesariaMaxima` + contador + `" >
+                <input type="hidden" name="txtIdOrigen[]" value="`+ detalles[d].IdMovimientoDetalle+ `" id="txtIdOrigen` + contador + `" disabled>
+                <input type="hidden" name="txtTablaOrigen[]" value="DevProv" id="txtIdOrigen` + contador + `" disabled>
+            </td>
+            <td><input class="form-control" type="number" name="txtPrecioInfo[]" value="0" id="txtPrecioInfo`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled></td>
+            <td>
+            <select class="form-control ImpuestoCabecera" name="cboIndicadorImpuestoDetalle[]" id="cboIndicadorImpuestoDetalle`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled>`;
+                tr += `  <option impuesto="0" value="0">Seleccione</option>`;
+                for (var i = 0; i < IndicadorImpuesto.length; i++) {
+                    tr += `  <option impuesto="` + IndicadorImpuesto[i].Porcentaje + `" value="` + IndicadorImpuesto[i].IdIndicadorImpuesto + `">` + IndicadorImpuesto[i].Descripcion + `</option>`;
+                }
+                tr += `</select>
+            </td>
+        <td><select class="form-control cboCuadrillaTabla" onchange="SeleccionarEmpleadosTabla(`+ contador + `)" id="cboCuadrillaTablaId` + contador + `"></select></td>
+            <td><select class="form-control cboResponsableTabla" id="cboResponsableTablaId`+ contador + `"></select></td>
+
+            <td><input class="form-control changeTotal" type="number" style="width:100px" name="txtItemTotal[]" id="txtItemTotal`+ contador + `" onchange="CalcularTotales()" disabled></td>
+            <td style="display:none">
+            <select class="form-control" style="width:100px" id="cboAlmacen`+ contador + `" name="cboAlmacen[]">`;
+                tr += `  <option value="0">Seleccione</option>`;
+                for (var i = 0; i < Almacen.length; i++) {
+                    tr += `  <option value="` + Almacen[i].IdAlmacen + `">` + Almacen[i].Descripcion + `</option>`;
+                }
+                tr += `</select>
+            </td>`
+                tr += `
+            <td input style="display:none;"><input class="form-control" type="text" name="txtNumeroFacbricacion[]"></td>
+            <td input style="display:none;"><input class="form-control" type="text" name="txtNumeroSerie[]"></td>
+            <td input style="display:none;">
+            <select class="form-control" name="cboLineaNegocio[]">`;
+                tr += `  <option value="0">Seleccione</option>`;
+                //for (var i = 0; i < LineaNegocio.length; i++) {
+                //    tr += `  <option value="` + LineaNegocio[i].IdLineaNegocio + `">` + LineaNegocio[i].Descripcion + `</option>`;
+                //}
+                tr += `</select>
+            </td>`;
+                //for (var i = 0; i < CentroCosto.length; i++) {
+                //    tr += `  <option value="` + CentroCosto[i].IdCentroCosto + `">` + CentroCosto[i].Descripcion + `</option>`;
+                //}
+
+                //for (var i = 0; i < Proyecto.length; i++) {
+                //    tr += `  <option value="` + Proyecto[i].IdProyecto + `">` + Proyecto[i].Descripcion + `</option>`;
+                //}
+                tr += `
+            <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
+            <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
+            <td> <input class="form-control" type="text" value="BASADO EN LA SALIDA `+ serieycorrelativo + `" id="txtReferencia` + contador + `" name="txtReferencia[]"></td>
+<td style="display:none"><input style="width:50px" class="form-control" type="text" value="" id="txtTipoServicio`+ contador + `" name="txtTipoServicio[]"></input></td>
+<td><button class="btn btn-xs btn-danger borrar fa fa-trash" disabled onclick="borrartditem(`+ contador + `)"></button></td>
+          </tr>`;
+
+                $("#tabla").find('tbody').append(tr);
+                $("#cboUnidadMedida" + contador).val(detalles[d].IdDefinicionGrupoUnidad);
+                $("#cboMonedaDetalle" + contador).val(datarecibida.IdMoneda);
+                $("#txtCantidadNecesaria" + contador).val(Cantidad).change();
+                $("#txtPrecioInfo" + contador).val(detalles[d].PrecioUnidadBase);
+                $("#cboIndicadorImpuestoDetalle" + contador).val(1).change();
+                $("#cboAlmacen" + contador).val(detalles[d].IdAlmacen)
+                $("#txtTipoServicio" + contador).val('No Aplica');
+                ObtenerCuadrillasTabla(contador)
+                ObtenerEmpleadosxIdCuadrillaTabla(contador)
+                $(".cboCuadrillaTabla").select2()
+                $(".cboResponsableTabla").select2()
+                if (IdCuadrillaParaTabla != 0) {
+                    $("#cboCuadrillaTablaId" + contador).val(IdCuadrillaParaTabla).change();
+                    console.log("CONTADOR V" + contador)
+                    console.log("VUELTA" + IdCuadrillaParaTabla)
+                    if (IdResponsableParaTabla != 0) {
+                        $("#cboResponsableTablaId" + contador).val(IdResponsableParaTabla).change();
+                    }
+                } else {
+                    $("#cboCuadrillaTablaId" + contador).val(2582).change();
+                }
+                NumeracionDinamica();
+            }
+        }
+
+    });
+    //ObtenerCuadrillasTabla(contador)
+    //ObtenerEmpleadosxIdCuadrillaTabla(contador)
+    //$(".cboCuadrillaTabla").select2()
+    //$(".cboResponsableTabla").select2()
 }

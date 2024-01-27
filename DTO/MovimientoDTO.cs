@@ -78,6 +78,8 @@ namespace DTO
         public string NombAlmacen { get; set; }
         public string DescCuadrilla { get; set; }
         public string NombObra { get; set; }
+        public int IdProveedor { get; set; }
+        public string NombProveedor { get; set; }
 
         public int IdDestinatario { get; set; } = 0;
         public int IdMotivoTraslado { get; set; } = 0;
@@ -126,6 +128,7 @@ namespace DTO
         public string DistritoLlegada { get; set; }
         public string OrigenDespacho { get; set; }
         public int EsDevolucionAdm { get; set; }
+        public string NroRef { get; set; }
 
     }
 

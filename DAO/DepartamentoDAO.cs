@@ -7,10 +7,10 @@ namespace DAO
 {
     public class DepartamentoDAO
     {
-        public List<DepartamentoDTO> ObtenerDepartamentos(string IdSociedad)
+        public List<DepartamentoDTO> ObtenerDepartamentos(string IdSociedad, string BaseDatos)
         {
             List<DepartamentoDTO> lstDepartamentoDTO = new List<DepartamentoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -39,13 +39,13 @@ namespace DAO
             return lstDepartamentoDTO;
         }
 
-        public int UpdateInsertDepartamento(DepartamentoDTO oDepartamentoDTO, string IdSociedad)
+        public int UpdateInsertDepartamento(DepartamentoDTO oDepartamentoDTO, string IdSociedad, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -71,10 +71,10 @@ namespace DAO
             }
         }
 
-        public List<DepartamentoDTO> ObtenerDatosxID(int IdDepartamento)
+        public List<DepartamentoDTO> ObtenerDatosxID(int IdDepartamento, string BaseDatos)
         {
             List<DepartamentoDTO> lstDepartamentoDTO = new List<DepartamentoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -104,13 +104,13 @@ namespace DAO
         }
 
 
-        public int Delete(int IdDepartamento)
+        public int Delete(int IdDepartamento, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -133,10 +133,10 @@ namespace DAO
         }
 
 
-        public List<DepartamentoDTO> ObtenerDepartamentosxUsuario(int IdUsuario)
+        public List<DepartamentoDTO> ObtenerDepartamentosxUsuario(int IdUsuario, string BaseDatos)
         {
             List<DepartamentoDTO> lstDepartamentoDTO = new List<DepartamentoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {

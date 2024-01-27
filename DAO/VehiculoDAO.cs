@@ -7,10 +7,10 @@ namespace DAO
 {
     public class VehiculoDAO
     {
-        public List<VehiculoDTO> ObtenerVehiculo(int IdSociedad, ref string mensaje_error, int Estado = 3)
+        public List<VehiculoDTO> ObtenerVehiculo(int IdSociedad, string BaseDatos, ref string mensaje_error, int Estado = 3)
         {
             List<VehiculoDTO> lstVehiculoDTO = new List<VehiculoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -49,13 +49,13 @@ namespace DAO
             return lstVehiculoDTO;
         }
 
-        public int UpdateInsertVehiculo1(VehiculoDTO oVehiculoDTO, ref string mensaje_error)
+        public int UpdateInsertVehiculo1(VehiculoDTO oVehiculoDTO, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -94,13 +94,13 @@ namespace DAO
         }
 
 
-        public int UpdateInsertVehiculo(VehiculoDTO oVehiculoDTO, ref string mensaje_error,int IdUsuario)
+        public int UpdateInsertVehiculo(VehiculoDTO oVehiculoDTO, string BaseDatos, ref string mensaje_error,int IdUsuario)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -136,10 +136,10 @@ namespace DAO
 
 
 
-        public List<VehiculoDTO> ObtenerDatosxID(int IdVehiculo, ref string mensaje_error)
+        public List<VehiculoDTO> ObtenerDatosxID(int IdVehiculo, string BaseDatos, ref string mensaje_error)
         {
             List<VehiculoDTO> lstVehiculoDTO = new List<VehiculoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -176,13 +176,13 @@ namespace DAO
         }
 
 
-        public int Delete(int IdVehiculo, ref string mensaje_error)
+        public int Delete(int IdVehiculo, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -208,10 +208,10 @@ namespace DAO
 
 
 
-        public List<VehiculoDTO> ObtenerDatosConductorxPlaca(string Placa)
+        public List<VehiculoDTO> ObtenerDatosConductorxPlaca(string Placa,string BaseDatos)
         {
             List<VehiculoDTO> lstVehiculoDTO = new List<VehiculoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {

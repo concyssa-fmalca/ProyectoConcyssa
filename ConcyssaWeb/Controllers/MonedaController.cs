@@ -16,7 +16,8 @@ namespace ConcyssaWeb.Controllers
         {
             MonedaDAO oMonedaDAO = new MonedaDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<MonedaDTO> lstMonedaDTO = oMonedaDAO.ObtenerMonedas(IdSociedad.ToString());
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            List<MonedaDTO> lstMonedaDTO = oMonedaDAO.ObtenerMonedas(IdSociedad.ToString(),BaseDatos);
             if (lstMonedaDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstMonedaDTO);
@@ -32,7 +33,8 @@ namespace ConcyssaWeb.Controllers
 
             MonedaDAO oMonedaDAO = new MonedaDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            int resultado = oMonedaDAO.UpdateInsertMoneda(MonedaDTO, IdSociedad.ToString(), Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")));
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            int resultado = oMonedaDAO.UpdateInsertMoneda(MonedaDTO, IdSociedad.ToString(), Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")),BaseDatos);
             if (resultado != 0)
             {
                 resultado = 1;
@@ -45,7 +47,8 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerDatosxID(int IdMoneda)
         {
             MonedaDAO oMonedaDAO = new MonedaDAO();
-            List<MonedaDTO> lstMonedaDTO = oMonedaDAO.ObtenerDatosxID(IdMoneda);
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            List<MonedaDTO> lstMonedaDTO = oMonedaDAO.ObtenerDatosxID(IdMoneda,BaseDatos);
 
             if (lstMonedaDTO.Count > 0)
             {
@@ -61,7 +64,8 @@ namespace ConcyssaWeb.Controllers
         public int EliminarMoneda(int IdMoneda)
         {
             MonedaDAO oMonedaDAO = new MonedaDAO();
-            int resultado = oMonedaDAO.Delete(IdMoneda);
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            int resultado = oMonedaDAO.Delete(IdMoneda,BaseDatos);
             if (resultado == 0)
             {
                 resultado = 1;
@@ -73,7 +77,8 @@ namespace ConcyssaWeb.Controllers
         public string ValidarMonedaBase(int IdMoneda)
         {
             MonedaDAO oMonedaDAO = new MonedaDAO();
-            List<MonedaDTO> lstMonedaDTO = oMonedaDAO.ValidarMonedaBase(IdMoneda);
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            List<MonedaDTO> lstMonedaDTO = oMonedaDAO.ValidarMonedaBase(IdMoneda,BaseDatos);
 
             if (lstMonedaDTO.Count > 0)
             {

@@ -13,10 +13,10 @@ namespace DAO
 {
     public class PedidoDAO
     {
-        public List<PedidoDTO> ObtenerPedidoxEstadoConformidad(int IdSociedad, ref string mensaje_error, int Conformidad = 0)
+        public List<PedidoDTO> ObtenerPedidoxEstadoConformidad(int IdSociedad, string BaseDatos, ref string mensaje_error, int Conformidad = 0)
         {
             List<PedidoDTO> lstPedidoDTO = new List<PedidoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -73,10 +73,10 @@ namespace DAO
         }
 
         
-        public List<PedidoDTO> ObtenerPedidoDTCorreoProveedor(int IdSociedad, int EnvioCorreo, int Proveedor, ref string mensaje_error)
+        public List<PedidoDTO> ObtenerPedidoDTCorreoProveedor(int IdSociedad, int EnvioCorreo, int Proveedor, string BaseDatos, ref string mensaje_error)
         {
             List<PedidoDTO> lstPedidoDTO = new List<PedidoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -116,6 +116,7 @@ namespace DAO
                         oPedidoDTO.NombreProveedor = (drd["NombreProveedor"].ToString());
                         oPedidoDTO.NombMoneda = (drd["NombMoneda"].ToString());
                         oPedidoDTO.NombTipoPedido = (drd["NombTipoPedido"].ToString());
+                        oPedidoDTO.EmailProveedor = (drd["EmailProveedor"].ToString());
                         oPedidoDTO.NombSerie = (drd["NombSerie"].ToString());
                         oPedidoDTO.Conformidad = Convert.ToInt32((String.IsNullOrEmpty(drd["Conformidad"].ToString())) ? 0 : drd["Conformidad"].ToString());
                         oPedidoDTO.total_venta = Convert.ToDecimal((String.IsNullOrEmpty(drd["total_venta"].ToString())) ? "0" : drd["total_venta"].ToString());
@@ -134,10 +135,10 @@ namespace DAO
             }
             return lstPedidoDTO;
         }
-        public List<PedidoDTO> ObtenerPedido(int IdSociedad, ref string mensaje_error, int Estado = 3)
+        public List<PedidoDTO> ObtenerPedido(int IdSociedad, string BaseDatos, ref string mensaje_error, int Estado = 3)
         {
             List<PedidoDTO> lstPedidoDTO = new List<PedidoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -198,10 +199,10 @@ namespace DAO
 
 
 
-        public List<PedidoDTO> ObtenerPedidosEntregaLDT(int IdSociedad, ref string mensaje_error, string EstadoPedido = "O", int IdObra=0,int IdUsuario=0)
+        public List<PedidoDTO> ObtenerPedidosEntregaLDT(int IdSociedad, string BaseDatos, ref string mensaje_error, string EstadoPedido = "O", int IdObra=0,int IdUsuario=0)
         {
             List<PedidoDTO> lstPedidoDTO = new List<PedidoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -269,10 +270,10 @@ namespace DAO
         }
 
 
-        public List<PedidoDetalleDTO> ObtenerDetallePedido(int IdPedido, ref string mensaje_error)
+        public List<PedidoDetalleDTO> ObtenerDetallePedido(int IdPedido, string BaseDatos, ref string mensaje_error)
         {
             List<PedidoDetalleDTO> lstPedidoDetalleDTO = new List<PedidoDetalleDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -324,10 +325,10 @@ namespace DAO
         }
 
 
-        public List<ArticuloStockDTO> ObtenerStockxIdDetalleSolicitudRQ(int IdDetalleRQ, ref string mensaje_error)
+        public List<ArticuloStockDTO> ObtenerStockxIdDetalleSolicitudRQ(int IdDetalleRQ, string BaseDatos, ref string mensaje_error)
         {
             List<ArticuloStockDTO> lstArticuloStockDTO = new List<ArticuloStockDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -360,10 +361,10 @@ namespace DAO
             }
 
         }
-        public List<ItemAprobadosDTO> ListarItemAprobadosxSociedad(int IdSociedad, ref string mensaje_error)
+        public List<ItemAprobadosDTO> ListarItemAprobadosxSociedad(int IdSociedad, string BaseDatos, ref string mensaje_error)
         {
             List<ItemAprobadosDTO> lstItemAprobadosDTO = new List<ItemAprobadosDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -377,6 +378,7 @@ namespace DAO
                         ItemAprobadosDTO oItemAprobadosDTO = new ItemAprobadosDTO();
                         oItemAprobadosDTO.DT_RowId = Convert.ToInt32(drd["IdDetalle"].ToString());
                         oItemAprobadosDTO.IdDetalle = Convert.ToInt32(drd["IdDetalle"].ToString());
+                        oItemAprobadosDTO.IdSolicitud = Convert.ToInt32(drd["IdSolicitud"].ToString());
                         oItemAprobadosDTO.NombArticulo = (drd["NombArticulo"].ToString());
                         oItemAprobadosDTO.Cantidad = Convert.ToDecimal(drd["Cantidad"].ToString());
                         oItemAprobadosDTO.IdUnidadMedidaInv = Convert.ToInt32(drd["IdUnidadMedidaInv"].ToString());
@@ -415,10 +417,10 @@ namespace DAO
             return success? conversion : 0;
         }
 
-        public List<ProveedoresPrecioProductoDTO> ObtenerProveedoresPrecioxProducto(int IdArticulo, ref string mensaje_error)
+        public List<ProveedoresPrecioProductoDTO> ObtenerProveedoresPrecioxProducto(int IdArticulo, string BaseDatos, ref string mensaje_error)
         {
             List<ProveedoresPrecioProductoDTO> lstProveedoresPrecioProductoDTO = new List<ProveedoresPrecioProductoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -449,10 +451,10 @@ namespace DAO
                 return lstProveedoresPrecioProductoDTO;
             }
         }
-        public List<ProveedoresPrecioProductoDTO> ObtenerProveedoresPrecioxProductoConObras(int IdObra,int IdArticulo, ref string mensaje_error)
+        public List<ProveedoresPrecioProductoDTO> ObtenerProveedoresPrecioxProductoConObras(int IdObra,int IdArticulo, string BaseDatos, ref string mensaje_error)
         {
             List<ProveedoresPrecioProductoDTO> lstProveedoresPrecioProductoDTO = new List<ProveedoresPrecioProductoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -466,6 +468,7 @@ namespace DAO
                     {
                         ProveedoresPrecioProductoDTO oProveedoresPrecioProductoDTO = new ProveedoresPrecioProductoDTO();
                         oProveedoresPrecioProductoDTO.IdProveedor = Convert.ToInt32(drd["IdProveedor"].ToString());
+                        oProveedoresPrecioProductoDTO.IdArticuloProveedor = Convert.ToInt32(drd["IdArticuloProveedor"].ToString());
                         oProveedoresPrecioProductoDTO.RazonSocial = (drd["RazonSocial"].ToString());
                         oProveedoresPrecioProductoDTO.PrecioNacional = Convert.ToDecimal(drd["PrecioNacional"].ToString());
                         oProveedoresPrecioProductoDTO.PrecioExtranjero = Convert.ToDecimal(drd["PrecioExtranjero"].ToString());
@@ -485,10 +488,10 @@ namespace DAO
                 return lstProveedoresPrecioProductoDTO;
             }
         }
-        public List<ProveedoresPrecioProductoDTO> ObtenerPrecioxProductoUltimasVentas(int IdArticulo, ref string mensaje_error)
+        public List<ProveedoresPrecioProductoDTO> ObtenerPrecioxProductoUltimasVentas(int IdArticulo, string BaseDatos, ref string mensaje_error)
         {
             List<ProveedoresPrecioProductoDTO> lstProveedoresPrecioProductoDTO = new List<ProveedoresPrecioProductoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -526,10 +529,10 @@ namespace DAO
 
 
 
-        public List<AsignadoPedidoRequeridoDTO> ListarProductosAsignadosxProveedorxIdUsuario(int IdUsuario, ref string mensaje_error)
+        public List<AsignadoPedidoRequeridoDTO> ListarProductosAsignadosxProveedorxIdUsuario(int IdUsuario, string BaseDatos, ref string mensaje_error)
         {
             List<AsignadoPedidoRequeridoDTO> lstAsignadoPedidoRequeridoDTO = new List<AsignadoPedidoRequeridoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -567,10 +570,10 @@ namespace DAO
 
 
 
-        public List<AsignadoPedidoRequeridoDTO> ListarProductosAsignadosxProveedorDetalle(int IdProveedor,int TipoItem,int IdObra, ref string mensaje_error)
+        public List<AsignadoPedidoRequeridoDTO> ListarProductosAsignadosxProveedorDetalle(int IdProveedor,int TipoItem,int IdObra, string BaseDatos, ref string mensaje_error)
         {
             List<AsignadoPedidoRequeridoDTO> lstAsignadoPedidoRequeridoDTO = new List<AsignadoPedidoRequeridoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -621,13 +624,13 @@ namespace DAO
         }
 
 
-        public int UpdateInsertPedidoAsignadoPedidoRQ(int IdProveedor, decimal precionacional, decimal precioextranjero, int idproducto, int IdDetalleRq,string Comentario, ref string mensaje_error)
+        public int UpdateInsertPedidoAsignadoPedidoRQ(int IdProveedor, decimal precionacional, decimal precioextranjero, int idproducto, int IdDetalleRq,string Comentario, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -657,13 +660,13 @@ namespace DAO
                 }
             }
         }
-        public int UpdateInsertPedido(PedidoDTO oPedidoDTO, ref string mensaje_error)
+        public int UpdateInsertPedido(PedidoDTO oPedidoDTO, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -708,13 +711,13 @@ namespace DAO
 
 
         #region InsertUpdatePedidoDetalle
-        public int InsertUpdatePedidoDetalle(PedidoDetalleDTO oPedidoDetalleDTO, ref string mensaje_error)
+        public int InsertUpdatePedidoDetalle(PedidoDetalleDTO oPedidoDetalleDTO, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -768,13 +771,13 @@ namespace DAO
 
 
         #region UpdateTotalesPedido
-        public int UpdateTotalesPedido(int IdPedido, ref string mensaje_error)
+        public int UpdateTotalesPedido(int IdPedido, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -799,10 +802,10 @@ namespace DAO
         #endregion
 
 
-        public PedidoDTO ObtenerPedidoxId(int IdPedido, ref string mensaje_error)
+        public PedidoDTO ObtenerPedidoxId(int IdPedido, string BaseDatos, ref string mensaje_error)
         {
             PedidoDTO oPedidoDTO = new PedidoDTO();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -871,7 +874,7 @@ namespace DAO
 
             #region Contar Detalle 
             Int32 filasdetalle = 0;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -893,7 +896,7 @@ namespace DAO
 
             oPedidoDTO.detalles = new PedidoDetalleDTO[filasdetalle];
 
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -949,7 +952,7 @@ namespace DAO
 
             #region AnexoDetalle
             Int32 filasdetalleAnexo = 0;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -969,7 +972,7 @@ namespace DAO
                 }
             }
             oPedidoDTO.AnexoDetalle = new AnexoDTO[filasdetalleAnexo];
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -1004,13 +1007,13 @@ namespace DAO
         }
 
 
-        public int UpdateInsertPedidoConformidadPedido(ConformidadPedidoDTO oConformidadPedidoDTO,int UsuarioConformidad, ref string mensaje_error)
+        public int UpdateInsertPedidoConformidadPedido(ConformidadPedidoDTO oConformidadPedidoDTO,int UsuarioConformidad, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -1065,13 +1068,13 @@ namespace DAO
 
 
 
-        public int UpdateEnvioCorreoPedido(int IdPedido,ref string mensaje_error)
+        public int UpdateEnvioCorreoPedido(int IdPedido,string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -1094,13 +1097,13 @@ namespace DAO
                 }
             }
         }
-        public int CerrarPedido(PedidoDTO oPedidoDTO, ref string mensaje_error)
+        public int CerrarPedido(PedidoDTO oPedidoDTO, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -1122,13 +1125,13 @@ namespace DAO
                 }
             }
         }
-        public int LiberarPedido(PedidoDTO oPedidoDTO, ref string mensaje_error)
+        public int LiberarPedido(PedidoDTO oPedidoDTO, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -1150,13 +1153,13 @@ namespace DAO
                 }
             }
         }
-        public int AnularPedido(PedidoDTO oPedidoDTO, ref string mensaje_error)
+        public int AnularPedido(PedidoDTO oPedidoDTO, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -1175,6 +1178,42 @@ namespace DAO
                         mensaje_error = ex.Message.ToString();
                         return 0;
                     }
+                }
+            }
+        }
+
+
+        public int UpdatePrecioProveedorArticulo(ProveedoresPrecioProductoDTO oProveedoresPrecioProductoDTO, string BaseDatos, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_UpdatePrecioProveedorArticulo", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdArticuloProveedor", oProveedoresPrecioProductoDTO.IdArticuloProveedor);
+                        da.SelectCommand.Parameters.AddWithValue("@PrecioNacional", oProveedoresPrecioProductoDTO.PrecioNacional);
+                        da.SelectCommand.Parameters.AddWithValue("@PrecioExtranjero", oProveedoresPrecioProductoDTO.PrecioExtranjero);
+             
+
+
+                        int rpta = Convert.ToInt32(da.SelectCommand.ExecuteNonQuery());
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+
                 }
             }
         }

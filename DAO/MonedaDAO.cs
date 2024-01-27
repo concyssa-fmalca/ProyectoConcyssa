@@ -8,10 +8,10 @@ namespace DAO
 {
     public class MonedaDAO
     {
-        public List<MonedaDTO> ObtenerMonedas(string IdSociedad)
+        public List<MonedaDTO> ObtenerMonedas(string IdSociedad, string BaseDatos)
         {
             List<MonedaDTO> lstMonedaDTO = new List<MonedaDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -41,13 +41,13 @@ namespace DAO
             return lstMonedaDTO;
         }
 
-        public int UpdateInsertMoneda(MonedaDTO oMonedaDTO, string IdSociedad,int IdUsuario)
+        public int UpdateInsertMoneda(MonedaDTO oMonedaDTO, string IdSociedad,int IdUsuario, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -76,10 +76,10 @@ namespace DAO
             }
         }
 
-        public List<MonedaDTO> ObtenerDatosxID(int IdMoneda)
+        public List<MonedaDTO> ObtenerDatosxID(int IdMoneda, string BaseDatos)
         {
             List<MonedaDTO> lstMonedaDTO = new List<MonedaDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -110,13 +110,13 @@ namespace DAO
         }
 
 
-        public int Delete(int IdMoneda)
+        public int Delete(int IdMoneda, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -139,10 +139,10 @@ namespace DAO
         }
 
 
-        public List<MonedaDTO> ValidarMonedaBase(int IdMoneda)
+        public List<MonedaDTO> ValidarMonedaBase(int IdMoneda, string BaseDatos)
         {
             List<MonedaDTO> lstMonedaDTO = new List<MonedaDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {

@@ -174,36 +174,28 @@
                     <div class='container-fluid'>
                         <input id='txtCodigoObra' name="txtId" type='hidden' class="form-control input-sm">
                         <div class='form-horizontal'>
-                            <p style="font-size:15px">Cuentas de Consumo</p>
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label class="col-sm-3" for="txtFechaContabilizacion">Fecha Contabilizacion</label>
+                                    <div class="col-sm-9">
+                                        <input type="date" class="form-control col-sm-3" id="txtFechaContabilizacion" />
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                            <br />
+                            <p style="font-size:15px">Vista Previa del Asiento</p>
                             <table id="tabla_resumenCuentas" class="table" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th>#</th>
                                         <th>Cuenta Contable</th>
-                                        <th>Monto</th>
+                                        <th>Débito</th>
+                                        <th>Crédito</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tbody_resumenCuentas"></tbody>
                             </table>
-                            <br />
-                            <p style="font-size:15px">Cuenta de Inventario</p>
-                            <div class="row">
-                                <div class='form-group-sm'>
-                                    <label for='CuentaInv' class="control-label col-sm-3">Numero Cuenta</label>
-                                    <div class="col-sm-9">
-                                        <input type="text" id="CuentaInv" class="form-control col-md-6" />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class='form-group-sm'>
-                                    <label for='MontoCuentaInv' class="control-label col-sm-3">Monto</label>
-                                    <div class="col-sm-9">
-                                        <input type="text" id="MontoCuentaInv" class="form-control col-md-6" disabled />
-                                    </div>
-                                </div>
-                            </div>
-                        
                         </div>
 
                     </div>

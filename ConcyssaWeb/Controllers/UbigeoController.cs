@@ -15,8 +15,9 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerTodosUbigeo()
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             UbigeoDAO oUbigeoDAO = new UbigeoDAO();
-            List<UbigeoDTO> lstUbigeoDTO = oUbigeoDAO.ObtenerTodosUbigeo();
+            List<UbigeoDTO> lstUbigeoDTO = oUbigeoDAO.ObtenerTodosUbigeo(BaseDatos);
             if (lstUbigeoDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstUbigeoDTO);
@@ -29,8 +30,9 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerDepartamentos()
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             UbigeoDAO oUbigeoDAO = new UbigeoDAO();
-            List<UbigeoDTO> lstUbigeoDTO = oUbigeoDAO.ObtenerDepartamentos();
+            List<UbigeoDTO> lstUbigeoDTO = oUbigeoDAO.ObtenerDepartamentos(BaseDatos);
             if (lstUbigeoDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstUbigeoDTO);
@@ -43,8 +45,9 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerProvincias(string Departamento)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             UbigeoDAO oUbigeoDAO = new UbigeoDAO();
-            List<UbigeoDTO> lstUbigeoDTO = oUbigeoDAO.ObtenerProvincias(Departamento);
+            List<UbigeoDTO> lstUbigeoDTO = oUbigeoDAO.ObtenerProvincias(Departamento,BaseDatos);
             if (lstUbigeoDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstUbigeoDTO);
@@ -57,8 +60,9 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerDistritos(string Provincia)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             UbigeoDAO oUbigeoDAO = new UbigeoDAO();
-            List<UbigeoDTO> lstUbigeoDTO = oUbigeoDAO.ObtenerDistritos(Provincia);
+            List<UbigeoDTO> lstUbigeoDTO = oUbigeoDAO.ObtenerDistritos(Provincia,BaseDatos);
             if (lstUbigeoDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstUbigeoDTO);

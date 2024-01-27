@@ -14,9 +14,10 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerCondicionPagos()
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             CondicionPagoDAO oCondicionPagoDAO = new CondicionPagoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<CondicionPagoDTO> lstCondicionPagoDTO = oCondicionPagoDAO.ObtenerCondicionPagos(IdSociedad.ToString());
+            List<CondicionPagoDTO> lstCondicionPagoDTO = oCondicionPagoDAO.ObtenerCondicionPagos(IdSociedad.ToString(),BaseDatos);
             if (lstCondicionPagoDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstCondicionPagoDTO);
@@ -29,10 +30,10 @@ namespace ConcyssaWeb.Controllers
 
         public int UpdateInsertCondicionPago(CondicionPagoDTO CondicionPagoDTO)
         {
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             CondicionPagoDAO oCondicionPagoDAO = new CondicionPagoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            int resultado = oCondicionPagoDAO.UpdateInsertCondicionPago(CondicionPagoDTO, IdSociedad.ToString(), Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")));
+            int resultado = oCondicionPagoDAO.UpdateInsertCondicionPago(CondicionPagoDTO, IdSociedad.ToString(), Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")),BaseDatos);
 
             return resultado;
 
@@ -40,8 +41,9 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerDatosxID(int IdCondicionPago)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             CondicionPagoDAO oCondicionPagoDAO = new CondicionPagoDAO();
-            List<CondicionPagoDTO> lstCondicionPagoDTO = oCondicionPagoDAO.ObtenerDatosxID(IdCondicionPago);
+            List<CondicionPagoDTO> lstCondicionPagoDTO = oCondicionPagoDAO.ObtenerDatosxID(IdCondicionPago,BaseDatos);
 
             if (lstCondicionPagoDTO.Count > 0)
             {
@@ -57,8 +59,9 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerCondicionxProveedor(int IdProveedor)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             CondicionPagoDAO oCondicionPagoDAO = new CondicionPagoDAO();
-            List<CondicionPagoDTO> lstCondicionPagoDTO = oCondicionPagoDAO.ObtenerCondicionxProveedor(IdProveedor);
+            List<CondicionPagoDTO> lstCondicionPagoDTO = oCondicionPagoDAO.ObtenerCondicionxProveedor(IdProveedor,BaseDatos);
 
             if (lstCondicionPagoDTO.Count > 0)
             {
@@ -74,8 +77,9 @@ namespace ConcyssaWeb.Controllers
 
         public int EliminarCondicionPago(int IdCondicionPago)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             CondicionPagoDAO oCondicionPagoDAO = new CondicionPagoDAO();
-            int resultado = oCondicionPagoDAO.Delete(IdCondicionPago);
+            int resultado = oCondicionPagoDAO.Delete(IdCondicionPago,BaseDatos);
             if (resultado == 0)
             {
                 resultado = 1;

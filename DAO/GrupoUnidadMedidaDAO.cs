@@ -9,10 +9,10 @@ namespace DAO
     {
 
         
-        public List<GrupoUnidadMedidaDTO> ObtenerDatosxID(int IdGrupoUnidadMedida, ref string mensaje_error)
+        public List<GrupoUnidadMedidaDTO> ObtenerDatosxID(int IdGrupoUnidadMedida, string BaseDatos, ref string mensaje_error)
         {
             List<GrupoUnidadMedidaDTO> lstGrupoUnidadMedidaDTO = new List<GrupoUnidadMedidaDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -43,10 +43,10 @@ namespace DAO
             return lstGrupoUnidadMedidaDTO;
         }
 
-        public List<GrupoUnidadMedidaDTO> ObtenerGrupoUnidadMedida(int IdSociedad, ref string mensaje_error, int Estado = 3)
+        public List<GrupoUnidadMedidaDTO> ObtenerGrupoUnidadMedida(int IdSociedad, string BaseDatos, ref string mensaje_error, int Estado = 3)
         {
             List<GrupoUnidadMedidaDTO> lstGrupoUnidadMedidaDTO = new List<GrupoUnidadMedidaDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -78,13 +78,13 @@ namespace DAO
             return lstGrupoUnidadMedidaDTO;
         }
 
-        public int UpdateInsertGrupoUnidadMedida(GrupoUnidadMedidaDTO oGrupoUnidadMedidDTO, ref string mensaje_error)
+        public int UpdateInsertGrupoUnidadMedida(GrupoUnidadMedidaDTO oGrupoUnidadMedidDTO, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -114,13 +114,13 @@ namespace DAO
         }
 
 
-        public int Delete(int IdGrupoUnidadMedida, ref string mensaje_error)
+        public int Delete(int IdGrupoUnidadMedida, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {

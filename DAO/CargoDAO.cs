@@ -9,10 +9,10 @@ namespace DAO
 {
     public class CargoDAO
     {
-        public List<CargoDTO> ObtenerCargo(int IdSociedad, ref string mensaje_error, int Estado = 3)
+        public List<CargoDTO> ObtenerCargo(int IdSociedad, string BaseDatos, ref string mensaje_error, int Estado = 3)
         {
             List<CargoDTO> lstCargoDTO = new List<CargoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -44,13 +44,13 @@ namespace DAO
             return lstCargoDTO;
         }
 
-        public int UpdateInsertCargo(CargoDTO oCargoDTO, ref string mensaje_error, int IdUsuario)
+        public int UpdateInsertCargo(CargoDTO oCargoDTO, string BaseDatos, ref string mensaje_error, int IdUsuario)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -79,10 +79,10 @@ namespace DAO
             }
         }
 
-        public List<CargoDTO> ObtenerDatosxID(int IdCargo, ref string mensaje_error)
+        public List<CargoDTO> ObtenerDatosxID(int IdCargo, string BaseDatos, ref string mensaje_error)
         {
             List<CargoDTO> lstCargoDTO = new List<CargoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -114,13 +114,13 @@ namespace DAO
         }
 
 
-        public int Delete(int IdCargo, ref string mensaje_error)
+        public int Delete(int IdCargo, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {

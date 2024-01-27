@@ -302,6 +302,7 @@ function GuardarObra() {
     let varCorreoObra = $("#correoObra").val()
 
     let Direccion = $("#txtDireccion").val();
+    let codProyecto = $("#codProyecto").val();
     let VisibleInternet = false;
     if ($('#chkIntranet')[0].checked) {
         VisibleInternet = true;
@@ -341,6 +342,10 @@ function GuardarObra() {
         Swal.fire("Error", "El Campo Division es Obligatorio", "info")
         return
     }
+    if (codProyecto == "" || codProyecto == undefined) {
+        Swal.fire("Error", "El Campo Proyecto SAP es Obligatorio", "info")
+        return
+    }
 
 
     $.post('UpdateInsertObra', {
@@ -357,7 +362,8 @@ function GuardarObra() {
         'Direccion': Direccion,
         'CodigoUbigeo': varCodigoUbigeo,
         'CodigoAnexo': varCodigoAnexo,
-        'CorreoObra' : varCorreoObra
+        'CorreoObra': varCorreoObra,
+        'CodProyecto': codProyecto
     }, function (data, status) {
 
         if (data == 1) {
@@ -387,14 +393,14 @@ function GuardarObraCatalogo() {
     });
 
     console.log(detalles)
-    return
+    
     $.post('UpdateInsertObraCatalogoProducto', {
         'detalles': detalles
     }, function (data, status) {
         if (data == 1) {
             swal("Exito!", "Proceso Realizado Correctamente", "success")
             table.destroy();
-            ConsultaServidor("ObtenerObra");
+            ConsultaServidor("ObtenerObraxIdUsuarioSessionSinBase");
             limpiarDatos();
 
         } else {
@@ -435,6 +441,7 @@ function ObtenerDatosxID(varIdObra) {
             $("#txtUbigeo").val(obra[0].CodigoUbigeo);
             $("#txtAnexo").val(obra[0].CodigoAnexo);
             $("#correoObra").val(obra[0].CorreoObra);
+            $("#codProyecto").val(obra[0].CodProyecto);
 
             $("#IdTipoObra").val(obra[0].IdTipoObra);
             $("#IdDivision").val(obra[0].IdDivision);
@@ -494,6 +501,7 @@ function limpiarDatos() {
     $("#txtUbigeo").val("");
     $("#txtAnexo").val("");
     $("#correoObra").val("");
+    $("#codProyecto").val("");
 }
 
 

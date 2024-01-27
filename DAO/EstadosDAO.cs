@@ -12,10 +12,10 @@ namespace DAO
 {
     public class EstadosDAO
     {
-        public List<EstadosDTO> ObtenerEstados(int Modulo, ref string mensaje_error)
+        public List<EstadosDTO> ObtenerEstados(int Modulo, string BaseDatos, ref string mensaje_error)
         {
             List<EstadosDTO> lstGiroDTO = new List<EstadosDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -47,10 +47,10 @@ namespace DAO
         }
 
 
-        public List<EstadosDTO> ObtenerEstadosUsuario(int IdGiro,int IdUsuario, ref string mensaje_error)
+        public List<EstadosDTO> ObtenerEstadosUsuario(int IdGiro,int IdUsuario, string BaseDatos, ref string mensaje_error)
         {
             List<EstadosDTO> lstGiroDTO = new List<EstadosDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -82,10 +82,10 @@ namespace DAO
             return lstGiroDTO;
         }
 
-        public List<EstadosDTO> ObtenerEstadoUsuario(int IdUsuario, ref string mensaje_error)
+        public List<EstadosDTO> ObtenerEstadoUsuario(int IdUsuario, string BaseDatos, ref string mensaje_error)
         {
             List<EstadosDTO> lstGiroDTO = new List<EstadosDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {

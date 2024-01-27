@@ -192,7 +192,20 @@ function BuscarKardex() {
     if ($("#IdAlmacen").val()==0) {
         swal("Informacion!", "Seleccione un Almacen");
         return;
-    } if ($("#FechaInicio").val()=='') {
+    }
+
+    if ($("#cboClaseArticulo").val() == 0) {
+        swal("Informacion!", "Seleccione el Tipo de Articulo");
+        return;
+    }
+    if ($("#cboClaseArticulo").val() == 1) {
+        if ($("#IdTipoProducto").val() == 0) {
+            swal("Informacion!", "Seleccione el Tipo de Producto");
+            return;
+        }
+    }
+
+    if ($("#FechaInicio").val() == '') {
         swal("Informacion!", "Seleccione una Fecha de Inicio");
         return;
     }

@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 using DAO;
 using DTO;
 using Microsoft.AspNetCore.Http;
-
-
+using SAPbobsCOM;
 
 namespace ISAP
 {
@@ -20,25 +19,19 @@ namespace ISAP
         {
             HttpContextAccessor httpContextAccessor = new HttpContextAccessor();
 
+            string BaseDatos = httpContextAccessor.HttpContext.Session.GetString("BaseDatos").ToString();
 
-            //ConfiguracionBL oconfiguracionBL = new ConfiguracionBL();
-            //int IdSociedad = int.Parse(HttpContext.Current.Session["IdSociedad"].ToString());
             ConfiguracionSociedadDAO oConfiguracionSociedadDAO = new ConfiguracionSociedadDAO();
             string mensaje_error = "error";
-            var configuracion = oConfiguracionSociedadDAO.ObtenerConfiguracionSociedad(1, ref mensaje_error);
-            //SociedadDAO sociedadDAO = new SociedadDAO();
-            //var Sociedad = sociedadDAO.ObtenerDatosxID(IdSociedad);
-            //List<ConfiguracionDTO> lstConfiguracionDTO = new List<ConfiguracionDTO>();
-            //lstConfiguracionDTO = oconfiguracionBL.ObtenerDatosConfiguracionxIdEmpresa(IdEmpresa);
-            //if (lstConfiguracionDTO.Count() > 0)
-            //{
+            var configuracion = oConfiguracionSociedadDAO.ObtenerConfiguracionSociedad(1, BaseDatos, ref mensaje_error);
+
             UsuarioDAO usuarioDAO = new UsuarioDAO();
-            //UsuarioDTO oUsuarioDTO = new UsuarioDTO();
-            var oUsuarioDTO = usuarioDAO.ObtenerDatosxID(Convert.ToInt32(httpContextAccessor.HttpContext.Session.GetInt32("IdUsuario")), ref mensaje_error);
-           // var oUsuarioDTO = usuarioDAO.ObtenerDatosxID(4070, ref mensaje_error);
+
+            var oUsuarioDTO = usuarioDAO.ObtenerDatosxID(Convert.ToInt32(httpContextAccessor.HttpContext.Session.GetInt32("IdUsuario")), BaseDatos, ref mensaje_error);
+
             string SapServer = "SGCWEB";
 
-            string SapCompanyDB = configuracion[0].NombreBDSAP;//"SBO_TITAN_PRB";
+            string SapCompanyDB = configuracion[0].NombreBDSAP;
             string SapUserName = "";
             string SapPassword = "";
 
@@ -106,8 +99,8 @@ namespace ISAP
                 // oCompany.LicenseServer = "192.168.100.21:40000";
                 //oCompany.LicenseServer = SapServer + ":30000";
                 oCompany.language = SAPbobsCOM.BoSuppLangs.ln_Spanish_La;
-                var asd = oCompany.Connected;
-                if (oCompany != null && asd)
+                var resultadoConexion = oCompany.Connected;
+                if (oCompany != null && resultadoConexion)
                 {
                     return "true";
                 }
@@ -128,11 +121,7 @@ namespace ISAP
                 return ex.Message.ToString();
                 throw;
             }
-            //}
-            //else
-            //{
-            //    return "No hay configuracion creado para la empresa";
-            //}
+
 
 
 
@@ -145,102 +134,92 @@ namespace ISAP
             return true;
         }
 
-        public string AddComprobante(IntegradorV1DTO auxComprobante, int BorradorFirme, int SerieFactura, ref string mensaje_error)
+        public string AddComprobante(IntegradorV1DTO auxComprobante, int BorradorFirme, int SerieFactura, string BaseDatos,string BaseDatosSAP, ref string mensaje_error)
         {
             try
             {
 
-            string errMsg = "";
-            // int IdEmpresa = int.Parse(HttpContext.Current.Session["IdEmpresa"].ToString());
-            //Factura
-            SAPbobsCOM.Documents ObjSAPComprobante = null;
-            if (BorradorFirme == 1)
-            {
-                 ObjSAPComprobante = (SAPbobsCOM.Documents)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oDrafts);
-            }
-            else
-            {
-                ObjSAPComprobante = (SAPbobsCOM.Documents)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oPurchaseInvoices);
-            }
+                string errMsg = "";
 
-          
-            //SAPbobsCOM.Documents ObjSAPComprobante = oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oDrafts);
-
-            //if (FacturReserva > 0)
-            //{
-            //    ObjSAPComprobante.DocObjectCode = SAPbobsCOM.BoObjectTypes.oPurchaseInvoices;
-            //    ObjSAPComprobante.ReserveInvoice = SAPbobsCOM.BoYesNoEnum.tYES;
-            //}
-            //else
-            //{
-            ObjSAPComprobante.DocObjectCode = SAPbobsCOM.BoObjectTypes.oPurchaseInvoices;
-            //}
+                //Factura
+                SAPbobsCOM.Documents ObjSAPComprobante = null;
+                if (BorradorFirme == 1)
+                {
+                    ObjSAPComprobante = (SAPbobsCOM.Documents)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oDrafts);
+                }
+                else
+                {
+                    ObjSAPComprobante = (SAPbobsCOM.Documents)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oPurchaseInvoices);
+                }
 
 
-            //ConsultasHanaBL consultas = new ConsultasHanaBL();
-            //string Cuenta = consultas.ObtenerCuentaAsociadaProveedores("P" + auxComprobante.NumRucEmisor);
-            //if (Cuenta == "")
-            //{ }
-            //else
-            //{
 
-            
+                ObjSAPComprobante.DocObjectCode = SAPbobsCOM.BoObjectTypes.oPurchaseInvoices;
 
                 ConsultasSQL oConsultasSQL = new ConsultasSQL();
-                ////ObjSAPComprobante.ControlAccount = cuentaContable;
-                ////}
+
                 ObraDAO oObraDAO = new ObraDAO();
-                var datosObra = oObraDAO.ObtenerDatosxID(auxComprobante.IdObra, ref errMsg);
+                var datosObra = oObraDAO.ObtenerDatosxID(auxComprobante.IdObra, BaseDatos, ref errMsg);
 
                 DivisionDAO oDivisionDAO = new DivisionDAO();
-                var datosDivision = oDivisionDAO.ObtenerDatosxID(datosObra[0].IdDivision,ref mensaje_error);
+                var datosDivision = oDivisionDAO.ObtenerDatosxID(datosObra[0].IdDivision, BaseDatos, ref mensaje_error);
 
+
+
+                //ObjSAPComprobante.UserFields.Fields.Item("U_EXX_CLABYSADQ").Value = datosDivision[0].IdClasif.ToString();
+
+                ObjSAPComprobante.Project = datosObra[0].CodProyecto;
+
+
+                TipoRegistroDAO oTipoRegistroDAO = new TipoRegistroDAO();
+                List<TipoRegistroDTO> lstTipoRegistroDTO = oTipoRegistroDAO.ObtenerDatosxID(auxComprobante.IdTipoRegistro, BaseDatos, ref mensaje_error);
 
                
-                //ObjSAPComprobante.UserFields.Fields.Item("U_EXX_CLABYSADQ").Value = datosDivision[0].IdClasif.ToString();
-                
-                ObjSAPComprobante.Project = datosObra[0].Codigo;
-            ObjSAPComprobante.Comments = "Prueba Migracion desde IntegradorV1";
 
-            ObjSAPComprobante.DocTotal = Convert.ToDouble(auxComprobante.Total);
+
+                ObjSAPComprobante.DocTotal = Convert.ToDouble(auxComprobante.Total);
 
                 ProveedorDAO oProveedorDAO = new ProveedorDAO();
-                var datosProveedor = oProveedorDAO.ObtenerDatosxID(auxComprobante.IdProveedor);
+                var datosProveedor = oProveedorDAO.ObtenerDatosxID(auxComprobante.IdProveedor, BaseDatos);
 
-
-                //ObjSAPComprobante.CardCode = "P" + auxComprobante.NumRucEmisor;
                 ObjSAPComprobante.CardCode = "P" + datosProveedor[0].NumeroDocumento;
 
                 ObjSAPComprobante.CardName = datosProveedor[0].RazonSocial;
 
 
 
-            //ObjSAPComprobante.GroupNumber = -1;
-            ObjSAPComprobante.DocDate = auxComprobante.FechaContabilizacion; //fecha contabilizacion
-                
-                
+
+                ObjSAPComprobante.DocDate = auxComprobante.FechaContabilizacion; //fecha contabilizacion
+
+
                 ObjSAPComprobante.Series = SerieFactura;
 
-              
 
+                if (auxComprobante.IdTipoDocumento == 18)
+                {
+                    ObjSAPComprobante.UserFields.Fields.Item("U_EXX_CLABYSADQ").Value = "1";
+                }
+                else
+                {
+                    ObjSAPComprobante.UserFields.Fields.Item("U_EXX_CLABYSADQ").Value = "5";
+                }
 
                 CondicionPagoDAO oCondicionPagoDAO = new CondicionPagoDAO();
-                var datosCondicionPago = oCondicionPagoDAO.ObtenerDatosxID(auxComprobante.idCondicionPago);
+                var datosCondicionPago = oCondicionPagoDAO.ObtenerDatosxID(auxComprobante.idCondicionPago, BaseDatos);
                 var fechaVencimiento = auxComprobante.FechaContabilizacion.AddDays(datosCondicionPago[0].Dias);
 
-                ObjSAPComprobante.DocDueDate = fechaVencimiento; //fecha vencimiento
+               // ObjSAPComprobante.DocDueDate = fechaVencimiento; //fecha vencimiento
 
 
 
                 ObjSAPComprobante.TaxDate = auxComprobante.FechaDocumento; //fecha emision
 
-            ObjSAPComprobante.FederalTaxID = datosProveedor[0].NumeroDocumento; //nro ruc
+                ObjSAPComprobante.FederalTaxID = datosProveedor[0].NumeroDocumento; //nro ruc
 
-                //string codTipoDoc = auxComprobante.CodCpe;
-                //ObjSAPComprobante.Indicator = codTipoDoc;
+
 
                 MonedaDAO oMonedaDao = new MonedaDAO();
-                var DatosMoneda = oMonedaDao.ObtenerDatosxID(auxComprobante.IdMoneda);
+                var DatosMoneda = oMonedaDao.ObtenerDatosxID(auxComprobante.IdMoneda, BaseDatos);
 
 
                 if (DatosMoneda[0].Codigo == "USD")
@@ -254,103 +233,156 @@ namespace ISAP
 
                 ObjSAPComprobante.DocCurrency = auxComprobante.CodMoneda;
 
-               // ObjSAPComprobante.Series =
+
 
                 SerieDAO oSerieDAO = new SerieDAO();
-                var DatosSerie = oSerieDAO.ObtenerDatosxID(auxComprobante.IdSerie);
+                var DatosSerie = oSerieDAO.ObtenerDatosxID(auxComprobante.IdSerie, BaseDatos);
 
+                string SerieRef = auxComprobante.NumSerieTipoDocumentoRef.ToUpper();
 
-                ObjSAPComprobante.NumAtCard = DatosSerie[0].Serie + "-" + auxComprobante.Correlativo; //F001-255
+                //ObjSAPComprobante.NumAtCard = DatosSerie[0].Serie + "-" + auxComprobante.Correlativo; //F001-255
+                ObjSAPComprobante.NumAtCard = SerieRef; //F001-255
 
-            ObjSAPComprobante.UserFields.Fields.Item("U_CON_nrosisgestion").Value = auxComprobante.NumSerieTipoDocumentoRef.ToUpper();
+                //ObjSAPComprobante.UserFields.Fields.Item("U_CON_nrosisgestion").Value = auxComprobante.NumSerieTipoDocumentoRef.ToUpper();
+                ObjSAPComprobante.UserFields.Fields.Item("U_CON_nrosisgestion").Value = DatosSerie[0].Serie + "-" + auxComprobante.Correlativo;
 
-            ObjSAPComprobante.UserFields.Fields.Item("U_CON_OCCompras").Value = auxComprobante.NumOC;
+                ObjSAPComprobante.UserFields.Fields.Item("U_CON_OCCompras").Value = auxComprobante.NumOC;
 
-            ObjSAPComprobante.FolioPrefixString = "FT";//auxComprobante.SerieCpe;
-            ObjSAPComprobante.FolioNumber = Convert.ToInt32(auxComprobante.Correlativo);
+                // ObjSAPComprobante.FolioPrefixString = "FT";//auxComprobante.SerieCpe;
+                //auxComprobante.SerieCpe;
 
-            if(auxComprobante.Inventario==false && auxComprobante.Total > 700)
-            {
-                    ObjSAPComprobante.UserFields.Fields.Item("U_CON_TASADET").Value = auxComprobante.TasaDetraccion.ToString();
-                    ObjSAPComprobante.UserFields.Fields.Item("U_CON_GRUPODET").Value = auxComprobante.GrupoDetraccion.ToString();
-                    //ObjSAPComprobante.GroupNumber = auxComprobante.CondicionPagoDet;
-                    //ObjSAPComprobante.GroupNumber = 26;
-                    if (auxComprobante.CondicionPagoDet > 0)
-                    {
-                        ObjSAPComprobante.PaymentGroupCode = auxComprobante.CondicionPagoDet;
-
-                    }
+                // ObjSAPComprobante.FolioNumber = Convert.ToInt32(auxComprobante.Correlativo);
+                try
+                {
+                    ObjSAPComprobante.FolioNumber = int.Parse(SerieRef.Split("-")[1]);
+                }
+                catch (Exception e)
+                {
+                    ObjSAPComprobante.FolioNumber = int.Parse(SerieRef);
                 }
 
-            switch (auxComprobante.IdTipoRegistro)
-            {
-                case 1:
-                    ObjSAPComprobante.UserFields.Fields.Item("U_beas_type").Value = "P";
-                    break;
-                case 4:
-                    ObjSAPComprobante.UserFields.Fields.Item("U_beas_type").Value = "R";
+                if (auxComprobante.Inventario == false && auxComprobante.Total > 700)
+                {
+                    ObjSAPComprobante.UserFields.Fields.Item("U_CON_TASADET").Value = auxComprobante.TasaDetraccion.ToString();
+                    ObjSAPComprobante.UserFields.Fields.Item("U_CON_GRUPODET").Value = auxComprobante.GrupoDetraccion.ToString();
+
+                    //if (auxComprobante.CondicionPagoDet > 0)
+                    //{
+                    //    ObjSAPComprobante.PaymentGroupCode = auxComprobante.CondicionPagoDet;
+
+                    //}
+                }
+
+                string NumeroSemana = "0";
+                if (auxComprobante.IdTipoRegistro == 4)
+                {
                     GiroDAO oGiroDAO = new GiroDAO();
-                    var datosGiro = oGiroDAO.ObtenerGiroxId(auxComprobante.IdSemana, ref errMsg);
-                    string NumGiro = datosGiro[0].NombSerie + "-" + datosGiro[0].Correlativo;
-
-                    ObjSAPComprobante.UserFields.Fields.Item("U_EXX_NUMEREND").Value = NumGiro;
-                    break;
-                case 5:
-                    ObjSAPComprobante.UserFields.Fields.Item("U_beas_type").Value = "C";
-                    break;
-                default:
-                    break;
-            }
-
-
-            switch (auxComprobante.IdTipoDocumentoRef)
-            {
-                case 16:
-                    double CON_M3 = Convert.ToDouble(auxComprobante.ConsumoM3);
-                    ObjSAPComprobante.UserFields.Fields.Item("U_CON_M3").Value = CON_M3;
-                    double CON_HW = Convert.ToDouble(auxComprobante.ConsumoHW);
-                    ObjSAPComprobante.UserFields.Fields.Item("U_CON_KWH").Value = CON_HW;
-                    break;
-               
-                default:
-                    break;
-            }
+                    List<GiroDTO> giros = oGiroDAO.ObtenerGiroxId(auxComprobante.IdSemana, BaseDatos, ref mensaje_error);
+                    ObjSAPComprobante.Comments = lstTipoRegistroDTO[0].NombTipoRegistro + " - Giro " + giros[0].NombSerie + "-" + giros[0].Correlativo + " - " + datosObra[0].Descripcion;
+                }
+                else
+                {
+                    SemanaDAO semanaDAO = new SemanaDAO();
+                    List<SemanaDTO> semanas = semanaDAO.ObtenerDatosxID(auxComprobante.IdSemana, BaseDatos, ref mensaje_error);
+                    ObjSAPComprobante.Comments = lstTipoRegistroDTO[0].NombTipoRegistro + " - Semana " + semanas[0].NumSemana + " - " + datosObra[0].Descripcion;
+                    NumeroSemana = semanas[0].NumSemana.ToString().PadLeft(2,'0');
+                }
 
 
-            ObjSAPComprobante.Indicator = "01";
-            ObjSAPComprobante.DocType = SAPbobsCOM.BoDocumentTypes.dDocument_Service;
+                switch (auxComprobante.IdTipoRegistro)
+                {
+                    case 1:
+                        ObjSAPComprobante.UserFields.Fields.Item("U_beas_type").Value = "P";
+                        ObjSAPComprobante.UserFields.Fields.Item("U_EXX_NUMEREND").Value = datosObra[0].CodProyecto + "P" + NumeroSemana;
+                        break;
+                    case 4:
+                        ObjSAPComprobante.UserFields.Fields.Item("U_beas_type").Value = "R";
+                        GiroDAO oGiroDAO = new GiroDAO();
+                        var datosGiro = oGiroDAO.ObtenerGiroxId(auxComprobante.IdSemana, BaseDatos, ref errMsg);
+                        string NumGiro = datosGiro[0].NombSerie + "-" + datosGiro[0].Correlativo;
 
-            //ObjSAPComprobante.DiscountPercent = 0.00;
+                        ObjSAPComprobante.UserFields.Fields.Item("U_EXX_NUMEREND").Value = NumGiro;
+                        break;
+                    case 5:
+                        ObjSAPComprobante.UserFields.Fields.Item("U_beas_type").Value = "C";
+                        ObjSAPComprobante.UserFields.Fields.Item("U_EXX_NUMEREND").Value = datosObra[0].CodProyecto + "C" + NumeroSemana;
+                        break;
+                    default:
+                        break;
+                }
 
 
-            foreach (IntegradorV1Detalle auxdetalle in auxComprobante.detalles)
-            {
+                switch (auxComprobante.IdTipoDocumentoRef)
+                {
+                    case 16:
+                        double CON_M3 = Convert.ToDouble(auxComprobante.ConsumoM3);
+                        ObjSAPComprobante.UserFields.Fields.Item("U_CON_M3").Value = CON_M3;
+                        double CON_HW = Convert.ToDouble(auxComprobante.ConsumoHW);
+                        ObjSAPComprobante.UserFields.Fields.Item("U_CON_KWH").Value = CON_HW;
+                        break;
+
+                    default:
+                        break;
+                }
+
+                ObjSAPComprobante.Indicator = "01";
+                ObjSAPComprobante.DocType = SAPbobsCOM.BoDocumentTypes.dDocument_Service;
+
+                ObjSAPComprobante.JournalMemo = auxComprobante.detalles[0].DescripcionArticulo;
+                ConfiguracionSociedadDAO oConfiguracionSociedadDAO = new ConfiguracionSociedadDAO();
+                List<ConfiguracionSociedadDTO> configuracionSociedad = oConfiguracionSociedadDAO.ObtenerConfiguracionSociedad(1, BaseDatos, ref mensaje_error);
+                string CuentaAsocFT = oConsultasSQL.ObtenerCuentaContable(configuracionSociedad[0].ctaAsocFT, BaseDatosSAP);
+                ObjSAPComprobante.ControlAccount = CuentaAsocFT;
 
 
-                ObjSAPComprobante.Lines.ItemDescription = auxdetalle.DescripcionArticulo;
+                TiposDocumentosDAO oTiposDocumentosDAO = new TiposDocumentosDAO();
+                List<TiposDocumentosDTO> lstTiposDocumentosDTO = oTiposDocumentosDAO.ObtenerDatosxID(auxComprobante.IdTipoDocumentoRef, BaseDatos, ref mensaje_error);
+                
+                if(lstTiposDocumentosDTO[0].CodeSAP == "0" || lstTiposDocumentosDTO[0].CodeSAP == null)
+                {
+                    ObjSAPComprobante.Indicator = "01";
+                    ObjSAPComprobante.FolioPrefixString = "FP";
+                }
+                else
+                {
+                    ObjSAPComprobante.Indicator = lstTiposDocumentosDTO[0].CodeSAP;
+                    ObjSAPComprobante.FolioPrefixString = lstTiposDocumentosDTO[0].PrefijoSAP;
 
-                ObjSAPComprobante.Lines.ProjectCode = datosObra[0].Codigo;
-                ObjSAPComprobante.Lines.ShipDate = auxComprobante.FechaDocumento;
+                }
+
+                decimal SUMASubTotal = 0;
+                decimal SUMAIGV = 0;
+                decimal SUMATotal = 0;
 
 
-                ObjSAPComprobante.Lines.Quantity = Convert.ToDouble(auxdetalle.Cantidad);
+                foreach (IntegradorV1Detalle auxdetalle in auxComprobante.detalles)
+                {
 
-                ObjSAPComprobante.Lines.UserFields.Fields.Item("U_SMC_CODIGO_ITEM").Value = auxdetalle.CodigoArticulo;
 
-               var cuentaContable = "";
+                    ObjSAPComprobante.Lines.ItemDescription = auxdetalle.DescripcionArticulo;
+
+                    ObjSAPComprobante.Lines.ProjectCode = datosObra[0].CodProyecto;
+                    ObjSAPComprobante.Lines.ShipDate = auxComprobante.FechaDocumento;
+
+
+                    ObjSAPComprobante.Lines.Quantity = Convert.ToDouble(auxdetalle.Cantidad);
+
+                    ObjSAPComprobante.Lines.UserFields.Fields.Item("U_SMC_CODIGO_ITEM").Value = auxdetalle.CodigoArticulo;
+
+                    var cuentaContable = "";
 
 
                     if (auxComprobante.IdTipoDocumento == 18)
                     {
-                         cuentaContable = oConsultasSQL.ObtenerCuentaContable(datosDivision[0].CuentaContable);
+                        cuentaContable = oConsultasSQL.ObtenerCuentaContable(datosDivision[0].CuentaContable,BaseDatosSAP);
                     }
                     else if (auxComprobante.IdTipoDocumento == 1338)
                     {
-                        ObraCatalogoServicioDTO oObraCatalogoServicioDTO = oObraDAO.ObtenerDatosCatalogoServicioxId(auxdetalle.IdArticulo, auxComprobante.IdObra, ref mensaje_error);
-                        cuentaContable = oConsultasSQL.ObtenerCuentaContable(oObraCatalogoServicioDTO.CuentaContable);
+                        ObraCatalogoServicioDTO oObraCatalogoServicioDTO = oObraDAO.ObtenerDatosCatalogoServicioxId(auxdetalle.IdArticulo, auxComprobante.IdObra, BaseDatos, ref mensaje_error);
+                        cuentaContable = oConsultasSQL.ObtenerCuentaContable(oObraCatalogoServicioDTO.CuentaContable,BaseDatosSAP);
                     }
 
-                ObjSAPComprobante.Lines.AccountCode = cuentaContable;
+                    ObjSAPComprobante.Lines.AccountCode = cuentaContable;
 
                     if (datosProveedor[0].Afecto4ta == true)
                     {
@@ -363,51 +395,68 @@ namespace ISAP
 
 
                     if (auxdetalle.IdIndicadorImpuesto == 1)
-                {
-                    ObjSAPComprobante.Lines.UnitPrice = (double)auxdetalle.total_valor_item; //sin igv
-                    ObjSAPComprobante.Lines.TaxCode = "IGV";//"IGV";
-                    ObjSAPComprobante.Lines.PriceAfterVAT = (double)auxdetalle.total_valor_item; // sin igv
-                    ObjSAPComprobante.Lines.TaxJurisdictions.JurisdictionCode = "IGV";
-                    ObjSAPComprobante.Lines.TaxJurisdictions.JurisdictionType = 1;
-                    ObjSAPComprobante.Lines.TaxJurisdictions.TaxAmount = Convert.ToDouble(auxdetalle.total_igv); //MontoIGV
-                    ObjSAPComprobante.Lines.TaxTotal = Convert.ToDouble(auxdetalle.total_item);
-                   
-                }
-                if (auxdetalle.IdIndicadorImpuesto == 2)
-                {
-                        ObjSAPComprobante.Lines.UnitPrice = (double)auxdetalle.total_valor_item; //sin igv
+                    {
+                        ObjSAPComprobante.Lines.UnitPrice = (double) Math.Round(auxdetalle.total_valor_item,2); //sin igv
+                        ObjSAPComprobante.Lines.TaxCode = "IGV";//"IGV";
+                        ObjSAPComprobante.Lines.PriceAfterVAT = (double)Math.Round(auxdetalle.total_valor_item,2); // sin igv
+                        ObjSAPComprobante.Lines.TaxJurisdictions.JurisdictionCode = "IGV";
+                        ObjSAPComprobante.Lines.TaxJurisdictions.JurisdictionType = 1;
+                        ObjSAPComprobante.Lines.TaxJurisdictions.TaxAmount = Convert.ToDouble(auxdetalle.total_valor_item * auxdetalle.porcentaje_igv); //MontoIGV
+                        ObjSAPComprobante.Lines.TaxTotal = Convert.ToDouble(Math.Round(auxdetalle.total_item,2));
+
+                        SUMASubTotal += Math.Round(auxdetalle.total_valor_item,2);
+                        SUMAIGV += auxdetalle.total_valor_item * auxdetalle.porcentaje_igv;
+                        SUMATotal += Math.Round(auxdetalle.total_item,2);
+
+                    }
+                    if (auxdetalle.IdIndicadorImpuesto == 2)
+                    {
+                        ObjSAPComprobante.Lines.UnitPrice = (double)Math.Round(auxdetalle.total_valor_item, 2); //sin igv
                         ObjSAPComprobante.Lines.TaxCode = "EXO";//"IGV";
-                        ObjSAPComprobante.Lines.PriceAfterVAT = (double)auxdetalle.total_valor_item; // sin igv
-                        //ObjSAPComprobante.Lines.TaxJurisdictions.JurisdictionCode = "IGV";
-                        //ObjSAPComprobante.Lines.TaxJurisdictions.JurisdictionType = 1;
-                        //ObjSAPComprobante.Lines.TaxJurisdictions.TaxAmount = Convert.ToDouble(auxdetalle.total_igv); //MontoIGV
-                        //ObjSAPComprobante.Lines.TaxTotal = Convert.ToDouble(auxdetalle.total_item);
-                        //ObjSAPComprobante.Lines.WTLiable = SAPbobsCOM.BoYesNoEnum.tNO;
-                }
-                if (auxdetalle.IdIndicadorImpuesto == 3)
-                {
-                        ObjSAPComprobante.Lines.UnitPrice = (double)auxdetalle.total_valor_item; //sin igv
+                        ObjSAPComprobante.Lines.PriceAfterVAT = (double)Math.Round(auxdetalle.total_valor_item, 2); // sin igv
+                        SUMASubTotal += auxdetalle.total_valor_item;
+                        SUMATotal += auxdetalle.total_item;
+                    }
+                    if (auxdetalle.IdIndicadorImpuesto == 3)
+                    {
+                        ObjSAPComprobante.Lines.UnitPrice = (double)Math.Round(auxdetalle.total_valor_item, 2); //sin igv
                         ObjSAPComprobante.Lines.TaxCode = "INA";//"IGV";
-                        ObjSAPComprobante.Lines.PriceAfterVAT = (double)auxdetalle.total_valor_item; // sin igv
-                        //ObjSAPComprobante.Lines.TaxJurisdictions.JurisdictionCode = "IGV";
-                        //ObjSAPComprobante.Lines.TaxJurisdictions.JurisdictionType = 1;
-                        //ObjSAPComprobante.Lines.TaxJurisdictions.TaxAmount = Convert.ToDouble(auxdetalle.total_igv); //MontoIGV
-                        //ObjSAPComprobante.Lines.TaxTotal = Convert.ToDouble(auxdetalle.total_item);
-                        //ObjSAPComprobante.Lines.WTLiable = SAPbobsCOM.BoYesNoEnum.tNO;
-                }
+                        ObjSAPComprobante.Lines.PriceAfterVAT = (double)Math.Round(auxdetalle.total_valor_item,2); // sin igv
+                        SUMASubTotal += auxdetalle.total_valor_item;
+                        SUMATotal += auxdetalle.total_item;
+                    }
 
 
                     ObjSAPComprobante.Lines.Add();
                 }
+
+                //VALIDACION MONTOS
+
+                decimal IGVRedondado = Math.Round(SUMAIGV, 2, MidpointRounding.AwayFromZero);
+
+
+                decimal Monto2Decimales = auxComprobante.SubTotal + auxComprobante.Impuesto;
+                decimal MontoDecimalesCompletos = SUMASubTotal +IGVRedondado;
+
+                if (Monto2Decimales != MontoDecimalesCompletos)
+                {
+                    auxComprobante.Redondeo += Monto2Decimales - MontoDecimalesCompletos;
+                }
+
+
+                if (auxComprobante.Redondeo != 0)
+                {
+                    ObjSAPComprobante.Rounding = SAPbobsCOM.BoYesNoEnum.tYES;
+                    ObjSAPComprobante.RoundingDiffAmount = (double)auxComprobante.Redondeo;
+
+                }
+                //REDONDEO
 
 
                 try
                 {
                     for (int i = 0; i < auxComprobante.AnexoDetalle.Count(); i++)
                     {
-
-                        //string ruta = @"C:\Users\fperez\Documents\ANEXOS\";
-                        //string ruta = @"C:\SMC\Fuentes\ProyectoConcyssa\ConcyssaWeb\wwwroot\Anexos\";
                         string ruta = @"C:\SMC\Binario\ProyectoConcyssa\wwwroot\Anexos\";
 
                         SAPbobsCOM.Attachments2 oAttachment = (SAPbobsCOM.Attachments2)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oAttachments2);
@@ -460,42 +509,79 @@ namespace ISAP
                 }
                 catch (Exception ex)
                 {
-                   return  mensaje_error = ex.Message.ToString();
+                    return mensaje_error = ex.Message.ToString();
                 }
+
 
                 var algo = ObjSAPComprobante.GroupNumber;
                 int repuesta = ObjSAPComprobante.Add();
-            string ee = "";
-            if (repuesta != 0)
-            {
-                errMsg = oCompany.GetLastErrorDescription();
-                int errCode = oCompany.GetLastErrorCode();
+                string ee = "";
+                if (repuesta != 0)
+                {
+                    errMsg = oCompany.GetLastErrorDescription();
+                    int errCode = oCompany.GetLastErrorCode();
                     //DesconectarSAP();
-                    mensaje_error = "Error en " + DatosSerie[0].Serie + "-" + auxComprobante.Correlativo + ":"+ errMsg + " Esta Facutra volverá a los registros originales";
-                //GC.Collect();
-            }
-            else
-            {
+                    mensaje_error = "Error en " + DatosSerie[0].Serie + "-" + auxComprobante.Correlativo + ":" + errMsg + " Esta Facutra volverá a los registros originales";
+                    //ERROR 10000047 - La fecha difiere de ámbito permitido (VALIDAR FECHA DE VENCIMIENTO)
+                    //GC.Collect();
+                }
+                else
+                {
+
+                    
                     IntregadorV1DAO oIntregadorV1DAO = new IntregadorV1DAO();
                     var docentry = oCompany.GetNewObjectKey();
                     var intdocentry = Convert.ToInt32(docentry);
+
+                    if (BorradorFirme != 1)
+                    {
+                        SAPbobsCOM.Recordset recordset = null;
+                        recordset = (SAPbobsCOM.Recordset)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+                        recordset.DoQuery("Select TransId FROM OPCH WHERE DOCENTRY = " + intdocentry);
+
+                        SAPbobsCOM.JournalEntries Journal = null;
+                        Journal = (SAPbobsCOM.JournalEntries)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oJournalEntries);
+
+                        Journal.GetByKey(Convert.ToInt32(recordset.Fields.Item(0).Value.ToString()));
+
+                        Journal.Reference3 = auxComprobante.detalles[0].CodigoArticulo;
+                        Journal.Update();
+
+                    }
+                    //else
+                    //{
+                    //    SAPbobsCOM.Recordset recordset = null;
+                    //    recordset = (SAPbobsCOM.Recordset)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+                    //    recordset.DoQuery("Select TransId FROM ODRF WHERE DOCENTRY = " + intdocentry);
+
+                    //    SAPbobsCOM.JournalEntries Journal = null;
+                    //    Journal = (SAPbobsCOM.JournalEntries)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oJournalEntries);
+
+                    //    Journal.GetByKey(Convert.ToInt32(recordset.Fields.Item(0).Value.ToString()));
+
+                    //    Journal.Reference2 = "TEST ENVIO BORRADOR";
+                    //    Journal.Reference3 = auxComprobante.detalles[0].CodigoArticulo;
+                    //    Journal.Update();
+                    //}
+                    
+
                     //oIntregadorV1DAO.UpdateDocEntryEnviarSAP(auxComprobante.IdEnviarSap, intdocentry);
                     foreach (IntegradorV1Detalle auxdetalle in auxComprobante.detalles)
                     {
-                        oIntregadorV1DAO.UpdateDocEntryEnviarSAPDetalle(auxdetalle.IdEnviarSapDetalle, intdocentry,BorradorFirme);
-                        oIntregadorV1DAO.UpdateDocEntryOPCHDetalle(auxdetalle.IdTablaOriginalDetalle, intdocentry,BorradorFirme);
+                        oIntregadorV1DAO.UpdateDocEntryEnviarSAPDetalle(auxdetalle.IdEnviarSapDetalle, intdocentry, BorradorFirme, BaseDatos);
+                        oIntregadorV1DAO.UpdateDocEntryOPCHDetalle(auxdetalle.IdTablaOriginalDetalle, intdocentry, BorradorFirme, BaseDatos);
                     }
 
 
-                    mensaje_error = "Factura "+ DatosSerie[0].Serie + "-" + auxComprobante.Correlativo + " Enviada a SAP con Exito";
-                //GC.Collect();
-                //DesconectarSAP();
-            }
-            return mensaje_error;
+                    mensaje_error = "Factura " + DatosSerie[0].Serie + "-" + auxComprobante.Correlativo + " Enviada a SAP con Exito";
+                    //GC.Collect();
+                    //DesconectarSAP();
+                }
+                return mensaje_error;
             }
             catch (Exception e)
             {
-                
+
                 mensaje_error = e.Message.ToString();
                 return mensaje_error;
             }
@@ -508,14 +594,13 @@ namespace ISAP
             return mensaje_error;
         }
 
-        public string AddNotaCredito(IntegradorV1DTO auxComprobante, int BorradorFirme, int SerieNotaCredito, ref string mensaje_error)
+        public string AddNotaCredito(IntegradorV1DTO auxComprobante, int BorradorFirme, int SerieNotaCredito, string BaseDatos,string BaseDatosSAP, ref string mensaje_error)
         {
             try
             {
 
                 string errMsg = "";
-                // int IdEmpresa = int.Parse(HttpContext.Current.Session["IdEmpresa"].ToString());
-                //Factura
+
                 SAPbobsCOM.Documents ObjSAPComprobante = null;
                 if (BorradorFirme == 1)
                 {
@@ -526,53 +611,41 @@ namespace ISAP
                     ObjSAPComprobante = (SAPbobsCOM.Documents)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oPurchaseCreditNotes);
                 }
 
-
-                //SAPbobsCOM.Documents ObjSAPComprobante = oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oDrafts);
-
-                //if (FacturReserva > 0)
-                //{
-                //    ObjSAPComprobante.DocObjectCode = SAPbobsCOM.BoObjectTypes.oPurchaseInvoices;
-                //    ObjSAPComprobante.ReserveInvoice = SAPbobsCOM.BoYesNoEnum.tYES;
-                //}
-                //else
-                //{
                 ObjSAPComprobante.DocObjectCode = SAPbobsCOM.BoObjectTypes.oPurchaseCreditNotes;
-                //}
 
-
-                //ConsultasHanaBL consultas = new ConsultasHanaBL();
-                //string Cuenta = consultas.ObtenerCuentaAsociadaProveedores("P" + auxComprobante.NumRucEmisor);
-                //if (Cuenta == "")
-                //{ }
-                //else
-                //{
-
-              
-
-                ////ObjSAPComprobante.ControlAccount = cuentaContable;
-                ////}
                 ObraDAO oObraDAO = new ObraDAO();
-                var datosObra = oObraDAO.ObtenerDatosxID(auxComprobante.IdObra, ref errMsg);
+                var datosObra = oObraDAO.ObtenerDatosxID(auxComprobante.IdObra, BaseDatos, ref errMsg);
 
                 DivisionDAO oDivisionDAO = new DivisionDAO();
-                var datosDivision = oDivisionDAO.ObtenerDatosxID(datosObra[0].IdDivision, ref mensaje_error);
+                var datosDivision = oDivisionDAO.ObtenerDatosxID(datosObra[0].IdDivision, BaseDatos, ref mensaje_error);
 
 
-                //ObjSAPComprobante.UserFields.Fields.Item("U_EXX_CLABYSADQ").Value = datosDivision[0].IdClasif.ToString();
+
+                if(auxComprobante.IdTipoDocumento == 18)
+                {
+                    ObjSAPComprobante.UserFields.Fields.Item("U_EXX_CLABYSADQ").Value = "1";
+                }
+                else
+                {
+                    ObjSAPComprobante.UserFields.Fields.Item("U_EXX_CLABYSADQ").Value = "5";
+                }
 
                 ConsultasSQL oConsultasSQL = new ConsultasSQL();
-             
-            
+
+
+
+
+
+                ObjSAPComprobante.Project = datosObra[0].CodProyecto;
+                TipoRegistroDAO oTipoRegistroDAO = new TipoRegistroDAO();
+                List<TipoRegistroDTO> lstTipoRegistroDTO = oTipoRegistroDAO.ObtenerDatosxID(auxComprobante.IdTipoRegistro, BaseDatos, ref mensaje_error);
+
               
-                
-                
-                ObjSAPComprobante.Project = datosObra[0].Codigo;
-                ObjSAPComprobante.Comments = "Prueba Migracion desde IntegradorV1";
 
                 ObjSAPComprobante.DocTotal = Convert.ToDouble(auxComprobante.Total);
 
                 ProveedorDAO oProveedorDAO = new ProveedorDAO();
-                var datosProveedor = oProveedorDAO.ObtenerDatosxID(auxComprobante.IdProveedor);
+                var datosProveedor = oProveedorDAO.ObtenerDatosxID(auxComprobante.IdProveedor, BaseDatos);
 
 
                 //ObjSAPComprobante.CardCode = "P" + auxComprobante.NumRucEmisor;
@@ -584,29 +657,24 @@ namespace ISAP
 
                 //ObjSAPComprobante.GroupNumber = -1;
                 ObjSAPComprobante.DocDate = auxComprobante.FechaContabilizacion; //fecha contabilizacion
-               
-                
+
+
                 ObjSAPComprobante.Series = SerieNotaCredito;
 
-                
+
 
                 CondicionPagoDAO oCondicionPagoDAO = new CondicionPagoDAO();
-                var datosCondicionPago = oCondicionPagoDAO.ObtenerDatosxID(auxComprobante.idCondicionPago);
+                var datosCondicionPago = oCondicionPagoDAO.ObtenerDatosxID(auxComprobante.idCondicionPago, BaseDatos);
                 var fechaVencimiento = auxComprobante.FechaContabilizacion.AddDays(datosCondicionPago[0].Dias);
 
-                ObjSAPComprobante.DocDueDate = fechaVencimiento; //fecha vencimiento
-
-
+                //ObjSAPComprobante.DocDueDate = fechaVencimiento; //fecha vencimiento
 
                 ObjSAPComprobante.TaxDate = auxComprobante.FechaDocumento; //fecha emision
 
                 ObjSAPComprobante.FederalTaxID = datosProveedor[0].NumeroDocumento; //nro ruc
 
-                //string codTipoDoc = auxComprobante.CodCpe;
-                //ObjSAPComprobante.Indicator = codTipoDoc;
-
                 MonedaDAO oMonedaDao = new MonedaDAO();
-                var DatosMoneda = oMonedaDao.ObtenerDatosxID(auxComprobante.IdMoneda);
+                var DatosMoneda = oMonedaDao.ObtenerDatosxID(auxComprobante.IdMoneda, BaseDatos);
 
 
                 if (DatosMoneda[0].Codigo == "USD")
@@ -623,19 +691,36 @@ namespace ISAP
                 // ObjSAPComprobante.Series =
 
                 SerieDAO oSerieDAO = new SerieDAO();
-                var DatosSerie = oSerieDAO.ObtenerDatosxID(auxComprobante.IdSerie);
+                var DatosSerie = oSerieDAO.ObtenerDatosxID(auxComprobante.IdSerie, BaseDatos);
 
 
-                ObjSAPComprobante.NumAtCard = DatosSerie[0].Serie + "-" + auxComprobante.Correlativo; //F001-255
+                string SerieRef = auxComprobante.NumSerieTipoDocumentoRef.ToUpper();
 
-                ObjSAPComprobante.UserFields.Fields.Item("U_CON_nrosisgestion").Value = auxComprobante.NumSerieTipoDocumentoRef.ToUpper();
+                //ObjSAPComprobante.NumAtCard = DatosSerie[0].Serie + "-" + auxComprobante.Correlativo; //F001-255
+                ObjSAPComprobante.NumAtCard = SerieRef; //F001-255
+
+                //ObjSAPComprobante.UserFields.Fields.Item("U_CON_nrosisgestion").Value = auxComprobante.NumSerieTipoDocumentoRef.ToUpper();
+                ObjSAPComprobante.UserFields.Fields.Item("U_CON_nrosisgestion").Value = DatosSerie[0].Serie + "-" + auxComprobante.Correlativo;
 
                 ObjSAPComprobante.UserFields.Fields.Item("U_CON_OCCompras").Value = auxComprobante.NumOC;
 
-                ObjSAPComprobante.FolioPrefixString = "NC";//auxComprobante.SerieCpe;
-                ObjSAPComprobante.FolioNumber = Convert.ToInt32(auxComprobante.Correlativo);
+                // ObjSAPComprobante.FolioPrefixString = "FT";//auxComprobante.SerieCpe;
+
+                // ObjSAPComprobante.FolioNumber = Convert.ToInt32(auxComprobante.Correlativo);
+                try
+                {
+                    ObjSAPComprobante.FolioNumber = int.Parse(SerieRef.Split("-")[1]);
+                }
+                catch (Exception e)
+                {
+                    ObjSAPComprobante.FolioNumber = int.Parse(SerieRef);
+                }
+
 
                 //if (auxComprobante.detalles[0].nc)
+
+
+
 
                 switch (auxComprobante.IdTipoRegistro)
                 {
@@ -645,7 +730,7 @@ namespace ISAP
                     case 4:
                         ObjSAPComprobante.UserFields.Fields.Item("U_beas_type").Value = "R";
                         GiroDAO oGiroDAO = new GiroDAO();
-                        var datosGiro = oGiroDAO.ObtenerGiroxId(auxComprobante.IdSemana, ref errMsg);
+                        var datosGiro = oGiroDAO.ObtenerGiroxId(auxComprobante.IdSemana, BaseDatos, ref errMsg);
                         string NumGiro = datosGiro[0].NombSerie + "-" + datosGiro[0].Correlativo;
 
                         ObjSAPComprobante.UserFields.Fields.Item("U_EXX_NUMEREND").Value = NumGiro;
@@ -656,6 +741,11 @@ namespace ISAP
                     default:
                         break;
                 }
+                ObjSAPComprobante.JournalMemo = auxComprobante.detalles[0].DescripcionArticulo;
+                ConfiguracionSociedadDAO oConfiguracionSociedadDAO = new ConfiguracionSociedadDAO();
+                List<ConfiguracionSociedadDTO> configuracionSociedad = oConfiguracionSociedadDAO.ObtenerConfiguracionSociedad(1, BaseDatos, ref mensaje_error);
+                string CuentaAsocNC = oConsultasSQL.ObtenerCuentaContable(configuracionSociedad[0].ctaAsocNC, BaseDatosSAP);
+                ObjSAPComprobante.ControlAccount = CuentaAsocNC;
 
 
                 ObjSAPComprobante.Indicator = "01";
@@ -663,14 +753,27 @@ namespace ISAP
 
                 //ObjSAPComprobante.DiscountPercent = 0.00;
 
-                
+                TiposDocumentosDAO oTiposDocumentosDAO = new TiposDocumentosDAO();
+                List<TiposDocumentosDTO> lstTiposDocumentosDTO = oTiposDocumentosDAO.ObtenerDatosxID(auxComprobante.IdTipoDocumentoRef, BaseDatos, ref mensaje_error);
+
+                if (lstTiposDocumentosDTO[0].CodeSAP == "0" || lstTiposDocumentosDTO[0].CodeSAP == null)
+                {
+                    ObjSAPComprobante.Indicator = "07";
+                    ObjSAPComprobante.FolioPrefixString = "NC";
+                }
+                else
+                {
+                    ObjSAPComprobante.Indicator = lstTiposDocumentosDTO[0].CodeSAP;
+                    ObjSAPComprobante.FolioPrefixString = lstTiposDocumentosDTO[0].PrefijoSAP;
+
+                }
                 foreach (IntegradorV1Detalle auxdetalle in auxComprobante.detalles)
                 {
 
 
                     ObjSAPComprobante.Lines.ItemDescription = auxdetalle.DescripcionArticulo;
 
-                    ObjSAPComprobante.Lines.ProjectCode = datosObra[0].Codigo;
+                    ObjSAPComprobante.Lines.ProjectCode = datosObra[0].CodProyecto;
                     ObjSAPComprobante.Lines.ShipDate = auxComprobante.FechaDocumento;
 
 
@@ -680,32 +783,32 @@ namespace ISAP
 
 
                     ArticuloDAO articuloDAO = new ArticuloDAO();
-                    List<ArticuloDTO> lstArticulo = articuloDAO.ObtenerDatosxID(auxdetalle.IdArticulo, ref mensaje_error);
+                    List<ArticuloDTO> lstArticulo = articuloDAO.ObtenerDatosxID(auxdetalle.IdArticulo, BaseDatos, ref mensaje_error);
                     var cuentaContable = "";
 
                     if (lstArticulo[0].Inventario)
                     {
-                        cuentaContable = oConsultasSQL.ObtenerCuentaContable(datosDivision[0].CuentaContable);
+                        cuentaContable = oConsultasSQL.ObtenerCuentaContable(datosDivision[0].CuentaContable, BaseDatosSAP);
                     }
                     else
                     {
-                        ObraCatalogoServicioDTO oObraCatalogoServicioDTO = oObraDAO.ObtenerDatosCatalogoServicioxId(auxdetalle.IdArticulo, auxComprobante.IdObra, ref mensaje_error);
-                        cuentaContable = oConsultasSQL.ObtenerCuentaContable(oObraCatalogoServicioDTO.CuentaContable);
+                        ObraCatalogoServicioDTO oObraCatalogoServicioDTO = oObraDAO.ObtenerDatosCatalogoServicioxId(auxdetalle.IdArticulo, auxComprobante.IdObra, BaseDatos, ref mensaje_error);
+                        cuentaContable = oConsultasSQL.ObtenerCuentaContable(oObraCatalogoServicioDTO.CuentaContable, BaseDatosSAP);
                     }
 
                     ObjSAPComprobante.Lines.AccountCode = cuentaContable;
 
 
-                    if(auxdetalle.NCIdOPCHDetalle > 0)
+                    if (auxdetalle.NCIdOPCHDetalle > 0)
                     {
                         IntregadorV1DAO oIntregadorV1DAO = new IntregadorV1DAO();
-                        var datosFactura =  oIntregadorV1DAO.ObtenerDocEntryFacturaxNotaCredito(auxdetalle.NCIdOPCHDetalle);
-                    
+                        var datosFactura = oIntregadorV1DAO.ObtenerDocEntryFacturaxNotaCredito(auxdetalle.NCIdOPCHDetalle, BaseDatos);
+
 
                         if (datosFactura[0].EnviadoPor == 2)
                         {
 
-                            var DatosDocEntry = oConsultasSQL.ObtenerDetallexDocEntry(datosFactura[0].DocEntry,auxdetalle.CodigoArticulo,auxdetalle.Cantidad);
+                            var DatosDocEntry = oConsultasSQL.ObtenerDetallexDocEntry(datosFactura[0].DocEntry, auxdetalle.CodigoArticulo, auxdetalle.Cantidad,BaseDatosSAP);
 
                             ObjSAPComprobante.Lines.BaseEntry = datosFactura[0].DocEntry;
                             ObjSAPComprobante.Lines.BaseLine = DatosDocEntry[0].LineNum;
@@ -718,51 +821,41 @@ namespace ISAP
 
                     if (auxdetalle.IdIndicadorImpuesto == 1)
                     {
-                        ObjSAPComprobante.Lines.UnitPrice = (double)auxdetalle.total_valor_item; //sin igv
+                        ObjSAPComprobante.Lines.UnitPrice = (double)Math.Round(auxdetalle.total_valor_item, 2); //sin igv
                         ObjSAPComprobante.Lines.TaxCode = "IGV";//"IGV";
-                        ObjSAPComprobante.Lines.PriceAfterVAT = (double)auxdetalle.total_valor_item; // sin igv
+                        ObjSAPComprobante.Lines.PriceAfterVAT = (double)Math.Round(auxdetalle.total_valor_item, 2); // sin igv
                         ObjSAPComprobante.Lines.TaxJurisdictions.JurisdictionCode = "IGV";
                         ObjSAPComprobante.Lines.TaxJurisdictions.JurisdictionType = 1;
-                        ObjSAPComprobante.Lines.TaxJurisdictions.TaxAmount = Convert.ToDouble(auxdetalle.total_igv); //MontoIGV
-                        ObjSAPComprobante.Lines.TaxTotal = Convert.ToDouble(auxdetalle.total_item);
+                        ObjSAPComprobante.Lines.TaxJurisdictions.TaxAmount = Convert.ToDouble(Math.Round(auxdetalle.total_igv, 2)); //MontoIGV
+                        ObjSAPComprobante.Lines.TaxTotal = Convert.ToDouble(Math.Round(auxdetalle.total_item, 2));
                         ObjSAPComprobante.Lines.WTLiable = SAPbobsCOM.BoYesNoEnum.tNO;
                     }
                     if (auxdetalle.IdIndicadorImpuesto == 2)
                     {
-                        ObjSAPComprobante.Lines.UnitPrice = (double)auxdetalle.total_valor_item; //sin igv
+                        ObjSAPComprobante.Lines.UnitPrice = (double)Math.Round(auxdetalle.total_valor_item, 2); //sin igv
                         ObjSAPComprobante.Lines.TaxCode = "EXO";//"IGV";
-                        ObjSAPComprobante.Lines.PriceAfterVAT = (double)auxdetalle.total_valor_item; // sin igv
-                        //ObjSAPComprobante.Lines.TaxJurisdictions.JurisdictionCode = "IGV";
-                        //ObjSAPComprobante.Lines.TaxJurisdictions.JurisdictionType = 1;
-                        //ObjSAPComprobante.Lines.TaxJurisdictions.TaxAmount = Convert.ToDouble(auxdetalle.total_igv); //MontoIGV
-                        //ObjSAPComprobante.Lines.TaxTotal = Convert.ToDouble(auxdetalle.total_item);
-                        //ObjSAPComprobante.Lines.WTLiable = SAPbobsCOM.BoYesNoEnum.tNO;
+                        ObjSAPComprobante.Lines.PriceAfterVAT = (double)Math.Round(auxdetalle.total_valor_item, 2); // sin igv
+
                     }
-                    if ( auxdetalle.IdIndicadorImpuesto == 3)
+                    if (auxdetalle.IdIndicadorImpuesto == 3)
                     {
-                        ObjSAPComprobante.Lines.UnitPrice = (double)auxdetalle.total_valor_item; //sin igv
+                        ObjSAPComprobante.Lines.UnitPrice = (double)Math.Round(auxdetalle.total_valor_item, 2); //sin igv
                         ObjSAPComprobante.Lines.TaxCode = "INA";//"IGV";
-                        ObjSAPComprobante.Lines.PriceAfterVAT = (double)auxdetalle.total_valor_item; // sin igv
-                        //ObjSAPComprobante.Lines.TaxJurisdictions.JurisdictionCode = "IGV";
-                        //ObjSAPComprobante.Lines.TaxJurisdictions.JurisdictionType = 1;
-                        //ObjSAPComprobante.Lines.TaxJurisdictions.TaxAmount = Convert.ToDouble(auxdetalle.total_igv); //MontoIGV
-                        //ObjSAPComprobante.Lines.TaxTotal = Convert.ToDouble(auxdetalle.total_item);
-                        //ObjSAPComprobante.Lines.WTLiable = SAPbobsCOM.BoYesNoEnum.tNO;
+                        ObjSAPComprobante.Lines.PriceAfterVAT = (double)Math.Round(auxdetalle.total_valor_item, 2); // sin igv
+
                     }
 
 
 
                     ObjSAPComprobante.Lines.Add();
                 }
+                
 
 
                 try
                 {
                     for (int i = 0; i < auxComprobante.AnexoDetalle.Count(); i++)
                     {
-
-                        //string ruta = @"C:\Users\fperez\Documents\ANEXOS\";
-                        //string ruta = @"C:\SMC\Fuentes\ProyectoConcyssa\ConcyssaWeb\wwwroot\Anexos\";
                         string ruta = @"C:\SMC\Binario\ProyectoConcyssa\wwwroot\Anexos\";
 
                         SAPbobsCOM.Attachments2 oAttachment = (SAPbobsCOM.Attachments2)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oAttachments2);
@@ -836,13 +929,12 @@ namespace ISAP
                     var intdocentry = Convert.ToInt32(docentry);
                     //oIntregadorV1DAO.UpdateDocEntryEnviarSAP(auxComprobante.IdEnviarSap, intdocentry);
                     foreach (IntegradorV1Detalle auxdetalle in auxComprobante.detalles)
-                    {                 
-                        oIntregadorV1DAO.UpdateDocEntryORPCDetalle(auxdetalle.IdTablaOriginalDetalle, intdocentry, BorradorFirme);
+                    {
+                        oIntregadorV1DAO.UpdateDocEntryORPCDetalle(auxdetalle.IdTablaOriginalDetalle, intdocentry, BorradorFirme, BaseDatos);
                     }
                     //Convert.ToInt32(oCompany.GetNewObjectKey);
                     mensaje_error = "Nota de Credito " + DatosSerie[0].Serie + "-" + auxComprobante.Correlativo + " Enviada a SAP con Exito";
-                    //GC.Collect();
-                    //DesconectarSAP();
+
                 }
                 return mensaje_error;
             }
@@ -855,57 +947,39 @@ namespace ISAP
             // }
         }
 
-        public string AddAsientoContable(string CuentaInv, decimal MontoInv, string CodigoObra, List<CuentaConsumo> Cuentas, int GrupoCreacion,ref string mensaje_error)
+        public string AddAsientoContable(string Proyecto, List<CuentaConsumoSAP> Cuentas, int GrupoCreacion, DateTime FechaContabilizacion, string BaseDatos,string BaseDatosSAP, ref string mensaje_error)
         {
             try
             {
 
                 string errMsg = "";
-        
+
                 SAPbobsCOM.JournalEntries ObjSAPComprobante = null;
-                //if (BorradorFirme == 1)
-                //{
-                //    ObjSAPComprobante = (SAPbobsCOM.Documents)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oDrafts);
-                //}
-                //else
-                //{
+
                 ObjSAPComprobante = (SAPbobsCOM.JournalEntries)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oJournalEntries);
-                //ObjSAPComprobante = (SAPbobsCOM.JournalEntries)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oDrafts);
-                //}
+
 
                 ConsultasSQL oConsultasSQL = new ConsultasSQL();
 
-             
+                ObjSAPComprobante.Memo = "Movimiento de Consumo de Materiales";
 
-                ObjSAPComprobante.ProjectCode = CodigoObra;
+                ObjSAPComprobante.ReferenceDate = FechaContabilizacion;
+
+                ObjSAPComprobante.ProjectCode = Proyecto;
 
                 for (int i = 0; i < Cuentas.Count; i++)
                 {
-                    string CodigoCuentaSAP = oConsultasSQL.ObtenerCuentaContable(Cuentas[i].NumeroCuenta);
+                    string CodigoCuentaSAP = oConsultasSQL.ObtenerCuentaContable(Cuentas[i].NumeroCuenta,BaseDatosSAP);
 
-                    ObjSAPComprobante.TaxDate = DateTime.Now;
-                    ObjSAPComprobante.Lines.AccountCode = CodigoCuentaSAP;                   
-                    ObjSAPComprobante.Lines.Credit = Convert.ToDouble(0);
-                    ObjSAPComprobante.Lines.Debit = Convert.ToDouble(Cuentas[i].Monto);
-                    ObjSAPComprobante.Lines.DueDate = DateTime.Now;
-                    ObjSAPComprobante.Lines.ReferenceDate1 = DateTime.Now; 
-                    ObjSAPComprobante.Lines.TaxDate = DateTime.Now;
+                    ObjSAPComprobante.TaxDate = FechaContabilizacion;//DateTime.Now;
+                    ObjSAPComprobante.Lines.AccountCode = CodigoCuentaSAP;
+                    ObjSAPComprobante.Lines.Credit = Convert.ToDouble(Cuentas[i].MontoCredito);
+                    ObjSAPComprobante.Lines.Debit = Convert.ToDouble(Cuentas[i].MontoDebito);
+                    ObjSAPComprobante.Lines.DueDate = FechaContabilizacion;//DateTime.Now;
+                    ObjSAPComprobante.Lines.ReferenceDate1 = FechaContabilizacion;//DateTime.Now; 
+                    ObjSAPComprobante.Lines.TaxDate = FechaContabilizacion;//DateTime.Now;
                     ObjSAPComprobante.Lines.Add();
                 }
-
-                string CodigoCuentaSAPInv = oConsultasSQL.ObtenerCuentaContable(CuentaInv);
-                ObjSAPComprobante.TaxDate = DateTime.Now;
-                ObjSAPComprobante.Lines.AccountCode = CodigoCuentaSAPInv;            
-                ObjSAPComprobante.Lines.Credit = Convert.ToDouble(MontoInv);   
-                ObjSAPComprobante.Lines.Debit = Convert.ToDouble(0);
-                ObjSAPComprobante.Lines.DueDate = DateTime.Now;
-                ObjSAPComprobante.Lines.ReferenceDate1 = DateTime.Now;
-                ObjSAPComprobante.Lines.TaxDate = DateTime.Now;
-                ObjSAPComprobante.Lines.Add();
-
-
-
-
 
                 int repuesta = ObjSAPComprobante.Add();
                 string ee = "";
@@ -924,9 +998,9 @@ namespace ISAP
                     var intdocentry = Convert.ToInt32(docentry);
 
 
-                    oIntegradorConsumoDAO.ActualizarEnvioSap(GrupoCreacion, intdocentry);
-                    
-             
+                    oIntegradorConsumoDAO.ActualizarEnvioSap(GrupoCreacion, intdocentry, BaseDatos);
+
+
                     mensaje_error = "Enviada a SAP con Exito";
                     //GC.Collect();
                     //DesconectarSAP();

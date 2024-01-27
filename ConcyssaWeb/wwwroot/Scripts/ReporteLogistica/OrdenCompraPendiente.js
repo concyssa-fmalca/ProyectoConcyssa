@@ -1,4 +1,4 @@
-﻿function GenerarReporteOcPendiente() {
+﻿function GenerarReporteOcPendiente(Tipo) {
     let IdProveedor = $("#IdProveedor").val();
     let IdBase = $("#IdBase").val();
     let IdObra = $("#IdObra").val();
@@ -6,18 +6,62 @@
     let FechaFinal = $("#txtFechaFin").val();
 
     let respustavalidacion = "";
-    $.ajaxSetup({ async: false });
-    $.post("GenerarReporteOcPendiente", { 'NombreReporte': 'OcPendiente', 'Formato': 'PDF', 'IdProveedor': IdProveedor, 'IdBase': IdBase, 'IdObra': IdObra, 'FechaInicial': FechaInicial, 'FechaFinal': FechaFinal }, function (data, status) {
-        let datos;
-        if (validadJson(data)) {
-            let datobase64;
-            datobase64 = "data:application/octet-stream;base64,"
-            datos = JSON.parse(data);
-            verBase64PDF(datos) 
-        } else {
-            respustavalidacion;
-        }
+
+    Swal.fire({
+        title: "Generando Reporte...",
+        text: "Por favor espere",
+        showConfirmButton: false,
+        allowOutsideClick: false
     });
+
+    setTimeout(() => {
+
+        if (Tipo == 'excel') {
+            $.ajaxSetup({ async: false });
+            $.post("GenerarReporteOcPendiente", { 'NombreReporte': 'OcPendiente', 'Formato': 'excel', 'IdProveedor': IdProveedor, 'IdBase': IdBase, 'IdObra': IdObra, 'FechaInicial': FechaInicial, 'FechaFinal': FechaFinal }, function (data, status) {
+                let datos;
+                if (validadJson(data)) {
+                    window.open("http://192.168.0.209/Anexos/ExcelReporte/OcPendiente.xlsx", '_blank', 'noreferrer');
+                    Swal.fire(
+                        'Correcto',
+                        'Excel Generado',
+                        'success'
+                    )
+                } else {
+                    Swal.fire(
+                        'Error',
+                        'Ocurrio un Error',
+                        'error'
+                    )
+                }
+            });
+        } else {
+            $.ajaxSetup({ async: false });
+            $.post("GenerarReporteOcPendiente", { 'NombreReporte': 'OcPendiente', 'Formato': 'PDF', 'IdProveedor': IdProveedor, 'IdBase': IdBase, 'IdObra': IdObra, 'FechaInicial': FechaInicial, 'FechaFinal': FechaFinal }, function (data, status) {
+                let datos;
+                if (validadJson(data)) {
+                    let datobase64;
+                    datobase64 = "data:application/octet-stream;base64,"
+                    datos = JSON.parse(data);
+                    verBase64PDF(datos) 
+                    Swal.fire(
+                        'Correcto',
+                        'Reporte Generado',
+                        'success'
+                    )
+                } else {
+                    respustavalidacion;
+                    Swal.fire(
+                        'Error',
+                        'Ocurrio un Error',
+                        'error'
+                    )
+                }
+            });
+        }
+
+    }, 200)
+
 }
 
 

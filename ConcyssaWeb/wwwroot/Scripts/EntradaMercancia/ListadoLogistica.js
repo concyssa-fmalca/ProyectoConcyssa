@@ -463,6 +463,10 @@ function ConsultaServidor(url) {
 
 
 function ModalNuevo() {
+    $("#IdProveedor").prop("disabled", false);
+    $("#Direccion").prop("disabled", false);
+    $("#Telefono").prop("disabled", false);
+    $("#cboMoneda").prop("disabled", false);
     $("#btnEditar").hide()
     $("#btnExtorno").hide()
     $("#btnGrabar").show()
@@ -1612,6 +1616,13 @@ function GuardarSolicitud() {
         arrayCantidadNecesaria.push(($(elemento).val()).replace(/,/g, ""));
     });
 
+    for (var i = 0; i < arrayCantidadNecesaria.length; i++) {
+        if (arrayCantidadNecesaria[i] <= 0) {
+            Swal.fire("Advertencia", "Error en Linea " + (i+1) + " , La cantidad no puede ser Menor o Igual a Cero </br> En caso esta linea no cuente con entregas solo quitela con el botón eliminar a la derecha de la misma linea", "info")
+            return
+        }
+    }
+
     let arrayPrecioInfo = new Array();
     $("input[name='txtPrecioInfo[]']").each(function (indice, elemento) {
         arrayPrecioInfo.push(($(elemento).val()).replace(/,/g,""));
@@ -1669,9 +1680,9 @@ function GuardarSolicitud() {
 
     let IdCentroCosto = $("#cboCentroCosto").val();
     let Comentario = $("#txtComentarios").val();
-    let SubTotal = $("#txtTotalAntesDescuento").val();
-    let Impuesto = $("#txtImpuesto").val();
-    let Total = $("#txtTotal").val();
+    let SubTotal = ($("#txtTotalAntesDescuento").val()).replace(/,/g, "");
+    let Impuesto = ($("#txtImpuesto").val()).replace(/,/g, "");
+    let Total = ($("#txtTotal").val()).replace(/,/g, "");
     let IdCuadrilla = $("#IdCuadrilla").val();
 
     let IdResponsable = $("#IdResponsable").val();
@@ -2309,6 +2320,12 @@ function EnviarTipoCambioDetalle() {
 
 
 
+function SeleccionTrItem(ItemCodigo) {
+
+    $("#rdSeleccionado" + ItemCodigo).prop("checked", true);
+
+}
+
 
 
 function BuscarCodigoProducto() {
@@ -2334,7 +2351,7 @@ function BuscarCodigoProducto() {
 
                 for (var i = 0; i < items.length; i++) {
                     /* if (items[i].Inventario == TipoItem) {*/
-                    tr += '<tr>' +
+                    tr += '<tr onclick="SeleccionTrItem(' + items[i].IdArticulo + ')">' +
                         '<td><input type="radio" clase="" id="rdSeleccionado' + items[i].IdArticulo + '"  name="rdSeleccionado"  value = "' + items[i].IdArticulo + '" ></td>' +
                         '<td>' + items[i].Codigo + '</td>' +
                         '<td>' + items[i].Descripcion1 + '</td>' +
@@ -2389,7 +2406,7 @@ function BuscarCodigoProducto() {
 
                     for (var i = 0; i < items.length; i++) {
                         /* if (items[i].Inventario == TipoItem) {*/
-                        tr += '<tr>' +
+                        tr += '<tr onclick="SeleccionTrItem(' + items[i].IdArticulo + ')">' +
                             '<td><input type="radio" clase="" id="rdSeleccionado' + items[i].IdArticulo + '"  name="rdSeleccionado"  value = "' + items[i].IdArticulo + '" ></td>' +
                             '<td>' + items[i].Codigo + '</td>' +
                             '<td>' + items[i].Descripcion1 + '</td>' +
@@ -3601,6 +3618,10 @@ function AgregarSeleccionadoPedido() {
     $("#IdTipoProducto").val(0);
     $("#IdTipoProducto").prop("disabled", true);
     $("#btn_agregaritem").prop("disabled", true);
+    $("#IdProveedor").prop("disabled", true);
+    $("#Direccion").prop("disabled", true);
+    $("#Telefono").prop("disabled", true);
+    $("#cboMoneda").prop("disabled", true);
 }
 
 

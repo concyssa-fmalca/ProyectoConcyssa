@@ -12,10 +12,10 @@ namespace DAO
 {
     public class ConfiguracionSociedadDAO
     {
-        public List<ConfiguracionSociedadDTO> ObtenerConfiguracionSociedad(int IdSociedad, ref string mensaje_error)
+        public List<ConfiguracionSociedadDTO> ObtenerConfiguracionSociedad(int IdSociedad, string BaseDatos, ref string mensaje_error)
         {
             List<ConfiguracionSociedadDTO> lstConfiguracionSociedadDTO = new List<ConfiguracionSociedadDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -32,6 +32,9 @@ namespace DAO
                         oConfiguracionSociedadDTO.RazonSocial = (drd["RazonSocial"].ToString());
                         oConfiguracionSociedadDTO.Direccion = (drd["Direccion"].ToString());
                         oConfiguracionSociedadDTO.NombreBDSAP = (drd["NombreBDSAP"].ToString());
+                        oConfiguracionSociedadDTO.Alias = (drd["Alias"].ToString());
+                        oConfiguracionSociedadDTO.ctaAsocFT = (drd["ctaAsocFT"].ToString());
+                        oConfiguracionSociedadDTO.ctaAsocNC = (drd["ctaAsocNC"].ToString());
                         lstConfiguracionSociedadDTO.Add(oConfiguracionSociedadDTO);
                     }
                     drd.Close();
@@ -47,13 +50,13 @@ namespace DAO
         }
 
 
-        public int UpdateInsertConfiguracionSociedad(ConfiguracionSociedadDTO oConfiguracionSociedadDTO,int IdSociedad, ref string mensaje_error)
+        public int UpdateInsertConfiguracionSociedad(ConfiguracionSociedadDTO oConfiguracionSociedadDTO,int IdSociedad, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -67,6 +70,9 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@RazonSocial", (oConfiguracionSociedadDTO.RazonSocial) == null ? "": oConfiguracionSociedadDTO.RazonSocial);
                         da.SelectCommand.Parameters.AddWithValue("@Direccion", oConfiguracionSociedadDTO.Direccion == null ? "": oConfiguracionSociedadDTO.Direccion);
                         da.SelectCommand.Parameters.AddWithValue("@NombreBDSAP", oConfiguracionSociedadDTO.NombreBDSAP == null ? "": oConfiguracionSociedadDTO.NombreBDSAP);
+                        da.SelectCommand.Parameters.AddWithValue("@Alias", oConfiguracionSociedadDTO.Alias == null ? "": oConfiguracionSociedadDTO.Alias);
+                        da.SelectCommand.Parameters.AddWithValue("@ctaAsocFT", oConfiguracionSociedadDTO.ctaAsocFT == null ? "": oConfiguracionSociedadDTO.ctaAsocFT);
+                        da.SelectCommand.Parameters.AddWithValue("@ctaAsocNC", oConfiguracionSociedadDTO.ctaAsocNC == null ? "": oConfiguracionSociedadDTO.ctaAsocNC);
                         da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();

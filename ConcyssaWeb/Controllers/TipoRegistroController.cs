@@ -2,6 +2,7 @@
 using DTO;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Globalization;
 
 namespace ConcyssaWeb.Controllers
 {
@@ -24,7 +25,7 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerTipoRegistros(int estado=3)
         {
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string valida = "";
             valida = validarEmpresaActual();
             if (valida != "")
@@ -34,7 +35,7 @@ namespace ConcyssaWeb.Controllers
             string mensaje_error = "";
             TipoRegistroDAO oTipoRegistroDAO = new TipoRegistroDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<TipoRegistroDTO> lstTipoRegistroDTO = oTipoRegistroDAO.ObtenerTipoRegistro(IdSociedad, estado, ref mensaje_error);
+            List<TipoRegistroDTO> lstTipoRegistroDTO = oTipoRegistroDAO.ObtenerTipoRegistro(IdSociedad, estado,BaseDatos,ref mensaje_error);
             DataTableDTO oDataTableDTO = new DataTableDTO();
          
                 oDataTableDTO.sEcho = 1;
@@ -47,7 +48,7 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerTipoRegistrosAjax(int estado = 3)
         {
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string valida = "";
             valida = validarEmpresaActual();
             if (valida != "")
@@ -57,7 +58,7 @@ namespace ConcyssaWeb.Controllers
             string mensaje_error = "";
             TipoRegistroDAO oTipoRegistroDAO = new TipoRegistroDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<TipoRegistroDTO> lstTipoRegistroDTO = oTipoRegistroDAO.ObtenerTipoRegistro(IdSociedad, estado, ref mensaje_error);
+            List<TipoRegistroDTO> lstTipoRegistroDTO = oTipoRegistroDAO.ObtenerTipoRegistro(IdSociedad, estado,BaseDatos,ref mensaje_error);
             if (lstTipoRegistroDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstTipoRegistroDTO);
@@ -73,9 +74,10 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerDatosxID(int IdTipoRegistro)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             TipoRegistroDAO oTipoRegistroDAO = new TipoRegistroDAO();
-            List<TipoRegistroDTO> lstTipoRegistroDTO = oTipoRegistroDAO.ObtenerDatosxID(IdTipoRegistro, ref mensaje_error);
+            List<TipoRegistroDTO> lstTipoRegistroDTO = oTipoRegistroDAO.ObtenerDatosxID(IdTipoRegistro,BaseDatos,ref mensaje_error);
 
             if (lstTipoRegistroDTO.Count > 0)
             {
@@ -91,12 +93,12 @@ namespace ConcyssaWeb.Controllers
 
         public string UpdateInsertTipoRegistro(TipoRegistroDTO oTipoRegistroDTO)
         {
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             TipoRegistroDAO oTipoRegistroDAO = new TipoRegistroDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             oTipoRegistroDTO.IdSociedad = IdSociedad;
-            int respuesta = oTipoRegistroDAO.UpdateInsertTipoRegistro(oTipoRegistroDTO, ref mensaje_error);
+            int respuesta = oTipoRegistroDAO.UpdateInsertTipoRegistro(oTipoRegistroDTO,BaseDatos,ref mensaje_error);
 
             if (mensaje_error.Length > 0)
             {
@@ -118,9 +120,10 @@ namespace ConcyssaWeb.Controllers
 
         public int EliminarTipoRegistro(int IdTipoRegistro)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             TipoRegistroDAO oTipoRegistroDAO = new TipoRegistroDAO();
-            int resultado = oTipoRegistroDAO.Delete(IdTipoRegistro, ref mensaje_error);
+            int resultado = oTipoRegistroDAO.Delete(IdTipoRegistro,BaseDatos,ref mensaje_error);
             if (resultado == 0)
             {
                 resultado = 1;
@@ -136,7 +139,7 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerSemanas(int IdTipoRegistro,int Anio,int IdObra,int estado = 3)
         {
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string valida = "";
             valida = validarEmpresaActual();
             if (valida != "")
@@ -146,7 +149,7 @@ namespace ConcyssaWeb.Controllers
             string mensaje_error = "";
             SemanaDAO oSemanaDAO = new SemanaDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<SemanaDTO> lstSemanaDTO = oSemanaDAO.ObtenerSemanas(IdTipoRegistro,Anio, IdObra,IdSociedad, estado, ref mensaje_error);
+            List<SemanaDTO> lstSemanaDTO = oSemanaDAO.ObtenerSemanas(IdTipoRegistro,Anio, IdObra,IdSociedad, estado,BaseDatos,ref mensaje_error);
             DataTableDTO oDataTableDTO = new DataTableDTO();
             if (lstSemanaDTO.Count > 0 || mensaje_error=="")
             {
@@ -163,6 +166,7 @@ namespace ConcyssaWeb.Controllers
         }
         public string ObtenerSemanaAjax(int IdTipoRegistro, int IdObra, int estado = 3)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string valida = "";
             valida = validarEmpresaActual();
             if (valida != "")
@@ -172,7 +176,7 @@ namespace ConcyssaWeb.Controllers
             string mensaje_error = "";
             SemanaDAO oSemanaDAO = new SemanaDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<SemanaDTO> lstSemanaDTO = oSemanaDAO.ObtenerSemanasxIdTipoRegistro( IdSociedad, estado,IdTipoRegistro, IdObra, ref mensaje_error);
+            List<SemanaDTO> lstSemanaDTO = oSemanaDAO.ObtenerSemanasxIdTipoRegistro( IdSociedad, estado,IdTipoRegistro, IdObra,BaseDatos,ref mensaje_error);
             if (lstSemanaDTO.Count > 0 || mensaje_error == "")
             {
                 
@@ -189,9 +193,10 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerSemanaDatosxID(int IdSemana)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             SemanaDAO oSemanaDAO = new SemanaDAO();
-            List<SemanaDTO> lstSemanaDTO = oSemanaDAO.ObtenerDatosxID(IdSemana, ref mensaje_error);
+            List<SemanaDTO> lstSemanaDTO = oSemanaDAO.ObtenerDatosxID(IdSemana,BaseDatos,ref mensaje_error);
 
             if (lstSemanaDTO.Count > 0)
             {
@@ -207,12 +212,12 @@ namespace ConcyssaWeb.Controllers
 
         public string UpdateInsertSemana(SemanaDTO oSemanaDTO)
         {
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             SemanaDAO oSemanaDAO = new SemanaDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             oSemanaDTO.IdSociedad = IdSociedad;
-            int respuesta = oSemanaDAO.UpdateInsertSemana(oSemanaDTO, ref mensaje_error);
+            int respuesta = oSemanaDAO.UpdateInsertSemana(oSemanaDTO,BaseDatos,ref mensaje_error);
 
             if (mensaje_error.Length > 0)
             {
@@ -234,9 +239,10 @@ namespace ConcyssaWeb.Controllers
 
         public int EliminarSemana(int IdSemana)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             SemanaDAO oSemanaDAO = new SemanaDAO();
-            int resultado = oSemanaDAO.Delete(IdSemana, ref mensaje_error);
+            int resultado = oSemanaDAO.Delete(IdSemana,BaseDatos,ref mensaje_error);
             if (resultado == 0)
             {
                 resultado = 1;
@@ -267,9 +273,10 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerSemanasXIdObraAnioIdTipoRegistro(int IdObra, int Anio,int IdTipoRegistro )
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             SemanaDAO oSemanaDAO = new SemanaDAO();
-            List<SemanaDTO> lstSemanaDTO = oSemanaDAO.ObtenerSemanasXIdObraAnio(IdObra,Anio,IdTipoRegistro, ref mensaje_error);
+            List<SemanaDTO> lstSemanaDTO = oSemanaDAO.ObtenerSemanasXIdObraAnio(IdObra,Anio,IdTipoRegistro,BaseDatos,ref mensaje_error);
 
             if (lstSemanaDTO.Count > 0)
             {
@@ -281,7 +288,70 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
+        static DateTime GetFirstDayOfWeek(int year, int week)
+        {
+            DateTime jan1 = new DateTime(year, 1, 1);
+            int daysOffset = DayOfWeek.Monday - jan1.DayOfWeek;
+            DateTime firstMonday = jan1.AddDays(daysOffset);
 
+            int firstWeek = CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(jan1, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+
+            if (firstWeek <= 1)
+            {
+                week -= 1;
+            }
+
+            return firstMonday.AddDays(week * 7);
+        }
+
+        public string GenerarSemanasMasivo() {
+
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            ObraDAO oObraDAO = new ObraDAO();
+            string mensaje_error = "";
+            List<ObraDTO> lstObraDTO = oObraDAO.ObtenerObra(1, BaseDatos, ref mensaje_error);
+
+            TipoRegistroDAO tipoRegistroDAO = new TipoRegistroDAO();
+            List<TipoRegistroDTO> lstTipoRegistroDTO =  tipoRegistroDAO.ObtenerTipoRegistro(1, 1, BaseDatos, ref mensaje_error);
+
+
+            int year = 2024; // Puedes cambiar el año según necesites
+            DateTimeFormatInfo dfi = DateTimeFormatInfo.CurrentInfo;
+            Calendar cal = dfi.Calendar;
+
+            int totalWeeks = cal.GetWeekOfYear(new DateTime(year, 12, 31), dfi.CalendarWeekRule, dfi.FirstDayOfWeek);
+
+            SemanaDAO oSemanaDAO = new SemanaDAO();
+
+            List<SemanaDTO> Semanas = new List<SemanaDTO>();
+            for (int week = 1; week <= totalWeeks; week++)
+            {
+                DateTime startOfWeek = GetFirstDayOfWeek(year, week);
+                DateTime endOfWeek = startOfWeek.AddDays(6);
+
+                SemanaDTO semanaDTO = new SemanaDTO();
+                semanaDTO.FechaI = startOfWeek;
+                semanaDTO.FechaF = endOfWeek;
+                semanaDTO.NumSemana = week;
+                Semanas.Add(semanaDTO);
+                
+            }
+            return "";
+
+            for (int i = 0; i < lstObraDTO.Count; i++)
+            {
+                for (int j = 0;j< lstTipoRegistroDTO.Count; j++)
+                {
+                    for (int k = 0; k < Semanas.Count-1; k++)
+                    {
+                        oSemanaDAO.GeneradorMasivoSemanas(Semanas[k].FechaI, Semanas[k].FechaF, Semanas[k].NumSemana, year, lstTipoRegistroDTO[j].IdTipoRegistro, lstObraDTO[i].IdObra, k+1, BaseDatos);
+                    }
+                }
+            }
+
+            return "LISTO";
+
+        }
 
     }
 }

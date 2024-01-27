@@ -17,10 +17,10 @@ namespace ISAP
 
       
 
-        public string ObtenerCuentaContable(string Cuenta)
+        public string ObtenerCuentaContable(string Cuenta,string BaseDatosSAP)
         {
             string SysCuenta="";
-            using (SqlConnection cn = new ConexionSQL().conectar())
+            using (SqlConnection cn = new ConexionSQL().conectar(BaseDatosSAP))
             {
                 try
                 {
@@ -45,11 +45,11 @@ namespace ISAP
             return SysCuenta;
         }
 
-        public List<OPCHDetalle> ObtenerDetallexDocEntry(int DocEntry,string ItemCode,decimal Cantidad)
+        public List<OPCHDetalle> ObtenerDetallexDocEntry(int DocEntry,string ItemCode,decimal Cantidad,string BaseDatosSAP)
         {
             string mensaje_error = "";
             List<OPCHDetalle> lstOPCHDetalle = new List<OPCHDetalle>();
-            using (SqlConnection cn = new ConexionSQL().conectar())
+            using (SqlConnection cn = new ConexionSQL().conectar(BaseDatosSAP))
             {
                 try
                 {

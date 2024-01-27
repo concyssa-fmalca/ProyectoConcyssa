@@ -13,11 +13,12 @@ namespace ConcyssaWeb.Controllers
         }
         public string ObtenerTipoObra(int estado = 3)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             TipoObraDAO oTipoObraDAO = new TipoObraDAO();
             DataTableDTO oDataTableDTO = new DataTableDTO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<TipoObraDTO> lstTipoObraDTO = oTipoObraDAO.ObtenerTipoObra(IdSociedad, ref mensaje_error, estado);
+            List<TipoObraDTO> lstTipoObraDTO = oTipoObraDAO.ObtenerTipoObra(IdSociedad,BaseDatos,ref mensaje_error, estado);
             if (lstTipoObraDTO.Count > 0)
             {
  
@@ -34,11 +35,12 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerTipoObraDT(int estado = 3)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             TipoObraDAO oTipoObraDAO = new TipoObraDAO();
             DataTableDTO oDataTableDTO = new DataTableDTO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<TipoObraDTO> lstTipoObraDTO = oTipoObraDAO.ObtenerTipoObra(IdSociedad, ref mensaje_error, estado);
+            List<TipoObraDTO> lstTipoObraDTO = oTipoObraDAO.ObtenerTipoObra(IdSociedad,BaseDatos,ref mensaje_error, estado);
             if (lstTipoObraDTO.Count > 0)
             {
                 oDataTableDTO.sEcho = 1;
@@ -57,9 +59,10 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerDatosxID(int IdTipoObra)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             TipoObraDAO oTipoObraDAO = new TipoObraDAO();
-            List<TipoObraDTO> lstCodigoUbsoDTO = oTipoObraDAO.ObtenerDatosxID(IdTipoObra, ref mensaje_error);
+            List<TipoObraDTO> lstCodigoUbsoDTO = oTipoObraDAO.ObtenerDatosxID(IdTipoObra,BaseDatos,ref mensaje_error);
 
             if (lstCodigoUbsoDTO.Count > 0)
             {
@@ -75,12 +78,12 @@ namespace ConcyssaWeb.Controllers
 
         public string UpdateInsertTipoObra(TipoObraDTO oTipoObraDTO)
         {
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             TipoObraDAO oTipoObraDAO = new TipoObraDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             oTipoObraDTO.IdSociedad = IdSociedad;
-            int respuesta = oTipoObraDAO.UpdateInsertTipoObra(oTipoObraDTO, ref mensaje_error, Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")));
+            int respuesta = oTipoObraDAO.UpdateInsertTipoObra(oTipoObraDTO,BaseDatos,ref mensaje_error, Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")));
 
             if (mensaje_error.Length > 0)
             {
@@ -102,9 +105,10 @@ namespace ConcyssaWeb.Controllers
 
         public int EliminarTipoObra(int IdTipoObra)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             TipoObraDAO oTipoObraDAO = new TipoObraDAO();
-            int resultado = oTipoObraDAO.Delete(IdTipoObra, ref mensaje_error);
+            int resultado = oTipoObraDAO.Delete(IdTipoObra,BaseDatos,ref mensaje_error);
             if (resultado == 0)
             {
                 resultado = 1;

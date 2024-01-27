@@ -1000,8 +1000,12 @@
 
 </div>
 
+@{
+    Random rnd = new Random();
+}
 
-<script src="~/Scripts/SolicitudRQ/Listado.js"></script>
+
+<script src="~/Scripts/SolicitudRQ/Listado.js?v=@rnd.Next(1, 1000 + 1)"></script>
 <script src="~/Scripts/General.js"></script>
 <script src="~/js/pdf/jspdf.min.js"></script>
 <script src="~/js/pdf/faker.min.js"></script>

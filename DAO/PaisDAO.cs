@@ -6,10 +6,10 @@ namespace DAO
 {
     public class PaisDAO
     {
-        public List<PaisDTO> ObtenerPaises()
+        public List<PaisDTO> ObtenerPaises(string BaseDatos)
         {
             List<PaisDTO> lstPaisDTO = new List<PaisDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {

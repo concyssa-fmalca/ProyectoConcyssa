@@ -17,7 +17,7 @@ namespace DTO
         public int IdMoneda { get; set; }
 
         public string CodMoneda { get; set; }
-
+        public string RUCProveedor { get; set; }
         public decimal TipoCambio { get; set; }
         public int IdCliente { get; set; }
         public DateTime FechaContabilizacion { get; set; }
@@ -195,5 +195,34 @@ namespace DTO
         public string Name { get; set; }
 
 
+    }
+    public class IntegradorTipoDocumento
+    {
+        public string Code { get; set; }
+        public string Name { get; set; }
+        public string Prefijo { get; set; }
+    }
+    public class IntegradorProveedorDTO
+    {
+        public string CardCode { get; set; }
+        public string CardName { get; set; }
+        public string CardType { get; set; }
+        public int GroupCode { get; set; }
+        public string Address { get; set; }
+        public string Phone1 { get; set; }
+        public string Phone2 { get; set; }
+        public string FederalTaxID { get; set; }
+        public string Currency { get; set; }
+        public string County { get; set; }
+        public string Country { get; set; }
+        public string SubjectToWithholdingTax { get; set; }
+        public string BilltoDefault { get; set; }
+        public string U_EXX_TIPOPERS { get; set; }
+        public int U_EXX_TIPODOCU { get; set; }
+        public string U_EXX_APELLPAT { get; set; }
+        public string U_EXX_APELLMAT { get; set; }
+        public string U_EXX_PRIMERNO { get; set; }
+        public string U_EXX_SEGUNDNO { get; set; }
+        public string Properties15 { get; set; }
     }
 }

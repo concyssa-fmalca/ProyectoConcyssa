@@ -12,10 +12,10 @@ namespace DAO
 {
     public class CuadrillaDAO
     {
-        public List<CuadrillaDTO> ObtenerCuadrilla(int IdSociedad, ref string mensaje_error, int Estado = 3)
+        public List<CuadrillaDTO> ObtenerCuadrilla(int IdSociedad, string BaseDatos, ref string mensaje_error, int Estado = 3)
         {
             List<CuadrillaDTO> lstCuadrillaDTO = new List<CuadrillaDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -56,13 +56,13 @@ namespace DAO
         }
 
         
-        public int UpdateInsertCuadrilla(CuadrillaDTO oCuadrillaDTO, ref string mensaje_error,int IdUsuario)
+        public int UpdateInsertCuadrilla(CuadrillaDTO oCuadrillaDTO, string BaseDatos, ref string mensaje_error,int IdUsuario)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -87,7 +87,7 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@CuentaMateriales", oCuadrillaDTO.CuentaMateriales);
                         da.SelectCommand.Parameters.AddWithValue("@UsuarioCreacion", IdUsuario);
                         da.SelectCommand.Parameters.AddWithValue("@UsuarioActualizacion", IdUsuario);
-                        int rpta = da.SelectCommand.ExecuteNonQuery();
+                        int rpta = int.Parse(da.SelectCommand.ExecuteScalar().ToString());
                         transactionScope.Complete();
                         return rpta;
                     }
@@ -102,10 +102,10 @@ namespace DAO
 
 
         
-        public List<CuadrillaDTO> ObtenerDatosxID(int IdCuadrilla, ref string mensaje_error)
+        public List<CuadrillaDTO> ObtenerDatosxID(int IdCuadrilla, string BaseDatos, ref string mensaje_error)
         {
             List<CuadrillaDTO> lstCuadrillaDTO = new List<CuadrillaDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -147,13 +147,13 @@ namespace DAO
         }
 
 
-        public int Delete(int IdCuadrilla, ref string mensaje_error)
+        public int Delete(int IdCuadrilla, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -176,10 +176,10 @@ namespace DAO
             }
         }
 
-        public List<CuadrillaDTO> ObtenerCuadrillaxIdObra(int IdObra, ref string mensaje_error)
+        public List<CuadrillaDTO> ObtenerCuadrillaxIdObra(int IdObra, string BaseDatos, ref string mensaje_error)
         {
             List<CuadrillaDTO> lstCuadrillaDTO = new List<CuadrillaDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -218,10 +218,10 @@ namespace DAO
             return lstCuadrillaDTO;
         }
 
-        public List<CuadrillaDTO> ObtenerNuevoCodigo(int CodigoUsar, int IdObra, ref string mensaje_error)
+        public List<CuadrillaDTO> ObtenerNuevoCodigo(int CodigoUsar, int IdObra, string BaseDatos, ref string mensaje_error)
         {
             List<CuadrillaDTO> lstCuadrillaDTO = new List<CuadrillaDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {

@@ -11,12 +11,18 @@ namespace ConcyssaWeb.Controllers
 
         public IActionResult Listado()
         {
+            if(HttpContext.Session.GetString("BaseDatos") == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             return View();
         }
 
 
         public string obtenerListaMenurol()
         {
+            string BaseDatos = HttpContext.Session.GetString("BaseDatos").ToString();
             string mensaje_error = "";
             string rpta = "";
             MenuDAO oSeg_MenuBL = new MenuDAO();
@@ -24,7 +30,7 @@ namespace ConcyssaWeb.Controllers
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             int IdPerfil = Convert.ToInt32(HttpContext.Session.GetInt32("IdPerfil")); ;
 
-            Seg_RolMenuVistaDTO oSeg_RolMenuVistaDTO = oSeg_MenuBL.ListarMenurol(IdUsuario, IdPerfil,ref mensaje_error);
+            Seg_RolMenuVistaDTO oSeg_RolMenuVistaDTO = oSeg_MenuBL.ListarMenurol(IdUsuario, IdPerfil, BaseDatos, ref mensaje_error);
             if (oSeg_RolMenuVistaDTO != null)
             {
                 if (oSeg_RolMenuVistaDTO.listaRol != null && oSeg_RolMenuVistaDTO.listaRol.Count > 0)
@@ -46,11 +52,11 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerAccesos(int IdPerfil)
         {
-    
+            string BaseDatos = HttpContext.Session.GetString("BaseDatos").ToString();
             string mensaje_error = "";
             string rpta = "";
             MenuDAO oAccesoDAO = new MenuDAO();
-            List<beCampoString3> lstAcceso = oAccesoDAO.obtenerMenuPerfil(IdPerfil,ref mensaje_error);
+            List<beCampoString3> lstAcceso = oAccesoDAO.obtenerMenuPerfil(IdPerfil,BaseDatos,ref mensaje_error);
            
             if (lstAcceso != null && lstAcceso.Count > 0)
             {
@@ -67,13 +73,10 @@ namespace ConcyssaWeb.Controllers
 
         public string grabarAcceso(string datos)
         {
-
+            string BaseDatos = HttpContext.Session.GetString("BaseDatos").ToString();
             string mensaje_error = ""; string rpta = "";
-            //Stream st = HttpContext.Request.Body;
-            //StreamReader sr = new StreamReader(st);
-            //var data = sr.ReadToEnd();
             MenuDAO oSeg_MenuBL = new MenuDAO();
-            if (oSeg_MenuBL.GrabarAccesos(datos, Convert.ToInt32( HttpContext.Session.GetInt32("Usuario")) , ref mensaje_error )  )
+            if (oSeg_MenuBL.GrabarAccesos(datos, Convert.ToInt32( HttpContext.Session.GetInt32("Usuario")) ,BaseDatos, ref mensaje_error )  )
             {
                 rpta = "1";
             }else
@@ -83,26 +86,12 @@ namespace ConcyssaWeb.Controllers
             return rpta;
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         public string ObtenerAccesosPerfil(int IdPerfil)
         {
+            string BaseDatos = HttpContext.Session.GetString("BaseDatos").ToString();
             string mensaje_error = "";
             AccesoDAO oAccesoDAO = new AccesoDAO();
-            List<AccesoDTO> lstAccesoDTO = oAccesoDAO.ObtenerAccesos(IdPerfil,ref mensaje_error);
+            List<AccesoDTO> lstAccesoDTO = oAccesoDAO.ObtenerAccesos(IdPerfil,BaseDatos,ref mensaje_error);
             if (lstAccesoDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstAccesoDTO);
@@ -115,8 +104,9 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerMenus()
         {
+            string BaseDatos = HttpContext.Session.GetString("BaseDatos").ToString();
             MenuDAO oMenuDAO = new MenuDAO();
-            List<MenuDTO> lstMenuDTO = oMenuDAO.ObtenerMenus();
+            List<MenuDTO> lstMenuDTO = oMenuDAO.ObtenerMenus(BaseDatos);
             if (lstMenuDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstMenuDTO);
@@ -129,8 +119,9 @@ namespace ConcyssaWeb.Controllers
 
         public int GuardarAcceso(int IdPerfil, List<int> ArrayAccesos)
         {
+            string BaseDatos = HttpContext.Session.GetString("BaseDatos").ToString();
             AccesoDAO oAccesoDAO = new AccesoDAO();
-            int resultado = oAccesoDAO.UpdateInsertAcceso(IdPerfil, ArrayAccesos);
+            int resultado = oAccesoDAO.UpdateInsertAcceso(IdPerfil, ArrayAccesos,BaseDatos);
             if (resultado != 0)
             {
                 resultado = 1;
@@ -141,8 +132,9 @@ namespace ConcyssaWeb.Controllers
 
         public int EliminarAccesoxPerfil(int IdPerfil)
         {
+            string BaseDatos = HttpContext.Session.GetString("BaseDatos").ToString();
             AccesoDAO oAccesoDAO = new AccesoDAO();
-            int resultado = oAccesoDAO.Delete(IdPerfil);
+            int resultado = oAccesoDAO.Delete(IdPerfil,BaseDatos);
             if (resultado == 0)
             {
                 resultado = 1;

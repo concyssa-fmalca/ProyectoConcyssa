@@ -17,7 +17,8 @@ namespace ConcyssaWeb.Controllers
             string mensaje_error = "";
             MarcaDAO oMarcaDAO = new MarcaDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<MarcaDTO> lstMarcaDTO = oMarcaDAO.ObtenerMarca(IdSociedad, ref mensaje_error, estado);
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            List<MarcaDTO> lstMarcaDTO = oMarcaDAO.ObtenerMarca(IdSociedad,BaseDatos,ref mensaje_error, estado);
             if (lstMarcaDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstMarcaDTO);
@@ -32,8 +33,9 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerDatosxID(int IdMarca)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             MarcaDAO oMarcaDAO = new MarcaDAO();
-            List<MarcaDTO> lstCodigoUbsoDTO = oMarcaDAO.ObtenerDatosxID(IdMarca, ref mensaje_error);
+            List<MarcaDTO> lstCodigoUbsoDTO = oMarcaDAO.ObtenerDatosxID(IdMarca,BaseDatos,ref mensaje_error);
 
             if (lstCodigoUbsoDTO.Count > 0)
             {
@@ -51,10 +53,11 @@ namespace ConcyssaWeb.Controllers
         {
 
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             MarcaDAO oMarcaDAO = new MarcaDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             oMarcaDTO.IdSociedad = IdSociedad;
-            int respuesta = oMarcaDAO.UpdateInsertMarca(oMarcaDTO, ref mensaje_error, Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")));
+            int respuesta = oMarcaDAO.UpdateInsertMarca(oMarcaDTO,BaseDatos,ref mensaje_error, Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")));
 
             if (mensaje_error.Length > 0)
             {
@@ -77,8 +80,9 @@ namespace ConcyssaWeb.Controllers
         public int EliminarMarca(int IdMarca)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             MarcaDAO oMarcaDAO = new MarcaDAO();
-            int resultado = oMarcaDAO.Delete(IdMarca, ref mensaje_error);
+            int resultado = oMarcaDAO.Delete(IdMarca,BaseDatos,ref mensaje_error);
             if (resultado == 0)
             {
                 resultado = 1;

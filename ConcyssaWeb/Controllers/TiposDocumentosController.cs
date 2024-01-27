@@ -14,10 +14,11 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerTiposDocumentos(int estado = 3)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             TiposDocumentosDAO oTiposDocumentosDAO = new TiposDocumentosDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<TiposDocumentosDTO> lstTiposDocumentosDTO = oTiposDocumentosDAO.ObtenerTiposDocumentos(IdSociedad, ref mensaje_error, estado);
+            List<TiposDocumentosDTO> lstTiposDocumentosDTO = oTiposDocumentosDAO.ObtenerTiposDocumentos(IdSociedad,BaseDatos,ref mensaje_error, estado);
             if (lstTiposDocumentosDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstTiposDocumentosDTO);
@@ -31,9 +32,10 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerDatosxID(int IdTipoDocumento)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             TiposDocumentosDAO oTiposDocumentosDAO = new TiposDocumentosDAO();
-            List<TiposDocumentosDTO> lstCodigoUbsoDTO = oTiposDocumentosDAO.ObtenerDatosxID(IdTipoDocumento, ref mensaje_error);
+            List<TiposDocumentosDTO> lstCodigoUbsoDTO = oTiposDocumentosDAO.ObtenerDatosxID(IdTipoDocumento,BaseDatos,ref mensaje_error);
 
             if (lstCodigoUbsoDTO.Count > 0)
             {
@@ -49,12 +51,12 @@ namespace ConcyssaWeb.Controllers
 
         public string UpdateInsertTiposDocumentos(TiposDocumentosDTO oTiposDocumentosDTO)
         {
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             TiposDocumentosDAO oTiposDocumentosDAO = new TiposDocumentosDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             oTiposDocumentosDTO.IdSociedad = IdSociedad;
-            int respuesta = oTiposDocumentosDAO.UpdateInsertTiposDocumentos(oTiposDocumentosDTO, ref mensaje_error);
+            int respuesta = oTiposDocumentosDAO.UpdateInsertTiposDocumentos(oTiposDocumentosDTO,BaseDatos,ref mensaje_error);
 
             if (mensaje_error.Length > 0)
             {
@@ -77,9 +79,10 @@ namespace ConcyssaWeb.Controllers
 
         public int EliminarTipoDocumento(int IdTipoDocumento)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             TiposDocumentosDAO oTiposDocumentosDAO = new TiposDocumentosDAO();
-            int resultado = oTiposDocumentosDAO.Delete(IdTipoDocumento, ref mensaje_error);
+            int resultado = oTiposDocumentosDAO.Delete(IdTipoDocumento,BaseDatos,ref mensaje_error);
             if (resultado == 0)
             {
                 resultado = 1;

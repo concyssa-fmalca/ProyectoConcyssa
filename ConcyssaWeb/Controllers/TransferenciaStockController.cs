@@ -14,7 +14,7 @@ namespace ConcyssaWeb.Controllers
 
         public string UpdateInsertMovimiento(MovimientoDTO oMovimientoDTO)
         {
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             int ValidarSoloSalida = 0;
             int respuesta = 0;
@@ -26,13 +26,13 @@ namespace ConcyssaWeb.Controllers
 
             if (oMovimientoDTO.TranferenciaDirecta == 1)
             {
-                respuesta = oMovimimientoDAO.InsertUpdateMovimiento(oMovimientoDTO, ref mensaje_error);
+                respuesta = oMovimimientoDAO.InsertUpdateMovimiento(oMovimientoDTO,BaseDatos,ref mensaje_error);
                 if (respuesta > 0)
                 {
                     for (int i = 0; i < oMovimientoDTO.detalles.Count; i++)
                     {
                         oMovimientoDTO.detalles[i].IdMovimiento = respuesta;
-                        int respuesta1 = oMovimimientoDAO.InsertUpdateMovimientoDetalle(oMovimientoDTO.detalles[i], oMovimientoDTO.detalles[i].ValidarIngresoSalidaOAmbos, ref mensaje_error);
+                        int respuesta1 = oMovimimientoDAO.InsertUpdateMovimientoDetalle(oMovimientoDTO.detalles[i], oMovimientoDTO.detalles[i].ValidarIngresoSalidaOAmbos,BaseDatos,ref mensaje_error);
                     }
 
 
@@ -45,7 +45,7 @@ namespace ConcyssaWeb.Controllers
                             oMovimientoDTO.AnexoDetalle[i].Tabla = "Movimiento";
                             oMovimientoDTO.AnexoDetalle[i].IdTabla = respuesta;
 
-                            oMovimimientoDAO.InsertAnexoMovimiento(oMovimientoDTO.AnexoDetalle[i], ref mensaje_error);
+                            oMovimimientoDAO.InsertAnexoMovimiento(oMovimientoDTO.AnexoDetalle[i],BaseDatos,ref mensaje_error);
                         }
                     }
 
@@ -60,7 +60,7 @@ namespace ConcyssaWeb.Controllers
             }
             else
             {
-                respuesta = oMovimimientoDAO.InsertUpdateMovimiento(oMovimientoDTO, ref mensaje_error);
+                respuesta = oMovimimientoDAO.InsertUpdateMovimiento(oMovimientoDTO,BaseDatos,ref mensaje_error);
                 if (mensaje_error.Length > 0)
                 {
                     return mensaje_error;
@@ -70,7 +70,7 @@ namespace ConcyssaWeb.Controllers
                     for (int i = 0; i < oMovimientoDTO.detalles.Count; i++)
                     {
                         oMovimientoDTO.detalles[i].IdMovimiento = respuesta;
-                        int respuesta1 = oMovimimientoDAO.InsertUpdateMovimientoDetalle(oMovimientoDTO.detalles[i], oMovimientoDTO.detalles[i].ValidarIngresoSalidaOAmbos, ref mensaje_error);
+                        int respuesta1 = oMovimimientoDAO.InsertUpdateMovimientoDetalle(oMovimientoDTO.detalles[i], oMovimientoDTO.detalles[i].ValidarIngresoSalidaOAmbos,BaseDatos,ref mensaje_error);
                     }
 
 
@@ -83,14 +83,14 @@ namespace ConcyssaWeb.Controllers
                             oMovimientoDTO.AnexoDetalle[i].Tabla = "Movimiento";
                             oMovimientoDTO.AnexoDetalle[i].IdTabla = respuesta;
 
-                            oMovimimientoDAO.InsertAnexoMovimiento(oMovimientoDTO.AnexoDetalle[i], ref mensaje_error);
+                            oMovimimientoDAO.InsertAnexoMovimiento(oMovimientoDTO.AnexoDetalle[i],BaseDatos,ref mensaje_error);
                         }
                     }
 
 
                     if (oMovimientoDTO.ValidarIngresoSalidaOAmbos == 2) //solo salida
                     {
-                        int respuesta2 = oMovimimientoDAO.InsertUpdateTranferenciaPrevia(oMovimientoDTO, respuesta, ref mensaje_error);
+                        int respuesta2 = oMovimimientoDAO.InsertUpdateTranferenciaPrevia(oMovimientoDTO, respuesta,BaseDatos,ref mensaje_error);
                     }
 
                 }

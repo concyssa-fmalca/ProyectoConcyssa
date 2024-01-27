@@ -5,7 +5,10 @@ let contarclick = 0;
 var ultimaFila = null;
 var colorOriginal;
 let limitador = 0;
-let valorfor = 1
+let valorfor = 1;
+let UltimoTipoRegistro = 0;
+let UltimaSemana = 0;
+let UltimoGiro = 0;
 
 function ObtenerConfiguracionDecimales() {
     $.post("/ConfiguracionDecimales/ObtenerConfiguracionDecimales", function (data, status) {
@@ -107,7 +110,7 @@ function llenarComboBaseFiltro(lista, idCombo, primerItem) {
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
     $("#cboBaseFiltro").prop("selectedIndex", 1);
-    listarOpch();
+    //listarOpch();
 }
 
 function CargarGiros() {
@@ -388,7 +391,7 @@ function llenarComboObra(lista, idCombo, primerItem) {
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
-    $("#IdObra").prop("selectedIndex", 1)
+    $("#IdObra").prop("selectedIndex", 1).change()
 }
 
 
@@ -458,6 +461,8 @@ function llenarComboCentroCosto(lista, idCombo, primerItem) {
 
 window.onload = function () {
     $("#DivGiro").hide()
+    CargarObras()
+    CargarTipoRegistroFiltro()
     //$("#btn_nuevo_proveedor").prop("disabled", true);
     ObtenerConfiguracionDecimales();
     CargarBaseFiltro()
@@ -548,6 +553,10 @@ function ConsultaServidor(url) {
 
 
 function ModalNuevo() {
+    $("#IdProveedor").prop("disabled", false);
+    $("#Direccion").prop("disabled", false);
+    $("#Telefono").prop("disabled", false);
+    $("#cboMoneda").prop("disabled", false);
     contador = 0
     CargarTasaDet()
     CargarGrupoDet()
@@ -599,7 +608,7 @@ function ModalNuevo() {
 
 
     CargarSolicitante(1);
-    CargarSucursales();
+    //CargarSucursales();
     //CargarDepartamentos();
     CargarMoneda();
 
@@ -626,11 +635,17 @@ function ModalNuevo() {
     CargarTipoRegistro();
     CargarSemana();
 
+    console.log("varIdTipoRegistro")
+    console.log(UltimoTipoRegistro)
+    $("#IdTipoRegistro").val(UltimoTipoRegistro).change()
+    $("#IdSemana").val(UltimaSemana).change()
+    $("#IdGiro").val(UltimoGiro).change()
+
     $("#IdCuadrilla").val(1008).change();
     $("#IdResponsable").val(10781).change();
     $("#IdCondicionPago").val(1).change();
 
-    //setearValor_ComboRenderizado("cboCodigoArticulo");
+    
     
 }
 
@@ -905,12 +920,12 @@ function AgregarLinea() {
         return;
     }
 
-    for (var i = 0; i < arrayItemsAgregados.length; i++) {
-        if (arrayItemsAgregados[i] == $("#txtCodigoItem").val()) {
-            swal("Informacion!", "El Item Ya Fue Agregado!");
-            return;
-        }
-    }
+    //for (var i = 0; i < arrayItemsAgregados.length; i++) {
+    //    if (arrayItemsAgregados[i] == $("#txtCodigoItem").val()) {
+    //        swal("Informacion!", "El Item Ya Fue Agregado!");
+    //        return;
+    //    }
+    //}
 
     arrayItemsAgregados.push($("#txtCodigoItem").val())
 
@@ -952,10 +967,10 @@ function AgregarLinea() {
     $.post("/Moneda/ObtenerMonedas", function (data, status) {
         Moneda = JSON.parse(data);
     });
-    if (limitador >= 30) {
-        swal("Informacion!", "Solo se pueden agregar Hasta 30 items");
-        return;
-    }
+    //if (limitador >= 30) {
+    //    swal("Informacion!", "Solo se pueden agregar Hasta 30 items");
+    //    return;
+    //}
     for (var J = 0; J < valorfor; J++) {
         console.log("VUELTAAAAAAAAAAA: " + J)
 
@@ -1555,7 +1570,7 @@ function changeTipoRegistro() {
         llenarComboSemana(tipoRegistros, "IdSemana", "Seleccione")
 
     });
-
+   
 }
 
 
@@ -1586,6 +1601,11 @@ function GuardarSolicitud() {
         Swal.fire("Error!", "No Puede Crear este Documento en una Fecha No Habilitada", "error")
         return
     }
+
+    UltimoTipoRegistro = $("#IdTipoRegistro").val()
+    UltimaSemana = $("#IdSemana").val()
+    UltimoGiro = $("#IdGiro").val()
+
 
     if ($("#IdTipoRegistro").val() != 4) {
         //function GuardarSolicitud() PROVISION Y CAJA CHICA
@@ -1660,43 +1680,71 @@ function GuardarSolicitud() {
             return;
         }
 
-        if ($("#divDetraccion").is(':visible')) {
-            if ($("#TasaDet").val() == 0 || $("#TasaDet").val() == null) {
+        if ($("#IdTipoDocumentoRef").val() == "2" || $("#IdTipoDocumentoRef").val() == "11" || $("#IdTipoDocumentoRef").val() == "13" || $("#IdTipoDocumentoRef").val() == "16") {
+            let DocRef = $("#SerieNumeroRef").val()
+            if (!DocRef.includes("-")) {
                 Swal.fire(
                     'Error!',
-                    'Complete el campo de Tasa Detracción',
+                    'El Formato de Serie y Número para este Tipo de Doc. no es Correcto, debe contener [SERIE]-[NUM]',
                     'error'
                 )
                 return;
             }
-            if ($("#CondicionPagoDet").val() == 0 || $("#CondicionPagoDet").val() == null) {
+            if (DocRef.split("-")[0].length != 4) {
                 Swal.fire(
                     'Error!',
-                    'Complete el campo de Condición Pago Detracción',
+                    'El Formato de Serie no es Correcto, debe tener 4 caracteres. Emeplo F001',
                     'error'
                 )
                 return;
             }
-            if ($("#GrupoDet").val() == 0 || $("#GrupoDet").val() == null) {
+            if (DocRef.split("-")[1].length  == 0) {
                 Swal.fire(
                     'Error!',
-                    'Complete el campo de Grupo detracción',
+                    'El Formato de Correlativo no es Correcto, debe tener al menos un valor',
                     'error'
                 )
                 return;
             }
         }
-        if ($("#divServPub").is(':visible')) {
-            if (($("#consumomM3").val() == 0 || $("#consumomM3").val() == null) && ($("#consumomHW").val() == 0 || $("#consumomHW").val() == null)  )    {
-                Swal.fire(
-                    'Error!',
-                    'Complete al menos uno de los campos de Consumo',
-                    'error'
-                )
-                return;
-            }
-    
-        }
+
+        //if ($("#divDetraccion").is(':visible')) {
+        //    if ($("#TasaDet").val() == 0 || $("#TasaDet").val() == null) {
+        //        Swal.fire(
+        //            'Error!',
+        //            'Complete el campo de Tasa Detracción',
+        //            'error'
+        //        )
+        //        return;
+        //    }
+        //    if ($("#CondicionPagoDet").val() == 0 || $("#CondicionPagoDet").val() == null) {
+        //        Swal.fire(
+        //            'Error!',
+        //            'Complete el campo de Condición Pago Detracción',
+        //            'error'
+        //        )
+        //        return;
+        //    }
+        //    if ($("#GrupoDet").val() == 0 || $("#GrupoDet").val() == null) {
+        //        Swal.fire(
+        //            'Error!',
+        //            'Complete el campo de Grupo detracción',
+        //            'error'
+        //        )
+        //        return;
+        //    }
+        //}
+        //if ($("#divServPub").is(':visible')) {
+        //    if (($("#consumomM3").val() == 0 || $("#consumomM3").val() == null) && ($("#consumomHW").val() == 0 || $("#consumomHW").val() == null)  )    {
+        //        Swal.fire(
+        //            'Error!',
+        //            'Complete al menos uno de los campos de Consumo',
+        //            'error'
+        //        )
+        //        return;
+        //    }
+
+        //}
 
         let ArrayGeneral = new Array();
 
@@ -1801,28 +1849,28 @@ function GuardarSolicitud() {
             arrayTipoServicio.push($(elemento).val());
         });
 
-        for (var i = 0; i < arrayCboCuadrillaTabla.length; i++) {
-            if ($("#cboCuadrillaTablaId" + (i + 1)).val() == 0 || $("#cboCuadrillaTablaId" + (i + 1)).val() == null) {
-                Swal.fire(
-                    'Error!',
-                    'Complete el campo de Cuadrilla de la Fila N°' + (i+1),
-                    'error'
-                )
-                return;
-            }
+        //for (var i = 0; i < arrayCboCuadrillaTabla.length; i++) {
+        //    if ($("#cboCuadrillaTablaId" + (i + 1)).val() == 0 || $("#cboCuadrillaTablaId" + (i + 1)).val() == null) {
+        //        Swal.fire(
+        //            'Error!',
+        //            'Complete el campo de Cuadrilla de la Fila N°' + (i+1),
+        //            'error'
+        //        )
+        //        return;
+        //    }
 
-        }
-        for (var i = 0; i < arrayCboCuadrillaTabla.length; i++) {
-            if ($("#cboResponsableTablaId" + (i + 1)).val() == 0 || $("#cboResponsableTablaId" + (i + 1)).val() == null) {
-                Swal.fire(
-                    'Error!',
-                    'Complete el campo de Responsable de la Fila N°' + (i + 1),
-                    'error'
-                )
-                return;
-            }
+        //}
+        //for (var i = 0; i < arrayCboCuadrillaTabla.length; i++) {
+        //    if ($("#cboResponsableTablaId" + (i + 1)).val() == 0 || $("#cboResponsableTablaId" + (i + 1)).val() == null) {
+        //        Swal.fire(
+        //            'Error!',
+        //            'Complete el campo de Responsable de la Fila N°' + (i + 1),
+        //            'error'
+        //        )
+        //        return;
+        //    }
 
-        }
+        //}
 
 
         //Cabecera
@@ -1836,9 +1884,9 @@ function GuardarSolicitud() {
         let FechaDocumento = $("#txtFechaDocumento").val();
         let IdCentroCosto = $("#cboCentroCosto").val();
         let Comentario = $("#txtComentarios").val();
-        let SubTotal = $("#txtTotalAntesDescuento").val();
-        let Impuesto = $("#txtImpuesto").val();
-        let Total = $("#txtTotal").val();
+        let SubTotal = ($("#txtTotalAntesDescuento").val()).replace(/,/g, "");
+        let Impuesto = ($("#txtImpuesto").val()).replace(/,/g, "");
+        let Total = ($("#txtTotal").val()).replace(/,/g, "");
         let TablaOrigen = $("#txtOrigen").val();
         let IdOrigen = $("#txtOrigenId").val();
         IdOrigen = IdOrigen.substring(0, IdOrigen.length - 1);
@@ -1909,7 +1957,7 @@ function GuardarSolicitud() {
                     'IdCuadrilla': arrayCboCuadrillaTabla[i],
                     'IdResponsable': arrayCboResponsableTabla[i],
                     'TipoServicio': arrayTipoServicio[i],
-                    
+
 
 
 
@@ -1917,6 +1965,9 @@ function GuardarSolicitud() {
             }
 
         }
+
+
+
         //AnexoDetalle
         let arrayTxtNombreAnexo = new Array();
         $("input[name='txtNombreAnexo[]']").each(function (indice, elemento) {
@@ -1930,47 +1981,55 @@ function GuardarSolicitud() {
             });
         }
 
+   
+
+        let MovimientoEnviar = []
+
+        MovimientoEnviar.push({
+            detalles,
+            AnexoDetalle,
+            //cabecera
+            'IdAlmacen': IdAlmacen,
+            'IdTipoDocumento': IdTipoDocumento,
+            'IdSerie': IdSerie,
+            'Correlativo': Correlativo,
+            'IdMoneda': IdMoneda,
+            'TipoCambio': TipoCambio,
+            'FechaContabilizacion': FechaContabilizacion,
+            'FechaDocumento': FechaDocumento,
+            'IdCentroCosto': IdCentroCosto,
+            'IdGlosaContable': $("#cboGlosaContable").val(),
+
+            'Comentario': Comentario,
+            'SubTotal': SubTotal,
+            'Impuesto': Impuesto,
+            'Redondeo': Redondeo,
+            'Total': Total,
+            'IdCuadrilla': 2582,
+            'IdResponsable': 24151,
+            'IdTipoDocumentoRef': IdTipoDocumentoRef,
+            'NumSerieTipoDocumentoRef': SerieNumeroRef,
+            'IdProveedor': $("#IdProveedor").val(),
+            'IdCondicionPago': $("#IdCondicionPago").val(),
+            'IdTipoRegistro': $("#IdTipoRegistro").val(),
+            'IdSemana': $("#IdSemana").val(),
+            'TablaOrigen': TablaOrigen,
+            'IdOrigen': IdOrigen,
+            'ConsumoM3': varConsumoM3,
+            'ConsumoHW': varConsumoHW,
+            'TasaDetraccion': varTasaDet,
+            'GrupoDetraccion': varGrupoDet,
+            'SerieSAP': varSerieSAP,
+            'CondicionPagoDet': varCondPagoDet
+        })
+
 
         $.ajax({
-            url: "UpdateInsertMovimientoFacturaProveedor",
+            url: "UpdateInsertMovimientoFacturaProveedorString",
             type: "POST",
             async: true,
             data: {
-                detalles,
-                AnexoDetalle,
-                //cabecera
-                'IdAlmacen': IdAlmacen,
-                'IdTipoDocumento': IdTipoDocumento,
-                'IdSerie': IdSerie,
-                'Correlativo': Correlativo,
-                'IdMoneda': IdMoneda,
-                'TipoCambio': TipoCambio,
-                'FechaContabilizacion': FechaContabilizacion,
-                'FechaDocumento': FechaDocumento,
-                'IdCentroCosto': IdCentroCosto,
-                'IdGlosaContable': $("#cboGlosaContable").val(),
-
-                'Comentario': Comentario,
-                'SubTotal': SubTotal,
-                'Impuesto': Impuesto,
-                'Redondeo': Redondeo,
-                'Total': Total,
-                'IdCuadrilla': 2582,
-                'IdResponsable': 24151,
-                'IdTipoDocumentoRef': IdTipoDocumentoRef,
-                'NumSerieTipoDocumentoRef': SerieNumeroRef,
-                'IdProveedor': $("#IdProveedor").val(),
-                'IdCondicionPago': $("#IdCondicionPago").val(),
-                'IdTipoRegistro': $("#IdTipoRegistro").val(),
-                'IdSemana': $("#IdSemana").val(),
-                'TablaOrigen': TablaOrigen,
-                'IdOrigen': IdOrigen,
-                'ConsumoM3': varConsumoM3,
-                'ConsumoHW': varConsumoHW,
-                'TasaDetraccion': varTasaDet,
-                'GrupoDetraccion': varGrupoDet,
-                'SerieSAP': varSerieSAP,
-                'CondicionPagoDet': varCondPagoDet
+                'JsonDatosEnviar': JSON.stringify(MovimientoEnviar)
             },
             beforeSend: function () {
                 Swal.fire({
@@ -1988,25 +2047,47 @@ function GuardarSolicitud() {
                         'success'
                     )
                     CerrarModal();
-                    ObtenerDatosxIDOPCH(data)
+                    //ObtenerDatosxIDOPCH(data)
                     //swal("Exito!", "Proceso Realizado Correctamente", "success")
                     listarOpch()
 
-                } else {
+                } else if (data == -1) {
                     Swal.fire(
                         'Error!',
-                        'Ocurrio un Error!',
+                        'Ocurrio un Error al Grabar La Factura!',
+                        'error'
+                    )
+
+                } else if (data == -2 || data == -3) {
+                    Swal.fire(
+                        'Error!',
+                        'Ocurrio un Error al Grabar los Detalles!',
                         'error'
                     )
 
                 }
+                else if (data == -5) {
+                    Swal.fire(
+                        'Información!',
+                        'La Factura ya fue registrada previamente!',
+                        'info'
+                    )
+
+                } else {
+                    Swal.fire(
+                        'Error!',
+                        'Ocurrio un Error!, ' + data,
+                        'error'
+                    )
+                }
+
 
 
             }
         }).fail(function () {
             Swal.fire(
                 'Error!',
-                'Comunicarse con el Area Soporte: smarcode@smartcode.pe !',
+                'Error en el Controlador </br> Comunicarse con el Area Soporte: smarcode@smartcode.pe !',
                 'error'
             )
         });
@@ -2086,7 +2167,33 @@ function GuardarSolicitud() {
             )
             return;
         }
-
+        if ($("#IdTipoDocumentoRef").val() == "2" || $("#IdTipoDocumentoRef").val() == "11" || $("#IdTipoDocumentoRef").val() == "13" || $("#IdTipoDocumentoRef").val() == "16") {
+            let DocRef = $("#SerieNumeroRef").val()
+            if (!DocRef.includes("-")) {
+                Swal.fire(
+                    'Error!',
+                    'El Formato de Serie y Número para este Tipo de Doc. no es Correcto, debe contener [SERIE]-[NUM]',
+                    'error'
+                )
+                return;
+            }
+            if (DocRef.split("-")[0].length != 4) {
+                Swal.fire(
+                    'Error!',
+                    'El Formato de Serie no es Correcto, debe tener 4 caracteres. Emeplo F001',
+                    'error'
+                )
+                return;
+            }
+            if (DocRef.split("-")[1].length == 0) {
+                Swal.fire(
+                    'Error!',
+                    'El Formato de Correlativo no es Correcto, debe tener al menos un valor',
+                    'error'
+                )
+                return;
+            }
+        }
         let ArrayGeneral = new Array();
 
 
@@ -2291,47 +2398,52 @@ function GuardarSolicitud() {
             });
         }
 
+        let MovimientoEnviar = []
+
+        MovimientoEnviar.push({
+            detalles,
+            AnexoDetalle,
+            //cabecera
+            'IdAlmacen': IdAlmacen,
+            'IdTipoDocumento': IdTipoDocumento,
+            'IdSerie': IdSerie,
+            'Correlativo': Correlativo,
+            'IdMoneda': IdMoneda,
+            'TipoCambio': TipoCambio,
+            'FechaContabilizacion': FechaContabilizacion,
+            'FechaDocumento': FechaDocumento,
+            'IdCentroCosto': IdCentroCosto,
+            'IdGlosaContable': $("#cboGlosaContable").val(),
+
+            'Comentario': Comentario,
+            'SubTotal': SubTotal,
+            'Impuesto': Impuesto,
+            'Redondeo': Redondeo,
+            'Total': Total,
+            'IdCuadrilla': 2582,
+            'IdResponsable': 24151,
+            'IdTipoDocumentoRef': IdTipoDocumentoRef,
+            'NumSerieTipoDocumentoRef': SerieNumeroRef,
+            'IdProveedor': $("#IdProveedor").val(),
+            'IdCondicionPago': $("#IdCondicionPago").val(),
+            'IdTipoRegistro': $("#IdTipoRegistro").val(),
+            'IdSemana': $("#IdGiro").val(),
+            'TablaOrigen': TablaOrigen,
+            'IdOrigen': IdOrigen,
+            'ConsumoM3': varConsumoM3,
+            'ConsumoHW': varConsumoHW,
+            'TasaDetraccion': varTasaDet,
+            'GrupoDetraccion': varGrupoDet,
+            'SerieSAP': varSerieSAP,
+            'CondicionPagoDet': varCondPagoDet
+        })
 
         $.ajax({
-            url: "UpdateInsertMovimientoFacturaProveedor",
+            url: "UpdateInsertMovimientoFacturaProveedorString",
             type: "POST",
             async: true,
             data: {
-                detalles,
-                AnexoDetalle,
-                //cabecera
-                'IdAlmacen': IdAlmacen,
-                'IdTipoDocumento': IdTipoDocumento,
-                'IdSerie': IdSerie,
-                'Correlativo': Correlativo,
-                'IdMoneda': IdMoneda,
-                'TipoCambio': TipoCambio,
-                'FechaContabilizacion': FechaContabilizacion,
-                'FechaDocumento': FechaDocumento,
-                'IdCentroCosto': IdCentroCosto,
-                'IdGlosaContable': $("#cboGlosaContable").val(),
-
-                'Comentario': Comentario,
-                'SubTotal': SubTotal,
-                'Impuesto': Impuesto,
-                'Redondeo': Redondeo,
-                'Total': Total,
-                'IdCuadrilla': 2582,
-                'IdResponsable': 24151,
-                'IdTipoDocumentoRef': IdTipoDocumentoRef,
-                'NumSerieTipoDocumentoRef': SerieNumeroRef,
-                'IdProveedor': $("#IdProveedor").val(),
-                'IdCondicionPago': $("#IdCondicionPago").val(),
-                'IdTipoRegistro': $("#IdTipoRegistro").val(),
-                'IdSemana': $("#IdGiro").val(),
-                'TablaOrigen': TablaOrigen,
-                'IdOrigen': IdOrigen,
-                'ConsumoM3': varConsumoM3,
-                'ConsumoHW': varConsumoHW,
-                'TasaDetraccion': varTasaDet,
-                'GrupoDetraccion': varGrupoDet,
-                'SerieSAP': varSerieSAP,
-                'CondicionPagoDet': varCondPagoDet
+                'JsonDatosEnviar': JSON.stringify(MovimientoEnviar)
             },
             beforeSend: function () {
                 Swal.fire({
@@ -2349,27 +2461,44 @@ function GuardarSolicitud() {
                         'success'
                     )
                     CerrarModal();
-                    ObtenerDatosxIDOPCH(data)
-                    //swal("Exito!", "Proceso Realizado Correctamente", "success")
+                    //ObtenerDatosxIDOPCH(data)
+                    //swal("Exito!", "Proceso Realizado Correctamente", "succes
                     listarOpch()
-
+                } else if (data == -1) {
+                    Swal.fire(
+                        'Error!',
+                        'Ocurrio un Error al Grabar La Factura!',
+                        'error'
+                    )
+                } else if (data == -2 || data == -3) {
+                    Swal.fire(
+                        'Error!',
+                        'Ocurrio un Error al Grabar los Detalles!',
+                        'error'
+                    )
+                }
+                else if (data == -5) {
+                    Swal.fire(
+                        'Información!',
+                        'La Factura ya fue registrada previamente!',
+                        'info'
+                    )
                 } else {
                     Swal.fire(
                         'Error!',
-                        'Ocurrio un Error!',
+                        'Ocurrio un Error!, ' + data,
                         'error'
                     )
-
                 }
-
+                        
 
             }
         }).fail(function () {
-            Swal.fire(
-                'Error!',
-                'Comunicarse con el Area Soporte: smarcode@smartcode.pe !',
-                'error'
-            )
+             Swal.fire(
+                 'Error!',
+                 'Error en el Controlador </br> Comunicarse con el Area Soporte: smarcode@smartcode.pe !',
+                 'error'
+             )
         });
     }
 }
@@ -2559,7 +2688,7 @@ function CalcularTotales() {
     $("#txtTotal").val(formatNumber(total.toFixed(2)));
 
 
-    changeTipoDocumento()
+    //changeTipoDocumento()
 }
 
 
@@ -2692,7 +2821,11 @@ function EliminarDetalle(IdSolicitudRQDetalle, dato) {
 
 
 }
+function SeleccionTrItem(ItemCodigo) {
 
+    $("#rdSeleccionado" + ItemCodigo).prop("checked", true);
+
+}
 function EnviarTipoCambioDetalle() {
 
     //let Moneda = $("#cboMoneda").val();
@@ -2731,7 +2864,7 @@ function BuscarCodigoProducto() {
 
                 for (var i = 0; i < items.length; i++) {
                     /* if (items[i].Inventario == TipoItem) {*/
-                    tr += '<tr>' +
+                    tr += '<tr onclick="SeleccionTrItem(' + items[i].IdArticulo + ')">' +
                         '<td><input type="radio" clase="" id="rdSeleccionado' + items[i].IdArticulo + '"  name="rdSeleccionado"  value = "' + items[i].IdArticulo + '" ></td>' +
                         '<td>' + items[i].Codigo + '</td>' +
                         '<td>' + items[i].Descripcion1 + '</td>' +
@@ -2786,7 +2919,7 @@ function BuscarCodigoProducto() {
 
                     for (var i = 0; i < items.length; i++) {
                         /* if (items[i].Inventario == TipoItem) {*/
-                        tr += '<tr>' +
+                        tr += '<tr onclick="SeleccionTrItem(' + items[i].IdArticulo + ')">' +
                             '<td><input type="radio" clase="" id="rdSeleccionado' + items[i].IdArticulo + '"  name="rdSeleccionado"  value = "' + items[i].IdArticulo + '" ></td>' +
                             '<td>' + items[i].Codigo + '</td>' +
                             '<td>' + items[i].Descripcion1 + '</td>' +
@@ -3469,7 +3602,7 @@ function AgregarPedidoToEntradaMercancia(data) {
         $("#IdPedido").val(0)
         return;
     }
-    t
+    
     
 
     $("#IdBase").val(data['IdBase']).change();
@@ -4049,7 +4182,27 @@ function CalculaCantidadMaxima(conta) {
 
 
 function listarOpch() {
-    let varIdBaseFiltro = $("#cboBaseFiltro").val()
+    let varIdObraFiltro = $("#cboObraFiltro").val()
+    let IdRegistro = $("#cboTipoRegistroFiltro").val()
+    if (IdRegistro == 0) {
+        Swal.fire("Seleccione un Tipo de Registro")
+        return
+    }
+    let IdSemana = 0
+
+    if (IdRegistro != 4) {
+        IdSemana = $("#cboSemanaFiltro").val()
+        if (IdSemana == 0) {
+            Swal.fire("Seleccione una Semana")
+            return
+        }
+    } else {
+        IdSemana = $("#cboGiroFiltro").val()
+        if (IdSemana == 0) {
+            Swal.fire("Seleccione una Giro")
+            return
+        }
+    }
     tablepedido = $('#table_id').dataTable({
         language: lenguaje_data,
         responsive: true,
@@ -4057,7 +4210,9 @@ function listarOpch() {
             url: 'ListarOPCHDT',
             type: 'POST',
             data: {
-                'IdBase':varIdBaseFiltro,
+                'IdObra': varIdObraFiltro,
+                'IdTipoRegistro': IdRegistro,
+                'IdSemana': IdSemana,
                 pagination: {
                     perpage: 50,
                 },
@@ -4071,8 +4226,13 @@ function listarOpch() {
                 targets: -1,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return `<button class="btn btn-primary juntos fa fa-pencil btn-xs" onclick="ObtenerDatosxIDOPCH(` + full.IdOPCH + `)"></button>
-                            <button class="btn btn-primary juntos fa fa-file-text btn-xs" onclick="VerDocsOrigen(` + full.IdOPCH + `)"></button>`
+                    let extrasBtn = ''
+                    if (full.ValidadoSUNAT == 0) {
+                        extrasBtn = `<button class="btn btn-primary juntos fa fa-share-square btn-xs" onclick="ValidarSUNAT(` + full.IdOPCH + `)"></button>`
+                    }
+
+                    return `<button class="btn btn-primary juntos fa fa-eye btn-xs" onclick="ObtenerDatosxIDOPCH(` + full.IdOPCH + `)"></button>
+                            <button class="btn btn-primary juntos fa fa-file-text btn-xs" onclick="VerDocsOrigen(` + full.IdOPCH + `)"></button>`+extrasBtn
                 },
             },
             {
@@ -4127,7 +4287,7 @@ function listarOpch() {
                     if (full.IdDocExtorno != 0) {
                         return '<p style="color:red">' + full.NombSerie + '-' + full.Correlativo +'</p>'
                     } else {
-                        return full.NombSerie + '-' + full.Correlativo
+                        return '<a style="color:blue;text-decoration:underline;cursor:pointer" onclick="ImprimirFactura(' + full.IdOPCH + ')" > ' + full.NombSerie + '-' + full.Correlativo +'</a>'
                     }
                 },
             },
@@ -4187,8 +4347,35 @@ function listarOpch() {
                 render: function (data, type, full, meta) {
                     return full.Moneda
                 },
+            },
+            {
+                data: null,
+                targets: 12,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    if (full.ValidadoSUNAT == 0) {
+                        return 'NO ENVIADO'
+                    } else if (full.ValidadoSUNAT == 1) {
+                        return 'VALIDADO'
+                    } else {
+                        return 'NO EXISTE'
+                    }
+                },
+            },
+             {
+                data: null,
+                targets: 13,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    if (full.DocNumCont == -1) {
+                        return "<p style='color:red'>ERROR AL VALIDAR<p>"
+                    } else if (full.DocNumCont == 0) {
+                        return "NO CONTABILIZADO"
+                    } else {
+                    return "<p style='color:green'>CONTABILIZADO - " + full.DocNumCont+"</p>"
+                    }
+                },
             }
-
 
         ],
         "bDestroy": true
@@ -4238,14 +4425,19 @@ function ObtenerDatosxIDOPCH(IdOpch) {
     CargarSolicitante(1);
     CargarSucursales();
     CargarMoneda();
+   
     CargarImpuestos();
     ListarBasesxUsuario();
     CargarProveedor();
     CargarCondicionPago();
+ 
     CargarGlosaContable();
     CargarTipoRegistro();
+  
     CargarGrupoDet();
+  
     CargarTasaDet();
+
     setTimeout(() => {
         CargarSemana()
     }, 100)
@@ -4264,7 +4456,15 @@ function ObtenerDatosxIDOPCH(IdOpch) {
     AbrirModal("modal-form");
 
 
+    Swal.fire({
+        title: "Cargando Datos...",
+        text: "Por favor espere",
+        showConfirmButton: false,
+        allowOutsideClick: false
+    });
+    setTimeout(() => {
 
+    
 
 
     $.post('ObtenerDatosxIdOpch', {
@@ -4319,12 +4519,14 @@ function ObtenerDatosxIDOPCH(IdOpch) {
             } else {
                 $("#EditedAt").html(movimiento.FechaEdicion.replace("T", " "))
             }
-            if (movimiento.IdDocExtorno == 1 || IdUsuario !== +$("#IdUsuarioSesion").val()) {
-                $("#btnEditar").hide()
-                $("#btnExtornar").hide()
-            } else {
+            //if ((movimiento.IdDocExtorno == 0 &&  IdUsuario == +$("#IdUsuarioSesion").val()) || $("#IdPerfilSesion").val() == "1" || $("#IdPerfilSesion").val() == "1022" ) {
+            if (movimiento.IdDocExtorno == 0 && IdUsuario == +$("#IdUsuarioSesion").val()  ) {
                 $("#btnEditar").show()
                 $("#btnExtornar").show()
+            } else {
+             
+                $("#btnEditar").hide()
+                $("#btnExtornar").hide()
             }
             $("#IdCondicionPago").val(movimiento.idCondicionPago)
             
@@ -4404,8 +4606,10 @@ function ObtenerDatosxIDOPCH(IdOpch) {
 
 
         }
+        Swal.close()
 
     });
+    }, 50)
     disabledmodal(true);
     $("#cboTipoDocumentoOperacion").prop("disabled",false)
     $("#IdTipoDocumentoRef").prop("disabled",false)
@@ -4487,9 +4691,10 @@ function AgregarSeleccionadOPDN() {
     $("#IdTipoProducto").val(0)
     $("#btn_agregar_item").prop("disabled", true)
     $("#IdProveedor").prop("disabled", true)
-    $("#IdCondicionPago").prop("disabled", true)
+    //$("#IdCondicionPago").prop("disabled", true)
     $("#Direccion").prop("disabled", true)
     $("#Telefono").prop("disabled", true)
+    $("#cboMoneda").prop("disabled", true)
     $("#txtOrigenId").val(IdsOrigen)
 }
 
@@ -4557,9 +4762,10 @@ function AgregarSeleccionadoPedido() {
     $("#IdTipoProducto").prop("disabled", true)
     $("#btn_agregar_item").prop("disabled", true)
     $("#IdProveedor").prop("disabled", true)
-    $("#IdCondicionPago").prop("disabled", true)
+    //$("#IdCondicionPago").prop("disabled", true)
     $("#Direccion").prop("disabled", true)
     $("#Telefono").prop("disabled", true)
+    $("#cboMoneda").prop("disabled", true)
     $("#IdTipoProducto").val(0)
     $("#txtOrigenId").val(IdsOriginales)
 
@@ -5321,31 +5527,99 @@ function Editar() {
     $(".txtIdFacturaDetalle").each(function (indice, elemento) {
         arraytxtIdFacturaDetalle.push($(elemento).val());
     });
-
-
-
-    for (var i = 0; i < arrayCboCuadrillaTabla.length; i++) {
-        if ($("#cboCuadrillaTablaId" + i).val() == 0 || $("#cboCuadrillaTablaId" + i).val() == null) {
-            Swal.fire(
-                'Error!',
-                'Complete el campo de Cuadrilla de la Fila N°' + (i+1),
-                'error'
-            )
-            return;
-        }
-
+    if ($("#cboTipoDocumentoOperacion").val() == 0 || $("#cboTipoDocumentoOperacion").val() == null) {
+        Swal.fire(
+            'Error!',
+            'Complete el campo de Tipo de Movimiento',
+            'error'
+        )
+        return;
     }
-    for (var i = 0; i < arrayCboCuadrillaTabla.length; i++) {
-        if ($("#cboResponsableTablaId" + i).val() == 0 || $("#cboResponsableTablaId" + i).val() == null) {
-            Swal.fire(
-                'Error!',
-                'Complete el campo de Responsable de la Fila N°' + (i+1),
-                'error'
-            )
-            return;
-        }
 
+    if ($("#IdTipoDocumentoRef").val() == 0 || $("#IdTipoDocumentoRef").val() == null) {
+        Swal.fire(
+            'Error!',
+            'Complete el campo de Documento de referencia',
+            'error'
+        )
+        return;
     }
+    if ($("#cboSerie").val() == 0 || $("#cboSerie").val() == null) {
+        Swal.fire(
+            'Error!',
+            'Complete el campo Serie',
+            'error'
+        )
+        return;
+    }
+
+    if ($("#IdCondicionPago").val() == 0 || $("#IdCondicionPago").val() == null) {
+        Swal.fire(
+            'Error!',
+            'Complete el campo de Condicion de Pago',
+            'error'
+        )
+        return;
+    }
+    if ($("#IdSemana").val() == 0 || $("#IdSemana").val() == null) {
+        Swal.fire(
+            'Error!',
+            'Complete el campo de Semana',
+            'error'
+        )
+        return;
+    }
+    if ($("#IdTipoRegistro").val() == 0 || $("#IdTipoRegistro").val() == null) {
+        Swal.fire(
+            'Error!',
+            'Complete el campo de Tipo Registro',
+            'error'
+        )
+        return;
+    }
+
+    if ($("#IdProveedor").val() == 0 || $("#IdProveedor").val() == null) {
+        Swal.fire(
+            'Error!',
+            'Complete el campo de Proveedor',
+            'error'
+        )
+        return;
+    }
+
+    if ($("#SerieNumeroRef").val().length == 0) {
+        Swal.fire(
+            'Error!',
+            'Complete el campo de Serie y Número',
+            'error'
+        )
+        return;
+    }
+
+
+
+    //for (var i = 0; i < arrayCboCuadrillaTabla.length; i++) {
+    //    if ($("#cboCuadrillaTablaId" + i).val() == 0 || $("#cboCuadrillaTablaId" + i).val() == null) {
+    //        Swal.fire(
+    //            'Error!',
+    //            'Complete el campo de Cuadrilla de la Fila N°' + (i+1),
+    //            'error'
+    //        )
+    //        return;
+    //    }
+
+    //}
+    //for (var i = 0; i < arrayCboCuadrillaTabla.length; i++) {
+    //    if ($("#cboResponsableTablaId" + i).val() == 0 || $("#cboResponsableTablaId" + i).val() == null) {
+    //        Swal.fire(
+    //            'Error!',
+    //            'Complete el campo de Responsable de la Fila N°' + (i+1),
+    //            'error'
+    //        )
+    //        return;
+    //    }
+
+    //}
 
 
     $.post('UpdateOPCH', {
@@ -5877,6 +6151,27 @@ function changeTipoPersona() {
 function changeTipoDocumento() {
     let TDocSelect = $("#IdTipoDocumentoRef").val()
     let totalValor = ($("#txtTotal").val()).replace(/,/g, "")
+
+
+    if (TDocSelect == 2 || TDocSelect == 13 || TDocSelect == 17 || TDocSelect == 16) {
+        //$("select[name='cboIndicadorImpuestoDetalle[]']").each(function (indice, elemento) {
+        //    $(elemento).val(1).change();
+        //});
+
+    } else if (TDocSelect == 11) {
+        $("select[name='cboIndicadorImpuestoDetalle[]']").each(function (indice, elemento) {
+            $(elemento).val(2).change();
+        });
+    } else {
+        $("select[name='cboIndicadorImpuestoDetalle[]']").each(function (indice, elemento) {
+            $(elemento).val(3).change();
+        });
+    }
+
+
+
+
+
     if (TDocSelect == 11) {
         $("#divDetraccion").hide()
 
@@ -5906,6 +6201,10 @@ function changeTipoDocumento() {
     } else {
         $("#divGlosa").hide()
     }
+
+  
+
+
 }
 
 function CargarTasaDet() {
@@ -5933,7 +6232,7 @@ function llenarComboTasaDet(lista, idCombo, primerItem) {
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
     $("#cboBaseFiltro").prop("selectedIndex", 1);
-    listarOpch();
+    //listarOpch();
 }
 
 function CargarGrupoDet() {
@@ -5961,7 +6260,7 @@ function llenarComboGrupoDet(lista, idCombo, primerItem) {
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
     $("#cboBaseFiltro").prop("selectedIndex", 1);
-    listarOpch();
+    //listarOpch();
 }
 
 function CargarCondPagoDet() {
@@ -5995,5 +6294,217 @@ function llenarComboCondPagoDet(lista, idCombo, primerItem) {
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
     $("#cboBaseFiltro").prop("selectedIndex", 1);
-    listarOpch();
+    //listarOpch();
+}
+
+function ValidarSUNAT(Id) {
+    $.post("ActualizarEstadoValidacionSUNAT", { 'IdOPCH': Id }, function (data, status) {
+
+        if (data == 1) {
+            swal("Resultado!", "Documento Validado por SUNAT", "success")
+            listarOpch()
+        } else if (data == 2) {
+            swal("Resultado!", "El Documento no existe en SUNAT", "info")
+            listarOpch()
+        } else {
+            swal("Resultado!", "Volver a Intentar", "error")
+        }
+
+    });
+}
+
+
+////NUEVOS FILTROS
+
+function CargarObras() {
+    $.ajaxSetup({ async: false });
+    $.post("/Obra/ObtenerObraxIdUsuarioSessionSinBase", function (data, status) {
+        let obras = JSON.parse(data);
+        llenarComboObraFiltro(obras, "cboObraFiltro", "Seleccione")
+    });
+}
+
+function llenarComboObraFiltro(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    let ultimoindice = 0;
+    for (var i = 0; i < nRegistros; i++) {
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdObra + "'>" + lista[i].Descripcion + "</option>"; ultimoindice = i }
+
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+    $("#cboObraFiltro").prop("selectedIndex", 1)
+
+}
+
+function CargarTipoRegistroFiltro() {
+    $.ajaxSetup({ async: false });
+    $.post("/TipoRegistro/ObtenerTipoRegistrosAjax", { 'estado': 1 }, function (data, status) {
+        let tipoRegistros = JSON.parse(data);
+        llenarComboTipoRegistroFiltro(tipoRegistros, "cboTipoRegistroFiltro", "Seleccione")
+    });
+}
+
+
+function llenarComboTipoRegistroFiltro(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdTipoRegistro + "'>" + lista[i].NombTipoRegistro + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+}
+
+
+function changeTipoRegistroFiltro() {
+
+    let varIdTipoRegistro = $("#cboTipoRegistroFiltro").val();
+    let varIdObra = $("#cboObraFiltro").val();
+    $.ajaxSetup({ async: false });
+    $.post("/TipoRegistro/ObtenerSemanaAjax", { 'estado': 1, 'IdTipoRegistro': varIdTipoRegistro, 'IdObra': varIdObra }, function (data, status) {
+        let tipoRegistros = JSON.parse(data);
+        llenarComboSemanaFiltro(tipoRegistros, "cboSemanaFiltro", "Seleccione")
+
+    });
+
+}
+
+function llenarComboSemanaFiltro(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdSemana + "'>" + lista[i].Descripcion + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+}
+
+function esRendicionFiltro() {
+    if ($("#cboTipoRegistroFiltro").val() != 4) {
+        $("#DivGiro").hide()
+        $("#DivSemana").show()
+        if ($("#cboTipoRegistroFiltro").val() == 5) {
+            $("#cboCondicionPagoFiltro").val(1)
+        }
+    } else {
+        $("#DivGiro").show()
+        $("#DivSemana").hide()
+        CargarGirosFiltro()
+    }
+}
+function CargarGirosFiltro() {
+    let obraGiro = $("#cboObraFiltro").val()
+    $.ajaxSetup({ async: false });
+    $.post("/GestionGiro/ObtenerGiroAprobado", { 'IdObra': obraGiro }, function (data, status) {
+        let base = JSON.parse(data);
+        llenarComboGirosFiltro(base, "cboGiroFiltro", "seleccione")
+
+    });
+
+}
+
+
+function llenarComboGirosFiltro(lista, idCombo, primerItem) {
+    console.log(lista)
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdGiro + "'>" + lista[i].Serie.toUpperCase() + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+}
+
+function ImprimirFactura(Id) {
+    Swal.fire({
+        title: "Generando Reporte...",
+        text: "Por favor espere",
+        showConfirmButton: false,
+        allowOutsideClick: false
+    });
+
+    setTimeout(() => {
+
+        $.ajaxSetup({ async: false });
+        $.post("/Pedido/GenerarReporte", { 'NombreReporte': 'RPTFacturaProv', 'Formato': 'PDF', 'Id': Id }, function (data, status) {
+            let datos;
+            if (validadJson(data)) {
+                let datobase64;
+                datobase64 = "data:application/octet-stream;base64,"
+                datos = JSON.parse(data);
+                //datobase64 += datos.Base64ArchivoPDF;
+                //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
+                //$("#reporteRPT").attr("href", datobase64);
+                //$("#reporteRPT")[0].click();
+                verBase64PDF(datos)
+                Swal.close()
+            } else {
+                console.log("error");
+            }
+        });
+    }, 200)
+
+}
+
+function ValidacionSUNATMasivo() {
+    Swal.fire({
+        title: 'Validación Masiva SUNAT',
+        html: "Se validara los documentos pertenecientes al Tipo de Registro y Semana/Giro Seleccionado </br>" +
+            "</br>" +
+            "Este Proceso Puede tardar un poco, por lo que deberá esperar",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si Validar!',
+        reverseButtons: true 
+    }).then((result) => {
+        if (result.isConfirmed) {
+            let varIdObraFiltro = $("#cboObraFiltro").val()
+            let IdRegistro = $("#cboTipoRegistroFiltro").val()
+            if (IdRegistro == 0) {
+                Swal.fire("Seleccione un Tipo de Registro")
+                return
+            }
+            let IdSemana = 0
+
+            if (IdRegistro != 4) {
+                IdSemana = $("#cboSemanaFiltro").val()
+                if (IdSemana == 0) {
+                    Swal.fire("Seleccione una Semana")
+                    return
+                }
+            } else {
+                IdSemana = $("#cboGiroFiltro").val()
+                if (IdSemana == 0) {
+                    Swal.fire("Seleccione una Giro")
+                    return
+                }
+            }
+            $.post("ValidacionSunatMasiva", { 'IdObra': varIdObraFiltro, 'IdTipoRegistro': IdRegistro, 'IdSemana': IdSemana }, function (data, status) {
+                Swal.fire("Proceso Terminado")
+                listarOpch();
+            });
+        }
+    })
 }

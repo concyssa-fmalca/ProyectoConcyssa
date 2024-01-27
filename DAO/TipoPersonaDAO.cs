@@ -6,10 +6,10 @@ namespace DAO
 {
     public class TipoPersonaDAO
     {
-        public List<TipoPersonaDTO> ObtenerTipoPersonas()
+        public List<TipoPersonaDTO> ObtenerTipoPersonas(string BaseDatos)
         {
             List<TipoPersonaDTO> lstTipoPersonaDTO = new List<TipoPersonaDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {

@@ -36,6 +36,7 @@ function consultaServidor() {
     tablepedido = $('#tabla_integrador').dataTable({
         language: lenguaje_data,
         responsive: true,
+        paging: false,
         ajax: {
             url: 'ListarEnviarSap',
             type: 'POST',
@@ -64,7 +65,8 @@ function consultaServidor() {
                 targets: 0,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return meta.row + 1
+                    return  '<input type="checkbox" class="chkEnviar" id="'+full.IdEnviarSap+'">'
+
                 },
             },
             {
@@ -207,8 +209,10 @@ function validarEnvio() {
         console.log(validacion.EstadoEnviado)
         if (validacion.EstadoEnviado == 'Enviado') {
             $("#btn_EliminarMarco").hide()
+            $("#btnEnviarSap").hide()
         } else {
             $("#btn_EliminarMarco").show()
+            $("#btnEnviarSap").show()
         }
     });
 }
@@ -701,8 +705,10 @@ function ObtenerDatosxEnviarSap(IdEnviarSap,TablaOriginal) {
             if (movimiento.Impuesto == 0) {
                 $("#txtImpuesto").val((0).toFixed(2))
             }
-            $("#txtRedondeo").val(formatNumber(movimiento.Redondeo.toFixed(DecimalesPrecios), DecimalesPrecios))
-
+            console.log("REDONDEOOOOOOOOOOOO")
+            console.log(movimiento.Redondeo)
+            $("#txtRedondeo").val(movimiento.Redondeo)
+            
 
 
             $("#txtTotal").val(formatNumberDecimales(movimiento.Total, DecimalesPrecios))
@@ -1560,7 +1566,24 @@ function Editar() {
 }
 
 function enviarSAP() {
-    swal("Enviando a SAP, por favor espere")
+
+
+    let arrayIds = new Array();
+
+    $(".chkEnviar").each(function (indice, elemento) {
+        if ($(elemento).prop("checked") == true) {
+            arrayIds.push($(elemento).attr("id"));
+        }
+    });
+
+    if (arrayIds.length == 0) {
+        Swal.fire("Seleccione Documentos para Migrar a SAP");
+        return
+    }
+
+   
+
+    Swal.fire("Enviando a SAP, por favor espere" )
     setTimeout(() => {
         let GrupoVar = $("#txtIdDatosTrabajo").val()
         let varSerieFactura = $("#cboSerieFactura").val()
@@ -1570,11 +1593,23 @@ function enviarSAP() {
         if ($("#FacturaFirme").is(":checked")) {
             varBorradorFirme = 2;
         }
+        console.log("arrayIds.length")
+        console.log(arrayIds.length)
+        let Respuesta = "";
+        for (var i = 0; i < arrayIds.length; i++) {
+            $.post('ConectarSAP', { 'IdsEnviarSAP': arrayIds[i], 'BorradorFirme': varBorradorFirme, 'SerieFactura': varSerieFactura, 'SerieNotaCredito': varSerieNC }, function (data, status) {              
+                Respuesta += data;
+                Swal.fire("Resultados:", Respuesta, "info")
+            });
+        }
+        Swal.fire({
+            title: 'Resultados:',
+            text: Respuesta,
+            icon: "info",
+            allowOutsideClick: false,
+        })
+        validarEnvio()
    
-        $.post('ConectarSAP', { 'GrupoCreacion': GrupoVar, 'BorradorFirme': varBorradorFirme, 'SerieFactura': varSerieFactura, 'SerieNotaCredito': varSerieNC }, function (data, status) {
-            swal("Resultados:", data, "warning")
-
-        });
     },200)
 }
 function openContenido(evt, Name) {
@@ -1763,4 +1798,22 @@ function llenarComboSerieNotaCredito(lista, idCombo, primerItem) {
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
     $("#cboSerieNotaCredito").prop("selectedIndex", 1);
+}
+function ValidarProvNoRegistrados() {
+    $.ajaxSetup({ async: false });
+    $.post("DescargarExcelProvNoRegistrados", { 'GrupoCreacion':  $("#txtIdDatosTrabajo").val() }, function (data, status) {
+        if (data == "OK") {
+            window.open("/Anexos/MigrarProvSAP.xlsx", '_blank', 'noreferrer');
+        } else if (data == "SIN DATOS") {
+            Swal.fire("Validado", "No hay Prov. Pendientes de Envío a SAP", "error")
+        } else {
+            Swal.fire("Error", "Ocurrió un Error: " + data, "error")
+        }
+
+    });
+    
+}
+
+function ValidarChkTodos() {
+    $(".chkEnviar").prop("checked", $("#ChkCabezera").prop("checked"))
 }

@@ -8,10 +8,10 @@ namespace DAO
 {
     public class TiposDocumentosDAO
     {
-        public List<TiposDocumentosDTO> ObtenerTiposDocumentos(int IdSociedad, ref string mensaje_error, int Estado = 3)
+        public List<TiposDocumentosDTO> ObtenerTiposDocumentos(int IdSociedad, string BaseDatos, ref string mensaje_error, int Estado = 3)
         {
             List<TiposDocumentosDTO> lstTiposDocumentosDTO = new List<TiposDocumentosDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -30,6 +30,9 @@ namespace DAO
                         oTiposDocumentosDTO.Descripcion = drd["Descripcion"].ToString();
                         oTiposDocumentosDTO.Estado = bool.Parse(drd["Estado"].ToString());
                         oTiposDocumentosDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
+                        oTiposDocumentosDTO.CodeSAP = (String.IsNullOrEmpty(drd["CodeSAP"].ToString())) ? "" : drd["CodeSAP"].ToString();
+                        oTiposDocumentosDTO.PrefijoSAP = (String.IsNullOrEmpty(drd["PrefijoSAP"].ToString())) ? "" : drd["PrefijoSAP"].ToString();
+                        oTiposDocumentosDTO.NombreSAP = (String.IsNullOrEmpty(drd["NombreSAP"].ToString())) ? "" : drd["NombreSAP"].ToString();
                         lstTiposDocumentosDTO.Add(oTiposDocumentosDTO);
                     }
                     drd.Close();
@@ -44,13 +47,13 @@ namespace DAO
             return lstTiposDocumentosDTO;
         }
 
-        public int UpdateInsertTiposDocumentos(TiposDocumentosDTO oTiposDocumentosDTO, ref string mensaje_error)
+        public int UpdateInsertTiposDocumentos(TiposDocumentosDTO oTiposDocumentosDTO, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -65,6 +68,9 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@Descripcion", oTiposDocumentosDTO.Descripcion);
                         da.SelectCommand.Parameters.AddWithValue("@IdSociedad", oTiposDocumentosDTO.IdSociedad);
                         da.SelectCommand.Parameters.AddWithValue("@Estado", oTiposDocumentosDTO.Estado);
+                        da.SelectCommand.Parameters.AddWithValue("@CodeSAP", oTiposDocumentosDTO.CodeSAP);
+                        da.SelectCommand.Parameters.AddWithValue("@NombreSAP", oTiposDocumentosDTO.NombreSAP);
+                        da.SelectCommand.Parameters.AddWithValue("@PrefijoSAP", oTiposDocumentosDTO.PrefijoSAP);
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
                         return rpta;
@@ -78,10 +84,10 @@ namespace DAO
             }
         }
 
-        public List<TiposDocumentosDTO> ObtenerDatosxID(int IdTipoDocumento, ref string mensaje_error)
+        public List<TiposDocumentosDTO> ObtenerDatosxID(int IdTipoDocumento, string BaseDatos, ref string mensaje_error)
         {
             List<TiposDocumentosDTO> lstTiposDocumentosDTO = new List<TiposDocumentosDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -99,6 +105,9 @@ namespace DAO
                         oTiposDocumentosDTO.Codigo = drd["Codigo"].ToString();
                         oTiposDocumentosDTO.Descripcion = drd["Descripcion"].ToString();
                         oTiposDocumentosDTO.Estado = bool.Parse(drd["Estado"].ToString());
+                        oTiposDocumentosDTO.CodeSAP = (String.IsNullOrEmpty(drd["CodeSAP"].ToString())) ? "" : drd["CodeSAP"].ToString();
+                        oTiposDocumentosDTO.PrefijoSAP = (String.IsNullOrEmpty(drd["PrefijoSAP"].ToString())) ? "" : drd["PrefijoSAP"].ToString();
+                        oTiposDocumentosDTO.NombreSAP = (String.IsNullOrEmpty(drd["NombreSAP"].ToString())) ? "" : drd["NombreSAP"].ToString();
                         lstTiposDocumentosDTO.Add(oTiposDocumentosDTO);
                     }
                     drd.Close();
@@ -114,13 +123,13 @@ namespace DAO
         }
 
 
-        public int Delete(int IdTipoDocumento, ref string mensaje_error)
+        public int Delete(int IdTipoDocumento, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {

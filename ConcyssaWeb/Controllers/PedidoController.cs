@@ -35,12 +35,13 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerPedidosEntregaLDT(int IdObra, int IdProveedor,string EstadoPedido = "ABIERTO" )
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             PedidoDAO oPedidoDAO = new PedidoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
 
             DataTableDTO oDataTableDTO = new DataTableDTO();
-            List<PedidoDTO> lstPedidoDTO = oPedidoDAO.ObtenerPedidosEntregaLDT(IdSociedad, ref mensaje_error, EstadoPedido, IdObra, IdUsuario);
+            List<PedidoDTO> lstPedidoDTO = oPedidoDAO.ObtenerPedidosEntregaLDT(IdSociedad,BaseDatos,ref mensaje_error, EstadoPedido, IdObra, IdUsuario);
             List<PedidoDTO> NewlstPedidoDTO = new List<PedidoDTO>();
 
 
@@ -88,6 +89,7 @@ namespace ConcyssaWeb.Controllers
         public string UpdateInsertPedido(PedidoDTO oPedidoDTO)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             int IdSociedad = Convert.ToInt32((String.IsNullOrEmpty(oPedidoDTO.IdSociedad.ToString())) ? Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad")) : oPedidoDTO.IdSociedad);
             int IdUsuario = Convert.ToInt32((String.IsNullOrEmpty(oPedidoDTO.IdUsuario.ToString())) ? Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad")) : oPedidoDTO.IdUsuario);
 
@@ -106,7 +108,7 @@ namespace ConcyssaWeb.Controllers
             oPedidoDTO.IdUsuario = IdUsuario;
             PedidoDAO oPedidoDAO = new PedidoDAO();
             MovimientoDAO oMovimientoDAO = new MovimientoDAO();
-            int respuesta = oPedidoDAO.UpdateInsertPedido(oPedidoDTO, ref mensaje_error);
+            int respuesta = oPedidoDAO.UpdateInsertPedido(oPedidoDTO,BaseDatos,ref mensaje_error);
             if (mensaje_error.Length > 0)
             {
                 return mensaje_error;
@@ -116,10 +118,10 @@ namespace ConcyssaWeb.Controllers
                 for (int i = 0; i < oPedidoDTO.detalles.Count; i++)
                 {
                     oPedidoDTO.detalles[i].IdPedido = respuesta;
-                    int respuesta1 = oPedidoDAO.InsertUpdatePedidoDetalle(oPedidoDTO.detalles[i], ref mensaje_error);
+                    int respuesta1 = oPedidoDAO.InsertUpdatePedidoDetalle(oPedidoDTO.detalles[i],BaseDatos,ref mensaje_error);
                 }
 
-                oPedidoDAO.UpdateTotalesPedido(respuesta, ref mensaje_error);
+                oPedidoDAO.UpdateTotalesPedido(respuesta,BaseDatos,ref mensaje_error);
 
             }
 
@@ -136,10 +138,10 @@ namespace ConcyssaWeb.Controllers
                     RespuestaDTO oRespuestaDTOReporte = new RespuestaDTO();
                     try
                     {
-                        PedidoDTO datosObtenidos = oPedidoDAO.ObtenerPedidoxId(respuesta, ref mensaje_error);
+                        PedidoDTO datosObtenidos = oPedidoDAO.ObtenerPedidoxId(respuesta,BaseDatos,ref mensaje_error);
 
 
-                        string respuestareporte = GenerarReporte("CuadroComparativo", "PDF", respuesta);
+                        string respuestareporte = GenerarReporte("CuadroComparativo", "PDF", respuesta,BaseDatos);
                         oRespuestaDTOReporte = JsonConvert.DeserializeObject<RespuestaDTO>(respuestareporte);
                         Byte[] archivoreporte = Convert.FromBase64String(oRespuestaDTOReporte.Base64ArchivoPDF);
                         string nombrearchivocuadro = "CuadroComparativoPedido" + datosObtenidos.NombSerie + "-" + datosObtenidos.Correlativo + ".pdf";
@@ -159,7 +161,7 @@ namespace ConcyssaWeb.Controllers
                         oPedAnexo.IdTabla = respuesta;
                         oPedAnexo.NombreArchivo = nombrearchivocuadro;
 
-                        oMovimientoDAO.InsertAnexoMovimiento(oPedAnexo, ref mensaje_error);
+                        oMovimientoDAO.InsertAnexoMovimiento(oPedAnexo,BaseDatos,ref mensaje_error);
 
                     }
                     catch (Exception ex)
@@ -179,7 +181,7 @@ namespace ConcyssaWeb.Controllers
                             oPedidoDTO.AnexoDetalle[i].Tabla = "Pedido";
                             oPedidoDTO.AnexoDetalle[i].IdTabla = respuesta;
 
-                            oMovimientoDAO.InsertAnexoMovimiento(oPedidoDTO.AnexoDetalle[i], ref mensaje_error);
+                            oMovimientoDAO.InsertAnexoMovimiento(oPedidoDTO.AnexoDetalle[i],BaseDatos,ref mensaje_error);
                         }
                     }
 
@@ -195,10 +197,11 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerPedidoDTConfirmidad(int Conformidad = 0)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             PedidoDAO oPedidoDAO = new PedidoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             DataTableDTO oDataTableDTO = new DataTableDTO();
-            List<PedidoDTO> lstPedidoDTO = oPedidoDAO.ObtenerPedidoxEstadoConformidad(IdSociedad, ref mensaje_error, Conformidad);
+            List<PedidoDTO> lstPedidoDTO = oPedidoDAO.ObtenerPedidoxEstadoConformidad(IdSociedad,BaseDatos,ref mensaje_error, Conformidad);
             if (lstPedidoDTO.Count > 0)
             {
                 oDataTableDTO.sEcho = 1;
@@ -225,10 +228,11 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerPedidoDTCorreoProveedor(int EnvioCorreo = 0, int Proveedor=0)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             PedidoDAO oPedidoDAO = new PedidoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             DataTableDTO oDataTableDTO = new DataTableDTO();
-            List<PedidoDTO> lstPedidoDTO = oPedidoDAO.ObtenerPedidoDTCorreoProveedor(IdSociedad, EnvioCorreo, Proveedor, ref mensaje_error);
+            List<PedidoDTO> lstPedidoDTO = oPedidoDAO.ObtenerPedidoDTCorreoProveedor(IdSociedad, EnvioCorreo, Proveedor,BaseDatos,ref mensaje_error);
             if (lstPedidoDTO.Count > 0)
             {
                 oDataTableDTO.sEcho = 1;
@@ -257,10 +261,11 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerPedidoDT(int estado = 3)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             PedidoDAO oPedidoDAO = new PedidoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             DataTableDTO oDataTableDTO = new DataTableDTO();
-            List<PedidoDTO> lstPedidoDTO = oPedidoDAO.ObtenerPedido(IdSociedad, ref mensaje_error, estado);
+            List<PedidoDTO> lstPedidoDTO = oPedidoDAO.ObtenerPedido(IdSociedad,BaseDatos,ref mensaje_error, estado);
             if (lstPedidoDTO.Count > 0)
             {
                 oDataTableDTO.sEcho = 1;
@@ -287,10 +292,11 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerPedidoDetalle(int IdPedido)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             PedidoDAO oPedidoDAO = new PedidoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             DataTableDTO oDataTableDTO = new DataTableDTO();
-            List<PedidoDetalleDTO> lstPedidoDetalleDTO = oPedidoDAO.ObtenerDetallePedido(IdPedido, ref mensaje_error);
+            List<PedidoDetalleDTO> lstPedidoDetalleDTO = oPedidoDAO.ObtenerDetallePedido(IdPedido,BaseDatos,ref mensaje_error);
             if (lstPedidoDetalleDTO.Count > 0)
             {
                 //oDataTableDTO.sEcho = 1;
@@ -311,11 +317,12 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerDatosxID(int IdPedido)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             PedidoDAO oPedidoDAO = new PedidoDAO();
             PedidoDTO oPedidoDTO = new PedidoDTO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
 
-            oPedidoDTO = oPedidoDAO.ObtenerPedidoxId(IdPedido, ref mensaje_error);
+            oPedidoDTO = oPedidoDAO.ObtenerPedidoxId(IdPedido,BaseDatos,ref mensaje_error);
             if (oPedidoDTO != null)
             {
                 //oDataTableDTO.sEcho = 1;
@@ -337,11 +344,12 @@ namespace ConcyssaWeb.Controllers
         public string ListarItemAprobadosxSociedadDT(int IdPedido)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             PedidoDAO oPedidoDAO = new PedidoDAO();
             List<ItemAprobadosDTO> lstItemAprobadosDTO = new List<ItemAprobadosDTO>();
             DataTableDTO oDataTableDTO = new DataTableDTO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            lstItemAprobadosDTO = oPedidoDAO.ListarItemAprobadosxSociedad(IdSociedad, ref mensaje_error);
+            lstItemAprobadosDTO = oPedidoDAO.ListarItemAprobadosxSociedad(IdSociedad,BaseDatos,ref mensaje_error);
             oDataTableDTO.sEcho = 1;
             oDataTableDTO.iTotalDisplayRecords = lstItemAprobadosDTO.Count;
             oDataTableDTO.iTotalRecords = lstItemAprobadosDTO.Count;
@@ -354,9 +362,10 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerStockxIdDetalleSolicitudRQ(int IdDetalleRQ)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             List<ArticuloStockDTO> lstArticuloStockDTO = new List<ArticuloStockDTO>();
             PedidoDAO oPedidoDAO = new PedidoDAO();
-            lstArticuloStockDTO = oPedidoDAO.ObtenerStockxIdDetalleSolicitudRQ(IdDetalleRQ, ref mensaje_error);
+            lstArticuloStockDTO = oPedidoDAO.ObtenerStockxIdDetalleSolicitudRQ(IdDetalleRQ,BaseDatos,ref mensaje_error);
             if (lstArticuloStockDTO.Count() > 0)
             {
                 return JsonConvert.SerializeObject(lstArticuloStockDTO);
@@ -373,9 +382,10 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerPrecioxProductoUltimasVentas(int IdArticulo)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             List<ProveedoresPrecioProductoDTO> lstProveedoresPrecioProductoDTO = new List<ProveedoresPrecioProductoDTO>();
             PedidoDAO oPedidoDAO = new PedidoDAO();
-            lstProveedoresPrecioProductoDTO = oPedidoDAO.ObtenerPrecioxProductoUltimasVentas(IdArticulo, ref mensaje_error);
+            lstProveedoresPrecioProductoDTO = oPedidoDAO.ObtenerPrecioxProductoUltimasVentas(IdArticulo,BaseDatos,ref mensaje_error);
             if (lstProveedoresPrecioProductoDTO.Count() > 0)
             {
                 return JsonConvert.SerializeObject(lstProveedoresPrecioProductoDTO);
@@ -390,9 +400,10 @@ namespace ConcyssaWeb.Controllers
         }public string ObtenerProveedoresPrecioxProducto(int IdArticulo)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             List<ProveedoresPrecioProductoDTO> lstProveedoresPrecioProductoDTO = new List<ProveedoresPrecioProductoDTO>();
             PedidoDAO oPedidoDAO = new PedidoDAO();
-            lstProveedoresPrecioProductoDTO = oPedidoDAO.ObtenerProveedoresPrecioxProducto(IdArticulo, ref mensaje_error);
+            lstProveedoresPrecioProductoDTO = oPedidoDAO.ObtenerProveedoresPrecioxProducto(IdArticulo,BaseDatos,ref mensaje_error);
             if (lstProveedoresPrecioProductoDTO.Count() > 0)
             {
                 return JsonConvert.SerializeObject(lstProveedoresPrecioProductoDTO);
@@ -408,9 +419,10 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerProveedoresPrecioxProductoConObras(int IdObra,int IdArticulo)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             List<ProveedoresPrecioProductoDTO> lstProveedoresPrecioProductoDTO = new List<ProveedoresPrecioProductoDTO>();
             PedidoDAO oPedidoDAO = new PedidoDAO();
-            lstProveedoresPrecioProductoDTO = oPedidoDAO.ObtenerProveedoresPrecioxProductoConObras(IdObra,IdArticulo, ref mensaje_error);
+            lstProveedoresPrecioProductoDTO = oPedidoDAO.ObtenerProveedoresPrecioxProductoConObras(IdObra,IdArticulo,BaseDatos,ref mensaje_error);
             if (lstProveedoresPrecioProductoDTO.Count() > 0)
             {
                 return JsonConvert.SerializeObject(lstProveedoresPrecioProductoDTO);
@@ -431,8 +443,9 @@ namespace ConcyssaWeb.Controllers
                 Comentario = "";
             }
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             PedidoDAO oPedidoDAO = new PedidoDAO();
-            oPedidoDAO.UpdateInsertPedidoAsignadoPedidoRQ(IdProveedor, precionacional, precioextranjero, idproducto, IdDetalleRq, Comentario, ref mensaje_error);
+            oPedidoDAO.UpdateInsertPedidoAsignadoPedidoRQ(IdProveedor, precionacional, precioextranjero, idproducto, IdDetalleRq, Comentario,BaseDatos,ref mensaje_error);
             if (mensaje_error.Length > 0)
             {
                 return mensaje_error;
@@ -443,10 +456,11 @@ namespace ConcyssaWeb.Controllers
         public string ListarProductosAsignadosxProveedorxIdUsuarioDT()
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             PedidoDAO oPedidoDAO = new PedidoDAO();
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             List<AsignadoPedidoRequeridoDTO> lstAsignadoPedidoRequeridoDTO = new List<AsignadoPedidoRequeridoDTO>();
-            lstAsignadoPedidoRequeridoDTO = oPedidoDAO.ListarProductosAsignadosxProveedorxIdUsuario(IdUsuario, ref mensaje_error);
+            lstAsignadoPedidoRequeridoDTO = oPedidoDAO.ListarProductosAsignadosxProveedorxIdUsuario(IdUsuario,BaseDatos,ref mensaje_error);
             if (mensaje_error.Length > 0)
             {
                 return mensaje_error;
@@ -462,18 +476,20 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerDatosProveedorXRQAsignados(int IdProveedor,int TipoItem,int IdObra)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             List<AsignadoPedidoRequeridoDTO> lstAsignadoPedidoRequeridoDTO = new List<AsignadoPedidoRequeridoDTO>();
             PedidoDAO oPedidoDAO = new PedidoDAO();
-            lstAsignadoPedidoRequeridoDTO = oPedidoDAO.ListarProductosAsignadosxProveedorDetalle(IdProveedor,TipoItem, IdObra, ref mensaje_error);
+            lstAsignadoPedidoRequeridoDTO = oPedidoDAO.ListarProductosAsignadosxProveedorDetalle(IdProveedor,TipoItem, IdObra,BaseDatos,ref mensaje_error);
             return JsonConvert.SerializeObject(lstAsignadoPedidoRequeridoDTO);
         }
 
         public string updatedInsertConformidadPedido(ConformidadPedidoDTO oConformidadPedidoDTO,int UsuarioConformidad)
         {
             UsuarioConformidad = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             PedidoDAO oPedidoDAO = new PedidoDAO();
             string mensaje_error = "";
-            int respuesta = oPedidoDAO.UpdateInsertPedidoConformidadPedido(oConformidadPedidoDTO, UsuarioConformidad, ref mensaje_error);
+            int respuesta = oPedidoDAO.UpdateInsertPedidoConformidadPedido(oConformidadPedidoDTO, UsuarioConformidad,BaseDatos,ref mensaje_error);
             return respuesta.ToString();
         }
 
@@ -525,8 +541,8 @@ namespace ConcyssaWeb.Controllers
 
         public int EnviarCorreoxPedido(int IdPedido)
         {
-            
 
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             try
             {
 
@@ -538,12 +554,12 @@ namespace ConcyssaWeb.Controllers
                 int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
 
 
-                oPedidoDTO = oPedidoDAO.ObtenerPedidoxId(IdPedido, ref mensaje_error);
+                oPedidoDTO = oPedidoDAO.ObtenerPedidoxId(IdPedido,BaseDatos,ref mensaje_error);
                 string body;
                 body = "BASE PRUBAS";
 
                 ObraDAO obraDao = new ObraDAO();
-                List<ObraDTO> datosObra = obraDao.ObtenerDatosxID(oPedidoDTO.IdObra, ref mensaje_error);
+                List<ObraDTO> datosObra = obraDao.ObtenerDatosxID(oPedidoDTO.IdObra,BaseDatos,ref mensaje_error);
                 string correoObra = "";
                 if (datosObra.Count > 0) correoObra = datosObra[0].CorreoObra;
                 //body = "<body>" +
@@ -554,24 +570,24 @@ namespace ConcyssaWeb.Controllers
                 //    "</body>";
 
 
-                //solo para pruebas
-                oPedidoDTO.EmailProveedor = "fperez@smartcode.pe";
-                //oPedidoDTO.EmailProveedor = "cristhian.chacaliaza@smartcode.pe";
-
                 string msge = "";
                 string from = "concyssa.smc@gmail.com";
                 string correo = from;
                 string password = "tlbvngkvjcetzunr";
-                string displayName = "SMC - ENVIO ORDEN COMPRA "+ oPedidoDTO.NombSerie + "-"+oPedidoDTO.Correlativo;
+                string displayName = "CONCYSSA "+ oPedidoDTO.NombSerie + "-"+oPedidoDTO.Correlativo;
                 MailMessage mail = new MailMessage();
                 mail.From = new MailAddress(from, displayName);
 
-
+                
                 mail.To.Add(oPedidoDTO.EmailProveedor);
-                //mail.To.Add("cristhian.chacaliaza@smartcode.pe");
-                mail.To.Add("fmalca@concyssa.com");
-                mail.To.Add("compras@concyssa.com ");
-                mail.Subject = "CONCYSSA - ENVIO ORDEN COMPRA " + oPedidoDTO.NombSerie + "-" + oPedidoDTO.Correlativo;
+                mail.To.Add(correoObra);
+                mail.To.Add("compras@concyssa.com");
+         
+
+               //mail.To.Add("cristhian.chacaliaza@smartcode.pe");
+
+
+                mail.Subject = "CONCYSSA " + oPedidoDTO.NombSerie + "-" + oPedidoDTO.Correlativo;
                 //mail.CC.Add(new MailAddress("camala145@gmail.com"));
                 mail.Body = TemplateEmail(correoObra);
 
@@ -588,7 +604,7 @@ namespace ConcyssaWeb.Controllers
                 string cadenaUri;
                 string response;
               
-                string strNew = "NombreReporte=OrdenCompra&Formato=PDF&Id=" + IdPedido;
+                string strNew = "NombreReporte=OrdenCompra&Formato=PDF&Id=" + IdPedido + "&BaseDatos=" + BaseDatos;
                 cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReportCrystal";
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReportCrystal";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
@@ -611,7 +627,7 @@ namespace ConcyssaWeb.Controllers
                 client.Send(mail);
 
 
-                oPedidoDAO.UpdateEnvioCorreoPedido(IdPedido, ref mensaje_error);
+                oPedidoDAO.UpdateEnvioCorreoPedido(IdPedido,BaseDatos,ref mensaje_error);
             }
             catch (WebException e)
             {
@@ -651,8 +667,13 @@ namespace ConcyssaWeb.Controllers
         }
 
 
-        public string GenerarReporte(string NombreReporte, string Formato, int Id)
+        public string GenerarReporte(string NombreReporte, string Formato, int Id,string BaseDatos)
         {
+            if(BaseDatos == "" || BaseDatos==null)
+            {
+                BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            }
+
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
             HttpWebRequest request;
@@ -670,7 +691,7 @@ namespace ConcyssaWeb.Controllers
 
             try
             {
-                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&Id=" + Id;
+                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&Id=" + Id +"&BaseDatos=" + BaseDatos;
                //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReportCrystal";
                 cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReportCrystal";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
@@ -774,10 +795,10 @@ namespace ConcyssaWeb.Controllers
 
         public string CerrarPedido(PedidoDTO oPedidoDTO)
         {
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             PedidoDAO oPedidoDAO = new PedidoDAO();
-            int respuesta = oPedidoDAO.CerrarPedido(oPedidoDTO, ref mensaje_error);
+            int respuesta = oPedidoDAO.CerrarPedido(oPedidoDTO,BaseDatos,ref mensaje_error);
 
             if (mensaje_error.Length > 0)
             {
@@ -798,10 +819,10 @@ namespace ConcyssaWeb.Controllers
         }
         public string LiberarPedido(PedidoDTO oPedidoDTO)
         {
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             PedidoDAO oPedidoDAO = new PedidoDAO();
-            int respuesta = oPedidoDAO.LiberarPedido(oPedidoDTO, ref mensaje_error);
+            int respuesta = oPedidoDAO.LiberarPedido(oPedidoDTO,BaseDatos,ref mensaje_error);
 
             if (mensaje_error.Length > 0)
             {
@@ -822,10 +843,10 @@ namespace ConcyssaWeb.Controllers
         }
         public string AnularPedido(PedidoDTO oPedidoDTO)
         {
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             PedidoDAO oPedidoDAO = new PedidoDAO();
-            int respuesta = oPedidoDAO.AnularPedido(oPedidoDTO, ref mensaje_error);
+            int respuesta = oPedidoDAO.AnularPedido(oPedidoDTO,BaseDatos,ref mensaje_error);
 
             if (mensaje_error.Length > 0)
             {
@@ -846,6 +867,15 @@ namespace ConcyssaWeb.Controllers
                 }
             }
 
+        }
+
+        public int UpdatePrecioProveedorArticulo(ProveedoresPrecioProductoDTO oProveedoresPrecioProductoDTO)
+        {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            string mensaje_error = "";
+            PedidoDAO oPedidoDAO = new PedidoDAO();
+            int Resultado = oPedidoDAO.UpdatePrecioProveedorArticulo(oProveedoresPrecioProductoDTO,BaseDatos,ref mensaje_error);
+            return Resultado;
         }
 
 

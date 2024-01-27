@@ -14,10 +14,11 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerTipoDocumentoOperacion(int estado = 3)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             TipoDocumentoOperacionDAO oTipoDocumentoOperacionDAO = new TipoDocumentoOperacionDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<TipoDocumentoOperacionDTO> lstTipoDocumentoOperacionDTO = oTipoDocumentoOperacionDAO.ObtenerTipoDocumentoOperacion(IdSociedad, ref mensaje_error, estado);
+            List<TipoDocumentoOperacionDTO> lstTipoDocumentoOperacionDTO = oTipoDocumentoOperacionDAO.ObtenerTipoDocumentoOperacion(IdSociedad,BaseDatos,ref mensaje_error, estado);
             if (lstTipoDocumentoOperacionDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstTipoDocumentoOperacionDTO);

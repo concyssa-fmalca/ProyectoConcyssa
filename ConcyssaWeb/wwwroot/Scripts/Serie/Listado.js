@@ -468,14 +468,14 @@ function guardar(bd, id) {
     }, function (data, status) {
         if (data > 0) {
             Swal.fire("Exito!", "Proceso Realizado Correctamente", "success")
-            $("#modal-form").modal('hide')
+            //$("#modal-form").modal('hide')
             limpiarDatos();
         } else {
             Swal.fire("Error!", "Ocurrio un Error")
             limpiarDatos();
         }
         ObtenerSeriesDT()
-        closePopup();
+       // closePopup();
     });
 
 }

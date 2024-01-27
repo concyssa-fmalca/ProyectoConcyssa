@@ -16,8 +16,13 @@ namespace ConcyssaWeb.Controllers
         [Route("DevolucionAdm/AgregarDevolucionAdm")]
         public dynamic AgregarDevolucionAdm([FromBody] DevolucionAdmDTO oDevolucionAdmDTO)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            if (BaseDatos == "")
+            {
+                BaseDatos = "AddonsConcyssa";
+            }
             DevolucionAdmDAO oDevolucionAdmDAO = new DevolucionAdmDAO();
-            var respuesta = oDevolucionAdmDAO.UpdateInsertDevolucionAdm(oDevolucionAdmDTO);
+            var respuesta = oDevolucionAdmDAO.UpdateInsertDevolucionAdm(oDevolucionAdmDTO,BaseDatos);
             
             if (respuesta > 0)
             {
@@ -32,8 +37,9 @@ namespace ConcyssaWeb.Controllers
 
         public int AgregarDevolucionAdmDetalle(DevolucionAdmDetalle oDevolucionAdmDetalle)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             DevolucionAdmDAO oDevolucionAdmDAO = new DevolucionAdmDAO();
-            var respuesta = oDevolucionAdmDAO.UpdateInsertDevolucionAdmDetalle(oDevolucionAdmDetalle);
+            var respuesta = oDevolucionAdmDAO.UpdateInsertDevolucionAdmDetalle(oDevolucionAdmDetalle,BaseDatos);
 
             if (respuesta > 0)
             {
@@ -48,9 +54,14 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerDevoluciones(int IdUsuario, int EstadoDevolucion)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            if (BaseDatos == "")
+            {
+                BaseDatos = "AddonsConcyssa";
+            }
             DataTableDTO oDataTableDTO = new DataTableDTO();
             DevolucionAdmDAO oDevolucionAdmDAO = new DevolucionAdmDAO();
-            List<DevolucionAdmDTO> lstSolicitudDespachoDTO = oDevolucionAdmDAO.ObtenerDevoluciones(IdUsuario, EstadoDevolucion);
+            List<DevolucionAdmDTO> lstSolicitudDespachoDTO = oDevolucionAdmDAO.ObtenerDevoluciones(IdUsuario, EstadoDevolucion,BaseDatos);
             
             oDataTableDTO.sEcho = 1;
             oDataTableDTO.iTotalDisplayRecords = lstSolicitudDespachoDTO.Count;
@@ -62,9 +73,14 @@ namespace ConcyssaWeb.Controllers
 
         public dynamic ObtenerSolicitudDespachoxId(int IdDevolucion)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            if (BaseDatos == "")
+            {
+                BaseDatos = "AddonsConcyssa";
+            }
             DataTableDTO oDataTableDTO = new DataTableDTO();
             DevolucionAdmDAO oDevolucionAdmDAO = new DevolucionAdmDAO();
-            List<DevolucionAdmDTO> lstSolicitudDespachoDTO = oDevolucionAdmDAO.ObtenerDevolucionxId(IdDevolucion);
+            List<DevolucionAdmDTO> lstSolicitudDespachoDTO = oDevolucionAdmDAO.ObtenerDevolucionxId(IdDevolucion,BaseDatos);
 
             oDataTableDTO.sEcho = 1;
             oDataTableDTO.iTotalDisplayRecords = lstSolicitudDespachoDTO.Count;
@@ -76,9 +92,13 @@ namespace ConcyssaWeb.Controllers
 
         public int UpdateDevolucionDetalle(int IdDevolucionDetalle, decimal Cantidad)
         {
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            if (BaseDatos == "")
+            {
+                BaseDatos = "AddonsConcyssa";
+            }
             DevolucionAdmDAO oDevolucionAdmDAO = new DevolucionAdmDAO();
-            var respuesta = oDevolucionAdmDAO.UpdateDevolucionAdmDet(IdDevolucionDetalle, Cantidad);
+            var respuesta = oDevolucionAdmDAO.UpdateDevolucionAdmDet(IdDevolucionDetalle, Cantidad,BaseDatos);
 
             if (respuesta > 0)
             {
@@ -94,9 +114,13 @@ namespace ConcyssaWeb.Controllers
 
         public int CerrarDevolucionAdm(int IdDevolucion)
         {
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            if (BaseDatos == "")
+            {
+                BaseDatos = "AddonsConcyssa";
+            }
             DevolucionAdmDAO oDevolucionAdmDAO = new DevolucionAdmDAO();
-            var respuesta = oDevolucionAdmDAO.CerrarDevolucionAdm(IdDevolucion);
+            var respuesta = oDevolucionAdmDAO.CerrarDevolucionAdm(IdDevolucion,BaseDatos);
 
             if (respuesta > 0)
             {
@@ -111,9 +135,10 @@ namespace ConcyssaWeb.Controllers
         }
         public string ObtenerDevolucionAdmAtender(int IdBase, DateTime FechaInicio, DateTime FechaFin, int EstadoDevolucion, int SerieFiltro)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             DevolucionAdmDAO oDevolucionAdmDAO = new DevolucionAdmDAO();
-            List<DevolucionAdmDTO> lstDevolucionAdmDTO = oDevolucionAdmDAO.ObtenerDevolucionesAtender(IdBase, FechaInicio, FechaFin, EstadoDevolucion, SerieFiltro);
+            List<DevolucionAdmDTO> lstDevolucionAdmDTO = oDevolucionAdmDAO.ObtenerDevolucionesAtender(IdBase, FechaInicio, FechaFin, EstadoDevolucion, SerieFiltro,BaseDatos);
 
             if (lstDevolucionAdmDTO.Count > 0)
             {
@@ -128,9 +153,10 @@ namespace ConcyssaWeb.Controllers
 
         public int AtencionConfirmada(int Cantidad, int IdDevolucion, int IdArticulo, int EstadoDevolucion)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             DevolucionAdmDAO oDevolucionAdmDAO = new DevolucionAdmDAO();
-            int respuesta = oDevolucionAdmDAO.AtencionConfirmada(Cantidad, IdDevolucion, IdArticulo, EstadoDevolucion, ref mensaje_error);
+            int respuesta = oDevolucionAdmDAO.AtencionConfirmada(Cantidad, IdDevolucion, IdArticulo, EstadoDevolucion,BaseDatos,ref mensaje_error);
 
             if (mensaje_error.Length > 0)
             {

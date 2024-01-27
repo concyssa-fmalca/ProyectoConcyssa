@@ -12,10 +12,10 @@ namespace DAO
 {
     public class ModeloDAO
     {
-        public List<ModeloDTO> ObtenerModelo(int IdSociedad, ref string mensaje_error, int Estado = 3)
+        public List<ModeloDTO> ObtenerModelo(int IdSociedad, string BaseDatos, ref string mensaje_error, int Estado = 3)
         {
             List<ModeloDTO> lstModeloDTO = new List<ModeloDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -47,13 +47,13 @@ namespace DAO
             return lstModeloDTO;
         }
 
-        public int UpdateInsertModelo(ModeloDTO oModeloDTO, ref string mensaje_error, int IdUsuario)
+        public int UpdateInsertModelo(ModeloDTO oModeloDTO, string BaseDatos, ref string mensaje_error, int IdUsuario)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -82,10 +82,10 @@ namespace DAO
             }
         }
 
-        public List<ModeloDTO> ObtenerDatosxID(int IdModelo, ref string mensaje_error)
+        public List<ModeloDTO> ObtenerDatosxID(int IdModelo, string BaseDatos, ref string mensaje_error)
         {
             List<ModeloDTO> lstModeloDTO = new List<ModeloDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -117,13 +117,13 @@ namespace DAO
         }
 
 
-        public int Delete(int IdModelo, ref string mensaje_error)
+        public int Delete(int IdModelo, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {

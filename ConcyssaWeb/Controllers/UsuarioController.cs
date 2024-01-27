@@ -2,6 +2,8 @@
 using DAO;
 using DTO;
 using Newtonsoft.Json;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace ConcyssaWeb.Controllers
 {
@@ -18,9 +20,10 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerUsuarios()
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             UsuarioDAO oUsuarioDAO = new UsuarioDAO();
-            List<UsuarioDTO> lstUsuarioDTO = oUsuarioDAO.ObtenerUsuarios(ref mensaje_error);
+            List<UsuarioDTO> lstUsuarioDTO = oUsuarioDAO.ObtenerUsuarios(BaseDatos,ref mensaje_error);
             if (lstUsuarioDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstUsuarioDTO);
@@ -34,12 +37,13 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerPerfiles()
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             if (!String.IsNullOrEmpty(IdSociedad.ToString()))
             {
                 string mensaje_error = "";
                 PerfilDAO oPerfilDAO = new PerfilDAO();
-                List<PerfilDTO> lstPerfilDTO = oPerfilDAO.ObtenerPerfiles(IdSociedad, ref mensaje_error);
+                List<PerfilDTO> lstPerfilDTO = oPerfilDAO.ObtenerPerfiles(IdSociedad,BaseDatos,ref mensaje_error);
                 if (lstPerfilDTO.Count > 0)
                 {
                     return JsonConvert.SerializeObject(lstPerfilDTO);
@@ -65,10 +69,11 @@ namespace ConcyssaWeb.Controllers
             //{
             //    return valida;
             //}
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             UsuarioDAO oUsuarioDAO = new UsuarioDAO();
-            List<UsuarioDTO> lstUsuarioDTO = oUsuarioDAO.ObtenerUsuariosAutorizadores(IdSociedad.ToString());
+            List<UsuarioDTO> lstUsuarioDTO = oUsuarioDAO.ObtenerUsuariosAutorizadores(IdSociedad.ToString(),BaseDatos);
             if (lstUsuarioDTO.Count > 0)
             {
                 List<UsuarioDTO> olstUsuarioDTO = new List<UsuarioDTO>();
@@ -97,10 +102,11 @@ namespace ConcyssaWeb.Controllers
             //{
             //    return valida;
             //}
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             UsuarioDAO oUsuarioDAO = new UsuarioDAO();
-            List<UsuarioDTO> lstUsuarioDTO = oUsuarioDAO.ObtenerUsuariosAutorizadores(IdSociedad.ToString());
+            List<UsuarioDTO> lstUsuarioDTO = oUsuarioDAO.ObtenerUsuariosAutorizadores(IdSociedad.ToString(),BaseDatos);
             if (lstUsuarioDTO.Count > 0)
             {
                 List<UsuarioDTO> olstUsuarioDTO = new List<UsuarioDTO>();
@@ -122,9 +128,10 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerSociedades()
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             SociedadDAO oSociedadDAO = new SociedadDAO();
-            List<SociedadDTO> lstSociedadDTO = oSociedadDAO.ObtenerSociedades(ref mensaje_error);
+            List<SociedadDTO> lstSociedadDTO = oSociedadDAO.ObtenerSociedades(BaseDatos,ref mensaje_error);
             if (lstSociedadDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstSociedadDTO);
@@ -138,9 +145,26 @@ namespace ConcyssaWeb.Controllers
 
         public int UpdateInsertUsuario(UsuarioDTO usuarioDTO)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             UsuarioDAO oUsuarioDAO = new UsuarioDAO();
-            int resultado = oUsuarioDAO.UpdateInsertUsuario(usuarioDTO, ref mensaje_error);
+
+            string password = "";
+            using (SHA512 sha512 = SHA512.Create())
+            {
+                // Convierte la contraseña en un array de bytes
+                byte[] passwordBytes = Encoding.UTF8.GetBytes(usuarioDTO.Password.ToUpper());
+
+                // Calcula el hash de la contraseña
+                byte[] hashedBytes = sha512.ComputeHash(passwordBytes);
+
+                // Convierte el hash en una cadena hexadecimal
+                password = BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
+            }
+
+            usuarioDTO.Password = password;
+
+            int resultado = oUsuarioDAO.UpdateInsertUsuario(usuarioDTO,BaseDatos,ref mensaje_error);
             if (resultado != 0)
             {
                 resultado = 1;
@@ -152,9 +176,10 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerDatosxID(int IdUsuario)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             UsuarioDAO oUsuarioDAO = new UsuarioDAO();
-            List<UsuarioDTO> lstUsuarioDTO = oUsuarioDAO.ObtenerDatosxID(IdUsuario, ref mensaje_error);
+            List<UsuarioDTO> lstUsuarioDTO = oUsuarioDAO.ObtenerDatosxID(IdUsuario,BaseDatos,ref mensaje_error);
 
             if (lstUsuarioDTO.Count > 0)
             {
@@ -168,10 +193,11 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerBasesxIdUsuario()
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             string mensaje_error = "";
             UsuarioDAO oUsuarioDAO = new UsuarioDAO();
-            List<UsuarioDTO> lstUsuarioDTO = oUsuarioDAO.ObtenerBasesxIdUsuario(IdUsuario, ref mensaje_error);
+            List<UsuarioDTO> lstUsuarioDTO = oUsuarioDAO.ObtenerBasesxIdUsuario(IdUsuario,BaseDatos,ref mensaje_error);
 
             if (lstUsuarioDTO.Count > 0)
             {
@@ -185,8 +211,9 @@ namespace ConcyssaWeb.Controllers
 
         public int EliminarUsuario(int IdUsuario)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             UsuarioDAO oUsuarioDAO = new UsuarioDAO();
-            int resultado = oUsuarioDAO.Delete(IdUsuario);
+            int resultado = oUsuarioDAO.Delete(IdUsuario,BaseDatos);
             if (resultado == 0)
             {
                 resultado = 1;
@@ -197,9 +224,10 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerBaseAlmacenxIdUsuario(int IdUsuario)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             UsuarioDAO oUsuarioDAO = new UsuarioDAO();
-            List<UsuarioBaseAlmacenDTO> lstUsuarioBaseAlmacenDTO = oUsuarioDAO.ObtenerBaseAlmacenxIdUsuario(IdUsuario, ref mensaje_error);
+            List<UsuarioBaseAlmacenDTO> lstUsuarioBaseAlmacenDTO = oUsuarioDAO.ObtenerBaseAlmacenxIdUsuario(IdUsuario,BaseDatos,ref mensaje_error);
             if (lstUsuarioBaseAlmacenDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstUsuarioBaseAlmacenDTO);
@@ -212,10 +240,11 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerBaseAlmacenxIdUsuarioSession()
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             string mensaje_error = "";
             UsuarioDAO oUsuarioDAO = new UsuarioDAO();
-            List<UsuarioBaseAlmacenDTO> lstUsuarioBaseAlmacenDTO = oUsuarioDAO.ObtenerBaseAlmacenxIdUsuario(IdUsuario, ref mensaje_error);
+            List<UsuarioBaseAlmacenDTO> lstUsuarioBaseAlmacenDTO = oUsuarioDAO.ObtenerBaseAlmacenxIdUsuario(IdUsuario,BaseDatos,ref mensaje_error);
             if (lstUsuarioBaseAlmacenDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstUsuarioBaseAlmacenDTO);
@@ -228,9 +257,10 @@ namespace ConcyssaWeb.Controllers
 
         public int GuardarAlmacenBasexUsuario(UsuarioBaseAlmacenDTO oUsuarioBaseAlmacenDTO)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             UsuarioDAO oUsuarioDAO = new UsuarioDAO();
-            int resultado = oUsuarioDAO.UpdateInsertUsuarioBaseAlmacen(oUsuarioBaseAlmacenDTO, ref mensaje_error);
+            int resultado = oUsuarioDAO.UpdateInsertUsuarioBaseAlmacen(oUsuarioBaseAlmacenDTO,BaseDatos,ref mensaje_error);
             if (resultado != 0)
             {
                 resultado = 1;
@@ -241,8 +271,9 @@ namespace ConcyssaWeb.Controllers
 
         public int EliminarUsuarioBase(int IdUsuarioBase)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             UsuarioDAO oUsuarioDAO = new UsuarioDAO();
-            int resultado = oUsuarioDAO.DeleteUsuarioBase(IdUsuarioBase);
+            int resultado = oUsuarioDAO.DeleteUsuarioBase(IdUsuarioBase,BaseDatos);
             if (resultado == 0)
             {
                 resultado = 1;
@@ -250,7 +281,36 @@ namespace ConcyssaWeb.Controllers
             return resultado;
         }
 
+        public string codificar()
+        {
 
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            string mensaje_error = "";
+            UsuarioDAO oUsuarioDAO = new UsuarioDAO();
+            List<UsuarioDTO> lstUsuarioDTO = oUsuarioDAO.ObtenerUsuariosCodificar(4053, BaseDatos, ref mensaje_error);
+
+            for (int i = 0; i < lstUsuarioDTO.Count; i++)
+            {
+
+                using (SHA512 sha512 = SHA512.Create())
+                {
+                    // Convierte la contraseña en un array de bytes
+                    byte[] passwordBytes = Encoding.UTF8.GetBytes(lstUsuarioDTO[i].Password.ToUpper());
+
+                    // Calcula el hash de la contraseña
+                    byte[] hashedBytes = sha512.ComputeHash(passwordBytes);
+
+                    // Convierte el hash en una cadena hexadecimal
+                    lstUsuarioDTO[i].Password = BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
+                }
+
+
+                oUsuarioDAO.UpdatePassword(lstUsuarioDTO[i].IdUsuario, lstUsuarioDTO[i].Password, BaseDatos, ref mensaje_error);
+            }
+
+
+            return "";
+        }
         
 
     }

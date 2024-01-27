@@ -11,10 +11,10 @@ namespace DAO
 {
     public class GiroAutorizacionDAO
     {
-        public int ValidarSipuedeAprobarGiro(int IdSolicitudRQ, int IdEtapa)
+        public int ValidarSipuedeAprobarGiro(int IdSolicitudRQ, int IdEtapa, string BaseDatos)
         {
             int puedeentrar = 0;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -40,10 +40,10 @@ namespace DAO
         }
 
 
-        public int ValidarSipuedeAprobarGiroDetalle(int IdSolicitudRQ, int IdEtapa, int IdDetalle)
+        public int ValidarSipuedeAprobarGiroDetalle(int IdSolicitudRQ, int IdEtapa, int IdDetalle, string BaseDatos)
         {
             int puedeentrar = 0;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -70,10 +70,10 @@ namespace DAO
         }
 
 
-        public List<GiroAutorizacionDTO> ObtenerSolicitudesxAutorizar(string IdUsuario, string IdSociedad, string FechaInicio, string FechaFinal, int Estado)
+        public List<GiroAutorizacionDTO> ObtenerSolicitudesxAutorizar(string IdUsuario, string IdSociedad, string FechaInicio, string FechaFinal, int Estado, string BaseDatos)
         {
             List<GiroAutorizacionDTO> lstSolicitudRQAutorizacionDTO = new List<GiroAutorizacionDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -123,11 +123,11 @@ namespace DAO
             return lstSolicitudRQAutorizacionDTO;
         }
 
-        public List<DetalleGiroAprobacionDTO> ObtenerSolicitudesxAutorizarDetalleGiro(string IdUsuario, string IdSociedad, string FechaInicio, string FechaFinal, int Estado,int IdGiro)
+        public List<DetalleGiroAprobacionDTO> ObtenerSolicitudesxAutorizarDetalleGiro(string IdUsuario, string IdSociedad, string FechaInicio, string FechaFinal, int Estado,int IdGiro, string BaseDatos)
         {
             List<GiroAprobacionDTO> lstGiroAprobacionDTO = new List<GiroAprobacionDTO>();
             List<DetalleGiroAprobacionDTO> lstDetalleGiroAprobacionDTO = new List<DetalleGiroAprobacionDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -148,7 +148,7 @@ namespace DAO
                     {
 
                         aprobar = 0;
-                        aprobar = ValidarSipuedeAprobarGiroDetalle(Convert.ToInt32(drd["IdGiro"].ToString()), Convert.ToInt32(drd["IdEtapa"].ToString()), Convert.ToInt32(drd["IdGiroDetalle"].ToString()));
+                        aprobar = ValidarSipuedeAprobarGiroDetalle(Convert.ToInt32(drd["IdGiro"].ToString()), Convert.ToInt32(drd["IdEtapa"].ToString()), Convert.ToInt32(drd["IdGiroDetalle"].ToString()),BaseDatos);
 
                         if (aprobar == 1)
                         {
@@ -194,11 +194,11 @@ namespace DAO
 
 
 
-        public List<GiroAprobacionDTO> ObtenerGiroCabeceraAutorizar(string IdUsuario, string IdSociedad, string FechaInicio, string FechaFinal, int Estado)
+        public List<GiroAprobacionDTO> ObtenerGiroCabeceraAutorizar(string IdUsuario, string IdSociedad, string FechaInicio, string FechaFinal, int Estado, string BaseDatos)
         {
             List<GiroAprobacionDTO> lstGiroAprobacionDTO = new List<GiroAprobacionDTO>();
             List<DetalleGiroAprobacionDTO> lstDetalleGiroAprobacionDTO = new List<DetalleGiroAprobacionDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -219,12 +219,13 @@ namespace DAO
                     {
 
                         aprobar = 0;
-                        aprobar = ValidarSipuedeAprobarGiroDetalle(Convert.ToInt32(drd["IdGiro"].ToString()), Convert.ToInt32(drd["IdEtapa"].ToString()), Convert.ToInt32(drd["IdGiroDetalle"].ToString()));
+                        aprobar = ValidarSipuedeAprobarGiroDetalle(Convert.ToInt32(drd["IdGiro"].ToString()), Convert.ToInt32(drd["IdEtapa"].ToString()), Convert.ToInt32(drd["IdGiroDetalle"].ToString()),BaseDatos);
 
                         if (aprobar == 1)
                         {
                             DetalleGiroAprobacionDTO oDetalleGiroAprobacionDTO = new DetalleGiroAprobacionDTO();
                             oDetalleGiroAprobacionDTO.IdGiro = Convert.ToInt32(drd["IdGiro"].ToString());
+                            oDetalleGiroAprobacionDTO.SerieNumGiro = (drd["SerieNumGiro"].ToString() == "" ? drd["SerieNumGiro"].ToString() : drd["SerieNumGiro"].ToString());
                             lstDetalleGiroAprobacionDTO.Add(oDetalleGiroAprobacionDTO);
                         }
 
@@ -242,7 +243,7 @@ namespace DAO
             }
 
 
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -267,8 +268,11 @@ namespace DAO
                                 oGiroAprobacionDTO.Fecha = Convert.ToDateTime(dr["Fecha"].ToString());
                                 oGiroAprobacionDTO.MontoSoles = decimal.Parse(dr["MontoSoles"].ToString());
                                 oGiroAprobacionDTO.MontoDolares = decimal.Parse(dr["MontoDolares"].ToString());
+                                oGiroAprobacionDTO.SerieNumGiro = (dr["NombSerie"].ToString()) +"-"+ (dr["Correlativo"].ToString());
 
                                 oGiroAprobacionDTO.Solicitante = (dr["Proveedor"].ToString() == "" ? dr["Empleado"].ToString() : dr["Proveedor"].ToString());
+          
+                                
                                 var FechaIni = Convert.ToDateTime(dr["FechaIni"].ToString());
                                 var FechaFin = Convert.ToDateTime(dr["FechaFin"].ToString());
                                 oGiroAprobacionDTO.Semana = "Semana " + dr["NumSemana"].ToString() + " del " + FechaIni.ToString("dd/MM") + " al " + FechaFin.ToString("dd/MM");

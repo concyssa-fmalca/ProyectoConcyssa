@@ -14,10 +14,11 @@ namespace ConcyssaWeb.Controllers
         }
         public string ObtenerTipoCambio(int estado = 3)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             TipoCambioDAO oTipoCambioDAO = new TipoCambioDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<TipoCambioDTO> lstGlosaContableDTO = oTipoCambioDAO.ObtenerTipoCambio( ref mensaje_error);
+            List<TipoCambioDTO> lstGlosaContableDTO = oTipoCambioDAO.ObtenerTipoCambio( BaseDatos,ref mensaje_error);
             if (lstGlosaContableDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstGlosaContableDTO);
@@ -31,9 +32,10 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerDatosxID(int IdMoneda, DateTime Fecha)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             TipoCambioDAO oGlosaContableDAO = new TipoCambioDAO();
-            List<TipoCambioDTO> lstGlosaContableDTO = oGlosaContableDAO.ObtenerDatosxID(IdMoneda, Fecha, ref mensaje_error);
+            List<TipoCambioDTO> lstGlosaContableDTO = oGlosaContableDAO.ObtenerDatosxID(IdMoneda, Fecha,BaseDatos,ref mensaje_error);
 
             if (lstGlosaContableDTO.Count > 0)
             {
@@ -49,12 +51,12 @@ namespace ConcyssaWeb.Controllers
 
         public string UpdateInsertTipoCambio(TipoCambioDTO oTipoCambio)
         {
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             TipoCambioDAO oTipoCambioDAO = new TipoCambioDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             oTipoCambio.IdSociedad = IdSociedad;
-            int respuesta = oTipoCambioDAO.UpdateInsertTipoCambio(oTipoCambio, ref mensaje_error);
+            int respuesta = oTipoCambioDAO.UpdateInsertTipoCambio(oTipoCambio,BaseDatos,ref mensaje_error);
 
             if (mensaje_error.Length > 0)
             {
@@ -75,12 +77,14 @@ namespace ConcyssaWeb.Controllers
 
         public string ActualizarTipoCambio()
         {
+
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string resultado = "0";
             try
             {
                 MonedaDAO oMonedaDAO = new MonedaDAO();
                 int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));              
-                List<MonedaDTO> monedaDTOs=   oMonedaDAO.ObtenerMonedas(IdSociedad.ToString());
+                List<MonedaDTO> monedaDTOs=   oMonedaDAO.ObtenerMonedas(IdSociedad.ToString(),BaseDatos);
                 string date = DateTime.Now.ToString("yyyy-MM-dd");
                 foreach (MonedaDTO item in monedaDTOs)
                 {
@@ -168,9 +172,10 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerTipoCambio(int IdMoneda, DateTime Fecha)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             TipoCambioDAO oGlosaContableDAO = new TipoCambioDAO();
-            List<TipoCambioDTO> lstGlosaContableDTO = oGlosaContableDAO.ObtenerDatosxID(IdMoneda, Fecha, ref mensaje_error);
+            List<TipoCambioDTO> lstGlosaContableDTO = oGlosaContableDAO.ObtenerDatosxID(IdMoneda, Fecha,BaseDatos,ref mensaje_error);
 
             if (lstGlosaContableDTO.Count > 0)
             {
@@ -191,9 +196,10 @@ namespace ConcyssaWeb.Controllers
 
         public int EliminarGlosaContable(int IdGlosaContable)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
             GlosaContableDAO oGlosaContableDAO = new GlosaContableDAO();
-            int resultado = oGlosaContableDAO.Delete(IdGlosaContable, ref mensaje_error);
+            int resultado = oGlosaContableDAO.Delete(IdGlosaContable,BaseDatos,ref mensaje_error);
             if (resultado == 0)
             {
                 resultado = 1;

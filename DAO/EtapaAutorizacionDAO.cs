@@ -14,10 +14,10 @@ namespace DAO
     {
 
 
-        public List<EtapaAutorizacionDTO> ObtenerEtapaAutorizacion(string IdSociedad)
+        public List<EtapaAutorizacionDTO> ObtenerEtapaAutorizacion(string IdSociedad, string BaseDatos)
         {
             List<EtapaAutorizacionDTO> lstEtapaAutorizacionDTO = new List<EtapaAutorizacionDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -48,13 +48,13 @@ namespace DAO
             return lstEtapaAutorizacionDTO;
         }
 
-        public int UpdateInsertEtapaAutorizacion(EtapaAutorizacionDTO oEtapaAutorizacionDTO, string IdSociedad)
+        public int UpdateInsertEtapaAutorizacion(EtapaAutorizacionDTO oEtapaAutorizacionDTO, string IdSociedad, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -107,11 +107,11 @@ namespace DAO
             }
         }
 
-        public List<EtapaAutorizacionDTO> ObtenerDatosxID(int IdEtapaAutorizacion)
+        public List<EtapaAutorizacionDTO> ObtenerDatosxID(int IdEtapaAutorizacion, string BaseDatos)
         {
             List<EtapaAutorizacionDTO> lstEtapaAutorizacionDTO = new List<EtapaAutorizacionDTO>();
             EtapaAutorizacionDTO oEtapaAutorizacionDTO = new EtapaAutorizacionDTO();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -142,7 +142,7 @@ namespace DAO
 
 
             Int32 filasdetalle = 0;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -163,7 +163,7 @@ namespace DAO
 
 
             oEtapaAutorizacionDTO.Detalles = new EtapaAutorizacionDetalleDTO[filasdetalle];
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -201,7 +201,7 @@ namespace DAO
         //{
         //    List<EtapaAutorizacionDTO> lstEtapaAutorizacionDTO = new List<EtapaAutorizacionDTO>();
         //    EtapaAutorizacionDTO oEtapaAutorizacionDTO = new EtapaAutorizacionDTO();
-        //    //using (SqlConnection cn = new Conexion().conectar())
+        //    //using (SqlConnection cn = new Conexion().conectar(BaseDatos))
         //    //{
         //        try
         //        {
@@ -232,7 +232,7 @@ namespace DAO
 
 
         //    Int32 filasdetalle = 0;
-        //    //using (SqlConnection cn = new Conexion().conectar())
+        //    //using (SqlConnection cn = new Conexion().conectar(BaseDatos))
         //    //{
         //        try
         //        {
@@ -254,7 +254,7 @@ namespace DAO
 
 
         //    oEtapaAutorizacionDTO.Detalles = new EtapaAutorizacionDetalleDTO[filasdetalle];
-        //    //using (SqlConnection cn = new Conexion().conectar())
+        //    //using (SqlConnection cn = new Conexion().conectar(BaseDatos))
         //    //{
         //        try
         //        {
@@ -290,13 +290,13 @@ namespace DAO
         //}
 
 
-        public int Delete(int IdEtapaAutorizacion)
+        public int Delete(int IdEtapaAutorizacion, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -319,13 +319,13 @@ namespace DAO
         }
 
 
-        public int EliminarDetalleAutorizacion(int IdEtapaAutorizacionDetalle)
+        public int EliminarDetalleAutorizacion(int IdEtapaAutorizacionDetalle, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {

@@ -9,7 +9,7 @@ window.onload = function () {
     ObtenerTipoRegistroFiltro()
     KeyPressNumber($("#txtFondo"));
     $("#cboObraFiltro").prop("selectedIndex", 1);
-    $("#cboPeriodo").prop("selectedIndex", 3);
+    $("#cboPeriodo").val(2024);
     ObtenerSemanas()
 };
 

@@ -52,4 +52,10 @@ namespace DTO
         public string NumeroCuenta { get; set; }
         public decimal Monto { get; set; }
     }
+    public class CuentaConsumoSAP
+    {
+        public string NumeroCuenta { get; set; }
+        public decimal MontoDebito { get; set; }
+        public decimal MontoCredito { get; set; }
+    }
 }

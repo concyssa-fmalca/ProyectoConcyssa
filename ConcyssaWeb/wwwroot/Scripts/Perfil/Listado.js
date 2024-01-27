@@ -62,7 +62,7 @@ function GuardarPerfil() {
     if ($('#chkActivo')[0].checked) {
         varEstado = true;
     }
-    if (varIdPerfil == "" || varIdPerfil == undefined) {
+    if (varPerfil == "" || varPerfil == undefined) {
         Swal.fire("Error", "El Campo Perfil es Obligatorio", "info")
         return
     }

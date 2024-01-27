@@ -12,8 +12,12 @@ namespace ConcyssaWeb.Controllers
         {
             return View();
         }
-        public string GenerarReporte(string NombreReporte, string Formato, int IdObra, int IdSemana, int Anio)
+        public string GenerarReporte(string NombreReporte, string Formato, int IdObra, int IdSemana, int Anio, string BaseDatos)
         {
+            if (BaseDatos == "" || BaseDatos == null)
+            {
+                BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            }
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
             HttpWebRequest request;
@@ -33,7 +37,7 @@ namespace ConcyssaWeb.Controllers
 
             try
             {
-                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdObra=" + IdObra + "&Anio=" + Anio + "&IdSemana=" + IdSemana;
+                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdObra=" + IdObra + "&Anio=" + Anio + "&IdSemana=" + IdSemana + "&BaseDatos=" + BaseDatos;
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteInformeCajaChicaSemanas";
                 cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteInformeCajaChicaSemanas";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);

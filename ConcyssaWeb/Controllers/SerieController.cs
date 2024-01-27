@@ -21,10 +21,10 @@ namespace ConcyssaWeb.Controllers
                 return valida;
             }
 
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             SerieDAO oSerieDAO = new SerieDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<SerieDTO> lstSerieDTO = oSerieDAO.ObtenerSeries(IdSociedad.ToString());
+            List<SerieDTO> lstSerieDTO = oSerieDAO.ObtenerSeries(IdSociedad.ToString(),BaseDatos);
             if (lstSerieDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstSerieDTO);
@@ -44,10 +44,10 @@ namespace ConcyssaWeb.Controllers
                 return valida;
             }
 
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             SerieDAO oSerieDAO = new SerieDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<SerieDTO> lstSerieDTO = oSerieDAO.ObtenerSeries(IdSociedad.ToString());
+            List<SerieDTO> lstSerieDTO = oSerieDAO.ObtenerSeries(IdSociedad.ToString(),BaseDatos);
             DataTableDTO oDataTableDTO = new DataTableDTO();
             if (lstSerieDTO.Count > 0)
             {
@@ -74,10 +74,10 @@ namespace ConcyssaWeb.Controllers
                 return valida;
             }
 
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             SerieDAO oSerieDAO = new SerieDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<SerieDTO> lstSerieDTO = oSerieDAO.ObtenerSeriesNEW(IdSociedad.ToString());
+            List<SerieDTO> lstSerieDTO = oSerieDAO.ObtenerSeriesNEW(IdSociedad.ToString(),BaseDatos);
             DataTableDTO oDataTableDTO = new DataTableDTO();
             if (lstSerieDTO.Count > 0)
             {
@@ -103,10 +103,10 @@ namespace ConcyssaWeb.Controllers
                 return valida;
             }
 
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             SerieDAO oSerieDAO = new SerieDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<SerieDTO> lstSerieDTO = oSerieDAO.ObtenerSeriesElectronicas(IdSociedad.ToString());
+            List<SerieDTO> lstSerieDTO = oSerieDAO.ObtenerSeriesElectronicas(IdSociedad.ToString(),BaseDatos);
             DataTableDTO oDataTableDTO = new DataTableDTO();
             if (lstSerieDTO.Count > 0)
             {
@@ -131,10 +131,10 @@ namespace ConcyssaWeb.Controllers
             {
                 return valida;
             }
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             SerieDAO oSerieDAO = new SerieDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<SerieDTO> lstSerieDTO = oSerieDAO.ObtenerSeriesxIdDocumento(IdSociedad,IdDocumento);
+            List<SerieDTO> lstSerieDTO = oSerieDAO.ObtenerSeriesxIdDocumento(IdSociedad,IdDocumento,BaseDatos);
             DataTableDTO oDataTableDTO = new DataTableDTO();
             if (lstSerieDTO.Count > 0)
             {
@@ -159,11 +159,11 @@ namespace ConcyssaWeb.Controllers
                 return valida;
             }
 
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             SerieDAO oSerieDAO = new SerieDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
 
-            int resultado = oSerieDAO.UpdateInsertSerie(SerieDTO, IdSociedad.ToString());
+            int resultado = oSerieDAO.UpdateInsertSerie(SerieDTO, IdSociedad.ToString(),BaseDatos);
             if (resultado != 0)
             {
                 resultado = 1;
@@ -182,9 +182,9 @@ namespace ConcyssaWeb.Controllers
                 return valida;
             }
 
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             SerieDAO oSerieDAO = new SerieDAO();
-            List<SerieDTO> lstSerieDTO = oSerieDAO.ObtenerDatosxID(IdSerie);
+            List<SerieDTO> lstSerieDTO = oSerieDAO.ObtenerDatosxID(IdSerie,BaseDatos);
 
             if (lstSerieDTO.Count > 0)
             {
@@ -206,9 +206,9 @@ namespace ConcyssaWeb.Controllers
                 return valida;
             }
 
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             SerieDAO oSerieDAO = new SerieDAO();
-            int resultado = oSerieDAO.Delete(IdSerie);
+            int resultado = oSerieDAO.Delete(IdSerie,BaseDatos);
             if (resultado == 0)
             {
                 resultado = 1;
@@ -227,9 +227,9 @@ namespace ConcyssaWeb.Controllers
                 return valida;
             }
 
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             SerieDAO oSerieDAO = new SerieDAO();
-            List<SerieDTO> lstSerieDTO = oSerieDAO.ValidarNumeracionSerieSolicitudRQ(IdSerie);
+            List<SerieDTO> lstSerieDTO = oSerieDAO.ValidarNumeracionSerieSolicitudRQ(IdSerie,BaseDatos);
 
             if (lstSerieDTO.Count > 0)
             {
@@ -271,12 +271,13 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerDatosSerieValidacion(int IdSerie,int IdDocumento,int Orden,string fecha)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             SerieDAO oSerieDAO = new SerieDAO();
             SerieDTO oSerieDTO = new SerieDTO();
-            oSerieDTO = oSerieDAO.ObtenerDatosSerieValidacion(IdSerie, IdDocumento, Orden, fecha);
+            oSerieDTO = oSerieDAO.ObtenerDatosSerieValidacion(IdSerie, IdDocumento, Orden, fecha,BaseDatos);
             PeriodoDAO oPeriodoDAO =new PeriodoDAO();
             List<PeriodoContableFechaDTO> lstPeriodoContableFechaDTO = new List<PeriodoContableFechaDTO>();
-            lstPeriodoContableFechaDTO=oPeriodoDAO.ObtenerPeriodoContableFechaValidacion(oSerieDTO.IdPeriodo, fecha, Orden);
+            lstPeriodoContableFechaDTO=oPeriodoDAO.ObtenerPeriodoContableFechaValidacion(oSerieDTO.IdPeriodo, fecha, Orden,BaseDatos);
 
             oSerieDTO.FechaRelacion=lstPeriodoContableFechaDTO;
 

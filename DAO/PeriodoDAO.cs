@@ -14,10 +14,10 @@ namespace DAO
     {
 
         #region IndicadorPeriodo
-        public List<IndicadorPeriodoDTO> ObtenerIndicadorPeriodo(int IdSociedad,int Estado ,ref string mensaje_error)
+        public List<IndicadorPeriodoDTO> ObtenerIndicadorPeriodo(int IdSociedad,int Estado ,string BaseDatos, ref string mensaje_error)
         {
             List<IndicadorPeriodoDTO> lstIndicadorPeriodoDTO = new List<IndicadorPeriodoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -54,10 +54,10 @@ namespace DAO
         }
 
 
-        public IndicadorPeriodoDTO ObtenerIndicadorPeriodoxId(int IdIndicadorPeriodo,ref string mensaje_error)
+        public IndicadorPeriodoDTO ObtenerIndicadorPeriodoxId(int IdIndicadorPeriodo,string BaseDatos, ref string mensaje_error)
         {
             IndicadorPeriodoDTO oIndicadorPeriodoDTO = new IndicadorPeriodoDTO();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -84,13 +84,13 @@ namespace DAO
             return oIndicadorPeriodoDTO;
         }
 
-        public int UpdateInsertIndicadorPeriodo(IndicadorPeriodoDTO oIndicadorPeriodoDTO, ref string mensaje_error)
+        public int UpdateInsertIndicadorPeriodo(IndicadorPeriodoDTO oIndicadorPeriodoDTO, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -116,13 +116,13 @@ namespace DAO
             }
         }
 
-        public int DeleteIndicadorPeriodo(int IdIndicadorPeriodo, ref string mensaje_error)
+        public int DeleteIndicadorPeriodo(int IdIndicadorPeriodo, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -151,10 +151,10 @@ namespace DAO
 
 
         #region PeriodoContable
-        public List<PeriodoContableDTO> ObtenerPeriodoContable(int IdSociedad,int Estado,ref string mensaje_error)
+        public List<PeriodoContableDTO> ObtenerPeriodoContable(int IdSociedad,int Estado,string BaseDatos, ref string mensaje_error)
         {
             List<PeriodoContableDTO> lstPeriodoContableDTO = new List<PeriodoContableDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -197,10 +197,10 @@ namespace DAO
             return lstPeriodoContableDTO;
         }
 
-        public PeriodoContableDTO ObtenerPeriodoContablexId(int IdPeriodoContable, ref string mensaje_error)
+        public PeriodoContableDTO ObtenerPeriodoContablexId(int IdPeriodoContable, string BaseDatos, ref string mensaje_error)
         {
             PeriodoContableDTO oPeriodoContableDTO = new PeriodoContableDTO();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -237,7 +237,7 @@ namespace DAO
 
             #region Contar Detalle 
             Int32 filasdetalle = 0;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -261,7 +261,7 @@ namespace DAO
             #endregion
 
             #region Detalle
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -295,13 +295,13 @@ namespace DAO
             return oPeriodoContableDTO;
         }
 
-        public int UpdateInsertPeriodoContable(PeriodoContableDTO oPeriodoContableDTO, ref string mensaje_error)
+        public int UpdateInsertPeriodoContable(PeriodoContableDTO oPeriodoContableDTO, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -334,13 +334,13 @@ namespace DAO
             }
         }
 
-        public int UpdateInsertPeriodoContableFecha(PeriodoContableFechaDTO oPeriodoContableFechaDTO, ref string mensaje_error)
+        public int UpdateInsertPeriodoContableFecha(PeriodoContableFechaDTO oPeriodoContableFechaDTO, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -368,13 +368,13 @@ namespace DAO
             }
         }
 
-        public int DeletePeriodoContable(int IdPeriodoContable, ref string mensaje_error)
+        public int DeletePeriodoContable(int IdPeriodoContable, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -400,10 +400,10 @@ namespace DAO
 
 
         #region Validacion
-        public List<PeriodoContableFechaDTO> ObtenerPeriodoContableFechaValidacion(int IdIndicadorPeriodo,string Fecha,int Orden)
+        public List<PeriodoContableFechaDTO> ObtenerPeriodoContableFechaValidacion(int IdIndicadorPeriodo,string Fecha,int Orden, string BaseDatos)
         {
             List <PeriodoContableFechaDTO> lstPeriodoContableFechaDTO = new List<PeriodoContableFechaDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {

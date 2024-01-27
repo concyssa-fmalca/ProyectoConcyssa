@@ -9,14 +9,14 @@ namespace DAO
 {
     public class ConexionSQLSAP
     {
-        public SqlConnection conectar()
+        public SqlConnection conectar(string nombreBaseDatos)
         {
-            return cn();
+            return cn(nombreBaseDatos);
         }
-        public SqlConnection cn()
+        public SqlConnection cn(string nombreBaseDatos)
         {
             //string nombreBaseDatos = ConfigurationManager.AppSettings["BDAddonRQ"];
-            string nombreBaseDatos = "SBO_CONCYSSA_PRUEBAS";
+    
 
             SqlConnection cn = new SqlConnection("Server=192.168.0.209,1433;Database=" + nombreBaseDatos + ";User ID=sa;Password=C0ncy$$@$ql;Trusted_Connection=False");
 

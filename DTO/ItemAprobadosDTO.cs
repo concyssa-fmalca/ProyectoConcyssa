@@ -4,6 +4,7 @@
     {
         public int DT_RowId { get; set; }
         public int IdDetalle { get; set; }
+        public int IdSolicitud { get; set; }
         public int IdArticulo { get; set; }
 
         public string NombArticulo { get; set; }

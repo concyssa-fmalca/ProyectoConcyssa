@@ -13,13 +13,13 @@ namespace DAO
     public class GiroModeloDAO
     {
 
-        public int UpdateInsertGiroModelo(GiroModeloDTO oGiroModeloDTO, string IdSociedad)
+        public int UpdateInsertGiroModelo(GiroModeloDTO oGiroModeloDTO, string IdSociedad, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -48,11 +48,11 @@ namespace DAO
         }
 
 
-        public List<GiroModeloDTO> ObtenerDatosxID(int IdGiroModelo, string IdSociedad)
+        public List<GiroModeloDTO> ObtenerDatosxID(int IdGiroModelo, string IdSociedad, string BaseDatos)
         {
             List<GiroModeloDTO> lstGiroModeloDTO = new List<GiroModeloDTO>();
 
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {

@@ -13,8 +13,9 @@ namespace ConcyssaWeb.Controllers
         }
         public string ObtenerTipoPersonas()
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             TipoPersonaDAO oTipoPersonaDAO = new TipoPersonaDAO();
-            List<TipoPersonaDTO> lstTipoPersonaDTO = oTipoPersonaDAO.ObtenerTipoPersonas();
+            List<TipoPersonaDTO> lstTipoPersonaDTO = oTipoPersonaDAO.ObtenerTipoPersonas(BaseDatos);
             if (lstTipoPersonaDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstTipoPersonaDTO);

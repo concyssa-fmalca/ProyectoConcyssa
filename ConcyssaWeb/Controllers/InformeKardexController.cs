@@ -21,9 +21,10 @@ namespace ConcyssaWeb.Controllers
         public string ListarKardex(int IdArticulo, int IdAlmacen, DateTime FechaInicio, DateTime FechaTermino)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             KardexDAO oKardexDAO = new KardexDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<KardexDTO> lstKardexDTO = oKardexDAO.ObtenerKardex(IdSociedad, IdArticulo, IdAlmacen, FechaInicio, FechaTermino, ref mensaje_error);
+            List<KardexDTO> lstKardexDTO = oKardexDAO.ObtenerKardex(IdSociedad, IdArticulo, IdAlmacen, FechaInicio, FechaTermino,BaseDatos,ref mensaje_error);
             if (lstKardexDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstKardexDTO);
@@ -246,6 +247,7 @@ namespace ConcyssaWeb.Controllers
         public List<KardexDTO> ObtenerDatosKardex(int IdArticulo, int IdAlmacen, DateTime FechaInicio, DateTime FechaTermino, int ClaseArticulo, int TipoArticulo, int IdSociedad)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             KardexDAO oKardexDAO = new KardexDAO();
             if(IdSociedad == 0)
             {
@@ -256,24 +258,24 @@ namespace ConcyssaWeb.Controllers
 
             if (IdArticulo != 0)
             {
-                lstKardexDTO = oKardexDAO.ObtenerKardex(IdSociedad, IdArticulo, IdAlmacen, FechaInicio, FechaTermino, ref mensaje_error);
+                lstKardexDTO = oKardexDAO.ObtenerKardex(IdSociedad, IdArticulo, IdAlmacen, FechaInicio, FechaTermino,BaseDatos,ref mensaje_error);
             }
             else
             {
                 ArticuloDAO oArticuloDAO = new ArticuloDAO();
                 List<ArticuloDTO> lstArticuloDTO = new List<ArticuloDTO>();
                 List<KardexDTO> lstArticulosKardex = new List<KardexDTO>();
-                lstArticulosKardex = oKardexDAO.ObtenerArticulosEnKardex(IdAlmacen, FechaInicio, FechaTermino, ref mensaje_error);
+                lstArticulosKardex = oKardexDAO.ObtenerArticulosEnKardex(IdAlmacen, FechaInicio, FechaTermino,BaseDatos,ref mensaje_error);
                 List<int> ArticulosObtenidos = new List<int>();          
                 List<int> ArticulosExistentes = new List<int>();          
                 List<KardexDTO> lstArticulosNoEncontrados = new List<KardexDTO>();
                 if (ClaseArticulo == 1)
                 {
-                    lstArticuloDTO = oArticuloDAO.ListarArticulosCatalogoxSociedadxAlmacenStockxIdTipoProducto(IdSociedad, IdAlmacen, TipoArticulo, ref mensaje_error, 1);
+                    lstArticuloDTO = oArticuloDAO.ListarArticulosCatalogoxSociedadxAlmacenStockxIdTipoProducto(IdSociedad, IdAlmacen, TipoArticulo,BaseDatos,ref mensaje_error, 1);
                 }
                 else
                 {
-                    lstArticuloDTO = oArticuloDAO.ObtenerArticulosActivoFijo(1, ref mensaje_error);
+                    lstArticuloDTO = oArticuloDAO.ObtenerArticulosActivoFijo(1,BaseDatos,ref mensaje_error);
                 }
 
                 for (int i = 0; i < lstArticulosKardex.Count; i++)
@@ -330,7 +332,7 @@ namespace ConcyssaWeb.Controllers
 
                 for (int i = 0; i < ArticulosObtenidos.Count; i++)
                 {
-                    lstKardexDTO.AddRange(oKardexDAO.ObtenerKardex(IdSociedad, ArticulosObtenidos[i], IdAlmacen, FechaInicio, FechaTermino, ref mensaje_error));
+                    lstKardexDTO.AddRange(oKardexDAO.ObtenerKardex(IdSociedad, ArticulosObtenidos[i], IdAlmacen, FechaInicio, FechaTermino,BaseDatos,ref mensaje_error));
                 }
                 for (int i = 0; i < lstArticulosNoEncontrados.Count; i++)
                 {

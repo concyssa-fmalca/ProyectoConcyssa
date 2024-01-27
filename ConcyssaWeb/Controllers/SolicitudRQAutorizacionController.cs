@@ -152,6 +152,7 @@ namespace ConcyssaWeb.Controllers
         }
         public string ObtenerSolicitudesxAutorizar(string FechaInicio, string FechaFinal, int Estado, int IdAutorizador)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
            
@@ -169,7 +170,7 @@ namespace ConcyssaWeb.Controllers
             {
                 SolicitudRQAutorizacionDAO oSolicitudRQAutorizacionDAO = new SolicitudRQAutorizacionDAO();
                 //List<SolicitudRQAutorizacionDTO> lstSolicitudRQAutorizacionDTO = oSolicitudRQAutorizacionDAO.ObtenerSolicitudesxAutorizar(IdAutorizador.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado);
-                List<DetalleSolicitudRqAprobacionDTO> lstDetalleSolicitudRqAprobacionDTO = oSolicitudRQAutorizacionDAO.ObtenerSolicitudesxAutorizarDetalle(IdUsuario.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado);
+                List<DetalleSolicitudRqAprobacionDTO> lstDetalleSolicitudRqAprobacionDTO = oSolicitudRQAutorizacionDAO.ObtenerSolicitudesxAutorizarDetalle(IdUsuario.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado,BaseDatos);
                 if (lstDetalleSolicitudRqAprobacionDTO.Count > 0)
                 {
                   
@@ -184,7 +185,7 @@ namespace ConcyssaWeb.Controllers
             {
                 SolicitudRQAutorizacionDAO oSolicitudRQAutorizacionDAO = new SolicitudRQAutorizacionDAO();
                 //List<SolicitudRQAutorizacionDTO> lstSolicitudRQAutorizacionDTO = oSolicitudRQAutorizacionDAO.ObtenerSolicitudesxAutorizar(IdUsuario.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado);
-                List<DetalleSolicitudRqAprobacionDTO> lstDetalleSolicitudRqAprobacionDTO = oSolicitudRQAutorizacionDAO.ObtenerSolicitudesxAutorizarDetalle(IdUsuario.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado);
+                List<DetalleSolicitudRqAprobacionDTO> lstDetalleSolicitudRqAprobacionDTO = oSolicitudRQAutorizacionDAO.ObtenerSolicitudesxAutorizarDetalle(IdUsuario.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado,BaseDatos);
                 if (lstDetalleSolicitudRqAprobacionDTO.Count > 0)
                 {
                     Resultado = JsonConvert.SerializeObject(lstDetalleSolicitudRqAprobacionDTO);
@@ -201,8 +202,9 @@ namespace ConcyssaWeb.Controllers
 
         public bool ValidarSipuedeAprobar(int IdSolicitudRQ, int IdEtapa)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             SolicitudRQAutorizacionDAO oSolicitudRQAutorizacionDAO = new SolicitudRQAutorizacionDAO();
-            int puedeentrar = oSolicitudRQAutorizacionDAO.ValidarSipuedeAprobar(IdSolicitudRQ, IdEtapa);
+            int puedeentrar = oSolicitudRQAutorizacionDAO.ValidarSipuedeAprobar(IdSolicitudRQ, IdEtapa,BaseDatos);
             if (puedeentrar == 1)
             {
                 return true;
@@ -216,6 +218,7 @@ namespace ConcyssaWeb.Controllers
 
         public int UpdateInsertModeloAprobaciones(List<SolicitudRQModeloAprobacionesDTO> solicitudRQModeloAprobacionesDTO)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             int valida = 0;
@@ -232,15 +235,14 @@ namespace ConcyssaWeb.Controllers
             SolicitudRQModeloDAO oSolicitudRQModeloDAO = new SolicitudRQModeloDAO();
             EtapaAutorizacionDAO oEtapaAutorizacionDAO = new EtapaAutorizacionDAO();
             UsuarioDAO oUsuarioDAO = new UsuarioDAO();
-            int resultado = oSolicitudRQModeloAprobacionesDAO.UpdateInsertModeloAprobaciones(solicitudRQModeloAprobacionesDTO, IdSociedad.ToString());
+            int resultado = oSolicitudRQModeloAprobacionesDAO.UpdateInsertModeloAprobaciones(solicitudRQModeloAprobacionesDTO, IdSociedad.ToString(),BaseDatos);
             if (resultado != 0)
             {
 
                 //Valida si hay cambio en precio o cantidad y realiza la actualizacion dependiendo de eso
                 for (int i = 0; i < solicitudRQModeloAprobacionesDTO.Count; i++)
                 {
-                    var DatosSolicitud = oSolicitudRQDAO.ObtenerDatosxID(solicitudRQModeloAprobacionesDTO[i].IdSolicitud);
-                    //for (int i = 0; i < solicitudRQModeloAprobacionesDTO.Count; i++) //datos enviados de aprobador
+                    var DatosSolicitud = oSolicitudRQDAO.ObtenerDatosxID(solicitudRQModeloAprobacionesDTO[i].IdSolicitud, BaseDatos);
                     //{
                         for (int j = 0; j < DatosSolicitud[0].Detalle.Count; j++) //datos de solicitud
                         {
@@ -248,7 +250,7 @@ namespace ConcyssaWeb.Controllers
                             {
                                 if (solicitudRQModeloAprobacionesDTO[i].CantidadItem != DatosSolicitud[0].Detalle[j].CantidadNecesaria)
                                 {
-                                    oSolicitudRQModeloAprobacionesDAO.ActualizarCantidadPrecioDetalle(solicitudRQModeloAprobacionesDTO[i], IdSociedad.ToString());
+                                    oSolicitudRQModeloAprobacionesDAO.ActualizarCantidadPrecioDetalle(solicitudRQModeloAprobacionesDTO[i], IdSociedad.ToString(),BaseDatos);
                                 }
                                 //if (solicitudRQModeloAprobacionesDTO[i].PrecioItem != DatosSolicitud[0].Detalle[j].PrecioInfo)
                                 //{
@@ -263,8 +265,8 @@ namespace ConcyssaWeb.Controllers
                 //Valida si hay cambio en precio o cantidad y realiza la actualizacion dependiendo de eso
 
 
-                var SolicitudRQModeloResult = oSolicitudRQModeloDAO.ObtenerDatosxID(solicitudRQModeloAprobacionesDTO[0].IdSolicitudModelo, IdSociedad.ToString());
-                var EtapasAutorizacionResult = oEtapaAutorizacionDAO.ObtenerDatosxID(SolicitudRQModeloResult[0].IdEtapa);
+                var SolicitudRQModeloResult = oSolicitudRQModeloDAO.ObtenerDatosxID(solicitudRQModeloAprobacionesDTO[0].IdSolicitudModelo, IdSociedad.ToString(),BaseDatos);
+                var EtapasAutorizacionResult = oEtapaAutorizacionDAO.ObtenerDatosxID(SolicitudRQModeloResult[0].IdEtapa,BaseDatos);
 
                 for (int i = 0; i < solicitudRQModeloAprobacionesDTO.Count; i++)
                 {
@@ -275,22 +277,22 @@ namespace ConcyssaWeb.Controllers
 
 
                     //valida cuantas autorizaciones tiene el item
-                    int validarItemsAutorizados = oSolicitudRQModeloAprobacionesDAO.ValidarItemsAutorizados(solicitudRQModeloAprobacionesDTO[i].IdSolicitudModelo, solicitudRQModeloAprobacionesDTO[i].IdArticulo, solicitudRQModeloAprobacionesDTO[i].IdDetalle);
-                    int validarItemsRechazados = oSolicitudRQModeloAprobacionesDAO.ValidarItemsDesAutorizados(solicitudRQModeloAprobacionesDTO[i].IdSolicitudModelo, solicitudRQModeloAprobacionesDTO[i].IdArticulo, solicitudRQModeloAprobacionesDTO[i].IdDetalle);
+                    int validarItemsAutorizados = oSolicitudRQModeloAprobacionesDAO.ValidarItemsAutorizados(solicitudRQModeloAprobacionesDTO[i].IdSolicitudModelo, solicitudRQModeloAprobacionesDTO[i].IdArticulo, solicitudRQModeloAprobacionesDTO[i].IdDetalle,BaseDatos);
+                    int validarItemsRechazados = oSolicitudRQModeloAprobacionesDAO.ValidarItemsDesAutorizados(solicitudRQModeloAprobacionesDTO[i].IdSolicitudModelo, solicitudRQModeloAprobacionesDTO[i].IdArticulo, solicitudRQModeloAprobacionesDTO[i].IdDetalle,BaseDatos);
 
                     if (EtapasAutorizacionResult[0].AutorizacionesRequeridas == validarItemsAutorizados)
                     {
-                        var ActualizarEstadoDisabledItem = oSolicitudRQModeloAprobacionesDAO.ActualizarEstadoDisabledItem(solicitudRQModeloAprobacionesDTO[i], IdSociedad.ToString());
+                        var ActualizarEstadoDisabledItem = oSolicitudRQModeloAprobacionesDAO.ActualizarEstadoDisabledItem(solicitudRQModeloAprobacionesDTO[i], IdSociedad.ToString(),BaseDatos);
                     }
 
                     if (EtapasAutorizacionResult[0].RechazosRequeridos == validarItemsRechazados)
                     {
-                        var ActualizarEstadoDisabledItem = oSolicitudRQModeloAprobacionesDAO.ActualizarEstadoDisabledItem(solicitudRQModeloAprobacionesDTO[i], IdSociedad.ToString());
+                        var ActualizarEstadoDisabledItem = oSolicitudRQModeloAprobacionesDAO.ActualizarEstadoDisabledItem(solicitudRQModeloAprobacionesDTO[i], IdSociedad.ToString(),BaseDatos);
                     }
 
                     if (solicitudRQModeloAprobacionesDTO[i].Accion == 4)
                     {
-                        oSolicitudRQModeloAprobacionesDAO.ActualizarEstadoDisabledItem(solicitudRQModeloAprobacionesDTO[i], IdSociedad.ToString());
+                        oSolicitudRQModeloAprobacionesDAO.ActualizarEstadoDisabledItem(solicitudRQModeloAprobacionesDTO[i], IdSociedad.ToString(),BaseDatos);
                     }
                     //}
 
@@ -422,6 +424,7 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerDatosxID(int IdSolicitudRQ, int IdAprobador, int IdEtapa)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string valida = "";
             valida = validarEmpresaActual();
             if (valida != "")
@@ -436,13 +439,13 @@ namespace ConcyssaWeb.Controllers
             SolicitudRQModeloAprobacionesDAO solicitudRQModeloAprobacionesDAO = new SolicitudRQModeloAprobacionesDAO();
             SolicitudRQDAO solicitud = new SolicitudRQDAO();
 
-            var existe = solicitudRQModeloAprobacionesDAO.istarDetalleItemAprobados(IdSolicitudRQ, IdAprobador, IdEtapa);
-            var DetalleRQ = solicitud.ObtenerDatosxID(IdSolicitudRQ);
+            var existe = solicitudRQModeloAprobacionesDAO.istarDetalleItemAprobados(IdSolicitudRQ, IdAprobador, IdEtapa,BaseDatos);
+            var DetalleRQ = solicitud.ObtenerDatosxID(IdSolicitudRQ,BaseDatos);
 
             if (existe[0].Detalle.Count == DetalleRQ[0].Detalle.Count)
             {
                 SolicitudRQDAO oSolicitudDAO = new SolicitudRQDAO();
-                List<SolicitudRQDTO> lstSolicitudRQDTO = solicitudRQModeloAprobacionesDAO.istarDetalleItemAprobados(IdSolicitudRQ, IdAprobador, IdEtapa);
+                List<SolicitudRQDTO> lstSolicitudRQDTO = solicitudRQModeloAprobacionesDAO.istarDetalleItemAprobados(IdSolicitudRQ, IdAprobador, IdEtapa,BaseDatos);
 
                 if (lstSolicitudRQDTO.Count > 0)
                 {
@@ -457,7 +460,7 @@ namespace ConcyssaWeb.Controllers
             {
                 SolicitudRQDAO oSolicitudDAO = new SolicitudRQDAO();
                 //List<SolicitudRQDTO> lstSolicitudRQDTO = oSolicitudDAO.ObtenerDatosxID(IdSolicitudRQ);
-                List<SolicitudRQDTO> lstSolicitudRQDTO = oSolicitudDAO.ObtenerDatosxIDNuevo(IdSolicitudRQ, IdAprobador, IdEtapa);
+                List<SolicitudRQDTO> lstSolicitudRQDTO = oSolicitudDAO.ObtenerDatosxIDNuevo(IdSolicitudRQ, IdAprobador, IdEtapa,BaseDatos);
 
 
                 if (lstSolicitudRQDTO.Count > 0)
@@ -712,8 +715,9 @@ namespace ConcyssaWeb.Controllers
 
         public int PasarPendiente(int IdSolicitud)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             SolicitudRQAutorizacionDAO solicitud = new SolicitudRQAutorizacionDAO();
-            int resultado = solicitud.PasarPendiente(IdSolicitud);
+            int resultado = solicitud.PasarPendiente(IdSolicitud,BaseDatos);
             if (resultado != 0)
             {
                 resultado = 1;
@@ -726,6 +730,7 @@ namespace ConcyssaWeb.Controllers
 
         public string validarEmpresaActual()
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string rpta = "";
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));

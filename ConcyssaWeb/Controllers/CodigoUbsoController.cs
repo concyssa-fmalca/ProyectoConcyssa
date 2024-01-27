@@ -15,9 +15,10 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerCodigoUbso(int estado=3)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             CodigoUbsoDAO oCodigoUbsoDAO = new CodigoUbsoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<CodigoUbsoDTO> lstCodigoUbsoDTO  = oCodigoUbsoDAO.ObtenerCodigoUbso(IdSociedad, ref mensaje_error,estado);
+            List<CodigoUbsoDTO> lstCodigoUbsoDTO  = oCodigoUbsoDAO.ObtenerCodigoUbso(IdSociedad,BaseDatos,ref mensaje_error,estado);
             if (lstCodigoUbsoDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstCodigoUbsoDTO);
@@ -32,9 +33,10 @@ namespace ConcyssaWeb.Controllers
         {
             DataTableDTO oDataTableDTO = new DataTableDTO();
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             CodigoUbsoDAO oCodigoUbsoDAO = new CodigoUbsoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<CodigoUbsoDTO> lstCodigoUbsoDTO = oCodigoUbsoDAO.ObtenerCodigoUbso(IdSociedad, ref mensaje_error, estado);
+            List<CodigoUbsoDTO> lstCodigoUbsoDTO = oCodigoUbsoDAO.ObtenerCodigoUbso(IdSociedad,BaseDatos,ref mensaje_error, estado);
             if (lstCodigoUbsoDTO.Count > 0)
             {
                 oDataTableDTO.aaData=@JsonConvert.SerializeObject(lstCodigoUbsoDTO);
@@ -53,8 +55,9 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerDatosxID(int IdCodigoUbso)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             CodigoUbsoDAO oCodigoUbsoDAO = new CodigoUbsoDAO();
-            List<CodigoUbsoDTO> lstCodigoUbsoDTO = oCodigoUbsoDAO.ObtenerDatosxID(IdCodigoUbso,ref mensaje_error);
+            List<CodigoUbsoDTO> lstCodigoUbsoDTO = oCodigoUbsoDAO.ObtenerDatosxID(IdCodigoUbso,BaseDatos,ref mensaje_error);
 
             if (lstCodigoUbsoDTO.Count > 0)
             {
@@ -73,10 +76,11 @@ namespace ConcyssaWeb.Controllers
         {
 
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             CodigoUbsoDAO oCodigoUbsoDAO = new CodigoUbsoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             oCodigoUbsoDTO.IdSociedad = IdSociedad;
-            int respuesta = oCodigoUbsoDAO.UpdateInsertCodigoUbso(oCodigoUbsoDTO, ref mensaje_error, Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")));
+            int respuesta = oCodigoUbsoDAO.UpdateInsertCodigoUbso(oCodigoUbsoDTO,BaseDatos,ref mensaje_error, Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")));
 
             if (mensaje_error.Length>0)
             {
@@ -100,8 +104,9 @@ namespace ConcyssaWeb.Controllers
         public string EliminarCodigoUbso(int IdCodigoUbso)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             CodigoUbsoDAO oCodigoUbsoDAO = new CodigoUbsoDAO();
-            string resultado = oCodigoUbsoDAO.Delete(IdCodigoUbso, ref mensaje_error);
+            string resultado = oCodigoUbsoDAO.Delete(IdCodigoUbso,BaseDatos,ref mensaje_error);
             if (mensaje_error.Length > 0)
             {
                 return mensaje_error;

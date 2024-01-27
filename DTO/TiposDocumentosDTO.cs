@@ -15,5 +15,8 @@ namespace DTO
         public bool Estado { get; set; }
         public bool Eliminado { get; set; }
         public int IdSociedad { get; set; }
+        public string CodeSAP { get; set; }
+        public string PrefijoSAP { get; set; }
+        public string NombreSAP { get; set; }
     }
 }

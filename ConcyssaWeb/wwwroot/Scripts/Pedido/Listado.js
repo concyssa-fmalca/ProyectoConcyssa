@@ -5,6 +5,9 @@ let tableProductosAprobadosRQ;
 let ultimaProductosAprobados = null;
 let ultimaFila=null;
 let colorOriginal = null;
+
+let UltimaBusqueda = "";
+
 function CargarMoneda() {
     $.ajaxSetup({ async: false });
     $.post("/Moneda/ObtenerMonedas", function (data, status) {
@@ -1376,7 +1379,7 @@ function LimpiarModalItem() {
 
 function GuardarPedido() {
     //validaciones
-    if ($("#IdSerie").val() == 0) {
+    if ($("#IdSerie").val() == 0 || $("#IdSerie").val() == null || $("#IdSerie").val() == undefined) {
         Swal.fire(
             'Error!',
             'Seleccione una Serie',
@@ -1385,7 +1388,7 @@ function GuardarPedido() {
         return;
     }
 
-    if ($("#IdObra").val() == 0) {
+    if ($("#IdObra").val() == 0 || $("#IdObra").val() == null || $("#IdObra").val() == undefined) {
         Swal.fire(
             'Error!',
             'Seleccione una Obra',
@@ -1394,7 +1397,7 @@ function GuardarPedido() {
         return;
     }
 
-    if ($("#IdAlmacen").val() == 0) {
+    if ($("#IdAlmacen").val() == 0 || $("#IdAlmacen").val() == null || $("#IdAlmacen").val() == undefined) {
         Swal.fire(
             'Error!',
             'Seleccione un Almacen',
@@ -1405,7 +1408,7 @@ function GuardarPedido() {
 
 
 
-    if ($("#IdProveedor").val() == 0) {
+    if ($("#IdProveedor").val() == 0 || $("#IdProveedor").val() == null || $("#IdProveedor").val() == undefined) {
         Swal.fire(
             'Error!',
             'Seleccione una Proveedor',
@@ -1414,7 +1417,7 @@ function GuardarPedido() {
         return;
     }
 
-    if ($("#IdTipoPedido").val() == 0) {
+    if ($("#IdTipoPedido").val() == 0 || $("#IdTipoPedido").val() == null || $("#IdTipoPedido").val() == undefined) {
         Swal.fire(
             'Error!',
             'Seleccione Tipo Pedido',
@@ -1423,7 +1426,7 @@ function GuardarPedido() {
         return;
     }
 
-    if ($("#IdCondicionPago").val() == 0) {
+    if ($("#IdCondicionPago").val() == 0 || $("#IdCondicionPago").val() == null ||$("#IdCondicionPago").val() == undefined) {
         Swal.fire(
             'Error!',
             'Seleccione Condicion de Pago',
@@ -2751,13 +2754,13 @@ function listarItemAprobados(IdDetalleSeleccionado = 0) {
             let row = tableitemsaprobados.row(i);
 
             let data = row.data();
-            
+
             if (data.IdDetalle != +IdDetalleSeleccionado) {
                 $(row.node()).removeClass("selectA");;
             }
         }
         let row = tableitemsaprobados.row(this);
-       // $(row.node()).css("background-color", "#f00");
+        // $(row.node()).css("background-color", "#f00");
         var data = row.data();
         //console.log(data);
 
@@ -2786,8 +2789,12 @@ function listarItemAprobados(IdDetalleSeleccionado = 0) {
 
 
         ObtenerStockxIdDetalleSolicitudRQ(data.IdDetalle)
-        ObtenerProveedoresPrecioxProducto(data.IdArticulo, data.IdDetalle,  data.IdProveedor,data.IdObra)
+        ObtenerProveedoresPrecioxProducto(data.IdArticulo, data.IdDetalle, data.IdProveedor, data.IdObra)
         ObtenerPrecioxProductoUltimasVentas(data.IdArticulo, data.IdDetalle)
+        MostrarAnexos(data.IdSolicitud)
+
+        UltimaBusqueda = $("#tabla_listado_itemsaprobados").DataTable().search;
+    
         //$("#tbody_detalle").find('tbody').empty();
         //AgregarItemTranferir(((table.row(this).index()) + 1), data["IdArticulo"], data["Descripcion"], (data["CantidadEnviada"] - data["CantidadTranferida"]), data["Stock"]);
 
@@ -2881,7 +2888,7 @@ function ObtenerProveedoresPrecioxProducto(IdArticulo, IdDetalleRq, IdProveedor,
         for (var i = 0; i < datos.length; i++) {
 
             if (IdProveedor == datos[i].IdProveedor) {
-                tr += `<tr>
+                tr += `<tr id="FilaPrecioProv`+i+`">
                 <td>
                         <input type="hidden" id="idproducto`+ datos[i].IdProveedor + `" value="` + IdArticulo + `" /> 
                         <input type="hidden" id="IdDetalleRq`+ datos[i].IdProveedor + `" value="` + IdDetalleRq + `" />
@@ -2903,7 +2910,9 @@ function ObtenerProveedoresPrecioxProducto(IdArticulo, IdDetalleRq, IdProveedor,
                 <td> <input class="form-control" id="precionacional`+ datos[i].IdProveedor + `" value="` + datos[i].PrecioNacional + `"/></td>
                 <td> <input class="form-control" id="precioextranjero`+ datos[i].IdProveedor + `" value="` + datos[i].PrecioExtranjero + `"/></td>
                 <td style="display:none"> <input class="form-control"  id="comentario`+ datos[i].IdProveedor + `" value=""/></td>
-                <td> <button class="btn btn-info editar solo" onclick="AsignarProveedorPrecio(`+ datos[i].IdProveedor + `)">ASIGNAR</button></td>
+                <td> <button class="btn btn-info editar solo" onclick="AsignarProveedorPrecio(`+ datos[i].IdProveedor + `)">ASIGNAR</button>
+                <button class="btn btn-info editar solo" onclick="UpdateProveedorPrecio(`+ datos[i].IdArticuloProveedor + `,` + datos[i].IdProveedor+`)">ACTUALIZAR</button>
+               <button style="background-color:red"class="btn btn-danger editar solo" onclick="EliminarProveedorPrecio(`+ datos[i].IdProveedor + `, ` + IdArticulo + `,` + IdDetalleRq + `,` + IdObra +`)">Eliminar</button></td>
             </tr>`;
             }
           
@@ -2964,6 +2973,8 @@ function AsignarProveedorPrecio(IdProveedor) {
       
 
     });
+
+    $("#tabla_listado_itemsaprobados").DataTable().search(UltimaBusqueda()).draw();
 }
 
 function validadJson(json) {
@@ -3084,6 +3095,11 @@ function addprecioproductoproveedor() {
 
     if (PrecioDolares == "" || PrecioDolares == null || PrecioDolares < "0" || !$.isNumeric(PrecioDolares)) {
         swal("Informacion!", "Ingrese Precio dolares!");
+        return;
+    }
+
+    if (PrecioDolares == "0" && PrecioSoles == "0") {
+        swal("Informacion!", "Ingrese al menos un monto!");
         return;
     }
 
@@ -3552,4 +3568,157 @@ function ReportePendiente(IdPedido) {
         }
     });
     },200)
+}
+
+function EliminarProveedorPrecio(IdProveedor, IdArticulo, IdDetalleRq, IdObra) {
+    Swal.fire({
+        title: 'DESEA ELIMINAR ESTE REGISTRO?',
+        text: "Este Accion no se puede Revertir",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si Eliminar!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: "/Articulo/EliminarArticuloProveedorPrecio",
+                type: "POST",
+                async: true,
+                data: {
+                    'IdProveedor': IdProveedor,
+                    'IdArticulo': IdArticulo
+                },
+                beforeSend: function () {
+                    Swal.fire({
+                        title: "Cargando...",
+                        text: "Por favor espere",
+                        showConfirmButton: false,
+                        allowOutsideClick: false
+                    });
+                },
+                success: function (data) {
+                    if (data > 0) {
+                        Swal.fire(
+                            'Correcto',
+                            'Proceso Realizado Correctamente',
+                            'success'
+                        )
+                        ObtenerProveedoresPrecioxProducto(IdArticulo, IdDetalleRq, IdProveedor, IdObra) 
+                        //swal("Exito!", "Proceso Realizado Correctamente", "success")
+
+                    } else {
+                        Swal.fire(
+                            'Error!',
+                            'Ocurrio un Error!',
+                            'error'
+                        )
+
+                    }
+
+
+                }
+            }).fail(function () {
+                Swal.fire(
+                    'Error!',
+                    'Comunicarse con el Area Soporte: smarcode@smartcode.pe !',
+                    'error'
+                )
+            });
+        }
+    })
+
+}
+
+
+function UpdateProveedorPrecio(IdTabla, IdProveedor) {
+
+    let PrecioSoles = $("#precionacional" + IdProveedor).val();
+    let PrecioDolares = $("#precioextranjero" + IdProveedor).val()
+
+
+    if (PrecioSoles == "" || PrecioSoles == null || PrecioSoles < "0" || !$.isNumeric(PrecioSoles)) {
+        swal("Informacion!", "Ingrese Precio Soles!");
+        return;
+    }
+
+    if (PrecioDolares == "" || PrecioDolares == null || PrecioDolares < "0" || !$.isNumeric(PrecioDolares)) {
+        swal("Informacion!", "Ingrese Precio dolares!");
+        return;
+    }
+
+    if (PrecioDolares == "0" && PrecioSoles == "0") {
+        swal("Informacion!", "Ingrese al menos un monto!");
+        return;
+    }
+
+
+    $.ajax({
+        url: "UpdatePrecioProveedorArticulo",
+        type: "POST",
+        async: true,
+        data: {
+            'IdArticuloProveedor': +IdTabla,
+            'PrecioNacional': +PrecioSoles,
+            'PrecioExtranjero': +PrecioDolares
+        },
+        beforeSend: function () {
+            Swal.fire({
+                title: "Cargando...",
+                text: "Por favor espere",
+                showConfirmButton: false,
+                allowOutsideClick: false
+            });
+        },
+        success: function (data) {
+            if (data > 0) {
+                Swal.fire("Exito", "Precios Actualizados", "success")
+
+            } else {
+                Swal.fire("Error", "No se Pudieron actualizar los Precios", "error")
+
+            }
+
+
+        }
+    }).fail(function () {
+        Swal.fire("Error", "No se Pudieron actualizar los Precios", "error")
+    });
+
+}
+
+function MostrarAnexos(IdSolicitud) {
+    $.ajax({
+        url: "/SolicitudRQ/ObtenerAnexoxID",
+        type: "POST",
+        async: true,
+        data: {
+            'IdSolicitudRQ': +IdSolicitud
+        },    
+        success: function (data) {
+            try {
+                let datos = JSON.parse(data)
+                console.log(datos)
+                $("#tabla_listado_anexos").html("")
+                let tr=""
+                for (var i = 0; i < datos.length; i++) {
+                    tr += '<tr>' +
+                        '<td>' + datos[i].NombreArchivo + '</td>' +
+                        '<td> <a href="/Anexos/' + datos[i].NombreArchivo +'" target="_blank">Ver</a> </td>' + 
+                        '</tr>';
+                }
+                $("#body_anexos_solicitud").html(tr)
+                
+                
+            }
+            catch (e) {
+                $("#body_anexos_solicitud").html("")
+            }
+           
+
+
+        }
+    }).fail(function () {
+        $("#body_anexos_solicitud").html("")
+    });
 }

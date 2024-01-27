@@ -15,9 +15,10 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerArea(int estado = 3)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             AreaDAO oAreaDAO = new AreaDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<AreaDTO> lstAreaDTO = oAreaDAO.ObtenerArea(IdSociedad, ref mensaje_error, estado);
+            List<AreaDTO> lstAreaDTO = oAreaDAO.ObtenerArea(IdSociedad,BaseDatos,ref mensaje_error, estado);
             if (lstAreaDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstAreaDTO);
@@ -32,8 +33,9 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerDatosxID(int IdArea)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             AreaDAO oAreaDAO = new AreaDAO();
-            List<AreaDTO> lstCodigoUbsoDTO = oAreaDAO.ObtenerDatosxID(IdArea, ref mensaje_error);
+            List<AreaDTO> lstCodigoUbsoDTO = oAreaDAO.ObtenerDatosxID(IdArea,BaseDatos,ref mensaje_error);
 
             if (lstCodigoUbsoDTO.Count > 0)
             {
@@ -51,10 +53,11 @@ namespace ConcyssaWeb.Controllers
         {
 
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             AreaDAO oAreaDAO = new AreaDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             oAreaDTO.IdSociedad = IdSociedad;
-            int respuesta = oAreaDAO.UpdateInsertArea(oAreaDTO, ref mensaje_error);
+            int respuesta = oAreaDAO.UpdateInsertArea(oAreaDTO,BaseDatos,ref mensaje_error);
 
             if (mensaje_error.Length > 0)
             {
@@ -76,8 +79,9 @@ namespace ConcyssaWeb.Controllers
         public int EliminarArea(int IdArea)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             AreaDAO oAreaDAO = new AreaDAO();
-            int resultado = oAreaDAO.Delete(IdArea, ref mensaje_error);
+            int resultado = oAreaDAO.Delete(IdArea,BaseDatos,ref mensaje_error);
             if (resultado == 0)
             {
                 resultado = 1;

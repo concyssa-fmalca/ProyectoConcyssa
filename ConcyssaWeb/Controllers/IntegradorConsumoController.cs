@@ -21,8 +21,9 @@ namespace ConcyssaWeb.Controllers
         public string ListarMovimientosKardex(int IdObra, DateTime FechaInicio, DateTime FechaTermino, int ClaseArticulo, int TipoArticulo)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             AlmacenDAO oAlmacenDAO = new AlmacenDAO();
-            List<AlmacenDTO> lstAlmacenDTO = oAlmacenDAO.ObtenerAlmacenxIdObra(IdObra,ref mensaje_error);
+            List<AlmacenDTO> lstAlmacenDTO = oAlmacenDAO.ObtenerAlmacenxIdObra(IdObra,BaseDatos,ref mensaje_error);
 
             List<KardexDTO> lstKardex = new List<KardexDTO>();
 
@@ -38,7 +39,7 @@ namespace ConcyssaWeb.Controllers
         {
             string mensaje_error = "";
             KardexDAO oKardexDAO = new KardexDAO();
-
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
 
             List<KardexDTO> lstKardexDTO = new List<KardexDTO>();
@@ -46,12 +47,12 @@ namespace ConcyssaWeb.Controllers
             ArticuloDAO oArticuloDAO = new ArticuloDAO();
             List<ArticuloDTO> lstArticuloDTO = new List<ArticuloDTO>();
                 List<KardexDTO> lstArticulosKardex = new List<KardexDTO>();
-                lstArticulosKardex = oKardexDAO.ObtenerArticulosEnKardex(IdAlmacen, FechaInicio, FechaTermino, ref mensaje_error);
+                lstArticulosKardex = oKardexDAO.ObtenerArticulosEnKardex(IdAlmacen, FechaInicio, FechaTermino,BaseDatos,ref mensaje_error);
                 List<int> ArticulosObtenidos = new List<int>();
                 List<int> ArticulosExistentes = new List<int>();
                 List<KardexDTO> lstArticulosNoEncontrados = new List<KardexDTO>();
 
-                lstArticuloDTO = oArticuloDAO.ListarArticulosCatalogoxSociedadxAlmacenStockxIdTipoProducto(IdSociedad, IdAlmacen, TipoArticulo, ref mensaje_error, 1);
+                lstArticuloDTO = oArticuloDAO.ListarArticulosCatalogoxSociedadxAlmacenStockxIdTipoProducto(IdSociedad, IdAlmacen, TipoArticulo,BaseDatos,ref mensaje_error, 1);
                 
 
                 for (int i = 0; i < lstArticulosKardex.Count; i++)
@@ -67,7 +68,7 @@ namespace ConcyssaWeb.Controllers
 
                 for (int i = 0; i < ArticulosObtenidos.Count; i++)
                 {
-                    lstKardexDTO.AddRange(oKardexDAO.ObtenerKardexMigración(IdSociedad, ArticulosObtenidos[i], IdAlmacen, FechaInicio, FechaTermino, SoloNoEnviadas, ref mensaje_error));
+                    lstKardexDTO.AddRange(oKardexDAO.ObtenerKardexMigración(IdSociedad, ArticulosObtenidos[i], IdAlmacen, FechaInicio, FechaTermino, SoloNoEnviadas,BaseDatos,ref mensaje_error));
                 }
             return lstKardexDTO;
 
@@ -75,9 +76,10 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerListaDatosTrabajo()
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             IntegradorConsumoDAO oIntegradorConsumoDAO = new IntegradorConsumoDAO();
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
-            List<ListaTrabajoDTO> lstListaTrabajoDTO = oIntegradorConsumoDAO.ObtenerListaDatosTrabajo(IdUsuario);
+            List<ListaTrabajoDTO> lstListaTrabajoDTO = oIntegradorConsumoDAO.ObtenerListaDatosTrabajo(IdUsuario,BaseDatos);
             if (lstListaTrabajoDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstListaTrabajoDTO);
@@ -90,18 +92,20 @@ namespace ConcyssaWeb.Controllers
 
         public int ObtenerGrupoCreacionEnviarSap()
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             IntegradorConsumoDAO oIntegradorConsumoDAO = new IntegradorConsumoDAO();
-            int resultado = oIntegradorConsumoDAO.ObtenerGrupoCreacionEnviarSap();
+            int resultado = oIntegradorConsumoDAO.ObtenerGrupoCreacionEnviarSap(BaseDatos);
 
             return resultado;
         }
 
         public int MoverKardexAEnviarSapConsumo(int IdObra, DateTime FechaInicio, DateTime FechaTermino, int ClaseArticulo, int TipoArticulo,int GrupoCreacion)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             int respuesta = 0;
             string mensaje_error = "";
             AlmacenDAO oAlmacenDAO = new AlmacenDAO();
-            List<AlmacenDTO> lstAlmacenDTO = oAlmacenDAO.ObtenerAlmacenxIdObra(IdObra, ref mensaje_error);
+            List<AlmacenDTO> lstAlmacenDTO = oAlmacenDAO.ObtenerAlmacenxIdObra(IdObra,BaseDatos,ref mensaje_error);
 
             List<KardexDTO> lstKardex = new List<KardexDTO>();
 
@@ -127,7 +131,7 @@ namespace ConcyssaWeb.Controllers
             IntegradorConsumoDAO oIntegradorConsumoDAO = new IntegradorConsumoDAO();
             for (int i = 0; i < IdsValidas.Count; i++)
             {
-                respuesta += oIntegradorConsumoDAO.CopiarKardexEnviarSapConsumo(IdsValidas[i], GrupoCreacion, IdUsuario);
+                respuesta += oIntegradorConsumoDAO.CopiarKardexEnviarSapConsumo(IdsValidas[i], GrupoCreacion, IdUsuario,BaseDatos);
             }
 
             return respuesta;
@@ -137,11 +141,12 @@ namespace ConcyssaWeb.Controllers
         public string ListarEnviarSapConsumo(int GrupoCreacion)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             IntegradorConsumoDAO oIntegradorConsumoDAO = new IntegradorConsumoDAO();
 
             List<CuentaConsumo> lstCuentaConsumo = new List<CuentaConsumo>();
 
-            List<IntegradorConsumoDTO> lstIntegradorConsumoDTO = oIntegradorConsumoDAO.ListarEnviarSapConsumo(GrupoCreacion, ref mensaje_error);
+            List<IntegradorConsumoDTO> lstIntegradorConsumoDTO = oIntegradorConsumoDAO.ListarEnviarSapConsumo(GrupoCreacion,BaseDatos,ref mensaje_error);
             if (lstIntegradorConsumoDTO.Count >= 0 && mensaje_error.Length == 0)
             {
 
@@ -158,22 +163,23 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerMontoDeCuentas(int GrupoCreacion)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             IntegradorConsumoDAO oIntegradorConsumoDAO = new IntegradorConsumoDAO();
 
             List<CuentaConsumo> lstCuentaConsumo = new List<CuentaConsumo>();
 
-            List<IntegradorConsumoDTO> lstIntegradorConsumoDTO = oIntegradorConsumoDAO.ListarEnviarSapConsumo(GrupoCreacion, ref mensaje_error);
+            List<IntegradorConsumoDTO> lstIntegradorConsumoDTO = oIntegradorConsumoDAO.ListarEnviarSapConsumo(GrupoCreacion,BaseDatos,ref mensaje_error);
             if (lstIntegradorConsumoDTO.Count >= 0 && mensaje_error.Length == 0)
             {
                 lstCuentaConsumo = lstIntegradorConsumoDTO.GroupBy(t => t.CuentaConsumo).Select(g => new CuentaConsumo
                 {
                     NumeroCuenta = g.Key,
-                    Monto = g.Sum(t => t.CantidadBase * t.CantidadRegistro)
+                    Monto = g.Sum(t => t.CantidadBase * t.PrecioRegistro)
                 }).ToList();
 
                 DivisionDAO divisionDAO = new DivisionDAO();
 
-                DivisionDTO divisionDTO = divisionDAO.ObtenerDivisionxIdAlmacen(lstIntegradorConsumoDTO[0].IdAlmacen,ref mensaje_error);
+                DivisionDTO divisionDTO = divisionDAO.ObtenerDivisionxIdAlmacen(lstIntegradorConsumoDTO[0].IdAlmacen,BaseDatos,ref mensaje_error);
 
                 decimal MontoTotal = 0;
 
@@ -202,14 +208,15 @@ namespace ConcyssaWeb.Controllers
         public ObraDTO ObtenerIdObraGrupoCreacion(int GrupoCreacion)
         {
             string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             IntegradorConsumoDAO oIntegradorConsumoDAO = new IntegradorConsumoDAO();
             ObraDTO oObraDTO = new ObraDTO();
-            List<IntegradorConsumoDTO> lstIntegradorConsumoDTO = oIntegradorConsumoDAO.ListarEnviarSapConsumo(GrupoCreacion, ref mensaje_error);
+            List<IntegradorConsumoDTO> lstIntegradorConsumoDTO = oIntegradorConsumoDAO.ListarEnviarSapConsumo(GrupoCreacion,BaseDatos,ref mensaje_error);
             if (lstIntegradorConsumoDTO.Count >= 0 && mensaje_error.Length == 0)
             {
 
                 ObraDAO oObraDAO = new ObraDAO();
-                oObraDTO = oObraDAO.ObtenerObraxIdAlmacen(lstIntegradorConsumoDTO[0].IdAlmacen, ref mensaje_error);
+                oObraDTO = oObraDAO.ObtenerObraxIdAlmacen(lstIntegradorConsumoDTO[0].IdAlmacen,BaseDatos,ref mensaje_error);
                 return oObraDTO;
 
             }
@@ -220,10 +227,10 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
-        public string ProcesarIntegracion(string CuentaInv,decimal MontoInv,int GrupoCreacion,List<CuentaConsumo> Cuentas)
+        public string ProcesarIntegracion(int GrupoCreacion,DateTime FechaContabilizacion,List<CuentaConsumoSAP> Cuentas)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string respuesta = ConexionSAP.Conectar();
-
             ObraDTO oObraDTO = ObtenerIdObraGrupoCreacion(GrupoCreacion);
 
             string respuestaSAP = ".";
@@ -236,17 +243,26 @@ namespace ConcyssaWeb.Controllers
                 }
                
             }
+            string mensaje_error = "";
 
-            string Mensaje_error = "";
+            ConfiguracionSociedadDAO oConfiguracionSociedadDAO = new ConfiguracionSociedadDAO();
+            var configuracion = oConfiguracionSociedadDAO.ObtenerConfiguracionSociedad(1, BaseDatos, ref mensaje_error);
+            string BaseDatosSAP = configuracion[0].NombreBDSAP;
+
+
             try
             {
 
                 if (respuesta == "true")
                 {
                     ConexionSAP conexion = new ConexionSAP();
-                    respuestaSAP = conexion.AddAsientoContable( CuentaInv,  MontoInv, oObraDTO.Codigo, Cuentas, GrupoCreacion,ref Mensaje_error);
+                    respuestaSAP = conexion.AddAsientoContable(oObraDTO.CodProyecto, Cuentas, GrupoCreacion,FechaContabilizacion,BaseDatos,BaseDatosSAP,ref mensaje_error);
                     
                     ConexionSAP.DesconectarSAP();
+                }
+                else
+                {
+                    respuestaSAP = "Credenciales no Valida para Conectar a SAP";
                 }
             }
             catch (Exception e)
@@ -262,9 +278,10 @@ namespace ConcyssaWeb.Controllers
 
         public int ValidarEnvioSap(int GrupoCreacion)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             IntegradorConsumoDAO oIntegradorConsumoDAO = new IntegradorConsumoDAO();
             int respuesta = 0;
-            respuesta = oIntegradorConsumoDAO.ValidarEnvioSap(GrupoCreacion);
+            respuesta = oIntegradorConsumoDAO.ValidarEnvioSap(GrupoCreacion,BaseDatos);
             return respuesta;
         }
 

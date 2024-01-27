@@ -12,10 +12,10 @@ namespace DAO
 {
     public class ObraDAO
     {
-        public List<ObraCatalogoDTO> ListarArticulosxIdSociedadObra(int IdSociedad, int IdObra, ref string mensaje_error)
+        public List<ObraCatalogoDTO> ListarArticulosxIdSociedadObra(int IdSociedad, int IdObra, string BaseDatos, ref string mensaje_error)
         {
             List<ObraCatalogoDTO> lstObraCatalogoDTO = new List<ObraCatalogoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -50,10 +50,10 @@ namespace DAO
             return lstObraCatalogoDTO;
         }
 
-        public List<ObraCatalogoServicioDTO> ListarServiciosxIdSociedadObra(int IdSociedad, int IdObra, ref string mensaje_error)
+        public List<ObraCatalogoServicioDTO> ListarServiciosxIdSociedadObra(int IdSociedad, int IdObra, string BaseDatos, ref string mensaje_error)
         {
             List<ObraCatalogoServicioDTO> lstObraCatalogoDTO = new List<ObraCatalogoServicioDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -89,10 +89,10 @@ namespace DAO
             return lstObraCatalogoDTO;
         }
 
-        public List<ObraDTO> ObtenerObra(int IdSociedad, ref string mensaje_error, int Estado = 3)
+        public List<ObraDTO> ObtenerObra(int IdSociedad, string BaseDatos, ref string mensaje_error, int Estado = 3)
         {
             List<ObraDTO> lstObraDTO = new List<ObraDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -131,10 +131,10 @@ namespace DAO
             }
             return lstObraDTO;
         }
-        public List<ObraDTO> ObtenerObraFiltroBase(int IdBase, int IdSociedad, ref string mensaje_error, int Estado = 3)
+        public List<ObraDTO> ObtenerObraFiltroBase(int IdBase, int IdSociedad, string BaseDatos, ref string mensaje_error, int Estado = 3)
         {
             List<ObraDTO> lstObraDTO = new List<ObraDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -174,10 +174,10 @@ namespace DAO
             return lstObraDTO;
         }
 
-        public List<ObraDTO> ObtenerObraxIdBase(int IdBase, ref string mensaje_error)
+        public List<ObraDTO> ObtenerObraxIdBase(int IdBase, string BaseDatos, ref string mensaje_error)
         {
             List<ObraDTO> lstObraDTO = new List<ObraDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -217,13 +217,13 @@ namespace DAO
         }
 
 
-        public int UpdateInsertObra(ObraDTO oObraDTO, ref string mensaje_error, int IdUsuario)
+        public int UpdateInsertObra(ObraDTO oObraDTO, string BaseDatos, ref string mensaje_error, int IdUsuario)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -250,6 +250,7 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@CodigoUbigeo", oObraDTO.CodigoUbigeo);
                         da.SelectCommand.Parameters.AddWithValue("@CodigoAnexo", oObraDTO.CodigoAnexo);
                         da.SelectCommand.Parameters.AddWithValue("@CorreoObra", oObraDTO.CorreoObra);
+                        da.SelectCommand.Parameters.AddWithValue("@CodProyecto", oObraDTO.CodProyecto);
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
                         return rpta;
@@ -264,13 +265,13 @@ namespace DAO
         }
 
 
-        public int UpdateInsertObraCatalogoProducto(ObraCatalogoDTO oObraCatalogoDTO, ref string mensaje_error)
+        public int UpdateInsertObraCatalogoProducto(ObraCatalogoDTO oObraCatalogoDTO, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -296,13 +297,13 @@ namespace DAO
             }
         }
 
-        public int UpdateInsertObraCatalogoServicio(ObraCatalogoServicioDTO oObraCatalogoServicioDTO, ref string mensaje_error)
+        public int UpdateInsertObraCatalogoServicio(ObraCatalogoServicioDTO oObraCatalogoServicioDTO, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -329,10 +330,10 @@ namespace DAO
             }
         }
 
-        public List<ObraDTO> ObtenerDatosxID(int IdObra, ref string mensaje_error)
+        public List<ObraDTO> ObtenerDatosxID(int IdObra, string BaseDatos, ref string mensaje_error)
         {
             List<ObraDTO> lstObraDTO = new List<ObraDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -358,6 +359,7 @@ namespace DAO
                         oObraDTO.Estado = bool.Parse(drd["Estado"].ToString());
                         oObraDTO.Eliminado = bool.Parse(drd["Eliminado"].ToString());
                         oObraDTO.Direccion = (drd["Direccion"].ToString());
+                        oObraDTO.CodProyecto = (drd["CodProyecto"].ToString());
                         oObraDTO.CodigoUbigeo = (String.IsNullOrEmpty(drd["CodigoUbigeo"].ToString())) ? "0" : drd["CodigoUbigeo"].ToString();
                         oObraDTO.CodigoAnexo = (String.IsNullOrEmpty(drd["CodigoAnexo"].ToString())) ? "0" : drd["CodigoAnexo"].ToString();
                         oObraDTO.CorreoObra = (drd["correo"].ToString());
@@ -379,13 +381,13 @@ namespace DAO
         }
 
 
-        public int Delete(int IdObra, ref string mensaje_error)
+        public int Delete(int IdObra, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -409,10 +411,10 @@ namespace DAO
         }
 
 
-        public List<ObraDTO> ObtenerObraxIdUsuario(int IdPerfil, int IdBase, int IdUsuario, ref string mensaje_error)
+        public List<ObraDTO> ObtenerObraxIdUsuario(int IdPerfil, int IdBase, int IdUsuario, string BaseDatos, ref string mensaje_error)
         {
             List<ObraDTO> lstObraDTO = new List<ObraDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -452,10 +454,10 @@ namespace DAO
             }
             return lstObraDTO;
         }
-        public List<ObraDTO> ObtenerObraxIdUsuarioSinBase(int IdPerfil, int IdUsuario, ref string mensaje_error)
+        public List<ObraDTO> ObtenerObraxIdUsuarioSinBase(int IdPerfil, int IdUsuario, string BaseDatos, ref string mensaje_error)
         {
             List<ObraDTO> lstObraDTO = new List<ObraDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -495,10 +497,10 @@ namespace DAO
             }
             return lstObraDTO;
         }
-        public List<ObraDTO> ObtenerObraxIdUsuarioFiltro(int IdPerfil, int IdUsuario, ref string mensaje_error)
+        public List<ObraDTO> ObtenerObraxIdUsuarioFiltro(int IdPerfil, int IdUsuario, string BaseDatos, ref string mensaje_error)
         {
             List<ObraDTO> lstObraDTO = new List<ObraDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -538,10 +540,10 @@ namespace DAO
             return lstObraDTO;
         }
 
-        public ObraCatalogoServicioDTO ObtenerDatosCatalogoServicioxId(int IdArticulo, int IdObra, ref string mensaje_error)
+        public ObraCatalogoServicioDTO ObtenerDatosCatalogoServicioxId(int IdArticulo, int IdObra, string BaseDatos, ref string mensaje_error)
         {
             ObraCatalogoServicioDTO oObraCatalogoServicioDTO = new ObraCatalogoServicioDTO();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -572,10 +574,10 @@ namespace DAO
             return oObraCatalogoServicioDTO;
         }
 
-        public ObraDTO ObtenerObraxIdAlmacen(int IdAlmacen, ref string mensaje_error)
+        public ObraDTO ObtenerObraxIdAlmacen(int IdAlmacen, string BaseDatos, ref string mensaje_error)
         {       
                 ObraDTO oObraDTO = new ObraDTO();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
 
 
@@ -595,6 +597,7 @@ namespace DAO
                         oObraDTO.IdDivision = int.Parse(drd["IdDivision"].ToString());
                         oObraDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
                         oObraDTO.Codigo = (drd["Codigo"].ToString());
+                        oObraDTO.CodProyecto = (drd["CodProyecto"].ToString());
                         oObraDTO.Descripcion = (drd["Descripcion"].ToString());
                        
 
@@ -610,6 +613,70 @@ namespace DAO
                 }
             }
             return oObraDTO;
+        }
+
+
+
+        public List<ObraDTO> ObtenerObraxDivision(int IdDivision, string BaseDatos, ref string mensaje_error)
+        {
+            List<ObraDTO> lstObraDTO = new List<ObraDTO>();
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerObraxDivision", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@Division", IdDivision);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        ObraDTO oObraDTO = new ObraDTO();
+                        oObraDTO.IdObra = int.Parse(drd["IdObra"].ToString());
+                        lstObraDTO.Add(oObraDTO);
+
+                    }
+                    drd.Close();
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstObraDTO;
+        }
+
+        public List<ObraDTO> ObtenerObraxCodigo(string CodigoObra, string BaseDatos, ref string mensaje_error)
+        {
+            List<ObraDTO> lstObraDTO = new List<ObraDTO>();
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerObraxCodigo", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@Codigo", CodigoObra);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        ObraDTO oObraDTO = new ObraDTO();
+                        oObraDTO.IdObra = int.Parse(drd["IdObra"].ToString());
+                        oObraDTO.Codigo = (drd["Codigo"].ToString());
+                        oObraDTO.Descripcion = (drd["Descripcion"].ToString());
+                        lstObraDTO.Add(oObraDTO);
+
+                    }
+                    drd.Close();
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstObraDTO;
         }
 
 

@@ -12,10 +12,10 @@ namespace DAO
 {
     public class GlosaContableDAO
     {
-        public List<GlosaContableDTO> ObtenerGlosaContable(int IdSociedad, ref string mensaje_error, int Estado = 3)
+        public List<GlosaContableDTO> ObtenerGlosaContable(int IdSociedad, string BaseDatos, ref string mensaje_error, int Estado = 3)
         {
             List<GlosaContableDTO> lstGlosaContableDTO = new List<GlosaContableDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -50,10 +50,10 @@ namespace DAO
             return lstGlosaContableDTO;
         }
 
-        public List<GlosaContableDTO> ObtenerGlosaContableDivision(int IdSociedad,int Idbase, ref string mensaje_error, int Estado = 3)
+        public List<GlosaContableDTO> ObtenerGlosaContableDivision(int IdSociedad,int Idbase, string BaseDatos, ref string mensaje_error, int Estado = 3)
         {
             List<GlosaContableDTO> lstGlosaContableDTO = new List<GlosaContableDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -89,13 +89,13 @@ namespace DAO
             return lstGlosaContableDTO;
         }
 
-        public int UpdateInsertGlosaContable(GlosaContableDTO oGlosaContableDTO, ref string mensaje_error)
+        public int UpdateInsertGlosaContable(GlosaContableDTO oGlosaContableDTO, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -125,10 +125,10 @@ namespace DAO
             }
         }
 
-        public List<GlosaContableDTO> ObtenerDatosxID(int IdGlosaContable, ref string mensaje_error)
+        public List<GlosaContableDTO> ObtenerDatosxID(int IdGlosaContable, string BaseDatos, ref string mensaje_error)
         {
             List<GlosaContableDTO> lstGlosaContableDTO = new List<GlosaContableDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -163,13 +163,13 @@ namespace DAO
         }
 
 
-        public int Delete(int IdArea, ref string mensaje_error)
+        public int Delete(int IdArea, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {

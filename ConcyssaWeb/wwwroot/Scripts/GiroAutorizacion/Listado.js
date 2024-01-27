@@ -122,6 +122,7 @@ function ConsultaServidorCabecera(url) {
 
             tr += `<tr id="rdSeleccionado` + girosCabecera[i].IdGiro +`">
                   <td>`+ (i + 1) +`</td>
+                  <td>`+ girosCabecera[i].SerieNumGiro +`</td>
                   <td>`+ girosCabecera[i].Creador +`</td>
                   <td>`+ girosCabecera[i].Fecha.split("T")[0] +`</td>
                   <td>`+ girosCabecera[i].Solicitante+`</td>

@@ -71,6 +71,7 @@
             <div class="topbar-left col-xs-6">
                 <h3>Marco de Trababajo -  Modulo Intregador V1.0</h3>
             </div>
+           
         </div>
         <div class="container-fluid">
            @* <div class="col-xs-6">
@@ -79,9 +80,7 @@
                 </div>
             </div>*@
             <div class="col-xs-6 right">
-                @*<button class="btn btn-sm  btn-primary pull-right plu" data-target="modal1" onclick="ModalNuevo()" style="margin-left:10px;">Nuevo</button>*@
-                @*<button class="btn btn-sm  btn-success pull-right plu" id="btnPdf" style="margin-left:10px;">Descargar PDF</button>
-                <button class="btn btn-sm btn-info pull-right plu" id="btnExcel" style="margin-left:10px;">Descargar Excel</button>*@
+                <button style="background-color:green" onclick="ValidarProvNoRegistrados()" class="btn btn-success">DESCARGAR PROV. NO REGISTRADOS</button>       
             </div>
             <div class="col-xs-12 right" style="display:none">
                 <input id="txtIdDatosTrabajo" type="text"/>
@@ -95,7 +94,7 @@
             <table id="tabla_integrador" class="table" style="width:100%">
                 <thead>
                     <tr>
-                        <th>#</th>
+                        <th><input type="checkbox" id="ChkCabezera" onchange="ValidarChkTodos()"></th>
                         <th>Fecha Documento</th>
                         <th>Usuario</th>
                         <th>Tipo Movimiento</th>
@@ -147,7 +146,7 @@
                  <Button class="btn btn-primary" style="background-color:red"  id="btn_EliminarMarco"onclick="eliminarMarcoTrabajo()"> 
                     Eliminar Marco de Trabajo
                 </Button>
-                <Button class="btn btn-primary" onclick="enviarSAP()"> 
+                <Button class="btn btn-primary" id="btnEnviarSap" onclick="enviarSAP()"> 
                     Enviar a SAP
                 </Button>
             </div>
@@ -337,7 +336,7 @@
                                         <select id="cboCentroCosto" class="form-control input-sm" tabindex="0"></select>
                                     </div>
                                 </div>
-                                <div class="form-group-sm">
+                                <div class="form-group-sm" style="display:none">
                                     <label for="cboGlosaContable" class="control-label col-sm-2 left-align">Glosa Contable</label>
                                     <div class="col-sm-4">
                                         <select id="cboGlosaContable" type="text" class="form-control input-sm" tabindex="3"></select>
@@ -677,7 +676,7 @@
                                         <hr style="margin: 0px 0px 5px 0px" />
                                         <p id="DivTasaDet">
                                             Tasa detracción:
-                                            <select style="height: 20px" id="TasaDet" type="text" class="form-control input-sm" tabindex="0">
+                                            <select style="height: 20px" id="TasaDet" type="text" class="form-control input-sm"  onchange="CargarCondPagoDet()" tabindex="0">
                                             
                                             </select>
                                         </p>

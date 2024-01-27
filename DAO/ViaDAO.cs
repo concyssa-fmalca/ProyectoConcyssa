@@ -7,10 +7,10 @@ namespace DAO
 {
     public class ViaDAO
     {
-        public List<ViaDTO> ObtenerVia(int IdSociedad, ref string mensaje_error, int Estado = 3)
+        public List<ViaDTO> ObtenerVia(int IdSociedad, string BaseDatos, ref string mensaje_error, int Estado = 3)
         {
             List<ViaDTO> lstViaDTO = new List<ViaDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -42,13 +42,13 @@ namespace DAO
             return lstViaDTO;
         }
 
-        public int UpdateInsertVia(ViaDTO oViaDTO, ref string mensaje_error,int IdUsuario)
+        public int UpdateInsertVia(ViaDTO oViaDTO, string BaseDatos, ref string mensaje_error,int IdUsuario)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -77,10 +77,10 @@ namespace DAO
             }
         }
 
-        public List<ViaDTO> ObtenerDatosxID(int IdVia, ref string mensaje_error)
+        public List<ViaDTO> ObtenerDatosxID(int IdVia, string BaseDatos, ref string mensaje_error)
         {
             List<ViaDTO> lstViaDTO = new List<ViaDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -112,13 +112,13 @@ namespace DAO
         }
 
 
-        public int Delete(int IdVia, ref string mensaje_error)
+        public int Delete(int IdVia, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {

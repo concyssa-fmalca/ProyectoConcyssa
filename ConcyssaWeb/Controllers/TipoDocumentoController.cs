@@ -14,8 +14,9 @@ namespace ConcyssaWeb.Controllers
 
         public string ObtenerTipoDocumentos()
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             TipoDocumentoDAO oTipoDocumentoDAO = new TipoDocumentoDAO();
-            List<TipoDocumentoDTO> lstTipoDocumentoDTO = oTipoDocumentoDAO.ObtenerTipoDocumentos();
+            List<TipoDocumentoDTO> lstTipoDocumentoDTO = oTipoDocumentoDAO.ObtenerTipoDocumentos(BaseDatos);
             if (lstTipoDocumentoDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstTipoDocumentoDTO);

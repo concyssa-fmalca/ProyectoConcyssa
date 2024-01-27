@@ -11,13 +11,13 @@ namespace DAO
 
 
         #region InsertUpdateMovimientoOPDN
-        public int InsertUpdateMovimientoOPDN(OpdnDTO oOpdnDTO, ref string mensaje_error)
+        public int InsertUpdateMovimientoOPDN(OpdnDTO oOpdnDTO, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -75,13 +75,13 @@ namespace DAO
         #endregion
 
         #region InsertUpdateOPDNDetalle
-        public int InsertUpdateOPDNDetalle(OPDNDetalle oOPDNDetalle, ref string mensaje_error)
+        public int InsertUpdateOPDNDetalle(OPDNDetalle oOPDNDetalle, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -137,13 +137,13 @@ namespace DAO
         #endregion
 
         #region InsertUpdateMovimientoDetalleCuadrilla
-        public int InsertUpdateOPDNDetalleCuadrilla(int OPDNDetalle, OPDNDetalle oOPDNDetalle, ref string mensaje_error)
+        public int InsertUpdateOPDNDetalleCuadrilla(int OPDNDetalle, OPDNDetalle oOPDNDetalle, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -173,13 +173,13 @@ namespace DAO
 
 
         #region InsertUpdateMovimiento
-        public int InsertUpdateMovimiento(MovimientoDTO oMovimientoDTO,ref string mensaje_error)
+        public int InsertUpdateMovimiento(MovimientoDTO oMovimientoDTO,string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -246,6 +246,8 @@ namespace DAO
                         //Nuevo de Despacho
                         da.SelectCommand.Parameters.AddWithValue("@OrigenDespacho", oMovimientoDTO.OrigenDespacho);
                         da.SelectCommand.Parameters.AddWithValue("@EsDevolucionAdm", oMovimientoDTO.EsDevolucionAdm);
+                        da.SelectCommand.Parameters.AddWithValue("@IdProveedor", oMovimientoDTO.IdProveedor);
+                        da.SelectCommand.Parameters.AddWithValue("@NroRef", oMovimientoDTO.NroRef);
 
 
                         int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
@@ -263,13 +265,13 @@ namespace DAO
         #endregion
 
         #region InsertUpdateMovimientoDetalle
-        public int InsertUpdateMovimientoDetalle(MovimientoDetalleDTO oMovimientoDetalleDTO,int ValidarIngresoSalidaOAmbos, ref string mensaje_error)
+        public int InsertUpdateMovimientoDetalle(MovimientoDetalleDTO oMovimientoDetalleDTO,int ValidarIngresoSalidaOAmbos, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -317,13 +319,13 @@ namespace DAO
         #endregion
 
         #region InsertUpdateMovimientoDetalleCuadrilla
-        public int InsertUpdateMovimientoDetalleCuadrilla(int MovDetalle,MovimientoDetalleDTO oMovimientoDetalleDTO, ref string mensaje_error)
+        public int InsertUpdateMovimientoDetalleCuadrilla(int MovDetalle,MovimientoDetalleDTO oMovimientoDetalleDTO, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -354,13 +356,13 @@ namespace DAO
 
 
 
-        public int InsertUpdateMovimientoDetalleIngreso(MovimientoDetalleDTO oMovimientoDetalleDTO, int ValidarIngresoSalidaOAmbos, ref string mensaje_error)
+        public int InsertUpdateMovimientoDetalleIngreso(MovimientoDetalleDTO oMovimientoDetalleDTO, int ValidarIngresoSalidaOAmbos, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -410,7 +412,7 @@ namespace DAO
 
 
         #region InsertUpdateTranferenciaPrevia
-        public int InsertUpdateTranferenciaPrevia(MovimientoDTO oMovimientoDTO,int IdMovimiento, ref string mensaje_error)
+        public int InsertUpdateTranferenciaPrevia(MovimientoDTO oMovimientoDTO,int IdMovimiento, string BaseDatos, ref string mensaje_error)
         {
             var JsonMovimiento = JsonSerializer.Serialize(oMovimientoDTO);
 
@@ -418,7 +420,7 @@ namespace DAO
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -460,7 +462,7 @@ namespace DAO
 
 
 
-        public int ActualziarJsonTranferencia(MovimientoDTO oMovimientoDTO, int IdMovimiento, ref string mensaje_error)
+        public int ActualziarJsonTranferencia(MovimientoDTO oMovimientoDTO, int IdMovimiento, string BaseDatos, ref string mensaje_error)
         {
             var JsonMovimiento = JsonSerializer.Serialize(oMovimientoDTO);
 
@@ -468,7 +470,7 @@ namespace DAO
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -503,10 +505,10 @@ namespace DAO
 
 
 
-        public List<MovimientoDTO> ObtenerMovimientosTransferencias(int IdBase, int IdSociedad,int IdUsuario, ref string mensaje_error, int Estado = 3)
+        public List<MovimientoDTO> ObtenerMovimientosTransferencias(int IdBase, int IdSociedad,int IdUsuario, string BaseDatos, ref string mensaje_error, int Estado = 3)
         {
             List<MovimientoDTO> lstMovimientoDTO = new List<MovimientoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -578,10 +580,10 @@ namespace DAO
 
 
 
-        public List<MovimientoTranferenciaFinal> ObtenerMovimientosTransferenciasFinal(int IdObraDestino,int IdSociedad,int IdUsuario, ref string mensaje_error)
+        public List<MovimientoTranferenciaFinal> ObtenerMovimientosTransferenciasFinal(int IdObraDestino,int IdSociedad,int IdUsuario, string BaseDatos, ref string mensaje_error)
         {
             List<MovimientoTranferenciaFinal> lstMovimientoDTO = new List<MovimientoTranferenciaFinal>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -635,10 +637,10 @@ namespace DAO
 
 
         #region ObtenerMovimientosIngresos
-        public List<MovimientoDTO> ObtenerMovimientosIngresos(int IdBase,int IdSociedad, ref string mensaje_error, int Estado = 3, int IdUsuario=0)
+        public List<MovimientoDTO> ObtenerMovimientosIngresos(int IdBase,int IdSociedad, string BaseDatos, ref string mensaje_error, int Estado = 3, int IdUsuario=0)
         {
             List<MovimientoDTO> lstMovimientoDTO = new List<MovimientoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -687,6 +689,8 @@ namespace DAO
                         oMovimientoDTO.TDocumento = drd["TDocumento"].ToString();
                         oMovimientoDTO.NumSerieTipoDocumentoRef = drd["NumSerieTipoDocumentoRef"].ToString();
                         oMovimientoDTO.IdDocExtorno = Convert.ToInt32(drd["IdDocExtorno"].ToString());
+                        oMovimientoDTO.EsDevolucionAdm   = Convert.ToInt32(drd["EsDevolucionAdm"].ToString());
+                        oMovimientoDTO.NroRef   = (String.IsNullOrEmpty(drd["NroRef"].ToString()) ? "" : drd["NroRef"].ToString());
 
                         oMovimientoDTO.NombUsuario = (drd["NombUsuario"].ToString());
 
@@ -706,10 +710,10 @@ namespace DAO
         #endregion
 
         
-        public List<MovimientoDTO> ObtenerMovimientosSalidaModal(int IdSociedad,int IdAlmacen, ref string mensaje_error, int Estado = 3)
+        public List<MovimientoDTO> ObtenerMovimientosSalidaModal(int IdSociedad,int IdAlmacen, string BaseDatos, ref string mensaje_error, int Estado = 3)
         {
             List<MovimientoDTO> lstMovimientoDTO = new List<MovimientoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -771,10 +775,10 @@ namespace DAO
         }
 
 
-        public List<MovimientoDTO> ObtenerMovimientosSalida(int IdBase,int IdSociedad, ref string mensaje_error, int Estado = 3,int IdUsuario=0)
+        public List<MovimientoDTO> ObtenerMovimientosSalida(int IdBase,int IdSociedad, string BaseDatos, ref string mensaje_error, int Estado = 3,int IdUsuario=0)
         {
             List<MovimientoDTO> lstMovimientoDTO = new List<MovimientoDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -825,6 +829,7 @@ namespace DAO
                         oMovimientoDTO.SerieGuiaElectronica = (String.IsNullOrEmpty(drd["SerieGuiaElectronica"].ToString()) ? "" : drd["SerieGuiaElectronica"].ToString());
                         oMovimientoDTO.NumeroGuiaElectronica = Convert.ToInt32(String.IsNullOrEmpty(drd["NumeroGuiaElectronica"].ToString()) ? "0" : drd["NumeroGuiaElectronica"].ToString());
                         oMovimientoDTO.EstadoFE = Convert.ToInt32(String.IsNullOrEmpty(drd["EstadoFE"].ToString()) ? "0" : drd["EstadoFE"].ToString());
+                        oMovimientoDTO.NroRef = (String.IsNullOrEmpty(drd["NroRef"].ToString()) ? "" : drd["NroRef"].ToString());
                         lstMovimientoDTO.Add(oMovimientoDTO);
                     }
                     drd.Close();
@@ -841,10 +846,10 @@ namespace DAO
 
 
         #region ObtenerDAtosxId
-        public MovimientoDTO ObtenerMovimientosDetallexIdMovimiento(int IdMovimiento, ref string mensaje_error)
+        public MovimientoDTO ObtenerMovimientosDetallexIdMovimiento(int IdMovimiento, string BaseDatos, ref string mensaje_error)
         {
             MovimientoDTO oMovimientoDTO = new MovimientoDTO();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -935,6 +940,7 @@ namespace DAO
                         oMovimientoDTO.NombUsuarioEdicion = (String.IsNullOrEmpty(drd["NombUsuarioEdicion"].ToString()) ? "" : drd["NombUsuarioEdicion"].ToString());
                         oMovimientoDTO.IdDocExtorno = Convert.ToInt32(drd["IdDocExtorno"].ToString());
                         oMovimientoDTO.EsDevolucionAdm = Convert.ToInt32(drd["EsDevolucionAdm"].ToString());
+                        oMovimientoDTO.NroRef = (String.IsNullOrEmpty(drd["NroRef"].ToString()) ? "" : drd["NroRef"].ToString());
                     }
                     drd.Close();
 
@@ -947,7 +953,7 @@ namespace DAO
 
             #region Contar Detalle 
             Int32 filasdetalle = 0;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -969,7 +975,7 @@ namespace DAO
 
             oMovimientoDTO.detalles = new MovimientoDetalleDTO[filasdetalle];
 
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -1033,7 +1039,7 @@ namespace DAO
 
             #region AnexoDetalle
             Int32 filasdetalleAnexo = 0;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -1053,7 +1059,7 @@ namespace DAO
                 }
             }
             oMovimientoDTO.AnexoDetalle = new AnexoDTO[filasdetalleAnexo];
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -1092,13 +1098,13 @@ namespace DAO
 
 
         #region InsertUpdateMovimientoOPCH
-        public int InsertUpdateMovimientoOPCH(OpchDTO oOpchDTO, ref string mensaje_error)
+        public int InsertUpdateMovimientoOPCH(OpchDTO oOpchDTO, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -1151,14 +1157,92 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@CondicionPagoDet", oOpchDTO.CondicionPagoDet);
 
 
-                        int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
+                        int IdOPCH = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
+
+
+
+                        if(IdOPCH == 0)
+                        {
+                            return -1;
+                        }
+
+
+                        if (IdOPCH == -5)
+                        {
+                            return -5;
+                        }
+
+                        for (int i = 0; i < oOpchDTO.detalles.Count; i++)
+                        {
+                            oOpchDTO.detalles[i].IdOPCH = IdOPCH;
+                            SqlDataAdapter dadet = new SqlDataAdapter("SMC_InsertUpdateOPCHDetalle", cn);
+                            dadet.SelectCommand.CommandType = CommandType.StoredProcedure;
+                            dadet.SelectCommand.Parameters.AddWithValue("@IdOPCHDetalle", oOpchDTO.detalles[i].IdOPCHDetalle);
+                            dadet.SelectCommand.Parameters.AddWithValue("@IdOPCH", oOpchDTO.detalles[i].IdOPCH);
+                            dadet.SelectCommand.Parameters.AddWithValue("@IdArticulo", oOpchDTO.detalles[i].IdArticulo);
+                            dadet.SelectCommand.Parameters.AddWithValue("@DescripcionArticulo", oOpchDTO.detalles[i].DescripcionArticulo);
+                            dadet.SelectCommand.Parameters.AddWithValue("@IdDefinicionGrupoUnidad", oOpchDTO.detalles[i].IdDefinicionGrupoUnidad);
+                            dadet.SelectCommand.Parameters.AddWithValue("@IdAlmacen", oOpchDTO.detalles[i].IdAlmacen);
+                            dadet.SelectCommand.Parameters.AddWithValue("@Cantidad", oOpchDTO.detalles[i].Cantidad);
+                            dadet.SelectCommand.Parameters.AddWithValue("@Igv", oOpchDTO.detalles[i].Igv);
+                            dadet.SelectCommand.Parameters.AddWithValue("@PrecioUnidadBase", oOpchDTO.detalles[i].PrecioUnidadBase);
+                            dadet.SelectCommand.Parameters.AddWithValue("@PrecioUnidadTotal", oOpchDTO.detalles[i].PrecioUnidadTotal);
+                            dadet.SelectCommand.Parameters.AddWithValue("@TotalBase", oOpchDTO.detalles[i].TotalBase);
+                            dadet.SelectCommand.Parameters.AddWithValue("@Total", oOpchDTO.detalles[i].Total);
+                            dadet.SelectCommand.Parameters.AddWithValue("@CuentaContable", oOpchDTO.detalles[i].CuentaContable);
+                            dadet.SelectCommand.Parameters.AddWithValue("@IdCentroCosto", oOpchDTO.detalles[i].IdCentroCosto);
+                            dadet.SelectCommand.Parameters.AddWithValue("@IdAfectacionIgv", oOpchDTO.detalles[i].IdAfectacionIgv);
+                            dadet.SelectCommand.Parameters.AddWithValue("@Descuento", oOpchDTO.detalles[i].Descuento);
+                            dadet.SelectCommand.Parameters.AddWithValue("@IdAlmacenDestino", oOpchDTO.detalles[i].IdAlmacenDestino);
+                            dadet.SelectCommand.Parameters.AddWithValue("@valor_unitario", oOpchDTO.detalles[i].valor_unitario);
+                            dadet.SelectCommand.Parameters.AddWithValue("@precio_unitario", oOpchDTO.detalles[i].precio_unitario);
+                            //dadet.SelectCommand.Parameters.AddWithValue("@codigo_tipo_afectacion_igv", oOPDNDetalle.codigo_tipo_afectacion_igv);
+                            dadet.SelectCommand.Parameters.AddWithValue("@total_base_igv", oOpchDTO.detalles[i].total_base_igv);
+                            dadet.SelectCommand.Parameters.AddWithValue("@porcentaje_igv", oOpchDTO.detalles[i].porcentaje_igv);
+                            dadet.SelectCommand.Parameters.AddWithValue("@total_igv", oOpchDTO.detalles[i].total_igv);
+                            dadet.SelectCommand.Parameters.AddWithValue("@total_impuestos", oOpchDTO.detalles[i].total_impuestos);
+                            dadet.SelectCommand.Parameters.AddWithValue("@total_valor_item", oOpchDTO.detalles[i].total_valor_item);
+                            dadet.SelectCommand.Parameters.AddWithValue("@total_item", oOpchDTO.detalles[i].total_item);
+                            dadet.SelectCommand.Parameters.AddWithValue("@IdIndicadorImpuesto", oOpchDTO.detalles[i].IdIndicadorImpuesto);
+                            dadet.SelectCommand.Parameters.AddWithValue("@Referencia", oOpchDTO.detalles[i].Referencia);
+                            dadet.SelectCommand.Parameters.AddWithValue("@NombTablaOrigen", oOpchDTO.detalles[i].NombTablaOrigen);
+                            dadet.SelectCommand.Parameters.AddWithValue("@IdOrigen", oOpchDTO.detalles[i].IdOrigen);
+                            dadet.SelectCommand.Parameters.AddWithValue("@TipoServicio", oOpchDTO.detalles[i].TipoServicio);
+
+                            int IdOPCHDetalle = Convert.ToInt32(dadet.SelectCommand.ExecuteScalar());
+
+                            if(IdOPCHDetalle == 0)
+                            {
+                                return -2;
+                            }
+
+                            SqlDataAdapter daCu = new SqlDataAdapter("SMC_InsertUpdateOPCHDetalleCuadrilla", cn);
+                            daCu.SelectCommand.CommandType = CommandType.StoredProcedure;
+                            daCu.SelectCommand.Parameters.AddWithValue("@IdOPCHDetalle", IdOPCHDetalle);
+                            daCu.SelectCommand.Parameters.AddWithValue("@IdCuadrilla", oOpchDTO.detalles[i].IdCuadrilla);
+                            daCu.SelectCommand.Parameters.AddWithValue("@IdResponsable", oOpchDTO.detalles[i].IdResponsable);
+
+                            int rpta3 = Convert.ToInt32(daCu.SelectCommand.ExecuteNonQuery());
+
+
+                            if(rpta3 == 0)
+                            {
+                                return -3;
+                            }
+
+                            SqlDataAdapter daTot = new SqlDataAdapter("SMC_UpdateTotalesOPCH", cn);
+                            daTot.SelectCommand.CommandType = CommandType.StoredProcedure;
+                            daTot.SelectCommand.Parameters.AddWithValue("@IdOPCH", IdOPCH);
+                            int rpta4 = daTot.SelectCommand.ExecuteNonQuery();
+                        }
+
                         transactionScope.Complete();
-                        return rpta;
+                        return IdOPCH;
                     }
                     catch (Exception ex)
                     {
                         mensaje_error = ex.Message.ToString();
-                        return 0;
+                        return -99;
                     }
                 }
             }
@@ -1167,13 +1251,13 @@ namespace DAO
 
 
         #region InsertUpdateOPCHDetalle
-        public int InsertUpdateOPCHDetalle(OPCHDetalle oOPCHDetalle, ref string mensaje_error)
+        public int InsertUpdateOPCHDetalle(OPCHDetalle oOPCHDetalle, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -1228,13 +1312,13 @@ namespace DAO
         }
         #endregion
 
-        public int InsertUpdateOPCHDetalleCuadrilla(int IdOPCHDet,OPCHDetalle oOPCHDetalle, ref string mensaje_error)
+        public int InsertUpdateOPCHDetalleCuadrilla(int IdOPCHDet,OPCHDetalle oOPCHDetalle, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -1262,13 +1346,13 @@ namespace DAO
         }
 
 
-        public int InsertAnexoMovimiento(AnexoDTO oAnexoDTO, ref string mensaje_error)
+        public int InsertAnexoMovimiento(AnexoDTO oAnexoDTO, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -1297,13 +1381,13 @@ namespace DAO
 
 
 
-        public int GuardarTicketUpdateEstadoGuia(int IdMovimiento,string Ticket)
+        public int GuardarTicketUpdateEstadoGuia(int IdMovimiento,string Ticket, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -1328,13 +1412,13 @@ namespace DAO
 
 
 
-        public int UpdateEstadoGuia(int IdMovimiento, ref string mensaje_error)
+        public int UpdateEstadoGuia(int IdMovimiento, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -1359,13 +1443,13 @@ namespace DAO
 
 
         #region ORPC
-        public int InsertUpdateMovimientoORPC(OrpcDTO oOrpcDTO, ref string mensaje_error)
+        public int InsertUpdateMovimientoORPC(OrpcDTO oOrpcDTO, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -1423,13 +1507,13 @@ namespace DAO
         }
 
 
-        public int InsertUpdateORPCDetalle(ORPCDetalle oORPCDetalle, ref string mensaje_error)
+        public int InsertUpdateORPCDetalle(ORPCDetalle oORPCDetalle, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -1483,13 +1567,13 @@ namespace DAO
             }
         }
         #endregion
-        public int InsertUpdateORPCDetalleCuadrilla(int OPRCDDetId,ORPCDetalle oORPCDetalle, ref string mensaje_error)
+        public int InsertUpdateORPCDetalleCuadrilla(int OPRCDDetId,ORPCDetalle oORPCDetalle, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -1518,10 +1602,10 @@ namespace DAO
 
 
 
-        public string ValidaExtorno(int IdMovimiento, ref string mensaje_error)
+        public string ValidaExtorno(int IdMovimiento, string BaseDatos, ref string mensaje_error)
         {
             string Valida = "0";
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -1549,10 +1633,10 @@ namespace DAO
             return Valida;
         }
 
-        public int ValidarExisteObraxIdUsuario(int IdUsuario,int IdObraDestino, ref string mensaje_error)
+        public int ValidarExisteObraxIdUsuario(int IdUsuario,int IdObraDestino, string BaseDatos, ref string mensaje_error)
         {
             int Valida =0;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -1579,10 +1663,10 @@ namespace DAO
             return Valida;
         }
 
-        public MovimientoDTO ObtenerMovimientosDetallexIdMovimientoOLD(int IdMovimiento, ref string mensaje_error)
+        public MovimientoDTO ObtenerMovimientosDetallexIdMovimientoOLD(int IdMovimiento, string BaseDatos, ref string mensaje_error)
         {
             MovimientoDTO oMovimientoDTO = new MovimientoDTO();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -1672,6 +1756,8 @@ namespace DAO
                         oMovimientoDTO.DistritoLlegada = (String.IsNullOrEmpty(drd["DistritoLlegada"].ToString()) ? "" : drd["DistritoLlegada"].ToString());
                         oMovimientoDTO.DireccionLlegada = (String.IsNullOrEmpty(drd["DireccionLlegada"].ToString()) ? "" : drd["DireccionLlegada"].ToString());
                         oMovimientoDTO.IdDocExtorno = Convert.ToInt32(drd["IdDocExtorno"].ToString());
+                        oMovimientoDTO.IdProveedor = Convert.ToInt32(drd["IdProveedor"].ToString());
+                        oMovimientoDTO.NroRef = (String.IsNullOrEmpty(drd["NroRef"].ToString()) ? "" : drd["NroRef"].ToString());
                     }
                     drd.Close();
 
@@ -1684,7 +1770,7 @@ namespace DAO
 
             #region Contar Detalle 
             Int32 filasdetalle = 0;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -1706,7 +1792,7 @@ namespace DAO
 
             oMovimientoDTO.detalles = new MovimientoDetalleDTO[filasdetalle];
 
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -1767,7 +1853,7 @@ namespace DAO
 
             #region AnexoDetalle
             Int32 filasdetalleAnexo = 0;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -1787,7 +1873,7 @@ namespace DAO
                 }
             }
             oMovimientoDTO.AnexoDetalle = new AnexoDTO[filasdetalleAnexo];
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -1827,10 +1913,10 @@ namespace DAO
 
 
 
-        public string ObtenerTicketGuia(int IdMovimiento)
+        public string ObtenerTicketGuia(int IdMovimiento, string BaseDatos)
         {
             string Ticket = "";
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -1856,13 +1942,13 @@ namespace DAO
             return Ticket;
         }
 
-        public int UpdateMovimiento(int IdUsuario,MovimientoDTO oMovimientoDTO, ref string mensaje_error)
+        public int UpdateMovimiento(int IdUsuario,MovimientoDTO oMovimientoDTO, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -1878,6 +1964,7 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@Comentario",comentario );
                         da.SelectCommand.Parameters.AddWithValue("@IdCuadrilla", oMovimientoDTO.IdCuadrilla);
                         da.SelectCommand.Parameters.AddWithValue("@IdResponsable", oMovimientoDTO.IdResponsable);
+                        da.SelectCommand.Parameters.AddWithValue("@NroRef", oMovimientoDTO.NroRef);
                         da.SelectCommand.Parameters.AddWithValue("@UsuarioEdicion", IdUsuario);
 
 
@@ -1894,7 +1981,7 @@ namespace DAO
             }
         }
         
-        public int UpdateMovimientoSalida(int IdUsuario, MovimientoDTO oMovimientoDTO, ref string mensaje_error)
+        public int UpdateMovimientoSalida(int IdUsuario, MovimientoDTO oMovimientoDTO, string BaseDatos, ref string mensaje_error)
         
         
         {
@@ -1902,7 +1989,7 @@ namespace DAO
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -1937,6 +2024,8 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@UbigeoLlegada", oMovimientoDTO.CodigoUbigeoLlegada);
                         da.SelectCommand.Parameters.AddWithValue("@DistritoLlegada", oMovimientoDTO.DistritoLlegada);
                         da.SelectCommand.Parameters.AddWithValue("@DireccionLlegada", oMovimientoDTO.DireccionLlegada);
+                        da.SelectCommand.Parameters.AddWithValue("@IdProveedor", oMovimientoDTO.IdProveedor);
+                        da.SelectCommand.Parameters.AddWithValue("@NroRef", oMovimientoDTO.NroRef);
 
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
@@ -1950,13 +2039,13 @@ namespace DAO
                 }
             }
         }
-        public int UpdateMovimientoTransferencia(int IdUsuario, MovimientoDTO oMovimientoDTO, ref string mensaje_error)
+        public int UpdateMovimientoTransferencia(int IdUsuario, MovimientoDTO oMovimientoDTO, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -1997,13 +2086,13 @@ namespace DAO
             }
         }
 
-        public int AsignarSerieCorrelativoGuia(int IdMovimiento,int IdTipoDocumentoRef,int IdAlmacen)
+        public int AsignarSerieCorrelativoGuia(int IdMovimiento,int IdTipoDocumentoRef,int IdAlmacen, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
             transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
             TransactionOptions option = transactionOptions;
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
                 {
@@ -2028,11 +2117,11 @@ namespace DAO
         }
 
 
-        public List<SgiDTO> BuscarSGI(string SGI, ref string mensaje_error)
+        public List<SgiDTO> BuscarSGI(string SGI, string BaseDatos, ref string mensaje_error)
         {
             SgiDTO sgi = new SgiDTO();
             List<SgiDTO> list = new List<SgiDTO>();
-            using (SqlConnection cn = new Conexion().conectar())
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
                 try
                 {
@@ -2060,6 +2149,109 @@ namespace DAO
             return list;
         }
 
+        public List<MovimientoDTO> ObtenerDevolucionModal(int IdSociedad,int IdUsuario,int IdProveedor, string BaseDatos, ref string mensaje_error)
+        {
+            List<MovimientoDTO> lstMovimientoDTO = new List<MovimientoDTO>();
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarDevolucionProveedorModal", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
+                    da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
+                    da.SelectCommand.Parameters.AddWithValue("@IdProveedor", IdProveedor);
+
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        MovimientoDTO oMovimientoDTO = new MovimientoDTO();
+                        oMovimientoDTO.DT_RowId = Convert.ToInt32(drd["IdMovimiento"].ToString());
+                        oMovimientoDTO.IdMovimiento = Convert.ToInt32(drd["IdMovimiento"].ToString());
+                        oMovimientoDTO.IdTipoDocumento = Convert.ToInt32(drd["IdTipoDocumento"].ToString());
+                        oMovimientoDTO.ObjType = (drd["ObjType"].ToString());
+                        oMovimientoDTO.IdMoneda = Convert.ToInt32(drd["IdMoneda"].ToString());
+                        oMovimientoDTO.CodMoneda = (drd["CodMoneda"].ToString());
+                        oMovimientoDTO.TipoCambio = Convert.ToDecimal(drd["TipoCambio"].ToString());
+                        oMovimientoDTO.IdCliente = Convert.ToInt32(drd["IdCliente"].ToString());
+                        oMovimientoDTO.FechaContabilizacion = Convert.ToDateTime(drd["FechaContabilizacion"].ToString());
+                        oMovimientoDTO.FechaDocumento = Convert.ToDateTime(drd["FechaDocumento"].ToString());
+                        oMovimientoDTO.FechaVencimiento = Convert.ToDateTime(drd["FechaVencimiento"].ToString());
+                        oMovimientoDTO.IdListaPrecios = Convert.ToInt32(drd["IdListaPrecios"].ToString());
+                        oMovimientoDTO.Referencia = (drd["Referencia"].ToString());
+                        oMovimientoDTO.Comentario = (drd["Comentario"].ToString());
+                        oMovimientoDTO.DocEntrySap = Convert.ToInt32(drd["DocEntrySap"].ToString());
+                        oMovimientoDTO.DocNumSap = (drd["DocNumSap"].ToString());
+                        oMovimientoDTO.IdCentroCosto = Convert.ToInt32(drd["IdCentroCosto"].ToString());
+                        oMovimientoDTO.SubTotal = Convert.ToDecimal(drd["SubTotal"].ToString());
+                        oMovimientoDTO.Impuesto = Convert.ToDecimal(drd["Impuesto"].ToString());
+                        oMovimientoDTO.IdTipoAfectacionIgv = Convert.ToInt32(drd["IdTipoAfectacionIgv"].ToString());
+                        oMovimientoDTO.Total = Convert.ToDecimal(drd["Total"].ToString());
+                        oMovimientoDTO.IdAlmacen = Convert.ToInt32(drd["IdAlmacen"].ToString());
+                        oMovimientoDTO.IdSerie = Convert.ToInt32(drd["IdSerie"].ToString());
+                        oMovimientoDTO.Correlativo = Convert.ToInt32(drd["Correlativo"].ToString());
+                        oMovimientoDTO.IdSociedad = Convert.ToInt32(drd["IdSociedad"].ToString());
+                        oMovimientoDTO.NombTipoDocumentoOperacion = (drd["NombTipoDocumentoOperacion"].ToString());
+                        oMovimientoDTO.NombSerie = (drd["NombSerie"].ToString());
+                        oMovimientoDTO.Estado = Convert.ToBoolean(drd["Estado"].ToString());
+                        oMovimientoDTO.DescCuadrilla = (drd["DescCuadrilla"].ToString());
+                        oMovimientoDTO.NombAlmacen = (drd["NombAlmacen"].ToString());
+                        oMovimientoDTO.NombObra = (drd["NombObra"].ToString());
+                        oMovimientoDTO.IdAlmacen = Convert.ToInt32(drd["IdAlmacen"].ToString());
+                        oMovimientoDTO.IdObra = Convert.ToInt32(drd["IdObra"].ToString());
+                        oMovimientoDTO.IdBase = Convert.ToInt32(drd["IdBase"].ToString());
+                        oMovimientoDTO.IdProveedor = Convert.ToInt32(drd["IdProveedor"].ToString());
+                        oMovimientoDTO.NombProveedor = drd["NombProveedor"].ToString();
+                        oMovimientoDTO.IdCuadrilla = Convert.ToInt32((String.IsNullOrEmpty(drd["IdCuadrilla"].ToString())) ? 0 : drd["IdCuadrilla"].ToString());
+                        oMovimientoDTO.IdTipoDocumentoRef = Convert.ToInt32(drd["IdTipoDocumentoRef"].ToString());
+                        oMovimientoDTO.IdResponsable = Convert.ToInt32((String.IsNullOrEmpty(drd["IdResponsable"].ToString())) ? 0 : drd["IdResponsable"].ToString());
+                        oMovimientoDTO.NumSerieTipoDocumentoRef = (drd["NumSerieTipoDocumentoRef"].ToString());
+                        //oMovimientoDTO.TablaOrigen = drd["TablaOrigen"].ToString();
+                        //oMovimientoDTO.IdOrigen = drd["IdOrigen"].ToString();
+
+
+                        lstMovimientoDTO.Add(oMovimientoDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstMovimientoDTO;
+        }
+        public int ValidarSalidaMercanciaTieneNC(int IdMovimiento, string BaseDatos)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_ValidarSalidaTieneNC", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdMovimiento", IdMovimiento);
+
+                        int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        return 0;
+                    }
+                }
+            }
+        }
 
     }
 }

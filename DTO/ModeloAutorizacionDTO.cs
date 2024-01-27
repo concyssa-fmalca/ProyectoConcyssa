@@ -25,6 +25,7 @@ namespace DTO
 
         public List<ModeloAutorizacionEtapaDTO> DetalleEtapa { get; set; }
         public IList<ModeloAutorizacionEtapaDTO> DetallesEtapa;
+
     }
 
     public class ModeloAutorizacionAutorDTO

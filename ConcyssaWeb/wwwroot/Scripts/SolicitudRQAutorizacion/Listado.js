@@ -164,7 +164,7 @@ function ConsultaServidor(url) {
 
            
             tr += `<td>` + solicitudes[i].NombreArticulo.toUpperCase(); + `</td>`;
-            tr += `<td><input class="form-control" type="numeric" value="` + solicitudes[i].CantidadNecesaria + `" name="txtCantidadNecesaria[]"  id="txtCantidadNecesaria` + contador + `" onkeyup="CalcularTotalDetalle(` + contador + `)" ></td>`;
+            tr += `<td><input class="form-control" type="numeric" value="` + solicitudes[i].CantidadNecesaria + `" name="txtCantidadNecesaria[]" onchange="ValidarNumero(` + contador +`)"  id="txtCantidadNecesaria` + contador + `" onkeyup="CalcularTotalDetalle(` + contador + `)" ></td>`;
             tr += `<td>` + solicitudes[i].Referencia + `</td>`;
             tr += `<td><button type="button" class="btn btn-primary btn-xs" onclick="verAnexos(` + solicitudes[i].IdSolicitud + `,'` + (solicitudes[i].Serie).toString() + `',` + solicitudes[i].NumeroPedido +`)">Ver Anexos</button></td>`;
             tr += `<td>`;
@@ -1541,4 +1541,15 @@ function ObtenerPrecioxProductoUltimasVentas(IdArticulo, IdDetalleRq) {
         console.log(tr);
         $("#tabla_listado_ultimasventas tbody").html(tr);
     });
+}
+
+
+
+function ValidarNumero(i) {
+    console.log($("#txtCantidadNecesaria" + i).val())
+    if ($("#txtCantidadNecesaria" + i).val() <= 0) {
+       
+        Swal.fire("Aviso", "La cantidad no puede ser menor o igual a 0 </br> La cantidad se colocará en 1", "info")
+        $("#txtCantidadNecesaria" + i).val(1)
+    }
 }

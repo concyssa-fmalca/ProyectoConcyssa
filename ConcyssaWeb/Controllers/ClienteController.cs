@@ -15,8 +15,9 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerClientes()
         {
             ClienteDAO oClienteDAO = new ClienteDAO();
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<ClienteDTO> lstClienteDTO = oClienteDAO.ObtenerClientes(IdSociedad.ToString());
+            List<ClienteDTO> lstClienteDTO = oClienteDAO.ObtenerClientes(IdSociedad.ToString(),BaseDatos);
 
             if (lstClienteDTO.Count > 0)
             {
@@ -32,8 +33,9 @@ namespace ConcyssaWeb.Controllers
         {
 
             ClienteDAO oClienteDAO = new ClienteDAO();
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            int resultado = oClienteDAO.UpdateInsertCliente(clienteDTO, IdSociedad.ToString());
+            int resultado = oClienteDAO.UpdateInsertCliente(clienteDTO, IdSociedad.ToString(),BaseDatos);
             if (resultado != 0)
             {
                 resultado = 1;
@@ -46,7 +48,8 @@ namespace ConcyssaWeb.Controllers
         public string ObtenerDatosxID(int IdCliente)
         {
             ClienteDAO oClienteDAO = new ClienteDAO();
-            List<ClienteDTO> lstClienteDTO = oClienteDAO.ObtenerDatosxID(IdCliente);
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            List<ClienteDTO> lstClienteDTO = oClienteDAO.ObtenerDatosxID(IdCliente,BaseDatos);
 
             if (lstClienteDTO.Count > 0)
             {
@@ -61,8 +64,9 @@ namespace ConcyssaWeb.Controllers
 
         public int EliminarCliente(int IdCliente)
         {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             ClienteDAO oClienteDAO = new ClienteDAO();
-            int resultado = oClienteDAO.Delete(IdCliente);
+            int resultado = oClienteDAO.Delete(IdCliente,BaseDatos);
             if (resultado == 0)
             {
                 resultado = 1;
