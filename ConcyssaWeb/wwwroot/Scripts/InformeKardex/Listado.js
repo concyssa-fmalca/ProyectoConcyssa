@@ -491,6 +491,22 @@ function ListarDatatableKardexDT(url, IdArticulo, IdAlmacen, FechaInicio, FechaT
                         return full.NombUsuario
                     },
                 },   
+                {
+                    data: null,
+                    targets: 19,
+                    orderable: false,
+                    render: function (data, type, full, meta) {
+                        return full.Cuadrilla
+                    },
+                },   
+                {
+                    data: null,
+                    targets: 20,
+                    orderable: false,
+                    render: function (data, type, full, meta) {
+                        return full.NumRef
+                    },
+                },   
             ],
             //"drawCallback": function (settings) {
             //    var api = this.api();

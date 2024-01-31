@@ -150,7 +150,7 @@ namespace ConcyssaWeb.Controllers
         {
             return View();
         }
-        public string ObtenerSolicitudesxAutorizar(string FechaInicio, string FechaFinal, int Estado, int IdAutorizador)
+        public string ObtenerSolicitudesxAutorizar(string FechaInicio, string FechaFinal, int Estado, int IdAutorizador, int IdObra)
         {
             string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
@@ -170,7 +170,7 @@ namespace ConcyssaWeb.Controllers
             {
                 SolicitudRQAutorizacionDAO oSolicitudRQAutorizacionDAO = new SolicitudRQAutorizacionDAO();
                 //List<SolicitudRQAutorizacionDTO> lstSolicitudRQAutorizacionDTO = oSolicitudRQAutorizacionDAO.ObtenerSolicitudesxAutorizar(IdAutorizador.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado);
-                List<DetalleSolicitudRqAprobacionDTO> lstDetalleSolicitudRqAprobacionDTO = oSolicitudRQAutorizacionDAO.ObtenerSolicitudesxAutorizarDetalle(IdUsuario.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado,BaseDatos);
+                List<DetalleSolicitudRqAprobacionDTO> lstDetalleSolicitudRqAprobacionDTO = oSolicitudRQAutorizacionDAO.ObtenerSolicitudesxAutorizarDetalle(IdUsuario.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado,IdObra,BaseDatos);
                 if (lstDetalleSolicitudRqAprobacionDTO.Count > 0)
                 {
                   
@@ -185,7 +185,7 @@ namespace ConcyssaWeb.Controllers
             {
                 SolicitudRQAutorizacionDAO oSolicitudRQAutorizacionDAO = new SolicitudRQAutorizacionDAO();
                 //List<SolicitudRQAutorizacionDTO> lstSolicitudRQAutorizacionDTO = oSolicitudRQAutorizacionDAO.ObtenerSolicitudesxAutorizar(IdUsuario.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado);
-                List<DetalleSolicitudRqAprobacionDTO> lstDetalleSolicitudRqAprobacionDTO = oSolicitudRQAutorizacionDAO.ObtenerSolicitudesxAutorizarDetalle(IdUsuario.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado,BaseDatos);
+                List<DetalleSolicitudRqAprobacionDTO> lstDetalleSolicitudRqAprobacionDTO = oSolicitudRQAutorizacionDAO.ObtenerSolicitudesxAutorizarDetalle(IdUsuario.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado, IdObra, BaseDatos);
                 if (lstDetalleSolicitudRqAprobacionDTO.Count > 0)
                 {
                     Resultado = JsonConvert.SerializeObject(lstDetalleSolicitudRqAprobacionDTO);

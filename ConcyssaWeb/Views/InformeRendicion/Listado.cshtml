@@ -43,14 +43,18 @@
                     <select class="form-control" id="cboSemana"></select>
                 </div>
                 <button class="btn btn-primary" style="margin-top:3px" onclick="ObtenerReporte()">Imprimir Reporte</button>
+                <button class="btn btn-primary" style="margin-top:3px" onclick="ValidacionSUNATMasivo()">Validacion SUNAT</button>
             </div>
         </div>
     </div>
 </div>
 
 
+@{
+    Random rnd = new Random();
+}
 
-<script src="~/Scripts/InformeRendicion/Listado.js"></script>
+<script src="~/Scripts/InformeRendicion/Listado.js?v=@rnd.Next(1, 1000 + 1)"></script>
 <script src="~/Scripts/General.js"></script>
 <script src="~/js/pdf/jspdf.min.js"></script>
 <script src="~/js/pdf/faker.min.js"></script>

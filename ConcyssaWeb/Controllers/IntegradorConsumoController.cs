@@ -227,7 +227,7 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
-        public string ProcesarIntegracion(int GrupoCreacion,DateTime FechaContabilizacion,List<CuentaConsumoSAP> Cuentas)
+        public string ProcesarIntegracion(int GrupoCreacion,DateTime FechaContabilizacion,List<CuentaConsumoSAP> Cuentas,int Serie)
         {
             string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string respuesta = ConexionSAP.Conectar();
@@ -256,7 +256,7 @@ namespace ConcyssaWeb.Controllers
                 if (respuesta == "true")
                 {
                     ConexionSAP conexion = new ConexionSAP();
-                    respuestaSAP = conexion.AddAsientoContable(oObraDTO.CodProyecto, Cuentas, GrupoCreacion,FechaContabilizacion,BaseDatos,BaseDatosSAP,ref mensaje_error);
+                    respuestaSAP = conexion.AddAsientoContable(oObraDTO.CodProyecto, Cuentas, GrupoCreacion,FechaContabilizacion,Serie,BaseDatos,BaseDatosSAP,ref mensaje_error);
                     
                     ConexionSAP.DesconectarSAP();
                 }

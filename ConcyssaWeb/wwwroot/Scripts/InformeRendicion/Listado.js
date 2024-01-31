@@ -271,3 +271,71 @@ function ResetSemana() {
 }
 
 
+function ValidacionSUNATMasivo() {
+    Swal.fire({
+        title: 'Validación Masiva SUNAT',
+        html: "Se validara los documentos pertenecientes al Tipo de Registro y Semana/Giro Seleccionado </br>" +
+            "</br>" +
+            "Este Proceso Puede tardar un poco, por lo que deberá esperar",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si Validar!',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            let varIdObraFiltro = $("#cboObraFiltro").val()
+            let IdRegistro = $("#cboTipoRegistroFiltro").val()
+            if (IdRegistro == 0) {
+                Swal.fire("Seleccione un Tipo de Registro")
+                return
+            }
+            let IdSemana = 0
+            IdSemana = $("#cboSemana").val()
+            if (IdSemana == 0) {
+                Swal.fire("Seleccione una Semana")
+                return
+            }
+
+
+            //if (IdRegistro != 4) {
+            //    IdSemana = $("#cboSemanaFiltro").val()
+            //    if (IdSemana == 0) {
+            //        Swal.fire("Seleccione una Semana")
+            //        return
+            //    }
+            //} else {
+            //    IdSemana = $("#cboGiroFiltro").val()
+            //    if (IdSemana == 0) {
+            //        Swal.fire("Seleccione una Giro")
+            //        return
+            //    }
+            //}
+            $.post("/FacturaProveedor/ValidacionSunatMasiva", { 'IdObra': varIdObraFiltro, 'IdTipoRegistro': IdRegistro, 'IdSemana': IdSemana }, function (data, status) {
+                if (data == "OK") {
+                    $.post("/FacturaProveedor/GenerarReporteValidacionSUNAT", { 'IdObra': varIdObraFiltro, 'IdTipoRegistro': IdRegistro, 'IdSemana': IdSemana }, function (data, status) {
+                        let datos;
+                        if (validadJson(data)) {
+                            let datobase64;
+                            datobase64 = "data:application/octet-stream;base64,"
+                            datos = JSON.parse(data);
+                            //datobase64 += datos.Base64ArchivoPDF;
+                            //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
+                            //$("#reporteRPT").attr("href", datobase64);
+                            //$("#reporteRPT")[0].click();
+                            verBase64PDF(datos)
+                            Swal.fire(
+                                'Correcto',
+                                'Reporte Generado',
+                                'success'
+                            )
+                        } else {
+                            console.log("error");
+                        }
+                    });
+                }
+            });
+        }
+    })
+}

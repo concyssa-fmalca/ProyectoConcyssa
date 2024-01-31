@@ -20,7 +20,7 @@ builder.Services.AddBundling()
 //    c.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(1);
 //});
 builder.Services.AddSession(options => {
-    options.IdleTimeout = TimeSpan.FromMinutes(40);
+    options.IdleTimeout = TimeSpan.FromMinutes(120);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });

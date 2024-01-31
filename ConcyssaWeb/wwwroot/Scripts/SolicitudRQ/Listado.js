@@ -267,11 +267,7 @@ function ConsultaServidor() {
             //tr += '<td>' + solicitudes[i].NombMoneda + '</td>';
             //'<td>' + formatNumberDecimales( solicitudes[i].TotalCantidad ,2)+ '</td>';
 
-            if (solicitudes[i].Prioridad == 1) {
-                tr += '<td>ALTA</td>';
-            } else {
-                tr += '<td>BAJA</td>';
-            }
+            tr += '<td>' + solicitudes[i].Comentarios +'</td>'
 
             //tr += '<td>' + solicitudes[i].DetalleEstado.toUpperCase() + '</td>';
             tr += '<td> <button class="btn btn-sm-red estados fa fa-th-list fa-lg " onclick="modalHistorialEstado(' + solicitudes[i].IdSolicitudRQ + ')"></button> </td>';
@@ -1049,6 +1045,8 @@ function AgregarLinea() {
             LimpiarModalItem();
         }
     }
+
+    ValidarOCAbiertas(IdItem)
 }
 
 function restarLimitador() {
@@ -3996,4 +3994,37 @@ function ImprimitSolicitudRQ(Id) {
             }
         });
     }, 200)
+}
+
+function ValidarOCAbiertas(IdItem) {
+    $.post("/Pedido/ObtenerOcAbiertasxArtAlmacen", { 'IdArticulo': IdItem, 'IdAlmacen': $("#cboAlmacen").val() }, function (data, status) {
+        if (data == "SIN DATOS" || data=="ERROR") {
+            console.log(data)
+        } else {
+            let tr = "";
+            let datos = JSON.parse(data)
+            for (var i = 0; i < datos.length; i++) {
+                tr += '<tr>' +
+                  
+                    '<td>' + datos[i].NombSerie +'-' +datos[i].Correlativo+ '</td>' +
+                    '<td>' + datos[i].CantidadDisponible + '</td>';
+            }
+            console.log(tr)
+            Swal.fire({
+                title: 'Se Encontraron OC Abiertas para este Articulo y Almacen',
+                html: `<table class="table" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>OC</th>
+                            <th>Cant. Por Entregar</th>                         
+                        </tr>
+                    </thead>
+                    <tbody>`+ tr +`</tbody>
+                </table>
+                Este mensaje solo es informativo`,
+                icon: 'warning'
+            })
+        }
+    });
+
 }

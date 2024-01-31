@@ -150,7 +150,8 @@ function Editar() {
         'DistritoLlegada': DistritoLlegada,
         'DireccionLlegada': DireccionLlegada,
         'IdProveedor': $("#cboProveedor").val(),
-        'NroRef': $("#NumRef").val()
+        'NroRef': $("#NumRef").val(),
+        'FechaDocumento': $("#txtFechaDocumento").val()
     }, function (data, status) {
 
         if (data != 0) {
@@ -928,7 +929,7 @@ function disabledmodal(valorbolean) {
     $("#cboCentroCosto").prop('disabled', valorbolean);
     $("#cboMoneda").prop('disabled', valorbolean);
     $("#cboSerie").prop('disabled', valorbolean);
-    $("#txtFechaDocumento").prop('disabled', valorbolean);
+    //$("#txtFechaDocumento").prop('disabled', valorbolean);
     //$("#txtFechaContabilizacion").prop('disabled', valorbolean);
     $("#cboTipoDocumentoOperacion").prop('disabled', valorbolean);
     $("#IdTipoDocumentoRef").prop('disabled', valorbolean);
@@ -3753,8 +3754,12 @@ function ObtenerEmpleadosxIdCuadrilla() {
     let IdCuadrilla = $("#IdCuadrilla").val();
     $.ajaxSetup({ async: false });
     $.post("/Empleado/ObtenerEmpleadosPorUsuarioBase", function (data, status) {
-        let empleados = JSON.parse(data);
-        llenarComboEmpleados(empleados, "EntregadoA", "Seleccione")
+        try {
+            let empleados = JSON.parse(data);
+            llenarComboEmpleados(empleados, "EntregadoA", "Seleccione")
+        } catch (e) {
+            console.log(e)
+        }
     });
 }
 
@@ -3951,8 +3956,11 @@ function ObtenerCapatazTablaFila(contador) {
     let IdCuadrillaFila = $("#cboCuadrillaTablaId" + contador).val();
     /* setTimeout(() => {*/
     $.post("/Empleado/ObtenerCapatazXCuadrilla", { 'IdCuadrilla': IdCuadrillaFila }, function (data, status) {
-        let capataz = JSON.parse(data);
-        $("#cboResponsableTablaId" + contador).val(capataz[0].IdEmpleado).change();
+        try {
+            let capataz = JSON.parse(data);
+            $("#cboResponsableTablaId" + contador).val(capataz[0].IdEmpleado).change();
+        } catch (e) {
+        }
     })
     /*}, 1000);*/
 

@@ -174,6 +174,82 @@ namespace DAO
             return lstOPCHDTO;
         }
 
+
+        public List<OpchDTO> ObtenerOPCHXProveedor(int IdProveedor, string NumSerie, string BaseDatos, ref string mensaje_error)
+        {
+            List<OpchDTO> lstOPCHDTO = new List<OpchDTO>();
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarOPCHxProveedor", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdProveedor", IdProveedor);
+                    da.SelectCommand.Parameters.AddWithValue("@NumSerie", NumSerie);
+            
+
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        OpchDTO oOpchDTO = new OpchDTO();
+                        oOpchDTO.DT_RowId = Convert.ToInt32(drd["IdOPCH"].ToString());
+                        oOpchDTO.IdOPCH = Convert.ToInt32(drd["IdOPCH"].ToString());
+                        oOpchDTO.IdTipoDocumento = Convert.ToInt32(drd["IdTipoDocumento"].ToString());
+                        oOpchDTO.ObjType = (drd["ObjType"].ToString());
+                        oOpchDTO.IdMoneda = Convert.ToInt32(drd["IdMoneda"].ToString());
+                        oOpchDTO.CodMoneda = (drd["CodMoneda"].ToString());
+                        oOpchDTO.TipoCambio = Convert.ToDecimal(drd["TipoCambio"].ToString());
+                        oOpchDTO.IdCliente = Convert.ToInt32(drd["IdCliente"].ToString());
+                        oOpchDTO.FechaContabilizacion = Convert.ToDateTime(drd["FechaContabilizacion"].ToString());
+                        oOpchDTO.FechaDocumento = Convert.ToDateTime(drd["FechaDocumento"].ToString());
+                        oOpchDTO.FechaVencimiento = Convert.ToDateTime(drd["FechaVencimiento"].ToString());
+                        oOpchDTO.IdListaPrecios = Convert.ToInt32(drd["IdListaPrecios"].ToString());
+                        oOpchDTO.Referencia = (drd["Referencia"].ToString());
+                        oOpchDTO.Comentario = (drd["Comentario"].ToString());
+                        oOpchDTO.DocEntrySap = Convert.ToInt32(drd["DocEntrySap"].ToString());
+                        oOpchDTO.DocNumSap = (drd["DocNumSap"].ToString());
+                        oOpchDTO.IdCentroCosto = Convert.ToInt32(drd["IdCentroCosto"].ToString());
+                        oOpchDTO.SubTotal = Convert.ToDecimal(drd["SubTotal"].ToString());
+                        oOpchDTO.Impuesto = Convert.ToDecimal(drd["Impuesto"].ToString());
+                        oOpchDTO.IdTipoAfectacionIgv = Convert.ToInt32(drd["IdTipoAfectacionIgv"].ToString());
+                        oOpchDTO.Total = Convert.ToDecimal(drd["Total"].ToString());
+                        oOpchDTO.IdAlmacen = Convert.ToInt32(drd["IdAlmacen"].ToString());
+                        oOpchDTO.IdSerie = Convert.ToInt32(drd["IdSerie"].ToString());
+                        oOpchDTO.Correlativo = Convert.ToInt32(drd["Correlativo"].ToString());
+                        oOpchDTO.IdSociedad = Convert.ToInt32(drd["IdSociedad"].ToString());
+                        oOpchDTO.NombTipoDocumentoOperacion = (drd["NombTipoDocumentoOperacion"].ToString());
+                        oOpchDTO.NombSerie = (drd["NombSerie"].ToString());
+                        oOpchDTO.Estado = Convert.ToBoolean(drd["Estado"].ToString());
+                        oOpchDTO.DescCuadrilla = (drd["DescCuadrilla"].ToString());
+                        oOpchDTO.NombAlmacen = (drd["NombAlmacen"].ToString());
+                        oOpchDTO.NombObra = (drd["NombObra"].ToString());
+                        oOpchDTO.IdAlmacen = Convert.ToInt32(drd["IdAlmacen"].ToString());
+                        oOpchDTO.IdObra = Convert.ToInt32(drd["IdObra"].ToString());
+                        oOpchDTO.IdBase = Convert.ToInt32(drd["IdBase"].ToString());
+                        oOpchDTO.Moneda = (drd["Moneda"].ToString());
+                        oOpchDTO.NombUsuario = (drd["NombUsuario"].ToString());
+                        oOpchDTO.NumSerieTipoDocumentoRef = drd["NumSerieTipoDocumentoRef"].ToString();
+                        oOpchDTO.Proveedor = drd["Proveedor"].ToString();
+                        oOpchDTO.RUCProveedor = drd["RUCProveedor"].ToString();
+                        oOpchDTO.TipoDocumentoRef = drd["TipoDocumentoRef"].ToString();
+                        oOpchDTO.IdTipoDocumentoRef = int.Parse(drd["IdTipoDocumentoRef"].ToString());
+                        oOpchDTO.IdDocExtorno = Convert.ToInt32(drd["IdDocExtorno"].ToString());
+                        oOpchDTO.ValidadoSUNAT = Convert.ToInt32(drd["ValidadoSUNAT"].ToString());
+                        lstOPCHDTO.Add(oOpchDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstOPCHDTO;
+        }
+
         public List<OpchDTO> ObtenerOPCHxEstadoModal(int IdSociedad, int IdProveedor,string BaseDatos, ref string mensaje_error, string EstadoOPCH,int IdUsuario=0)
         {
             List<OpchDTO> lstOPCHDTO = new List<OpchDTO>();
@@ -638,7 +714,7 @@ namespace DAO
             return lstOPCHDTO;
         }
 
-        public int GuardarValidacionSUNAT(int IdOPCH, int respuestaSunat, string BaseDatos)
+        public int GuardarValidacionSUNAT(int IdOPCH, int respuestaSunat,string estadoRuc, string condDomiRuc, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
@@ -655,6 +731,8 @@ namespace DAO
                         da.SelectCommand.CommandType = CommandType.StoredProcedure;
                         da.SelectCommand.Parameters.AddWithValue("@IdOPCH", IdOPCH);
                         da.SelectCommand.Parameters.AddWithValue("@respuestaSunat", respuestaSunat);
+                        da.SelectCommand.Parameters.AddWithValue("@estadoRuc", estadoRuc);
+                        da.SelectCommand.Parameters.AddWithValue("@condDomiRuc", condDomiRuc);
 
 
                         int rpta = da.SelectCommand.ExecuteNonQuery();
@@ -667,6 +745,33 @@ namespace DAO
                     }
                 }
             }
+        }
+        public string ObtenerNroOperacionOPCH(int IdOpch, string BaseDatos)
+        {
+            string respuesta = "";
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerNroOperacionOPCH", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdOpch", IdOpch);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        respuesta = (drd["NumOperacion"].ToString());
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    respuesta = "";
+                }
+            }
+            return respuesta;
         }
 
     }

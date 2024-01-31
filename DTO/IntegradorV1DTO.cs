@@ -225,4 +225,6 @@ namespace DTO
         public string U_EXX_SEGUNDNO { get; set; }
         public string Properties15 { get; set; }
     }
+
+
 }

@@ -159,7 +159,7 @@ namespace ConcyssaWeb.Controllers
                 // Agregar una hoja al archivo
                 ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Kardex");
 
-                using (ExcelRange range = worksheet.Cells["A1:R1"])
+                using (ExcelRange range = worksheet.Cells["A1:T1"])
                 {
                     range.Style.Font.Bold = true;
                     range.Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -187,6 +187,8 @@ namespace ConcyssaWeb.Controllers
                 worksheet.Cells["P1"].Value = "Costo Promedio";
                 worksheet.Cells["Q1"].Value = "Valorizado";
                 worksheet.Cells["R1"].Value = "Usuario";
+                worksheet.Cells["S1"].Value = "Cuadrilla";
+                worksheet.Cells["T1"].Value = "NroRef";
 
 
                 // Definir el ancho de las columnas
@@ -195,6 +197,7 @@ namespace ConcyssaWeb.Controllers
                 worksheet.Column(5).Width = 20;
                 worksheet.Column(9).Width = 20;
                 worksheet.Column(18).Width = 20;
+                worksheet.Column(19).Width = 40;
 
                 // Rellenar celdas con datos
                 int row = 2; // Empezar en la segunda fila
@@ -234,6 +237,8 @@ namespace ConcyssaWeb.Controllers
                     worksheet.Cells["P" + row].Value = registro.PrecioPromedio;
                     worksheet.Cells["Q" + row].Value = registro.PrecioPromedio * registro.Saldo;
                     worksheet.Cells["R" + row].Value = registro.NombUsuario;
+                    worksheet.Cells["S" + row].Value = registro.Cuadrilla;
+                    worksheet.Cells["T" + row].Value = registro.NumRef;
                     row++;
                 }
 
@@ -323,6 +328,8 @@ namespace ConcyssaWeb.Controllers
                         DatoLimpio.Modulo = "SALDO INICIAL";
                         DatoLimpio.NumSerieTipoDocumentoRef = "-";
                         DatoLimpio.TipoDocumentoRef = "-";
+                        DatoLimpio.Cuadrilla = "-";
+                        DatoLimpio.NumRef = "-";
                         lstArticulosNoEncontrados.Add(DatoLimpio);
                     }
                 

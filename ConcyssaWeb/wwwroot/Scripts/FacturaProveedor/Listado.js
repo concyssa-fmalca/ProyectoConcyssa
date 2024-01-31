@@ -461,6 +461,7 @@ function llenarComboCentroCosto(lista, idCombo, primerItem) {
 
 window.onload = function () {
     $("#DivGiro").hide()
+    CargarProveedorFiltro()
     CargarObras()
     CargarTipoRegistroFiltro()
     //$("#btn_nuevo_proveedor").prop("disabled", true);
@@ -477,7 +478,7 @@ window.onload = function () {
     DecimalesPorcentajes = GDecimalesPorcentajes;
 
 
-    KeyPressNumber($("#txtRedondeo"));
+    //KeyPressNumber($("#txtRedondeo"));
 
     $("#IdProveedor").select2();
 
@@ -1008,8 +1009,8 @@ function AgregarLinea() {
         tr += `</select>
             </td>
             <td input style="display:none;"><input class="form-control TipoCambioDeCabecera" type="number" name="txtTipoCambio[]" id="txtTipoCambioDetalle`+ contador + `" disabled></td>
-            <td><input class="form-control"  type="number" name="txtCantidadNecesaria[]" value="0" id="txtCantidadNecesaria`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled></td>
-            <td><input class="form-control" type="number" name="txtPrecioInfo[]" value="0" id="txtPrecioInfo`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled></td>
+            <td><input class="form-control"  type="number" name="txtCantidadNecesaria[]" value="0" id="txtCantidadNecesaria`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" ></td>
+            <td><input class="form-control" type="number" name="txtPrecioInfo[]" value="0" id="txtPrecioInfo`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" ></td>
             <td input>
             <select class="form-control ImpuestoCabecera" name="cboIndicadorImpuestoDetalle[]" id="cboIndicadorImpuestoDetalle`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled>`;
         tr += `  <option impuesto="0" value="0">Seleccione</option>`;
@@ -2041,15 +2042,16 @@ function GuardarSolicitud() {
             },
             success: function (data) {
                 if (data > 0) {
-                    Swal.fire(
-                        'Correcto',
-                        'Proceso Realizado Correctamente',
-                        'success'
-                    )
-                    CerrarModal();
-                    //ObtenerDatosxIDOPCH(data)
-                    //swal("Exito!", "Proceso Realizado Correctamente", "success")
-                    listarOpch()
+                    $.post("ObtenerSerieOPCH", { 'IdOPCH': data }, function (data, status) {
+                        Swal.fire(
+                            'Correcto',
+                            'Documento '+data+' Registrado Correctamente',
+                            'success'
+                        )
+                        CerrarModal();                      
+                        listarOpch()
+                    });
+                   
 
                 } else if (data == -1) {
                     Swal.fire(
@@ -2455,15 +2457,15 @@ function GuardarSolicitud() {
             },
             success: function (data) {
                 if (data > 0) {
-                    Swal.fire(
-                        'Correcto',
-                        'Proceso Realizado Correctamente',
-                        'success'
-                    )
-                    CerrarModal();
-                    //ObtenerDatosxIDOPCH(data)
-                    //swal("Exito!", "Proceso Realizado Correctamente", "succes
-                    listarOpch()
+                     $.post("ObtenerSerieOPCH", { 'IdOPCH': data }, function (data, status) {
+                        Swal.fire(
+                            'Correcto',
+                            'Documento '+data+' Registrado Correctamente',
+                            'success'
+                        )
+                        CerrarModal();                      
+                        listarOpch()
+                    });
                 } else if (data == -1) {
                     Swal.fire(
                         'Error!',
@@ -6507,4 +6509,234 @@ function ValidacionSUNATMasivo() {
             });
         }
     })
+}
+
+function CargarProveedorFiltro() {
+    $.ajaxSetup({ async: false });
+    $.post("/Proveedor/ObtenerProveedores", { estado: 1 }, function (data, status) {
+        let proveedores = JSON.parse(data);
+        llenarComboProveedorFiltro(proveedores, "cboProveedorFiltro", "Seleccione")
+    });
+}
+
+function llenarComboProveedorFiltro(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdProveedor + "'>" + lista[i].NumeroDocumento + " - " + lista[i].RazonSocial + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+    $("#cboProveedorFiltro").select2();
+}
+
+function listarOpchProveedor() {
+    let varProveedor = $("#cboProveedorFiltro").val()
+    let varNumSerie = $("#txtNumFTFiltro").val()
+ 
+    tablepedido = $('#table_id').dataTable({
+        language: lenguaje_data,
+        responsive: true,
+        ajax: {
+            url: 'ListarOPCHDTxProveedor',
+            type: 'POST',
+            data: {
+                'IdProveedor': varProveedor,
+                'NumSerie': varNumSerie,
+                pagination: {
+                    perpage: 50,
+                },
+            },
+        },
+
+        columnDefs: [
+            // {"className": "text-center", "targets": "_all"},
+            {
+                data: null,
+                targets: -1,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    let extrasBtn = ''
+                    if (full.ValidadoSUNAT == 0) {
+                        extrasBtn = `<button class="btn btn-primary juntos fa fa-share-square btn-xs" onclick="ValidarSUNAT(` + full.IdOPCH + `)"></button>`
+                    }
+
+                    return `<button class="btn btn-primary juntos fa fa-eye btn-xs" onclick="ObtenerDatosxIDOPCH(` + full.IdOPCH + `)"></button>
+                            <button class="btn btn-primary juntos fa fa-file-text btn-xs" onclick="VerDocsOrigen(` + full.IdOPCH + `)"></button>` + extrasBtn
+                },
+            },
+            {
+                data: null,
+                targets: 0,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return meta.row + 1
+                },
+            },
+            {
+                data: null,
+                targets: 1,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    let FechaDoc = full.FechaDocumento
+                    const fechaTabla = new Date(FechaDoc);
+                    const diaTabla = fechaTabla.getDate();
+                    const mesTabla = fechaTabla.getMonth() + 1;
+                    const anioTabla = fechaTabla.getFullYear();
+
+                    // Añadir ceros iniciales si es necesario
+                    const diaFormateado = diaTabla < 10 ? "0" + diaTabla : diaTabla;
+                    const mesFormateado = mesTabla < 10 ? "0" + mesTabla : mesTabla;
+
+                    const fechaFormateada = `${diaFormateado}/${mesFormateado}/${anioTabla}`;
+
+                    return fechaFormateada
+                },
+            },
+            {
+                data: null,
+                targets: 2,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.NombUsuario
+                },
+            },
+            {
+                data: null,
+                targets: 3,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.NombTipoDocumentoOperacion
+                },
+            },
+            {
+                data: null,
+                targets: 4,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    if (full.IdDocExtorno != 0) {
+                        return '<p style="color:red">' + full.NombSerie + '-' + full.Correlativo + '</p>'
+                    } else {
+                        return '<a style="color:blue;text-decoration:underline;cursor:pointer" onclick="ImprimirFactura(' + full.IdOPCH + ')" > ' + full.NombSerie + '-' + full.Correlativo + '</a>'
+                    }
+                },
+            },
+            {
+                data: null,
+                targets: 5,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.TipoDocumentoRef
+                },
+            },
+            {
+                data: null,
+                targets: 6,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.NumSerieTipoDocumentoRef
+
+                },
+            },
+            {
+                data: null,
+                targets: 7,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.Proveedor
+                },
+            },
+            {
+                data: null,
+                targets: 8,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return formatNumberDecimales(full.Total, 2)
+                },
+            },
+            {
+                data: null,
+                targets: 9,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.NombObra
+                },
+            },
+            {
+                data: null,
+                targets: 10,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.NombAlmacen
+                },
+            },
+            {
+                data: null,
+                targets: 11,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.Moneda
+                },
+            },
+            {
+                data: null,
+                targets: 12,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    if (full.ValidadoSUNAT == 0) {
+                        return 'NO ENVIADO'
+                    } else if (full.ValidadoSUNAT == 1) {
+                        return 'VALIDADO'
+                    } else {
+                        return 'NO EXISTE'
+                    }
+                },
+            },
+            {
+                data: null,
+                targets: 13,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    if (full.DocNumCont == -1) {
+                        return "<p style='color:red'>ERROR AL VALIDAR<p>"
+                    } else if (full.DocNumCont == 0) {
+                        return "NO CONTABILIZADO"
+                    } else {
+                        return "<p style='color:green'>CONTABILIZADO - " + full.DocNumCont + "</p>"
+                    }
+                },
+            }
+
+        ],
+        "bDestroy": true
+    }).DataTable();
+
+    $('#tabla_listado_pedidos tbody').on('dblclick', 'tr', function () {
+        var data = tablepedido.row(this).data();
+        console.log(data);
+        if (ultimaFila != null) {
+            ultimaFila.css('background-color', colorOriginal)
+        }
+        colorOriginal = $("#" + data["DT_RowId"]).css('background-color');
+        $("#" + data["DT_RowId"]).css('background-color', '#dde5ed');
+        ultimaFila = $("#" + data["DT_RowId"]);
+        AgregarPedidoToEntradaMercancia(data);
+        $("#txtOrigen").val("Pedido")
+        $("#txtOrigenId").val(data.IdPedido + " ")
+        $('#ModalListadoPedido').modal('hide');
+        tablepedido.ajax.reload()
+
+        //$("#tbody_detalle").find('tbody').empty();
+        //AgregarItemTranferir(((table.row(this).index()) + 1), data["IdArticulo"], data["Descripcion"], (data["CantidadEnviada"] - data["CantidadTranferida"]), data["Stock"]);
+
+    });
+
+    setTimeout(() => {
+        changeTipoDocumento()
+    }, 500)
 }

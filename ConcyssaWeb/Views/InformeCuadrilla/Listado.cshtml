@@ -107,6 +107,12 @@
                             <input type="checkbox" id="chkIncExtornos" />
                         </div>
                     </div>
+                    <div class="row">
+                        <label class="col-sm-3" for="chkDetallado">Reporte Detallado</label>
+                        <div class="col-sm-9">
+                            <input type="checkbox" id="chkDetallado" />
+                        </div>
+                    </div>
                 </div>
                 <div class="col-sm-4">
                     <div class="col-sm-12">
@@ -122,9 +128,11 @@
 
 
 </div>
+@{
+    Random rnd = new Random();
+}
 
-
-<script src="~/Scripts/InformeCuadrilla/Listado.js"></script>
+<script src="~/Scripts/InformeCuadrilla/Listado.js?v=@rnd.Next(1, 1000 + 1)"></script>
 <script src="~/Scripts/General.js"></script>
 <script src="~/js/pdf/jspdf.min.js"></script>
 <script src="~/js/pdf/faker.min.js"></script>

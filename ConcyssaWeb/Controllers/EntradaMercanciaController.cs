@@ -234,6 +234,96 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
+        public string UpdateInsertMovimientoEMLogisticaString(string JsonDatosEnviar)
+        {
+            JsonDatosEnviar = JsonDatosEnviar.Remove(JsonDatosEnviar.Length - 1, 1);
+            JsonDatosEnviar = JsonDatosEnviar.Remove(0, 1);
+
+            var settings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                MissingMemberHandling = MissingMemberHandling.Ignore
+            };
+
+            OpdnDTO oOpdnDTO = JsonConvert.DeserializeObject<OpdnDTO>(JsonDatosEnviar, settings);
+            string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            int IdSociedad = Convert.ToInt32((String.IsNullOrEmpty(oOpdnDTO.IdSociedad.ToString())) ? Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad")) : oOpdnDTO.IdSociedad);
+            int IdUsuario = Convert.ToInt32((String.IsNullOrEmpty(oOpdnDTO.IdUsuario.ToString())) ? Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario")) : oOpdnDTO.IdUsuario);
+            if (IdSociedad == 0)
+            {
+                IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            }
+            if (IdUsuario == 0)
+            {
+                IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            }
+
+            if (oOpdnDTO.IdMoneda == 1)
+            {
+                oOpdnDTO.TipoCambio = 1;
+            }
+            //int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            //int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+
+            oOpdnDTO.IdSociedad = IdSociedad;
+            oOpdnDTO.IdUsuario = IdUsuario;
+            MovimientoDAO oMovimimientoDAO = new MovimientoDAO();
+            OpdnDAO oOpdnDAO = new OpdnDAO();
+            int respuesta = oMovimimientoDAO.InsertUpdateMovimientoOPDN(oOpdnDTO, BaseDatos, ref mensaje_error);
+            int respuesta1 = 0;
+            if (mensaje_error.Length > 0)
+            {
+                return mensaje_error;
+            }
+            if (respuesta > 0)
+            {
+                for (int i = 0; i < oOpdnDTO.detalles.Count; i++)
+                {
+                    oOpdnDTO.detalles[i].IdOPDN = respuesta;
+                    respuesta1 = oMovimimientoDAO.InsertUpdateOPDNDetalle(oOpdnDTO.detalles[i], BaseDatos, ref mensaje_error);
+                    int respuesta2 = oMovimimientoDAO.InsertUpdateOPDNDetalleCuadrilla(respuesta1, oOpdnDTO.detalles[i], BaseDatos, ref mensaje_error);
+                }
+
+                if (oOpdnDTO.AnexoDetalle != null)
+                {
+                    for (int i = 0; i < oOpdnDTO.AnexoDetalle.Count; i++)
+                    {
+                        oOpdnDTO.AnexoDetalle[i].ruta = "/Anexos/" + oOpdnDTO.AnexoDetalle[i].NombreArchivo;
+                        oOpdnDTO.AnexoDetalle[i].IdSociedad = oOpdnDTO.IdSociedad;
+                        oOpdnDTO.AnexoDetalle[i].Tabla = "Opdn";
+                        oOpdnDTO.AnexoDetalle[i].IdTabla = respuesta;
+
+                        oMovimimientoDAO.InsertAnexoMovimiento(oOpdnDTO.AnexoDetalle[i], BaseDatos, ref mensaje_error);
+                    }
+                }
+
+
+
+
+
+                oOpdnDAO.UpdateTotalesOPDN(respuesta, BaseDatos, ref mensaje_error);
+
+
+            }
+
+            if (mensaje_error.Length > 0)
+            {
+                return mensaje_error;
+            }
+            else
+            {
+                if (respuesta > 0)
+                {
+                    return respuesta.ToString();
+                }
+                else
+                {
+                    return mensaje_error;
+                }
+            }
+        }
+
 
         public string UpdateInsertMovimiento(MovimientoDTO oMovimientoDTO,string BaseDatos = "")
          {

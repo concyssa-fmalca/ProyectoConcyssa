@@ -1879,7 +1879,7 @@ function disabledmodal(valorbolean) {
     $("#cboCentroCosto").prop('disabled', valorbolean);
     $("#cboMoneda").prop('disabled', valorbolean);
     $("#cboSerie").prop('disabled', valorbolean);
-    $("#txtFechaDocumento").prop('disabled', valorbolean);
+    //$("#txtFechaDocumento").prop('disabled', valorbolean);
     //$("#txtFechaContabilizacion").prop('disabled', valorbolean);
     $("#cboTipoDocumentoOperacion").prop('disabled', valorbolean);
     $("#IdTipoDocumentoRef").prop('disabled', valorbolean);
@@ -1985,6 +1985,7 @@ function Editar() {
         'Comentario': varComentario,
         'IdCuadrilla': varIdCuadrilla,
         'IdResponsable': varIdResponsable,
+        'FechaDocumento': $("#txtFechaDocumento").val(),
         'NroRef' : $("#NumRef").val()
         
     }, function (data, status) {

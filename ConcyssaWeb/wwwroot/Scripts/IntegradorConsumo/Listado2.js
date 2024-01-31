@@ -2,8 +2,7 @@
     let link = window.location.href
     $("#txtIdDatosTrabajo").val(link.split('=')[1])
     consultaServidor()
-    CargarSerieNotaCredito()
-    CargarSerieFactura()
+    CargarSerie()
     $("#DivGiro").hide();
     ValidarEnvioSap()
     $("#txtFechaContabilizacion").val(getFechaHoy())
@@ -1711,21 +1710,21 @@ function llenarComboCondPagoDet(lista, idCombo, primerItem) {
     $("#cboBaseFiltro").prop("selectedIndex", 1);
 }
 
-function CargarSerieFactura() {
+function CargarSerie() {
     $.ajaxSetup({ async: false });
-    $.post("ObtenerSerieSAP", { 'ObjCode': 18 }, function (data, status) {
+    $.post("/IntegradorV1/ObtenerSerieSAP", { 'ObjCode': 30 }, function (data, status) {
         try {
             let base = JSON.parse(data);
-            llenarSerieFactura(base, "cboSerieFactura", "seleccione")
+            llenarSerie(base, "cboSerie", "seleccione")
 
         } catch (e) {
-            $("#cboSerieFactura").html("<option value=0>Selecione</option>")
+            $("#cboSerie").html("<option value=0>Selecione</option>")
         }
 
     });
 
 }
-function llenarSerieFactura(lista, idCombo, primerItem) {
+function llenarSerie(lista, idCombo, primerItem) {
     var contenido = "";
     if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
     var nRegistros = lista.length;
@@ -1738,7 +1737,7 @@ function llenarSerieFactura(lista, idCombo, primerItem) {
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
-    $("#cboSerieFactura").prop("selectedIndex", 1);
+    $("#cboSerie").prop("selectedIndex", 1);
 }
 
 
@@ -1819,6 +1818,14 @@ function enviarSAP() {
 }
 
 function ProcesarIntegracion() {
+
+    if ($("#cboSerie").val() == 0 || $("#cboSerie").val() == null || $("#cboSerie").val() == undefined) {
+        Swal.fire("Advertencia", "Seleccione un Serie", "info")
+        return
+    }
+
+
+
     Swal.fire({
         title: "Enviando a SAP...",
         text: "Por favor espere",
@@ -1878,7 +1885,8 @@ function ProcesarIntegracion() {
         $.post("ProcesarIntegracion", {
             'Cuentas': ArrayConsumo,
             'FechaContabilizacion': $("#txtFechaContabilizacion").val(),
-            'GrupoCreacion': $("#txtIdDatosTrabajo").val()
+            'GrupoCreacion': $("#txtIdDatosTrabajo").val(),
+            'Serie': $("#cboSerie").val()
         }, function (data, status) {
             closePopup()
             ValidarEnvioSap()

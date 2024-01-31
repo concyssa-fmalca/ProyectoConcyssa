@@ -29,6 +29,32 @@ window.onload = function () {
 
 };
 
+function CargarObras() {
+    $.post('/Obra/ObtenerObraxIdUsuarioSessionSinBase', function (data, status) {
+        let datos = JSON.parse(data);
+        llenarComboObra(datos, "IdObra", "Todas")
+    });
+
+}
+
+function llenarComboObra(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdObra + "'>" + lista[i].Descripcion + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+ 
+     BuscarPorFechas();
+   
+}
+
 function BuscarPorFechas() {
     table.destroy();
     $("#tbody_detalle").html("");
@@ -52,7 +78,7 @@ function llenarComboAutorizadores(lista, idCombo, primerItem) {
     if (cbo != null) cbo.innerHTML = contenido;
     if (nRegistros == 1) {
         $("#" + idCombo).val(lista[nRegistros - 1].IdUsuario);
-        BuscarPorFechas();
+        CargarObras();
     }
 }
 
@@ -63,6 +89,7 @@ function ConsultaServidor(url) {
     let FechaFinal = $("#FechaFinal").val();
     let Estado = $("#Estado").val();
     let Autorizador = $("#CboAutorizador").val();
+    let IdObra = $("#IdObra").val();
 
     if (Autorizador == null || Autorizador == "" || Autorizador == "null") {
         Autorizador = 0;
@@ -94,7 +121,7 @@ function ConsultaServidor(url) {
     }
 
 
-    $.post(url, { 'FechaInicio': FechaInicio, 'FechaFinal': FechaFinal, 'Estado': Estado, 'IdAutorizador': Autorizador }, function (data, status) {
+    $.post(url, { 'FechaInicio': FechaInicio, 'FechaFinal': FechaFinal, 'Estado': Estado, 'IdAutorizador': Autorizador, 'IdObra': IdObra }, function (data, status) {
 
         var errorEmpresa = validarEmpresa(data);
         if (errorEmpresa) {

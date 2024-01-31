@@ -878,6 +878,26 @@ namespace ConcyssaWeb.Controllers
             return Resultado;
         }
 
+        public string ObtenerOcAbiertasxArtAlmacen(int IdArticulo, int IdAlmacen)
+        {
+            string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            PedidoDAO oPedidoDAO = new PedidoDAO();
+            List<PedidoDTO> lstPedidoDTO = oPedidoDAO.ObtenerOcAbiertasxArtAlmacen(IdArticulo, IdAlmacen, BaseDatos, ref mensaje_error);
+            if (lstPedidoDTO.Count > 0)
+            {
+             
+                return JsonConvert.SerializeObject(lstPedidoDTO);
+
+            }
+            else
+            {
+                
+                return "SIN DATOS";
+
+            }
+            return "ERROR";
+        }
 
     }
 }

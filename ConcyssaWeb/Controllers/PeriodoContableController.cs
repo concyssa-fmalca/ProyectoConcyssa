@@ -119,6 +119,20 @@ namespace ConcyssaWeb.Controllers
             oPeriodoContableDTO.IdUsuario = IdUsuario;
             PeriodoDAO oPeriodoDAO = new PeriodoDAO();
 
+
+
+            if (oPeriodoContableDTO.StatusPeriodo == 4)
+            {
+                ObraDAO oObraDAO = new ObraDAO();
+           
+                List<ObraDTO> lstObraDTO = oObraDAO.ObtenerObrasTransfPendientes(oPeriodoContableDTO.FechaContabilizacionI, BaseDatos, ref mensaje_error);
+
+                if (lstObraDTO.Count > 0)
+                {
+                    return JsonConvert.SerializeObject(lstObraDTO);
+                }
+            }
+
             int respuesta = oPeriodoDAO.UpdateInsertPeriodoContable(oPeriodoContableDTO,BaseDatos,ref mensaje_error);
             if (mensaje_error.Length > 0)
             {
@@ -131,13 +145,16 @@ namespace ConcyssaWeb.Controllers
                     for (int i = 0; i < oPeriodoContableFechaDTO.Count; i++)
                     {
                         oPeriodoContableFechaDTO[i].IdPeriodoContable = respuesta;
-                        int respuesta2 = oPeriodoDAO.UpdateInsertPeriodoContableFecha(oPeriodoContableFechaDTO[i],BaseDatos,ref mensaje_error);
+                        int respuesta2 = oPeriodoDAO.UpdateInsertPeriodoContableFecha(oPeriodoContableFechaDTO[i], BaseDatos, ref mensaje_error);
                     }
 
-                    return respuesta.ToString();
+                    return "1";
+                }
+                else {
+                    return "0";
                 }
             }
-            return respuesta.ToString();
+     
 
         }
 
@@ -153,5 +170,6 @@ namespace ConcyssaWeb.Controllers
             }
             return resultado.ToString();
         }
+      
     }
 }

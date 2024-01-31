@@ -1756,35 +1756,40 @@ function GuardarSolicitud() {
         });
     }
 
+    let MovimientoEnviar = []
+
+    MovimientoEnviar.push({
+        detalles,
+        AnexoDetalle,
+        //cabecera
+        'IdAlmacen': IdAlmacen,
+        'IdTipoDocumento': IdTipoDocumento,
+        'IdSerie': IdSerie,
+        'Correlativo': Correlativo,
+        'IdMoneda': IdMoneda,
+        'TipoCambio': TipoCambio,
+        'FechaContabilizacion': FechaContabilizacion,
+        'FechaDocumento': FechaDocumento,
+        'FechaEntrega': FechaEntrega,
+        'IdCentroCosto': IdCentroCosto,
+        'Comentario': Comentario,
+        'SubTotal': SubTotal,
+        'Impuesto': Impuesto,
+        'Total': Total,
+        'IdCuadrilla': IdCuadrilla,
+        'IdResponsable': IdResponsable,
+        'IdTipoDocumentoRef': IdTipoDocumentoRef,
+        'NumSerieTipoDocumentoRef': SerieNumeroRef,
+        'IdProveedor': $("#IdProveedor").val(),
+        'IdCondicionPago': $("#IdCondicionPago").val()
+    })
 
     $.ajax({
-        url: "UpdateInsertMovimientoEMLogistica",
+        url: "UpdateInsertMovimientoEMLogisticaString",
         type: "POST",
         async: true,
         data: {
-            detalles,
-            AnexoDetalle,
-            //cabecera
-            'IdAlmacen': IdAlmacen,
-            'IdTipoDocumento': IdTipoDocumento,
-            'IdSerie': IdSerie,
-            'Correlativo': Correlativo,
-            'IdMoneda': IdMoneda,
-            'TipoCambio': TipoCambio,
-            'FechaContabilizacion': FechaContabilizacion,
-            'FechaDocumento': FechaDocumento,
-            'FechaEntrega': FechaEntrega,
-            'IdCentroCosto': IdCentroCosto,
-            'Comentario': Comentario,
-            'SubTotal': SubTotal,
-            'Impuesto': Impuesto,
-            'Total': Total,
-            'IdCuadrilla': IdCuadrilla,
-            'IdResponsable': IdResponsable,
-            'IdTipoDocumentoRef': IdTipoDocumentoRef,
-            'NumSerieTipoDocumentoRef': SerieNumeroRef,
-            'IdProveedor': $("#IdProveedor").val(),
-            'IdCondicionPago': $("#IdCondicionPago").val()
+            'JsonDatosEnviar': JSON.stringify(MovimientoEnviar)
         },
         beforeSend: function () {
             Swal.fire({
@@ -2265,8 +2270,11 @@ function AgregarLineaDetalle(contador, detalle) {
     ObtenerEmpleadosxIdCuadrillaTabla(contador)
     $(".cboCuadrillaTabla").select2()
     $(".cboResponsableTabla").select2()
-    $("#cboCuadrillaTablaId" + contador).val(detalle.IdCuadrilla).change()
-    $("#cboResponsableTablaId" + contador).val(detalle.IdResponsable).change()
+   
+    console.log("--------detalle.IdCuadrilla")
+    console.log("#cboCuadrillaTablaId" + contador)
+    console.log(detalle.IdCuadrilla)
+   
     if (detalle.TipoServicio == 'No Aplica') {
         $("#cboCuadrillaTablaId" + contador).prop("disabled", true)
         $("#cboResponsableTablaId" + contador).prop("disabled", true)
@@ -2274,6 +2282,8 @@ function AgregarLineaDetalle(contador, detalle) {
         $("#cboCuadrillaTablaId" + contador).prop("disabled", false)
         $("#cboResponsableTablaId" + contador).prop("disabled", false)
     }
+    $("#cboCuadrillaTablaId" + contador).val(detalle.IdCuadrilla).change()
+    $("#cboResponsableTablaId" + contador).val(detalle.IdResponsable).change()
     NumeracionDinamica();
 
 
@@ -3738,8 +3748,8 @@ function llenarComboCuadrillaTabla(lista, idCombo, primerItem) {
     }
     //var cbo = document.getElementById(idCombo);
     //if (cbo != null) cbo.innerHTML = contenido;
-    $("#cboCuadrillaTablaId" + contador).html(contenido)
-    $("#cboCuadrillaTablaId" + contador).val($("#IdCuadrilla").val())
+    $("#" + idCombo).html(contenido)
+    $("#" + idCombo).val($("#IdCuadrilla").val())
 }
 
 function ObtenerEmpleadosxIdCuadrillaTabla(contador) {
@@ -3765,8 +3775,8 @@ function llenarComboEmpleadosTabla(lista, idCombo, primerItem) {
         if (lista.length > 0) { contenido += "<option value='" + lista[i].IdEmpleado + "'>" + lista[i].RazonSocial.toUpperCase() + "</option>"; ultimoindice = i }
         else { }
     }
-    $("#cboResponsableTablaId" + contador).html(contenido)
-    $("#cboResponsableTablaId" + contador).val($("#IdResponsable").val())
+    $("#" + idCombo).html(contenido)
+    $("#" + idCombo).val($("#IdResponsable").val())
 
 
 }

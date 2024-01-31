@@ -128,7 +128,7 @@ namespace DAO
 
 
         
-        public List<DetalleSolicitudRqAprobacionDTO> ObtenerSolicitudesxAutorizarDetalle(string IdUsuario, string IdSociedad, string FechaInicio, string FechaFinal, int Estado, string BaseDatos)
+        public List<DetalleSolicitudRqAprobacionDTO> ObtenerSolicitudesxAutorizarDetalle(string IdUsuario, string IdSociedad, string FechaInicio, string FechaFinal, int Estado,int IdObra, string BaseDatos)
         {
             List<DetalleSolicitudRqAprobacionDTO> lstDetalleSolicitudRqAprobacionDTO = new List<DetalleSolicitudRqAprobacionDTO>();
             using (SqlConnection cn = new Conexion().conectar(BaseDatos))
@@ -145,6 +145,7 @@ namespace DAO
                     da.SelectCommand.Parameters.AddWithValue("@FechaFinal", FechaFinal);
                     //da.SelectCommand.Parameters.AddWithValue("@Estado", Estado);
                     da.SelectCommand.Parameters.AddWithValue("@EstadoPR", Estado);
+                    da.SelectCommand.Parameters.AddWithValue("@IdObra", IdObra);
 
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
                     SqlDataReader drd = da.SelectCommand.ExecuteReader();

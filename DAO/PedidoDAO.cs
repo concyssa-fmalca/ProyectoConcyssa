@@ -1218,5 +1218,48 @@ namespace DAO
             }
         }
 
+
+        public List<PedidoDTO> ObtenerOcAbiertasxArtAlmacen(int IdArticulo,int IdAlmacen, string BaseDatos, ref string mensaje_error)
+        {
+            List<PedidoDTO> lstPedidoDTO = new List<PedidoDTO>();
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerOcAbiertasxArtAlmacen", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdArticulo", IdArticulo);
+                    da.SelectCommand.Parameters.AddWithValue("@IdAlmacen", IdAlmacen);
+
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        PedidoDTO oPedidoDTO = new PedidoDTO();
+            
+                        oPedidoDTO.NombSerie = (drd["Serie"].ToString());
+                
+                        oPedidoDTO.Correlativo = Convert.ToInt32(drd["Correlativo"].ToString());
+
+                        oPedidoDTO.CantidadDisponible = Convert.ToDecimal(drd["CantidadDisponible"].ToString());
+
+                        lstPedidoDTO.Add(oPedidoDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+
+
+
+            return lstPedidoDTO;
+        }
+
+
     }
 }

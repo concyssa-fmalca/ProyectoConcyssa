@@ -63,6 +63,45 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
+        public string ListarOPCHDTxProveedor(int IdProveedor, string NumSerie)
+        {
+            string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            OpchDAO oOpchDAO = new OpchDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+
+            DataTableDTO oDataTableDTO = new DataTableDTO();
+            List<OpchDTO> lstOpchDTO = oOpchDAO.ObtenerOPCHXProveedor(IdProveedor, NumSerie, BaseDatos, ref mensaje_error);
+
+
+            ConfiguracionSociedadDAO oConfiguracionSociedadDAO = new ConfiguracionSociedadDAO();
+            var configuracion = oConfiguracionSociedadDAO.ObtenerConfiguracionSociedad(1, BaseDatos, ref mensaje_error);
+            string BaseDatosSAP = configuracion[0].NombreBDSAP;
+            IntregadorV1DAO intregadorV1DAO = new IntregadorV1DAO();
+            if (lstOpchDTO.Count >= 0 && mensaje_error.Length == 0)
+            {
+
+                for (int i = 0; i < lstOpchDTO.Count; i++)
+                {
+
+                    lstOpchDTO[i].DocNumCont = intregadorV1DAO.ObtenerDocNumOPCH(lstOpchDTO[i].RUCProveedor, lstOpchDTO[i].NumSerieTipoDocumentoRef, BaseDatosSAP, ref mensaje_error);
+                }
+
+                oDataTableDTO.sEcho = 1;
+                oDataTableDTO.iTotalDisplayRecords = lstOpchDTO.Count;
+                oDataTableDTO.iTotalRecords = lstOpchDTO.Count;
+                oDataTableDTO.aaData = (lstOpchDTO);
+                //return oDataTableDTO;
+                return JsonConvert.SerializeObject(oDataTableDTO);
+
+            }
+            else
+            {
+                return mensaje_error;
+
+            }
+        }
 
         public string ListarOPCHDTModal(int IdProveedor,string EstadoOPCH = "ABIERTO")
         {
@@ -700,43 +739,137 @@ namespace ConcyssaWeb.Controllers
             ConfiguracionSociedadDAO oSociedadDAO = new ConfiguracionSociedadDAO();
             List<ConfiguracionSociedadDTO> sociedad = oSociedadDAO.ObtenerConfiguracionSociedad(oOpchDTO.IdSociedad,BaseDatos,ref mensaje_error);
 
-
-            string RUC = lstProveedorDTO[0].NumeroDocumento;
-            string Serie = oOpchDTO.NumSerieTipoDocumentoRef.Split('-')[0];
-            string Numero = oOpchDTO.NumSerieTipoDocumentoRef.Split('-')[1];
-            DateTime FechaEmision = oOpchDTO.FechaDocumento;
-            string NumDocAdquiriente = sociedad[0].Ruc;
-            string TotalDocumento = oOpchDTO.Total.ToString("N2");
-            string TipoDoc = lstTiposDocumentosDTO[0].CodSunat;
+            int estadoCp = 0;
+            string estadoRuc = "-";
+            string condDomiRuc = "-";
 
 
-            string SunatID = "0a0af984-ae1e-47b3-a200-edc706a14fa0";
-            string SunatClave = "N61pn1uXKGoQZahHzp7B0Q==";
-
-            int respuesta = validar_cpe_sunat(RUC, Serie, Numero, FechaEmision, NumDocAdquiriente, TotalDocumento, TipoDoc, SunatID, SunatClave);
-            
-            if(respuesta >= 0)
+            try
             {
-                int actualizar = oOpchDAO.GuardarValidacionSUNAT(IdOPCH, respuesta,BaseDatos);
-                if (actualizar > 0)
+
+
+                string RUC = lstProveedorDTO[0].NumeroDocumento;
+                string Serie = oOpchDTO.NumSerieTipoDocumentoRef.Split('-')[0];
+                string Numero = oOpchDTO.NumSerieTipoDocumentoRef.Split('-')[1];
+                DateTime FechaEmision = oOpchDTO.FechaDocumento;
+                string NumDocAdquiriente = sociedad[0].Ruc;
+                string TotalDocumento = oOpchDTO.Total.ToString("N2");
+                string TipoDoc = lstTiposDocumentosDTO[0].CodSunat;
+
+
+                string SunatID = "0a0af984-ae1e-47b3-a200-edc706a14fa0";
+                string SunatClave = "N61pn1uXKGoQZahHzp7B0Q==";
+
+
+
+
+                ResponseDocumentoConsultaDTO reponseDocumento = new ResponseDocumentoConsultaDTO();
+                reponseDocumento = null;
+                int contador = 0;
+                while (reponseDocumento == null && contador <= 3)
                 {
-                    return respuesta;
+                    reponseDocumento = validar_cpe_sunat(RUC, Serie, Numero, FechaEmision, NumDocAdquiriente, TotalDocumento, TipoDoc, SunatID, SunatClave);
+                    contador++;
                 }
-                else
+
+                if (reponseDocumento != null)
                 {
-                    return 0;
+
+                    switch (reponseDocumento.data.estadoCp)
+                    {
+                        //NO EXISTE
+                        case "0":
+                            estadoCp = 2;
+                            break;
+                        //VALIDO
+                        case "1":
+                            estadoCp = 1;
+                            break;
+                        //ANULADO
+                        case "2":
+                            estadoCp = 3;
+                            break;
+                        //AUTORIZADO
+                        case "3":
+                            estadoCp = 4;
+                            break;
+                        //AUTORIZADO
+                        case "4":
+                            estadoCp = 5;
+                            break;
+                        //ERROR
+                        default:
+                            estadoCp = 0;
+                            break;
+                    }
+
+                    switch (reponseDocumento.data.estadoRuc)
+                    {
+                        case "00":
+                            estadoRuc = "ACTIVO";
+                            break;
+                        case "01":
+                            estadoRuc = "BAJA PROVISIONAL";
+                            break;
+                        case "02":
+                            estadoRuc = "BAJA PROV. POR OFICIO";
+                            break;
+                        case "03":
+                            estadoRuc = "SUSPENSION TEMPORAL";
+                            break;
+                        case "10":
+                            estadoRuc = "BAJA DEFINITIVA";
+                            break;
+                        case "11":
+                            estadoRuc = "BAJA DE OFICIO";
+                            break;
+                        case "12":
+                            estadoRuc = "INHABILITADO-VENT.UNICA";
+                            break;
+                        //ERROR
+                        default:
+                            estadoRuc = "-";
+                            break;
+                    }
+
+                    switch (reponseDocumento.data.condDomiRuc)
+                    {
+                        case "00":
+                            condDomiRuc = "HABIDO";
+                            break;
+                        case "09":
+                            condDomiRuc = "PENDIENTE";
+                            break;
+                        case "11":
+                            condDomiRuc = "POR VERIFICAR";
+                            break;
+                        case "12":
+                            condDomiRuc = "NO HABIDO";
+                            break;
+                        case "20":
+                            condDomiRuc = "NO HALLADO";
+                            break;
+                        //ERROR
+                        default:
+                            condDomiRuc = "-";
+                            break;
+                    }
                 }
+                int actualizar = oOpchDAO.GuardarValidacionSUNAT(IdOPCH, estadoCp, estadoRuc, condDomiRuc, BaseDatos);
+                return estadoCp;
             }
-            else
+            catch (Exception e)
             {
-                return respuesta;
+                int actualizar = oOpchDAO.GuardarValidacionSUNAT(IdOPCH, 0, "-", "-", BaseDatos);
+                return estadoCp;
             }
-            
+
+
 
         }
 
 
-        public int validar_cpe_sunat(string RUC, string Serie, string Numero, DateTime FechaEmision, string NumDocAdquiriente,
+        public ResponseDocumentoConsultaDTO validar_cpe_sunat(string RUC, string Serie, string Numero, DateTime FechaEmision, string NumDocAdquiriente,
             string TotalDocumento, string TipoDoc, string SunatID, string SunatClave)
         {
             int respuesta;
@@ -753,32 +886,9 @@ namespace ConcyssaWeb.Controllers
             documento.fechaEmision = FechaEmision.ToString("dd/MM/yyyy");
             documento.monto = Convert.ToDecimal(TotalDocumento);
             _reponseDocumento = consultarCPESUNAT(NumDocAdquiriente, tokenSUNAT, documento);
-            if (_reponseDocumento == null)
-            {
-                
-                respuesta = -1;
-            }
-            else
-            {
-               
-                switch (_reponseDocumento.data.estadoCp)
-                {
-                    //VALIDO
-                    case "1":
-                        respuesta = 1;
-                        break;
-                    //NO EXISTE
-                    case "0":
-                        respuesta = 2;
-                        break;
-                    //ERROR
-                    default:
-                        respuesta = 0;
-                        break;
-                }
-            }
+           
 
-            return respuesta;
+            return _reponseDocumento;
         }
 
         public ResponseDocumentoConsultaDTO consultarCPESUNAT(string rucClienteFacturacionE, string tokenSUNAT, DocumentoConsultaDTO documento)
@@ -879,24 +989,111 @@ namespace ConcyssaWeb.Controllers
             List<OpchDTO> PendientesValidar = new List<OpchDTO>();
             for (int i = 0; i < lstOpchDTO.Count; i++)
             {
-                if (lstOpchDTO[i].IdTipoDocumentoRef==2 && lstOpchDTO[i].ValidadoSUNAT != 1)
+                if (lstOpchDTO[i].IdTipoDocumentoRef==2 || lstOpchDTO[i].IdTipoDocumentoRef == 12 || lstOpchDTO[i].IdTipoDocumentoRef == 13 )
                 {
-                    PendientesValidar.Add(lstOpchDTO[i]);
+                    if(lstOpchDTO[i].ValidadoSUNAT != 1)
+                    {
+                        PendientesValidar.Add(lstOpchDTO[i]);
+                    }
                 }
             }
             for (int i = 0; i < PendientesValidar.Count; i++)
             {
-                int Respuesta = 0;
-                while (Respuesta == 0)
-                {
-                    Respuesta = ActualizarEstadoValidacionSUNAT(PendientesValidar[i].IdOPCH);
+                int Respuesta = ActualizarEstadoValidacionSUNAT(PendientesValidar[i].IdOPCH);
 
-                }
+                
             }
 
 
+            return "OK";
+        }
+
+        public string ObtenerSerieOPCH(int IdOPCH)
+        {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            OpchDAO oOpchDAO = new OpchDAO();
+            string respuesta = oOpchDAO.ObtenerNroOperacionOPCH(IdOPCH, BaseDatos);
+            return respuesta;
+        }
+
+        public string GenerarReporteValidacionSUNAT(int IdObra, int IdTipoRegistro, int IdSemana,string BaseDatos)
+        {
+            if (BaseDatos == "" || BaseDatos == null)
+            {
+                BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            }
+
+            RespuestaDTO oRespuestaDTO = new RespuestaDTO();
+            WebResponse webResponse;
+            HttpWebRequest request;
+            Uri uri;
+            string cadenaUri;
+            string requestData;
+            string response;
+            string mensaje_error;
+            WebServiceDTO oWebServiceDTO = new WebServiceDTO();
+            requestData = JsonConvert.SerializeObject(oWebServiceDTO);
+
+
+            try
+            {
+                string strNew = "IdObra=" + IdObra + "&IdTipoRegistro=" + IdTipoRegistro + "&IdSemana=" + IdSemana + "&BaseDatos=" + BaseDatos;
+                //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReportCrystal";
+                cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ReporteValidacionSUNAT";
+                uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
+                request = (HttpWebRequest)WebRequest.Create(uri);
+
+                request.Method = "POST";
+                //request.ContentType = "application/json;charset=utf-8";
+                request.ContentType = "application/x-www-form-urlencoded";
+
+
+                StreamWriter requestWriter = new StreamWriter(request.GetRequestStream(), System.Text.Encoding.ASCII);
+
+                requestWriter.Write(strNew);
+
+
+                requestWriter.Close();
+
+
+
+                webResponse = request.GetResponse();
+                Stream webStream = webResponse.GetResponseStream();
+                StreamReader responseReader = new StreamReader(webStream);
+                response = responseReader.ReadToEnd();
+
+                //var Resultado = response;
+                //XmlSerializer xmlSerializer = new XmlSerializer(response);
+                var rr = 33;
+                XmlDocument xDoc = new XmlDocument();
+                xDoc.LoadXml(response);
+                var dd = "";
+
+                oRespuestaDTO.Result = xDoc.ChildNodes[1].ChildNodes[0].InnerText;
+                oRespuestaDTO.Mensaje = xDoc.ChildNodes[1].ChildNodes[1].InnerText;
+                oRespuestaDTO.Base64ArchivoPDF = xDoc.ChildNodes[1].ChildNodes[2].InnerText;
+
+                return JsonConvert.SerializeObject(oRespuestaDTO);
+            }
+            catch (WebException e)
+            {
+                using (WebResponse responses = e.Response)
+                {
+                    HttpWebResponse httpResponse = (HttpWebResponse)responses;
+                    using (Stream data = responses.GetResponseStream())
+                    using (var reader = new StreamReader(data))
+                    {
+                        mensaje_error = reader.ReadToEnd();
+
+                    }
+                }
+
+                string err = e.ToString();
+            }
+
             return "";
         }
+
 
     }
 }

@@ -257,7 +257,18 @@ namespace ConcyssaWeb.Controllers
 
         }
 
-
+        public string ObtenerObrasTransfPendientes(DateTime Fecha)
+        {
+            string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            ObraDAO oObraDAO = new ObraDAO();
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            int IdPerfil = Convert.ToInt32(HttpContext.Session.GetInt32("IdPerfil"));
+            List<ObraDTO> lstObraDTO = oObraDAO.ObtenerObrasTransfPendientes(Fecha, BaseDatos, ref mensaje_error);
+      
+            return JsonConvert.SerializeObject(lstObraDTO);
+         
+        }
 
 
     }

@@ -1965,6 +1965,7 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@IdCuadrilla", oMovimientoDTO.IdCuadrilla);
                         da.SelectCommand.Parameters.AddWithValue("@IdResponsable", oMovimientoDTO.IdResponsable);
                         da.SelectCommand.Parameters.AddWithValue("@NroRef", oMovimientoDTO.NroRef);
+                        da.SelectCommand.Parameters.AddWithValue("@FechaDocumento", oMovimientoDTO.FechaDocumento);
                         da.SelectCommand.Parameters.AddWithValue("@UsuarioEdicion", IdUsuario);
 
 
@@ -2026,6 +2027,7 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@DireccionLlegada", oMovimientoDTO.DireccionLlegada);
                         da.SelectCommand.Parameters.AddWithValue("@IdProveedor", oMovimientoDTO.IdProveedor);
                         da.SelectCommand.Parameters.AddWithValue("@NroRef", oMovimientoDTO.NroRef);
+                        da.SelectCommand.Parameters.AddWithValue("@FechaDocumento", oMovimientoDTO.FechaDocumento);
 
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();

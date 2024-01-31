@@ -362,7 +362,6 @@ function Guardar() {
         Swal.fire("Error", "El Campo Ejercicio Final es Obligatorio", "info")
         return
     }
-
    
     $.ajax({
         url: "UpdateInsertPeriodoContable",
@@ -396,7 +395,7 @@ function Guardar() {
             });
         },
         success: function (data) {
-            if (data > 0) {
+            if (data == "1") {
                 Swal.fire(
                     'Correcto',
                     'Proceso Realizado Correctamente',
@@ -405,13 +404,37 @@ function Guardar() {
                 CerrarModal();
                 listarperiodocontabledt()
 
-            } else {
+            } else if (data == "0") {
                 Swal.fire(
                     'Error!',
                     'Ocurrio un Error!',
                     'error'
                 )
 
+            } else {
+                let tr = "";
+                let datos = JSON.parse(data)
+                for (var i = 0; i < datos.length; i++) {
+                    tr += '<tr>' +
+
+                        '<td>' + datos[i].Descripcion + '</td>' +
+                        '<td>' + datos[i].Cantidad + '</td>';
+                }
+                console.log(tr)
+                Swal.fire({
+                    title: 'Se Encontraron Trasnferencias Pendientes',
+                    html: `<table class="table" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Obra</th>
+                            <th>Cant. Transf.</th>                         
+                        </tr>
+                    </thead>
+                    <tbody>`+ tr + `</tbody>
+                </table>
+                No se Podrá Bloquear el Periodo Mientras No se Completen estas Transferencias`,
+                    icon: 'warning'
+                })
             }
 
 

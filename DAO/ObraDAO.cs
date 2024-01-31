@@ -679,6 +679,39 @@ namespace DAO
             return lstObraDTO;
         }
 
+        public List<ObraDTO> ObtenerObrasTransfPendientes(DateTime FechaEvaluacion, string BaseDatos, ref string mensaje_error)
+        {
+            List<ObraDTO> lstObraDTO = new List<ObraDTO>();
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerTransferenciasPendientes", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@FechaEvaluacion", FechaEvaluacion);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        ObraDTO oObraDTO = new ObraDTO();
+
+                        oObraDTO.Descripcion = (drd["Descripcion"].ToString());
+                    
+                        oObraDTO.Cantidad = int.Parse(drd["Cantidad"].ToString());
+                        lstObraDTO.Add(oObraDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    lstObraDTO = new List<ObraDTO>();
+                }
+            }
+            return lstObraDTO;
+        }
+
 
     }
 

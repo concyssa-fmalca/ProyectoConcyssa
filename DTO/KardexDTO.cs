@@ -42,6 +42,8 @@ namespace DTO
         public string Modulo { get; set; } = "";
         public string TipoDocumentoRef { get; set; }
         public string NumSerieTipoDocumentoRef { get; set; }
+        public string Cuadrilla { get; set; }
+        public string NumRef { get; set; }
         public int DocEntrySap { get; set; }
 
     }

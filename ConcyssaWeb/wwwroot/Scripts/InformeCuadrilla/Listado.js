@@ -266,6 +266,7 @@ function GenerarReporte() {
     let varAuxiliaresRPT
     let varServiciosRPT
     let varExtornosRPT
+    let nombreRPT = ""
     let varFechaInicioRPT = $("#txtFechaInicio").val()
     let varFechaFinRPT = $("#txtFechaFin").val()
 
@@ -273,6 +274,7 @@ function GenerarReporte() {
     $("#chkIncAuxiliares").is(':checked') ? varAuxiliaresRPT = true : varAuxiliaresRPT = false
     $("#chkIncServicios").is(':checked') ? varServiciosRPT = true : varServiciosRPT = false
     $("#chkIncExtornos").is(':checked') ? varExtornosRPT = true : varExtornosRPT = false
+    $("#chkDetallado").is(':checked') ? nombreRPT = "InformeCuadrillas" : nombreRPT = "InformeCuadrillasResumido"
 
 
     if (varMaterialesRPT == false && varAuxiliaresRPT == false && varServiciosRPT == false && varExtornosRPT == false) {
@@ -291,7 +293,7 @@ function GenerarReporte() {
             type: "POST",
             async: false,
             data: {
-                'NombreReporte': 'InformeCuadrillas', 'Formato': 'PDF', 'Cuadrillas': varCuadrillasRPT, 'Materiales': varMaterialesRPT, 'Auxiliares': varAuxiliaresRPT, 'Servicios': varServiciosRPT, 'Extornos': varExtornosRPT, 'FechaInicioS': varFechaInicioRPT, 'FechaFin': varFechaFinRPT
+                'NombreReporte': nombreRPT, 'Formato': 'PDF', 'Cuadrillas': varCuadrillasRPT, 'Materiales': varMaterialesRPT, 'Auxiliares': varAuxiliaresRPT, 'Servicios': varServiciosRPT, 'Extornos': varExtornosRPT, 'FechaInicioS': varFechaInicioRPT, 'FechaFin': varFechaFinRPT
             },
             beforeSend: function () {
                 Swal.fire({

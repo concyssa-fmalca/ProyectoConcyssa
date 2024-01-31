@@ -947,7 +947,7 @@ namespace ISAP
             // }
         }
 
-        public string AddAsientoContable(string Proyecto, List<CuentaConsumoSAP> Cuentas, int GrupoCreacion, DateTime FechaContabilizacion, string BaseDatos,string BaseDatosSAP, ref string mensaje_error)
+        public string AddAsientoContable(string Proyecto, List<CuentaConsumoSAP> Cuentas, int GrupoCreacion, DateTime FechaContabilizacion,int Serie, string BaseDatos,string BaseDatosSAP, ref string mensaje_error)
         {
             try
             {
@@ -957,6 +957,7 @@ namespace ISAP
                 SAPbobsCOM.JournalEntries ObjSAPComprobante = null;
 
                 ObjSAPComprobante = (SAPbobsCOM.JournalEntries)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oJournalEntries);
+                //ObjSAPComprobante = (SAPbobsCOM.JournalEntries)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oJournalVouchers);
 
 
                 ConsultasSQL oConsultasSQL = new ConsultasSQL();
@@ -964,6 +965,8 @@ namespace ISAP
                 ObjSAPComprobante.Memo = "Movimiento de Consumo de Materiales";
 
                 ObjSAPComprobante.ReferenceDate = FechaContabilizacion;
+
+                ObjSAPComprobante.Series = Serie;
 
                 ObjSAPComprobante.ProjectCode = Proyecto;
 
