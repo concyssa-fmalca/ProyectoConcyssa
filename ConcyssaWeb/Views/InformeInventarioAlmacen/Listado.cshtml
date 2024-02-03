@@ -42,6 +42,7 @@
                     <select class="form-control" id="cboAlmacenFiltro"></select>
                 </div>
                 <button class="btn btn-xs btn-primary res" style="margin-top:3px;border-radius:5px;margin-left:0" onclick="ObtenerStockxAlmacen()">Buscar</button>
+                <button class="btn btn-xs btn-success" style="margin-top:3px;border-radius:5px;margin-left:0;background-color:green" onclick="ImportarExcel()">Exportar  Excel</button>
             </div>
             <input style="display:none" type="text" id="txtIdPerfil"  value="@Accessor.HttpContext.Session.GetInt32("IdPerfil").ToString()"/>
 

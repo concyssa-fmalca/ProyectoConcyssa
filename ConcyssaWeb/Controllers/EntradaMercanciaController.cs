@@ -30,7 +30,7 @@ namespace ConcyssaWeb.Controllers
         {
             return View();
         }
-        public string ListarOPDNDT(int IdBase, string EstadoOPDN = "ABIERTO")
+        public string ListarOPDNDT(int IdBase,DateTime FechaInicio,DateTime FechaFin, string EstadoOPDN = "ABIERTO")
         {
             string mensaje_error = "";
             string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
@@ -39,7 +39,7 @@ namespace ConcyssaWeb.Controllers
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
 
             DataTableDTO oDataTableDTO = new DataTableDTO();
-            List<OpdnDTO> lstOpdnDTO = oOpdnDAO.ObtenerOPDNxEstado(IdBase, IdSociedad,BaseDatos,ref mensaje_error, EstadoOPDN,IdUsuario);
+            List<OpdnDTO> lstOpdnDTO = oOpdnDAO.ObtenerOPDNxEstado(IdBase, IdSociedad,FechaInicio,FechaFin,BaseDatos,ref mensaje_error, EstadoOPDN,IdUsuario);
             if (lstOpdnDTO.Count >= 0 && mensaje_error.Length==0)
             {
                 oDataTableDTO.sEcho = 1;

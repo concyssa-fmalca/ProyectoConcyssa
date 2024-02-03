@@ -1,0 +1,92 @@
+﻿@{
+    ViewBag.Title = "CompraAnual";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" style="height:93%;">
+
+    <div class="panel">
+        <div class="container-fluid">
+            <div class="topbar-left col-xs-6">
+                <h3>Reporte de Consumo Promedio Proyectado</h3>
+            </div>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="container-fluid">
+
+            <a id="reporteRPT" style="display:none"></a>
+            <div class="panel-footer text-left">
+                <div class="row">
+                    <div class='form-group-sm'>
+                        <label for="cboTipoArticulo" class="control-label col-sm-1 rigth-align">Tipo Material</label>
+                        <div class="col-sm-5">
+                            <select id="cboTipoArticulo" class="form-control input-sm" tabindex="1">
+                                <option value="1">Materiales</option>
+                                <option value="2">Auxiliares</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class='form-group-sm'>
+                        <label for="IdObra" class="control-label col-sm-1 left-align">Obra</label>
+                        <div class="col-sm-5">
+                            <select class="form-control input-sm" id="IdObra" onchange="CargarAlmacen()"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class='form-group-sm'>
+                        <label for="IdAlmacen" class="control-label col-sm-1 left-align">Almacen</label>
+                        <div class="col-sm-5">
+                            <select class="form-control input-sm" id="IdAlmacen"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class='form-group-sm'>
+                        <label for="txtAnioI" class="control-label col-sm-1 left-align">Año Inicial</label>
+                        <div class="col-sm-2">
+                            <select class="form-control input-sm" id="txtAnioI"></select>
+                        </div>
+                        <label for="txtMesI" class="control-label col-sm-1 left-align">Mes Inicial</label>
+                        <div class="col-sm-2">
+                            <select class="form-control input-sm" id="txtMesI"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class='form-group-sm'>
+                        <label for="txtAnioF" class="control-label col-sm-1 left-align">Año Final</label>
+                        <div class="col-sm-2">
+                            <select class="form-control input-sm" id="txtAnioF"></select>
+                        </div>
+                        <label for="txtMesF" class="control-label col-sm-1 left-align">Mes Final</label>
+                        <div class="col-sm-2">
+                            <select class="form-control input-sm" id="txtMesF"></select>
+                        </div>
+                    </div>
+                </div>
+               
+                <div class="row">
+                    <button type="button" id="btnReporte" class="btn btn-primary pull-centers plu" onclick="GenerarReporte()">Generar Reporte</button>                 
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+@{
+    Random rnd = new Random();
+}
+
+<script src="~/Scripts/InformeInventarioAlmacen/ConsumoProyectado.js?v=@rnd.Next(1, 1000 + 1)"></script>
+<script src="~/Scripts/General.js"></script>
+<script src="~/js/pdf/jspdf.min.js"></script>
+<script src="~/js/pdf/faker.min.js"></script>
+<script src="~/js/pdf/jspdf.plugin.autotable.src.js"></script>
+
+

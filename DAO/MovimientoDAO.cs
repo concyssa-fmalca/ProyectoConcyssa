@@ -637,7 +637,7 @@ namespace DAO
 
 
         #region ObtenerMovimientosIngresos
-        public List<MovimientoDTO> ObtenerMovimientosIngresos(int IdBase,int IdSociedad, string BaseDatos, ref string mensaje_error, int Estado = 3, int IdUsuario=0)
+        public List<MovimientoDTO> ObtenerMovimientosIngresos(int IdBase,int IdSociedad,DateTime FechaInicial,DateTime FechaFinal, string BaseDatos, ref string mensaje_error, int Estado = 3, int IdUsuario=0)
         {
             List<MovimientoDTO> lstMovimientoDTO = new List<MovimientoDTO>();
             using (SqlConnection cn = new Conexion().conectar(BaseDatos))
@@ -650,6 +650,8 @@ namespace DAO
                     da.SelectCommand.Parameters.AddWithValue("@Estado", Estado);
                     da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
                     da.SelectCommand.Parameters.AddWithValue("@IdBase", IdBase);
+                    da.SelectCommand.Parameters.AddWithValue("@FechaInicial", FechaInicial);
+                    da.SelectCommand.Parameters.AddWithValue("@FechaFinal", FechaFinal);
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
                     SqlDataReader drd = da.SelectCommand.ExecuteReader();
                     while (drd.Read())
@@ -775,7 +777,7 @@ namespace DAO
         }
 
 
-        public List<MovimientoDTO> ObtenerMovimientosSalida(int IdBase,int IdSociedad, string BaseDatos, ref string mensaje_error, int Estado = 3,int IdUsuario=0)
+        public List<MovimientoDTO> ObtenerMovimientosSalida(int IdBase,int IdSociedad, string BaseDatos,DateTime FechaInicial,DateTime FechaFinal, ref string mensaje_error, int Estado = 3,int IdUsuario=0)
         {
             List<MovimientoDTO> lstMovimientoDTO = new List<MovimientoDTO>();
             using (SqlConnection cn = new Conexion().conectar(BaseDatos))
@@ -788,6 +790,8 @@ namespace DAO
                     da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
                     da.SelectCommand.Parameters.AddWithValue("@Estado", Estado);
                     da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
+                    da.SelectCommand.Parameters.AddWithValue("@FechaInicial", FechaInicial);
+                    da.SelectCommand.Parameters.AddWithValue("@FechaFinal", FechaFinal);
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
                     SqlDataReader drd = da.SelectCommand.ExecuteReader();
                     while (drd.Read())

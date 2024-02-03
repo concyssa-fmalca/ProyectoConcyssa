@@ -1516,7 +1516,36 @@ namespace DAO
 
         }
 
-       
+        public IntegradorProveedorDTO ObtenerDatosProveedorSAP(string CardCode, string BaseDatosSAP, ref string mensaje_error)
+        {
+            IntegradorProveedorDTO oIntegradorProveedorDTO = new IntegradorProveedorDTO();
+            using (SqlConnection cn = new ConexionSQLSAP().conectar(BaseDatosSAP))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerDatosProveedor", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@CardCode", CardCode);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        oIntegradorProveedorDTO.CardCode = (drd["CardCode"].ToString());
+                        oIntegradorProveedorDTO.CardName = (drd["CardName"].ToString());
+                        oIntegradorProveedorDTO.GroupNum = int.Parse(drd["GroupNum"].ToString());
+                        oIntegradorProveedorDTO.WTLiable = drd["WTLiable"].ToString();
+                    }
+                    drd.Close();
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return oIntegradorProveedorDTO;
+        }
+
+
 
     }
 }

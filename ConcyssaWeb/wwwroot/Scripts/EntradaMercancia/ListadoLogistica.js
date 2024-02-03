@@ -377,6 +377,8 @@ function llenarComboCentroCosto(lista, idCombo, primerItem) {
 
 
 window.onload = function () {
+    $("#txtFechaInicio").val(getCurrentDate())
+    $("#txtFechaFin").val(getCurrentDateFinal())
     var url = "../Movimientos/ObtenerMovimientosIngresos";
     CargarBaseFiltro()
     ObtenerConfiguracionDecimales();
@@ -414,6 +416,22 @@ window.onload = function () {
 
 
 
+function getCurrentDate() {
+    var currentDate = new Date();
+    var year = currentDate.getFullYear();
+    var month = ('0' + (currentDate.getMonth() + 1)).slice(-2);
+    var formattedDate = year + '-' + month + '-' + '01';
+    return formattedDate;
+}
+function getCurrentDateFinal() {
+    var date = new Date();
+
+    var ultimoDia = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    var year = date.getFullYear();
+    var month = ('0' + (date.getMonth() + 1)).slice(-2);
+    var formattedDate = year + '-' + month + '-' + ultimoDia.getDate();
+    return formattedDate
+}
 
 
 
@@ -3331,6 +3349,8 @@ function listaropdnDT() {
             data: {
                 'IdBase' : varIdBaseFiltro,
                 'EstadoOPDN': 'ABIERTO',
+                'FechaInicio': $("#txtFechaInicio").val(),
+                'FechaFin': $("#txtFechaFin").val(),
                 pagination: {
                     perpage: 50,
                 },

@@ -102,7 +102,7 @@ function ConsultaServidor(url) {
     var year = date.getFullYear();
 
     if (FechaInicio == "") {
-        FechaInicio = '01/' + (mes < 10 ? '0' : '') + mes + '/' + year;
+        FechaInicio = '08/01/2024';
         //FechaInicio = "01-01-1999";
     }
     if (FechaFinal == "") {
@@ -268,6 +268,169 @@ function ConsultaServidor(url) {
 
         //});
     }
+
+
+
+}
+function ConsultaServidor2(url) {
+
+
+    let FechaInicio = $("#FechaInicio").val();
+    let FechaFinal = $("#FechaFinal").val();
+    let Estado = $("#Estado").val();
+    let Autorizador = $("#CboAutorizador").val();
+    let IdObra = $("#IdObra").val();
+
+    if (Autorizador == null || Autorizador == "" || Autorizador == "null") {
+        Autorizador = 0;
+    }
+    //console.log(Autorizador);
+
+    var date = new Date();
+    var ultimoDia = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    var mes = date.getMonth() + 1;
+    var year = date.getFullYear();
+
+    if (FechaInicio == "") {
+        FechaInicio = '08/01/2024';
+        //FechaInicio = "01-01-1999";
+    }
+    if (FechaFinal == "") {
+        FechaFinal = ultimoDia.getDate() + '/' + (mes < 10 ? '0' : '') + mes + '/' + year;
+        //FechaFinal = "01-01-2025";
+    }
+
+    if (Estado == 0) {
+        $("#IdAprobarTodo").prop("disabled", false);
+        $("#IdRechazarTodo").prop("disabled", false);
+        $("#IdGuardarAuto").prop("disabled", false);
+    } else {
+        $("#IdAprobarTodo").prop("disabled", true);
+        $("#IdRechazarTodo").prop("disabled", true);
+        $("#IdGuardarAuto").prop("disabled", true);
+    }
+
+
+    tablekardex = $('#table_id').dataTable({
+
+
+        language: {
+            lenguaje_data,
+            loadingRecords: "Cargando...",
+        },
+        responsive: false,
+        //scrollX: true,
+        ajax: {
+            url: url,
+            type: 'POST',
+            error: function (xhr, status, error) {
+                console.error(error);
+            },
+            data: {
+                'FechaInicio': FechaInicio, 'FechaFinal': FechaFinal, 'Estado': Estado, 'IdAutorizador': Autorizador, 'IdObra': IdObra,
+                pagination: {
+                    perpage: 50,
+                },
+            },
+            dataSrc: "",
+        },
+        rowId: function (data, type, full, meta) {
+            return "requerimiento" + data.IdSolicitudRQDetalle.toString()
+        },
+        order: [[0, 'desc']],
+        columnDefs: [
+            {
+                data: null,
+                targets: 0,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.Serie + '-' + full.NumeroPedido
+                },
+            },
+            {
+                data: null,
+                targets: 1,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    var fechaSplit = (full.FechaDocumento.substring(0, 10)).split("-");                   
+                    var fecha = fechaSplit[2] + "/" + fechaSplit[1] + "/" + fechaSplit[0];
+
+                    return fecha
+                },
+            },
+            {
+                data: null,
+                targets: 2,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return "a"
+                },
+            },
+            {
+                data: null,
+                targets: 3,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return "a"
+                },
+            },
+            {
+                data: null,
+                targets: 4,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    
+                    return "a"
+                },
+            },
+            {
+                data: null,
+                targets: 5,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return "a"
+                },
+            },
+            {
+                data: null,
+                targets: 6,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                   
+                    return "a"
+                },
+            },
+            {
+                data: null,
+                targets: 7,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                   
+                    return "a"
+                },
+            },
+            {
+                data: null,
+                targets: 8,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                   
+                    return "a"
+                },
+            },
+            {
+                data: null,
+                targets: 9,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return "a"
+                },
+            }
+        ],
+      
+
+        "bDestroy": true
+    });
 
 
 

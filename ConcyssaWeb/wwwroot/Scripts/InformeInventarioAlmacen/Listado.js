@@ -298,3 +298,24 @@ function validadJson(json) {
     }
 }
 
+
+function ImportarExcel() {
+
+    let IdArticulo = $("#IdArticulo").val();
+    let IdAlmacen = $("#IdAlmacen").val();
+    let FechaInicio = $("#FechaInicio").val();
+    let FechaTermino = $("#FechaTermino").val();
+
+    $.post('GenerarExcel', {
+        'IdAlmacen': $("#cboAlmacenFiltro").val(),
+    }, function (data, status) {
+        if (data=="ERROR") {
+            Swal.fire("Error!","No se pudo generar el Archivo Excel","error")
+        }else {
+            window.open("/Anexos/" + data + ".xlsx", '_blank', 'noreferrer');
+        }
+    });
+
+
+
+}

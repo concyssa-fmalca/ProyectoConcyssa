@@ -177,7 +177,7 @@ namespace ISAP
                
 
 
-                ObjSAPComprobante.DocTotal = Convert.ToDouble(auxComprobante.Total);
+            
 
                 ProveedorDAO oProveedorDAO = new ProveedorDAO();
                 var datosProveedor = oProveedorDAO.ObtenerDatosxID(auxComprobante.IdProveedor, BaseDatos);
@@ -186,8 +186,19 @@ namespace ISAP
 
                 ObjSAPComprobante.CardName = datosProveedor[0].RazonSocial;
 
+                IntregadorV1DAO IntDao = new IntregadorV1DAO();
+                IntegradorProveedorDTO datosProveedorSAP = IntDao.ObtenerDatosProveedorSAP("P" + datosProveedor[0].NumeroDocumento, BaseDatosSAP, ref mensaje_error);
 
+                if (datosProveedorSAP.WTLiable == "Y")
+                {
+                    datosProveedor[0].Afecto4ta = true;
+                }
+                else
+                {
+                    datosProveedor[0].Afecto4ta = false;
+                }
 
+                ObjSAPComprobante.GroupNumber = datosProveedorSAP.GroupNum;
 
                 ObjSAPComprobante.DocDate = auxComprobante.FechaContabilizacion; //fecha contabilizacion
 
@@ -371,7 +382,6 @@ namespace ISAP
 
                     var cuentaContable = "";
 
-
                     if (auxComprobante.IdTipoDocumento == 18)
                     {
                         cuentaContable = oConsultasSQL.ObtenerCuentaContable(datosDivision[0].CuentaContable,BaseDatosSAP);
@@ -411,11 +421,23 @@ namespace ISAP
                     }
                     if (auxdetalle.IdIndicadorImpuesto == 2)
                     {
-                        ObjSAPComprobante.Lines.UnitPrice = (double)Math.Round(auxdetalle.total_valor_item, 2); //sin igv
-                        ObjSAPComprobante.Lines.TaxCode = "EXO";//"IGV";
-                        ObjSAPComprobante.Lines.PriceAfterVAT = (double)Math.Round(auxdetalle.total_valor_item, 2); // sin igv
-                        SUMASubTotal += auxdetalle.total_valor_item;
-                        SUMATotal += auxdetalle.total_item;
+                        if (auxComprobante.IdTipoDocumentoRef == 11 && datosProveedor[0].Afecto4ta == true)
+                        {
+                            ObjSAPComprobante.Lines.UnitPrice = (double)Math.Round(auxdetalle.total_valor_item, 2); //sin igv
+                            ObjSAPComprobante.Lines.TaxCode = "EXO";//"IGV";
+                            //ObjSAPComprobante.Lines.PriceAfterVAT = (double)Math.Round(auxdetalle.total_valor_item * 8/100, 2); // sin igv
+                            SUMASubTotal += auxdetalle.total_valor_item - (auxdetalle.total_valor_item * 8 /100);
+                            SUMATotal += auxdetalle.total_item - (auxdetalle.total_item * 8/100);
+                        }
+                        else
+                        {
+                            ObjSAPComprobante.Lines.UnitPrice = (double)Math.Round(auxdetalle.total_valor_item, 2); //sin igv
+                            ObjSAPComprobante.Lines.TaxCode = "EXO";//"IGV";
+                            ObjSAPComprobante.Lines.PriceAfterVAT = (double)Math.Round(auxdetalle.total_valor_item, 2); // sin igv
+                            SUMASubTotal += auxdetalle.total_valor_item;
+                            SUMATotal += auxdetalle.total_item;
+
+                        }
                     }
                     if (auxdetalle.IdIndicadorImpuesto == 3)
                     {
@@ -430,8 +452,7 @@ namespace ISAP
                     ObjSAPComprobante.Lines.Add();
                 }
 
-                //VALIDACION MONTOS
-
+               
                 decimal IGVRedondado = Math.Round(SUMAIGV, 2, MidpointRounding.AwayFromZero);
 
 
@@ -440,7 +461,16 @@ namespace ISAP
 
                 if (Monto2Decimales != MontoDecimalesCompletos)
                 {
-                    auxComprobante.Redondeo += Monto2Decimales - MontoDecimalesCompletos;
+                    //VALIDACION MONTOS         
+                    if (auxComprobante.IdTipoDocumentoRef == 11 && datosProveedor[0].Afecto4ta == true)
+                    {
+                        ObjSAPComprobante.DiscountPercent = 0;
+                    }
+                    else
+                    {
+                        ObjSAPComprobante.DocTotal = Convert.ToDouble(auxComprobante.Total);
+                        auxComprobante.Redondeo += Monto2Decimales - MontoDecimalesCompletos;
+                    }
                 }
 
 
