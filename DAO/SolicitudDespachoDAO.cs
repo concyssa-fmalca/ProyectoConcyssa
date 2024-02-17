@@ -770,12 +770,15 @@ namespace DAO
                         oSolicitudDetalleMovilAprobacion.IdSolicitudDespachoModelo = int.Parse(drd["IdSolicitudDespachoModelo"].ToString());
                         oSolicitudDetalleMovilAprobacion.IdSolicitudDespachoDetalle = int.Parse(drd["IdSolicitudDespachoDetalle"].ToString());
                         oSolicitudDetalleMovilAprobacion.FechaDocumento = Convert.ToDateTime(drd["FechaDocumento"].ToString());
+                        oSolicitudDetalleMovilAprobacion.FechaCreacion = Convert.ToDateTime(drd["FechaCreacion"].ToString());
                         oSolicitudDetalleMovilAprobacion.EstadoSolicitud = int.Parse(drd["EstadoSolicitud"].ToString());
                         oSolicitudDetalleMovilAprobacion.IdUsuario = int.Parse(drd["IdUsuario"].ToString());
                         oSolicitudDetalleMovilAprobacion.IdEtapa = int.Parse(drd["IdEtapa"].ToString());
                         oSolicitudDetalleMovilAprobacion.Serie = (drd["Serie"].ToString());
                         oSolicitudDetalleMovilAprobacion.Referencia = (drd["Referencia"].ToString());
                         oSolicitudDetalleMovilAprobacion.NombUsuario = (drd["NombUsuario"].ToString());
+                        oSolicitudDetalleMovilAprobacion.CodCuadrilla = (drd["CodCuadrilla"].ToString());
+                        oSolicitudDetalleMovilAprobacion.NombCuadrilla = (drd["NombCuadrilla"].ToString());
 
                         lstSolicitudDetalleMovilAprobacion.Add(oSolicitudDetalleMovilAprobacion);
                     }
@@ -808,12 +811,14 @@ namespace DAO
                                 cn.Open();
                                 SqlDataAdapter da = new SqlDataAdapter("SMC_UpdateInsertSolicitudDespachoModeloAprobaciones", cn);
                                 da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                                da.SelectCommand.Parameters.AddWithValue("@IdSolicitud", oSolicitudDespachoModeloAprobacionesDTO.IdSolicitud);
                                 da.SelectCommand.Parameters.AddWithValue("@IdSolicitudModelo", oSolicitudDespachoModeloAprobacionesDTO.IdSolicitudModelo);
                                 da.SelectCommand.Parameters.AddWithValue("@IdAutorizador", oSolicitudDespachoModeloAprobacionesDTO.IdAutorizador);
                                 da.SelectCommand.Parameters.AddWithValue("@IdArticulo", oSolicitudDespachoModeloAprobacionesDTO.IdArticulo);
                                 da.SelectCommand.Parameters.AddWithValue("@Accion", oSolicitudDespachoModeloAprobacionesDTO.Accion);
                                 da.SelectCommand.Parameters.AddWithValue("@IdDetalle", oSolicitudDespachoModeloAprobacionesDTO.IdDetalle);
                                 da.SelectCommand.Parameters.AddWithValue("@CantidadItem", oSolicitudDespachoModeloAprobacionesDTO.CantidadItem);
+                                da.SelectCommand.Parameters.AddWithValue("@Referencia", oSolicitudDespachoModeloAprobacionesDTO.Referencia);
                                 rpta = da.SelectCommand.ExecuteNonQuery();
                                 transactionScope.Complete();
 
@@ -827,6 +832,45 @@ namespace DAO
                 
                 return rpta;
            
+        }
+
+        public List<SolicitudDespachoDTO> SolicitudDespachoPendienteAprobacion(int IdObra, DateTime FechaInicio, DateTime FechaFin, string BaseDatos)
+        {
+            List<SolicitudDespachoDTO> lstSolicitudDespachoDTO = new List<SolicitudDespachoDTO>();
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarSolicitudDespachoPendienteAprobacion", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdObra", IdObra);
+                    da.SelectCommand.Parameters.AddWithValue("@FechaInicio", FechaInicio);
+                    da.SelectCommand.Parameters.AddWithValue("@FechaFin", FechaFin);
+
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        SolicitudDespachoDTO oSolicitudDespachoDTO = new SolicitudDespachoDTO();
+                        oSolicitudDespachoDTO.NumDoc = (drd["NocDoc"].ToString());
+                        oSolicitudDespachoDTO.Codigo = drd["Codigo"].ToString();
+                        oSolicitudDespachoDTO.Descripcion = (drd["Descripcion1"].ToString());
+                        oSolicitudDespachoDTO.DescripcionCuadrilla = drd["Cuadrilla"].ToString();
+                        oSolicitudDespachoDTO.DescripcionObra = drd["Obra"].ToString();
+                        oSolicitudDespachoDTO.FechaDocumento = Convert.ToDateTime(drd["FechaDocumento"].ToString());
+                        oSolicitudDespachoDTO.Cantidad = Convert.ToDecimal(drd["Cantidad"].ToString());
+
+                        lstSolicitudDespachoDTO.Add(oSolicitudDespachoDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            return lstSolicitudDespachoDTO;
         }
 
     }

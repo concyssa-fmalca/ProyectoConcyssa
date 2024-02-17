@@ -46,6 +46,7 @@ namespace DTO
         public bool Estado { get; set; }
         public bool Eliminado { get; set; }
         public int IdDocExtorno { get; set; }
+        public int IdTransfAnulada { get; set; }
         public string TDocumento { get; set; }
 
 

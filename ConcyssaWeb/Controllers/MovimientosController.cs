@@ -352,6 +352,18 @@ namespace ConcyssaWeb.Controllers
 
         }
 
+        public string ValidarExtornoTransferencia(int IdMovimiento)
+        {
+            string Valida = "0";
+            string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            MovimientoDAO oMovimientoDAO = new MovimientoDAO();
+            Valida = oMovimientoDAO.ValidaExtorno(IdMovimiento, BaseDatos, ref mensaje_error);
+
+            return Valida;
+
+        }
+
         public string UpdateMovimiento(MovimientoDTO oMovimientoDTO)
         {
 

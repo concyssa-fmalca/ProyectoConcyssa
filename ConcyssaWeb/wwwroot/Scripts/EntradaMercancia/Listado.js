@@ -276,6 +276,8 @@ let NombreArchivo = '';
 
 
 window.onload = function () {
+    CargarUnidadMedidaItem()
+    CargarGrupoUnidadMedida()
     $("#txtFechaInicio").val(getCurrentDate())
     $("#txtFechaFin").val(getCurrentDateFinal())
     getDecimales();
@@ -381,6 +383,9 @@ window.onload = function () {
             }
         });
     });
+    $("#cboAgregarArticulo").select2({
+        dropdownParent: $("#ModalItem")
+    })
 };
 
 
@@ -535,6 +540,7 @@ function ModalNuevo() {
     validarseriescontable();
 
     $("#IdTipoDocumentoRef").val(14)
+    BuscarItemsExp()
 
 }
 
@@ -823,10 +829,9 @@ function AgregarLinea() {
         tr += `</select>
             </td>
             <td input style="display:none;"><input class="form-control TipoCambioDeCabecera" type="number" name="txtTipoCambio[]" id="txtTipoCambioDetalle`+ contador + `" disabled></td>
-            <td><input class="form-control"  type="number" name="txtCantidadNecesaria[]" value="0" id="txtCantidadNecesaria`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled></td>
+            <td><input class="form-control"  type="number" name="txtCantidadNecesaria[]" value="0" id="txtCantidadNecesaria`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" ></td>
             <td><input class="form-control" type="number" name="txtPrecioInfo[]" value="0" id="txtPrecioInfo`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled></td>
-            <td style="display:none"><select onchange="SeleccionarEmpleadosTabla(`+ contador + `)" class="form-control cboCuadrillaTabla" id="cboCuadrillaTablaId` + contador + `"></select></td>
-            <td style="display:none"><select class="form-control cboResponsableTabla" id="cboResponsableTablaId`+ contador + `"></select></td>
+           
             <td input style="display:none;">
             <select class="form-control ImpuestoCabecera" name="cboIndicadorImpuesto[]" id="cboIndicadorImpuestoDetalle`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)">`;
         tr += `  <option impuesto="0" value="0">Seleccione</option>`;
@@ -908,6 +913,10 @@ function AgregarLinea() {
         NumeracionDinamica();
         ObtenerCuadrillasTabla(contador)
         ObtenerEmpleadosxIdCuadrillaTabla(contador)
+
+        $("#precionuevo").val('')
+        $("#cantidadnuevo").val('')
+        $("#cboAgregarArticulo").val(0).change()
     }
 }
 
@@ -1542,8 +1551,8 @@ function GuardarSolicitud() {
                 'IdAfectacionIgv': 1,
                 'Descuento': 0,
                 'Referencia': arrayReferencia[i],
-                'IdCuadrilla': arrayCboCuadrillaTabla[i],
-                'IdResponsable': arrayCboResponsableTabla[i],
+                'IdCuadrilla': $("#IdCuadrilla").val(),
+                'IdResponsable': $("#IdResponsable").val(),
             })
         }
 
@@ -1760,7 +1769,7 @@ function ObtenerDatosxID(IdMovimiento) {
             } else {
                 let movimiento = JSON.parse(data);
                 console.log(movimiento);
-                if (movimiento.IdDocExtorno != 0) {
+                if (movimiento.IdDocExtorno != 0 || movimiento.IdTransfAnulada) {
                     EstaExtornado = true
                 }
                 IdUsuario = movimiento.IdUsuario,
@@ -2419,7 +2428,7 @@ function BuscarListadoAlmacen() {
 
 function SeleccionarItemListado() {
 
-    let IdArticulo = $('input:radio[name=rdSeleccionado]:checked').val();
+    let IdArticulo = $('#cboAgregarArticulo').val();
     let TipoItem = $("#cboClaseArticulo").val();
     let Almacen = $("#cboAlmacenItem").val();
     if (TipoItem == 3) {
@@ -2429,18 +2438,29 @@ function SeleccionarItemListado() {
                 swal("Info!", "No se encontro Articulo")
                 tableItems.destroy();
             } else {
-                let datos = JSON.parse(data);
-                console.log(1);
-                $("#cboGrupoUnidadMedida").val(datos[0].IdGrupoUnidadMedida).change();
-                $("#cboMedidaItem").val(datos[0].IdUnidadMedidaInv);
-                $("#cboGrupoUnidadMedida").prop('disabled', true);
-                $("#txtCodigoItem").val(datos[0].Codigo);
-                $("#txtIdItem").val(datos[0].IdArticulo);
-                $("#txtDescripcionItem").val(datos[0].Descripcion1);
-                $("#txtPrecioUnitarioItem").val(datos[0].UltimoPrecioCompra);
-                $("#txtStockAlmacenItem").val(datos[0].Stock);
-                $("#txtPrecioUnitarioItem").val((datos[0].PrecioPromedio).toFixed(DecimalesPrecios))
-                tableItems.destroy();
+                try {
+                    let datos = JSON.parse(data);
+                    console.log(1);
+                    $("#cboGrupoUnidadMedida").val(datos[0].IdGrupoUnidadMedida).change();
+                    $("#cboMedidaItem").val(datos[0].IdUnidadMedidaInv);
+                    $("#cboGrupoUnidadMedida").prop('disabled', true);
+                    $("#txtCodigoItem").val(datos[0].Codigo);
+                    $("#txtIdItem").val(datos[0].IdArticulo);
+                    $("#txtDescripcionItem").val(datos[0].Descripcion1);
+                    $("#txtPrecioUnitarioItem").val(datos[0].UltimoPrecioCompra);
+                    $("#txtStockAlmacenItem").val(datos[0].Stock);
+                    $("#txtPrecioUnitarioItem").val((datos[0].PrecioPromedio).toFixed(DecimalesPrecios))
+                    $("#precionuevo").val((datos[0].PrecioPromedio).toFixed(DecimalesPrecios));
+
+                    if (datos[0].PrecioPromedio == 0) {
+                        $("#precionuevo").prop("disabled", false)
+                    } else {
+                        $("#precionuevo").prop("disabled", true)
+                    }
+                } catch (e) {
+                    console.log("data")
+                }
+                
             }
         });
     } else {
@@ -2450,18 +2470,28 @@ function SeleccionarItemListado() {
                 swal("Info!", "No se encontro Articulo")
                 tableItems.destroy();
             } else {
-                let datos = JSON.parse(data);
-                console.log(1);
-                $("#cboGrupoUnidadMedida").val(datos[0].IdGrupoUnidadMedida).change();
-                $("#cboMedidaItem").val(datos[0].IdUnidadMedidaInv);
-                $("#cboGrupoUnidadMedida").prop('disabled', true);
-                $("#txtCodigoItem").val(datos[0].Codigo);
-                $("#txtIdItem").val(datos[0].IdArticulo);
-                $("#txtDescripcionItem").val(datos[0].Descripcion1);
-                $("#txtPrecioUnitarioItem").val(datos[0].UltimoPrecioCompra);
-                $("#txtStockAlmacenItem").val(datos[0].Stock);
-                $("#txtPrecioUnitarioItem").val((datos[0].PrecioPromedio).toFixed(DecimalesPrecios))
-                tableItems.destroy();
+                try {
+                    let datos = JSON.parse(data);
+                    console.log(1);
+                    $("#cboGrupoUnidadMedida").val(datos[0].IdGrupoUnidadMedida).change();
+                    $("#cboMedidaItem").val(datos[0].IdUnidadMedidaInv);
+                    $("#cboGrupoUnidadMedida").prop('disabled', true);
+                    $("#txtCodigoItem").val(datos[0].Codigo);
+                    $("#txtIdItem").val(datos[0].IdArticulo);
+                    $("#txtDescripcionItem").val(datos[0].Descripcion1);
+                    $("#txtPrecioUnitarioItem").val(datos[0].UltimoPrecioCompra);
+                    $("#txtStockAlmacenItem").val(datos[0].Stock);
+                    $("#txtPrecioUnitarioItem").val((datos[0].PrecioPromedio).toFixed(DecimalesPrecios))
+                    $("#precionuevo").val((datos[0].PrecioPromedio).toFixed(DecimalesPrecios));
+                    if (datos[0].PrecioPromedio == 0) {
+                        $("#precionuevo").prop("disabled", false)
+                    } else {
+                        $("#precionuevo").prop("disabled", true)
+                    }
+                } catch (e) {
+                    console.log("data")
+                }
+               
             }
         });
     }
@@ -2707,7 +2737,7 @@ function GenerarExtorno() {
                     } else {
                         Swal.fire(
                             'Error!',
-                            'Ocurrio un Error!',
+                            'Ocurrio un Error!,'+data,
                             'error'
                         )
 
@@ -3095,8 +3125,12 @@ function ObtenerCapataz() {
     let IdCuadrilla = $("#IdCuadrilla").val();
     //setTimeout(() => {
         $.post("/Empleado/ObtenerCapatazXCuadrilla", { 'IdCuadrilla': IdCuadrilla }, function (data, status) {
-            let capataz = JSON.parse(data);
-            $("#IdResponsable").select2("val", capataz[0].IdEmpleado);
+            try {
+                let capataz = JSON.parse(data);
+                $("#IdResponsable").select2("val", capataz[0].IdEmpleado);
+            } catch (e) {
+
+            }
         })
   /*  }, 1000);*/
   
@@ -3198,8 +3232,8 @@ function llenarComboEmpleadosTabla(lista, idCombo, primerItem) {
 }
 
 function SetCuadrillaTabla() {
-    let SetCuadrilla = $("#IdCuadrilla").val()
-    $(".cboCuadrillaTabla").val(SetCuadrilla).change()
+    //let SetCuadrilla = $("#IdCuadrilla").val()
+    //$(".cboCuadrillaTabla").val(SetCuadrilla).change()
 }
 function SeleccionarEmpleadosTabla(contador) {
 
@@ -3522,4 +3556,89 @@ function Resalida() {
         let series = JSON.parse(data);
         llenarComboSerieExtorno(series, "cboSerieExtorno", "Seleccione")
     });
+}
+
+
+function BuscarItemsExp() {
+
+
+    $("#cboAgregarArticulo").select2({
+        language: "es",
+        width: '100%',
+
+        //theme: "classic",
+        async: false,
+        ajax: {
+            url: "/Articulo/ListarArticulosxAlmacenSelect2",
+            type: "post",
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+
+                return {
+                    searchTerm: params.term, // search term
+                    IdTipoProducto: $("#IdTipoProducto").val(),
+                    IdAlmacen: $("#cboAlmacen").val()
+                };
+
+
+
+            },
+            processResults: function (response) {
+
+                var results = [];
+                $.each(response, function (index, item) {
+                 
+
+                        results.push({ id: item.IdArticulo, text: item.Codigo + '-' + item.Descripcion1 })
+                    
+                });
+
+
+                return { results }
+
+
+            },
+            cache: true,
+        },
+        placeholder: 'Ingrese Nombre de Producto',
+        minimunInputLength: 3
+    });
+}
+
+function AgregarItemV2() {
+
+    if ($("#cboAgregarArticulo").val() == 0 || $("#cboAgregarArticulo").val() == null) {
+        swal("Error", "Seleccione un Articulo")
+        return
+    }
+
+    if ($("#cantidadnuevo").val() <= 0 || $("#cantidadnuevo").val() == null) {
+        swal("Error", "Ingrese una Cantidad Valida")
+        return
+    }
+
+
+    $("#txtCantidadItem").val($("#cantidadnuevo").val())
+    $("#txtPrecioUnitarioItem").val($("#precionuevo").val())
+  
+    AgregarLinea()
+    ValidarItems()
+    $('#cboAgregarArticulo').select2('open');
+
+}
+
+function ValidarItems() {
+    let arrayIdArticulo = new Array();
+    $("input[name='txtIdArticulo[]']").each(function (indice, elemento) {
+        arrayIdArticulo.push($(elemento).val());
+    });
+
+    if (arrayIdArticulo.length > 0) {
+        $("#cboClaseArticulo").prop("disabled", true)
+        $("#IdTipoProducto").prop("disabled", true)
+    } else {
+        $("#cboClaseArticulo").prop("disabled", false)
+        $("#IdTipoProducto").prop("disabled", false)
+    }
 }

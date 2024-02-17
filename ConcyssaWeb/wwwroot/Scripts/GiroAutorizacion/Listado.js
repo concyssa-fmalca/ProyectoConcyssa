@@ -14,6 +14,7 @@ var ultimaFila1 = null;
 var colorOriginal1;
 window.onload = function () {
   
+    CargarObras()
 
     $.post('/Usuario/ObtenerUsuariosAutorizadores', function (data, status) {
         $.ajaxSetup({ async: false });
@@ -35,9 +36,35 @@ window.onload = function () {
 
     var url = "ObtenerGirosCabeceraxAutorizar";
     ObtenerConfiguracionDecimales();
-    ConsultaServidorCabecera(url);
+    //ConsultaServidorCabecera(url);
 
 };
+function CargarObras() {
+    $.post('/Obra/ObtenerObraxIdUsuarioSessionSinBase', function (data, status) {
+        let datos = JSON.parse(data);
+        llenarComboObra(datos, "IdObra", "Todas")
+    });
+
+}
+
+function llenarComboObra(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdObra + "'>" + lista[i].Descripcion + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+
+    BuscarPorFechas();
+
+}
+
 
 
 function BuscarPorFechas() {
@@ -77,6 +104,7 @@ function ConsultaServidorCabecera(url) {
     let FechaFinal = $("#FechaFinal").val();
     let Estado = $("#Estado").val();
     let Autorizador = $("#CboAutorizador").val();
+    let IdObra = $("#IdObra").val();
 
     if (tableCabecera) {
         tableCabecera.destroy();
@@ -102,7 +130,7 @@ function ConsultaServidorCabecera(url) {
     }
 
 
-    $.post(url, { 'FechaInicio': FechaInicio, 'FechaFinal': FechaFinal, 'Estado': Estado, 'IdAutorizador': Autorizador }, function (data, status) {
+    $.post(url, { 'FechaInicio': FechaInicio, 'FechaFinal': FechaFinal, 'Estado': Estado, 'IdAutorizador': Autorizador,'IdObra': IdObra }, function (data, status) {
 
 
         if (data == "error") {

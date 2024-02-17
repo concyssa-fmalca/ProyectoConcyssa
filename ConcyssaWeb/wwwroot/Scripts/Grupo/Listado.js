@@ -65,6 +65,7 @@ function ConsultaServidor() {
     $.post(url, { 'IdObra': $("#IdObrafiltro").val() }, function (data, status) {
         //console.log(data);
         if (data == "error") {
+          
             table = $("#table_id").DataTable(lenguaje);
             console.log("sssssssssssssss");
             return;

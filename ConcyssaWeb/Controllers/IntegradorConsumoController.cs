@@ -257,7 +257,7 @@ namespace ConcyssaWeb.Controllers
                 {
                     ConexionSAP conexion = new ConexionSAP();
                     respuestaSAP = conexion.AddAsientoContable(oObraDTO.CodProyecto, Cuentas, GrupoCreacion,FechaContabilizacion,Serie,BaseDatos,BaseDatosSAP,ref mensaje_error);
-                    
+                    GC.Collect();
                     ConexionSAP.DesconectarSAP();
                 }
                 else

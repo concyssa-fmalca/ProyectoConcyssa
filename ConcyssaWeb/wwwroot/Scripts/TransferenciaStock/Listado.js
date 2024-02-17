@@ -310,6 +310,8 @@ function llenarComboCentroCosto(lista, idCombo, primerItem) {
 
 
 window.onload = function () {
+    CargarUnidadMedidaItem()
+    CargarGrupoUnidadMedida()
     CargarBaseFiltro()
     ObtenerConfiguracionDecimales();
     $("#btnEditar").hide()
@@ -333,6 +335,9 @@ window.onload = function () {
             }
         });
     });
+    $("#cboAgregarArticulo").select2({
+        dropdownParent: $("#ModalItem")
+    })
 };
 
 function CargarBaseFiltro() {
@@ -379,8 +384,7 @@ function ConsultaServidor() {
 
         let movimientos = JSON.parse(data);
         let total_solicitudes = movimientos.length;
-        console.log("cabecera");
-        console.log(movimientos);
+    
 
         for (var i = 0; i < movimientos.length; i++) {
             let varSNGE = "-"
@@ -395,12 +399,19 @@ function ConsultaServidor() {
                 }
             }
 
+            let Condicion = 'style = "color:blue;cursor:pointer;text-decoration:underline" onclick = "GenerarReporte(' + movimientos[i].IdMovimiento + ')"'
+
+            if (movimientos[i].IdTransfAnulada != 0) {
+                Condicion = 'style = "color:red"'
+            }
+
             tr += '<tr>' +
                 '<td>' + (i + 1) + '</td>' +
                 '<td>' + movimientos[i].FechaDocumento.split("T")[0] + '</td>' +
                 '<td>' + movimientos[i].NombUsuario + '</td>' +
                 '<td>' + movimientos[i].NombTipoDocumentoOperacion.toUpperCase() + '</td>' +
-                '<td style="color:blue;cursor:pointer;text-decoration:underline" onclick="GenerarReporte(' + movimientos[i].IdMovimiento + ')">' + movimientos[i].NombSerie.toUpperCase() + '-' + movimientos[i].Correlativo + '</td>' +
+
+                '<td ' + Condicion +' >' + movimientos[i].NombSerie.toUpperCase() + '-' + movimientos[i].Correlativo + '</td>' +
                 '<td>' + movimientos[i].TDocumento.toUpperCase() + '</td>' +
                 '<td>' + varSNGE + '</td>' +
                 '<td>' + varEstadoGE + '</td>' +
@@ -515,6 +526,8 @@ function ModalNuevo() {
     $("#Bulto").val(1);
 
     $("#btnGenerarPDF").hide();
+    $("#btnExtorno").hide();
+    BuscarItemsExp()
 }
 
 
@@ -902,6 +915,10 @@ function AgregarLinea() {
         $("#txtItemTotal" + contador).val(formatNumberDecimales($("#txtItemTotal" + contador).val(),2))
         LimpiarModalItem();
         NumeracionDinamica();
+
+        $("#stocknuevo").val('')
+        $("#cantidadnuevo").val('')
+        $("#cboAgregarArticulo").val(0).change()
     }
 }
 
@@ -1840,7 +1857,7 @@ function ObtenerDatosxID(IdMovimiento) {
     CargarMotivoTraslado();
     CargarProveedor();
     ObtenerTiposDocumentos();
-    CargarBaseFiltro();
+    //CargarBaseFiltro();
     CargarCentroCosto();
     CargarAlmacen();
     CargarTipoDocumentoOperacion();
@@ -1932,6 +1949,25 @@ function ObtenerDatosxID(IdMovimiento) {
             $("#Bulto").val(movimiento.Bulto)
 
             var TipDoc = $("#IdTipoDocumentoRef").val();
+
+            console.log('movimiento.IdTransfAnulada')
+            console.log($("#IdUsuarioSesion").val())
+            console.log(movimiento.IdUsuario)
+
+            if ($("#IdUsuarioSesion").val() == movimiento.IdUsuario) {
+
+                if (movimiento.IdTransfAnulada == 0) {
+
+                    $("#btnExtorno").show()
+                } else {
+                    $("#btnExtorno").hide()
+                }
+            } else {
+                $("#btnExtorno").hide()
+            }
+
+
+
             if (TipDoc == "1") {
                 $("#btnGenerarPDF").show();
                 $("#btnGenerarGuia").show();
@@ -2066,7 +2102,7 @@ function ObtenerDatosxID(IdMovimiento) {
     });
     disabledmodal(true);
 
-    $("#btnExtorno").hide();
+    //$("#btnExtorno").hide();
     $("#btnAgregarItem").prop("disabled", true);
     OcultarCampos();
 }
@@ -2557,8 +2593,7 @@ function BuscarListadoAlmacen() {
 
 
 function SeleccionarItemListado() {
-
-    let IdArticulo = $('input:radio[name=rdSeleccionado]:checked').val();
+    let IdArticulo = $('#cboAgregarArticulo').val();
     let TipoItem = $("#cboClaseArticulo").val();
     let Almacen = $("#cboAlmacenItem").val();
     if (TipoItem == 3) {
@@ -2566,20 +2601,31 @@ function SeleccionarItemListado() {
 
             if (data == "error") {
                 swal("Info!", "No se encontro Articulo")
-                tableItems.destroy();
+               
             } else {
-                let datos = JSON.parse(data);
-                console.log(1);
-                $("#cboGrupoUnidadMedida").val(datos[0].IdGrupoUnidadMedida).change();
-                $("#cboMedidaItem").val(datos[0].IdUnidadMedidaInv);
-                $("#cboGrupoUnidadMedida").prop('disabled', true);
-                $("#txtCodigoItem").val(datos[0].Codigo);
-                $("#txtIdItem").val(datos[0].IdArticulo);
-                $("#txtDescripcionItem").val(datos[0].Descripcion1);
-                $("#txtPrecioUnitarioItem").val(datos[0].UltimoPrecioCompra);
-                $("#txtStockAlmacenItem").val(datos[0].Stock);
-                $("#txtPrecioUnitarioItem").val((datos[0].PrecioPromedio).toFixed(DecimalesPrecios))
-                tableItems.destroy();
+                try {
+                    let datos = JSON.parse(data);
+                    console.log(1);
+                    $("#cboGrupoUnidadMedida").val(datos[0].IdGrupoUnidadMedida).change();
+                    $("#cboMedidaItem").val(datos[0].IdUnidadMedidaInv);
+                    $("#cboGrupoUnidadMedida").prop('disabled', true);
+                    $("#txtCodigoItem").val(datos[0].Codigo);
+                    $("#txtIdItem").val(datos[0].IdArticulo);
+                    $("#txtDescripcionItem").val(datos[0].Descripcion1);
+                    $("#txtPrecioUnitarioItem").val(datos[0].UltimoPrecioCompra);
+                    $("#txtStockAlmacenItem").val(datos[0].Stock);
+                    $("#stocknuevo").val(datos[0].Stock);
+                    $("#txtPrecioUnitarioItem").val((datos[0].PrecioPromedio).toFixed(DecimalesPrecios))
+
+                    console.log("cboGrupoUnidadMedida")
+                    console.log(("#cboGrupoUnidadMedida").val())
+                    console.log("#cboMedidaItem")
+                    console.log(("#cboMedidaItem").val())
+                }
+                catch (e) {
+                    console.log("data")
+                }
+                
             }
         });
     }
@@ -2588,33 +2634,36 @@ function SeleccionarItemListado() {
 
             if (data == "error") {
                 swal("Info!", "No se encontro Articulo")
-                tableItems.destroy();
+               
             } else {
-                let datos = JSON.parse(data);
-                console.log(datos);
-                $("#cboGrupoUnidadMedida").val(0).change();
+                try {
+                    let datos = JSON.parse(data);
+                    console.log(datos);
+                 
+                    $("#cboGrupoUnidadMedida").prop("disabled", true);
 
-                $("#cboGrupoUnidadMedida").val(29).change();
-                $("#cboGrupoUnidadMedida").prop("disabled", true);
+                    $("#cboGrupoUnidadMedida").val(datos[0].IdGrupoUnidadMedida).change();
+                    $("#txtCodigoItem").val(datos[0].Codigo);
+                    $("#txtIdItem").val(datos[0].IdArticulo);
+                    $("#txtDescripcionItem").val(datos[0].Descripcion1);
+                    $("#cboMedidaItem").val(datos[0].IdUnidadMedidaInv);
+                    $("#txtPrecioUnitarioItem").val(datos[0].UltimoPrecioCompra);
+                    $("#txtStockAlmacenItem").val(datos[0].Stock);
+                    $("#stocknuevo").val(datos[0].Stock);
+                    $("#txtPrecioUnitarioItem").val(datos[0].PrecioPromedio)
+                    $("#txtPrecioUnitarioItemOriginal").val(datos[0].PrecioPromedio);
+                    $("#txtPrecioUnitarioItem").prop("disabled", true);
+                    // $("#cboMedidaItem").val(29).change();
 
-
-
-
-                $("#txtCodigoItem").val(datos[0].Codigo);
-                $("#txtIdItem").val(datos[0].IdArticulo);
-                $("#txtDescripcionItem").val(datos[0].Descripcion1);
-                $("#cboMedidaItem").val(datos[0].IdUnidadMedida);
-                $("#txtPrecioUnitarioItem").val(datos[0].UltimoPrecioCompra);
-                $("#txtStockAlmacenItem").val(datos[0].Stock);
-                $("#txtPrecioUnitarioItem").val(datos[0].PrecioPromedio)
-                $("#txtPrecioUnitarioItemOriginal").val(datos[0].PrecioPromedio);
-                $("#txtPrecioUnitarioItem").prop("disabled", true);
-
-
-
-                $("#cboMedidaItem").val(29).change();
-
-                tableItems.destroy();
+                    console.log("cboGrupoUnidadMedida")
+                    console.log($("#cboGrupoUnidadMedida").val())
+                    console.log("#cboMedidaItem")
+                    console.log($("#cboMedidaItem").val())
+                }
+                catch (e) {
+                    console.log("data")
+                }
+               
             }
         });
     }
@@ -2718,14 +2767,14 @@ function ObtenerConfiguracionDecimales() {
 
 function ValidarDecimalesCantidades(input) {
 
-    let cantidad = $("#" + input).val();
-    let separar = cantidad.split(".");
+    //let cantidad = $("#" + input).val();
+    //let separar = cantidad.split(".");
 
-    if (separar.length > 1) {
-        if ((separar[1]).length > DecimalesCantidades) {
-            $("#" + input).val(Number(cantidad).toFixed(DecimalesCantidades));
-        }
-    }
+    //if (separar.length > 1) {
+    //    if ((separar[1]).length > DecimalesCantidades) {
+    //        $("#" + input).val(Number(cantidad).toFixed(DecimalesCantidades));
+    //    }
+    //}
 }
 
 function ValidarDecimalesImportes(input) {
@@ -2894,7 +2943,7 @@ function CargarProveedor() {
     $.post("/Proveedor/ObtenerProveedores", function (data, status) {
         Proveedor = JSON.parse(data);
         let option = `<option value="0">SELECCIONE PROVEEDOR</option>`;
-        console.log(Proveedor);
+       
         for (var i = 0; i < Proveedor.length; i++) {
             option += `<option value="` + Proveedor[i].IdProveedor + `">` + Proveedor[i].NumeroDocumento + `-` + Proveedor[i].RazonSocial + `</option>`
         }
@@ -3027,13 +3076,13 @@ function disabledmodal(valorbolean) {
 
     if (valorbolean) {
         $("#btnGrabar").hide()
-        $("#btnExtorno").show();
+       // $("#btnExtorno").show();
         $("#total_editar").show();
         $("#total_nuevo").hide();
         $("#btnNuevo").show();
 
     } else {
-        $("#btnExtorno").hide();
+        //$("#btnExtorno").hide();
         $("#total_editar").hide();
         $("#total_nuevo").show();
         $("#btnGrabar").show();
@@ -3287,4 +3336,221 @@ function Editar() {
 
     });
 
+}
+function BuscarItemsExp() {
+
+
+    $("#cboAgregarArticulo").select2({
+        language: "es",
+        width: '100%',
+
+        //theme: "classic",
+        async: false,
+        ajax: {
+            url: "/Articulo/ListarArticulosxAlmacenSelect2",
+            type: "post",
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+
+                return {
+                    searchTerm: params.term, // search term
+                    IdTipoProducto: $("#IdTipoProducto").val(),
+                    IdAlmacen: $("#cboAlmacen").val()
+                };
+
+
+
+            },
+            processResults: function (response) {
+
+                var results = [];
+                $.each(response, function (index, item) {
+                    if (item.Stock > 0) {
+
+                        results.push({ id: item.IdArticulo, text: item.Codigo + '-' + item.Descripcion1 })
+                    }
+                });
+
+
+                return { results }
+
+
+            },
+            cache: true,
+        },
+        placeholder: 'Ingrese Nombre de Producto',
+        minimunInputLength: 3
+    });
+}
+
+function AgregarItemV2() {
+    if ($("#IdObraDestino").val() == "0") {
+        swal("Informacion!", "Debe Seleccionar Obra Destino!");
+        return;
+    }
+
+    if ($("#cboAgregarArticulo").val() == 0 || $("#cboAgregarArticulo").val() == null) {
+        swal("Error", "Seleccione un Articulo")
+        return
+    }
+
+    if ($("#cantidadnuevo").val() <= 0 || $("#cantidadnuevo").val() == null) {
+        swal("Error", "Ingrese una Cantidad Valida")
+        return
+    }
+
+
+    $("#txtCantidadItem").val($("#cantidadnuevo").val())
+    if (+$("#cantidadnuevo").val() > +$("#stocknuevo").val()) {
+        swal("Error", "La Cantidad Supera al Stock")
+        return
+    }
+    AgregarLinea()
+    ValidarItems()
+    $('#cboAgregarArticulo').select2('open');
+
+}
+
+function ValidarItems() {
+    let arrayIdArticulo = new Array();
+    $("input[name='txtIdArticulo[]']").each(function (indice, elemento) {
+        arrayIdArticulo.push($(elemento).val());
+    });
+
+    if (arrayIdArticulo.length > 0) {
+        $("#cboClaseArticulo").prop("disabled", true)
+        $("#IdTipoProducto").prop("disabled", true)
+    } else {
+        $("#cboClaseArticulo").prop("disabled", false)
+        $("#IdTipoProducto").prop("disabled", false)
+    }
+}
+
+function Extornar() {
+    let IdMovimiento = $("#txtId").val();
+    Swal.fire({
+        title: 'DESEA GENERAR EXTORNO?',
+        html: "Se validara si los productos ingresados se encuentran con Stock </br>" +
+            "</br>" +
+            "Serie Para Extorno </br>" +
+            "<Select id='cboSerieExtorno' class='form-control'></select>" +
+            "</br>" +
+            "Fecha De Documento para Extorno </br>" +
+            "<input id='FechDocExtorno' type='date' class='form-control'/>" +
+            "</br>" +
+            "Fecha de Contabilizacion para Extorno </br>" +
+            "<input id='FechContExtorno' type='date' disabled class='form-control'/>" +
+            "</br>" +
+            "<p>* Las Fechas que se muestran por defecto son las mismas que el documento seleccionado</p>",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si Generar!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+
+            var parar = 0;
+            $.post("/Movimientos/ValidarExtorno", { 'IdMovimiento': IdMovimiento }, function (data, status) {
+
+                var datos = data.split("|");
+                console.log(datos);
+
+                if (Number(datos[0]) > 0) {
+                    Swal.fire(
+                        'Error!',
+                        'Este documento ya ha sido Entregado! Nro Op:' + datos[1],
+                        'error'
+                    )
+                    parar++;
+                }
+
+
+            });
+
+            if (parar > 0) {
+                return;
+            }
+
+
+            $.ajax({
+                url: "/SalidaMercancia/GenerarTransfExtorno",
+                type: "POST",
+                async: true,
+                data: {
+                    'IdMovimiento': IdMovimiento,
+                    'Serie': $("#cboSerieExtorno").val(),
+                    'FechaDoc': $("#FechDocExtorno").val(),
+                    'FechaCont': $("#FechContExtorno").val()
+                },
+                beforeSend: function () {
+                    Swal.fire({
+                        title: "Cargando...",
+                        text: "Por favor espere",
+                        showConfirmButton: false,
+                        allowOutsideClick: false
+                    });
+                },
+                success: function (data) {
+                    if (data == 1) {
+                        Swal.fire(
+                            'Correcto',
+                            'Proceso Realizado Correctamente',
+                            'success'
+                        )
+                        //swal("Exito!", "Proceso Realizado Correctamente", "success")
+                        //table.destroy();
+                        CerrarModal();
+                        ConsultaServidor();
+
+                    } else {
+                        Swal.fire(
+                            'Error!',
+                            'Ocurrio un Error!',
+                            'error'
+                        )
+
+                    }
+
+
+                }
+            }).fail(function () {
+                Swal.fire(
+                    'Error!',
+                    'Comunicarse con el Area Soporte: smarcode@smartcode.pe !',
+                    'error'
+                )
+            });
+        }
+    })
+    $.post("/Serie/ObtenerSeries", { estado: 1 }, function (data, status) {
+        let series = JSON.parse(data);
+        llenarComboSerieExtorno(series, "cboSerieExtorno", "Seleccione")
+    });
+}
+
+function llenarComboSerieExtorno(lista, idCombo, primerItem) {
+
+    $("#FechDocExtorno").val($("#txtFechaDocumento").val())
+    $("#FechContExtorno").val($("#txtFechaContabilizacion").val())
+
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    let ultimoindice = 0;
+
+    for (var i = 0; i < nRegistros; i++) {
+        if (lista[i].Documento == 1) {
+            if (lista.length > 0) { contenido += "<option value='" + lista[i].IdSerie + "'>" + lista[i].Serie + "</option>"; ultimoindice = i }
+            else { }
+        }
+
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+
+    $("#" + idCombo).val(lista[ultimoindice].IdSerie).change();
 }

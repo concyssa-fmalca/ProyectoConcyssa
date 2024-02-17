@@ -189,13 +189,20 @@ namespace ISAP
                 IntregadorV1DAO IntDao = new IntregadorV1DAO();
                 IntegradorProveedorDTO datosProveedorSAP = IntDao.ObtenerDatosProveedorSAP("P" + datosProveedor[0].NumeroDocumento, BaseDatosSAP, ref mensaje_error);
 
-                if (datosProveedorSAP.WTLiable == "Y")
-                {
-                    datosProveedor[0].Afecto4ta = true;
-                }
-                else
+
+                if (auxComprobante.IdTipoRegistro == 5)
                 {
                     datosProveedor[0].Afecto4ta = false;
+                }else
+                {
+                    if (datosProveedorSAP.WTLiable == "Y")
+                    {
+                        datosProveedor[0].Afecto4ta = true;
+                    }
+                    else
+                    {
+                        datosProveedor[0].Afecto4ta = false;
+                    }
                 }
 
                 ObjSAPComprobante.GroupNumber = datosProveedorSAP.GroupNum;

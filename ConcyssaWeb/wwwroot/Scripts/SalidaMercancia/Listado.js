@@ -16,6 +16,19 @@ let DecimalesPorcentajes = 0;
 let limitador = 0;
 let valorfor = 1
 
+//document.addEventListener('keydown', function (event) {
+
+//    if (event.key === "Enter") {
+//        ModalNuevo();
+//    }
+//});
+
+//document.addEventListener('keydown', function (event) {
+//    if (event.key === "F2") {
+//        $("#NumRef").focus()
+//    }
+//});
+
 function EsActivo() {
     let TipoArticulo = $("#cboClaseArticulo").val()
     if (TipoArticulo == 3) {
@@ -445,13 +458,16 @@ function ConsultaServidor() {
                 }
             }
             let datosext
+            if (movimientos[i].OrigenDespacho != "") {
+                movimientos[i].NombTipoDocumentoOperacion == "APP MOVIL"
+            }
             if (movimientos[i].IdDocExtorno == 1) {
                 $.post("/Movimientos/ValidarExtorno", { 'IdMovimiento': movimientos[i].IdMovimiento }, function (data, status) {
 
                     datosext = data.split("|");
                     console.log(datosext);
                 });
-                console.log("extornado")
+          
                 tr += '<tr>' +
                     '<td>' + (i + 1) + '</td>' +
                     '<td>' + movimientos[i].FechaDocumento.split('T')[0] + '</td>' +
@@ -473,7 +489,7 @@ function ConsultaServidor() {
                     //'<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + solicitudes[i].IdSolicitudRQ + ')"></button></td >' +
                     '</tr>';
             } else {
-                console.log("no extornado")
+              
                 tr += '<tr>' +
                     '<td>' + (i + 1) + '</td>' +
                     '<td>' + movimientos[i].FechaDocumento.split('T')[0] + '</td>' +

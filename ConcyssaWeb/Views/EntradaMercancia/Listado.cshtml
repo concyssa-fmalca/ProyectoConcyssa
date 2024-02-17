@@ -328,7 +328,7 @@
 
                                 <div class='form-group-sm'>
                                     <div class="col-sm-4">
-                                        <select class="form-control" id="IdTipoProducto" style="margin-bottom:10px;margin-top:5px">
+                                        <select class="form-control" id="IdTipoProducto" style="margin-bottom:10px;margin-top:5px" onchange="BuscarItemsExp()">
                                             <option value="0">Seleccione</option>
                                             <option value="1">MATERIALES</option>
                                             <option value="2">AUXILIARES</option>
@@ -337,14 +337,17 @@
                                 </div>
 
 
-                                <div class='form-group-sm'>
-                                    <div class="col-sm-2">
-                                        <button style="margin-bottom:10px;margin-top:5px" class="btn btn-xs btn-info" id="btn_agregaritem" onclick="OpenModalItem()" type="button">Agregar Item</button>
-                                    </div>
-                                    <div class="col-sm-2">
+                                <div class='form-group-sm'>                                  
+                                @*    <div class="col-sm-2">
                                         <button style="margin-bottom:10px;margin-top:5px" class="btn btn-xs btn-info" id="btn_agregaritem" onclick="OpenModalImportacion()" type="button">Importar Datos</button>
-                                    </div>
+                                    </div>*@
                                 </div>
+
+                                <select id="cboAgregarArticulo" class="form-control" onchange="SeleccionarItemListado()"></select>
+                                <label>Precio Unit.:</label> <input id="precionuevo" type="number" />
+                                <label>Cantidad:</label> <input id="cantidadnuevo" type="number" />
+                               
+                                    <button id="btn_agregaritem" style="margin-bottom:10px;margin-top:5px" class="btn btn-xs btn-info" onclick="AgregarItemV2()" type="button">Agregar Item</button>
                                 <div class="table-responsive">
                                     <table class="table" id="tabla" style="width:100%">
                                         <thead>

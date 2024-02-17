@@ -52,7 +52,7 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
-        public string ObtenerDevoluciones(int IdUsuario, int EstadoDevolucion)
+        public string ObtenerDevoluciones(int IdUsuario, int EstadoDevolucion,DateTime FechaInicio,DateTime FechaFin)
         {
             string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             if (BaseDatos == "")
@@ -61,7 +61,7 @@ namespace ConcyssaWeb.Controllers
             }
             DataTableDTO oDataTableDTO = new DataTableDTO();
             DevolucionAdmDAO oDevolucionAdmDAO = new DevolucionAdmDAO();
-            List<DevolucionAdmDTO> lstSolicitudDespachoDTO = oDevolucionAdmDAO.ObtenerDevoluciones(IdUsuario, EstadoDevolucion,BaseDatos);
+            List<DevolucionAdmDTO> lstSolicitudDespachoDTO = oDevolucionAdmDAO.ObtenerDevoluciones(IdUsuario, EstadoDevolucion,FechaInicio,FechaFin,BaseDatos);
             
             oDataTableDTO.sEcho = 1;
             oDataTableDTO.iTotalDisplayRecords = lstSolicitudDespachoDTO.Count;

@@ -340,6 +340,63 @@ namespace DAO
             return lstEmpleadoDTO;
         }
 
+        public List<EmpleadoDTO> ObtenerEmpleadosPorIdBase(int IdBase, string BaseDatos)
+        {
+            List<EmpleadoDTO> lstEmpleadoDTO = new List<EmpleadoDTO>();
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerEmpleadosPorIdBase", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdBase", IdBase);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        EmpleadoDTO oEmpleadoDTO = new EmpleadoDTO();
+                        oEmpleadoDTO.IdEmpleado = int.Parse(drd["Id"].ToString());
+                        oEmpleadoDTO.CodigoCliente = drd["CodigoCliente"].ToString();
+                        oEmpleadoDTO.TipoPersona = int.Parse(drd["TipoPersona"].ToString());
+                        oEmpleadoDTO.TipoDocumento = int.Parse(drd["TipoDocumento"].ToString());
+                        oEmpleadoDTO.NumeroDocumento = drd["NumeroDocumento"].ToString();
+                        oEmpleadoDTO.RazonSocial = drd["RazonSocial"].ToString();
+                        oEmpleadoDTO.EstadoContribuyente = drd["EstadoContribuyente"].ToString();
+                        oEmpleadoDTO.CondicionContribuyente = drd["CondicionContribuyente"].ToString();
+                        oEmpleadoDTO.DireccionFiscal = drd["DireccionFiscal"].ToString();
+                        oEmpleadoDTO.Departamento = int.Parse(drd["Departamento"].ToString());
+                        oEmpleadoDTO.Provincia = int.Parse(drd["Provincia"].ToString());
+                        oEmpleadoDTO.Distrito = int.Parse(drd["Distrito"].ToString());
+                        oEmpleadoDTO.Pais = int.Parse(drd["Pais"].ToString());
+                        oEmpleadoDTO.Telefono = drd["Telefono"].ToString();
+                        oEmpleadoDTO.ComprobantesElectronicos = drd["ComprobantesElectronicos"].ToString();
+                        oEmpleadoDTO.AfiliadoPLE = drd["AfiliadoPLE"].ToString();
+                        oEmpleadoDTO.CondicionPago = int.Parse(drd["CondicionPago"].ToString());
+                        oEmpleadoDTO.LineaCredito = drd["LineaCredito"].ToString();
+                        oEmpleadoDTO.Email = drd["Email"].ToString();
+                        oEmpleadoDTO.Web = drd["Web"].ToString();
+                        oEmpleadoDTO.Fax = drd["Fax"].ToString();
+                        oEmpleadoDTO.NombreContacto = drd["NombreContacto"].ToString();
+                        oEmpleadoDTO.TelefonoContacto = drd["TelefonoContacto"].ToString();
+                        oEmpleadoDTO.EmailContacto = drd["EmailContacto"].ToString();
+                        oEmpleadoDTO.FechaIngreso = Convert.ToDateTime(drd["FechaIngreso"].ToString());
+                        oEmpleadoDTO.Observacion = drd["Observacion"].ToString();
+                        oEmpleadoDTO.Estado = bool.Parse(drd["Estado"].ToString());
+                        oEmpleadoDTO.IdBase = int.Parse(drd["IdBase"].ToString());
+                        oEmpleadoDTO.IdCargo = int.Parse(drd["IdCargo"].ToString());
+                        lstEmpleadoDTO.Add(oEmpleadoDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            return lstEmpleadoDTO;
+        }
+
         public List<EmpleadoDTO> ObtenerCapatazXCuadrilla(int IdCuadrilla, string BaseDatos)
         {
             List<EmpleadoDTO> lstEmpleadoDTO = new List<EmpleadoDTO>();

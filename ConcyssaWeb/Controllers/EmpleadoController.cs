@@ -105,6 +105,21 @@ namespace ConcyssaWeb.Controllers
                 return "error";
             }
         }
+        public string ObtenerEmpleadosPorIdBase(int IdBase)
+        {
+            EmpleadoDAO oEmpleadoDAO = new EmpleadoDAO();
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+          
+            List<EmpleadoDTO> lstEmpleadoDTO = oEmpleadoDAO.ObtenerEmpleadosPorIdBase(IdBase, BaseDatos);
+            if (lstEmpleadoDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstEmpleadoDTO);
+            }
+            else
+            {
+                return "error";
+            }
+        }
         public string ObtenerCapatazXCuadrilla(int IdCuadrilla)
         {
             EmpleadoDAO oEmpleadoDAO = new EmpleadoDAO();

@@ -1,4 +1,14 @@
-﻿let table = '';
+﻿let table = ''; 
+
+function getFechaHoy() {
+    var currentDate = new Date();
+    var year = currentDate.getFullYear();
+    var month = ('0' + (currentDate.getMonth() + 1)).slice(-2);
+    var day = ('0' + currentDate.getDate()).slice(-2);
+
+    var formattedDate = year + '-' + month + '-' + day;
+    return formattedDate;
+}
 
 window.onload = function () {
     var url = "ObtenerProveedores";
@@ -152,6 +162,7 @@ function ModalNuevo() {
     CargarPaises();
     CargarDepartamentos();
     $("#cboPais").val(193);
+    $("#txtFechaIngreso").val(getFechaHoy())
 }
 function pad(str, max) { str = str.toString(); return str.length < max ? pad("0" + str, max) : str; }
 

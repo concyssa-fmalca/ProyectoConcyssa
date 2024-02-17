@@ -16,7 +16,7 @@ namespace ConcyssaWeb.Controllers
 
 
 
-        public string ObtenerGirosCabeceraxAutorizar(string FechaInicio, string FechaFinal, int Estado, int IdAutorizador)
+        public string ObtenerGirosCabeceraxAutorizar(string FechaInicio, string FechaFinal, int Estado, int IdAutorizador, int IdObra)
         {
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
@@ -27,7 +27,7 @@ namespace ConcyssaWeb.Controllers
 
             GiroAutorizacionDAO oGiroAutorizacionDAO = new GiroAutorizacionDAO();
             //List<SolicitudRQAutorizacionDTO> lstSolicitudRQAutorizacionDTO = oSolicitudRQAutorizacionDAO.ObtenerSolicitudesxAutorizar(IdUsuario.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado);
-            List<GiroAprobacionDTO> lstGiroAprobacionDTO = oGiroAutorizacionDAO.ObtenerGiroCabeceraAutorizar(IdUsuario.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado,BaseDatos);
+            List<GiroAprobacionDTO> lstGiroAprobacionDTO = oGiroAutorizacionDAO.ObtenerGiroCabeceraAutorizar(IdUsuario.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado,IdObra,BaseDatos);
             if (lstGiroAprobacionDTO.Count > 0)
             {
                 Resultado = JsonConvert.SerializeObject(lstGiroAprobacionDTO);

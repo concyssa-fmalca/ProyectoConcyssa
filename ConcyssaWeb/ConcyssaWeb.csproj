@@ -12,6 +12,8 @@
   <ItemGroup>
     <Content Remove="Views\Cargo\Listado.cshtml" />
     <Content Remove="Views\InformeInventarioAlmacen\ConsumoProyectado.cshtml" />
+    <Content Remove="Views\SalidaMercancia\version3.cshtml" />
+    <Content Remove="wwwroot\Scripts\SalidaMercancia\version3.js" />
   </ItemGroup>
 
   <ItemGroup>

@@ -339,6 +339,17 @@ namespace ConcyssaWeb.Controllers
         }
 
 
+        public int UpdateInsertModeloAprobacionesMasivo(List<SolicitudDespachoModeloAprobacionesDTO> lstSolicitudDespachoModeloAprobacionesDTO)
+        {
+            int resultado = 0;
+            for (int i = 0; i < lstSolicitudDespachoModeloAprobacionesDTO.Count; i++)
+            {
+                 resultado += UpdateInsertModeloAprobaciones(lstSolicitudDespachoModeloAprobacionesDTO[i]);
+            }
+            return resultado;
+        }
+
+
         public int UpdateInsertModeloAprobaciones(SolicitudDespachoModeloAprobacionesDTO oSolicitudDespachoModeloAprobacionesDTO)
         {
             string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;

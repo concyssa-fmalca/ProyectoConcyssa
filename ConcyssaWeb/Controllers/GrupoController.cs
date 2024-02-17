@@ -64,7 +64,7 @@ namespace ConcyssaWeb.Controllers
             }
             else
             {
-                return mensaje_error;
+                return "error";
             }
         }
         public string ObtenerGrupoxID(int IdGrupo)

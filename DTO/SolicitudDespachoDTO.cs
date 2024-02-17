@@ -25,6 +25,10 @@ namespace DTO
         public DateTime FechaContabilizacion { get; set; }
         public string SerieyNum { get; set; }
         public string NombCuadrilla { get; set; }
+        public string NumDoc { get; set; }
+        public decimal Cantidad { get; set; }
+        public string Codigo { get; set; }
+        public string Descripcion { get; set; }
         public int IdSolicitante { get; set; }
         public int EstadoSolicitud { get; set; }
         public List<SolicitudDespachoDetalleDTO> Detalle { get; set; }
@@ -99,12 +103,15 @@ namespace DTO
         public int IdSolicitudDespachoModelo { get; set; }
         public int IdSolicitudDespachoDetalle { get; set; }
         public DateTime FechaDocumento { get; set; }
+        public DateTime FechaCreacion { get; set; }
         public int EstadoSolicitud { get; set; }
         public int IdUsuario { get; set; }
         public int IdEtapa { get; set; }
         public string Serie { get; set; }
         public string Referencia { get; set; }
         public string NombUsuario { get; set; }
+        public string CodCuadrilla { get; set; }
+        public string NombCuadrilla { get; set; }
 
 
 

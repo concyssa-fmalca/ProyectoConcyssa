@@ -1,5 +1,5 @@
 ﻿
-function GenerarReporte() {
+function GenerarReporte(Formato) {
     let IdAlmacen = $("#IdAlmacen").val();
     let IdTipoProducto = $("#cboTipoArticulo").val();
     let AnioI = $("#txtAnioI").val();
@@ -20,9 +20,31 @@ function GenerarReporte() {
 
 
             $.ajaxSetup({ async: false });
-        $.post("GenerarReporteProyeccion", { 'IdAlmacen': IdAlmacen, 'IdTipoProducto': IdTipoProducto, 'AnioI': AnioI, 'AnioF': AnioF, 'MesI': MesI, 'MesF': MesF}, function (data, status) {
+        $.post("GenerarReporteProyeccion", { 'Formato': Formato, 'IdAlmacen': IdAlmacen, 'IdTipoProducto': IdTipoProducto, 'AnioI': AnioI, 'AnioF': AnioF, 'MesI': MesI, 'MesF': MesF}, function (data, status) {
                 let datos;
-                if (validadJson(data)) {
+            if (validadJson(data)) {
+                if (Formato == 'excel') {
+                    try {
+                        datos = JSON.parse(data)
+
+                        const byteString = window.atob(datos.Base64ArchivoPDF);
+                        const arrayBuffer = new ArrayBuffer(byteString.length);
+                        const int8Array = new Uint8Array(arrayBuffer);
+                        for (let i = 0; i < byteString.length; i++) {
+                            int8Array[i] = byteString.charCodeAt(i);
+                        }
+
+                        const blob = new Blob([int8Array], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                        const link = document.createElement("a");
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = `ProyeccionConsumo.xlsx`;
+                        link.click();
+                        Swal.close()
+                    } catch (e) {
+                        Swal.fire("Error", "No se Pudo Generar el Archivo Excel", "error")
+                    }
+                } else {
+
                     let datobase64;
                     datobase64 = "data:application/octet-stream;base64,"
                     datos = JSON.parse(data);
@@ -32,6 +54,7 @@ function GenerarReporte() {
                         'Reporte Generado',
                         'success'
                     )
+                }
                 } else {
                     respustavalidacion;
                     Swal.fire(

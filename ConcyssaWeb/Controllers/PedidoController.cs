@@ -86,6 +86,71 @@ namespace ConcyssaWeb.Controllers
         }
 
 
+        public string InsertPedidoModeloAut(PedidoDTO oPedidoDTO) {
+            string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            int IdSociedad = Convert.ToInt32((String.IsNullOrEmpty(oPedidoDTO.IdSociedad.ToString())) ? Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad")) : oPedidoDTO.IdSociedad);
+            int IdUsuario = Convert.ToInt32((String.IsNullOrEmpty(oPedidoDTO.IdUsuario.ToString())) ? Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad")) : oPedidoDTO.IdUsuario);
+
+            if (IdSociedad == 0)
+            {
+                IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            }
+            if (IdUsuario == 0)
+            {
+                IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            }
+            //Validar Modelos Aprobacion 
+            ModeloAutorizacionDAO oModeloAutorizacionDAO = new ModeloAutorizacionDAO();
+            PedidoDAO OPedidoDAO = new PedidoDAO();
+            var ModeloAuorizacion = oModeloAutorizacionDAO.VerificarExisteModeloSolicitud(1, 4, BaseDatos); //valida si existe alguina modelo aplicado a documento solicitud Despacho
+
+            if (ModeloAuorizacion.Count > 0)
+            {
+                for (int i = 0; i < ModeloAuorizacion.Count; i++)
+                {
+                    var ResultadoModelo = oModeloAutorizacionDAO.ObtenerDatosxID(ModeloAuorizacion[i].IdModeloAutorizacion, BaseDatos);
+                    for (int a = 0; a < ResultadoModelo[0].DetallesAutor.Count; a++)
+                    {
+                        if (ResultadoModelo[0].DetallesAutor[a].IdAutor == IdUsuario)
+                        {
+                            SolicitudDespachoDAO oSolicitudDespachoDAO = new SolicitudDespachoDAO();
+                            int IdInsert = 0;
+                            try
+                            {
+                                IdInsert = int.Parse(UpdateInsertPedido(oPedidoDTO));
+                            }
+                            catch (Exception e) {
+                                return "-2";
+                            }
+                            for (int e = 0; e < ResultadoModelo[0].DetallesEtapa.Count; e++)
+                            {
+                                var result = OPedidoDAO.UpdateInsertPedidoModelo(new PedidoModeloDTO
+                                {
+                                    IdPedidoModelo = 0,
+                                    IdPedido = IdInsert,
+                                    IdModelo = ResultadoModelo[0].IdModeloAutorizacion,
+                                    IdEtapa = ResultadoModelo[0].DetallesEtapa[e].IdEtapa,
+                                    Aprobaciones = ResultadoModelo[0].DetallesEtapa[e].AutorizacionesRequeridas,
+                                    Rechazos = ResultadoModelo[0].DetallesEtapa[e].RechazosRequeridos
+                                }, "1", BaseDatos);
+
+                                //var ResultadoEtapa = oEtapaAutorizacionDAO.ObtenerDatosxID(ResultadoModelo[0].DetallesEtapa[e].IdEtapa);
+                            }
+                            return IdInsert.ToString();
+                        }
+                    }
+
+
+                }
+
+            }
+            return "-1";
+
+        }
+
+
+
         public string UpdateInsertPedido(PedidoDTO oPedidoDTO)
         {
             string mensaje_error = "";
@@ -198,6 +263,7 @@ namespace ConcyssaWeb.Controllers
         {
             string mensaje_error = "";
             string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            
             PedidoDAO oPedidoDAO = new PedidoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             DataTableDTO oDataTableDTO = new DataTableDTO();
@@ -223,8 +289,42 @@ namespace ConcyssaWeb.Controllers
             return mensaje_error;
         }
 
+        public string ObtenerPedidoDTConfirmidadXAutorizador(int Accion = 0)
+        {
+            string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            PedidoDAO oPedidoDAO = new PedidoDAO();
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            DataTableDTO oDataTableDTO = new DataTableDTO();
+            List<PedidoDTO> lstPedidoDTO = oPedidoDAO.ObtenerPedidoxEstadoConformidadAutorizacion(IdUsuario, BaseDatos, ref mensaje_error, Accion);
+            List<PedidoDTO> lstPedidoDTO2 = oPedidoDAO.ObtenerPedidoxEstadoConformidad(1, BaseDatos, ref mensaje_error, Accion);
+            for (int i = 0; i < lstPedidoDTO2.Count; i++)
+            {
+                lstPedidoDTO.Add(lstPedidoDTO2[i]);
+            }
+            if (lstPedidoDTO.Count > 0)
+            {
+                oDataTableDTO.sEcho = 1;
+                oDataTableDTO.iTotalDisplayRecords = lstPedidoDTO.Count;
+                oDataTableDTO.iTotalRecords = lstPedidoDTO.Count;
+                oDataTableDTO.aaData = (lstPedidoDTO);
+                return JsonConvert.SerializeObject(oDataTableDTO);
 
-        
+            }
+            else
+            {
+                oDataTableDTO.sEcho = 1;
+                oDataTableDTO.iTotalDisplayRecords = lstPedidoDTO.Count;
+                oDataTableDTO.iTotalRecords = lstPedidoDTO.Count;
+                oDataTableDTO.aaData = (lstPedidoDTO);
+                return JsonConvert.SerializeObject(oDataTableDTO);
+
+            }
+            return mensaje_error;
+        }
+
+
+
         public string ObtenerPedidoDTCorreoProveedor(int EnvioCorreo = 0, int Proveedor=0)
         {
             string mensaje_error = "";
@@ -490,6 +590,26 @@ namespace ConcyssaWeb.Controllers
             PedidoDAO oPedidoDAO = new PedidoDAO();
             string mensaje_error = "";
             int respuesta = oPedidoDAO.UpdateInsertPedidoConformidadPedido(oConformidadPedidoDTO, UsuarioConformidad,BaseDatos,ref mensaje_error);
+            if (respuesta >= 0 && oConformidadPedidoDTO.Conformidad == 2)
+            {
+                EnviarCorreoObservaciones(oConformidadPedidoDTO.IdPedido);
+
+            }
+            return respuesta.ToString();
+        }
+
+        public string updatedInsertConformidadPedidoAuth(ConformidadPedidoDTO oConformidadPedidoDTO, int UsuarioConformidad, int IdModelo)
+        {
+            UsuarioConformidad = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            PedidoDAO oPedidoDAO = new PedidoDAO();
+            string mensaje_error = "";
+            int respuesta = oPedidoDAO.UpdateInsertPedidoConformidadPedidoAuth(oConformidadPedidoDTO, UsuarioConformidad,IdModelo, BaseDatos, ref mensaje_error);
+            if (respuesta >= 0 && oConformidadPedidoDTO.Conformidad == 2)
+            {
+                EnviarCorreoObservaciones(oConformidadPedidoDTO.IdPedido);
+
+            }
             return respuesta.ToString();
         }
 
@@ -808,6 +928,7 @@ namespace ConcyssaWeb.Controllers
             {
                 if (respuesta == 1)
                 {
+                    EnviarCorreoAnulacionCierre(oPedidoDTO.IdPedido, "cerrado");
                     return "1";
                 }
                 else
@@ -832,6 +953,7 @@ namespace ConcyssaWeb.Controllers
             {
                 if (respuesta == 1)
                 {
+                   
                     return "1";
                 }
                 else
@@ -856,6 +978,7 @@ namespace ConcyssaWeb.Controllers
             {
                 if (respuesta == 1)
                 {
+                    EnviarCorreoAnulacionCierre(oPedidoDTO.IdPedido, "anulado");
                     return "1";
                 }
                 else if (respuesta == 2) {
@@ -897,6 +1020,206 @@ namespace ConcyssaWeb.Controllers
 
             }
             return "ERROR";
+        }
+
+        public int EnviarCorreoObservaciones(int IdPedido)
+        {
+
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            try
+            {
+
+                string base64;
+                string html = @"";
+                string mensaje_error = "";
+                PedidoDAO oPedidoDAO = new PedidoDAO();
+                PedidoDTO oPedidoDTO = new PedidoDTO();
+                int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+
+
+                oPedidoDTO = oPedidoDAO.ObtenerPedidoxId(IdPedido, BaseDatos, ref mensaje_error);
+                string body;
+                body = "BASE PRUBAS";
+
+                ObraDAO obraDao = new ObraDAO();
+                List<ObraDTO> datosObra = obraDao.ObtenerDatosxID(oPedidoDTO.IdObra, BaseDatos, ref mensaje_error);
+                string correoObra = "";
+                if (datosObra.Count > 0) correoObra = datosObra[0].CorreoObra;
+                //body = "<body>" +
+                //    "<h2>Se "+Estado+" una Solicitud</h2>" +
+                //    "<h4>Detalles de Solicitud:</h4>" +
+                //    "<span>N° Solicitud: " + Serie + "-" + Numero + "</span>" +
+                //    "<br/><span>Solicitante: " + Solicitante + "</span>" +
+                //    "</body>";
+
+
+                string msge = "";
+                string from = "concyssa.smc@gmail.com";
+                string correo = from;
+                string password = "tlbvngkvjcetzunr";
+                string displayName = "SE OBSERVÓ EL PEDIDO " + oPedidoDTO.NombSerie + "-" + oPedidoDTO.Correlativo;
+                MailMessage mail = new MailMessage();
+                mail.From = new MailAddress(from, displayName);
+
+                //mail.To.Add(correoObra);
+                //mail.To.Add("garrieta@concyssa.com");
+    
+
+                mail.To.Add("cristhian.chacaliaza@smartcode.pe");
+
+
+                mail.Subject = "SE OBSERVÓ EL PEDIDO " + oPedidoDTO.NombSerie + "-" + oPedidoDTO.Correlativo;
+                //mail.CC.Add(new MailAddress("camala145@gmail.com"));
+                mail.Body = TemplateObservacion(oPedidoDTO);
+
+                mail.IsBodyHtml = true;
+                SmtpClient client = new SmtpClient("smtp.gmail.com", 587); //Aquí debes sustituir tu servidor SMTP y el puerto
+                client.Credentials = new NetworkCredential(from, password);
+                client.EnableSsl = true;//En caso de que tu servidor de correo no utilice cifrado SSL,poner en false
+
+
+
+                client.Send(mail);
+
+            }
+            catch (WebException e)
+            {
+                using (WebResponse responses = e.Response)
+                {
+                    HttpWebResponse httpResponse = (HttpWebResponse)responses;
+                    using (Stream data = responses.GetResponseStream())
+                    using (var reader = new StreamReader(data))
+                    {
+                        var dd = reader.ReadToEnd();
+                    }
+                }
+                string err = e.ToString();
+            }
+
+            return 0;
+        }
+
+        public int EnviarCorreoAnulacionCierre(int IdPedido,string CierreAnulacion)
+        {
+
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            try
+            {
+
+                string base64;
+                string html = @"";
+                string mensaje_error = "";
+                PedidoDAO oPedidoDAO = new PedidoDAO();
+                PedidoDTO oPedidoDTO = new PedidoDTO();
+                int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+
+
+                oPedidoDTO = oPedidoDAO.ObtenerPedidoxId(IdPedido, BaseDatos, ref mensaje_error);
+                string body;
+                body = "BASE PRUBAS";
+
+
+                if (oPedidoDTO.EnvioCorreo == false)
+                {
+                    return 0;
+                }
+
+                ObraDAO obraDao = new ObraDAO();
+                List<ObraDTO> datosObra = obraDao.ObtenerDatosxID(oPedidoDTO.IdObra, BaseDatos, ref mensaje_error);
+                string correoObra = "";
+                if (datosObra.Count > 0) correoObra = datosObra[0].CorreoObra;
+                //body = "<body>" +
+                //    "<h2>Se "+Estado+" una Solicitud</h2>" +
+                //    "<h4>Detalles de Solicitud:</h4>" +
+                //    "<span>N° Solicitud: " + Serie + "-" + Numero + "</span>" +
+                //    "<br/><span>Solicitante: " + Solicitante + "</span>" +
+                //    "</body>";
+
+                string displayAsunto = "CERRÓ";
+                if (CierreAnulacion == "anulado") { displayAsunto = "ANULÓ"; }
+
+                string msge = "";
+                string from = "concyssa.smc@gmail.com";
+                string correo = from;
+                string password = "tlbvngkvjcetzunr";
+                string displayName = "SE "+ displayAsunto + " EL PEDIDO " + oPedidoDTO.NombSerie + "-" + oPedidoDTO.Correlativo;
+                MailMessage mail = new MailMessage();
+                mail.From = new MailAddress(from, displayName);
+
+                mail.To.Add(correoObra);
+                mail.To.Add("compras@concyssa.com");
+                mail.To.Add(oPedidoDTO.EmailProveedor);
+
+
+                //mail.To.Add("cristhian.chacaliaza@smartcode.pe");
+
+
+                mail.Subject = "SE "+ displayAsunto + " EL PEDIDO " + oPedidoDTO.NombSerie + "-" + oPedidoDTO.Correlativo;
+                //mail.CC.Add(new MailAddress("camala145@gmail.com"));
+                mail.Body = TemplateCierreAnulacion(oPedidoDTO, CierreAnulacion);
+
+                mail.IsBodyHtml = true;
+                SmtpClient client = new SmtpClient("smtp.gmail.com", 587); //Aquí debes sustituir tu servidor SMTP y el puerto
+                client.Credentials = new NetworkCredential(from, password);
+                client.EnableSsl = true;//En caso de que tu servidor de correo no utilice cifrado SSL,poner en false
+
+
+
+                client.Send(mail);
+
+            }
+            catch (WebException e)
+            {
+                using (WebResponse responses = e.Response)
+                {
+                    HttpWebResponse httpResponse = (HttpWebResponse)responses;
+                    using (Stream data = responses.GetResponseStream())
+                    using (var reader = new StreamReader(data))
+                    {
+                        var dd = reader.ReadToEnd();
+                    }
+                }
+                string err = e.ToString();
+            }
+
+            return 0;
+        }
+
+
+
+        public string TemplateObservacion(PedidoDTO oPedidoDTO)
+        {
+            string correo = @"<html><head><meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>
+	                <title></title>
+	
+                    </head>
+                    <body>
+                    <p>Estimado personal</p>
+
+                    <p>Se notifica que el Pedido " + oPedidoDTO.NombSerie + "-" + oPedidoDTO.Correlativo + @" fué observado:</p>
+                
+                    </body></html>";
+
+            return correo;
+
+
+        }
+        public string TemplateCierreAnulacion(PedidoDTO oPedidoDTO,string AnulacionCierre)
+        {
+            string correo = @"<html><head><meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>
+	                <title></title>
+	
+                    </head>
+                    <body>
+                    <p>Estimado Proveedor</p>
+
+                    <p>Se notifica que el Pedido " + oPedidoDTO.NombSerie + "-" + oPedidoDTO.Correlativo + @" fué " + AnulacionCierre+@"</p>
+                
+                    </body></html>";
+
+            return correo;
+
+
         }
 
     }

@@ -972,6 +972,7 @@ function ObtenerGiros() {
                 IdTipoRegistro: +$("#cboTipoRegistro").val(),
                 IdSemana: +$("#cboSemana").val(),
                 IdEstadoGiro: +$("#cboEstado").val(),
+                EstadoCont: +$("#cboContabilizado").val()
             },
         },
 
@@ -1088,6 +1089,19 @@ function ObtenerGiros() {
 
                 },
             },
+            {              
+                data: null,
+                targets: 10,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    let estado = ""
+                    let readonly = "disabled"
+                    if (full.Contabilizado) { estado = "Checked" }
+                    if ($("#IdPerfilSesion").val() == 1022 || $("#IdPerfilSesion").val() == 1) { readonly = "" }
+                    return '<input type="checkbox" id="chkGiro' + full.IdGiro + '" onchange="ActualizarEstadoContabilizado(' + full.IdGiro + ')" ' + estado + ' ' + readonly +'/>';
+
+                },
+            },
             
 
 
@@ -1097,6 +1111,20 @@ function ObtenerGiros() {
         ],
         "bDestroy": true
     }).DataTable();
+
+}
+
+function ActualizarEstadoContabilizado(Id) {
+
+    let Estado = $("#chkGiro"+Id).prop("checked")
+
+    $.post('ActualizarEstadoContabilizado', {
+        'IdGiro': Id,
+        'Estado' : Estado
+    }, function (data, status) {
+
+        console.log(data)
+    });
 }
 
 function ObtenerGiroDetalles() {

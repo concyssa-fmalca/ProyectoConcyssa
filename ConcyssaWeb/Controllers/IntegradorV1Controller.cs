@@ -438,6 +438,7 @@ namespace ConcyssaWeb.Controllers
 
                         //respuestaSAP += Mensaje_error;
                     }
+                    GC.Collect();
                     ConexionSAP.DesconectarSAP();
                 }
                 else

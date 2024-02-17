@@ -1,11 +1,14 @@
 ﻿@model List<string>
+@using Microsoft.AspNetCore.Http;
 @{
     ViewBag.Title = "Listado";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    HttpContextAccessor httpContextAccessor = new HttpContextAccessor();
 }
 
 
 <div class="container-fluid" style="height:93%;">
+    <input id="IdPerfilSesion" style="display:none" type="text" value="@httpContextAccessor.HttpContext.Session.GetInt32("IdPerfil")" />
     <div class="panel">
         <div class="container-fluid">
             <div class="topbar-left col-xs-6">
@@ -53,6 +56,15 @@
                     <div class="col-sm-2">
                         <select id="cboEstado" class="form-control" onchange="onchangeEstado()"></select>
                     </div>
+                    <label for="cboContabilizado" class="control-label col-sm-1 left-align" style="color:black;margin-top:5px">Contablizado</label>
+                    <div class="col-sm-2">
+                        <select id="cboContabilizado" class="form-control" onchange="onchangeTipoRegistroM()">
+                            <option value="2">Mostar Todos</option>
+                            <option value="0">Mostar No Contabilizados</option>
+                            <option value="1">Mostar Contabilizados</option>
+
+                        </select>
+                    </div>
 
 
                 </div>
@@ -76,7 +88,7 @@
                             <th>Total Dolares</th>
                             <th>Estado Giro</th>
                             <th>Historial</th>
-
+                            <th>Contabilizado</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>

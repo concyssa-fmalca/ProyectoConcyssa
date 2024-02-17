@@ -62,6 +62,9 @@ namespace DTO
         public string NombCondicionPago { get; set; }
         public string EmailProveedor { get; set; }
         public int EstadoOC { get; set; }
+        public int Accion { get; set; }
+        public int IdModelo { get; set; }
+        public bool EnvioCorreo { get; set; }
 
     }
     public class PedidoDetalleDTO

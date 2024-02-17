@@ -15,6 +15,10 @@ namespace ConcyssaWeb.Controllers
         {
             return View();
         }
+        public IActionResult version2()
+        {
+            return View();
+        }
 
         public string UpdateInsertMovimiento(MovimientoDTO oMovimientoDTO,string BaseDatos="")
         {
@@ -48,6 +52,7 @@ namespace ConcyssaWeb.Controllers
             int respuesta1 = 0;
             if (mensaje_error.Length > 0)
             {
+                GC.Collect();
                 return mensaje_error;
             }
             if (respuesta > 0)
@@ -83,16 +88,19 @@ namespace ConcyssaWeb.Controllers
 
             if (mensaje_error.Length > 0)
             {
+                GC.Collect();
                 return mensaje_error;
             }
             else
             {
                 if (respuesta > 0)
                 {
+                    GC.Collect();
                     return respuesta.ToString();
                 }
                 else
                 {
+                    GC.Collect();
                     return mensaje_error;
                 }
             }
@@ -109,33 +117,55 @@ namespace ConcyssaWeb.Controllers
 
             if (mensaje_error.ToString().Length == 0)
             {
-                //int validadStock = 0;
-                //for (int i = 0; i < oMovimientoDTO.detalles.Count(); i++)
-                //{
-                //    oArticuloStockDTO = oKardexDAO.ObtenerArticuloxIdArticuloxIdAlm(oMovimientoDTO.detalles[i].IdArticulo, oMovimientoDTO.detalles[i].IdAlmacen,BaseDatos,ref mensaje_error);
-                //    if (oArticuloStockDTO.Stock < oMovimientoDTO.detalles[i].CantidadBase)
-                //    {
-                //        validadStock = 1;
-                //    }
-                //}
-                //if (validadStock == 1)
-                //{
-                //    return "No hay suficiente Stock";
-                //}
+  
                 EntradaMercanciaController oEntradaMercanciaController = new EntradaMercanciaController();
                 oMovimientoDTO.IdTipoDocumento = 335;
-                oMovimientoDTO.Comentario = "EXTORNO DEL SALIDA " + oMovimientoDTO.NombSerie + "-" + +oMovimientoDTO.Correlativo;
+                oMovimientoDTO.Comentario = "EXTORNO DE LA SALIDA " + oMovimientoDTO.NombSerie + "-" + +oMovimientoDTO.Correlativo;
                 oMovimientoDTO.IdMovimiento = 0;
                 oMovimientoDTO.IdSerie = Serie;
                 oMovimientoDTO.FechaDocumento = FechaDoc;
                 oMovimientoDTO.FechaContabilizacion = FechaCont;
-                //for (int i = 0; i < oMovimientoDTO.detalles.Count; i++)
-                //{
-                //    oMovimientoDTO.detalles[i].IdMovimientoDetalle = 0;
-                //}
+ 
 
                 oEntradaMercanciaController.UpdateInsertMovimiento(oMovimientoDTO,BaseDatos);
 
+
+                return "1";
+
+            }
+            else
+            {
+                return mensaje_error;
+
+            }
+
+        }
+
+        public string GenerarTransfExtorno(int IdMovimiento, int Serie, DateTime FechaDoc, DateTime FechaCont)
+        {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            string mensaje_error = "";
+            MovimientoDAO oMovimientoDAO = new MovimientoDAO();
+            KardexDAO oKardexDAO = new KardexDAO();
+            MovimientoDTO oMovimientoDTO = oMovimientoDAO.ObtenerMovimientosDetallexIdMovimiento(IdMovimiento, BaseDatos, ref mensaje_error);
+            ArticuloStockDTO oArticuloStockDTO = new ArticuloStockDTO();
+
+            if (mensaje_error.ToString().Length == 0)
+            {
+
+                EntradaMercanciaController oEntradaMercanciaController = new EntradaMercanciaController();
+                oMovimientoDTO.IdTipoDocumento = 335;
+                oMovimientoDTO.IdTransfAnulada = IdMovimiento;
+                oMovimientoDTO.IdMovimiento = 0;
+                oMovimientoDTO.Comentario = "EXTORNO DE LA TRANSFERENCIA " + oMovimientoDTO.NombSerie + "-" + +oMovimientoDTO.Correlativo;
+                oMovimientoDTO.IdMovimiento = 0;
+                oMovimientoDTO.IdSerie = Serie;
+                oMovimientoDTO.FechaDocumento = FechaDoc;
+                oMovimientoDTO.FechaContabilizacion = FechaCont;
+
+
+                oEntradaMercanciaController.UpdateInsertMovimiento(oMovimientoDTO, BaseDatos);
+                oMovimientoDAO.ActualizarAnulacionTransferencia(IdMovimiento,BaseDatos,ref mensaje_error);
 
                 return "1";
 

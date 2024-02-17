@@ -1,7 +1,9 @@
 ﻿@model List<string>
+@using Microsoft.AspNetCore.Http;
 @{
     ViewBag.Title = "Listado";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    HttpContextAccessor httpContextAccessor = new HttpContextAccessor();
 }
 
 
@@ -66,6 +68,7 @@
 </style>
 
 <div class="container-fluid" style="height:93%;">
+    <input style="display:none" id="IdUsuarioSesion" type="text" value="@httpContextAccessor.HttpContext.Session.GetInt32("IdUsuario")" />
     <div class="panel">
         <div class="container-fluid">
             <div class="topbar-left col-xs-6">
@@ -319,7 +322,7 @@
                                 </div>
                                 <div class='form-group-sm'>
                                     <div class="col-sm-4">
-                                        <select class="form-control" id="IdTipoProducto" style="margin-bottom:10px;margin-top:5px">
+                                        <select class="form-control" id="IdTipoProducto" style="margin-bottom:10px;margin-top:5px" onchange="BuscarItemsExp()">
                                             <option value="0">Seleccione</option>
                                             <option value="1">MATERIALES</option>
                                             <option value="2">AUXILIARES</option>
@@ -327,10 +330,12 @@
                                     </div>
                                 </div>
                                 <div class='form-group-sm'>
-                                    <div class="col-sm-4">
-                                        <button style="margin-bottom:10px;margin-top:5px" class="btn btn-xs btn-info" id="btnAgregarItem" onclick="OpenModalItem()" type="button">Agregar Item</button>
-                                    </div>
+                                   
                                 </div>
+                                <select id="cboAgregarArticulo" class="form-control" onchange="SeleccionarItemListado()"></select>
+                                <label>Stock:</label> <input id="stocknuevo" type="number" disabled/>
+                                <label>Cantidad:</label> <input id="cantidadnuevo" type="number" />
+                                 <button id="btn_agregaritem" style="margin-bottom:10px;margin-top:5px" class="btn btn-xs btn-info" onclick="AgregarItemV2()" type="button">Agregar Item</button>
                                 <div class="table-responsive">
                                     <table class="table" id="tabla">
                                         <thead>
@@ -545,6 +550,7 @@
         <div class="panel-footer text-right">
             <div class="row">
                 <button type="button" id="btnGrabar" onclick="GuardarSolicitud()" class="btn btn-primary pull-right plu">Grabar</button>
+                <button type="button" id="btnExtorno" onclick="Extornar()" style="display:none" class="btn btn-primary pull-right plu">Extornar</button>
                 <button type="button" id="btnEditar" onclick="Editar()" class="btn btn-primary pull-right plu">Grabar</button>
                 @*<button type="button" id="btnExtorno" onclick="GenerarGuia()" class="btn btn-primary pull-right plu">Generar Guia</button>*@
 

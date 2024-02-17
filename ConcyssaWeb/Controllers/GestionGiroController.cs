@@ -15,7 +15,7 @@ namespace ConcyssaWeb.Controllers
         {
             return View();
         }
-        public string ObtenerGiro(int estado = 3, int IdObra = 0, int IdTipoRegistro=0, int IdSemana = 0,int IdEstadoGiro = 0 )
+        public string ObtenerGiro(int estado = 3, int IdObra = 0, int IdTipoRegistro=0, int IdSemana = 0,int IdEstadoGiro = 0 ,int EstadoCont = 2)
         {
 
             string valida = "";
@@ -29,7 +29,7 @@ namespace ConcyssaWeb.Controllers
             GiroDAO oGiroDAO = new GiroDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
-            List<GiroDTO> lstSemanaDTO = oGiroDAO.ObtenerGiro(BaseDatos,ref mensaje_error, IdSociedad,IdObra, IdTipoRegistro, IdSemana, IdEstadoGiro,  estado, IdUsuario);
+            List<GiroDTO> lstSemanaDTO = oGiroDAO.ObtenerGiro(BaseDatos,ref mensaje_error, IdSociedad,IdObra, IdTipoRegistro, IdSemana, IdEstadoGiro,  estado, IdUsuario, EstadoCont);
             DataTableDTO oDataTableDTO = new DataTableDTO();
             if (lstSemanaDTO.Count > 0 || mensaje_error == "")
             {
@@ -534,6 +534,18 @@ namespace ConcyssaWeb.Controllers
             {
                 return mensaje_error;
             }
+        }
+
+        public int ActualizarEstadoContabilizado(int IdGiro, bool Estado)
+        {
+
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            GiroDAO oSemanaDAO = new GiroDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            //oSemanaDTO.IdSociedad = IdSociedad;
+            int respuesta = oSemanaDAO.ActualizarEstadoContabilizado( IdGiro,  Estado, BaseDatos);
+
+            return respuesta;
         }
 
 

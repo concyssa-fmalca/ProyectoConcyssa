@@ -194,7 +194,7 @@ namespace DAO
 
 
 
-        public List<GiroAprobacionDTO> ObtenerGiroCabeceraAutorizar(string IdUsuario, string IdSociedad, string FechaInicio, string FechaFinal, int Estado, string BaseDatos)
+        public List<GiroAprobacionDTO> ObtenerGiroCabeceraAutorizar(string IdUsuario, string IdSociedad, string FechaInicio, string FechaFinal, int Estado,int IdObra, string BaseDatos)
         {
             List<GiroAprobacionDTO> lstGiroAprobacionDTO = new List<GiroAprobacionDTO>();
             List<DetalleGiroAprobacionDTO> lstDetalleGiroAprobacionDTO = new List<DetalleGiroAprobacionDTO>();
@@ -212,6 +212,7 @@ namespace DAO
                     da.SelectCommand.Parameters.AddWithValue("@FechaFinal", FechaFinal);
                     //da.SelectCommand.Parameters.AddWithValue("@Estado", Estado);
                     da.SelectCommand.Parameters.AddWithValue("@EstadoPR", Estado);
+                    da.SelectCommand.Parameters.AddWithValue("@IdObra", IdObra);
 
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
                     SqlDataReader drd = da.SelectCommand.ExecuteReader();

@@ -14,7 +14,7 @@ namespace DAO
 {
     public class GiroDAO
     {
-        public List<GiroDTO> ObtenerGiro( string BaseDatos, ref string mensaje_error,int IdSociedad, int IdObra = 0, int IdTipoRegistro = 0, int IdSemana = 0, int IdEstadoGiro = 0,  int Estado = 3, int IdUsuario=0)
+        public List<GiroDTO> ObtenerGiro( string BaseDatos, ref string mensaje_error,int IdSociedad, int IdObra = 0, int IdTipoRegistro = 0, int IdSemana = 0, int IdEstadoGiro = 0,  int Estado = 3, int IdUsuario=0, int EstadoCont=2)
         {
             List<GiroDTO> lstGiroDTO = new List<GiroDTO>();
             using (SqlConnection cn = new Conexion().conectar(BaseDatos))
@@ -30,6 +30,7 @@ namespace DAO
                     if(IdSemana != 0)da.SelectCommand.Parameters.AddWithValue("@IdSemana", IdSemana);
                     if(IdEstadoGiro != 0)da.SelectCommand.Parameters.AddWithValue("@IdEstadoGiro", IdEstadoGiro);
                     if (IdUsuario != 0) da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
+                    if (IdUsuario != 0) da.SelectCommand.Parameters.AddWithValue("@EstadoCont", EstadoCont);
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
                     SqlDataReader drd = da.SelectCommand.ExecuteReader();
                     while (drd.Read())
@@ -691,6 +692,37 @@ namespace DAO
 
 
 
+        public int ActualizarEstadoContabilizado(int IdGiro, bool Estado, string BaseDatos)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_ActualizarEstadoContabilizado", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdGiro", IdGiro);
+                        da.SelectCommand.Parameters.AddWithValue("@Estado", Estado);
+  
+
+                        int rpta = da.SelectCommand.ExecuteNonQuery();
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                       
+                        return 0;
+                    }
+                }
+            }
+        }
 
 
 
@@ -700,6 +732,6 @@ namespace DAO
 
 
 
-    
+
 }
 

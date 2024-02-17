@@ -229,7 +229,7 @@ function QuitarTodasCuadrillas() {
         $("#cboCuadrillaSeleccionada").empty();
     }
 }
-function GenerarReporte() {
+function GenerarReporte(Formato) {
     // Obtiene todos los elementos del select "llenar"
     var elementos = $("#cboCuadrillaSeleccionada option");
 
@@ -274,7 +274,20 @@ function GenerarReporte() {
     $("#chkIncAuxiliares").is(':checked') ? varAuxiliaresRPT = true : varAuxiliaresRPT = false
     $("#chkIncServicios").is(':checked') ? varServiciosRPT = true : varServiciosRPT = false
     $("#chkIncExtornos").is(':checked') ? varExtornosRPT = true : varExtornosRPT = false
-    $("#chkDetallado").is(':checked') ? nombreRPT = "InformeCuadrillas" : nombreRPT = "InformeCuadrillasResumido"
+
+    if ($("#RptResumido").is(':checked')) {
+        nombreRPT = "InformeCuadrillasResumido" 
+    }
+    if ($("#RptDetallado").is(':checked')) {
+        nombreRPT = "InformeCuadrillas"
+    }
+    if ($("#RptTotales").is(':checked')) {
+        nombreRPT = "InformeCuadrillasTotales"
+    }
+    if ($("#RptGrupo").is(':checked')) {
+        nombreRPT = "InformeCuadrillasPorGrupo"
+
+    }
 
 
     if (varMaterialesRPT == false && varAuxiliaresRPT == false && varServiciosRPT == false && varExtornosRPT == false) {
@@ -293,7 +306,7 @@ function GenerarReporte() {
             type: "POST",
             async: false,
             data: {
-                'NombreReporte': nombreRPT, 'Formato': 'PDF', 'Cuadrillas': varCuadrillasRPT, 'Materiales': varMaterialesRPT, 'Auxiliares': varAuxiliaresRPT, 'Servicios': varServiciosRPT, 'Extornos': varExtornosRPT, 'FechaInicioS': varFechaInicioRPT, 'FechaFin': varFechaFinRPT
+                'NombreReporte': nombreRPT, 'Formato': Formato, 'Cuadrillas': varCuadrillasRPT, 'Materiales': varMaterialesRPT, 'Auxiliares': varAuxiliaresRPT, 'Servicios': varServiciosRPT, 'Extornos': varExtornosRPT, 'FechaInicioS': varFechaInicioRPT, 'FechaFin': varFechaFinRPT
             },
             beforeSend: function () {
                 Swal.fire({
@@ -311,23 +324,45 @@ function GenerarReporte() {
                     allowOutsideClick: false
                 });
                 let datos;
-                if (validadJson(data)) {
-                    let datobase64;
-                    datobase64 = "data:application/octet-stream;base64,"
-                    datos = JSON.parse(data);
-                    //datobase64 += datos.Base64ArchivoPDF;
-                    //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
-                    //$("#reporteRPT").attr("href", datobase64);
-                    //$("#reporteRPT")[0].click();
-                
-                    verBase64PDF(datos)
-                    Swal.fire(
-                        'Correcto',
-                        'Reporte Generado Correctamente',
-                        'success'
-                    )
+                if (Formato == "excel") {
+                    try {
+                        datos = JSON.parse(data)
+
+                        const byteString = window.atob(datos.Base64ArchivoPDF);
+                        const arrayBuffer = new ArrayBuffer(byteString.length);
+                        const int8Array = new Uint8Array(arrayBuffer);
+                        for (let i = 0; i < byteString.length; i++) {
+                            int8Array[i] = byteString.charCodeAt(i);
+                        }
+
+                        const blob = new Blob([int8Array], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                        const link = document.createElement("a");
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = nombreRPT +`.xlsx`;
+                        link.click();
+                        Swal.close()
+                    } catch (e) {
+                        Swal.fire("Error", "No se Pudo Generar el Archivo Excel", "error")
+                    }
                 } else {
-                    console.log("error");
+                    if (validadJson(data)) {
+                        let datobase64;
+                        datobase64 = "data:application/octet-stream;base64,"
+                        datos = JSON.parse(data);
+                        //datobase64 += datos.Base64ArchivoPDF;
+                        //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
+                        //$("#reporteRPT").attr("href", datobase64);
+                        //$("#reporteRPT")[0].click();
+                
+                        verBase64PDF(datos)
+                        Swal.fire(
+                            'Correcto',
+                            'Reporte Generado Correctamente',
+                            'success'
+                        )
+                    } else {
+                        console.log("error");
+                    }
                 }
 
             },

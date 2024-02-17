@@ -26,6 +26,15 @@ namespace ConcyssaWeb.Controllers
         }
         public IActionResult ConsumoProyectado()
         {
+         
+            return View();
+        }
+        public IActionResult ConsumosProyectados()
+        {
+            return View();
+        }
+        public IActionResult MovimientosMensual()
+        {
             return View();
         }
 
@@ -307,7 +316,7 @@ namespace ConcyssaWeb.Controllers
         }
 
 
-        public string GenerarReporteProyeccion(int IdAlmacen, int IdTipoProducto, int AnioI, int AnioF, int MesI, int MesF, string BaseDatos)
+        public string GenerarReporteProyeccion(string Formato,int IdAlmacen, int IdTipoProducto, int AnioI, int AnioF, int MesI, int MesF, string BaseDatos)
         {
             if (BaseDatos == "" || BaseDatos == null)
             {
@@ -327,9 +336,86 @@ namespace ConcyssaWeb.Controllers
 
             try
             {
-                string strNew = "IdAlmacen=" + IdAlmacen + "&IdTipoProducto=" + IdTipoProducto + "&AnioI=" + AnioI + "&AnioF=" + AnioF + "&MesI=" + MesI + "&MesF=" + MesF + "&BaseDatos=" + BaseDatos;
+                string strNew = "IdAlmacen=" + IdAlmacen + "&IdTipoProducto=" + IdTipoProducto + "&AnioI=" + AnioI + "&AnioF=" + AnioF + "&MesI=" + MesI + "&MesF=" + MesF + "&BaseDatos=" + BaseDatos + "&Formato=" + Formato;
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteStockMinimo";
                 cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ProyeccionConsumo";
+                uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
+                request = (HttpWebRequest)WebRequest.Create(uri);
+
+                request.Method = "POST";
+                //request.ContentType = "application/json;charset=utf-8";
+                request.ContentType = "application/x-www-form-urlencoded";
+
+
+                StreamWriter requestWriter = new StreamWriter(request.GetRequestStream(), System.Text.Encoding.ASCII);
+
+                requestWriter.Write(strNew);
+
+
+                requestWriter.Close();
+
+
+
+                webResponse = request.GetResponse();
+                Stream webStream = webResponse.GetResponseStream();
+                StreamReader responseReader = new StreamReader(webStream);
+                response = responseReader.ReadToEnd();
+
+                //var Resultado = response;
+                //XmlSerializer xmlSerializer = new XmlSerializer(response);
+                var rr = 33;
+                XmlDocument xDoc = new XmlDocument();
+                xDoc.LoadXml(response);
+                var dd = "";
+
+                oRespuestaDTO.Result = xDoc.ChildNodes[1].ChildNodes[0].InnerText;
+                oRespuestaDTO.Mensaje = xDoc.ChildNodes[1].ChildNodes[1].InnerText;
+                oRespuestaDTO.Base64ArchivoPDF = xDoc.ChildNodes[1].ChildNodes[2].InnerText;
+
+                return JsonConvert.SerializeObject(oRespuestaDTO);
+            }
+            catch (WebException e)
+            {
+                using (WebResponse responses = e.Response)
+                {
+                    HttpWebResponse httpResponse = (HttpWebResponse)responses;
+                    using (Stream data = responses.GetResponseStream())
+                    using (var reader = new StreamReader(data))
+                    {
+                        mensaje_error = reader.ReadToEnd();
+
+                    }
+                }
+
+                string err = e.ToString();
+            }
+
+            return "";
+        }
+
+        public string GenerarReporteMovMensual(string Formato,int IdObra, int IdTipoProducto, int Anio, int Mes,string BaseDatos)
+        {
+            if (BaseDatos == "" || BaseDatos == null)
+            {
+                BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            }
+            RespuestaDTO oRespuestaDTO = new RespuestaDTO();
+            WebResponse webResponse;
+            HttpWebRequest request;
+            Uri uri;
+            string cadenaUri;
+            string requestData;
+            string response;
+            string mensaje_error;
+            WebServiceDTO oWebServiceDTO = new WebServiceDTO();
+            requestData = JsonConvert.SerializeObject(oWebServiceDTO);
+
+
+            try
+            {
+                string strNew = "IdObra=" + IdObra + "&IdTipoProducto=" + IdTipoProducto + "&Anio=" + Anio + "&Mes=" + Mes+ "&BaseDatos=" + BaseDatos+ "&Formato="+ Formato;
+                //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteStockMinimo";
+                cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ReporteMovMensual";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
                 request = (HttpWebRequest)WebRequest.Create(uri);
 

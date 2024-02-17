@@ -16,10 +16,11 @@ function listarPedidoDtConfirmidad() {
         language: lenguaje_data,
         responsive: true,
         ajax: {
-            url: 'ObtenerPedidoDTConfirmidad',
+            //url: 'ObtenerPedidoDTConfirmidad',
+            url: 'ObtenerPedidoDTConfirmidadXAutorizador',
             type: 'POST',
             data: {
-                Conformidad: Conformidad,
+                Accion: Conformidad,
                 TipoAlmacen: TipoAlmacen,
                 pagination: {
                     perpage: 50,
@@ -59,7 +60,7 @@ function listarPedidoDtConfirmidad() {
                 targets: 2,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return '<a style="color:blue;text-decoration:underline;cursor:pointer" onclick="abrirModalPedidoConformidad(`' + full.NombSerie + '`,' + full.Correlativo +',`' + full.NombreProveedor.toString() +'`,`'+ full.FechaDocumento + '`,`' + full.NombAlmacen + '`,' + full.IdPedido +',`'+full.Conformidad+'`)">' + full.NombSerie + '-' + full.Correlativo +'</a>' 
+                    return '<a style="color:blue;text-decoration:underline;cursor:pointer" onclick="abrirModalPedidoConformidad(`' + full.NombSerie + '`,' + full.Correlativo +',`' + full.NombreProveedor.toString() +'`,`'+ full.FechaDocumento + '`,`' + full.NombAlmacen + '`,' + full.IdPedido +',`'+full.Conformidad+'`,'+full.IdModelo+')">' + full.NombSerie + '-' + full.Correlativo +'</a>' 
                 },
             },
             {
@@ -120,6 +121,8 @@ function listarPedidoDtConfirmidad() {
                     } else {
                         if (full.Conformidad == 1) {
                             return "Confirmado"
+                        } else if (full.Conformidad == 2) {
+                            return "Observado"
                         } else {
                             return "Rechazado"
                         }
@@ -345,26 +348,28 @@ function MostrarCC(id) {
 
 // /*   $('#modal-form').modal('show');*/
 //}
-function abrirModalPedidoConformidad(NombSerie, Correlativo, NombreProveedor, FechaDocumento, NombAlmacen, IdPedido,Conformidad) {
+function abrirModalPedidoConformidad(NombSerie, Correlativo, NombreProveedor, FechaDocumento, NombAlmacen, IdPedido,Conformidad,IdModelo) {
     $("#npedido").val(NombSerie + "-" + Correlativo);
     $("#nombproveedor").val(NombreProveedor);
     $("#fechapedido").val(FechaDocumento.split("T")[0]);
     $("#almacen").val(NombAlmacen);
     $("#IdPedido").val(IdPedido);
+    $("#txtIdModelo").val(IdModelo);
 
 
     $("#ConformidadModal").val(Conformidad);
-    if (Conformidad != 0) {
-        $("#ConformidadModal").prop('disabled', true);
-        $("#comentarioconformidad").prop('disabled', true);
-        $("#btnGrabar").hide();
-
-
-    } else {
+    if (Conformidad == 0 || Conformidad == 2 ) {
         $("#ConformidadModal").prop('disabled', false);
         $("#comentarioconformidad").prop('disabled', false);
         $("#btnGrabar").show();
 
+
+    } else {
+       
+
+        $("#ConformidadModal").prop('disabled', true);
+        $("#comentarioconformidad").prop('disabled', true);
+        $("#btnGrabar").hide();
     }
 
 
@@ -374,7 +379,7 @@ function abrirModalPedidoConformidad(NombSerie, Correlativo, NombreProveedor, Fe
         $("#CreatedAt").html(pedido.CreatedAt)
         $("#NombUsuario").html(pedido.NombUsuario)
         $("#total_items").html(pedido.detalles.length)
-        $("#comentarioconformidad").html(pedido.ComentarioConformidad)
+        $("#comentarioconformidad").val(pedido.ComentarioConformidad)
         let tabletr = "";
         for (var i = 0; i < pedido.detalles.length; i++) {
             tabletr += `<tr>
@@ -416,6 +421,7 @@ function GuardarPedidoConformidad() {
 
     let ConformidadModal = $("#ConformidadModal").val();
     let IdPedido = $("#IdPedido").val();
+    let IdModelo = $("#txtIdModelo").val();
   
     let comentarioconformidad = $("#comentarioconformidad").val();
     console.log(comentarioconformidad);
@@ -443,14 +449,16 @@ function GuardarPedidoConformidad() {
     }
 
     $.ajax({
-        url: "updatedInsertConformidadPedido",
+        //url: "updatedInsertConformidadPedido",
+        url: "updatedInsertConformidadPedidoAuth",
         type: "POST",
         async: true,
         data: {
             detalles,
             'Conformidad': ConformidadModal,
             'ComentarioConformidad': comentarioconformidad,
-            'IdPedido': IdPedido
+            'IdPedido': IdPedido,
+            'IdModelo': IdModelo
            
         },
         beforeSend: function () {
@@ -468,6 +476,7 @@ function GuardarPedidoConformidad() {
                     'Proceso Realizado Correctamente',
                     'success'
                 )
+                listarPedidoDtConfirmidad()
                 CerrarModal();
 
             } else {

@@ -21,8 +21,12 @@ namespace ConcyssaWeb.Controllers
         {
             return View();
         }
+        public IActionResult ReporteFacturaServicio()
+        {
+            return View();
+        }
 
-       // public string ListarOPCHDT(int IdBase,string EstadoOPCH = "ABIERTO")
+        // public string ListarOPCHDT(int IdBase,string EstadoOPCH = "ABIERTO")
         public string ListarOPCHDT(int IdObra,int IdTipoRegistro,int IdSemana,string EstadoOPCH = "ABIERTO")
         {
             string mensaje_error = "";
@@ -1093,6 +1097,73 @@ namespace ConcyssaWeb.Controllers
 
             return "";
         }
+
+        public string GenerarReporteFacturaServicioObra(string NombreReporte,DateTime FechaInicio,DateTime FechaFin, string Formato,int IdObra, int IdProveedor, string BaseDatos)
+        {
+            if (BaseDatos == "" || BaseDatos == null)
+            {
+                BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            }
+
+            RespuestaDTO oRespuestaDTO = new RespuestaDTO();
+            WebResponse webResponse;
+            HttpWebRequest request;
+            Uri uri;
+            string cadenaUri;    
+            string response;
+            string mensaje_error;
+ 
+
+            try
+            {
+                string strNew = "Formato="  +Formato+"&IdObra=" + IdObra + "&IdProveedor=" + IdProveedor + "&BaseDatos=" + BaseDatos + "&NombreReporte=" + NombreReporte + "&FechaInicio=" + FechaInicio + "&FechaFin=" + FechaFin;
+                cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ReporteFacturaServicioObra";
+                uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
+                request = (HttpWebRequest)WebRequest.Create(uri);
+
+                request.Method = "POST";
+                request.ContentType = "application/x-www-form-urlencoded";
+
+
+                StreamWriter requestWriter = new StreamWriter(request.GetRequestStream(), System.Text.Encoding.ASCII);
+                requestWriter.Write(strNew);
+                requestWriter.Close();
+
+
+
+                webResponse = request.GetResponse();
+                Stream webStream = webResponse.GetResponseStream();
+                StreamReader responseReader = new StreamReader(webStream);
+                response = responseReader.ReadToEnd();
+
+                XmlDocument xDoc = new XmlDocument();
+                xDoc.LoadXml(response);
+
+                oRespuestaDTO.Result = xDoc.ChildNodes[1].ChildNodes[0].InnerText;
+                oRespuestaDTO.Mensaje = xDoc.ChildNodes[1].ChildNodes[1].InnerText;
+                oRespuestaDTO.Base64ArchivoPDF = xDoc.ChildNodes[1].ChildNodes[2].InnerText;
+
+                return JsonConvert.SerializeObject(oRespuestaDTO);
+            }
+            catch (WebException e)
+            {
+                using (WebResponse responses = e.Response)
+                {
+                    HttpWebResponse httpResponse = (HttpWebResponse)responses;
+                    using (Stream data = responses.GetResponseStream())
+                    using (var reader = new StreamReader(data))
+                    {
+                        mensaje_error = reader.ReadToEnd();
+
+                    }
+                }
+
+                string err = e.ToString();
+            }
+
+            return "";
+        }
+
 
 
     }

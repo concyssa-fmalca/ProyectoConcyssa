@@ -120,6 +120,7 @@
                     </select>
                 </div>
                 <button class="btn btn-primary" style="margin-top:3px" onclick="ConsultaServidor()">Buscar</button>
+                <button class="btn btn-primary" style="margin-top:3px" onclick="ModalReporte()">Ver Pend. Aprob.</button>
             </div>
         </div>
     </div>
@@ -214,6 +215,54 @@
             <div class="panel-footer text-right">
                 <div class="row">
                     <button type="button" class="btn btn-danger pull-right" onclick="agregarItemDetalle()" data-dismiss="modal">Agregar</button>
+                    <button type="button" class="btn btn-danger pull-right" style="background-color:orange;" data-dismiss="modal" onclick="closePopup()">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal-reporte" class="popup-sm allcp-form mfp-with-anim mfp-hide">
+        <div class="panel">
+            <div class="panel-heading">
+                <h5 id='lblTituloModal'></h5>
+            </div>
+            <div class="panel-body ">
+                <div class='col s12 m12 '>
+                    <div class='container-fluid'>
+                        <div class='form-horizontal'>
+                            <div class="row" style="display:none">
+                                <div class="col-md-10">
+                                    <input class="form-control" id="txtIdFila" type="number" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label class="col-md-2">Obra</label>
+                                <div class="col-md-10">
+                                    <Select id="cboObraReporte" class="form-control"></Select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label class="col-sm-2" for="txtFechaInicio">Fecha Inicio</label>
+                                <div class="col-sm-4">
+                                    <input type="date" class="form-control col-sm-3" id="txtFechaInicioRpt" />
+                                </div>
+                                <label class="col-sm-2" for="txtFechaFin">Fecha Fin</label>
+                                <div class="col-sm-4">
+                                    <input type="date" class="form-control col-sm-3" id="txtFechaFinRpt" />
+                                </div>
+                            </div>                          
+                            <div class="row">
+                                <button class="btn btn-primary" onclick="ObtenerReporte()">Ver PDF</button>
+                                <button class="btn btn-primary" onclick="ImportarExcel()" style="background-color:green">Ver Excel</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer text-right">
+                <div class="row">
                     <button type="button" class="btn btn-danger pull-right" style="background-color:orange;" data-dismiss="modal" onclick="closePopup()">Cerrar</button>
                 </div>
             </div>

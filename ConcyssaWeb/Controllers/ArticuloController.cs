@@ -47,6 +47,23 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
+        public string ListarArticulosxAlmacenSelect2(int IdAlmacen, int IdTipoProducto, string searchTerm = "")
+        {
+            string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            ArticuloDAO oArticuloDAO = new ArticuloDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            List<ArticuloDTO> lstArticuloDTO = oArticuloDAO.ListarArticulosxAlmacenSelect2(searchTerm, IdAlmacen, IdTipoProducto, BaseDatos, ref mensaje_error);
+            if (lstArticuloDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstArticuloDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
+
         public string ListarArticulosxSociedadxAlmacenStock(int IdAlmacen,int estado = 3)
         {
             string mensaje_error = "";

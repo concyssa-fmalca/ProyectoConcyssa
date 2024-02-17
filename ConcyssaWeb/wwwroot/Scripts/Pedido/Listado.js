@@ -1587,10 +1587,9 @@ function GuardarPedido() {
         console.log("detalles");
     }
 
-
-
     $.ajax({
-        url: "UpdateInsertPedido",
+        //url: "UpdateInsertPedido",
+        url: "InsertPedidoModeloAut",
         type: "POST",
         async: true,
         data: {
@@ -1689,6 +1688,7 @@ function ObtenerDatosxID(id) {
         $("#IdCondicionPago").val(pedido.IdCondicionPago)
         $("#txtNumeracion").val(pedido.Correlativo)
         $("#NombUsuario").html(pedido.NombUsuario)
+        $("#txtComentarios").val(pedido.Observacion)
         $("#total_items").html(pedido.detalles.length)
         $("#CreatedAt").html(pedido.CreatedAt);
         $("#txtTipoCambio").html(pedido.TipoCambio);
@@ -3255,10 +3255,10 @@ function limpiarDatos() {
 
 function disabledmodal(valorbolean) {
 
-    $("#IdBase").prop('disabled', valorbolean);
+    //$("#IdBase").prop('disabled', valorbolean);
     $("#txtTipoCambio").prop('disabled', valorbolean);
-    $("#IdObra").prop('disabled', valorbolean);
-    $("#IdAlmacen").prop('disabled', valorbolean);
+    //$("#IdObra").prop('disabled', valorbolean);
+    //$("#IdAlmacen").prop('disabled', valorbolean);
     //$("#IdSerie").prop('disabled', valorbolean);
     //$("#IdProveedor").prop('disabled', valorbolean);
     //$("#Direccion").prop('disabled', valorbolean);

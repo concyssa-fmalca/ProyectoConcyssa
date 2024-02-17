@@ -507,6 +507,8 @@ namespace ConcyssaWeb.Controllers
             MovimientoDTO oMovimientoDTO = oMovimientoDAO.ObtenerMovimientosDetallexIdMovimiento(IdMovimiento,BaseDatos,ref mensaje_error);
             ArticuloStockDTO oArticuloStockDTO = new ArticuloStockDTO();
 
+            string MensajeNoStock = "";
+
             if (mensaje_error.ToString().Length == 0)
             {
                 int validadStock = 0;
@@ -516,11 +518,12 @@ namespace ConcyssaWeb.Controllers
                     if (oArticuloStockDTO.Stock < oMovimientoDTO.detalles[i].CantidadBase)
                     {
                         validadStock = 1;
+                        MensajeNoStock += oMovimientoDTO.detalles[i].CodigoArticulo + "-" + oMovimientoDTO.detalles[i].DescripcionArticulo+" </br> ";
                     }
                 }
                 if (validadStock == 1)
                 {
-                    return "No hay suficiente Stock";
+                    return "No hay suficiente Stock </br> "+ MensajeNoStock;
                 }
                 SalidaMercanciaController oSalidaMercanciaController = new SalidaMercanciaController();
                 oMovimientoDTO.IdTipoDocumento = 334;

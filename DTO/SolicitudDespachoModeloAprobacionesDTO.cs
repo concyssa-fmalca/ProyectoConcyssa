@@ -23,5 +23,6 @@ namespace DTO
 
         public string NombArticulo { get; set; }
         public string NombEstado { get; set; }
+        public string Referencia { get; set; }
     }
 }

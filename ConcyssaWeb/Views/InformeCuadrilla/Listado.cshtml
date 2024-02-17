@@ -79,6 +79,35 @@
                 </div>
             </div>
             <div class="row">
+
+            <label>Tipo de Reporte:</label>
+            </div>
+            <div class="col-md-5">
+                <div class="row">
+                    <div class="radio-custom col-md-3">
+                        <input type="radio" class="form-control" id="RptResumido" name="TipoReporte" onclick="alertar()" checked />
+                        <label for="RptResumido">Resumido</label>
+
+                    </div>
+                    <div class="radio-custom col-md-3">
+
+                        <input type="radio" class="form-control" id="RptDetallado" name="TipoReporte" onclick="alertar()" />
+                        <label for="RptDetallado">Detallado</label>
+                    </div>
+                    <div class="radio-custom col-md-3">
+
+                        <input type="radio" class="form-control" id="RptTotales" name="TipoReporte" onclick="alertar()" />
+                        <label for="RptTotales">Totales</label>
+                    </div>
+                    <div class="radio-custom col-md-3">
+
+                        <input type="radio" class="form-control" id="RptGrupo" name="TipoReporte" onclick="alertar()" />
+                        <label for="RptGrupo">Grupo</label>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
                 <div class="col-sm-8">
                     <div class="row">
                         <label class="col-sm-3" for="chkIncMateriales">Incluir Materiales</label>
@@ -102,24 +131,20 @@
                     </div>
 
                     <div class="row">
-                        <label class="col-sm-3" for="chkIncExtornos">Incluir Extornos</label>
+                        <label class="col-sm-3" for="chkIncExtornos">Incluir Vales Extornados</label>
                         <div class="col-sm-9">
-                            <input type="checkbox" id="chkIncExtornos" />
+                            <input type="checkbox" checked id="chkIncExtornos" />
                         </div>
-                    </div>
-                    <div class="row">
-                        <label class="col-sm-3" for="chkDetallado">Reporte Detallado</label>
-                        <div class="col-sm-9">
-                            <input type="checkbox" id="chkDetallado" />
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="col-sm-12">
-                        <button class="button btn-primary col-sm-12" onclick="GenerarReporte()">Generar Reporte</button>
-                    </div>
-                </div>
             </div>
+        </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="col-sm-4">
+        <div class="col-sm-12">
+            <button class="button btn-primary col-sm-12" onclick="GenerarReporte('pdf')">Generar Reporte PDF</button>
+            <button class="button btn-primary col-sm-12" style="background-color:green" onclick="GenerarReporte('excel')">Generar Reporte EXCEL</button>
         </div>
     </div>
 
