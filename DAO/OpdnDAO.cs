@@ -83,7 +83,7 @@ namespace DAO
         }
 
 
-        public List<OpdnDTO> ObtenerOPDNxEstado(int IdBase,int IdSociedad,DateTime FechaInicio,DateTime FechaFin, string BaseDatos, ref string mensaje_error, string EstadoOPDN, int IdUsuario=0)
+        public List<OpdnDTO> ObtenerOPDNxEstado(int IdBase,int IdObra,int IdSociedad,DateTime FechaInicio,DateTime FechaFin, string BaseDatos, ref string mensaje_error, string EstadoOPDN, int IdUsuario=0)
         {
             List<OpdnDTO> lstOPDNDTO = new List<OpdnDTO>();
             using (SqlConnection cn = new Conexion().conectar(BaseDatos))
@@ -93,6 +93,7 @@ namespace DAO
                     cn.Open();
                     SqlDataAdapter da = new SqlDataAdapter("SMC_ListarOPDNxEstado", cn);
                     da.SelectCommand.Parameters.AddWithValue("@IdBase", IdBase);
+                    da.SelectCommand.Parameters.AddWithValue("@IdObra", IdObra);
                     da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
                     da.SelectCommand.Parameters.AddWithValue("@EstadoOPDN", EstadoOPDN);
                     da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
@@ -157,7 +158,7 @@ namespace DAO
             return lstOPDNDTO;
         }
 
-        public List<OpdnDTO> ListarOPDNDTModalOPCH(int IdSociedad, string BaseDatos, ref string mensaje_error, string EstadoOPDN,int IdUsuario=0)
+        public List<OpdnDTO> ListarOPDNDTModalOPCH(int IdSociedad, string BaseDatos,int IdProveedor,int IdAlmacen, ref string mensaje_error, string EstadoOPDN,int IdUsuario=0)
         {
             List<OpdnDTO> lstOPDNDTO = new List<OpdnDTO>();
             using (SqlConnection cn = new Conexion().conectar(BaseDatos))
@@ -169,6 +170,8 @@ namespace DAO
                     da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
                     da.SelectCommand.Parameters.AddWithValue("@EstadoOPDN", EstadoOPDN);
                     da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
+                    da.SelectCommand.Parameters.AddWithValue("@IdProveedor", IdProveedor);
+                    da.SelectCommand.Parameters.AddWithValue("@IdAlmacen", IdAlmacen);
 
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
                     SqlDataReader drd = da.SelectCommand.ExecuteReader();

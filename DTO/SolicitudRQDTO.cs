@@ -49,6 +49,7 @@ namespace DTO
         public int EstadoSolicitud { get; set; } = 1;
 
         public string NombMoneda { get; set; } = "";
+        public string OCRelacionadas { get; set; } = "";
         public decimal TotalCantidad { get; set; } = 0;
         public int Usuario { get; set; } = 0;
 

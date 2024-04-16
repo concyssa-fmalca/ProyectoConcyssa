@@ -230,7 +230,34 @@
         </div>
     </div>
 
-
+        <!-- Modal ALMACEN BASE-->
+        <div id="mmodal-cambiaclave" class="popup-sm allcp-form mfp-with-anim mfp-hide">
+            <div class="panel">
+                <div class="panel-heading">
+                    <h5>ACTUALIZAR CONTRASEÑA</h5>
+                </div>
+                <div class="panel-body ">
+                    <div class='col s12 m12 '>
+                       <input type="hidden" id="UsuarioSeleccionado"/>
+                       <div class="col-md-12">
+                           <label class="col-md-12">Usuario:</label>
+                            <input type="text" class="form-control" id="nombreuser" readonly disabled/>
+                       </div>
+                        <div class="col-md-12">
+                            <label class="col-md-12">Nueva Contraseña:</label>
+                            <input type="text" class="form-control"  id="nuevapassword"/>
+                        </div>
+               
+                    </div>
+                </div>
+                <div class="panel-footer text-right">
+                    <div class="row">
+                        <button type="button" onclick="ActualizarClave()" class="btn btn-primary pull-right plu">Grabar</button>
+                        <button type="button" class="btn btn-danger pull-right" style="background-color:orange;" onclick="closePopup();">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 </div>
 

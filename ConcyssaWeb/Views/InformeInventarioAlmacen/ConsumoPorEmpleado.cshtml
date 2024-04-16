@@ -1,0 +1,97 @@
+﻿@using Microsoft.AspNetCore.Http
+@using Karambolo.AspNetCore.Bundling.ViewHelpers
+@addTagHelper *, Karambolo.AspNetCore.Bundling
+@inject IHttpContextAccessor Accessor
+@{
+    ViewBag.Title = "Listado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" style="height:93%;">
+    <div class="panel">
+        <div class="container-fluid">
+            <div class="topbar-left col-xs-12">
+                <h3>Reporte de Consumo por Persona</h3>
+            </div>
+        </div>
+        <div class="container-fluid ">
+            <div class="col-xs-12">
+                <div class="topbar-left col-xs-12">
+                    <h4 style="font-size:1.2em;">Total de Registros: <span id="spnTotalRegistros"></span></h4>
+                </div>
+            </div>
+            @*    <div class="col-xs-6 right">
+
+            </div>
+            *@
+            <div class="col-xs-12 right">
+                <label class="col-sm-1" for="cboBaseFiltro">Base</label>
+                <div class="col-sm-3">
+                    <select class="form-control" id="cboBaseFiltro" onchange="ObtenerObraxIdBase();ObtenerEmpleadosxIdCuadrilla()"></select>
+                </div>
+            </div>
+            <div class="col-xs-12 right">
+                <label class="col-sm-1" for="cboObraFiltro">Obra</label>
+                <div class="col-sm-3">
+                    <select class="form-control" id="cboObraFiltro"></select>
+                </div>
+            </div>
+            <div class="col-xs-12 right">
+                <label class="col-sm-1" for="cboObraFiltro">Empleado</label>
+                <div class="col-sm-3">
+                    <select class="form-control" id="cboEmpleado"></select>
+                </div>
+
+            </div>
+            <div class="col-xs-12 right">
+                <label class="col-sm-1" for="cboObraFiltro">Fecha Inicial</label>
+                <div class="col-sm-3">
+                    <input class="form-control" type="date" id="txtFechaInicio"/>
+                </div>
+
+            </div>
+            <div class="col-xs-12 right">
+                <label class="col-sm-1" for="cboObraFiltro">Fecha Final</label>
+                <div class="col-sm-3">
+                    <input class="form-control" type="date" id="txtFechaFin"/>
+                </div>
+            </div>
+
+            <div class="col-xs-12">
+                Tipo Producto:
+                <div class="col-xs-12">
+                    <input type="radio" id="radioMateriales" name="TipoProducto" onclick="alertar()" checked />
+                    <label style="font-size:1.5rem" for="radioMateriales">Materiales</label>
+
+                </div>
+                <div class="col-xs-12">
+
+                    <input type="radio" id="radioAuxiliares" name="TipoProducto" onclick="alertar()" />
+                    <label style="font-size:1.5rem" for="radioAuxiliares">Auxiliares</label>
+                </div>
+            </div>
+
+            <input style="display:none" type="text" id="txtIdPerfil" value="@Accessor.HttpContext.Session.GetInt32("IdPerfil").ToString()" />
+            <button class="btn btn-xs btn-primary res"  onclick="ObtenerReporte('pdf')">Generar Reporte</button>
+            <button class="btn btn-xs btn-primary res" style="background-color:green"  onclick="ObtenerReporte('excel')">Descargar Excel</button>
+        </div>
+
+
+    </div>
+
+
+
+</div>
+
+@{
+    Random rnd = new Random();
+}
+
+
+<script src="~/Scripts/InformeInventarioAlmacen/ConsumoPorEmpleado.js?v=@rnd.Next(1, 1000 + 1)"></script>
+<script src="~/Scripts/General.js"></script>
+<script src="~/js/pdf/jspdf.min.js"></script>
+<script src="~/js/pdf/faker.min.js"></script>
+<script src="~/js/pdf/jspdf.plugin.autotable.src.js"></script>
+
+

@@ -152,6 +152,7 @@
                             <th>Comentario</th>
                             <th>Estado</th>
                             <th>Fecha Documento</th>
+                            <th>OC Relacionadas</th>
 @*                            <th>Valido Hasta</th>*@
                             @*<th>PDF</th>*@
                             <th>Accion</th>
@@ -347,7 +348,7 @@
                             <div id="Contenido" class="tabcontent" style="display: block;">
                                 <div class='form-group-sm'>
                                     <div class="col-sm-4">
-                                        <select class="form-control" id="cboClaseArticulo" style="margin-bottom:10px;margin-top:5px" onchange="CambiarClaseArticulo()">
+                                        <select class="form-control" id="cboClaseArticulo" style="margin-bottom:10px;margin-top:5px" onchange="CambiarClaseArticulo();BuscarItemsExp()">
                                             <option value="0">Seleccione</option>
                                             <option value="1">Producto</option>
                                             <option value="2">Servicio</option>
@@ -358,7 +359,7 @@
 
                                 <div class='form-group-sm'>
                                     <div class="col-sm-4">
-                                        <select class="form-control" id="IdTipoProducto" style="margin-bottom:10px;margin-top:5px">
+                                        <select class="form-control" id="IdTipoProducto" style="margin-bottom:10px;margin-top:5px" onchange="BuscarItemsExp()">
                                             <option value="0">Seleccione</option>
                                             <option value="1">MATERIALES</option>
                                             <option value="2">AUXILIARES</option>
@@ -366,10 +367,23 @@
                                     </div>
                                 </div>
                                 <div class='form-group-sm'>
-                                    <div class="col-sm-4">
+                                  @*  <div class="col-sm-4">
                                         <button id="OpenModalItem" style="margin-bottom:10px;margin-top:5px" class="btn btn-xs btn-info" onclick="OpenModalItem()" type="button">Agregar Item</button>
-                                    </div>
+                                    </div>*@
                                 </div>
+                                <select id="cboAgregarArticulo" class="form-control" onchange="SeleccionarItemListado()"></select>
+                                <br />
+                                <div>
+                                    <label>Stock:</label> <input id="txtStockAlmacenItem" type="text" disabled>
+                                    <label>Pendiente Ent.:</label> <input id="txtStockObraPedido" type="text" disabled>
+                                    <label>Cantidad:</label> <input id="txtCantidadItem" max="5" type="number" onkeyup="ValidarDecimalesCantidades('txtCantidadItem')">
+                                </div>
+                                <div>
+                                    <label>Referencia:</label>  <input id="txtReferenciaItem" name="txtReferenciaItem" style="width:50%"/>
+                                    <button id="btn_agregaritem" style="margin-bottom:10px;margin-top:5px" class="btn btn-xs btn-info" onclick="AgregarLinea()" type="button">Agregar Item</button>
+                                </div>
+
+
                                 <div class="table-responsive">
                                     <table class="table" id="tabla">
                                         <thead>
@@ -610,18 +624,8 @@
                                 </div>
                                 <div class="row">
 
-                                    <div class='form-group-sm'>
-                                        <label for="txtCantidadItem" class="control-label col-sm-2 left-align">Cantidad</label>
-                                        <div class="col-sm-4">
-                                            <input id="txtCantidadItem" max="5" type="number" class="form-control input-sm" tabindex="6" onkeyup="ValidarDecimalesCantidades('txtCantidadItem')">
-                                        </div>
-                                    </div>
-                                      <div class='form-group-sm'>
-                                        <label id="lblStockItem" for="txtStockAlmacenItem" class="control-label col-sm-2 left-align">Stock en Almacen</label>
-                                        <div class="col-sm-4">
-                                            <input id="txtStockAlmacenItem" type="text" class="form-control input-sm" tabindex="5" disabled>
-                                        </div>
-                                    </div>
+                                   
+                                   
 
                                     <div class='form-group-sm d-none' style="display:none">
                                         <label for="txtPrecioUnitarioItem" class="control-label col-sm-2 left-align">Precio Unitario</label>
@@ -641,12 +645,7 @@
                                           
                                         </div>
                                     </div>
-                                    <div class='form-group-sm' id="divStockObraPedido">
-                                        <label id="lblStockObraPedido" for="txtStockObraPedido" class="control-label col-sm-2 left-align">Cantidad pendiente de Entrega</label>
-                                        <div class="col-sm-4">
-                                            <input id="txtStockObraPedido" type="text" class="form-control input-sm" tabindex="5" disabled>
-                                        </div>
-                                    </div>
+                                  
 
                                 </div>
                           
@@ -694,13 +693,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class='form-group-sm'>
-                                        <label for="txtReferenciaItem" class="control-label col-sm-2 left-align">Referencia</label>
-                                        <div class="col-sm-12">
-                                            @*<input id="txtComentarios" type="date" class="form-control input-sm" tabindex="14">*@
-                                            <textarea class="form-control" id="txtReferenciaItem" name="txtReferenciaItem" rows="3" cols="15" tabindex="9"></textarea>
-                                        </div>
-                                    </div>
+                                    
                                 </div>
                                 <div class="row">
                                     <div style="margin-top:10px"><b>Stock en Otros Almacenes</b></div>

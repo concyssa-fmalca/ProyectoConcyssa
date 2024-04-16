@@ -266,9 +266,9 @@ function ConsultaServidor() {
 
 
                 InsertarHTML += `</select> 
-                                </div>
-                                    <button class="btn btn-primary" style="margin-top:0px" onclick="AgregarItem(`+ SolicitudDespacho[i].IdObra + `,` + SolicitudDespacho[i].IdTipoProducto + `,` + i + `)">Agregar Artículo</button>
-                                </div>
+                                </div>`
+                                  /*  <button class="btn btn-primary" style="margin-top:0px" onclick="AgregarItem(`+ SolicitudDespacho[i].IdObra + `,` + SolicitudDespacho[i].IdTipoProducto + `,` + i + `)">Agregar Artículo</button>*/
+                               +` </div>
                                 <div class="row">
                                     <label class="col-md-2" style="max-width:130px;color:black">Centro de Costo:</label>
                                     <p class="col-md-5">`+ SolicitudDespacho[i].NombCuadrilla + `</p>
@@ -305,7 +305,7 @@ function ConsultaServidor() {
                                                     <td class="DescripcionTabla`+ i + `">` + SolicitudDespacho[i].Detalles[j].CodigoArticulo + `-` + SolicitudDespacho[i].Detalles[j].Descripcion + `</td>
                                                     <td class="CantidadPedida`+ i + `">` + SolicitudDespacho[i].Detalles[j].Cantidad + `</td>
                                                     <td>`+ SolicitudDespacho[i].Detalles[j].CantidadAtendida + `</td>
-                                                    <td><input type="text" value="` + Saldo + `" id="txtCantidadAtendida` + i + `" onchange="VerificarEntregaStock(` + IdFila + `);ObtenerStocks(` + i + `)" class="form-control  EntregarDetalle` + i + ` NoPasarStock` + IdFila + `" style="max-width:60px"></td>
+                                                    <td><input type="text" value="` + Saldo + `" id="txtCantidadAtendida` + i + `" onchange="ValidarCantidadNoMayor(` + IdFila + `,` + Saldo +`);  VerificarEntregaStock(` + IdFila + `);ObtenerStocks(` + i + `)" class="form-control  EntregarDetalle` + i + ` NoPasarStock` + IdFila + `" style="max-width:60px"></td>
                                                     <td id="StockDetalle`+ IdFila + `" class="ClassStockDetalle` + i + `">d</td>
                                                     <td class="PrecioDetalle`+ i + `">Precio</td>
                                                     <td class="TotalDetalle`+ i + `">Total</td>
@@ -322,7 +322,7 @@ function ConsultaServidor() {
                                                     <td class="DescripcionTabla`+ i + `">` + SolicitudDespacho[i].Detalles[j].CodigoArticulo + `-` + SolicitudDespacho[i].Detalles[j].Descripcion + `</td>
                                                     <td class="CantidadPedida`+ i + `">` + SolicitudDespacho[i].Detalles[j].Cantidad + `</td>
                                                     <td>`+ SolicitudDespacho[i].Detalles[j].CantidadAtendida + `</td>
-                                                    <td><input type="text" value="` + SolicitudDespacho[i].Detalles[j].Cantidad + `" id="txtCantidadAtendida` + i + `" onchange="VerificarEntregaStock(` + IdFila + `);ObtenerStocks(` + i + `)" class="form-control  EntregarDetalle` + i + ` NoPasarStock` + IdFila + `" style="max-width:60px"></td>
+                                                    <td><input type="text" value="` + SolicitudDespacho[i].Detalles[j].Cantidad + `" id="txtCantidadAtendida` + i + `" onchange="ValidarCantidadNoMayor(` + IdFila + `,` + Saldo +`);VerificarEntregaStock(` + IdFila + `);ObtenerStocks(` + i + `)" class="form-control  EntregarDetalle` + i + ` NoPasarStock` + IdFila + `" style="max-width:60px"></td>
                                                     <td id="StockDetalle`+ IdFila + `" class="ClassStockDetalle` + i + `">d</td>
                                                     <td class="PrecioDetalle`+ i + `">Precio</td>
                                                     <td class="TotalDetalle`+ i + `">Total</td>
@@ -425,6 +425,7 @@ function VerificarEntregaStock(IdFila) {
     let ValorCantidadEntregar = $(".NoPasarStock" + IdFila).val();
    
     let CantidadEnStock = $("#StockDetalle" + IdFila).text();
+
     console.log(CantidadEnStock)
     console.log(ValorCantidadEntregar)
     if (+ValorCantidadEntregar > +CantidadEnStock) {
@@ -1112,6 +1113,17 @@ function ImportarExcel() {
         }
     });
 
+
+
+}
+
+function ValidarCantidadNoMayor(IdFila, Saldo) {
+    let ValorCantidadEntregar = $(".NoPasarStock" + IdFila).val();
+
+    if (ValorCantidadEntregar > Saldo) {
+        Swal.fire("No puede asignar una cantidad mayor a la Solicitada");
+        $(".NoPasarStock" + IdFila).val(Saldo).change();
+    }
 
 
 }

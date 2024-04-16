@@ -34,6 +34,7 @@ function ConsultaServidor(url) {
                 '<td>' +
                     `<div class="btn-group" role="group" aria-label="..." style="inline-size: max-content !important; ">
                         <button style="margin-top:0px !important;margin-bottom:0px !important;" class="btn btn-primary fa fa-pencil btn-xs" onclick = "ObtenerDatosxID(` + usuarios[i].IdUsuario + `)" ></button>
+                        <button style="margin-top:0px !important;margin-bottom:0px !important;" class="btn btn-success fa fa-lock btn-xs" onclick = "CambiarPass(` + usuarios[i].IdUsuario + `)" ></button>
                         <button style="margin-top:0px !important;margin-bottom:0px !important;" class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(`+ usuarios[i].IdUsuario + `)"></button>
                         <button style="margin-top:0px !important;margin-bottom:0px !important;" class="btn btn-info btn-xs " onclick="AbrirModalBaseAlmacen(` + usuarios[i].IdUsuario + `)">BA</button>
                     </div>`+
@@ -619,5 +620,42 @@ function listarEmpleados() {
                 $("#cboEmpleado").html(options);
             }
         }
+    });
+}
+function CambiarPass(IdUsuario) {
+    AbrirModal("mmodal-cambiaclave")
+
+    $.post('ObtenerDatosxID', {
+        'IdUsuario': IdUsuario,
+    }, function (data, status) {
+
+        if (data == "Error") {
+            swal("Error!", "Ocurrio un error")
+            limpiarDatos();
+        } else {
+            let usuarios = JSON.parse(data);
+            console.log("ssssss");
+          
+            $("#nombreuser").val(usuarios[0].Nombre);
+          
+
+        }
+
+    });
+
+    $("#UsuarioSeleccionado").val(IdUsuario)
+}
+function ActualizarClave() {
+    $.post('UpdateClaveUser', {
+        'IdUsuario': $("#UsuarioSeleccionado").val(),
+        'Clave': $("#nuevapassword").val()
+    }, function (data, status) {
+        if (data > 0) {
+            Swal.fire("Correcto", "Clave Actualizada Correctamente", "success")
+            closePopup()
+        } else {
+            Swal.fire("Error", "Ocurrió un Error", "success")
+        }
+
     });
 }

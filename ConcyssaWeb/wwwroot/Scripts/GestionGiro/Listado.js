@@ -631,35 +631,55 @@ function Guardar() {
         } else if (data == "-98") {
             Swal.fire(
                 'Error!',
-                'El Usuario se encuentra como autor en mas de un modelo de Aut., Contacte a Soporte!',
+                'El Usuario se encuentra como autor en mas de un modelo de Aut., Intente Nuevamente o Contacte a Soporte!',
                 'error'
             )
-        }else if (data != "") {
-            swal("Exito!", "Proceso Realizado Correctamente", "success")
-            let format = data.split('-')
-            $("#txtId").val(format[0]);
-            var id = $("#txtId").val();
-            //CargarEstadosGiro(id, format[1])
-            $("#btnGrabarCabecera").html("Grabar");
+        } else if (data == "-97") {
+            Swal.fire(
+                'Error!',
+                'Error al Buscar Etapa de Autorizacion., Intente Nuevamente o Contacte a Soporte!',
+                'error'
+            )
+        } else if (data == "-96") {
+            Swal.fire(
+                'Error!',
+                'Error al Validar Autorizacion, Intente Nuevamente o Contacte a Soporte!',
+                'error'
+            )
+        } else if (data > 0) {
+            $.post("ObtenerSerieGiro", { 'IdGiro': data }, function (data, status) {
+                Swal.fire(
+                    'Correcto',
+                    'Documento ' + data + ' Registrado Correctamente',
+                    'success'
+                )
+               
+                let format = data.split('-')
+                $("#txtId").val(format[0]);
+                var id = $("#txtId").val();
+                //CargarEstadosGiro(id, format[1])
+                $("#btnGrabarCabecera").html("Grabar");
 
-            //limpiarDatos();
-            //limpiarDatosDetalle();
+                //limpiarDatos();
+                //limpiarDatosDetalle();
 
-            $("#tabla_detalle").find('tbody').empty();
-            $("#cboObraM").val("0");
-            $("#cboSemanaM").val("0");
-            $("#rdProveedor").prop('checked', false);
-            $("#rdEmpleado").prop('checked', false);
-            $("#txtId").val("");
-            $("#IdProveedor").val("0").change();
-            $("#cboTipoDocumento").val("0");
-            $("#txtNroDocumento").val("");
-            $("#cboMoneda").val("0");
-            $("#txtComentario").val("");
-            $("#cboSolicitante").val("0").change();
-            $("#cboEncargado").val("0").change();
-            $("#txtMonto").val("");
-            $("#msgBox").text("");
+                $("#tabla_detalle").find('tbody').empty();
+                $("#cboObraM").val("0");
+                $("#cboSemanaM").val("0");
+                $("#rdProveedor").prop('checked', false);
+                $("#rdEmpleado").prop('checked', false);
+                $("#txtId").val("");
+                $("#IdProveedor").val("0").change();
+                $("#cboTipoDocumento").val("0");
+                $("#txtNroDocumento").val("");
+                $("#cboMoneda").val("0");
+                $("#txtComentario").val("");
+                $("#cboSolicitante").val("0").change();
+                $("#cboEncargado").val("0").change();
+                $("#txtMonto").val("");
+                $("#msgBox").text("");
+            });
+          
         } else {
 
             swal("Error!", "Ocurrio un Error")
@@ -771,11 +791,15 @@ function GuardarDetalle() {
     }
 
 
+    $.post("ValidarExistenciaDocumentoGiro", { 'IdProveedor': IdProveedor, 'IdTipoDocumento': cboTipoDocumento, 'NroDocumento': NroDocumento }, function (data, status) {
+        if (data != "OK") {
+            Swal.fire("Advertencia", data, "info");
+            return
+        } else {
+            var tr = ``;
 
-    var tr = ``;
 
-
-    tr += `<tr>
+            tr += `<tr>
             <td style="display:none"><input name="txtId[]" value="0" hidden/></td>
             <td>`+ NombreProveedor + `<input  name="txtIdProveedor[]" value="` + IdProveedor + `" hidden/><input name="txtNombreProveedor[]" value="` + NombreProveedor + `" hidden/></td>
             <td>`+ DescripcionTipoDocumento + `<input  name="txtIdTipoDocumento[]" value="` + cboTipoDocumento + `" hidden/><input name="txtDescripcionTipoDocumento[]" value="` + DescripcionTipoDocumento + `" hidden/></td>
@@ -789,13 +813,20 @@ function GuardarDetalle() {
             </tr>`;
 
 
-    $("#tbody_Detalle").append(tr);
+            $("#tbody_Detalle").append(tr);
 
-    //tableDetalle = $("#tabla_detalle").dataTable({ "bDestroy": true, language: lenguaje_data });
+            //tableDetalle = $("#tabla_detalle").dataTable({ "bDestroy": true, language: lenguaje_data });
 
-    $("#btnGrabarCabecera").prop("disabled", false);
+            $("#btnGrabarCabecera").prop("disabled", false);
+            LimpiarDetalle();
 
-    LimpiarDetalle();
+        }
+    });
+
+
+
+  
+
     //$.post('UpdateInsertGiroDetalle', {
     //    'IdGiroDetalle': +$("#txtIdDetalle").val(),
     //    'IdGiro': +$("#txtId").val(),
@@ -943,6 +974,7 @@ function cerrarModal() {
             closePopup();
             limpiarDatos();
             limpiarDatosDetalle();
+            LimpiarDetalle()
 
         }, function () {
 
@@ -953,6 +985,7 @@ function cerrarModal() {
         closePopup();
         limpiarDatos();
         limpiarDatosDetalle();
+        LimpiarDetalle()
     }
 
 

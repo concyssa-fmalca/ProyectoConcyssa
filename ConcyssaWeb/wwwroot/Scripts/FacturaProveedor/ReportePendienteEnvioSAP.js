@@ -1,5 +1,5 @@
 ﻿function GenerarReporte(Formato) {
-    let IdProveedor = $("#IdProveedor").val();
+    let IdTipoRegistro = $("#IdTipoRegistro").val();
     let IdBase = $("#IdBase").val();
     let IdObra = $("#IdObra").val();
     let FechaInicial = $("#txtFechaInicio").val();
@@ -7,24 +7,10 @@
 
     let respustavalidacion = "";
 
-    let nombreRpt = "FacturaServicioObraResumido"
+    let nombreRpt = "FacturasPendientesSAP"
 
 
-    if ($("#rptResumido").is(':checked')) {
-        nombreRpt = "FacturaServicioObraResumido"
-    }
-    if ($("#rptDetallado").is(':checked')) {
-        nombreRpt = "FacturaServicioObra"
-    }
-    if ($("#rptOrdenadoServicio").is(':checked')) {
-        nombreRpt = "FacturaServicioObraPorServicio"
-    }
-    if ($("#rptOrdenadoServiciorResumido").is(':checked')) {
-        nombreRpt = "FacturaServicioObraPorServicioResumido"
-    }
-    if ($("#rptOrdenadoServiciorCCSAP").is(':checked')) {
-        nombreRpt = "FacturaServicioObraResumidoCCSAP"
-    }
+  
 
 
     Swal.fire({
@@ -35,69 +21,70 @@
     });
 
     setTimeout(() => {
-       
-            $.ajaxSetup({ async: false });
-        $.post("GenerarReporteFacturaServicioObra", { 'NombreReporte': nombreRpt, 'Formato': Formato, 'IdProveedor': IdProveedor, 'IdObra': IdObra, 'FechaInicio': $("#txtFechaInicio").val(), 'FechaFin': $("#txtFechaFin").val() }, function (data, status) {
-                let datos;
-                if (validadJson(data)) {
-                    if (Formato == 'excel') {
-                        try {
-                            datos = JSON.parse(data)
 
-                            const byteString = window.atob(datos.Base64ArchivoPDF);
-                            const arrayBuffer = new ArrayBuffer(byteString.length);
-                            const int8Array = new Uint8Array(arrayBuffer);
-                            for (let i = 0; i < byteString.length; i++) {
-                                int8Array[i] = byteString.charCodeAt(i);
-                            }
+        $.ajaxSetup({ async: false });
+        $.post("GenerarReporteFacturaPendienteSAP", { 'NombreReporte': nombreRpt, 'Formato': Formato, 'IdTipoRegistro': IdTipoRegistro, 'IdObra': IdObra, 'FechaInicio': $("#txtFechaInicio").val(), 'FechaFin': $("#txtFechaFin").val() }, function (data, status) {
+            let datos;
+            if (validadJson(data)) {
+                if (Formato == 'excel') {
+                    try {
+                        datos = JSON.parse(data)
 
-                            const blob = new Blob([int8Array], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-                            const link = document.createElement("a");
-                            link.href = window.URL.createObjectURL(blob);
-                            link.download = `FacturaServicio.xlsx`;
-                            link.click();
-                            Swal.close()
-                        } catch (e) {
-                            Swal.fire("Error", "No se Pudo Generar el Archivo Excel", "error")
+                        const byteString = window.atob(datos.Base64ArchivoPDF);
+                        const arrayBuffer = new ArrayBuffer(byteString.length);
+                        const int8Array = new Uint8Array(arrayBuffer);
+                        for (let i = 0; i < byteString.length; i++) {
+                            int8Array[i] = byteString.charCodeAt(i);
                         }
-                    } else {
-                        let datobase64;
-                        datobase64 = "data:application/octet-stream;base64,"
-                        datos = JSON.parse(data);
-                        verBase64PDF(datos);
-                        Swal.fire(
-                            'Correcto',
-                            'Reporte Generado',
-                            'success'
-                        )
 
+                        const blob = new Blob([int8Array], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                        const link = document.createElement("a");
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = `FacturasPendientes.xlsx`;
+                        link.click();
+                        Swal.close()
+                    } catch (e) {
+                        Swal.fire("Error", "No se Pudo Generar el Archivo Excel", "error")
                     }
-
-
                 } else {
-                    respustavalidacion;
+                    let datobase64;
+                    datobase64 = "data:application/octet-stream;base64,"
+                    datos = JSON.parse(data);
+                    verBase64PDF(datos);
                     Swal.fire(
-                        'Error',
-                        'Ocurrio un Error',
-                        'error'
+                        'Correcto',
+                        'Reporte Generado',
+                        'success'
                     )
+
                 }
-            });
-        
+
+
+            } else {
+                respustavalidacion;
+                Swal.fire(
+                    'Error',
+                    'Ocurrio un Error',
+                    'error'
+                )
+            }
+        });
+
     }, 200)
 
 }
 
 
-function CargarProveedor() {
+function CargarTipoRegistro() {
     $.ajaxSetup({ async: false });
-    $.post("/Proveedor/ObtenerProveedores", { estado: 1 }, function (data, status) {
-        let proveedores = JSON.parse(data);
-        llenarComboProveedor(proveedores, "IdProveedor", "TODOS")
+    $.post("/TipoRegistro/ObtenerTipoRegistros", { estado: 1 }, function (data, status) {
+        let datos = JSON.parse(data);
+        datos = datos.aaData
+        llenarComboTipoRegistro(datos, "IdTipoRegistro", "TODOS")
     });
 }
 
-function llenarComboProveedor(lista, idCombo, primerItem) {
+function llenarComboTipoRegistro(lista, idCombo, primerItem) {
     var contenido = "";
     if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
     var nRegistros = lista.length;
@@ -105,7 +92,7 @@ function llenarComboProveedor(lista, idCombo, primerItem) {
     var campos;
     for (var i = 0; i < nRegistros; i++) {
 
-        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdProveedor + "'>" + lista[i].NumeroDocumento+"-" + lista[i].RazonSocial + "</option>"; }
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdTipoRegistro + "'>" + lista[i].NombTipoRegistro + "</option>"; }
         else { }
     }
     var cbo = document.getElementById(idCombo);
@@ -117,10 +104,10 @@ function llenarComboProveedor(lista, idCombo, primerItem) {
 
 function CargarObra() {
     $.ajaxSetup({ async: false });
-    $.post("/Obra/ObtenerObraxIdUsuarioSessionSinBase", {  }, function (data, status) {
+    $.post("/Obra/ObtenerObraxIdUsuarioSessionSinBase", {}, function (data, status) {
         try {
             let bases = JSON.parse(data);
-            llenarComboObra(bases, "IdObra", "Seleccione")
+            llenarComboObra(bases, "IdObra", "TODAS")
         } catch (e) {
             $("#IdObra").html("<option value='0'>Seleccione</option>")
         }
@@ -140,7 +127,6 @@ function llenarComboObra(lista, idCombo, primerItem) {
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
-    $("#"+idCombo).prop("selectedIndex",1)
 }
 
 function validadJson(json) {
@@ -153,9 +139,8 @@ function validadJson(json) {
 }
 
 window.onload = function () {
-    CargarProveedor();
+    CargarTipoRegistro();
     CargarObra()
-    $("#IdProveedor").select2();
     $("#IdBase").select2();
     $("#txtFechaInicio").val(getCurrentDate())
     $("#txtFechaFin").val(getCurrentDateFinal())

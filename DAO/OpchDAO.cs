@@ -250,7 +250,7 @@ namespace DAO
             return lstOPCHDTO;
         }
 
-        public List<OpchDTO> ObtenerOPCHxEstadoModal(int IdSociedad, int IdProveedor,string BaseDatos, ref string mensaje_error, string EstadoOPCH,int IdUsuario=0)
+        public List<OpchDTO> ObtenerOPCHxEstadoModal(int IdSociedad, int IdProveedor,int IdObra,string BaseDatos, ref string mensaje_error, string EstadoOPCH,int IdUsuario=0)
         {
             List<OpchDTO> lstOPCHDTO = new List<OpchDTO>();
             using (SqlConnection cn = new Conexion().conectar(BaseDatos))
@@ -263,6 +263,7 @@ namespace DAO
                     da.SelectCommand.Parameters.AddWithValue("@EstadoOPCH", EstadoOPCH);
                     da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
                     da.SelectCommand.Parameters.AddWithValue("@IdProveedor", IdProveedor);
+                    da.SelectCommand.Parameters.AddWithValue("@IdObra", IdObra);
 
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
                     SqlDataReader drd = da.SelectCommand.ExecuteReader();

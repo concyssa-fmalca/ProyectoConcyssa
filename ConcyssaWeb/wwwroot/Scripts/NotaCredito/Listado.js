@@ -440,6 +440,7 @@ window.onload = function () {
     $("#cboCentroCosto").val(7)
     $("#IdResponsable").select2();
     $("#IdCuadrilla").select2();
+    $("#IdProveedor").select2();
     ObtenerConfiguracionDecimales();
     
     $("#SubirAnexos").on("submit", function (e) {
@@ -4289,6 +4290,7 @@ function listarFacturaProveedor() {
             data: {
                 IdAlmacen: $("#cboAlmacen").val(),
                 IdProveedor: $("#IdProveedor").val(),
+                IdObra: $("#IdObra").val(),
                 pagination: {
                     perpage: 50,
                 },
@@ -4763,7 +4765,7 @@ function NumeracionDinamica() {
 function ObtenerEmpleadosxIdCuadrilla() {
     let IdCuadrilla = $("#IdCuadrilla").val();
     $.ajaxSetup({ async: false });
-    $.post("/Empleado/ObtenerEmpleadosPorUsuarioBase", function (data, status) {
+    $.post("/Empleado/ObtenerEmpleadosPorIdBase", { 'IdBase': $("#IdBase").val() }, function (data, status) {
         let empleados = JSON.parse(data);
         llenarComboEmpleados(empleados, "IdResponsable", "Seleccione")
     });
@@ -4884,7 +4886,7 @@ function ObtenerEmpleadosxIdCuadrillaTabla(contador) {
 
     let IdCuadrilla = $("#IdCuadrilla").val();
     $.ajaxSetup({ async: false });
-    $.post("/Empleado/ObtenerEmpleadosPorUsuarioBase", function (data, status) {
+    $.post("/Empleado/ObtenerEmpleadosPorIdBase", { 'IdBase': $("#IdBase").val() }, function (data, status) {
         let empleados = JSON.parse(data);
         llenarComboEmpleadosTabla(empleados, "cboResponsableTablaId" + contador, "Seleccione", contador)
     });
@@ -4916,7 +4918,7 @@ function SetCuadrillaTabla() {
 function SeleccionarEmpleadosTabla(contador) {
     let valorActual = $("#cboResponsableTablaId" + contador).val()
     $.ajaxSetup({ async: false });
-    $.post("/Empleado/ObtenerEmpleadosPorUsuarioBase", function (data, status) {
+    $.post("/Empleado/ObtenerEmpleadosPorIdBase", { 'IdBase': $("#IdBase").val() }, function (data, status) {
         let empleados = JSON.parse(data);
         llenarComboEmpleadosTablaFila(empleados, "cboResponsableTablaId" + contador, "Seleccione", contador, valorActual)
     });

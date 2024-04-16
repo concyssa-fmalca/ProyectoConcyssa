@@ -16,6 +16,32 @@ let DecimalesPorcentajes = 0;
 let limitador = 0;
 let valorfor = 1
 
+
+
+var DatosModalCargados = false;
+function CargarDatosModal() {
+
+    if (!DatosModalCargados) {
+        $.ajaxSetup({ async: false });
+        CargarBasesObraAlmacenSegunAsignado();
+        ObtenerTiposDocumentos();
+        CargarCentroCosto();
+        CargarTipoDocumentoOperacion()
+        CargarSeries();
+        CargarMotivoTraslado();
+        CargarProveedor();
+        CargarVehiculos();
+        CargarSolicitante(1);
+        CargarSucursales();
+        CargarMoneda();
+        CargarImpuestos();
+        CargarTodosUbigeo();
+
+        DatosModalCargados = true;
+    }
+    return DatosModalCargados;
+}
+
 //document.addEventListener('keydown', function (event) {
 
 //    if (event.key === "Enter") {
@@ -206,6 +232,7 @@ function llenarComboCuadrilla(lista, idCombo, primerItem) {
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
+    $("#" + idCombo).val(0).change();
 }
 
 
@@ -213,37 +240,48 @@ function llenarComboCuadrilla(lista, idCombo, primerItem) {
 
 function ObtenerAlmacenxIdObra() {
     let IdObra = $("#IdObra").val();
-    $.ajaxSetup({ async: false });
-    $.post("/Almacen/ObtenerAlmacenxIdObra", { 'IdObra': IdObra }, function (data, status) {
-        let almacen = JSON.parse(data);
-        $("#cboAlmacen").html('');
-        $("#cboAlmacenItem").html('');
-        llenarComboAlmacen(almacen, "cboAlmacen", "Seleccione")
-        llenarComboAlmacen(almacen, "cboAlmacenItem", "Seleccione")
-    });
-    $("#cboAlmacen").prop("selectedIndex", 1)
-    $("#cboAlmacenItem").prop("selectedIndex", 1)
-    ObtenerCuadrillasxIdObra(IdObra)
+    let AlmacenxObra = [];
+
+    for (var i = 0; i < DatosAlmacen.length; i++) {
+        if (DatosAlmacen[i].IdObra == IdObra) {
+            AlmacenxObra.push(DatosAlmacen[i])
+        }
+    }
+
+    llenarComboAlmacen(AlmacenxObra, "cboAlmacen", "seleccione")
+    llenarComboAlmacen(AlmacenxObra, "cboAlmacenItem", "seleccione")
 }
 
-function ObtenerCuadrillasxIdObra(IdObra) {
+DatosCuadrilla = [];
+
+function ObtenerCuadrillasxIdObra() {
+
+    let IdObra = $("#IdObra").val()
 
     $.ajaxSetup({ async: false });
     $.post("/Cuadrilla/ObtenerCuadrillaxIdObra", { 'IdObra': IdObra }, function (data, status) {
-        let cuadrilla = JSON.parse(data);
-        llenarComboCuadrilla(cuadrilla, "IdCuadrilla", "Seleccione")
+        try {
+            DatosCuadrilla = JSON.parse(data);
+        } catch (e) {
+            DatosCuadrilla = [];
+        }
     });
+    llenarComboCuadrilla(DatosCuadrilla, "IdCuadrilla", "Seleccione")
 }
 
 
 function ObtenerObraxIdBase() {
     let IdBase = $("#IdBase").val();
-    $.ajaxSetup({ async: false });
-    $.post("/Obra/ObtenerObraxIdUsuarioSession", { 'IdBase': IdBase }, function (data, status) {
-        let obra = JSON.parse(data);
-        $("#IdObra").html();
-        llenarComboObra(obra, "IdObra", "Seleccione")
-    });
+
+    let ObrasxBase = [];
+
+    for (var i = 0; i < DatosObra.length; i++) {
+        if (DatosObra[i].IdBase == IdBase) {
+            ObrasxBase.push(DatosObra[i])
+        }
+    }
+
+    llenarComboObra(ObrasxBase, "IdObra", "Seleccione")
 }
 
 function llenarComboObra(lista, idCombo, primerItem) {
@@ -259,6 +297,7 @@ function llenarComboObra(lista, idCombo, primerItem) {
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
+    $("#" + idCombo).prop("selectedIndex", 1).change();
 }
 
 
@@ -438,7 +477,7 @@ function llenarComboBaseFiltro(lista, idCombo, primerItem) {
 
 function ConsultaServidor() {
     let varIdBaseFiltro = $("#cboObraFiltro").val()
-    $.post("../Movimientos/ObtenerMovimientosSalida", { 'IdBase': varIdBaseFiltro, 'FechaInicial': $("#txtFechaInicio").val(), 'FechaFinal': $("#txtFechaFin").val() }, function (data, status) {
+    $.post("../Movimientos/ObtenerMovimientosSalida", { 'IdBase': varIdBaseFiltro, 'FechaInicial': $("#txtFechaInicio").val(), 'FechaFinal': $("#txtFechaFin").val(), 'OpRef': $("#txtOpRef").val() }, function (data, status) {
 
         //console.log(data);
         if (data == "error") {
@@ -541,6 +580,7 @@ function ConsultaServidor() {
 
 
 function ModalNuevo() {
+    CargarDatosModal()
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth() + 1).padStart(2, '0');
@@ -553,7 +593,7 @@ function ModalNuevo() {
     $("#btnEditar").hide()
     disabledmodal(false);
     let seguiradelante = 'false';
-    seguiradelante = CargarBasesObraAlmacenSegunAsignado();
+    seguiradelante = ValidacionBases;
     if (seguiradelante == 'false') {
         swal("Informacion!", "No tiene acceso a ninguna base, comunicarse con su administrador");
         return true;
@@ -561,25 +601,7 @@ function ModalNuevo() {
 
 
 
-    ObtenerTiposDocumentos();
-    //listarEmpleados();
-    //ObtenerCuadrillas();
-    CargarCentroCosto();
-    CargarTipoDocumentoOperacion()
-    CargarSeries();
 
-
-    //AgregarLinea();
-
-
-    CargarVehiculos();
-
-    CargarSolicitante(1);
-    CargarSucursales();
-    //CargarDepartamentos();
-    CargarMoneda();
-
-    CargarImpuestos();
     $("#cboImpuesto").val(2).change();
     //$("#cboSerie").val(1).change();
 
@@ -593,8 +615,7 @@ function ModalNuevo() {
 
     //setearValor_ComboRenderizado("cboCodigoArticulo");
     validarseriescontable();
-    CargarMotivoTraslado();
-    CargarProveedor();
+
     $("#cboTipoDocumentoOperacion").val(332).change();
     $("#IdTipoDocumentoRef").val(14).change();
 
@@ -605,7 +626,7 @@ function ModalNuevo() {
     $("#Peso").val(1);
     $("#Bulto").val(1);
 
-    CargarTodosUbigeo();
+    
 
     $("#btnGenerarPDF").hide();
 
@@ -786,17 +807,17 @@ function AgregarLinea() {
         UnidadMedida = JSON.parse(data);
     });
 
-    $.post("/IndicadorImpuesto/ObtenerIndicadorImpuestos", function (data, status) {
-        IndicadorImpuesto = JSON.parse(data);
-    });
+    
+    IndicadorImpuesto = DatosIndicadorImpuestos
+    
 
-    $.post("../Almacen/ObtenerAlmacen", function (data, status) {
-        Almacen = JSON.parse(data);
-    });
+    
+        Almacen = DatosAlmacen
+   
 
-    $.post("/Proveedor/ObtenerProveedores", function (data, status) {
-        Proveedor = JSON.parse(data);
-    });
+
+        Proveedor = DatosProveedor
+  
 
     //$.post("/LineaNegocio/ObtenerLineaNegocios", function (data, status) {
     //    LineaNegocio = JSON.parse(data);
@@ -810,10 +831,9 @@ function AgregarLinea() {
     //    Proyecto = JSON.parse(data);
     //});
 
-    $.post("/Moneda/ObtenerMonedas", function (data, status) {
-        Moneda = JSON.parse(data);
-    });
-
+    
+    Moneda = DatosMonedas
+   
     let arrayIdArticulo = new Array();
     $("input[name='txtIdArticulo[]']").each(function (indice, elemento) {
         arrayIdArticulo.push($(elemento).val());
@@ -1015,29 +1035,18 @@ function disabledmodal(valorbolean) {
 
 }
 
-function listarEmpleados() {
-    $.ajax({
-        url: "../Empleado/ObtenerEmpleados",
-        type: "GET",
-        contentType: "application/json",
-        dataType: "json",
-        data: {
-            'estado': 1
-        },
-        cache: false,
-        contentType: false,
-        success: function (datos) {
-            $("#EntregadoA").html('');
-            let options = `<option value="0">Seleccione</option>`;
-            if (datos.length > 0) {
+let DatosEmpleados = [];
 
-                for (var i = 0; i < datos.length; i++) {
-                    options += `<option value="` + datos[i].IdEmpleado + `">` + datos[i].RazonSocial + `</option>`;
-                }
-                $("#EntregadoA").html(options);
-            }
+function listarEmpleados() {
+    $.ajaxSetup({ async: false });
+    $.post("/Empleado/ObtenerEmpleadosPorIdBase", { 'IdBase': $("#IdBase").val() }, function (data, status) {
+        try {
+            DatosEmpleados = JSON.parse(data);
+        } catch (e) {
+            DatosEmpleados = [];
         }
     });
+    llenarComboEmpleados(DatosEmpleados, "EntregadoA", "Seleccione")
 }
 
 function CargarSeries() {
@@ -1048,11 +1057,13 @@ function CargarSeries() {
     });
 }
 
+
+var DatosIndicadorImpuestos = []
 function CargarImpuestos() {
     $.ajaxSetup({ async: false });
     $.post("/IndicadorImpuesto/ObtenerIndicadorImpuestos", function (data, status) {
-        let impuestos = JSON.parse(data);
-        llenarComboImpuesto(impuestos, "cboImpuesto", "Seleccione")
+        DatosIndicadorImpuestos = JSON.parse(data);
+        llenarComboImpuesto(DatosIndicadorImpuestos, "cboImpuesto", "Seleccione")
     });
 }
 
@@ -1137,11 +1148,13 @@ function CargarDepartamentos() {
     });
 }
 
+var DatosMonedas = [];
+
 function CargarMoneda() {
     $.ajaxSetup({ async: false });
     $.post("/Moneda/ObtenerMonedas", function (data, status) {
-        let monedas = JSON.parse(data);
-        llenarComboMoneda(monedas, "cboMoneda", "Seleccione")
+        DatosMonedas = JSON.parse(data);
+        llenarComboMoneda(DatosMonedas, "cboMoneda", "Seleccione")
     });
 }
 
@@ -1362,6 +1375,7 @@ function llenarComboAlmacen(lista, idCombo, primerItem) {
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
+    $("#cboAlmacen").prop("selectedIndex", 1).change();
 }
 
 
@@ -1893,7 +1907,7 @@ function GuardarSolicitud() {
             } else {
                 Swal.fire(
                     'Error!',
-                    'Ocurrio un Error!',
+                    'Ocurrio un Error!' +data,
                     'error'
                 )
 
@@ -1913,7 +1927,7 @@ function GuardarSolicitud() {
 function limpiarDatos() {
 
     $("#txtId").val('');
-    $("#cboSerie").val('');
+    //$("#cboSerie").val('');
     $("#txtNumeracion").val('');
     $("#cboMoneda").val('');
     $("#txtTipoCambio").val('');
@@ -1954,21 +1968,10 @@ function limpiarDatos() {
 
 function ObtenerDatosxID(IdMovimiento) {
 
-
+    CargarDatosModal()
 
     $("#txtId").val(IdMovimiento);
-    CargarCentroCosto();
-    listarEmpleados();
-    ObtenerTiposDocumentos()
-    CargarBase()
-    CargarTipoDocumentoOperacion()
-    ObtenerCuadrillas()
-    CargarSeries();
-    CargarSeries();
-    CargarMoneda();
-    CargarProveedor();
-    CargarMotivoTraslado();
-    CargarProveedorDevolucion()
+
 
     $("#lblTituloModal").html("Editar Salida");
     AbrirModal("modal-form");
@@ -2341,10 +2344,9 @@ function AgregarLineaDetalle(contador, detalle) {
     });
 
 
-    $.ajaxSetup({ async: false });
-    $.post("/Almacen/ObtenerAlmacen", function (data, status) {
-        Almacen = JSON.parse(data);
-    });
+    
+        Almacen = DatosAlmacen
+   
 
     tr = `<tr>
         <td>`+ detalle.CodigoArticulo + `</td>
@@ -2723,7 +2725,7 @@ function SeleccionarItemListado() {
 
     let IdArticulo = $('#cboAgregarArticulo').val();
     let TipoItem = $("#cboClaseArticulo").val();
-    let Almacen = $("#cboAlmacenItem").val();
+    let Almacen = $("#cboAlmacen").val();
     if (TipoItem == 3) {
         $.post("/Articulo/ListarArticulosxSociedadxAlmacenStockxProductoActivoFijo", { 'IdArticulo': IdArticulo, 'IdAlmacen': Almacen, 'Estado': 1 }, function (data, status) {
 
@@ -3071,8 +3073,10 @@ function llenarComboSerieExtorno(lista, idCombo, primerItem) {
     $("#" + idCombo).val(lista[ultimoindice].IdSerie).change();
 }
 
+
+var ValidacionBases = 'false';
 function CargarBasesObraAlmacenSegunAsignado() {
-    let respuesta = 'false';
+    ValidacionBases = 'false';
     $.ajaxSetup({ async: false });
     $.post("/Usuario/ObtenerBaseAlmacenxIdUsuarioSession", function (data, status) {
         if (validadJson(data)) {
@@ -3081,9 +3085,11 @@ function CargarBasesObraAlmacenSegunAsignado() {
             contadorBase = datos[0].CountBase;
             contadorObra = datos[0].CountObra;
             contadorAlmacen = datos[0].CountAlmacen;
+            CargarDatosBaseObraAlmacen();
             AbrirModal("modal-form");
-            CargarBase();
             if (contadorBase == 1 && contadorObra == 1 && contadorAlmacen == 1) {
+                console.log("Entro");
+                console.log(datos[0].IdObra);
                 $.ajaxSetup({ async: false });
                 $("#IdBase").val(datos[0].IdBase).change();
                 $("#IdObra").val(datos[0].IdObra).change();
@@ -3117,13 +3123,14 @@ function CargarBasesObraAlmacenSegunAsignado() {
             }
 
 
-            respuesta = 'true';
+            ValidacionBases = 'true';
         } else {
-            respuesta = 'false';
+            ValidacionBases = 'false';
         }
     });
-    return respuesta;
+    return ValidacionBases;
 }
+
 
 function ObtenerDatosDefinicion() {
     let IdDefinicionGrupo = $("#cboMedidaItem").val();
@@ -3257,11 +3264,12 @@ function BuscarVehiculoxPlaca() {
 
 }
 
-
+var DatosProveedor = []
 
 function CargarProveedor() {
     $.post("/Proveedor/ObtenerProveedores", function (data, status) {
         Proveedor = JSON.parse(data);
+        DatosProveedor = JSON.parse(data);
         let option = `<option value="0">SELECCIONE PROVEEDOR</option>`;
         console.log(Proveedor);
         for (var i = 0; i < Proveedor.length; i++) {
@@ -3270,6 +3278,7 @@ function CargarProveedor() {
 
         $("#IdTransportista").html(option);
         $("#IdDestinatario").html(option);
+        $("#cboProveedor").html(option);
         $("#IdTransportista").select2();
         $("#IdDestinatario").select2();
 
@@ -3568,17 +3577,16 @@ function AgregarOPNDDetalle(data) {
 
             });
 
-            $.post("/IndicadorImpuesto/ObtenerIndicadorImpuestos", function (data, status) {
-                IndicadorImpuesto = JSON.parse(data);
-            });
+            
+            IndicadorImpuesto = DatosIndicadorImpuestos
+            
 
-            $.post("../Almacen/ObtenerAlmacen", function (data, status) {
-                Almacen = JSON.parse(data);
-            });
+            
+                Almacen = DatosAlmacen
+            
 
-            $.post("/Proveedor/ObtenerProveedores", function (data, status) {
-                Proveedor = JSON.parse(data);
-            });
+                Proveedor = DatosProveedor
+            
 
             //$.post("/LineaNegocio/ObtenerLineaNegocios", function (data, status) {
             //    LineaNegocio = JSON.parse(data);
@@ -3592,9 +3600,9 @@ function AgregarOPNDDetalle(data) {
             //    Proyecto = JSON.parse(data);
             //});
 
-            $.post("/Moneda/ObtenerMonedas", function (data, status) {
-                Moneda = JSON.parse(data);
-            });
+            
+            Moneda = DatosMonedas
+          
 
             contador++;
             let tr = '';
@@ -3844,8 +3852,7 @@ function llenarComboEmpleados(lista, idCombo, primerItem) {
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
-    //$("#" + idCombo).val(lista[ultimoindice].IdEmpleado).change();
-    ObtenerCapataz()
+    $("#EntregadoA").val(0).change();
 }
 function ObtenerCapataz() {
     let IdCuadrilla = $("#IdCuadrilla").val();
@@ -4205,8 +4212,61 @@ function ValidarItems(){
     if (arrayIdArticulo.length > 0) {
         $("#cboClaseArticulo").prop("disabled", true)
         $("#IdTipoProducto").prop("disabled", true)
+        $("#IdBase").prop("disabled", true)
+        $("#IdObra").prop("disabled", true)
+        $("#cboAlmacen").prop("disabled", true)
     } else {
         $("#cboClaseArticulo").prop("disabled", false)
         $("#IdTipoProducto").prop("disabled", false)
+        $("#IdBase").prop("disabled", false)
+        $("#IdObra").prop("disabled", false)
+        $("#cboAlmacen").prop("disabled", false)
     }
+}
+
+
+
+var DatosBase = [];
+var DatosObra = [];
+var DatosAlmacen = [];
+function CargarDatosBaseObraAlmacen() {
+
+
+    try {
+        $.ajaxSetup({ async: false });
+        $.post("/Base/ObtenerBasexIdUsuario", function (data, status) {
+            DatosBase = JSON.parse(data);
+
+        });
+        llenarComboBase(DatosBase, "IdBase", "Seleccione")
+
+    } catch (e) {
+        Swal.fire("Error!", "No se pudieron Cargar las Bases", "error");
+        return;
+    }
+
+    try {
+        $.ajaxSetup({ async: false });
+        $.post("/Obra/ObtenerObraxIdUsuarioSessionSinBase", function (data, status) {
+            DatosObra = JSON.parse(data);
+
+        });
+
+    } catch (e) {
+        Swal.fire("Error!", "No se pudieron Cargar las Obra", "error");
+        return;
+    }
+    try {
+        $.ajaxSetup({ async: false });
+        $.post("/Almacen/ObtenerAlmacenxIdUsuario", function (data, status) {
+            DatosAlmacen = JSON.parse(data);
+
+        });
+
+    } catch (e) {
+        Swal.fire("Error!", "No se pudieron Cargar los Almacenes", "error");
+        return;
+    }
+
+
 }

@@ -28,8 +28,8 @@ function ConsultaServidor(url) {
                 '<td>' + empleados[i].RazonSocial.toUpperCase() + '</td>' +
                 '<td>' + empleados[i].Base.toUpperCase() + '</td>' +
                 '<td>' + empleados[i].Cargo.toUpperCase() + '</td>' +
-                '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + empleados[i].IdEmpleado + ')"></button>' +
-                '<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + empleados[i].IdEmpleado + ')"></button></td >' +
+                //'<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + empleados[i].IdEmpleado + ')"></button>' +
+                //'<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + empleados[i].IdEmpleado + ')"></button></td >' +
                 '</tr>';
         }
 

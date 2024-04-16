@@ -105,7 +105,7 @@ function esRendicion() {
 function CargarGiros() {
     let obraGiro = $("#cboObraFiltro").val()
     $.ajaxSetup({ async: false });
-    $.post("/GestionGiro/ObtenerGiroAprobado", { 'IdObra': obraGiro }, function (data, status) {
+    $.post("/GestionGiro/ObtenerGiroParaBusqueda", { 'IdObra': obraGiro }, function (data, status) {
         let base = JSON.parse(data);
         llenarComboGiros(base, "cboGiro", "seleccione")
 

@@ -138,12 +138,19 @@ window.onload = function () {
     listarUnidadMedida();
     listarCodigoUbso();
     listarGrupoArticulo();
+    CargarCateogiras() 
     CargarGrupoUnidadMedida();
     $("#cboIdCodigoUbso").select2();
     $("#divObraArticulo").hide();
     ObtenerObra();
 
-
+    if ($("#ArtIdPerfil").val() == 1 || $("#ArtIdPerfil").val() == 1018) {
+        $("#btnGrabar").show()
+        $("#btnNuevoArt").show()
+    } else {
+        $("#btnGrabar").hide()
+        $("#btnNuevoArt").hide()
+    }
 
     $("#CargarExcel").on("submit", function (e) {
         e.preventDefault();
@@ -581,6 +588,7 @@ function GuardarArticulo() {
             'Estado': varEstado,
             'IdGrupoUnidadMedida': IdGrupoUnidadMedida,
             'IdUnidadMedidaInv': IdUnidadMedidaInv,
+            'IdCategoria': $("#cboCategoria").val(),
             'IdProveedor': $("#txtProveedor").val()
 
 
@@ -666,6 +674,7 @@ function ObtenerDatosxID(varIdArticulo) {
             $("#TablaAlmacenes").show();
             console.log(articulos[0].IdUnidadMedidaInv)
             $("#IdUnidadMedidaInv").val(articulos[0].IdUnidadMedidaInv);
+            $("#cboCategoria").val(articulos[0].IdCategoria);
         }
 
     });
@@ -715,13 +724,16 @@ function listarPrecioProductoProveedor(IdArticulo) {
                     tr += `<tr>
     
                         <td>`+ datos[i].Proveedor + `</td>
-                        <td>`+ datos[i].PrecioSoles + `</td>
-                        <td>`+ datos[i].PrecioDolares + `</td>
+                        <td><input class="form-control" type="number" id="precioSoles`+ datos[i].IdArticuloProveedor +`" value="`+ datos[i].PrecioSoles + `"/></td>
+                        <td><input class="form-control" type="number" id="precioDolar`+ datos[i].IdArticuloProveedor +`" value="`+ datos[i].PrecioDolares + `"/></td>
                         <td>`+ datos[i].CondicionPago + `</td>
                         <td>`+ datos[i].numeroentrega + `</td>
                         <td>`+ TipoPrecio + `</td>
                         <td>`+ ObraA + `</td>
-                        <td> <button class="btn btn-sm btn-danger" onclick="elimiarproductoproveedor(`+ datos[i].IdArticuloProveedor + `,` + datos[i].IdArticulo + `)">-</button></td>
+                        <td>
+                             <button class="btn btn-sm btn-danger fa fa-floppy-o"  onclick="UpdateProveedorPrecio(`+ datos[i].IdArticuloProveedor +`)"></button>
+                            <button class="btn btn-sm btn-danger fa fa-trash"  style="background-color:red" onclick="elimiarproductoproveedor(`+ datos[i].IdArticuloProveedor + `,` + datos[i].IdArticulo + `)"></button>
+                       </td>
                     </tr>`;
                 }
 
@@ -751,11 +763,68 @@ function elimiarproductoproveedor(IdProductoProveedor,IdArticulo) {
 }
 
 
+function UpdateProveedorPrecio(IdArticuloProveedor) {
+
+    let PrecioSoles = $("#precioSoles" + IdArticuloProveedor).val();
+    let PrecioDolares = $("#precioDolar" + IdArticuloProveedor).val()
+
+
+    if (PrecioSoles == "" || PrecioSoles == null || PrecioSoles < "0" || !$.isNumeric(PrecioSoles)) {
+        swal("Informacion!", "Ingrese Precio Soles!");
+        return;
+    }
+
+    if (PrecioDolares == "" || PrecioDolares == null || PrecioDolares < "0" || !$.isNumeric(PrecioDolares)) {
+        swal("Informacion!", "Ingrese Precio dolares!");
+        return;
+    }
+
+    if (PrecioDolares == "0" && PrecioSoles == "0") {
+        swal("Informacion!", "Ingrese al menos un monto!");
+        return;
+    }
+
+
+    $.ajax({
+        url: "/Pedido/UpdatePrecioProveedorArticulo",
+        type: "POST",
+        async: true,
+        data: {
+            'IdArticuloProveedor': +IdArticuloProveedor,
+            'PrecioNacional': +PrecioSoles,
+            'PrecioExtranjero': +PrecioDolares
+        },
+        beforeSend: function () {
+            Swal.fire({
+                title: "Cargando...",
+                text: "Por favor espere",
+                showConfirmButton: false,
+                allowOutsideClick: false
+            });
+        },
+        success: function (data) {
+            if (data > 0) {
+                Swal.fire("Exito", "Precios Actualizados", "success")
+
+            } else {
+                Swal.fire("Error", "No se Pudieron actualizar los Precios", "error")
+
+            }
+
+
+        }
+    }).fail(function () {
+        Swal.fire("Error", "No se Pudieron actualizar los Precios", "error")
+    });
+
+}
+
 function limpiarDatos() {
     $("#txtId").val("");
     $("#txtCodigo").val("");
     $("#txtDescripcion1").val("");
     $("#txtDescripcion2").val("");
+    $("#cboCategoria").val(0);
     $("#chkActivo").prop('checked', false);
     $("#chkArticulo").prop('checked', false);
     $("#chkArticuloCompra").prop('checked', false);
@@ -900,4 +969,27 @@ function OpenModalImportacionArtProv() {
 
 
     $("#ModalImportarDatosPrecioProv").modal('show')
+}
+
+function CargarCateogiras() {
+    $.ajaxSetup({ async: false });
+    $.post("/Categoria/ObtenerCategoria", function (data, status) {
+        let proveedores = JSON.parse(data);
+        llenarcomboCategoria(proveedores, "cboCategoria", "NINGUNO")
+    });
+}
+
+function llenarcomboCategoria(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+
+    for (var i = 0; i < nRegistros; i++) {
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdCategoria + "'>" + lista[i].Descripcion + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
 }

@@ -8,7 +8,7 @@
     <div class="panel">
         <div class="container-fluid">
             <div class="topbar-left col-xs-6">
-                <h3>FACTURAS DE SERVICIOS POR PROVEEDOR</h3>
+                <h3>REPORTE DE FACTURAS PENDIENTE DE ENVIO A SAP</h3>
             </div>
         </div>
     </div>
@@ -35,13 +35,13 @@
                         </div>
                     </div>
                 </div>
-              @*  <div class="row">
-                    <div class='form-group-sm'>
-                        <label for="IdBase" class="control-label col-sm-2 left-align">Base</label>
-                        <div class="col-sm-4">
-                            <select class="form-control input-sm" id="IdBase" onchange="CargarObra()"></select>
-                        </div>
-                    </div>
+                @*  <div class="row">
+                <div class='form-group-sm'>
+                <label for="IdBase" class="control-label col-sm-2 left-align">Base</label>
+                <div class="col-sm-4">
+                <select class="form-control input-sm" id="IdBase" onchange="CargarObra()"></select>
+                </div>
+                </div>
                 </div>*@
                 <div class="row">
                     <div class='form-group-sm'>
@@ -53,17 +53,17 @@
                 </div>
                 <div class="row">
                     <div class='form-group-sm'>
-                        <label for="IdProveedor" class="control-label col-sm-2 rigth-align">Proveedor</label>
+                        <label for="IdTipoRegistro" class="control-label col-sm-2 rigth-align">Tipo Registro</label>
                         <div class="col-sm-4">
-                            <select id="IdProveedor" class="form-control input-sm" tabindex="1">
+                            <select id="IdTipoRegistro" class="form-control input-sm" tabindex="1">
                                 <
                             </select>
                         </div>
                     </div>
                 </div>
 
-               
-                <div class="col-xs-12">
+
+            @*    <div class="col-xs-12">
                     <input type="radio" id="rptResumido" name="TipoReporte" checked />
                     <label style="font-size:1.5rem" for="rptResumido">Reporte Resumido</label>
 
@@ -75,7 +75,7 @@
                 </div>
                 <div class="col-xs-12">
 
-                    <input type="radio" id="rptOrdenadoServicio" name="TipoReporte"  />
+                    <input type="radio" id="rptOrdenadoServicio" name="TipoReporte" />
                     <label style="font-size:1.5rem" for="rptOrdenadoServicio">Reporte Ordenado Por Servicio</label>
                 </div>
                 <div class="col-xs-12">
@@ -83,11 +83,11 @@
                     <input type="radio" id="rptOrdenadoServiciorResumido" name="TipoReporte" />
                     <label style="font-size:1.5rem" for="rptOrdenadoServiciorResumido">Reporte Ordenado Por Servicio Resumido</label>
                 </div>
-                  <div class="col-xs-12">
+                <div class="col-xs-12">
 
-                  <input type="radio" id="rptOrdenadoServiciorCCSAP" name="TipoReporte" />
+                    <input type="radio" id="rptOrdenadoServiciorCCSAP" name="TipoReporte" />
                     <label style="font-size:1.5rem" for="rptOrdenadoServiciorCCSAP">Reporte Resumido por Cuenta Contable SAP</label>
-                </div>
+                </div>*@
                 <div class="row">
                     <button type="button" id="btnReporte" class="btn btn-primary pull-centers plu" onclick="GenerarReporte('pdf')">Generar Reporte PDF</button>
                     <button type="button" id="btnReporte" style="background-color:green" class="btn btn-primary pull-centers plu" onclick="GenerarReporte('excel')">Generar Reporte Excel</button>
@@ -104,7 +104,7 @@
 
 
 
-<script src="~/Scripts/FacturaProveedor/ReporteFacturaServicio.js?v=@rnd.Next(1, 1000 + 1)"></script>
+<script src="~/Scripts/FacturaProveedor/ReportePendienteEnvioSAP.js?v=@rnd.Next(1, 1000 + 1)"></script>
 <script src="~/Scripts/General.js"></script>
 <script src="~/js/pdf/jspdf.min.js"></script>
 <script src="~/js/pdf/faker.min.js"></script>

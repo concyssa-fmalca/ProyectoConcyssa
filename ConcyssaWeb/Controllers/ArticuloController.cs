@@ -45,24 +45,7 @@ namespace ConcyssaWeb.Controllers
             {
                 return mensaje_error;
             }
-        }
-
-        public string ListarArticulosxAlmacenSelect2(int IdAlmacen, int IdTipoProducto, string searchTerm = "")
-        {
-            string mensaje_error = "";
-            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
-            ArticuloDAO oArticuloDAO = new ArticuloDAO();
-            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<ArticuloDTO> lstArticuloDTO = oArticuloDAO.ListarArticulosxAlmacenSelect2(searchTerm, IdAlmacen, IdTipoProducto, BaseDatos, ref mensaje_error);
-            if (lstArticuloDTO.Count > 0)
-            {
-                return JsonConvert.SerializeObject(lstArticuloDTO);
-            }
-            else
-            {
-                return mensaje_error;
-            }
-        }
+        }    
 
         public string ListarArticulosxSociedadxAlmacenStock(int IdAlmacen,int estado = 3)
         {
@@ -751,6 +734,62 @@ namespace ConcyssaWeb.Controllers
 
             }
 
+        }
+
+        public string ListarArticulosxAlmacenSelect2(int IdAlmacen, int IdTipoProducto , string searchTerm = "", int IdClaseArticulo = 1)
+        {
+            string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            ArticuloDAO oArticuloDAO = new ArticuloDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            List<ArticuloDTO> lstArticuloDTO = new List<ArticuloDTO>();
+
+            if (IdClaseArticulo == 1)
+            {
+                lstArticuloDTO = oArticuloDAO.ListarArticulosxAlmacenSelect2(searchTerm, IdAlmacen, IdTipoProducto, BaseDatos, ref mensaje_error);
+            }
+            if (IdClaseArticulo == 2)
+            {
+                lstArticuloDTO = oArticuloDAO.ListarServiciosxAlmacenSelect2(searchTerm, IdAlmacen, BaseDatos, ref mensaje_error);
+            }
+            if (IdClaseArticulo == 3)
+            {
+                lstArticuloDTO = oArticuloDAO.ListarActivosFijosxAlmacenSelect2(searchTerm, IdAlmacen, BaseDatos, ref mensaje_error);
+            }
+
+
+
+            if (lstArticuloDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstArticuloDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
+        public string ListarArticulosActivosSelect2(string searchTerm = "")
+        {
+            string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            ArticuloDAO oArticuloDAO = new ArticuloDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            List<ArticuloDTO> lstArticuloDTO = new List<ArticuloDTO>();
+
+           
+                lstArticuloDTO = oArticuloDAO.ListarArticulosSelect2(searchTerm, BaseDatos, ref mensaje_error);
+       
+
+
+
+            if (lstArticuloDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstArticuloDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
         }
 
     }

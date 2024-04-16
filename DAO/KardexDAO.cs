@@ -187,6 +187,46 @@ namespace DAO
             }
             return lstArticuloStockDTO;
         }
+
+        public List<ArticuloStockDTO> ObtenerStockxAlmacenxTipoProducto(int IdAlmacen,int IdTipoProducto, string BaseDatos, ref string mensaje_error)
+        {
+
+            List<ArticuloStockDTO> lstArticuloStockDTO = new List<ArticuloStockDTO>();
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_InformeInventarioxIdAlmacenConStockTipoArt", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdTipoProducto", IdTipoProducto);
+                    da.SelectCommand.Parameters.AddWithValue("@IdAlmacen", IdAlmacen);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        ArticuloStockDTO oArticuloStockDTO = new ArticuloStockDTO();
+                        oArticuloStockDTO.IdArticulo = Convert.ToInt32(drd["IdArticulo"].ToString());
+                        oArticuloStockDTO.IdAlmacen = Convert.ToInt32(drd["IdAlmacen"].ToString());
+                        oArticuloStockDTO.NombArticulo = (drd["NombArticulo"].ToString());
+                        oArticuloStockDTO.Stock = Convert.ToDecimal(drd["Stock"].ToString());
+                        oArticuloStockDTO.PrecioPromedio = Convert.ToDecimal(drd["PrecioPromedio"].ToString());
+                        oArticuloStockDTO.Codigo = (drd["Codigo"].ToString());
+                        oArticuloStockDTO.IdUnidadMedidaInv = int.Parse(drd["IdUnidadMedidaInv"].ToString());
+
+                        lstArticuloStockDTO.Add(oArticuloStockDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstArticuloStockDTO;
+        }
+
         public List<KardexDTO> ObtenerKardexMigración(int IdSociedad, int IdArticulo, int IdAlmacen, DateTime FechaInicio, DateTime FechaTermino,bool SoloNoEnviadas, string BaseDatos, ref string mensaje_error)
         {
             List<KardexDTO> lstKardexDTO = new List<KardexDTO>();

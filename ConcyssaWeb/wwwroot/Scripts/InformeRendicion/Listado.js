@@ -108,7 +108,7 @@ function ObtenerSemanas() {
     let ObraSemana = $("#cboObraFiltro").val()
     let AnioSemana = $("#cboPeriodo").val()
     $.ajaxSetup({ async: false });
-    $.post("/GestionGiro/ObtenerGiroAprobado", { 'IdObra': ObraSemana }, function (data, status) {
+    $.post("/GestionGiro/ObtenerGiroParaBusqueda", { 'IdObra': ObraSemana }, function (data, status) {
         if (validadJson(data)) {
             let SemanaData = JSON.parse(data);
             llenarComboSemanaFiltro(SemanaData, "cboSemana", "Seleccione")

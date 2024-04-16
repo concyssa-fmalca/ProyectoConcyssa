@@ -312,10 +312,16 @@ function GuardarProveedor() {
         'Tipo': varTipo,
         'Estado': varEstado,
         'DiasEntrega': varDiasEntrega,
-        'Afecto4ta' : varAfecto
+        'Afecto4ta': varAfecto
     }, function (data, status) {
 
-        if (data !== 0) {
+        if (data == -2) {
+            swal("Error!", "El proveedor ya está registrado", "info")
+        } else if (data == -3) {
+            swal("Error!", "No se Pudo Validar el Provedor en SUNAT, intente de nuevo", "info")
+        } else if (data == -4) {
+            swal("Error!", "El RUC no existe en SUNAT", "info")
+        } else if (data > 0) {
             swal("Exito!", "Proceso Realizado Correctamente", "success")
             table.destroy();
             ConsultaServidor("ObtenerProveedores");
@@ -596,7 +602,7 @@ function ValidarBotonBuscar() {
         $("#btnBuscarReniec").hide();
     }
 
-    limpiarDatos();
+    //limpiarDatos();
 
 }
 

@@ -18,15 +18,28 @@
 
         if (Tipo == 'excel') {
             $.ajaxSetup({ async: false });
-            $.post("GenerarReporteOcPendiente", { 'NombreReporte': 'OsPendiente', 'Formato': 'PDF', 'IdProveedor': IdProveedor, 'IdBase': IdBase, 'IdObra': IdObra, 'FechaInicial': FechaInicial, 'FechaFinal': FechaFinal }, function (data, status) {
+            $.post("GenerarReporteOcPendiente", { 'NombreReporte': 'OsPendiente', 'Formato': 'excel', 'IdProveedor': IdProveedor, 'IdBase': IdBase, 'IdObra': IdObra, 'FechaInicial': FechaInicial, 'FechaFinal': FechaFinal }, function (data, status) {
                 let datos;
                 if (validadJson(data)) {
-                    window.open("http://192.168.0.209/Anexos/ExcelReporte/OsPendiente.xlsx", '_blank', 'noreferrer');
-                    Swal.fire(
-                        'Correcto',
-                        'Excel Generado',
-                        'success'
-                    )
+                    try {
+                        datos = JSON.parse(data)
+
+                        const byteString = window.atob(datos.Base64ArchivoPDF);
+                        const arrayBuffer = new ArrayBuffer(byteString.length);
+                        const int8Array = new Uint8Array(arrayBuffer);
+                        for (let i = 0; i < byteString.length; i++) {
+                            int8Array[i] = byteString.charCodeAt(i);
+                        }
+
+                        const blob = new Blob([int8Array], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                        const link = document.createElement("a");
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = `OrdenServicioPendiente.xlsx`;
+                        link.click();
+                        Swal.close()
+                    } catch (e) {
+                        Swal.fire("Error", "No se Pudo Generar el Archivo Excel", "error")
+                    }
                 } else {
                     Swal.fire(
                         'Error',

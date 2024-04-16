@@ -184,7 +184,6 @@ namespace ISAP
 
                 ObjSAPComprobante.CardCode = "P" + datosProveedor[0].NumeroDocumento;
 
-                ObjSAPComprobante.CardName = datosProveedor[0].RazonSocial;
 
                 IntregadorV1DAO IntDao = new IntregadorV1DAO();
                 IntegradorProveedorDTO datosProveedorSAP = IntDao.ObtenerDatosProveedorSAP("P" + datosProveedor[0].NumeroDocumento, BaseDatosSAP, ref mensaje_error);
@@ -205,6 +204,7 @@ namespace ISAP
                     }
                 }
 
+                ObjSAPComprobante.CardName = datosProveedorSAP.CardName;
                 ObjSAPComprobante.GroupNumber = datosProveedorSAP.GroupNum;
 
                 ObjSAPComprobante.DocDate = auxComprobante.FechaContabilizacion; //fecha contabilizacion
@@ -688,9 +688,15 @@ namespace ISAP
                 //ObjSAPComprobante.CardCode = "P" + auxComprobante.NumRucEmisor;
                 ObjSAPComprobante.CardCode = "P" + datosProveedor[0].NumeroDocumento;
 
-                ObjSAPComprobante.CardName = datosProveedor[0].RazonSocial;
+      
+
+                IntregadorV1DAO IntDao = new IntregadorV1DAO();
+                IntegradorProveedorDTO datosProveedorSAP = IntDao.ObtenerDatosProveedorSAP("P" + datosProveedor[0].NumeroDocumento, BaseDatosSAP, ref mensaje_error);
 
 
+            
+                ObjSAPComprobante.CardName = datosProveedorSAP.CardName;
+                ObjSAPComprobante.GroupNumber = datosProveedorSAP.GroupNum;
 
                 //ObjSAPComprobante.GroupNumber = -1;
                 ObjSAPComprobante.DocDate = auxComprobante.FechaContabilizacion; //fecha contabilizacion

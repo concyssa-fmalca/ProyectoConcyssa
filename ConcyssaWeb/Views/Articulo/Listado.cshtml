@@ -36,13 +36,13 @@
                 </div>
             </div>
              <div class="col-sm-2 right">
-                <button class="btn btn-sm btn-info pull-right" id="btn_agregaritem" onclick="OpenModalImportacion()" type="button">Importar Articulos Excel</button>
+                <button class="btn btn-sm btn-info pull-right" id="btn_agregaritem" onclick="OpenModalImportacion()" style="display:none" type="button">Importar Articulos Excel</button>
              </div>
             <div class="col-sm-2 right">
-                <button class="btn btn-sm btn-info pull-right" id="btn_agregaritem" onclick="OpenModalImportacionArtProv()" type="button">Importar Precio x Prov Excel</button>
+                <button class="btn btn-sm btn-info pull-right" id="btn_agregaritem" onclick="OpenModalImportacionArtProv()" style="display:none"  type="button">Importar Precio x Prov Excel</button>
             </div>
             <div class="col-xs-2 right">
-                <button class="btn btn-sm  btn-primary pull-right plu" data-target="modal1" onclick="ModalNuevo()" style="margin-left:10px;">Nuevo</button>
+                <button class="btn btn-sm  btn-primary pull-right plu" data-target="modal1" id="btnNuevoArt" onclick="ModalNuevo()" style="margin-left:10px;">Nuevo</button>
                 @*<button class="btn btn-sm  btn-success pull-right plu" id="btnPdf" style="margin-left:10px;">Descargar PDF</button>
                 <button class="btn btn-sm btn-info pull-right plu" id="btnExcel" style="margin-left:10px;">Descargar Excel</button>*@
             </div>
@@ -475,6 +475,20 @@
                                                 </div>
                                             </div>
 
+                                             <div class="col-lg-6 pl20 pr40">
+                                                <div class="row">
+                                                    <div class='form-group-sm'>
+                                                        <label for='cboCategoria' cl class="control-label col-sm-7 left-align">Categoria</label>
+                                                        <div class="col-sm-5">
+                                                            <select class="form-control" id="cboCategoria">
+                                                                <option value="0">Seleccione</option>
+                                                            </select>
+                                                            @*<input id='txtUnidadInventario' type='text' class="form-control input-sm" tabindex="1">*@
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                              
+                                            </div>
 
 
                                             <div class="col-lg-6  pl40 pr20" style="display:none">

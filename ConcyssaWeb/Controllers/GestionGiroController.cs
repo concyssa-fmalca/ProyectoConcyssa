@@ -251,6 +251,7 @@ namespace ConcyssaWeb.Controllers
                                                 }
                                                 //enviar correo
                                             }
+                                            
 
 
                                         }
@@ -261,6 +262,7 @@ namespace ConcyssaWeb.Controllers
                                     {
                                         //SolicitudRQModeloAprobacionesDAO oSolicitudRQModeloAprobacionesDAO = new SolicitudRQModeloAprobacionesDAO();
                                         //oSolicitudRQModeloAprobacionesDAO.AprobarSolicitudRQxIdSolicitud(IdInsert);
+                                        // return "-97";
                                     }
 
                                 }
@@ -269,6 +271,7 @@ namespace ConcyssaWeb.Controllers
                             {
                                 //SolicitudRQModeloAprobacionesDAO oSolicitudRQModeloAprobacionesDAO = new SolicitudRQModeloAprobacionesDAO();
                                 //oSolicitudRQModeloAprobacionesDAO.AprobarSolicitudRQxIdSolicitud(IdInsert);
+                                //return "-96";
                             }
                         }
 
@@ -285,7 +288,13 @@ namespace ConcyssaWeb.Controllers
             //{
             //    return respuesta;
             //}
-            return "1";
+            try
+            {
+                return resultado[1].Split('-')[0].ToString();
+            }catch(Exception ex)
+            {
+                return "0";
+            }
          }
 
 
@@ -535,6 +544,22 @@ namespace ConcyssaWeb.Controllers
                 return mensaje_error;
             }
         }
+        public string ObtenerGiroParaBusqueda(int IdObra)
+        {
+            string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            GiroDAO oGiroDAO = new GiroDAO();
+            List<GiroDTO> lstSemanaDTO = oGiroDAO.ObtenerGiroParaBusqueda(IdObra, BaseDatos, ref mensaje_error);
+
+            if (lstSemanaDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstSemanaDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
 
         public int ActualizarEstadoContabilizado(int IdGiro, bool Estado)
         {
@@ -548,7 +573,38 @@ namespace ConcyssaWeb.Controllers
             return respuesta;
         }
 
+        public string ObtenerSerieGiro(int IdGiro)
+        {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            GiroDAO oGiroDAO = new GiroDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            //oSemanaDTO.IdSociedad = IdSociedad;
+            string respuesta = oGiroDAO.ObtenerSerieGiro(IdGiro, BaseDatos);
 
+            return respuesta;
+        }
+
+        public string ValidarExistenciaDocumentoGiro(int IdProveedor, int IdTipoDocumento, string NroDocumento)
+        {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            GiroDAO oGiroDAO = new GiroDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            //oSemanaDTO.IdSociedad = IdSociedad;
+            string mensaje_error = "";
+            List<GiroDTO> lstGiroDTO = oGiroDAO.ValidarExistenciaDocumentoGiro(IdProveedor,IdTipoDocumento,NroDocumento, BaseDatos,ref mensaje_error);
+
+            if (lstGiroDTO.Count == 0)
+            {
+                return "OK";
+            }
+            string respuesta = "EL DOCUMENTO YA SE ENCUENTRA REGISTRADO EN EL GIRO: ";
+            for (int i = 0; i < lstGiroDTO.Count; i++)
+            {
+                respuesta += lstGiroDTO[i].NombSerie + "-" + lstGiroDTO[i].Correlativo + " | ";
+            }
+
+            return respuesta;
+        }
     }
 }
   

@@ -313,6 +313,14 @@ function CerrarModal() {
 
 function CalcularTotalDetalle(contador) {
 
+    if ($("#txtCantidadNecesaria" + contador).val() == 0) {
+        Swal.fire("ERROR!", "La cantidad no puede ser cero, si no recibió el articulo elimine la fila con el botón a la derecha", "error");
+        $("#txtCantidadNecesaria" + contador).val($("#txtCantidadPrevia"+contador).val())
+    }
+
+
+
+
     let varIndicadorImppuesto = ($("#cboIndicadorImpuestoDetalle" + contador).val()).replace(/,/g,"");
     let varPorcentaje = $('option:selected', "#cboIndicadorImpuestoDetalle" + contador).attr("impuesto");
 
@@ -470,7 +478,7 @@ function AgregarLineaDetalle(contador, detalle) {
     });
 
 
-    tr = `<tr>
+    tr = `<tr id="DetalleTrans`+contador+`">
         <td>
           <input class="form-control" type="text" value="`+ (contador + 1) + `" disabled />
         </td>
@@ -544,7 +552,7 @@ function AgregarLineaDetalle(contador, detalle) {
             <input class="form-control" type="text" style="width:100px" id="txtReferencia`+ contador + `" name="txtReferencia[]" value="` + detalle.Referencia+`" disabled>
         </td>
         <td>
-            <button type="button" class="btn-sm btn btn-danger borrar fa fa-trash" disabled></button>   
+            <button type="button" class="btn-sm btn btn-danger borrar fa fa-trash" onclick="borrartdIdtem(`+contador+`)"></button>   
          </td>
     </tr>`
 
@@ -568,7 +576,10 @@ function AgregarLineaDetalle(contador, detalle) {
 }
 
 
+function borrartdIdtem(Id) {
+    $("#DetalleTrans"+Id).remove()
 
+}
 
 
 function GuardarSolicitud() {

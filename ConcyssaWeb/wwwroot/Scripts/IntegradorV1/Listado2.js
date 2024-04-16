@@ -700,7 +700,7 @@ function ObtenerDatosxEnviarSap(IdEnviarSap,TablaOriginal) {
             $("#cboSerie").val(movimiento.IdSerie);
             $("#cboMoneda").val(movimiento.IdMoneda);
             $("#TipoCambio").val(movimiento.TipoCambio);
-            $("#txtTotalAntesDescuento").val(formatNumber(movimiento.SubTotal.toFixed(DecimalesPrecios), DecimalesPrecios))
+            $("#txtTotalAntesDescuento").val(formatNumberDecimales(movimiento.SubTotal.toFixed(2), 2))
             $("#txtImpuesto").val(formatNumberDecimales(movimiento.Impuesto, 2))
             if (movimiento.Impuesto == 0) {
                 $("#txtImpuesto").val((0).toFixed(2))
@@ -899,7 +899,7 @@ function disabledmodal(valorbolean) {
     $("#IdCondicionPago").prop('disabled', valorbolean)
     $("#IdSemana").prop('disabled', valorbolean)
     $("#IdTipoRegistro").prop('disabled', valorbolean)
-    $("#txtRedondeo").prop('disabled', valorbolean)
+    //$("#txtRedondeo").prop('disabled', valorbolean)
 
     if (valorbolean) {
         $("#btnGrabar").hide()
@@ -1525,7 +1525,8 @@ function Editar() {
         'TasaDetraccion': varTasaDet,
         'GrupoDetraccion': varGrupoDet,
         'SerieSAP': varSerieSAP,
-        'CondicionPagoDet': varCondicionPagoDet
+        'CondicionPagoDet': varCondicionPagoDet,
+        'Redondeo': $("#txtRedondeo").val()
 
     }, function (data, status) {
 

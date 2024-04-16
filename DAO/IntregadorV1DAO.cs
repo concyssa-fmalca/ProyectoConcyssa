@@ -479,6 +479,7 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@GrupoDetraccion", oIntegradorV1DTO.GrupoDetraccion);
                         da.SelectCommand.Parameters.AddWithValue("@SerieSAP", oIntegradorV1DTO.SerieSAP);
                         da.SelectCommand.Parameters.AddWithValue("@CondicionPagoDet", oIntegradorV1DTO.CondicionPagoDet);
+                        da.SelectCommand.Parameters.AddWithValue("@Redondeo", oIntegradorV1DTO.Redondeo);
                         int rpta = Convert.ToInt32(da.SelectCommand.ExecuteNonQuery());
                         transactionScope.Complete();
                         return rpta;

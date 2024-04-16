@@ -41,6 +41,7 @@ namespace DTO
 
         public decimal UltimoPrecioCompra { get; set; }
         public int IdProveedor { get; set; }
+        public int IdCategoria { get; set; }
         public decimal CantidadPendiente { get; set; }
         public string Obra { get; set; }
         public string Almacen { get; set; }

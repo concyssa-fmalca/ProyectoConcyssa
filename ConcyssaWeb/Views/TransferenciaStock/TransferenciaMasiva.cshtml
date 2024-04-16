@@ -1,0 +1,69 @@
+﻿@{
+    ViewBag.Title = "Listado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" style="height:93%;">
+    <div class="panel">
+        <div class="container-fluid">
+            <div class="topbar-left col-xs-6">
+                <h3>Transferencia Masiva de Stock - Cierre de Proyecto</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+            
+                <label class="col-md-12">Tipo Articulo</label>
+                <select class="form-control" id="IdTipoProducto">
+                    <option value="1">MATERIALES</option>
+                    <option value="2">AUXILIARES</option>
+                </select>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <label class="col-md-12">Almacen de Origen</label>
+                <select class="form-control" id="IdAlmacenOrigen"></select>
+            </div>
+            <div class="col-md-2">
+                <label class="col-md-12"> </label>
+                <button class="btn btn-primary" onclick="ObtenerStockxAlmacen()">Ver Stock</button>
+            </div>
+            <div class="col-md-4">
+                <label class="col-md-12">Almacen de Destino</label>
+                <select class="form-control" id="IdAlmacenDestino">></select>
+            </div>
+            <div class="col-md-2">
+                <label class="col-md-12"> </label>
+                <button class="btn btn-primary" style="background-color:green" onclick="TransferenciaMasiva()">Transferir Stock</button>
+            </div>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="container-fluid">
+            <table id="table_id" class="table" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Codigo</th>
+                        <th>Descripción</th>
+                        <th>Stock</th>
+                        <th>Precio P.</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody_Stock"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@{
+    Random rnd = new Random();
+}
+
+
+<script src="~/Scripts/TransferenciaStock/TransferenciaMasiva.js?v=@rnd.Next(1, 1000 + 1)"></script>
+<script src="~/Scripts/General.js"></script>
+<script src="~/js/pdf/jspdf.min.js"></script>
+<script src="~/js/pdf/faker.min.js"></script>
+<script src="~/js/pdf/jspdf.plugin.autotable.src.js"></script>

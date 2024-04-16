@@ -162,4 +162,9 @@ namespace DTO
         public int LineNum { get; set; }
 
     }
+    public class TotalesOPCH
+    {
+        public decimal SumaSoles { get; set; }
+        public decimal SumaDolares { get; set; }
+    }
 }

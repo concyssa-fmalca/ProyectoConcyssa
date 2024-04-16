@@ -14,9 +14,10 @@ namespace DAO
     public class SolicitudRQDAO
     {
 
-        public List<SolicitudRQDTO> ObtenerSolicitudesRQ(int Usuario,int IdPerfil,int IdBase,int IdSolicitante, string IdSociedad, string FechaInicio, string FechaFinal, int Estado, string BaseDatos)
+        public List<SolicitudRQDTO> ObtenerSolicitudesRQ(int Usuario, int IdPerfil, int IdBase, int IdSolicitante, string IdSociedad, string FechaInicio, string FechaFinal, int Estado, string BaseDatos)
         {
-            if (IdPerfil == 1018) {
+            if (IdPerfil == 1018)
+            {
                 IdSolicitante = 999999;
             }
             List<SolicitudRQDTO> lstSolicitudRQDTO = new List<SolicitudRQDTO>();
@@ -62,10 +63,11 @@ namespace DAO
                         oSolicitudRQDTO.DetalleEstado = drd["DetalleEstado"].ToString();
                         oSolicitudRQDTO.Prioridad = int.Parse(drd["Prioridad"].ToString());
                         oSolicitudRQDTO.EstadoSolicitud = int.Parse(drd["EstadoSolicitud"].ToString());
-                        oSolicitudRQDTO.NombMoneda =(drd["NombMoneda"].ToString());
+                        oSolicitudRQDTO.NombMoneda = (drd["NombMoneda"].ToString());
                         oSolicitudRQDTO.TotalCantidad = Convert.ToDecimal(drd["TotalCantidad"].ToString());
+                        oSolicitudRQDTO.OCRelacionadas = (drd["OCRelacionadas"].ToString());
                         oSolicitudRQDTO.Usuario = Usuario;
-                    
+
 
 
                         oSolicitudRQDTO.NombObra = (drd["NombObra"].ToString());
@@ -102,7 +104,7 @@ namespace DAO
                     SqlDataReader drd = da.SelectCommand.ExecuteReader();
                     while (drd.Read())
                     {
-                        precio=(Convert.ToDecimal(drd["PrecioInfo"].ToString()));
+                        precio = (Convert.ToDecimal(drd["PrecioInfo"].ToString()));
                     }
                     drd.Close();
 
@@ -143,7 +145,7 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@NombreDepartamento", oSolicitudRQDTO.NombreDepartamento);
                         da.SelectCommand.Parameters.AddWithValue("@IdClaseArticulo", oSolicitudRQDTO.IdClaseArticulo);
                         da.SelectCommand.Parameters.AddWithValue("@IdTitular", oSolicitudRQDTO.IdTitular);
-                        da.SelectCommand.Parameters.AddWithValue("@IdMoneda", oSolicitudRQDTO.IdMoneda);
+                        da.SelectCommand.Parameters.AddWithValue("@IdMoneda", 1);
                         da.SelectCommand.Parameters.AddWithValue("@TipoCambio", oSolicitudRQDTO.TipoCambio);
                         da.SelectCommand.Parameters.AddWithValue("@TotalAntesDescuento", oSolicitudRQDTO.TotalAntesDescuento);
                         da.SelectCommand.Parameters.AddWithValue("@IdIndicadorImpuesto", oSolicitudRQDTO.IdIndicadorImpuesto);
@@ -184,7 +186,7 @@ namespace DAO
                             dad.SelectCommand.Parameters.AddWithValue("@CantidadNecesaria", oSolicitudRQDetalleDTO.CantidadNecesaria[i]);
                             dad.SelectCommand.Parameters.AddWithValue("@CantidadSolicitada", oSolicitudRQDetalleDTO.CantidadNecesaria[i]);
                             dad.SelectCommand.Parameters.AddWithValue("@PrecioInfo", oSolicitudRQDetalleDTO.PrecioInfo[i]);
-                            dad.SelectCommand.Parameters.AddWithValue("@IdIndicadorImpuesto", oSolicitudRQDetalleDTO.IdIndicadorImpuesto[i]);
+                            dad.SelectCommand.Parameters.AddWithValue("@IdIndicadorImpuesto", 1);
                             dad.SelectCommand.Parameters.AddWithValue("@Total", oSolicitudRQDetalleDTO.ItemTotal[i]);
                             dad.SelectCommand.Parameters.AddWithValue("@IdAlmacen", oSolicitudRQDetalleDTO.IdAlmacen[i]);
                             dad.SelectCommand.Parameters.AddWithValue("@IdProveedor", oSolicitudRQDetalleDTO.IdProveedor[i]);
@@ -193,7 +195,7 @@ namespace DAO
                             dad.SelectCommand.Parameters.AddWithValue("@IdLineaNegocio", 0);
                             dad.SelectCommand.Parameters.AddWithValue("@IdCentroCostos", 0);
                             dad.SelectCommand.Parameters.AddWithValue("@IdProyecto", 0);
-                            dad.SelectCommand.Parameters.AddWithValue("@IdMoneda", oSolicitudRQDetalleDTO.IdItemMoneda[i]);
+                            dad.SelectCommand.Parameters.AddWithValue("@IdMoneda", 1);
                             dad.SelectCommand.Parameters.AddWithValue("@TipoCambio", 1);
                             dad.SelectCommand.Parameters.AddWithValue("@IdSociedad", int.Parse(IdSociedad));
                             dad.SelectCommand.Parameters.AddWithValue("@Referencia", oSolicitudRQDetalleDTO.Referencia[i]);
@@ -660,7 +662,7 @@ namespace DAO
             return lstSolicitudRQDTO;
         }
 
-        public List<SolicitudRQDTO> ObtenerDatosxIDV2(int IdUsuario,int IdSolicitudRQ, string BaseDatos)
+        public List<SolicitudRQDTO> ObtenerDatosxIDV2(int IdUsuario, int IdSolicitudRQ, string BaseDatos)
         {
             List<SolicitudRQDTO> lstSolicitudRQDTO = new List<SolicitudRQDTO>();
 
@@ -1071,7 +1073,7 @@ namespace DAO
             }
         }
 
-        
+
         public int CerrarSolicitudEstado(int IdSolicitud, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
@@ -1443,16 +1445,16 @@ namespace DAO
                 }
                 catch (Exception ex)
                 {
-                }             
+                }
             }
             return lstAnexoDTO;
 
         }
-        public List<AnexoDTO> ObtenerAnexosxID( int IdSolicitudRQ, string BaseDatos)
+        public List<AnexoDTO> ObtenerAnexosxID(int IdSolicitudRQ, string BaseDatos)
         {
 
-            List<AnexoDTO> lstAnexoDTO = new List<AnexoDTO>(); 
- 
+            List<AnexoDTO> lstAnexoDTO = new List<AnexoDTO>();
+
 
             using (SqlConnection cn = new Conexion().conectar(BaseDatos))
             {
@@ -1490,7 +1492,64 @@ namespace DAO
             return lstAnexoDTO;
         }
 
+        public List<SolicitudRQDTO> ObtenerRQSinModelo(string BaseDatos)
+        {
+            List<SolicitudRQDTO> lstSolicitudRQDTO = new List<SolicitudRQDTO>();
 
+            
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerRQSinModelo", cn);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        SolicitudRQDTO oSolicitudRQDTO = new SolicitudRQDTO();
+                        oSolicitudRQDTO.IdSolicitudRQ = int.Parse(drd["IdSolicitudRQ"].ToString());                    
+                        oSolicitudRQDTO.IdSolicitante = int.Parse(drd["IdSolicitante"].ToString());
+                        lstSolicitudRQDTO.Add(oSolicitudRQDTO);
+                    }
+                    drd.Close();
+                }
+                catch (Exception ex)
+                {
+                    return lstSolicitudRQDTO;
+                }
+            }
+            return lstSolicitudRQDTO;
+
+        }
+        public int CorregirSolicitudRQSinModelo(int IdSolicitudRQ,int IdAutor, string BaseDatos)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_CorregirSolicitudRQSinModelo", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdSolicitudRQ", IdSolicitudRQ);
+                        da.SelectCommand.Parameters.AddWithValue("@IdAutor", IdAutor);
+                        int rpta = Convert.ToInt32(da.SelectCommand.ExecuteNonQuery());
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        return 0;
+                    }
+                }
+            }
+        }
 
     }
 }

@@ -5,36 +5,64 @@ var colorOriginal;
 let tableopdn;
 let valorfor = 1
 
-function ObtenerProveedorxId() {
-    //console.log(varIdUsuario);
-    let IdProveedor = $("#IdProveedor").val();
-    $.post('/Proveedor/ObtenerDatosxID', {
-        'IdProveedor': IdProveedor,
-    }, function (data, status) {
+var DatosModalCargados = false;
+function CargarDatosModal() {
 
-        if (data == "Error") {
-            swal("Error!", "Ocurrio un error")
-            limpiarDatos();
-        } else {
-            try {
-                let proveedores = JSON.parse(data);
-                $("#Direccion").val(proveedores[0].DireccionFiscal);
-                $("#Telefono").val(proveedores[0].Telefono);
-            }
-            catch (e) {
-                console.log("No hay Proveedor Seleccionado")
-            }
-        }
+    if (!DatosModalCargados) {
+        $.ajaxSetup({ async: false });
+        CargarBasesObraAlmacenSegunAsignado();
+        ObtenerTiposDocumentos()
+        CargarTipoDocumentoOperacion()
+        CargarSeries();
+        CargarCondicionPago();
+        CargarProveedor();
+        CargarSolicitante(1);
+        CargarMoneda();
+        CargarImpuestos();
+        CargarGrupoUnidadMedida()
 
-    });
+        DatosModalCargados = true;
+    }
+    return DatosModalCargados;
 }
 
 
+function ObtenerProveedorxId() {
+    //console.log(varIdUsuario);
+        let IdProveedor = $("#IdProveedor").val();
+    if (IdProveedor > 0) {
+        $.post('/Proveedor/ObtenerDatosxID', {
+            'IdProveedor': IdProveedor,
+        }, function (data, status) {
+
+            if (data == "Error") {
+                swal("Error!", "Ocurrio un error")
+                limpiarDatos();
+            } else {
+                try {
+                    let proveedores = JSON.parse(data);
+                    $("#Direccion").val(proveedores[0].DireccionFiscal);
+                    $("#Telefono").val(proveedores[0].Telefono);
+                }
+                catch (e) {
+                    console.log("No hay Proveedor Seleccionado")
+                }
+            }
+
+        });
+
+    } else {
+        $("#Direccion").val("");
+        $("#Telefono").val("");
+    }
+}
+
+var DatosProveedor = [];
 function CargarProveedor() {
     $.ajaxSetup({ async: false });
     $.post("/Proveedor/ObtenerProveedores", { estado: 1 }, function (data, status) {
-        let proveedores = JSON.parse(data);
-        llenarComboProveedor(proveedores, "IdProveedor", "Seleccione")
+        DatosProveedor = JSON.parse(data);
+        llenarComboProveedor(DatosProveedor, "IdProveedor", "Seleccione")
     });
 }
 
@@ -160,29 +188,19 @@ function llenarTiposDocumentos(lista, idCombo, primerItem) {
     if (cbo != null) cbo.innerHTML = contenido;
 }
 
-function listarEmpleados() {
-    $.ajax({
-        url: "../Empleado/ObtenerEmpleados",
-        type: "GET",
-        contentType: "application/json",
-        dataType: "json",
-        data: {
-            'estado': 1
-        },
-        cache: false,
-        contentType: false,
-        success: function (datos) {
-            $("#IdResponsable").html('');
-            let options = `<option value="0">Seleccione</option>`;
-            if (datos.length > 0) {
 
-                for (var i = 0; i < datos.length; i++) {
-                    options += `<option value="` + datos[i].IdEmpleado + `">` + datos[i].RazonSocial + `</option>`;
-                }
-                $("#IdResponsable").html(options);
-            }
+let DatosEmpleados = [];
+
+function listarEmpleados() {
+    $.ajaxSetup({ async: false });
+    $.post("/Empleado/ObtenerEmpleadosPorIdBase", { 'IdBase': $("#IdBase").val() }, function (data, status) {
+        try {
+            DatosEmpleados = JSON.parse(data);
+        } catch (e) {
+            DatosEmpleados = [];
         }
     });
+    llenarComboEmpleados(DatosEmpleados, "IdResponsable", "NINGUNO")
 }
 function ObtenerEmpleadosxIdCuadrilla() {
     let IdCuadrilla = $("#IdCuadrilla").val();
@@ -195,21 +213,21 @@ function ObtenerEmpleadosxIdCuadrilla() {
 }
 
 function llenarComboEmpleados(lista, idCombo, primerItem) {
-    var contenido = "";
-    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
-    var nRegistros = lista.length;
-    var nCampos;
-    var campos;
-    let ultimoindice = 0;
-    for (var i = 0; i < nRegistros; i++) {
+   
+        var contenido = "";
+        if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+        var nRegistros = lista.length;
+        var nCampos;
+        var campos;
+        let ultimoindice = 0;
+        for (var i = 0; i < nRegistros; i++) {
 
-        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdEmpleado + "'>" + lista[i].RazonSocial.toUpperCase() + "</option>"; ultimoindice = i }
-        else { }
-    }
-    var cbo = document.getElementById(idCombo);
-    if (cbo != null) cbo.innerHTML = contenido;
-    $("#" + idCombo).val(lista[ultimoindice].IdEmpleado).change();
-    ObtenerCapataz()
+            if (lista.length > 0) { contenido += "<option value='" + lista[i].IdEmpleado + "'>" + lista[i].RazonSocial.toUpperCase() + "</option>"; ultimoindice = i }
+            else { }
+        }
+        var cbo = document.getElementById(idCombo);
+        if (cbo != null) cbo.innerHTML = contenido;
+    
 
 }
 function ObtenerCapataz() {
@@ -250,28 +268,32 @@ function llenarComboCuadrilla(lista, idCombo, primerItem) {
 
 function ObtenerAlmacenxIdObra() {
     let IdObra = $("#IdObra").val();
-    $.ajaxSetup({ async: false });
-    $.post("/Almacen/ObtenerAlmacenxIdObra", { 'IdObra': IdObra }, function (data, status) {
-        if (validadJson(data)) {
-            let almacen = JSON.parse(data);
-            llenarComboAlmacen(almacen, "cboAlmacen","seleccione")
-            llenarComboAlmacen(almacen, "cboAlmacenItem","seleccione")
-        } else {
-            $("#cboAlmacen").html('<option value="0">SELECCIONE</option>')
-            $("#cboAlmacenItem").html('<option value="0">SELECCIONE</option>')
+    let AlmacenxObra = [];
+
+    for (var i = 0; i < DatosAlmacen.length; i++) {
+        if (DatosAlmacen[i].IdObra == IdObra) {
+            AlmacenxObra.push(DatosAlmacen[i])
         }
-    });
-    $("#cboAlmacen").prop("selectedIndex", 1)
-    $("#cboAlmacenItem").prop("selectedIndex", 1)
-    ObtenerCuadrillasxIdObra(IdObra)
+    }
+
+    llenarComboAlmacen(AlmacenxObra, "cboAlmacen", "seleccione")
+    llenarComboAlmacen(AlmacenxObra, "cboAlmacenItem", "seleccione")
 }
-function ObtenerCuadrillasxIdObra(IdObra) {
+
+DatosCuadrilla = [];
+function ObtenerCuadrillasxIdObra() {
+
+    let IdObra = $("#IdObra").val()
 
     $.ajaxSetup({ async: false });
     $.post("/Cuadrilla/ObtenerCuadrillaxIdObra", { 'IdObra': IdObra }, function (data, status) {
-        let cuadrilla = JSON.parse(data);
-        llenarComboCuadrilla(cuadrilla, "IdCuadrilla", "Seleccione")
+        try {
+            DatosCuadrilla = JSON.parse(data);
+        } catch (e) {
+            DatosCuadrilla = [];
+        }
     });
+    llenarComboCuadrilla(DatosCuadrilla, "IdCuadrilla", "Seleccione")
 }
 
 
@@ -279,20 +301,15 @@ function ObtenerCuadrillasxIdObra(IdObra) {
 function ObtenerObraxIdBase() {
     let IdBase = $("#IdBase").val();
 
-    console.log(IdBase);
-    $.ajaxSetup({ async: false });
-    $.post("/Obra/ObtenerObraxIdUsuarioSession", { 'IdBase': IdBase }, function (data, status) {
+    let ObrasxBase = [];
 
-        if (validadJson(data)) {
-            let obra = JSON.parse(data);
-            llenarComboObra(obra, "IdObra", "Seleccione")
-        } else {
-            //$("#cboMedidaItem").html('<option value="0">SELECCIONE</option>')
+    for (var i = 0; i < DatosObra.length; i++) {
+        if (DatosObra[i].IdBase == IdBase) {
+            ObrasxBase.push(DatosObra[i])
         }
+    }
 
-        //let obra = JSON.parse(data);
-        //llenarComboObra(obra, "IdObra", "Seleccione")
-    });
+    llenarComboObra(ObrasxBase, "IdObra", "Seleccione")
 }
 
 function llenarComboObra(lista, idCombo, primerItem) {
@@ -308,6 +325,7 @@ function llenarComboObra(lista, idCombo, primerItem) {
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
+    $("#" + idCombo).prop("selectedIndex", 1).change();
 }
 
 
@@ -332,6 +350,7 @@ function llenarComboBase(lista, idCombo, primerItem) {
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
+    $("#IdBase").prop("selectedIndex", 1).change();
 }
 
 
@@ -481,6 +500,9 @@ function ConsultaServidor(url) {
 
 
 function ModalNuevo() {
+
+    CargarDatosModal()
+
     $("#IdProveedor").prop("disabled", false);
     $("#Direccion").prop("disabled", false);
     $("#Telefono").prop("disabled", false);
@@ -505,7 +527,7 @@ function ModalNuevo() {
     $("#btn_agregaritem").prop("disabled", false)
     disabledmodal(false)
     let seguiradelante = 'false';
-    seguiradelante = CargarBasesObraAlmacenSegunAsignado();
+    seguiradelante = ValidacionBases;
 
  
     if (seguiradelante == 'false') {
@@ -513,32 +535,6 @@ function ModalNuevo() {
         return true;
     }
 
-  
-
-
-    CargarCentroCosto();
-    listarEmpleados();
-    ObtenerTiposDocumentos()
-    //CargarAlmacen()
-    //CargarBase()
-    CargarTipoDocumentoOperacion()
-    //ObtenerCuadrillas();
-   
-    CargarSeries();
-    CargarCondicionPago();
-    CargarProveedor();
-
-    //CargarObra();
-    //AgregarLinea();
-
-
-
-    CargarSolicitante(1);
-    //CargarSucursales();
-    //CargarDepartamentos();
-    CargarMoneda();
-
-    CargarImpuestos();
     $("#cboImpuesto").val(2).change();
     //$("#cboSerie").val(1).change();
 
@@ -689,7 +685,7 @@ function CargarBaseFiltro() {
     $.ajaxSetup({ async: false });
     $.post("/Base/ObtenerBasexIdUsuario", function (data, status) {
         let base = JSON.parse(data);
-        llenarComboBaseFiltro(base, "cboObraFiltro")
+        llenarComboBaseFiltro(base, "cboBaseFiltro")
 
     });
 }
@@ -707,10 +703,34 @@ function llenarComboBaseFiltro(lista, idCombo, primerItem) {
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
-    $("#cboObraFiltro").val($("#cboObraFiltro option:first").val());
+    $("#cboBaseFiltro").val($("#cboBaseFiltro option:first").val()).change();
 
 }
 
+function CargarObraFiltro() {
+    $.ajaxSetup({ async: false });
+    $.post("/Obra/ObtenerObraxIdUsuarioSession", { 'IdBase': $("#cboBaseFiltro").val()}, function (data, status) {
+        let base = JSON.parse(data);
+        llenarComboObraFiltro(base, "cboObraFiltro")
+
+    });
+}
+function llenarComboObraFiltro(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdObra + "'>" + lista[i].Descripcion.toUpperCase() + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+    $("#cboObraFiltro").val($("#cboObraFiltro option:first").val());
+
+}
 
 function EliminarAnexo(Id, dato) {
 
@@ -803,10 +823,10 @@ function AgregarLinea() {
         swal("Informacion!", "Debe Especificar Precio!");
         return;
     }
-    if (ValidartCentroCosto == 0) {
-        swal("Informacion!", "Debe Seleccionar Centro de Costo!");
-        return;
-    }
+    //if (ValidartCentroCosto == 0) {
+    //    swal("Informacion!", "Debe Seleccionar Centro de Costo!");
+    //    return;
+    //}
     if (ValidartProducto == 0) {
         swal("Informacion!", "Debe Seleccionar Producto!");
         return;
@@ -832,17 +852,15 @@ function AgregarLinea() {
         UnidadMedida = JSON.parse(data);
     });
 
-    $.post("/IndicadorImpuesto/ObtenerIndicadorImpuestos", function (data, status) {
-        IndicadorImpuesto = JSON.parse(data);
-    });
+    
+    IndicadorImpuesto = DatosImpuestos
+    
 
-    $.post("../Almacen/ObtenerAlmacen", function (data, status) {
-        Almacen = JSON.parse(data);
-    });
+    Almacen = DatosAlmacen
+ 
 
-    $.post("/Proveedor/ObtenerProveedores", function (data, status) {
-        Proveedor = JSON.parse(data);
-    });
+    Proveedor = DatosProveedor
+   
 
     //$.post("/LineaNegocio/ObtenerLineaNegocios", function (data, status) {
     //    LineaNegocio = JSON.parse(data);
@@ -856,9 +874,9 @@ function AgregarLinea() {
     //    Proyecto = JSON.parse(data);
     //});
 
-    $.post("/Moneda/ObtenerMonedas", function (data, status) {
-        Moneda = JSON.parse(data);
-    });
+    
+    Moneda = DatosMonedas
+    
     if (limitador >= 30) {
         swal("Informacion!", "Solo se pueden agregar Hasta 30 items");
         return;
@@ -912,7 +930,7 @@ function AgregarLinea() {
         }
         tr += `</select>
             </td>
-            <td><select class="form-control  cboCuadrillaTabla" onchange="SeleccionarEmpleadosTabla(`+ contador + `)" id="cboCuadrillaTablaId` + contador + `"></select></td>
+            <td><select class="form-control  cboCuadrillaTabla" id="cboCuadrillaTablaId` + contador + `"></select></td>
             <td><select class="form-control cboResponsableTabla" id="cboResponsableTablaId`+ contador + `"></select></td>
             <td><input class="form-control changeTotal" type="text" style="width:100px" name="txtItemTotal[]" id="txtItemTotal`+ contador + `" onchange="CalcularTotales()" disabled></td>
             <td style="display:none">
@@ -993,12 +1011,17 @@ function AgregarLinea() {
         CalcularTotalDetalle(contador)
         CalcularTotalDetalle(contador)
         LimpiarModalItem();
-        ObtenerCuadrillasTabla(contador)
-        ObtenerEmpleadosxIdCuadrillaTabla(contador)
+
+
+
         $(".cboCuadrillaTabla").select2()
         $(".cboResponsableTabla").select2()
-        $("#cboCuadrillaTablaId").val($("#IdCuadrilla").val()).change()
-        $("#cboResponsableTablaId").val($("#IdResponsable").val()).change()
+        llenarComboCuadrilla(DatosCuadrilla, "cboCuadrillaTablaId" + contador, "Seleccione")
+        llenarComboEmpleados(DatosEmpleados, "cboResponsableTablaId" + contador, "Seleccione")
+
+
+        $("#cboCuadrillaTablaId"+ contador).val($("#IdCuadrilla").val()).change()
+        $("#cboResponsableTablaId" + contador).val($("#IdResponsable").val()).change()
     }
 }
 
@@ -1022,11 +1045,12 @@ function CargarSeries() {
     });
 }
 
+var DatosImpuestos = []
 function CargarImpuestos() {
     $.ajaxSetup({ async: false });
     $.post("/IndicadorImpuesto/ObtenerIndicadorImpuestos", function (data, status) {
-        let impuestos = JSON.parse(data);
-        llenarComboImpuesto(impuestos, "cboImpuesto", "Seleccione")
+        DatosImpuestos = JSON.parse(data);
+        llenarComboImpuesto(DatosImpuestos, "cboImpuesto", "Seleccione")
     });
 }
 
@@ -1114,11 +1138,12 @@ function CargarDepartamentos() {
     });
 }
 
+var DatosMonedas = [];
 function CargarMoneda() {
     $.ajaxSetup({ async: false });
     $.post("/Moneda/ObtenerMonedas", function (data, status) {
-        let monedas = JSON.parse(data);
-        llenarComboMoneda(monedas, "cboMoneda", "Seleccione")
+        DatosMonedas = JSON.parse(data);
+        llenarComboMoneda(DatosMonedas, "cboMoneda", "Seleccione")
     });
 }
 
@@ -1342,6 +1367,7 @@ function llenarComboAlmacen(lista, idCombo, primerItem) {
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
+    $("#cboAlmacen").prop("selectedIndex", 1).change();
 }
 
 
@@ -1545,15 +1571,15 @@ function GuardarSolicitud() {
     //        'error'
     //    )
     //    return;
+    ////}
+    //if ($("#cboCentroCosto").val() == 0 || $("#cboCentroCosto").val() == null) {
+    //    Swal.fire(
+    //        'Error!',
+    //        'Complete el campo Centro de Costo',
+    //        'error'
+    //    )
+    //    return;
     //}
-    if ($("#cboCentroCosto").val() == 0 || $("#cboCentroCosto").val() == null) {
-        Swal.fire(
-            'Error!',
-            'Complete el campo Centro de Costo',
-            'error'
-        )
-        return;
-    }
 
     if ($("#IdProveedor").val() == 0 || $("#IdProveedor").val() == null) {
         Swal.fire(
@@ -1738,7 +1764,7 @@ function GuardarSolicitud() {
                 'TotalBase': Number(SinFormato(arrayTotal[i])),
                 'Total': Number(SinFormato(arrayTotal[i])),
                 'CuentaContable': 1,
-                'IdCentroCosto': IdCentroCosto,
+                'IdCentroCosto': 7,
                 'IdAfectacionIgv': 1,
                 'Descuento': 0,
                 'valor_unitario': Number(SinFormato(arrayPrecioInfo[i])),
@@ -1789,7 +1815,7 @@ function GuardarSolicitud() {
         'FechaContabilizacion': FechaContabilizacion,
         'FechaDocumento': FechaDocumento,
         'FechaEntrega': FechaEntrega,
-        'IdCentroCosto': IdCentroCosto,
+        'IdCentroCosto': 7,
         'Comentario': Comentario,
         'SubTotal': SubTotal,
         'Impuesto': Impuesto,
@@ -1854,7 +1880,7 @@ function GuardarSolicitud() {
 function limpiarDatos() {
     $("#SerieNumeroRef").val('')
     $("#txtId").val('');
-    $("#cboSerie").val('');
+    //$("#cboSerie").val('');
     $("#txtNumeracion").val('');
     $("#cboMoneda").val('');
     $("#txtTipoCambio").val('');
@@ -1874,26 +1900,16 @@ function limpiarDatos() {
     limitador = 0;
 }
 
-
+var DatosUnidadMedidaLinea = []
 function ObtenerDatosxIDOPDN(IdOPDN) {
+    CargarDatosModal()
     $("#btnEditar").show()
     $("#btnExtorno").show()
     $("#btnGrabar").hide()
 
     disabledmodal(true);
     $("#txtId").val(IdOPDN);
-    CargarCentroCosto();
-    listarEmpleados();
-    ObtenerTiposDocumentos()
-    CargarTipoDocumentoOperacion()
-    CargarBase()
-  /*  CargarTipoDocumentoOperacion()*/
-    ObtenerCuadrillas()
-    CargarSeries();
-    CargarCondicionPago()
-    CargarMoneda();
-    CargarProveedor();
-    CargarImpuestos();
+
    
 
     let IdUsuario = 0;
@@ -1989,6 +2005,13 @@ function ObtenerDatosxIDOPDN(IdOPDN) {
             $("#total_items").html(Detalle.length)
             //console.log(Detalle);
             //console.log("Detalle");
+            
+            $.ajaxSetup({ async: false });
+            $.post("/GrupoUnidadMedida/ListarDefinicionGrupoxIdDefinicionSelect", { 'IdDefinicionGrupo': Detalle[0].IdDefinicionGrupoUnidad }, function (data, status) {
+                DatosUnidadMedidaLinea = JSON.parse(data);
+            });
+
+
             for (var i = 0; i < Detalle.length; i++) {
                 AgregarLineaDetalle(i, Detalle[i]);
                 $("#cboImpuesto").val(Detalle[0].IdIndicadorImpuesto);
@@ -2191,22 +2214,20 @@ function AgregarLineaDetalle(contador, detalle) {
 
 
 
-    $.ajaxSetup({ async: false });
-    $.post("/GrupoUnidadMedida/ListarDefinicionGrupoxIdDefinicionSelect", { 'IdDefinicionGrupo': detalle.IdDefinicionGrupoUnidad }, function (data, status) {
-        UnidadMedida = JSON.parse(data);
-    });
+   
+    UnidadMedida = DatosUnidadMedidaLinea
+    
     console.log('*******************');
     console.log(detalle);
     console.log('*******************')
 
-    $.ajaxSetup({ async: false });
-    $.post("/Almacen/ObtenerAlmacen", function (data, status) {
-        Almacen = JSON.parse(data);
-    });
+ 
+        Almacen = DatosAlmacen
+  
 
-    $.post("/IndicadorImpuesto/ObtenerIndicadorImpuestos", function (data, status) {
-        IndicadorImpuesto = JSON.parse(data);
-    });
+    
+    IndicadorImpuesto = DatosImpuestos
+ 
 
     tr = `<tr>
         <td style="display:none">
@@ -2255,7 +2276,7 @@ function AgregarLineaDetalle(contador, detalle) {
                 }
                 tr += `</select>
         </td>
-            <td><select class="form-control cboCuadrillaTabla" onchange="SeleccionarEmpleadosTabla(`+ contador + `)" id="cboCuadrillaTablaId` + contador + `"></select></td>
+            <td><select class="form-control cboCuadrillaTabla" id="cboCuadrillaTablaId` + contador + `"></select></td>
             <td><select class="form-control cboResponsableTabla" id="cboResponsableTablaId`+ contador + `"></select></td>
             <td style="display:none"><input style="200px" class="form-control txtIdEntregaDetalle" value="`+ detalle.IdOPDNDetalle +`" ></input></td>
 
@@ -2284,8 +2305,8 @@ function AgregarLineaDetalle(contador, detalle) {
 
     $("#tabla").find('tbody').append(tr);
     //$("#cboPrioridadDetalle" + contador).val(Prioridad);
-    ObtenerCuadrillasTabla(contador)
-    ObtenerEmpleadosxIdCuadrillaTabla(contador)
+    llenarComboCuadrilla(DatosCuadrilla, "cboCuadrillaTablaId" + contador, "Seleccione")
+    llenarComboEmpleados(DatosEmpleados, "cboResponsableTablaId" + contador, "Seleccione")
     $(".cboCuadrillaTabla").select2()
     $(".cboResponsableTabla").select2()
    
@@ -2621,7 +2642,7 @@ function SeleccionarItemListado() {
     if ($("#cboClaseArticulo").val() == 1) {
         let IdArticulo = $('input:radio[name=rdSeleccionado]:checked').val();
         let TipoItem = $("#cboClaseArticulo").val();
-        let Almacen = $("#cboAlmacenItem").val();
+        let Almacen = $("#cboAlmacen").val();
         $.post("/Articulo/ListarArticulosxSociedadxAlmacenStockxProducto", { 'IdArticulo': IdArticulo, 'IdAlmacen': Almacen, 'Estado': 1 }, function (data, status) {
 
             if (data == "error") {
@@ -3139,10 +3160,10 @@ function AgregarPedidoToEntradaMercancia(data) {
                 swal("Informacion!", "Debe Especificar Cantidad!");
                 return;
             }
-            if (ValidartCentroCosto == 0) {
-                swal("Informacion!", "Debe Seleccionar Centro de Costo!");
-                return;
-            }
+            //if (ValidartCentroCosto == 0) {
+            //    swal("Informacion!", "Debe Seleccionar Centro de Costo!");
+            //    return;
+            //}
             if (ValidartProducto == 0) {
                 swal("Informacion!", "Debe Seleccionar Producto!");
                 return;
@@ -3155,17 +3176,17 @@ function AgregarPedidoToEntradaMercancia(data) {
 
             });
 
-            $.post("/IndicadorImpuesto/ObtenerIndicadorImpuestos", function (data, status) {
-                IndicadorImpuesto = JSON.parse(data);
-            });
+            
+            IndicadorImpuesto = DatosImpuestos
+            
 
-            $.post("../Almacen/ObtenerAlmacen", function (data, status) {
-                Almacen = JSON.parse(data);
-            });
+            
+                Almacen = DatosAlmacen
+          
 
-            $.post("/Proveedor/ObtenerProveedores", function (data, status) {
-                Proveedor = JSON.parse(data);
-            });
+           
+            Proveedor = DatosProveedor
+            
 
             //$.post("/LineaNegocio/ObtenerLineaNegocios", function (data, status) {
             //    LineaNegocio = JSON.parse(data);
@@ -3179,9 +3200,9 @@ function AgregarPedidoToEntradaMercancia(data) {
             //    Proyecto = JSON.parse(data);
             //});
 
-            $.post("/Moneda/ObtenerMonedas", function (data, status) {
-                Moneda = JSON.parse(data);
-            });
+            
+            Moneda = DatosMonedas
+           
 
             contador++;
             let tr = '';
@@ -3339,7 +3360,7 @@ function CalculaCantidadMaxima(conta) {
 
 
 function listaropdnDT() { 
-    let varIdBaseFiltro = $("#cboObraFiltro").val()
+    let varIdBaseFiltro = $("#cboBaseFiltro").val()
     tablepedido = $('#table_id').dataTable({
         language: lenguaje_data,
         responsive: true,
@@ -3347,7 +3368,8 @@ function listaropdnDT() {
             url: '/EntradaMercancia/ListarOPDNDT',
             type: 'POST',
             data: {
-                'IdBase' : varIdBaseFiltro,
+                'IdBase': varIdBaseFiltro,
+                'IdObra': $("#cboObraFiltro").val(),
                 'EstadoOPDN': 'ABIERTO',
                 'FechaInicio': $("#txtFechaInicio").val(),
                 'FechaFin': $("#txtFechaFin").val(),
@@ -3469,8 +3491,9 @@ function listaropdnDT() {
 }
 
 
+var ValidacionBases = 'false';
 function CargarBasesObraAlmacenSegunAsignado() {
-    let respuesta = 'false';
+    ValidacionBases = 'false';
     $.ajaxSetup({ async: false });
     $.post("/Usuario/ObtenerBaseAlmacenxIdUsuarioSession", function (data, status) {
         if (validadJson(data)) {
@@ -3480,7 +3503,7 @@ function CargarBasesObraAlmacenSegunAsignado() {
             contadorObra = datos[0].CountObra;
             contadorAlmacen = datos[0].CountAlmacen;
             AbrirModal("modal-form");
-            CargarBase();
+            CargarDatosBaseObraAlmacen();
             if (contadorBase == 1 && contadorObra == 1 && contadorAlmacen == 1) {
                 console.log("Entro");
                 console.log(datos[0].IdObra);
@@ -3517,12 +3540,12 @@ function CargarBasesObraAlmacenSegunAsignado() {
             }
 
 
-            respuesta = 'true';
+            ValidacionBases = 'true';
         } else {
-            respuesta = 'false';
+            ValidacionBases = 'false';
         }
     });
-    return respuesta;
+    return ValidacionBases;
 }
 
 
@@ -4228,11 +4251,11 @@ function Extornar() {
                             });
                         }
                     } else {
-                        Swal.fire(
-                            'Error!',
-                            'Ocurrio un Error!',
-                            'error'
-                        )
+                        Swal.fire({
+                            title: 'ERROR',
+                            html: data,
+                            icon: 'error',
+                        })
 
                     }
 
@@ -4352,4 +4375,51 @@ function GenerarReporteOPDN(IdOPDN) {
         });
 
     }, 100)
+}
+
+
+
+let DatosBase = [];
+let DatosObra = [];
+let DatosAlmacen = [];
+function CargarDatosBaseObraAlmacen() {
+
+
+    try {
+        $.ajaxSetup({ async: false });
+        $.post("/Base/ObtenerBasexIdUsuario", function (data, status) {
+            DatosBase = JSON.parse(data);
+
+        });
+        llenarComboBase(DatosBase, "IdBase", "Seleccione")
+
+    } catch (e) {
+        Swal.fire("Error!", "No se pudieron Cargar las Bases", "error");
+        return;
+    }
+
+    try {
+        $.ajaxSetup({ async: false });
+        $.post("/Obra/ObtenerObraxIdUsuarioSessionSinBase", function (data, status) {
+            DatosObra = JSON.parse(data);
+
+        });
+
+    } catch (e) {
+        Swal.fire("Error!", "No se pudieron Cargar las Bases", "error");
+        return;
+    }
+    try {
+        $.ajaxSetup({ async: false });
+        $.post("/Almacen/ObtenerAlmacenxIdUsuario", function (data, status) {
+            DatosAlmacen = JSON.parse(data);
+
+        });
+
+    } catch (e) {
+        Swal.fire("Error!", "No se pudieron Cargar las Bases", "error");
+        return;
+    }
+
+
 }

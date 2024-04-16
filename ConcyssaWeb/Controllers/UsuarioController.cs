@@ -311,7 +311,30 @@ namespace ConcyssaWeb.Controllers
 
             return "";
         }
-        
+        public int UpdateClaveUser(int IdUsuario, string Clave)
+        {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            string mensaje_error = "";
+            UsuarioDAO oUsuarioDAO = new UsuarioDAO();
+
+            using (SHA512 sha512 = SHA512.Create())
+            {
+                // Convierte la contraseña en un array de bytes
+                byte[] passwordBytes = Encoding.UTF8.GetBytes(Clave.ToUpper());
+
+                // Calcula el hash de la contraseña
+                byte[] hashedBytes = sha512.ComputeHash(passwordBytes);
+
+                // Convierte el hash en una cadena hexadecimal
+                Clave = BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
+            }
+
+
+            int resultado = oUsuarioDAO.UpdatePassword(IdUsuario, Clave, BaseDatos, ref mensaje_error);
+
+            return resultado;
+        }
+
 
     }
 }

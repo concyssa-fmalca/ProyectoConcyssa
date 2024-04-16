@@ -47,6 +47,28 @@ namespace ConcyssaWeb.Controllers
             //int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             oMovimientoDTO.IdSociedad = IdSociedad;
             oMovimientoDTO.IdUsuario = IdUsuario;
+
+            KardexDAO oKardexDAO = new KardexDAO();
+            ArticuloStockDTO oArticuloStockDTO = new ArticuloStockDTO();
+            string MensajeNoStock = "";
+            int validadStock = 0;
+            for (int i = 0; i < oMovimientoDTO.detalles.Count(); i++)
+            {
+                oArticuloStockDTO = oKardexDAO.ObtenerArticuloxIdArticuloxIdAlm(oMovimientoDTO.detalles[i].IdArticulo, oMovimientoDTO.IdAlmacen, BaseDatos, ref mensaje_error);
+                if (oArticuloStockDTO.Stock < oMovimientoDTO.detalles[i].CantidadBase)
+                {
+                    validadStock = 1;
+                    MensajeNoStock += oMovimientoDTO.detalles[i].CodigoArticulo + "-" + oMovimientoDTO.detalles[i].DescripcionArticulo + " </br> ";
+                }
+            }
+            if (validadStock == 1)
+            {
+                return "No hay suficiente Stock en este Almacén </br> " + MensajeNoStock;
+            }
+
+
+
+
             MovimientoDAO oMovimimientoDAO = new MovimientoDAO();
             int respuesta = oMovimimientoDAO.InsertUpdateMovimiento(oMovimientoDTO,BaseDatos,ref mensaje_error);
             int respuesta1 = 0;

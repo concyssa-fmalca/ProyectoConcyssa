@@ -1,0 +1,61 @@
+﻿@{
+    ViewBag.Title = "Listado";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="container-fluid" style="height:93%;">
+    <div class="panel">
+        <div class="container-fluid">
+            <div class="topbar-left col-xs-6">
+                <h3>Stcok por Articulo</h3>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <label class="col-md-12">Buscar Articulo</label>
+            <div class="col-xs-6">
+                <select class="form-control" id="cboAgregarArticulo"></select>
+            </div>
+            <div class="col-xs-6">
+                <button class="btn btn-sm btn-primary" data-target="modal1" onclick="Buscar()" style="margin-left:10px;">Buscar</button>
+                @*<button class="btn btn-sm  btn-success pull-right plu" id="btnPdf" style="margin-left:10px;">Descargar PDF</button>
+                <button class="btn btn-sm btn-info pull-right plu" id="btnExcel" style="margin-left:10px;">Descargar Excel</button>*@
+            </div>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="container-fluid">
+    <div class="row">
+        <div style="margin-top:10px"><b>Stock en Otros Almacenes</b></div>
+        <div class="table-responsive">
+            <table class="table" id="tablaStockOtrosAlmacenes">
+                <thead>
+                    <tr>
+                        <th>Obra</th>
+                        <th>Almacen</th>
+                        <th>Stock</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody_stockOtrosAlmacenes"></tbody>
+            </table>
+        </div>
+        </div>
+        </div>
+    </div>
+
+
+    
+
+
+
+</div>
+
+
+
+<script src="~/Scripts/InformeInventarioAlmacen/StockGeneral.js"></script>
+<script src="~/Scripts/General.js"></script>
+<script src="~/js/pdf/jspdf.min.js"></script>
+<script src="~/js/pdf/faker.min.js"></script>
+<script src="~/js/pdf/jspdf.plugin.autotable.src.js"></script>
+
+

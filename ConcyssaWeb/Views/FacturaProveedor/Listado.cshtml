@@ -153,7 +153,13 @@
     </div>
     <div class="panel">
         <div class="container-fluid">
-
+            <div class="row">
+                <label>Total S/.</label>
+                <input type="text" id="TotalRegistrosSol" disabled/>
+                   <label>Total $.</label>
+                <input type="text" id="TotalRegistrosDol" disabled/>
+            </div>
+            <br />
             <table id="table_id" class="table" style="width:100%">
                 <thead>
                     <tr>
@@ -204,7 +210,7 @@
                                 <div class='form-group-sm'>
                                     <label for="IdBase" class="control-label col-sm-2 left-align">Base</label>
                                     <div class="col-sm-4">
-                                        <select id="IdBase" class="form-control input-sm" tabindex="0" onchange="ObtenerObraxIdBase();LimpiarAlmacen()"></select>
+                                        <select id="IdBase" class="form-control input-sm" tabindex="0" onchange="ObtenerObraxIdBase();listarEmpleados()"></select>
                                     </div>
                                 </div>
 
@@ -462,6 +468,7 @@
                                                 <th style="width:5px;display:none"><button style="display:none" class="btn btn-xs btn-info" onclick="AgregarLinea()" type="button">+</button></th>
                                                 @*<th style="display:none">Numero de Articulo</th>*@
                                                 <th>#</th>
+                                                <th>Accion</th>
                                                 <th>Codigo</th>
                                                 <th style="min-width:300px">Descripcion de Articulo</th>
                                                 <th>Unid. Medida</th>
@@ -486,7 +493,6 @@
                                                 @*<th style="display:none">Cantidad</th>
                                                 <th style="display:none">En Pedido</th>*@
                                                 <th>Referencia</th>
-                                                <th>Accion</th>
 
                                             </tr>
                                         </thead>
@@ -638,7 +644,7 @@
                                     <div style="display:none">
                                         <p>
                                             Cuadrilla:
-                                            <select style="height: 20px" id="IdCuadrillaOLD" type="text" class="form-control input-sm" tabindex="0" onchange="SetCuadrillaTabla();ObtenerEmpleadosxIdCuadrilla()">
+                                            <select style="height: 20px" id="IdCuadrillaOLD" type="text" class="form-control input-sm" tabindex="0">
                                                 <option value="0">SELECCIONE CUADRILLAS </option>
                                             </select>
                                         </p>
@@ -914,7 +920,7 @@
                                     <div class='form-group-sm'>
                                         <label id="lblStockItem" for="IdCuadrilla" class="control-label col-sm-2 left-align">Centro de Costo</label>
                                         <div class="col-sm-10">
-                                            <select id="IdCuadrilla" type="text" class="form-control input-sm" tabindex="0" onchange="ObtenerEmpleadosxIdCuadrilla()">
+                                            <select id="IdCuadrilla" type="text" class="form-control input-sm" tabindex="0">
                                                 <option value="0">SELECCIONE CUADRILLAS </option>
                                             </select>
                                         </div>

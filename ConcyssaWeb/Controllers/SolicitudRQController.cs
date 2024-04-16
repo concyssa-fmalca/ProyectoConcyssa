@@ -377,7 +377,7 @@ namespace ConcyssaWeb.Controllers
 
                 resultado[0] = 1;
             }
-
+            CorregirSolicitudRQSinModelo();
             return resultado[0];
 
         }
@@ -1003,7 +1003,17 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
-
+        public void CorregirSolicitudRQSinModelo()
+        {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            string mensaje_error = "";
+            SolicitudRQDAO oSolicitudRQDAO = new SolicitudRQDAO();
+            List<SolicitudRQDTO> lstSolicitudRQDTO = oSolicitudRQDAO.ObtenerRQSinModelo(BaseDatos);
+            for (int i = 0; i < lstSolicitudRQDTO.Count; i++)
+            {
+                oSolicitudRQDAO.CorregirSolicitudRQSinModelo(lstSolicitudRQDTO[i].IdSolicitudRQ, lstSolicitudRQDTO[i].IdSolicitante, BaseDatos);
+            }
+        }
 
     }
 }

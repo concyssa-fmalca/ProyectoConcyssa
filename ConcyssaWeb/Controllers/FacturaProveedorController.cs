@@ -25,6 +25,10 @@ namespace ConcyssaWeb.Controllers
         {
             return View();
         }
+        public IActionResult ReportePendienteEnvioSAP()
+        {
+            return View();
+        }
 
         // public string ListarOPCHDT(int IdBase,string EstadoOPCH = "ABIERTO")
         public string ListarOPCHDT(int IdObra,int IdTipoRegistro,int IdSemana,string EstadoOPCH = "ABIERTO")
@@ -67,6 +71,35 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
+        public string ObtenerTotalesTipoRegistro(int IdObra, int IdTipoRegistro, int IdSemana, string EstadoOPCH = "ABIERTO")
+        {
+            string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            OpchDAO oOpchDAO = new OpchDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+
+     
+            List<OpchDTO> lstOpchDTO = oOpchDAO.ObtenerOPCHxEstado(IdObra, IdTipoRegistro, IdSemana, BaseDatos, ref mensaje_error);
+
+            TotalesOPCH oTotalesOPCH = new TotalesOPCH();
+
+            for (int i = 0; i < lstOpchDTO.Count; i++)
+            {
+                if (lstOpchDTO[i].IdMoneda == 1)
+                {
+                    oTotalesOPCH.SumaSoles += lstOpchDTO[i].Total;
+                }
+                else
+                {
+                    oTotalesOPCH.SumaDolares += lstOpchDTO[i].Total;
+                }
+            }
+
+            return JsonConvert.SerializeObject(oTotalesOPCH);
+           
+        }
+
         public string ListarOPCHDTxProveedor(int IdProveedor, string NumSerie)
         {
             string mensaje_error = "";
@@ -107,7 +140,36 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
-        public string ListarOPCHDTModal(int IdProveedor,string EstadoOPCH = "ABIERTO")
+        public string ObtenerTotalesXProveedor(int IdProveedor, string NumSerie)
+        {
+            string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            OpchDAO oOpchDAO = new OpchDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+
+            DataTableDTO oDataTableDTO = new DataTableDTO();
+            List<OpchDTO> lstOpchDTO = oOpchDAO.ObtenerOPCHXProveedor(IdProveedor, NumSerie, BaseDatos, ref mensaje_error);
+
+            TotalesOPCH oTotalesOPCH = new TotalesOPCH();
+
+            for (int i = 0; i < lstOpchDTO.Count; i++)
+            {
+                if (lstOpchDTO[i].IdMoneda == 1)
+                {
+                    oTotalesOPCH.SumaSoles += lstOpchDTO[i].Total;
+                }
+                else
+                {
+                    oTotalesOPCH.SumaDolares += lstOpchDTO[i].Total;
+                }
+            }
+
+            return JsonConvert.SerializeObject(oTotalesOPCH);
+
+        }
+
+        public string ListarOPCHDTModal(int IdProveedor,int IdObra,string EstadoOPCH = "ABIERTO")
         {
             string mensaje_error = "";
             string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
@@ -115,7 +177,7 @@ namespace ConcyssaWeb.Controllers
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             DataTableDTO oDataTableDTO = new DataTableDTO();
-            List<OpchDTO> lstOpchDTO = oOpchDAO.ObtenerOPCHxEstadoModal(IdSociedad, IdProveedor,BaseDatos,ref mensaje_error, EstadoOPCH, IdUsuario);
+            List<OpchDTO> lstOpchDTO = oOpchDAO.ObtenerOPCHxEstadoModal(IdSociedad, IdProveedor, IdObra,BaseDatos, ref mensaje_error, EstadoOPCH, IdUsuario);
             if (lstOpchDTO.Count >= 0 && mensaje_error.Length == 0)
             {
                 oDataTableDTO.sEcho = 1;
@@ -1164,6 +1226,71 @@ namespace ConcyssaWeb.Controllers
             return "";
         }
 
+        public string GenerarReporteFacturaPendienteSAP(string NombreReporte, DateTime FechaInicio, DateTime FechaFin, string Formato, int IdObra, int IdTipoRegistro, string BaseDatos)
+        {
+            if (BaseDatos == "" || BaseDatos == null)
+            {
+                BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            }
+
+            RespuestaDTO oRespuestaDTO = new RespuestaDTO();
+            WebResponse webResponse;
+            HttpWebRequest request;
+            Uri uri;
+            string cadenaUri;
+            string response;
+            string mensaje_error;
+
+
+            try
+            {
+                string strNew = "Formato=" + Formato + "&IdObra=" + IdObra + "&IdTipoRegistro=" + IdTipoRegistro + "&BaseDatos=" + BaseDatos + "&NombreReporte=" + NombreReporte + "&FechaInicio=" + FechaInicio + "&FechaFin=" + FechaFin;
+                cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ReporteFacturasPendienteSAP";
+                uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
+                request = (HttpWebRequest)WebRequest.Create(uri);
+
+                request.Method = "POST";
+                request.ContentType = "application/x-www-form-urlencoded";
+
+
+                StreamWriter requestWriter = new StreamWriter(request.GetRequestStream(), System.Text.Encoding.ASCII);
+                requestWriter.Write(strNew);
+                requestWriter.Close();
+
+
+
+                webResponse = request.GetResponse();
+                Stream webStream = webResponse.GetResponseStream();
+                StreamReader responseReader = new StreamReader(webStream);
+                response = responseReader.ReadToEnd();
+
+                XmlDocument xDoc = new XmlDocument();
+                xDoc.LoadXml(response);
+
+                oRespuestaDTO.Result = xDoc.ChildNodes[1].ChildNodes[0].InnerText;
+                oRespuestaDTO.Mensaje = xDoc.ChildNodes[1].ChildNodes[1].InnerText;
+                oRespuestaDTO.Base64ArchivoPDF = xDoc.ChildNodes[1].ChildNodes[2].InnerText;
+
+                return JsonConvert.SerializeObject(oRespuestaDTO);
+            }
+            catch (WebException e)
+            {
+                using (WebResponse responses = e.Response)
+                {
+                    HttpWebResponse httpResponse = (HttpWebResponse)responses;
+                    using (Stream data = responses.GetResponseStream())
+                    using (var reader = new StreamReader(data))
+                    {
+                        mensaje_error = reader.ReadToEnd();
+
+                    }
+                }
+
+                string err = e.ToString();
+            }
+
+            return "";
+        }
 
 
     }

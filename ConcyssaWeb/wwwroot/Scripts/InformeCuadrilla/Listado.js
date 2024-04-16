@@ -101,9 +101,10 @@ function ObtenerCuadrillaxIdObra() {
 
 
 window.onload = function () {
-    CargarBaseFiltro()
+    $("#lblRptCategoria").html("Por Categoría (AÚN EN DESARROLLO)");
     $("#txtFechaInicio").val(getCurrentDate())
     $("#txtFechaFin").val(getCurrentDateFinal())
+    CargarBaseFiltro()
 };
 
 function getCurrentDate() {
@@ -286,6 +287,10 @@ function GenerarReporte(Formato) {
     }
     if ($("#RptGrupo").is(':checked')) {
         nombreRPT = "InformeCuadrillasPorGrupo"
+
+    }
+    if ($("#RptCategoria").is(':checked')) {
+        nombreRPT = "InformeCuadrillasPorCategoria"
 
     }
 

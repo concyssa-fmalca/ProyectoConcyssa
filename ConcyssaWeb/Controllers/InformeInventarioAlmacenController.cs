@@ -37,6 +37,14 @@ namespace ConcyssaWeb.Controllers
         {
             return View();
         }
+        public IActionResult StockGeneral()
+        {
+            return View();
+        }
+        public IActionResult ConsumoPorEmpleado()
+        {
+            return View();
+        }
 
 
 
@@ -468,6 +476,109 @@ namespace ConcyssaWeb.Controllers
             }
 
             return "";
+        }
+
+        public string GenerarReporteConsumoEmpleado(string NombreReporte,string Formato, int IdObra, int IdTipoProducto,int IdEmpleado, DateTime FechaInicio, DateTime FechaFin, string BaseDatos)
+        {
+            if (BaseDatos == "" || BaseDatos == null)
+            {
+                BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            }
+            RespuestaDTO oRespuestaDTO = new RespuestaDTO();
+            WebResponse webResponse;
+            HttpWebRequest request;
+            Uri uri;
+            string cadenaUri;
+            string requestData;
+            string response;
+            string mensaje_error;
+            WebServiceDTO oWebServiceDTO = new WebServiceDTO();
+            requestData = JsonConvert.SerializeObject(oWebServiceDTO);
+
+
+            try
+            {
+                string strNew = "IdObra=" + IdObra + "&IdTipoProducto=" + IdTipoProducto + "&NombreReporte=" + NombreReporte + "&IdEmpleado=" + IdEmpleado + "&BaseDatos=" + BaseDatos + "&Formato=" + Formato + "&FechaInicio=" + FechaInicio + "&FechaFin=" + FechaFin;
+                //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ReporteConsumoEmpleado";
+                cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ReporteConsumoEmpleado";
+                uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
+                request = (HttpWebRequest)WebRequest.Create(uri);
+
+                request.Method = "POST";
+                //request.ContentType = "application/json;charset=utf-8";
+                request.ContentType = "application/x-www-form-urlencoded";
+
+
+                StreamWriter requestWriter = new StreamWriter(request.GetRequestStream(), System.Text.Encoding.ASCII);
+
+                requestWriter.Write(strNew);
+
+
+                requestWriter.Close();
+
+
+
+                webResponse = request.GetResponse();
+                Stream webStream = webResponse.GetResponseStream();
+                StreamReader responseReader = new StreamReader(webStream);
+                response = responseReader.ReadToEnd();
+
+                //var Resultado = response;
+                //XmlSerializer xmlSerializer = new XmlSerializer(response);
+                var rr = 33;
+                XmlDocument xDoc = new XmlDocument();
+                xDoc.LoadXml(response);
+                var dd = "";
+
+                oRespuestaDTO.Result = xDoc.ChildNodes[1].ChildNodes[0].InnerText;
+                oRespuestaDTO.Mensaje = xDoc.ChildNodes[1].ChildNodes[1].InnerText;
+                oRespuestaDTO.Base64ArchivoPDF = xDoc.ChildNodes[1].ChildNodes[2].InnerText;
+
+                return JsonConvert.SerializeObject(oRespuestaDTO);
+            }
+            catch (WebException e)
+            {
+                using (WebResponse responses = e.Response)
+                {
+                    HttpWebResponse httpResponse = (HttpWebResponse)responses;
+                    using (Stream data = responses.GetResponseStream())
+                    using (var reader = new StreamReader(data))
+                    {
+                        mensaje_error = reader.ReadToEnd();
+
+                    }
+                }
+
+                string err = e.ToString();
+            }
+
+            return "";
+        }
+
+        public string ListarArticuloStockXIdTipoProducto(int IdAlmacen, int IdTipoProducto)
+        {
+            string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            KardexDAO oKardexDAO = new KardexDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            List<ArticuloStockDTO> lstArticuloStockDTO = oKardexDAO.ObtenerStockxAlmacenxTipoProducto(IdAlmacen,IdTipoProducto, BaseDatos, ref mensaje_error);
+
+            DataTableDTO oDataTableDTO = new DataTableDTO();
+            if (lstArticuloStockDTO.Count > 0)
+            {
+                oDataTableDTO.sEcho = 1;
+                oDataTableDTO.iTotalDisplayRecords = lstArticuloStockDTO.Count;
+                oDataTableDTO.iTotalRecords = lstArticuloStockDTO.Count;
+                oDataTableDTO.aaData = (lstArticuloStockDTO);
+                //return oDataTableDTO;
+                return JsonConvert.SerializeObject(oDataTableDTO);
+                //return JsonConvert.SerializeObject(lstArticuloStockDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+            return "error";
         }
     }
 }

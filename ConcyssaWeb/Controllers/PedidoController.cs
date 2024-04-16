@@ -41,26 +41,10 @@ namespace ConcyssaWeb.Controllers
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
 
             DataTableDTO oDataTableDTO = new DataTableDTO();
-            List<PedidoDTO> lstPedidoDTO = oPedidoDAO.ObtenerPedidosEntregaLDT(IdSociedad,BaseDatos,ref mensaje_error, EstadoPedido, IdObra, IdUsuario);
+            List<PedidoDTO> lstPedidoDTO = oPedidoDAO.ObtenerPedidosEntregaLDT(IdSociedad,BaseDatos, IdProveedor, ref mensaje_error, EstadoPedido, IdObra, IdUsuario);
             List<PedidoDTO> NewlstPedidoDTO = new List<PedidoDTO>();
 
 
-            if (IdProveedor > 0)
-            {
-                for (int i = 0; i < lstPedidoDTO.Count; i++)
-                {
-                    if (lstPedidoDTO[i].IdProveedor == IdProveedor)
-                    {
-                        NewlstPedidoDTO.Add(lstPedidoDTO[i]);
-                    }
-                }
-                oDataTableDTO.sEcho = 1;
-                oDataTableDTO.iTotalDisplayRecords = NewlstPedidoDTO.Count;
-                oDataTableDTO.iTotalRecords = NewlstPedidoDTO.Count;
-                oDataTableDTO.aaData = (NewlstPedidoDTO);
-                //return oDataTableDTO;
-                return JsonConvert.SerializeObject(oDataTableDTO);
-            }
 
             if (lstPedidoDTO.Count > 0)
             {
@@ -137,6 +121,7 @@ namespace ConcyssaWeb.Controllers
 
                                 //var ResultadoEtapa = oEtapaAutorizacionDAO.ObtenerDatosxID(ResultadoModelo[0].DetallesEtapa[e].IdEtapa);
                             }
+                            CorregirSolicitudRQSinModelo();
                             return IdInsert.ToString();
                         }
                     }
@@ -145,6 +130,7 @@ namespace ConcyssaWeb.Controllers
                 }
 
             }
+            CorregirSolicitudRQSinModelo();
             return "-1";
 
         }
@@ -298,10 +284,12 @@ namespace ConcyssaWeb.Controllers
             DataTableDTO oDataTableDTO = new DataTableDTO();
             List<PedidoDTO> lstPedidoDTO = oPedidoDAO.ObtenerPedidoxEstadoConformidadAutorizacion(IdUsuario, BaseDatos, ref mensaje_error, Accion);
             List<PedidoDTO> lstPedidoDTO2 = oPedidoDAO.ObtenerPedidoxEstadoConformidad(1, BaseDatos, ref mensaje_error, Accion);
+
             for (int i = 0; i < lstPedidoDTO2.Count; i++)
             {
                 lstPedidoDTO.Add(lstPedidoDTO2[i]);
             }
+
             if (lstPedidoDTO.Count > 0)
             {
                 oDataTableDTO.sEcho = 1;
@@ -698,8 +686,14 @@ namespace ConcyssaWeb.Controllers
                 MailMessage mail = new MailMessage();
                 mail.From = new MailAddress(from, displayName);
 
-                
-                mail.To.Add(oPedidoDTO.EmailProveedor);
+                int count = oPedidoDTO.EmailProveedor.Split(";").Count();
+
+                for (int i = 0; i < count; i++)
+                {
+                    string email = oPedidoDTO.EmailProveedor.Split(';')[i].Trim();
+                    mail.To.Add(email);
+                }
+
                 mail.To.Add(correoObra);
                 mail.To.Add("compras@concyssa.com");
          
@@ -1220,6 +1214,18 @@ namespace ConcyssaWeb.Controllers
             return correo;
 
 
+        }
+
+        public void CorregirSolicitudRQSinModelo()
+        {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            string mensaje_error = "";
+            PedidoDAO oPedidoDAO = new PedidoDAO();
+            List<PedidoDTO> lstPedidoDTO = oPedidoDAO.ObtenerPedidoSinModelo(BaseDatos);
+            for (int i = 0; i < lstPedidoDTO.Count; i++)
+            {
+                oPedidoDAO.CorregirPedidoSinModelo(lstPedidoDTO[i].IdPedido, lstPedidoDTO[i].IdUsuario, BaseDatos);
+            }
         }
 
     }

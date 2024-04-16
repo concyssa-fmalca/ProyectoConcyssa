@@ -1954,7 +1954,7 @@ function ObtenerDatosxID(IdMovimiento) {
             console.log($("#IdUsuarioSesion").val())
             console.log(movimiento.IdUsuario)
 
-            if ($("#IdUsuarioSesion").val() == movimiento.IdUsuario) {
+            if ($("#IdUsuarioSesion").val() == movimiento.IdUsuario && $("#cboTipoDocumentoOperacion").val()==1337) {
 
                 if (movimiento.IdTransfAnulada == 0) {
 
@@ -3452,7 +3452,7 @@ function Extornar() {
         if (result.isConfirmed) {
 
             var parar = 0;
-            $.post("/Movimientos/ValidarExtorno", { 'IdMovimiento': IdMovimiento }, function (data, status) {
+            $.post("/Movimientos/ValidarExtornoTransferencia", { 'IdMovimiento': IdMovimiento }, function (data, status) {
 
                 var datos = data.split("|");
                 console.log(datos);

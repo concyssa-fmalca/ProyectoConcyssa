@@ -359,8 +359,6 @@ namespace ConcyssaWeb.Controllers
             }
             SolicitudDespachoDAO oSolicitudRQModeloAprobacionesDAO = new SolicitudDespachoDAO();
 
-            SolicitudRQModeloDAO oSolicitudRQModeloDAO = new SolicitudRQModeloDAO();
-            EtapaAutorizacionDAO oEtapaAutorizacionDAO = new EtapaAutorizacionDAO();
             UsuarioDAO oUsuarioDAO = new UsuarioDAO();
             int resultado = oSolicitudRQModeloAprobacionesDAO.UpdateInsertModeloAprobacionesDespacho(oSolicitudDespachoModeloAprobacionesDTO,BaseDatos);
             if (resultado > 0)

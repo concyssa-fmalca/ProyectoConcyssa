@@ -19,5 +19,7 @@ namespace DTO
         public string NombAlmacen { get; set; }
         public string Codigo { get; set; }
         public string NombObra { get; set; }
+        public int IdUnidadMedidaInv { get; set; }
+        public decimal Precio { get; set; }
     }
 }

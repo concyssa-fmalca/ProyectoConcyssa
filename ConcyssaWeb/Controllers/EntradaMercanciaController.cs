@@ -30,7 +30,7 @@ namespace ConcyssaWeb.Controllers
         {
             return View();
         }
-        public string ListarOPDNDT(int IdBase,DateTime FechaInicio,DateTime FechaFin, string EstadoOPDN = "ABIERTO")
+        public string ListarOPDNDT(int IdBase,int IdObra,DateTime FechaInicio,DateTime FechaFin, string EstadoOPDN = "ABIERTO")
         {
             string mensaje_error = "";
             string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
@@ -39,7 +39,7 @@ namespace ConcyssaWeb.Controllers
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
 
             DataTableDTO oDataTableDTO = new DataTableDTO();
-            List<OpdnDTO> lstOpdnDTO = oOpdnDAO.ObtenerOPDNxEstado(IdBase, IdSociedad,FechaInicio,FechaFin,BaseDatos,ref mensaje_error, EstadoOPDN,IdUsuario);
+            List<OpdnDTO> lstOpdnDTO = oOpdnDAO.ObtenerOPDNxEstado(IdBase,IdObra, IdSociedad,FechaInicio,FechaFin,BaseDatos,ref mensaje_error, EstadoOPDN,IdUsuario);
             if (lstOpdnDTO.Count >= 0 && mensaje_error.Length==0)
             {
                 oDataTableDTO.sEcho = 1;
@@ -54,7 +54,7 @@ namespace ConcyssaWeb.Controllers
             return mensaje_error;
         }
 
-        public string ListarOPDNDTModalOPCH(int IdProveedor,string EstadoOPDN = "ABIERTO")
+        public string ListarOPDNDTModalOPCH(int IdProveedor,int IdAlmacen,string EstadoOPDN = "ABIERTO")
         {
             string mensaje_error = "";
             string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
@@ -63,26 +63,8 @@ namespace ConcyssaWeb.Controllers
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
 
             DataTableDTO oDataTableDTO = new DataTableDTO();
-            List<OpdnDTO> lstOpdnDTO = oOpdnDAO.ListarOPDNDTModalOPCH(IdSociedad,BaseDatos,ref mensaje_error, EstadoOPDN, IdUsuario);
+            List<OpdnDTO> lstOpdnDTO = oOpdnDAO.ListarOPDNDTModalOPCH(IdSociedad,BaseDatos,IdProveedor,IdAlmacen,ref mensaje_error, EstadoOPDN, IdUsuario);
             List<OpdnDTO> newListOpdnDTO = new List<OpdnDTO>();
-
-
-            if (IdProveedor > 0)
-            {
-                for (int i = 0; i < lstOpdnDTO.Count; i++)
-                {
-                    if (lstOpdnDTO[i].IdProveedor == IdProveedor)
-                    {
-                        newListOpdnDTO.Add(lstOpdnDTO[i]);
-                    }                
-                }
-                oDataTableDTO.sEcho = 1;
-                oDataTableDTO.iTotalDisplayRecords = newListOpdnDTO.Count;
-                oDataTableDTO.iTotalRecords = newListOpdnDTO.Count;
-                oDataTableDTO.aaData = (newListOpdnDTO);
-                return JsonConvert.SerializeObject(oDataTableDTO);
-            }
-
 
             if (lstOpdnDTO.Count >= 0 && mensaje_error.Length == 0)
             {
@@ -871,7 +853,7 @@ namespace ConcyssaWeb.Controllers
            List<OPDNDetalle> lstoOpdnDTO = oOpdnDAO.ObtenerStockParaExtornoOPDN(IdOPDN,BaseDatos,ref mensaje_error);
             for (int i = 0; i < lstoOpdnDTO.Count; i++)
             {
-                if( lstoOpdnDTO[i].Resta == -1) SinStock.Add( "No hay Stock para " + lstoOpdnDTO[i].DescripcionArticulo);
+                if( lstoOpdnDTO[i].Resta == -1) SinStock.Add( "No hay Stock para " + lstoOpdnDTO[i].DescripcionArticulo + " </br>") ;
             }
             if(SinStock.Count != 0) {
                 return JsonConvert.SerializeObject(SinStock);

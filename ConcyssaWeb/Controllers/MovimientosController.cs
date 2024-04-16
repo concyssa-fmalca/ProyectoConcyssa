@@ -104,14 +104,14 @@ namespace ConcyssaWeb.Controllers
         }
 
 
-        public string ObtenerMovimientosSalida(int IdBase,DateTime FechaInicial,DateTime FechaFinal,int Estado = 3)
+        public string ObtenerMovimientosSalida(int IdBase,DateTime FechaInicial,DateTime FechaFinal,int Estado = 3,string OpRef = "")
         {
             string mensaje_error = "";
             string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             MovimientoDAO oMovimientoDAO = new MovimientoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
-            List<MovimientoDTO> oMovimientoDTO = oMovimientoDAO.ObtenerMovimientosSalida(IdBase,IdSociedad,BaseDatos,FechaInicial,FechaFinal,ref mensaje_error, Estado, IdUsuario);
+            List<MovimientoDTO> oMovimientoDTO = oMovimientoDAO.ObtenerMovimientosSalida(IdBase,IdSociedad,BaseDatos,FechaInicial,FechaFinal,ref mensaje_error, Estado, IdUsuario,OpRef);
             if (mensaje_error.ToString().Length == 0)
             {
                 return JsonConvert.SerializeObject(oMovimientoDTO);

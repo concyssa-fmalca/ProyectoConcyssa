@@ -90,7 +90,7 @@ namespace DAO
                     {
                         aprobar = 0;
                         aprobar = ValidarSipuedeAprobar(Convert.ToInt32(drd["IdPedido"].ToString()), Convert.ToInt32(drd["IdEtapa"].ToString()), BaseDatos);
-                        if (aprobar == 1)
+                        if (aprobar > 0)
                         { 
                             PedidoDTO oPedidoDTO = new PedidoDTO();
                             oPedidoDTO.IdPedido = Convert.ToInt32(drd["IdPedido"].ToString());
@@ -266,7 +266,7 @@ namespace DAO
 
 
 
-        public List<PedidoDTO> ObtenerPedidosEntregaLDT(int IdSociedad, string BaseDatos, ref string mensaje_error, string EstadoPedido = "O", int IdObra=0,int IdUsuario=0)
+        public List<PedidoDTO> ObtenerPedidosEntregaLDT(int IdSociedad, string BaseDatos,int IdProveedor, ref string mensaje_error, string EstadoPedido = "O", int IdObra=0,int IdUsuario=0)
         {
             List<PedidoDTO> lstPedidoDTO = new List<PedidoDTO>();
             using (SqlConnection cn = new Conexion().conectar(BaseDatos))
@@ -279,6 +279,7 @@ namespace DAO
                     da.SelectCommand.Parameters.AddWithValue("@Estado", EstadoPedido);
                     da.SelectCommand.Parameters.AddWithValue("@IdObra", IdObra);
                     da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
+                    da.SelectCommand.Parameters.AddWithValue("@IdProveedor", IdProveedor);
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
                     SqlDataReader drd = da.SelectCommand.ExecuteReader();
                     while (drd.Read())
@@ -414,6 +415,7 @@ namespace DAO
                         oArticuloStockDTO.NombAlmacen = (drd["NombAlmacen"].ToString());
                         oArticuloStockDTO.NombArticulo = (drd["NombArticulo"].ToString());
                         oArticuloStockDTO.NombObra = (drd["NombObra"].ToString());
+                        oArticuloStockDTO.Precio = decimal.Parse(drd["Precio"].ToString());
                         lstArticuloStockDTO.Add(oArticuloStockDTO);
                     }
                     drd.Close();
@@ -1449,6 +1451,66 @@ namespace DAO
                 }
             }
             return puedeentrar;
+        }
+
+        public List<PedidoDTO> ObtenerPedidoSinModelo(string BaseDatos)
+        {
+            List<PedidoDTO> LSTPedidoDTO = new List<PedidoDTO>();
+
+
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerPedidoSinModelo", cn);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        PedidoDTO oPedidoDTO = new PedidoDTO();
+                        oPedidoDTO.IdPedido = int.Parse(drd["IdPedido"].ToString());
+                        oPedidoDTO.IdUsuario = int.Parse(drd["IdUsuario"].ToString());
+                        LSTPedidoDTO.Add(oPedidoDTO);
+                    }
+                    drd.Close();
+                }
+                catch (Exception ex)
+                {
+                    return LSTPedidoDTO;
+                }
+            }
+            return LSTPedidoDTO;
+
+        }
+
+        public int CorregirPedidoSinModelo(int IdPedido, int IdUsuario, string BaseDatos)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_CorregirPedidoSinModelo", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdPedido", IdPedido);
+                        da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
+                        int rpta = Convert.ToInt32(da.SelectCommand.ExecuteNonQuery());
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        return 0;
+                    }
+                }
+            }
         }
     }
 }

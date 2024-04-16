@@ -477,6 +477,93 @@ namespace DAO
             }
             return lstArticuloDTO;
         }
+        public List<ArticuloDTO> ListarServiciosxAlmacenSelect2(string Search, int IdAlmacen, string BaseDatos, ref string mensaje_error)
+        {
+            List<ArticuloDTO> lstArticuloDTO = new List<ArticuloDTO>();
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarServiciosxAlmacenSelect2", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@Search", Search);
+                    da.SelectCommand.Parameters.AddWithValue("@IdAlmacen", IdAlmacen);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        ArticuloDTO oArticuloDTO = new ArticuloDTO();
+                        oArticuloDTO.IdArticulo = int.Parse(drd["IdArticulo"].ToString());
+                        oArticuloDTO.Codigo = drd["Codigo"].ToString();
+                        oArticuloDTO.Descripcion1 = drd["Descripcion1"].ToString();
+                        oArticuloDTO.Descripcion2 = drd["Descripcion2"].ToString();
+                        oArticuloDTO.IdUnidadMedida = int.Parse(drd["IdUnidadMedida"].ToString());
+                        oArticuloDTO.ActivoFijo = Convert.ToBoolean(drd["ActivoFijo"].ToString());
+                        oArticuloDTO.ActivoCatalogo = Convert.ToBoolean(drd["ActivoCatalogo"].ToString());
+                        oArticuloDTO.IdCodigoUbso = int.Parse(drd["IdCodigoUbso"].ToString());
+                        oArticuloDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
+                        oArticuloDTO.Inventario = Convert.ToBoolean(drd["Inventario"].ToString());
+                        oArticuloDTO.Compra = Convert.ToBoolean(drd["Compra"].ToString());
+                        oArticuloDTO.Venta = Convert.ToBoolean(drd["Venta"].ToString());
+                        oArticuloDTO.UnidadMedida = (drd["UnidadMedida"].ToString());
+                        oArticuloDTO.Stock = Convert.ToDecimal(drd["Stock"].ToString());
+                        lstArticuloDTO.Add(oArticuloDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstArticuloDTO;
+        }
+
+        public List<ArticuloDTO> ListarActivosFijosxAlmacenSelect2(string Search, int IdAlmacen, string BaseDatos, ref string mensaje_error)
+        {
+            List<ArticuloDTO> lstArticuloDTO = new List<ArticuloDTO>();
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarActivoFijoxAlmacenSelect2", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@Search", Search);
+                    da.SelectCommand.Parameters.AddWithValue("@IdAlmacen", IdAlmacen);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        ArticuloDTO oArticuloDTO = new ArticuloDTO();
+                        oArticuloDTO.IdArticulo = int.Parse(drd["IdArticulo"].ToString());
+                        oArticuloDTO.Codigo = drd["Codigo"].ToString();
+                        oArticuloDTO.Descripcion1 = drd["Descripcion1"].ToString();
+                        oArticuloDTO.Descripcion2 = drd["Descripcion2"].ToString();
+                        oArticuloDTO.IdUnidadMedida = int.Parse(drd["IdUnidadMedida"].ToString());
+                        oArticuloDTO.ActivoFijo = Convert.ToBoolean(drd["ActivoFijo"].ToString());
+                        oArticuloDTO.ActivoCatalogo = Convert.ToBoolean(drd["ActivoCatalogo"].ToString());
+                        oArticuloDTO.IdCodigoUbso = int.Parse(drd["IdCodigoUbso"].ToString());
+                        oArticuloDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
+                        oArticuloDTO.Inventario = Convert.ToBoolean(drd["Inventario"].ToString());
+                        oArticuloDTO.Compra = Convert.ToBoolean(drd["Compra"].ToString());
+                        oArticuloDTO.Venta = Convert.ToBoolean(drd["Venta"].ToString());
+                        oArticuloDTO.UnidadMedida = (drd["UnidadMedida"].ToString());
+                        oArticuloDTO.Stock = Convert.ToDecimal(drd["Stock"].ToString());
+                        lstArticuloDTO.Add(oArticuloDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstArticuloDTO;
+        }
 
         public List<ArticuloDTO> ListarArticulosCatalogoxSociedadxAlmacenStockxIdTipoProductoConServicios(int TipoItem,int IdSociedad, int IdAlmacen, int IdTipoProducto, string BaseDatos, ref string mensaje_error, int Estado = 3)
         {
@@ -685,6 +772,7 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@IdGrupoUnidadMedida", oArticuloDTO.IdGrupoUnidadMedida);
                         da.SelectCommand.Parameters.AddWithValue("@IdUnidadMedidaInv", oArticuloDTO.IdUnidadMedidaInv);
                         da.SelectCommand.Parameters.AddWithValue("@IdProveedor", oArticuloDTO.IdProveedor);
+                        da.SelectCommand.Parameters.AddWithValue("@IdCategoria", oArticuloDTO.IdCategoria);
 
 
                         int i = da.SelectCommand.ExecuteNonQuery();
@@ -735,6 +823,7 @@ namespace DAO
                         oArticuloDTO.IdGrupoUnidadMedida = Convert.ToInt32(drd["IdGrupoUnidadMedida"].ToString());
                         oArticuloDTO.IdUnidadMedidaInv = Convert.ToInt32(drd["IdUnidadMedidaInv"].ToString());
                         oArticuloDTO.IdProveedor = Convert.ToInt32(drd["IdProveedor"].ToString());
+                        oArticuloDTO.IdCategoria = Convert.ToInt32(String.IsNullOrEmpty(drd["IdCategoria"].ToString()) ? "0" : drd["IdCategoria"].ToString());
 
 
                         lstArticuloDTO.Add(oArticuloDTO);
@@ -1223,6 +1312,47 @@ namespace DAO
             return lstArticuloDTO;
         }
 
+        public List<ArticuloDTO> ListarArticulosSelect2(string Search, string BaseDatos, ref string mensaje_error)
+        {
+            List<ArticuloDTO> lstArticuloDTO = new List<ArticuloDTO>();
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarArticulosTodosSelect2", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@Search", Search);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        ArticuloDTO oArticuloDTO = new ArticuloDTO();
+                        oArticuloDTO.IdArticulo = int.Parse(drd["IdArticulo"].ToString());
+                        oArticuloDTO.Codigo = drd["Codigo"].ToString();
+                        oArticuloDTO.Descripcion1 = drd["Descripcion1"].ToString();
+                        oArticuloDTO.Descripcion2 = drd["Descripcion2"].ToString();
+                        oArticuloDTO.IdUnidadMedida = int.Parse(drd["IdUnidadMedida"].ToString());
+                        oArticuloDTO.ActivoFijo = Convert.ToBoolean(drd["ActivoFijo"].ToString());
+                        oArticuloDTO.ActivoCatalogo = Convert.ToBoolean(drd["ActivoCatalogo"].ToString());
+                        oArticuloDTO.IdCodigoUbso = int.Parse(drd["IdCodigoUbso"].ToString());
+                        oArticuloDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
+                        oArticuloDTO.Inventario = Convert.ToBoolean(drd["Inventario"].ToString());
+                        oArticuloDTO.Compra = Convert.ToBoolean(drd["Compra"].ToString());
+                        oArticuloDTO.Venta = Convert.ToBoolean(drd["Venta"].ToString());
+                        oArticuloDTO.UnidadMedida = (drd["UnidadMedida"].ToString());
+                        oArticuloDTO.Stock = Convert.ToDecimal(drd["Stock"].ToString());
+                        lstArticuloDTO.Add(oArticuloDTO);
+                    }
+                    drd.Close();
 
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstArticuloDTO;
+        }
     }
 }

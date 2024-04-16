@@ -780,7 +780,7 @@ namespace DAO
         }
 
 
-        public List<MovimientoDTO> ObtenerMovimientosSalida(int IdBase,int IdSociedad, string BaseDatos,DateTime FechaInicial,DateTime FechaFinal, ref string mensaje_error, int Estado = 3,int IdUsuario=0)
+        public List<MovimientoDTO> ObtenerMovimientosSalida(int IdBase,int IdSociedad, string BaseDatos,DateTime FechaInicial,DateTime FechaFinal, ref string mensaje_error, int Estado = 3,int IdUsuario=0,string OpRef="")
         {
             List<MovimientoDTO> lstMovimientoDTO = new List<MovimientoDTO>();
             using (SqlConnection cn = new Conexion().conectar(BaseDatos))
@@ -795,6 +795,7 @@ namespace DAO
                     da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
                     da.SelectCommand.Parameters.AddWithValue("@FechaInicial", FechaInicial);
                     da.SelectCommand.Parameters.AddWithValue("@FechaFinal", FechaFinal);
+                    da.SelectCommand.Parameters.AddWithValue("@OpRef", OpRef);
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
                     SqlDataReader drd = da.SelectCommand.ExecuteReader();
                     while (drd.Read())

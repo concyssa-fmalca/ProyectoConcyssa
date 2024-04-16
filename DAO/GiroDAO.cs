@@ -690,6 +690,45 @@ namespace DAO
             return lstGiroDTO;
         }
 
+        public List<GiroDTO> ObtenerGiroParaBusqueda(int IdObra, string BaseDatos, ref string mensaje_error)
+        {
+            List<GiroDTO> lstGiroDTO = new List<GiroDTO>();
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerGiroParaBusquedas", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdObra", IdObra);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        GiroDTO oGiroDTO = new GiroDTO();
+                        oGiroDTO.IdGiro = Convert.ToInt32(drd["IdGiro"].ToString());
+                        oGiroDTO.IdResponsable = Convert.ToInt32(drd["IdResponsable"].ToString());
+                        oGiroDTO.IdSolicitante = Convert.ToInt32(drd["IdSolicitante"].ToString());
+                        oGiroDTO.Tipo = Convert.ToInt32(drd["Tipo"].ToString());
+                        oGiroDTO.IdObra = Convert.ToInt32(drd["IdObra"].ToString());
+                        oGiroDTO.IdSemana = Convert.ToInt32(drd["IdSemana"].ToString());
+                        oGiroDTO.IdTipoRegistro = Convert.ToInt32(drd["IdTipoRegistro"].ToString());
+                        oGiroDTO.IdEstadoGiro = Convert.ToInt32(drd["IdEstadoGiro"].ToString());
+                        oGiroDTO.IdCreador = Convert.ToInt32((drd["IdCreador"].ToString() == null ? 0 : drd["IdCreador"].ToString()));
+                        oGiroDTO.Serie = drd["Serie"].ToString();
+                        lstGiroDTO.Add(oGiroDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstGiroDTO;
+        }
+
 
 
         public int ActualizarEstadoContabilizado(int IdGiro, bool Estado, string BaseDatos)
@@ -725,9 +764,69 @@ namespace DAO
         }
 
 
+        public string ObtenerSerieGiro(int IdGiro, string BaseDatos)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerSerieGiro", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdGiro", IdGiro);
+
+                        string rpta = da.SelectCommand.ExecuteScalar().ToString();
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+
+                        return "";
+                    }
+                }
+            }
+        }
+
+        public List<GiroDTO> ValidarExistenciaDocumentoGiro(int IdProveedor,int IdTipoDocumento,string NroDoc, string BaseDatos, ref string mensaje_error)
+        {
+            List<GiroDTO> lstGiroDTO = new List<GiroDTO>();
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ValidarExistenciaDocumentoGiro", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdProveedor", IdProveedor);
+                    da.SelectCommand.Parameters.AddWithValue("@IdTipoDocumento", IdTipoDocumento);
+                    da.SelectCommand.Parameters.AddWithValue("@NroDoc", NroDoc);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        GiroDTO oGiroDTO = new GiroDTO();
+
+                        oGiroDTO.NombSerie = drd["NombSerie"].ToString();
+                        oGiroDTO.Correlativo = int.Parse(drd["Correlativo"].ToString());
+                        lstGiroDTO.Add(oGiroDTO);
+                    }
+                    drd.Close();
 
 
-
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstGiroDTO;
+        }
     }
 
 

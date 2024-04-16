@@ -8,11 +8,32 @@ let colorOriginal = null;
 
 let UltimaBusqueda = "";
 
+let DatosModalCargados = false;
+function CargarDatosModal() {
+
+    if (!DatosModalCargados) {
+        $.ajaxSetup({ async: false });
+        CargarMoneda();
+        CargarBasesObraAlmacenSegunAsignado();
+        CargarPedido();
+        CargarSeries();
+        CargarProveedor();
+        CargarCondicionPago();
+        CargarIndicadorImpuesto();
+
+        DatosModalCargados = true;
+    }
+    return DatosModalCargados;
+}
+
+
+
+let DatosMonedas = [];
 function CargarMoneda() {
     $.ajaxSetup({ async: false });
     $.post("/Moneda/ObtenerMonedas", function (data, status) {
-        let monedas = JSON.parse(data);
-        llenarComboMoneda(monedas, "cboMoneda", "Seleccione")
+        DatosMonedas = JSON.parse(data);
+        llenarComboMoneda(DatosMonedas, "cboMoneda", "Seleccione")
     });
 }
 
@@ -373,21 +394,18 @@ function CambiarAlmacenItem() {
 
 function ObtenerAlmacenxIdObra() {
     let IdObra = $("#IdObra").val();
-    $.ajaxSetup({ async: false });
-    $.post("/Almacen/ObtenerAlmacenxIdObra", { 'IdObra': IdObra }, function (data, status) {
-        if (validadJson(data)) {
-            let almacen = JSON.parse(data);
-            llenarComboAlmacen(almacen, "IdAlmacen", "Seleccione")
-            llenarComboAlmacen(almacen, "cboAlmacenItem", "Seleccione")
 
+    let AlmacenxObra = [];
 
-
-        } else {
-            $("#IdAlmacen").html('<option value="0">SELECCIONE</option>')
-            $("#cboAlmacenItem").html('<option value="0">SELECCIONE</option>')
-
+    for (var i = 0; i < DatosAlmacen.length; i++) {
+        if (DatosAlmacen[i].IdObra == IdObra) {
+            AlmacenxObra.push(DatosAlmacen[i])
         }
-    });
+    }
+
+    llenarComboAlmacen(AlmacenxObra, "IdAlmacen", "Seleccione")
+    llenarComboAlmacen(AlmacenxObra, "cboAlmacenItem", "Seleccione")
+    $("#IdAlmacen").prop("selectedIndex", 1).change();
 }
 
 
@@ -471,13 +489,17 @@ function ListarBasesxUsuario() {
 
 function ObtenerObraxIdBase() {
     let IdBase = $("#IdBase").val();
-    if (IdBase!=0) {
-        $.ajaxSetup({ async: false });
-        $.post("/Obra/ObtenerObraxIdBase", { 'IdBase': IdBase }, function (data, status) {
-            let obra = JSON.parse(data);
-            llenarComboObra(obra, "IdObra", "Seleccione")
-        });
+
+    let ObrasxBase = [];
+
+    for (var i = 0; i < DatosObra.length; i++) {
+        if (DatosObra[i].IdBase == IdBase) {
+            ObrasxBase.push(DatosObra[i])
+        }
     }
+
+
+    llenarComboObra(ObrasxBase, "IdObra", "Seleccione")
     
 }
 
@@ -496,6 +518,7 @@ function llenarComboObra(lista, idCombo, primerItem) {
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
+    $("#" + idCombo).prop("selectedIndex", 1).change();
 }
 
 
@@ -553,6 +576,7 @@ function EliminarAnexoEnMemoria(contAnexo) {
 }
 
 function ModalNuevo() {
+    CargarDatosModal()
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth() + 1).padStart(2, '0');
@@ -566,14 +590,10 @@ function ModalNuevo() {
     $("#div_tabla_listado_items").show();
     $("#btnVerItemModal2").hide();
     $("#btnVerItemModal1").show();
-    CargarPedido();
-    CargarSeries();
-    CargarProveedor();
-    CargarMoneda();
-    CargarCondicionPago();
+  
     $("#lblTituloModal").html("Pedido");
     let seguiradelante = 'false';
-    seguiradelante = CargarBasesObraAlmacenSegunAsignado();
+    seguiradelante = ValidacionBases
 
     if (seguiradelante == 'false') {
         swal("Informacion!", "No tiene acceso a ninguna base, comunicarse con su administrador");
@@ -623,11 +643,12 @@ function llenarComboSerie(lista, idCombo, primerItem) {
     $("#" + idCombo).val(lista[ultimoindice].IdSerie).change
 }
 
+var DatosProveedor = [];
 function CargarProveedor() {
     $.ajaxSetup({ async: false });
     $.post("/Proveedor/ObtenerProveedores", { estado: 1 }, function (data, status) {
-        let proveedores = JSON.parse(data);
-        llenarComboProveedor(proveedores, "IdProveedor", "Seleccione")
+        DatosProveedor = JSON.parse(data);
+        llenarComboProveedor(DatosProveedor, "IdProveedor", "Seleccione")
     });
 }
 
@@ -893,14 +914,16 @@ function SeleccionarItemListado() {
     });
 }
 
+
+let DastosUnidadMedida = [];
 function CargarDefinicionxGrupo() {
     //console.log('CargarDefinicionxGrupo');
     let IdGrupoUnidadMedida = $("#cboGrupoUnidadMedida").val();
     $.ajaxSetup({ async: false });
     $.post("/GrupoUnidadMedida/ObtenerDefinicionUnidadMedidaxGrupo", { 'IdGrupoUnidadMedida': IdGrupoUnidadMedida }, function (data, status) {
         if (validadJson(data)) {
-            let definicion = JSON.parse(data);
-            llenarComboDefinicionGrupoUnidadItem(definicion, "cboMedidaItem", "Seleccione")
+            DastosUnidadMedida = JSON.parse(data);
+            llenarComboDefinicionGrupoUnidadItem(DastosUnidadMedida, "cboMedidaItem", "Seleccione")
         } else {
             $("#cboMedidaItem").html('<option value="0">SELECCIONE</option>')
         }
@@ -1216,12 +1239,12 @@ function ValidarDecimalesCantidades(input) {
     }
 }
 
-
+let DatosIndicadorImpuestos = []
 function CargarIndicadorImpuesto() {
     $.ajaxSetup({ async: false });
     $.post("/IndicadorImpuesto/ObtenerIndicadorImpuestos", { 'estado': 1 }, function (data, status) {
-        let indicadorimpuesto = JSON.parse(data);
-        llenarComboIndicadorImppuesto(indicadorimpuesto, "IdIndicadorImpuesto", "Seleccione")
+        DatosIndicadorImpuestos = JSON.parse(data);
+        llenarComboIndicadorImppuesto(DatosIndicadorImpuestos, "IdIndicadorImpuesto", "Seleccione")
     });
 }
 
@@ -1623,7 +1646,14 @@ function GuardarPedido() {
             });
         },
         success: function (data) {
-            if (data > 0) {
+            if (data == -1) {
+                Swal.fire(
+                    'Error',
+                    'No Cuenta con Autorización para Crear este Documento',
+                    'error'
+                )
+            }
+            else if (data > 0) {
                 Swal.fire(
                     'Correcto',
                     'Proceso Realizado Correctamente',
@@ -1657,16 +1687,12 @@ function GuardarPedido() {
 }
 
 function ObtenerDatosxID(id) {
+    CargarDatosModal()
     $("#div_tabla_listadorequerimiento_items").hide();
     $("#div_tabla_listado_items").show();
     $("#btnVerItemModal2").hide();
     $("#btnVerItemModal1").show();
-    CargarBase();
-    CargarPedido();
-    CargarSeries();
-    CargarProveedor();
-    CargarMoneda();
-    CargarCondicionPago();
+
     $("#lblTituloModal").html("Editar Pedido");
     AbrirModal("modal-form");
   
@@ -1714,13 +1740,19 @@ function ObtenerDatosxID(id) {
                 </tr>`;
         }
         $("#tabla_files").find('tbody').append(trAnexo);
-        
-        
+
+        let IdGrupoUnidadMedida = pedido.detalles[0].IdGrupoUnidadMedida;
+
+        let UnidadMedida;
+        $.ajaxSetup({ async: false });
+        $.post("/GrupoUnidadMedida/ObtenerDefinicionUnidadMedidaxGrupo", { 'IdGrupoUnidadMedida': IdGrupoUnidadMedida }, function (data, status) {
+            UnidadMedida  = JSON.parse(data);
+        });
         
         
         for (var p = 0; p < pedido.detalles.length; p++) {
 
-            console.log(pedido.detalles[p])
+            
             let IdItem = pedido.detalles[p].IdArticulo;
             let CodigoItem = pedido.detalles[p].CodigoProducto;
             let MedidaItem = pedido.detalles[p].IdDefinicion;
@@ -1732,7 +1764,7 @@ function ObtenerDatosxID(id) {
             let ReferenciaItem = pedido.detalles[p].Referencia;
             let AlmacenItem = 0;
             let PrioridadItem = 0;
-            let IdGrupoUnidadMedida = pedido.detalles[p].IdGrupoUnidadMedida;
+           
             let IdIndicadorImpuesto = pedido.detalles[p].IdIndicadorImpuesto;
 
             let SerieNumero = pedido.detalles[p].SerieNumero;
@@ -1747,7 +1779,7 @@ function ObtenerDatosxID(id) {
             today = yyyy + '-' + mm + '-' + dd;
 
 
-            let UnidadMedida;
+           
             let IndicadorImpuesto;
             let Almacen;
             let Proveedor;
@@ -1758,31 +1790,37 @@ function ObtenerDatosxID(id) {
 
 
 
-            //validaciones
-            $.ajaxSetup({ async: false });
+            ////validaciones
+            //$.ajaxSetup({ async: false });
 
 
-            $.post("/GrupoUnidadMedida/ObtenerDefinicionUnidadMedidaxGrupo", { 'IdGrupoUnidadMedida': IdGrupoUnidadMedida }, function (data, status) {
-                UnidadMedida = JSON.parse(data);
-            });
+            //$.post("/GrupoUnidadMedida/ObtenerDefinicionUnidadMedidaxGrupo", { 'IdGrupoUnidadMedida': IdGrupoUnidadMedida }, function (data, status) {
+            //    UnidadMedida = JSON.parse(data);
+            //});
 
-            $.post("/IndicadorImpuesto/ObtenerIndicadorImpuestos", function (data, status) {
-                IndicadorImpuesto = JSON.parse(data);
-            });
+            //$.post("/IndicadorImpuesto/ObtenerIndicadorImpuestos", function (data, status) {
+            //    IndicadorImpuesto = JSON.parse(data);
+            //});
 
-            $.post("../Almacen/ObtenerAlmacen", function (data, status) {
-                Almacen = JSON.parse(data);
-            });
+            //$.post("../Almacen/ObtenerAlmacen", function (data, status) {
+            //    Almacen = JSON.parse(data);
+            //});
 
-            $.post("/Proveedor/ObtenerProveedores", function (data, status) {
-                Proveedor = JSON.parse(data);
-            });
+            //$.post("/Proveedor/ObtenerProveedores", function (data, status) {
+            //    Proveedor = JSON.parse(data);
+            //});
 
 
 
-            $.post("/Moneda/ObtenerMonedas", function (data, status) {
-                Moneda = JSON.parse(data);
-            });
+            //$.post("/Moneda/ObtenerMonedas", function (data, status) {
+            //    Moneda = JSON.parse(data);
+            //});
+
+
+            IndicadorImpuesto = DatosIndicadorImpuestos
+            Moneda = DatosMonedas
+         
+
 
             contador++;
             let tr = '';
@@ -1841,9 +1879,9 @@ function ObtenerDatosxID(id) {
             <td style="display:none">
             <select class="form-control" style="width:100px" id="cboAlmacen`+ contador + `" name="cboAlmacen[]" disabled>`;
             tr += `  <option value="0">Seleccione</option>`;
-            for (var i = 0; i < Almacen.length; i++) {
-                tr += `  <option value="` + Almacen[i].IdAlmacen + `">` + Almacen[i].Descripcion + `</option>`;
-            }
+            //for (var i = 0; i < Almacen.length; i++) {
+            //    tr += `  <option value="` + Almacen[i].IdAlmacen + `">` + Almacen[i].Descripcion + `</option>`;
+            //}
             tr += `</select>
             </td>`
             tr += `
@@ -2230,6 +2268,13 @@ function ObtenerDatosProveedorXRQ(IdProveedor, dataa) {
         console.log(datos);
         console.log("asssssssssssss");
 
+        let IdGrupoUnidadMedida = datos[0].IdGrupoUnidadMedida;
+
+        $.ajaxSetup({ async: false });
+        $.post("/GrupoUnidadMedida/ObtenerDefinicionUnidadMedidaxGrupo", { 'IdGrupoUnidadMedida': IdGrupoUnidadMedida }, function (data, status) {
+            UnidadMedida = JSON.parse(data);
+        });
+
         for (var p = 0; p < datos.length; p++) {
 
 
@@ -2241,29 +2286,24 @@ function ObtenerDatosProveedorXRQ(IdProveedor, dataa) {
             
 
 
-            let IdGrupoUnidadMedida = datos[p].IdGrupoUnidadMedida;
+           
 
-            $.ajaxSetup({ async: false });
-            $.post("/GrupoUnidadMedida/ObtenerDefinicionUnidadMedidaxGrupo", { 'IdGrupoUnidadMedida': IdGrupoUnidadMedida }, function (data, status) {
-                UnidadMedida = JSON.parse(data);
-            });
+            
 
 
-            $.post("/IndicadorImpuesto/ObtenerIndicadorImpuestos", function (data, status) {
-                IndicadorImpuesto = JSON.parse(data);
-            });
+            
+                IndicadorImpuesto = DatosIndicadorImpuestos
+            
 
-            $.post("../Almacen/ObtenerAlmacen", function (data, status) {
-                Almacen = JSON.parse(data);
-            });
+                Almacen = DatosAlmacen
+           
 
-            $.post("/Proveedor/ObtenerProveedores", function (data, status) {
-                Proveedor = JSON.parse(data);
-            });
+                Proveedor = DatosProveedor
+            
 
-            $.post("/Moneda/ObtenerMonedas", function (data, status) {
-                Moneda = JSON.parse(data);
-            });
+            
+                Moneda = DatosMonedas
+            
 
             contador++;
             tr = '';
@@ -2863,6 +2903,7 @@ function ObtenerStockxIdDetalleSolicitudRQ(IdDetalle) {
                 <td>`+ datos[i].NombObra + `</td>
                 <td>`+ datos[i].NombAlmacen + `</td>
                 <td>`+ datos[i].Stock + `</td>
+                <td>`+ datos[i].Precio + `</td>
             </tr>`;
         }
 
@@ -3177,10 +3218,9 @@ function CerrarModalListadoItems() {
     $("#numeroentrega").val(0)
     $("#PrecioAsignar").val(0)
 }
-
-
+var ValidacionBases = 'false';
 function CargarBasesObraAlmacenSegunAsignado() {
-    let respuesta = 'false';
+    ValidacionBases = 'false';
     $.ajaxSetup({ async: false });
     $.post("/Usuario/ObtenerBaseAlmacenxIdUsuarioSession", function (data, status) {
         if (validadJson(data)) {
@@ -3189,16 +3229,16 @@ function CargarBasesObraAlmacenSegunAsignado() {
             contadorBase = datos[0].CountBase;
             contadorObra = datos[0].CountObra;
             contadorAlmacen = datos[0].CountAlmacen;
-            AbrirModal("modal-form");
-            CargarBase();
+            //AbrirModal("modal-form");
+            CargarDatosBaseObraAlmacen();
             if (contadorBase == 1 && contadorObra == 1 && contadorAlmacen == 1) {
                 $.ajaxSetup({ async: false });
                 //console.log(1)
-                $("#IdBase").val(datos[0].IdBase).change();
+                $("#IdBase").prop("selectedIndex", 1).change();
                 //console.log(2)
-                $("#IdObra").val(datos[0].IdObra).change();
+                $("#IdObra").prop("selectedIndex", 1).change();
                 //console.log(3)
-                $("#IdAlmacen").val(datos[0].IdAlmacen).change();
+                $("#IdAlmacen").prop("selectedIndex", 1).change();
                 $("#IdBase").prop('disabled', true);
                 $("#IdObra").prop('disabled', true);
                 $("#IdAlmacen").prop('disabled', true);
@@ -3206,41 +3246,41 @@ function CargarBasesObraAlmacenSegunAsignado() {
             }
             if (contadorBase == 1 && contadorObra == 1 && contadorAlmacen != 1) {
                 $.ajaxSetup({ async: false });
-                $("#IdBase").val(datos[0].IdBase).change();
-                $("#IdObra").val(datos[0].IdObra).change();
-                $("#IdAlmacen").val(datos[0].IdAlmacen).change();
+                $("#IdBase").prop("selectedIndex", 1).change();
+                $("#IdObra").prop("selectedIndex", 1).change();
+                $("#IdAlmacen").prop("selectedIndex", 1).change();
                 $("#IdBase").prop('disabled', true);
                 $("#IdObra").prop('disabled', true);
             }
 
             if (contadorBase == 1 && contadorObra != 1 && contadorAlmacen != 1) {
                 $.ajaxSetup({ async: false });
-                $("#IdBase").val(datos[0].IdBase).change();
-                $("#IdObra").val(datos[0].IdObra).change();
-                $("#IdAlmacen").val(datos[0].IdAlmacen).change();
+                $("#IdBase").prop("selectedIndex", 1).change();
+                $("#IdObra").prop("selectedIndex", 1).change();
+                $("#IdAlmacen").prop("selectedIndex", 1).change();
                 $("#IdBase").prop('disabled', true);
             }
             if (contadorBase != 1 && contadorObra != 1 && contadorAlmacen != 1) {
                 $.ajaxSetup({ async: false });
-                $("#IdBase").val(datos[0].IdBase).change();
-                $("#IdObra").val(datos[0].IdObra).change();
-                $("#cboAlmacen").val(datos[0].IdAlmacen).change();
+                $("#IdBase").prop("selectedIndex", 1).change();
+                $("#IdObra").prop("selectedIndex", 1).change();
+                $("#cboAlmacen").prop("selectedIndex", 1).change();
             }
 
 
-            respuesta = 'true';
+            ValidacionBases = 'true';
         } else {
-            respuesta = 'false';cb
+            ValidacionBases = 'false';
         }
     });
-    return respuesta;
+    return ValidacionBases;
 }
 
 function limpiarDatos() {
     $("#IdBase").val(0);
     $("#IdObra").val(0);
     $("#IdAlmacen").val(0);
-    $("#IdSerie").val(0);
+    //$("#IdSerie").val(0);
     $("#IdProveedor").val(0);
     $("#Direccion").html('');
     $("#Telefono").val('');
@@ -3721,4 +3761,51 @@ function MostrarAnexos(IdSolicitud) {
     }).fail(function () {
         $("#body_anexos_solicitud").html("")
     });
+}
+
+
+
+let DatosBase = [];
+let DatosObra = [];
+let DatosAlmacen = [];
+function CargarDatosBaseObraAlmacen() {
+
+
+    try {
+        $.ajaxSetup({ async: false });
+        $.post("/Base/ObtenerBase", function (data, status) {
+            DatosBase = JSON.parse(data);
+
+        });
+        llenarComboBase(DatosBase, "IdBase", "Seleccione")
+
+    } catch (e) {
+        Swal.fire("Error!", "No se pudieron Cargar las Bases", "error");
+        return;
+    }
+
+    try {
+        $.ajaxSetup({ async: false });
+        $.post("/Obra/ObtenerObra", function (data, status) {
+            DatosObra = JSON.parse(data);
+
+        });
+
+    } catch (e) {
+        Swal.fire("Error!", "No se pudieron Cargar las Bases", "error");
+        return;
+    }
+    try {
+        $.ajaxSetup({ async: false });
+        $.post("/Almacen/ObtenerAlmacen", function (data, status) {
+            DatosAlmacen = JSON.parse(data);
+
+        });
+
+    } catch (e) {
+        Swal.fire("Error!", "No se pudieron Cargar las Bases", "error");
+        return;
+    }
+
+
 }

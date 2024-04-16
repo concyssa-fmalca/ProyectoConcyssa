@@ -157,14 +157,14 @@
                                 <div class='form-group-sm'>
                                     <label for="IdBase" class="control-label col-sm-2 left-align">Base</label>
                                     <div class="col-sm-4">
-                                        <select id="IdBase" class="form-control input-sm" tabindex="0" onchange="ObtenerObraxIdBase();LimpiarAlmacen()"></select>
+                                        <select id="IdBase" class="form-control input-sm" tabindex="0" onchange="ObtenerObraxIdBase();listarEmpleados()"></select>
                                     </div>
                                 </div>
 
                                 <div class='form-group-sm'>
                                     <label for="IdObra" class="control-label col-sm-2 left-align">Obra</label>
                                     <div class="col-sm-4">
-                                        <select id="IdObra" class="form-control input-sm" tabindex="0" onchange="ObtenerAlmacenxIdObra()"></select>
+                                        <select id="IdObra" class="form-control input-sm" tabindex="0" onchange="ObtenerAlmacenxIdObra();ObtenerCuadrillasxIdObra()"></select>
                                     </div>
                                 </div>
                             </div>
@@ -518,7 +518,7 @@
 
                                     <p>
                                         Centro de Costo:
-                                        <select style="height: 20px" id="IdCuadrilla" type="text" class="form-control input-sm" tabindex="0" onchange="SetCuadrillaTabla();ObtenerEmpleadosxIdCuadrilla()">
+                                        <select style="height: 20px" id="IdCuadrilla" type="text" class="form-control input-sm" tabindex="0" onchange="ObtenerCapataz()">
                                         <option value="0">SELECCIONE CUADRILLAS </option>
                                     </select> </p>
                                 <hr style="margin: 0px 0px 5px 0px"/>

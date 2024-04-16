@@ -322,10 +322,6 @@ function ValidacionSUNATMasivo() {
                             let datobase64;
                             datobase64 = "data:application/octet-stream;base64,"
                             datos = JSON.parse(data);
-                            //datobase64 += datos.Base64ArchivoPDF;
-                            //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
-                            //$("#reporteRPT").attr("href", datobase64);
-                            //$("#reporteRPT")[0].click();
                             verBase64PDF(datos)
                             Swal.fire(
                                 'Correcto',

@@ -89,6 +89,13 @@
              <div class="col-xs-12 right">
                  <label class="col-sm-1" for="cboObraFiltro">Base</label>
                  <div class="col-sm-3">
+                    <select class="form-control" id="cboBaseFiltro" onchange="CargarObraFiltro()"></select>
+                 </div>
+               
+            </div>
+              <div class="col-xs-12 right">
+                 <label class="col-sm-1" for="cboObraFiltro">Obra</label>
+                 <div class="col-sm-3">
                      <select class="form-control" id="cboObraFiltro"></select>
                  </div>
                
@@ -160,14 +167,14 @@
                                 <div class='form-group-sm'>
                                     <label for="IdBase" class="control-label col-sm-2 left-align">Base</label>
                                     <div class="col-sm-4">
-                                        <select id="IdBase" class="form-control input-sm" tabindex="0" onchange="ObtenerObraxIdBase();LimpiarAlmacen()"></select>
+                                        <select id="IdBase" class="form-control input-sm" tabindex="0" onchange="ObtenerObraxIdBase();listarEmpleados()"></select>
                                     </div>
                                 </div>
 
                                 <div class='form-group-sm'>
                                     <label for="IdObra" class="control-label col-sm-2 left-align">Obra</label>
                                     <div class="col-sm-4">
-                                        <select id="IdObra" class="form-control input-sm" tabindex="0" onchange="ObtenerAlmacenxIdObra()"></select>
+                                        <select id="IdObra" class="form-control input-sm" tabindex="0" onchange="ObtenerAlmacenxIdObra();ObtenerCuadrillasxIdObra()"></select>
                                     </div>
                                 </div>
                             </div>
@@ -551,7 +558,7 @@
                                     <div style="display:none">
                                     <p class="ocultarDiv">
                                         Cuadrilla:
-                                        <select style="height: 20px" id="IdCuadrillaOLD" type="text" class="form-control input-sm" tabindex="0" onchange="SetCuadrillaTabla();ObtenerEmpleadosxIdCuadrilla()">
+                                        <select style="height: 20px" id="IdCuadrillaOLD" type="text" class="form-control input-sm" tabindex="0">
                                             <option value="0">SELECCIONE CUADRILLAS </option>
                                         </select>
                                     </p>
@@ -559,7 +566,7 @@
 
                                     <p class="ocultarDiv">
                                         Responsable:
-                                        <select style="height: 20px" id="IdResponsableOLD" type="text" class="form-control input-sm" tabindex="0" onchange="SetearEmpleadosEnTabla()">
+                                        <select style="height: 20px" id="IdResponsableOLD" type="text" class="form-control input-sm" tabindex="0">
                                             <option value="0">SELECCIONE Responsable </option>
                                         </select>
                                     </p>
@@ -757,7 +764,7 @@
                                     <div class='form-group-sm'>
                                         <label id="lblStockItem" for="IdCuadrilla" class="control-label col-sm-2 left-align">Centro de Costo</label>
                                         <div class="col-sm-10">
-                                            <select id="IdCuadrilla" type="text" class="form-control input-sm" tabindex="0" onchange="ObtenerEmpleadosxIdCuadrilla()">
+                                            <select id="IdCuadrilla" type="text" class="form-control input-sm" tabindex="0" >
                                             <option value="0">SELECCIONE CUADRILLAS </option>
                                             </select>
                                         </div>
