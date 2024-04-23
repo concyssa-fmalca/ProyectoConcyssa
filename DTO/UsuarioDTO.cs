@@ -32,6 +32,7 @@ namespace DTO
         public int AprobarGiro { get; set; }
         public string NombBase { get; set; }
         public int IdEmpleado { get; set; }
+        public string Celular { get; set; }
     }
 
     public class UsuarioBaseAlmacenDTO{

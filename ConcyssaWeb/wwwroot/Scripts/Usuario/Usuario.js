@@ -242,7 +242,8 @@ function GuardarUsuario() {
         'IdDepartamento': varDepartamento,
         'AprobarGiro': varAbrobar,
         'Correo': varCorreo,
-        'IdEmpleado': varEmpleado
+        'IdEmpleado': varEmpleado,
+        'Celular': $("#txtCelular").val()
     }, function (data, status) {
 
         if (data == 1) {
@@ -286,6 +287,7 @@ function ObtenerDatosxID(varIdUsuario) {
             $("#txtCorreo").val(usuarios[0].Correo);
             $("#cboDepartamento").val(usuarios[0].IdDepartamento);
             $("#cboAbrobar").val(usuarios[0].AprobarGiro);
+            $("#txtCelular").val(usuarios[0].Celular)
             if (usuarios[0].Estado) {
                 $("#chkActivo").prop('checked', true);
             }
@@ -384,6 +386,10 @@ function limpiarDatos() {
     $("#txtContraseña").val("");
     $("#chkActivo").prop('checked', false);
     $("#MovimientoInventario").prop('checked', false);
+    $("#txtCelular").val("");
+    $("#txtCorreo").val("");
+    $("#txtContrasenaSap").val("");
+    $("#txtUsuarioSap").val("");
 }
 
 function listartablealmacenbase(IdUsuario) {

@@ -125,10 +125,7 @@ namespace ConcyssaWeb.Controllers
                             return IdInsert.ToString();
                         }
                     }
-
-
                 }
-
             }
             CorregirSolicitudRQSinModelo();
             return "-1";

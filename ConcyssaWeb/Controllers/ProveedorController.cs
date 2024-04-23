@@ -43,40 +43,42 @@ namespace ConcyssaWeb.Controllers
             string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
 
-            string responseBody = "";
-            var url = $"https://apiconsulta.smartcodeserver.pe/api/ConsultaSmartcode/ConsultaRucDni?ruc=" + proveedorDTO.NumeroDocumento;
-            ResponseConsultaRuc oResponseConsultaRuc = new ResponseConsultaRuc();
-
-
-            var request = (HttpWebRequest)WebRequest.Create(url);
-            request.Method = "POST";
-            try
+            if(proveedorDTO.TipoDocumento == 1 || proveedorDTO.TipoDocumento == 6)
             {
-                using (WebResponse response = request.GetResponse())
+                string responseBody = "";
+                var url = $"https://apiconsulta.smartcodeserver.pe/api/ConsultaSmartcode/ConsultaRucDni?ruc=" + proveedorDTO.NumeroDocumento;
+                ResponseConsultaRuc oResponseConsultaRuc = new ResponseConsultaRuc();
+
+
+                var request = (HttpWebRequest)WebRequest.Create(url);
+                request.Method = "POST";
+                try
                 {
-                    using (Stream strReader = response.GetResponseStream())
+                    using (WebResponse response = request.GetResponse())
                     {
-                        if (strReader == null) { }
-                        else
-                            using (StreamReader objReader = new StreamReader(strReader))
-                            {
-                                responseBody = objReader.ReadToEnd();
-                                oResponseConsultaRuc = JsonConvert.DeserializeObject<ResponseConsultaRuc>(responseBody);
-                            }
+                        using (Stream strReader = response.GetResponseStream())
+                        {
+                            if (strReader == null) { }
+                            else
+                                using (StreamReader objReader = new StreamReader(strReader))
+                                {
+                                    responseBody = objReader.ReadToEnd();
+                                    oResponseConsultaRuc = JsonConvert.DeserializeObject<ResponseConsultaRuc>(responseBody);
+                                }
+                        }
                     }
                 }
-            }
-            catch
-            {
-                return -3;
-            }
+                catch
+                {
+                    return -3;
+                }
 
-            if(oResponseConsultaRuc.ruc == null && oResponseConsultaRuc.dni == null)
-            {
-                return -4;
-            }
+                if(oResponseConsultaRuc.ruc == null && oResponseConsultaRuc.dni == null)
+                {
+                    return -4;
+                }
           
-
+            }
 
 
 

@@ -139,6 +139,12 @@ namespace DAO
                 {
                     try
                     {
+
+                        if(oUsuarioDTO.Celular == null)
+                        {
+                            oUsuarioDTO.Celular = "";
+                        }
+
                         cn.Open();
                         SqlDataAdapter da = new SqlDataAdapter("SMC_UpdateInsertUsuarios", cn);
                         da.SelectCommand.CommandType = CommandType.StoredProcedure;
@@ -156,6 +162,7 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@IdDepartamento", oUsuarioDTO.IdDepartamento);
                         da.SelectCommand.Parameters.AddWithValue("@AprobarGiro", oUsuarioDTO.AprobarGiro);
                         da.SelectCommand.Parameters.AddWithValue("@IdEmpleado", oUsuarioDTO.IdEmpleado);
+                        da.SelectCommand.Parameters.AddWithValue("@Celular", oUsuarioDTO.Celular);
 
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
@@ -204,6 +211,7 @@ namespace DAO
                         oUsuarioDTO.IdDepartamento =Convert.ToInt32((String.IsNullOrEmpty(drd["IdDepartamento"].ToString())) ? "0" : drd["IdDepartamento"].ToString());
 
                         oUsuarioDTO.IdEmpleado = Convert.ToInt32((String.IsNullOrEmpty(drd["IdEmpleado"].ToString())) ? "0" : drd["IdEmpleado"].ToString());
+                        oUsuarioDTO.Celular = ((String.IsNullOrEmpty(drd["Celular"].ToString())) ? "" : drd["Celular"].ToString());
 
                         lstUsuarioDTO.Add(oUsuarioDTO);
                     }

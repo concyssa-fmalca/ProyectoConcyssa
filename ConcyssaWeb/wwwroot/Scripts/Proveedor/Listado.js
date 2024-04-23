@@ -222,7 +222,7 @@ function GuardarProveedor() {
         return
     }
 
-    if (varTipoDocumento == 0 || varTipoDocumento == null || varTipoDocumento == undefined) {
+    if ( varTipoDocumento == null || varTipoDocumento == undefined) {
         Swal.fire("Advertencia", "Llene el Campo Tipo Documento", "info");
         return
     }

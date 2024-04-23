@@ -1658,6 +1658,7 @@ function GuardarSolicitud() {
         )
         return;
     }
+
     if ($("#EntregadoA").val() == 0) {
         Swal.fire(
             'Error!',
@@ -1665,6 +1666,18 @@ function GuardarSolicitud() {
             'error'
         )
         return;
+    }
+
+    if ($("#cboTipoDocumentoOperacion").val() != 329) {
+        if ($("#IdCuadrilla").val() == 0) {
+            Swal.fire(
+                'Error!',
+                'Complete el campo Cuadrilla',
+                'error'
+            )
+            return;
+        }
+
     }
 
     if ($("#cboTipoDocumentoOperacion").val() == '329') {
@@ -1681,15 +1694,7 @@ function GuardarSolicitud() {
 
 
     if ($("#IdTipoDocumentoRef").val() == 1) {
-        if ($("#IdCuadrilla").val() == 0) {
-            Swal.fire(
-                'Error!',
-                'Complete el campo Cuadrilla',
-                'error'
-            )
-            return;
-        }
-
+      
         if ($("#EntregadoA").val() == 0) {
             Swal.fire(
                 'Error!',
