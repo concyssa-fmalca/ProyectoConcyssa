@@ -71,5 +71,26 @@ namespace DTO
         public bool Estado { get; set; }
         public int Tipo { get; set; }
 
+
+        public class RespuestaTusComprobantes
+        {
+            public DatosTusComprobantes persona { get; set; }
+            public string mensaje { get; set; }
+        }
+        public class DatosTusComprobantes
+        {
+            public string ruc { get; set; }
+            public string dni { get; set; }
+            public string razonSocial { get; set; }
+            public string direccion { get; set; }
+            public string departamento { get; set; }
+            public string provincia { get; set; }
+            public string distrito { get; set; }
+            public string estado { get; set; }
+            public string condicion { get; set; }
+            public string ubigeo { get; set; }
+            public string fechaActualizacion { get; set; }
+        }
+
     }
 }

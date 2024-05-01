@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using OfficeOpenXml;
 using System.Net;
 using System.Security.Policy;
+using static DTO.ClienteDTO;
 
 namespace ConcyssaWeb.Controllers
 {
@@ -46,12 +47,21 @@ namespace ConcyssaWeb.Controllers
             if(proveedorDTO.TipoDocumento == 1 || proveedorDTO.TipoDocumento == 6)
             {
                 string responseBody = "";
-                var url = $"https://apiconsulta.smartcodeserver.pe/api/ConsultaSmartcode/ConsultaRucDni?ruc=" + proveedorDTO.NumeroDocumento;
-                ResponseConsultaRuc oResponseConsultaRuc = new ResponseConsultaRuc();
+                var url = "";
+                if (proveedorDTO.TipoDocumento == 1)
+                {
+                    url = $"https://e-factura.tuscomprobantes.pe/wsconsulta/dni/" + proveedorDTO.NumeroDocumento;
+                }
+                else
+                {
+                    url = $"https://e-factura.tuscomprobantes.pe/wsconsulta/ruc/" + proveedorDTO.NumeroDocumento;
+                }
+             
+                RespuestaTusComprobantes oResponseConsultaRuc = new RespuestaTusComprobantes();
 
 
                 var request = (HttpWebRequest)WebRequest.Create(url);
-                request.Method = "POST";
+                request.Method = "GET";
                 try
                 {
                     using (WebResponse response = request.GetResponse())
@@ -63,7 +73,7 @@ namespace ConcyssaWeb.Controllers
                                 using (StreamReader objReader = new StreamReader(strReader))
                                 {
                                     responseBody = objReader.ReadToEnd();
-                                    oResponseConsultaRuc = JsonConvert.DeserializeObject<ResponseConsultaRuc>(responseBody);
+                                    oResponseConsultaRuc = JsonConvert.DeserializeObject<RespuestaTusComprobantes>(responseBody);
                                 }
                         }
                     }
@@ -73,7 +83,7 @@ namespace ConcyssaWeb.Controllers
                     return -3;
                 }
 
-                if(oResponseConsultaRuc.ruc == null && oResponseConsultaRuc.dni == null)
+                if(oResponseConsultaRuc.mensaje != null)
                 {
                     return -4;
                 }
