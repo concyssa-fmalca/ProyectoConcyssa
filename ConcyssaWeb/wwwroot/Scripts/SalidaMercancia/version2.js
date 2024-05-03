@@ -1774,103 +1774,60 @@ function GuardarSolicitud() {
         return
     }
 
+    let MovimientoEnviar = []
+
+    MovimientoEnviar.push({
+        detalles,
+        AnexoDetalle,
+        //cabecera
+        'IdAlmacen': IdAlmacen,
+        'IdTipoDocumento': IdTipoDocumento,
+        'IdSerie': IdSerie,
+        'Correlativo': Correlativo,
+        'IdMoneda': IdMoneda,
+        'TipoCambio': TipoCambio,
+        'FechaContabilizacion': FechaContabilizacion,
+        'FechaDocumento': FechaDocumento,
+        'IdCentroCosto': IdCentroCosto,
+        'Comentario': Comentario,
+        'SubTotal': SubTotal,
+        'Impuesto': Impuesto,
+        'Total': Total,
+        'IdCuadrilla': 2582,
+        'EntregadoA': 24151,
+        'IdTipoDocumentoRef': IdTipoDocumentoRef,
+        'NumSerieTipoDocumentoRef': $("#SerieNumeroRef").val(),
+        'IdDestinatario': $("#IdDestinatario").val(),
+        'IdMotivoTraslado': $("#IdMotivoTraslado").val(),
+        'IdTransportista': $("#IdTransportista").val(),
+        'PlacaVehiculo': $("#PlacaVehiculo").val(),
+        'MarcaVehiculo': $("#MarcaVehiculo").val(),
+        'NumIdentidadConductor': $("#NumIdentidadConductor").val(),
+
+        'NombreConductor': $("#NombreConductor").val(),
+        'ApellidoConductor': $("#ApellidoConductor").val(),
+        'LicenciaConductor': $("#LicenciaConductor").val(),
+        'TipoTransporte': $("#IdTipoTransporte").val(),
+
+        'Peso': $("#Peso").val(),
+        'Bulto': $("#Bulto").val(),
+
+        'SGI': SGI,
+        'CodigoAnexoLlegada': Anexo,
+        'CodigoUbigeoLlegada': Ubigeo,
+        'DistritoLlegada': DistritoLlegada,
+        'DireccionLlegada': DireccionLlegada,
+        'IdProveedor': $("#cboProveedor").val(),
+        'NroRef': $("#NumRef").val()
+    })
+
     $.ajax({
-        url: "UpdateInsertMovimiento",
+        url: "UpdateInsertMovimientoString",
         type: "POST",
         async: true,
         data: {
-            detalles,
-            AnexoDetalle,
-            //cabecera
-            'IdAlmacen': IdAlmacen,
-            'IdTipoDocumento': IdTipoDocumento,
-            'IdSerie': IdSerie,
-            'Correlativo': Correlativo,
-            'IdMoneda': IdMoneda,
-            'TipoCambio': TipoCambio,
-            'FechaContabilizacion': FechaContabilizacion,
-            'FechaDocumento': FechaDocumento,
-            'IdCentroCosto': IdCentroCosto,
-            'Comentario': Comentario,
-            'SubTotal': SubTotal,
-            'Impuesto': Impuesto,
-            'Total': Total,
-            'IdCuadrilla': 2582,
-            'EntregadoA': 24151,
-            'IdTipoDocumentoRef': IdTipoDocumentoRef,
-            'NumSerieTipoDocumentoRef': $("#SerieNumeroRef").val(),
-            'IdDestinatario': $("#IdDestinatario").val(),
-            'IdMotivoTraslado': $("#IdMotivoTraslado").val(),
-            'IdTransportista': $("#IdTransportista").val(),
-            'PlacaVehiculo': $("#PlacaVehiculo").val(),
-            'MarcaVehiculo': $("#MarcaVehiculo").val(),
-            'NumIdentidadConductor': $("#NumIdentidadConductor").val(),
-
-            'NombreConductor': $("#NombreConductor").val(),
-            'ApellidoConductor': $("#ApellidoConductor").val(),
-            'LicenciaConductor': $("#LicenciaConductor").val(),
-            'TipoTransporte': $("#IdTipoTransporte").val(),
-            //'UbigeoPartida': $("#UbigeoPartida").val(),
-            //'UbigeoLlegada': $("#UbigeoLlegada").val(),
-
-            'Peso': $("#Peso").val(),
-            'Bulto': $("#Bulto").val(),
-
-            'SGI': SGI,
-            'CodigoAnexoLlegada': Anexo,
-            'CodigoUbigeoLlegada': Ubigeo,
-            'DistritoLlegada': DistritoLlegada,
-            'DireccionLlegada': DireccionLlegada,
-            'IdProveedor': $("#cboProveedor").val(),
-            'NroRef': $("#NumRef").val()
-
-            //end cabecera
-
-            //DETALLE
-            /* 'detalles': JSON.parse(detalles)*/
-
-            //END DETALLE
-            //'IdSolicitudRQ': varIdSolicitud,
-            //'IdAlmacen': varSerie,
-            //'Serie': varSerieDescripcion,
-            //'Numero': varNumero,
-            //'IdSolicitante': varSolicitante,
-            //'IdSucursal': varSucursal,
-            //'IdDepartamento': varDepartamento,
-            //'IdClaseArticulo': varClaseArticulo,
-            //'IdTitular': varTitular,
-            //'IdMoneda': varMoneda,
-            //'TipoCambio': varTipoCambio,
-            //'IndicadorImpuesto': 0,
-            //'TotalAntesDescuento': varTotalAntesDescuento,
-            //'Impuesto': varImpuesto,
-            //'Total': varTotal,
-            //'FechaContabilizacion': varFechaContabilizacion,
-            //'FechaValidoHasta': varFechaValidoHasta,
-            //'FechaDocumento': varFechaDocumento,
-            //'Comentarios': varComentarios,
-            //'Estado': varEstado,
-            //'Prioridad': varPrioridad,
-            //'IdArticulo': arrayIdArticulo,
-            //'Prioridad': arrayPrioridad,
-            //'IdUnidadMedida': arrayIdUnidadMedida,
-            //'FechaNecesaria': arrayFechaNecesaria,
-            //'IdItemMoneda': arrayIdMoneda,
-            //'ItemTipoCambio': arrayTipoCambio,
-            //'CantidadNecesaria': arrayCantidadNecesaria,
-            //'PrecioInfo': arrayPrecioInfo,
-            //'IdIndicadorImpuesto': arrayIndicadorImpuesto,
-            //'ItemTotal': arrayTotal,
-            //'IdAlmacen': arrayAlmacen,
-            //'IdProveedor': arrayProveedor,
-            //'NumeroFabricacion': arrayNumeroFabricacion,
-            //'NumeroSerie': arrayNumeroSerie,
-            //'IdLineaNegocio': arrayLineaNegocio,
-            //'IdCentroCostos': arrayCentroCosto,
-            //'IdProyecto': arrayProyecto,
-            //'Referencia': arrayReferencia,
-            //'IdSolicitudRQDetalle': arrayIdSolicitudDetalle,
-            //'DetalleAnexo': arrayGeneralAnexo
+            'JsonDatosEnviar': JSON.stringify(MovimientoEnviar)
+           
         },
         beforeSend: function () {
             Swal.fire({

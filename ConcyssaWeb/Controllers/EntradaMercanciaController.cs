@@ -1137,7 +1137,7 @@ namespace ConcyssaWeb.Controllers
             oMovimientoDTO.FechaDocumento = FechaDoc;
             oMovimientoDTO.FechaContabilizacion = FechaCont;
 
-            oSalidaMercanciaController.UpdateInsertMovimiento(oMovimientoDTO);
+            oSalidaMercanciaController.UpdateInsertMovimiento(oMovimientoDTO, BaseDatos);
 
 
             return "1";

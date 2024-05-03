@@ -3938,7 +3938,7 @@ function AgregarOPNDDetalle(data) {
         for (var k = 0; k < datos.length; k++) {
 
    
-
+            console.log(datos[k]['TipoServicio'])
             if (datos[k]['TipoServicio'].toUpperCase() == 'NO APLICA') {
                 $("#cboClaseArticulo").val(1).change()
             } else {

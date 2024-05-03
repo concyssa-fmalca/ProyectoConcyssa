@@ -128,6 +128,128 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
+        public string UpdateInsertMovimientoString(string JsonDatosEnviar, string BaseDatos = "")
+        {
+
+            JsonDatosEnviar = JsonDatosEnviar.Remove(JsonDatosEnviar.Length - 1, 1);
+            JsonDatosEnviar = JsonDatosEnviar.Remove(0, 1);
+
+            var settings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                MissingMemberHandling = MissingMemberHandling.Ignore
+            };
+
+            MovimientoDTO oMovimientoDTO = JsonConvert.DeserializeObject<MovimientoDTO>(JsonDatosEnviar, settings);
+
+
+            if (BaseDatos == "")
+            {
+                BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            }
+            int IdSociedad = Convert.ToInt32((String.IsNullOrEmpty(oMovimientoDTO.IdSociedad.ToString())) ? Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad")) : oMovimientoDTO.IdSociedad);
+            int IdUsuario = Convert.ToInt32((String.IsNullOrEmpty(oMovimientoDTO.IdUsuario.ToString())) ? Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad")) : oMovimientoDTO.IdUsuario);
+
+
+            if (IdSociedad == 0)
+            {
+                IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            }
+
+            if (IdUsuario == 0)
+            {
+                IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            }
+
+
+            string mensaje_error = "";
+
+            //int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            //int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            oMovimientoDTO.IdSociedad = IdSociedad;
+            oMovimientoDTO.IdUsuario = IdUsuario;
+
+            KardexDAO oKardexDAO = new KardexDAO();
+            ArticuloStockDTO oArticuloStockDTO = new ArticuloStockDTO();
+            string MensajeNoStock = "";
+            int validadStock = 0;
+            for (int i = 0; i < oMovimientoDTO.detalles.Count(); i++)
+            {
+                oArticuloStockDTO = oKardexDAO.ObtenerArticuloxIdArticuloxIdAlm(oMovimientoDTO.detalles[i].IdArticulo, oMovimientoDTO.IdAlmacen, BaseDatos, ref mensaje_error);
+                if (oArticuloStockDTO.Stock < oMovimientoDTO.detalles[i].CantidadBase)
+                {
+                    validadStock = 1;
+                    MensajeNoStock += oMovimientoDTO.detalles[i].CodigoArticulo + "-" + oMovimientoDTO.detalles[i].DescripcionArticulo + " </br> ";
+                }
+            }
+            if (validadStock == 1)
+            {
+                return "No hay suficiente Stock en este Almacén </br> " + MensajeNoStock;
+            }
+
+
+
+
+            MovimientoDAO oMovimimientoDAO = new MovimientoDAO();
+            int respuesta = oMovimimientoDAO.InsertUpdateMovimiento(oMovimientoDTO, BaseDatos, ref mensaje_error);
+            int respuesta1 = 0;
+            if (mensaje_error.Length > 0)
+            {
+                GC.Collect();
+                return mensaje_error;
+            }
+            if (respuesta > 0)
+            {
+                for (int i = 0; i < oMovimientoDTO.detalles.Count; i++)
+                {
+                    oMovimientoDTO.detalles[i].IdMovimiento = respuesta;
+                    oMovimientoDTO.detalles[i].IdMovimientoDetalle = 0;
+                    respuesta1 = oMovimimientoDAO.InsertUpdateMovimientoDetalle(oMovimientoDTO.detalles[i], 0, BaseDatos, ref mensaje_error);
+                    int respuesta2 = oMovimimientoDAO.InsertUpdateMovimientoDetalleCuadrilla(respuesta1, oMovimientoDTO.detalles[i], BaseDatos, ref mensaje_error);
+
+                }
+                //for (int i = 0; i < oMovimientoDTO.detalles.Count; i++)
+                //{
+                //    oMovimientoDTO.detalles[i].IdMovimientoDetalle = respuesta1;
+                //    int respuesta2 = oMovimimientoDAO.InsertUpdateMovimientoDetalleCuadrilla(respuesta1, oMovimientoDTO.detalles[i],BaseDatos,ref mensaje_error);
+                //}
+                if (oMovimientoDTO.AnexoDetalle != null)
+                {
+                    for (int i = 0; i < oMovimientoDTO.AnexoDetalle.Count; i++)
+                    {
+                        oMovimientoDTO.AnexoDetalle[i].ruta = "/Anexos/" + oMovimientoDTO.AnexoDetalle[i].NombreArchivo;
+                        oMovimientoDTO.AnexoDetalle[i].IdSociedad = oMovimientoDTO.IdSociedad;
+                        oMovimientoDTO.AnexoDetalle[i].Tabla = "Movimiento";
+                        oMovimientoDTO.AnexoDetalle[i].IdTabla = respuesta;
+
+                        oMovimimientoDAO.InsertAnexoMovimiento(oMovimientoDTO.AnexoDetalle[i], BaseDatos, ref mensaje_error);
+                    }
+                }
+
+
+            }
+
+            if (mensaje_error.Length > 0)
+            {
+                GC.Collect();
+                return mensaje_error;
+            }
+            else
+            {
+                if (respuesta > 0)
+                {
+                    GC.Collect();
+                    return respuesta.ToString();
+                }
+                else
+                {
+                    GC.Collect();
+                    return mensaje_error;
+                }
+            }
+        }
+
+
         public string GenerarSalidaExtorno(int IdMovimiento, int Serie, DateTime FechaDoc, DateTime FechaCont)
         {
             string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;

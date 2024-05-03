@@ -121,7 +121,7 @@ function ConsultaServidorCabecera(url) {
     var year = date.getFullYear();
 
     if (FechaInicio == "") {
-        FechaInicio = '01/' + (mes < 10 ? '0' : '') + mes + '/' + year;
+        FechaInicio = '01/' + '01' + '/' + year;
         //FechaInicio = "01-01-1999";
     }
     if (FechaFinal == "") {
@@ -258,7 +258,7 @@ function ConsultaServidorDetalle(IdGiro) {
     var year = date.getFullYear();
 
     if (FechaInicio == "") {
-        FechaInicio = '01/' + (mes < 10 ? '0' : '') + mes + '/' + year;
+        FechaInicio = '01/' + '01' + '/' + year;
         //FechaInicio = "01-01-1999";
     }
     if (FechaFinal == "") {
