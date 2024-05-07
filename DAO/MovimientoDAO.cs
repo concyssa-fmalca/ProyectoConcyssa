@@ -699,6 +699,8 @@ namespace DAO
 
                         oMovimientoDTO.NombUsuario = (drd["NombUsuario"].ToString());
 
+                        oMovimientoDTO.CodigoCuadrilla = (drd["CodigoCuadrilla"].ToString());
+
                         lstMovimientoDTO.Add(oMovimientoDTO);
                     }
                     drd.Close();
@@ -829,6 +831,7 @@ namespace DAO
                         oMovimientoDTO.NombSerie = (drd["NombSerie"].ToString());
                         oMovimientoDTO.Estado = Convert.ToBoolean(drd["Estado"].ToString());
                         oMovimientoDTO.DescCuadrilla = (drd["DescCuadrilla"].ToString());
+                        oMovimientoDTO.CodigoCuadrilla = (drd["CodigoCuadrilla"].ToString());
                         oMovimientoDTO.NombAlmacen = (drd["NombAlmacen"].ToString());
                         oMovimientoDTO.NombMoneda = (drd["NombMoneda"].ToString());
                         oMovimientoDTO.NombUsuario = (drd["NombUsuario"].ToString());

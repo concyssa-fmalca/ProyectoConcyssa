@@ -530,6 +530,7 @@ function ConsultaServidor() {
                     '<td>' + formatNumberDecimales(movimientos[i].Total, 3) + '</td>' +
                     /*    '<td>' + movimientos[i].NombObra + '</td>' +*/
 
+                    '<td>' + movimientos[i].CodigoCuadrilla + '</td>' +
                     '<td>' + movimientos[i].NombAlmacen + '</td>' +
                     '<td>' + movimientos[i].NroRef + '</td>' +
                     '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + movimientos[i].IdMovimiento + ')"></button>' +
@@ -549,9 +550,9 @@ function ConsultaServidor() {
                     '<td>' + varEstadoGE + '</td>' +
                     '<td>' + movimientos[i].NombMoneda + '</td>' +
 
-                    '<td>' + formatNumberDecimales(movimientos[i].Total, 3) + '</td>' +
+                    '<td>' + formatNumberDecimales(movimientos[i].Total, 3) + '</td>' +                    
                     /*    '<td>' + movimientos[i].NombObra + '</td>' +*/
-
+                    '<td>' + movimientos[i].CodigoCuadrilla + '</td>' +
                     '<td>' + movimientos[i].NombAlmacen + '</td>' +
                     '<td>' + movimientos[i].NroRef + '</td>' +
                     '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + movimientos[i].IdMovimiento + ')"></button>' +

@@ -3029,6 +3029,9 @@ function listarIngresosDT() {
 
                 },
             },
+
+
+
             {
                 data: null,
                 targets: 6,
@@ -3068,10 +3071,19 @@ function listarIngresosDT() {
                     return formatNumber(full.Total)
                 },
             },
-       
+
             {
                 data: null,
                 targets: 9,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return full.CodigoCuadrilla
+                },
+            },
+
+            {
+                data: null,
+                targets: 10,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     return full.NombObra
@@ -3079,7 +3091,7 @@ function listarIngresosDT() {
             },
             {
                 data: null,
-                targets: 10,
+                targets: 11,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     return full.NombAlmacen
@@ -3087,7 +3099,7 @@ function listarIngresosDT() {
             },
             {
                 data: null,
-                targets: 11,
+                targets: 12,
                 orderable: false,
                 render: function (data, type, full, meta) {
                     return full.NroRef
