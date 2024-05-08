@@ -1,13 +1,13 @@
 ﻿window.onload = function () {
+    $.ajaxSetup({ async: false });
     CargarBaseFiltro()
     $("#txtFechaInicio").val(getCurrentDate())
     $("#txtFechaFin").val(getCurrentDateFinal())
     $("#txtFechaInicioRpt").val(getCurrentDate())
     $("#txtFechaFinRpt").val(getCurrentDateFinal())
     //ListarSolicitudes()
-    ListarSeries()
-    CargarObra() 
     ConsultaServidor()
+    CargarObra() 
     $(".cboArticuloPedidoTodo").select2()
     $("#cboAgregarArticulo").select2({
         dropdownParent: $("#ModalAgregar")
@@ -212,27 +212,49 @@ function CargarProductosTodos(contador, IdTipoProducto,IdObra) {
 let Igeneral = 0;
 
 function ConsultaServidor() {
+
+ 
+
     let FechaInicio = $("#txtFechaInicio").val()
     let FechaFin = $("#txtFechaFin").val()
     let IdBase = $("#cboObraFiltro").val()
     let EstadoSolicitud = $("#EstadoFiltro").val()
     let SerieFiltro = $("#cboSeries").val()
+
     $.ajaxSetup({ async: false });
-    $.post('/SolicitudDespacho/ObtenerSolicitudesDespachoAtender', { 'IdBase': IdBase, 'FechaInicio': FechaInicio, 'FechaFin': FechaFin, 'EstadoSolicitud': EstadoSolicitud, 'SerieFiltro': SerieFiltro }, function (data, status) {
-        if (data != 'error') {
-            let SolicitudDespacho = JSON.parse(data);
-            //console.log(SolicitudDespacho)
-            let InsertarHTML = ''
+
+    let OffSet = 0;
+
+    if (PaginaActual > 1) {
+        OffSet = (PaginaActual - 1) * 10
+    }
 
 
-            for (var i = 0; i < SolicitudDespacho.length; i++) {
-                Igeneral = i;
-                //console.log(SolicitudDespacho[i])
-                //console.log(i)
-                let tr = ''
-                let Fecha = (SolicitudDespacho[i].FechaContabilizacion).split('T')[0]
-                Fecha = Fecha.split('-')[2] + "-" + Fecha.split('-')[1] + "-" + Fecha.split('-')[0]
-                InsertarHTML += `  <div class="panel" style="background-color:aliceblue">
+    $.ajax({
+        url: "/SolicitudDespacho/ObtenerSolicitudesDespachoAtender",
+        type: "POST",
+        async: true,
+        data: {
+            'IdBase': IdBase, 'FechaInicio': FechaInicio, 'FechaFin': FechaFin, 'EstadoSolicitud': EstadoSolicitud, 'SerieFiltro': SerieFiltro, 'Paginacion': OffSet
+        },
+        beforeSend: function () {
+            $("#SolicitudesCard").html('<div style="width:100%; display:flex;justify-content:center;align-items:center">Cargando...</div>')
+        },
+        success: function (data) {
+            if (data != 'error') {
+                let SolicitudDespacho = JSON.parse(data);
+                //console.log(SolicitudDespacho)
+                let InsertarHTML = ''
+
+
+                for (var i = 0; i < SolicitudDespacho.length; i++) {
+                    Igeneral = i;
+                    //console.log(SolicitudDespacho[i])
+                    //console.log(i)
+                    let tr = ''
+                    let Fecha = (SolicitudDespacho[i].FechaContabilizacion).split('T')[0]
+                    Fecha = Fecha.split('-')[2] + "-" + Fecha.split('-')[1] + "-" + Fecha.split('-')[0]
+                    InsertarHTML += `  <div class="panel" style="background-color:aliceblue">
                                 <div class="row">
                                     <label class="col-md-2" style="max-width:130px;color:black">Serie y Número:</label>
                                     <p class="col-md-1">`+ SolicitudDespacho[i].SerieyNum + `</p>
@@ -241,34 +263,34 @@ function ConsultaServidor() {
                                     <label for="cboAlmacen`+ i + `" class="col-md-1" style="color:black">Almacen:</label>
                                     <div class="col-md-4" style="margin-top:-3px">`;
 
-                InsertarHTML += `<select id="cboAlmacen` + i + `" class="form-control" name="cboAlmacenGeneral" onchange="ObtenerStocks(` + i + `)" >`;
+                    InsertarHTML += `<select id="cboAlmacen` + i + `" class="form-control" name="cboAlmacenGeneral" onchange="ObtenerStocks(` + i + `)" >`;
 
 
-                $.ajax({
-                    url: "/Almacen/ObtenerAlmacenxIdObra",
-                    type: 'POST',
-                    async: false,
-                    dataType: 'json',
-                    data: { 'IdObra': SolicitudDespacho[i].IdObra },
-                    success: function (datos) {
-                        //console.log(datos);
+                    $.ajax({
+                        url: "/Almacen/ObtenerAlmacenxIdObra",
+                        type: 'POST',
+                        async: false,
+                        dataType: 'json',
+                        data: { 'IdObra': SolicitudDespacho[i].IdObra },
+                        success: function (datos) {
+                            //console.log(datos);
 
-                        for (var k = 0; k < datos.length; k++) {
-                            InsertarHTML += `<option value="` + datos[k].IdAlmacen + `">` + datos[k].Descripcion + `</option>`;
+                            for (var k = 0; k < datos.length; k++) {
+                                InsertarHTML += `<option value="` + datos[k].IdAlmacen + `">` + datos[k].Descripcion + `</option>`;
+                            }
+
+                        },
+                        error: function () {
+                            Swal("Error!", "Ocurrió un Error", "error");
                         }
-
-                    },
-                    error: function () {
-                        Swal("Error!", "Ocurrió un Error", "error");
-                    }
-                })
+                    })
 
 
 
-                InsertarHTML += `</select> 
+                    InsertarHTML += `</select> 
                                 </div>`
-                                  /*  <button class="btn btn-primary" style="margin-top:0px" onclick="AgregarItem(`+ SolicitudDespacho[i].IdObra + `,` + SolicitudDespacho[i].IdTipoProducto + `,` + i + `)">Agregar Artículo</button>*/
-                               +` </div>
+                        /*  <button class="btn btn-primary" style="margin-top:0px" onclick="AgregarItem(`+ SolicitudDespacho[i].IdObra + `,` + SolicitudDespacho[i].IdTipoProducto + `,` + i + `)">Agregar Artículo</button>*/
+                        + ` </div>
                                 <div class="row">
                                     <label class="col-md-2" style="max-width:130px;color:black">Centro de Costo:</label>
                                     <p class="col-md-5">`+ SolicitudDespacho[i].NombCuadrilla + `</p>
@@ -276,7 +298,7 @@ function ConsultaServidor() {
                                     <div class="col-md-4" style="margin-top:-3px">
                                         <select id="cboResponsable`+ i + `" name="cboResponsableGeneral" class="form-control"></select>
                                     </div>
-                                    <input style="display:none" id="Ocultos`+i+`" value="0"/>
+                                    <input style="display:none" id="Ocultos`+ i + `" value="0"/>
                                 </div>
                                 <div class="row">
                                     <table id="table_id`+ i + `" class="table" style="width:100%">
@@ -294,10 +316,27 @@ function ConsultaServidor() {
                                             </tr>
                                         </thead>
                                         <tbody id="tbody_Solicitudes`+ i + `">`;
-                for (var j = 0; j < SolicitudDespacho[i].Detalles.length; j++) {
-                    let Saldo = +SolicitudDespacho[i].Detalles[j].Cantidad - +SolicitudDespacho[i].Detalles[j].CantidadAtendida
-                    if (SolicitudDespacho[i].EstadoSolicitud == 1) {
-                        if (SolicitudDespacho[i].Detalles[j].CantidadAtendida < SolicitudDespacho[i].Detalles[j].Cantidad) {
+                    for (var j = 0; j < SolicitudDespacho[i].Detalles.length; j++) {
+                        let Saldo = +SolicitudDespacho[i].Detalles[j].Cantidad - +SolicitudDespacho[i].Detalles[j].CantidadAtendida
+                        if (SolicitudDespacho[i].EstadoSolicitud == 1) {
+                            if (SolicitudDespacho[i].Detalles[j].CantidadAtendida < SolicitudDespacho[i].Detalles[j].Cantidad) {
+                                let IdFila = (i + 1).toString() + j.toString()
+
+                                InsertarHTML += ` <tr id="FilaDetalle` + IdFila + `"> 
+                                                    <td><input type="text" style="display:none" value="` + (SolicitudDespacho[i].Detalles[j].Id) + `" id="txtIdSolicitud` + i + `" class="form-control IdDetalleCol` + i + `" style="max-width:60px" >` + (j + 1) + `</td>
+                                                    <td class="DescripcionTabla`+ i + `">` + SolicitudDespacho[i].Detalles[j].CodigoArticulo + `-` + SolicitudDespacho[i].Detalles[j].Descripcion + `</td>
+                                                    <td class="CantidadPedida`+ i + `">` + SolicitudDespacho[i].Detalles[j].Cantidad + `</td>
+                                                    <td>`+ SolicitudDespacho[i].Detalles[j].CantidadAtendida + `</td>
+                                                    <td><input type="text" value="` + Saldo + `" id="txtCantidadAtendida` + i + `" onchange="ValidarCantidadNoMayor(` + IdFila + `,` + Saldo + `);  VerificarEntregaStock(` + IdFila + `);ObtenerStocks(` + i + `)" class="form-control  EntregarDetalle` + i + ` NoPasarStock` + IdFila + `" style="max-width:60px"></td>
+                                                    <td id="StockDetalle`+ IdFila + `" class="ClassStockDetalle` + i + `">d</td>
+                                                    <td class="PrecioDetalle`+ i + `">Precio</td>
+                                                    <td class="TotalDetalle`+ i + `">Total</td>
+                                                    <td><button class="btn btn-xs btn-danger fa fa-times" onclick="EliminarFila(`+ IdFila + `,` + i + `)"></button></td>
+                                                    <td style="display:none" class="IdItemDetalle`+ i + `" >` + SolicitudDespacho[i].Detalles[j].IdItem + `</td> 
+                                                    </tr>`
+
+                            }
+                        } else {
                             let IdFila = (i + 1).toString() + j.toString()
 
                             InsertarHTML += ` <tr id="FilaDetalle` + IdFila + `"> 
@@ -305,59 +344,64 @@ function ConsultaServidor() {
                                                     <td class="DescripcionTabla`+ i + `">` + SolicitudDespacho[i].Detalles[j].CodigoArticulo + `-` + SolicitudDespacho[i].Detalles[j].Descripcion + `</td>
                                                     <td class="CantidadPedida`+ i + `">` + SolicitudDespacho[i].Detalles[j].Cantidad + `</td>
                                                     <td>`+ SolicitudDespacho[i].Detalles[j].CantidadAtendida + `</td>
-                                                    <td><input type="text" value="` + Saldo + `" id="txtCantidadAtendida` + i + `" onchange="ValidarCantidadNoMayor(` + IdFila + `,` + Saldo +`);  VerificarEntregaStock(` + IdFila + `);ObtenerStocks(` + i + `)" class="form-control  EntregarDetalle` + i + ` NoPasarStock` + IdFila + `" style="max-width:60px"></td>
+                                                    <td><input type="text" value="` + SolicitudDespacho[i].Detalles[j].Cantidad + `" id="txtCantidadAtendida` + i + `" onchange="ValidarCantidadNoMayor(` + IdFila + `,` + Saldo + `);VerificarEntregaStock(` + IdFila + `);ObtenerStocks(` + i + `)" class="form-control  EntregarDetalle` + i + ` NoPasarStock` + IdFila + `" style="max-width:60px"></td>
                                                     <td id="StockDetalle`+ IdFila + `" class="ClassStockDetalle` + i + `">d</td>
                                                     <td class="PrecioDetalle`+ i + `">Precio</td>
                                                     <td class="TotalDetalle`+ i + `">Total</td>
                                                     <td><button class="btn btn-xs btn-danger fa fa-times" onclick="EliminarFila(`+ IdFila + `,` + i + `)"></button></td>
                                                     <td style="display:none" class="IdItemDetalle`+ i + `" >` + SolicitudDespacho[i].Detalles[j].IdItem + `</td> 
                                                     </tr>`
-
                         }
-                    } else {
-                        let IdFila = (i + 1).toString() + j.toString()
-
-                        InsertarHTML += ` <tr id="FilaDetalle` + IdFila + `"> 
-                                                    <td><input type="text" style="display:none" value="` + (SolicitudDespacho[i].Detalles[j].Id) + `" id="txtIdSolicitud` + i + `" class="form-control IdDetalleCol` + i + `" style="max-width:60px" >` + (j + 1) + `</td>
-                                                    <td class="DescripcionTabla`+ i + `">` + SolicitudDespacho[i].Detalles[j].CodigoArticulo + `-` + SolicitudDespacho[i].Detalles[j].Descripcion + `</td>
-                                                    <td class="CantidadPedida`+ i + `">` + SolicitudDespacho[i].Detalles[j].Cantidad + `</td>
-                                                    <td>`+ SolicitudDespacho[i].Detalles[j].CantidadAtendida + `</td>
-                                                    <td><input type="text" value="` + SolicitudDespacho[i].Detalles[j].Cantidad + `" id="txtCantidadAtendida` + i + `" onchange="ValidarCantidadNoMayor(` + IdFila + `,` + Saldo +`);VerificarEntregaStock(` + IdFila + `);ObtenerStocks(` + i + `)" class="form-control  EntregarDetalle` + i + ` NoPasarStock` + IdFila + `" style="max-width:60px"></td>
-                                                    <td id="StockDetalle`+ IdFila + `" class="ClassStockDetalle` + i + `">d</td>
-                                                    <td class="PrecioDetalle`+ i + `">Precio</td>
-                                                    <td class="TotalDetalle`+ i + `">Total</td>
-                                                    <td><button class="btn btn-xs btn-danger fa fa-times" onclick="EliminarFila(`+ IdFila + `,` + i + `)"></button></td>
-                                                    <td style="display:none" class="IdItemDetalle`+ i + `" >` + SolicitudDespacho[i].Detalles[j].IdItem + `</td> 
-                                                    </tr>`
                     }
-                }
 
 
-                InsertarHTML += `  </tbody>
+                    InsertarHTML += `  </tbody>
                                                     </table>
                                                 </div>
-                                            <label class="col-md-2" style="max-width:130px;color:black">Comentario:</label><input disabled value="`+SolicitudDespacho[i].Comentario+`" id="txtComentario`+ i +`" class="form-control" type="text">
+                                            <label class="col-md-2" style="max-width:130px;color:black">Comentario:</label><input disabled value="`+ SolicitudDespacho[i].Comentario + `" id="txtComentario` + i + `" class="form-control" type="text">
                                             <div class=row>`
-                                                if (SolicitudDespacho[i].EstadoSolicitud != 2) {
-                InsertarHTML+=                  `<button class="btn btn-primary" style="margin-top:0px" onclick="GenerarSalida(`+ i + `,` + SolicitudDespacho[i].Id + `,'` + SolicitudDespacho[i].SerieyNum + `',` + SolicitudDespacho[i].IdCuadrilla + `)">Crear Salida</button>
-                                                <button class="btn btn-primary" style="margin-top:0px" onclick="CerrarSolicitud(`+ SolicitudDespacho[i].Id+`)">Cerrar Solicitud</button>`
+                    if (SolicitudDespacho[i].EstadoSolicitud != 2) {
+                        InsertarHTML += `<button class="btn btn-primary" style="margin-top:0px" onclick="GenerarSalida(` + i + `,` + SolicitudDespacho[i].Id + `,'` + SolicitudDespacho[i].SerieyNum + `',` + SolicitudDespacho[i].IdCuadrilla + `)">Crear Salida</button>
+                                                <button class="btn btn-primary" style="margin-top:0px" onclick="CerrarSolicitud(`+ SolicitudDespacho[i].Id + `)">Cerrar Solicitud</button>`
 
-                                                 }
-                InsertarHTML +=             `</div>
+                    }
+                    InsertarHTML += `</div>
                                             </div>
                                             <br/>`;
-                $("#SolicitudesCard").html(InsertarHTML);
-                ObtenerEmpleados(i, SolicitudDespacho[i].IdSolicitante)
+                    $("#SolicitudesCard").html(InsertarHTML);
+                    ObtenerEmpleados(i, SolicitudDespacho[i].IdSolicitante)                             
+                }
+
+                ListarSeries()
+                let Id = "";
+
+                $(".page-item").each(function (indice, elemento) {
+                    if ($(elemento).hasClass('active')) {
+                        Id = $(elemento).attr("id");
+                    }
+                });
+
+                $("#" + Id).removeClass('active')
+                $("#paginacionId" + PaginaActual).addClass('active')
+
                 //CargarAlmacen(SolicitudDespacho[i].IdObra, i)
 
                 //ObtenerStocks(i)
                 //console.log(i);
+                LlenarStocks()
+            } else {
+                $("#SolicitudesCard").empty()
+                ListarSeries()
             }
-        } else {
-            $("#SolicitudesCard").empty()
+
+
         }
+    }).fail(function () {
+        $("#SolicitudesCard").html('<div style="width:100%; display:flex;justify-content:center;align-items:center">No se pudo cargar la Información</div>')
     });
-    LlenarStocks()
+
+   
+   
 }
 function LlenarStocks() {
     //console.log(Igeneral)
@@ -383,13 +427,20 @@ function llenarComboAlmacen(lista, idCombo, primerItem) {
     //console.log(cbo)
     $('#' + idCombo).html(contenido)
 }
+
+
+
+
 function ObtenerEmpleados(contador, IdEmpleado) {
     //console.log(IdEmpleado)
     $.ajaxSetup({ async: true });
-    $.post("/Empleado/ObtenerEmpleadosPorUsuarioBase", function (data, status) {
+    $.post("/Empleado/ObtenerEmpleadosPorIdBase", { 'IdBase': $("#cboObraFiltro").val() }, function (data, status) {
         let empleados = JSON.parse(data);
-        llenarComboEmpleados(empleados, "cboResponsable" + contador, "Seleccione", IdEmpleado)
+            llenarComboEmpleados(empleados, "cboResponsable" + contador, "Seleccione", IdEmpleado)
+
     });
+
+    
 }
 
 function llenarComboEmpleados(lista, idCombo, primerItem, IdEmpleado) {
@@ -932,6 +983,8 @@ function llenarComboSerieExtorno(lista, idCombo, primerItem) {
     $("#" + idCombo).val(lista[ultimoindice].IdSerie).change();
 }
 
+var CantidadPaginacion = 0;
+
 function ListarSeries() {
     let FechaInicio = $("#txtFechaInicio").val()
     let FechaFin = $("#txtFechaFin").val()
@@ -939,15 +992,81 @@ function ListarSeries() {
     let EstadoSolicitud = $("#EstadoFiltro").val()
     let SerieFiltro = 0
     $.ajaxSetup({ async: false });
-    $.post('/SolicitudDespacho/ObtenerSolicitudesDespachoAtender', { 'IdBase': IdBase, 'FechaInicio': FechaInicio, 'FechaFin': FechaFin, 'EstadoSolicitud': EstadoSolicitud, 'SerieFiltro': SerieFiltro }, function (data, status) {
+    $.post('/SolicitudDespacho/ObtenerSolicitudesDespachoAtenderFiltro', { 'IdBase': IdBase, 'FechaInicio': FechaInicio, 'FechaFin': FechaFin, 'EstadoSolicitud': EstadoSolicitud, 'SerieFiltro': SerieFiltro }, function (data, status) {
         try {
             let Series = JSON.parse(data);
             llenarComboSerieFiltro(Series, "cboSeries", "Todos")
+
+
+            CantidadPaginacion = Math.ceil(Series.length / 10)
+            console.log(CantidadPaginacion)
+
+            let html = `
+                <ul class="pagination">
+                <li class="page-item ">
+                    <a class="page-link" href="#" onclick="retrocederPaginacion()">Anterior</a>
+                </li>`
+            
+            //if (CantidadPaginacion < 10) {
+            //    for (var i = 0; i < CantidadPaginacion; i++) {
+            //        if (i == 0) {
+            //            html += ` <li class="page-item active" id="paginacionId` + (i + 1) + `" onclick="ActivarPaginacion(` + (i + 1) + `)"><a class="page-link" href="#">` + (i + 1) + `</a></li>`
+            //        } else {
+            //            html += ` <li class="page-item"  id="paginacionId` + (i + 1) + `" onclick="ActivarPaginacion(` + (i + 1) + `)"><a class="page-link" href="#">` + (i + 1) + `</a></li>`
+
+            //        }
+            //    }
+            //} else {
+            //    for (var i = 0; i < 10; i++) { 
+            //        if (i == 0) {
+            //            html += ` <li class="page-item active" id="paginacionId` + (i + 1) + `" onclick="ActivarPaginacion(` + (i + 1) + `)"><a class="page-link" href="#">` + (i + 1) + `</a></li>`
+            //        } else {
+            //            html += ` <li class="page-item"  id="paginacionId` + (i + 1) + `" onclick="ActivarPaginacion(` + (i + 1) + `)"><a class="page-link" href="#">`+(i+1)+`</a></li>`
+
+            //        }
+            //    }
+            //    html += ` <li class="page-item"><a class="page-link" href="#">...</a></li>`
+            //}
+
+            for (var i = 0; i < CantidadPaginacion; i++) {
+                if (i == 0) {
+                    html += ` <li class="page-item active" id="paginacionId` + (i + 1) + `" onclick="ActivarPaginacion(` + (i + 1) + `)"><a class="page-link" href="#">` + (i + 1) + `</a></li>`
+                } else {
+                    html += ` <li class="page-item"  id="paginacionId` + (i + 1) + `" onclick="ActivarPaginacion(` + (i + 1) + `)"><a class="page-link" href="#">` + (i + 1) + `</a></li>`
+
+                }
+            }
+
+            html += `<li class="page-item ">
+                        <a class="page-link" href="#" onclick="avanzarPaginacion()">Siguiente</a>
+                    </li>
+                    </ul>`
+     
+
+            $("#divPaginacion").html(html)
+
+
         } catch (e) {
             $("#cboSeries").html('<option value="0">Todos</option>')
-            ConsultaServidor();
+            $("#divPaginacion").html(`
+                 <ul class="pagination">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">Anterior</a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>                
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#">Siguiente</a>
+                    </li>
+                </ul>
+            `)
         }
     });
+
+
+
+
+
+
 
 }
 
@@ -965,7 +1084,6 @@ function llenarComboSerieFiltro(lista, idCombo, primerItem) {
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
     $("#cboSeries").val($("#cboSeries option:first").val());
-    ConsultaServidor();
 }
 function CerrarSolicitud(IdSolicitudCerrar) {
     alertify.confirm('Confirmar', '¿Desea Cerrar Esta Solicitud?, No se podrá volver a atender la solicitud', function () {
@@ -1126,4 +1244,45 @@ function ValidarCantidadNoMayor(IdFila, Saldo) {
     }
 
 
+}
+
+let PaginaActual = 1;
+
+function ActivarPaginacion(Nro) {
+
+
+    let Id = "";
+
+    $(".page-item").each(function (indice, elemento) {
+        if ($(elemento).hasClass('active')){
+            Id = $(elemento).attr("id");
+        }
+    });
+
+    $("#" + Id).removeClass('active')
+    $("#paginacionId" + Nro).addClass('active')
+    PaginaActual = Nro
+    ConsultaServidor()
+
+
+}
+function retrocederPaginacion() {
+
+    if (PaginaActual != 1) {
+        ActivarPaginacion(PaginaActual-1)
+    }
+
+}
+
+function avanzarPaginacion() {
+    if (PaginaActual < CantidadPaginacion) {
+     ActivarPaginacion(PaginaActual + 1)
+    }
+}
+
+
+
+function ConsultaServidorLimpio() {
+    PaginaActual = 1
+    ConsultaServidor()
 }

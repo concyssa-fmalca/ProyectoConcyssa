@@ -86,7 +86,7 @@
              <div class="col-xs-12 right">
                  <label class="col-sm-2" for="cboObraFiltro">Base</label>
                  <div class="col-sm-3">
-                     <select class="form-control" id="cboObraFiltro"></select>
+                    <select class="form-control" id="cboObraFiltro" onchange="CargarEmpleados()"></select>
                  </div>
             </div>
             <div class="col-xs-12 right">
@@ -105,7 +105,7 @@
             <div class="col-xs-12 right">
                 <label class="col-sm-2" for="EstadoFiltro">Estado</label>
                 <div class="col-sm-3">
-                    <select class="form-control" id="EstadoFiltro" onchange="ListarSeries()">
+                    <select class="form-control" id="EstadoFiltro" onchange="ConsultaServidorLimpio()">
                         <option value="0">Pendiente de Entrega</option>
                         <option value="1">Entregado Parcialmente</option>
                         <option value="2">Cerrado</option>
@@ -119,9 +119,28 @@
                         
                     </select>
                 </div>
-                <button class="btn btn-primary" style="margin-top:3px" onclick="ConsultaServidor()">Buscar</button>
+                <button class="btn btn-primary" style="margin-top:3px" onclick="ConsultaServidorLimpio()">Buscar</button>
                 <button class="btn btn-primary" style="margin-top:3px" onclick="ModalReporte()">Ver Pend. Aprob.</button>
             </div>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="container-fluid" id="divPaginacion">
+            
+                <ul class="pagination">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Next</a>
+                    </li>
+                </ul>
+           
         </div>
     </div>
     <div class="panel">

@@ -459,7 +459,7 @@ namespace DAO
             }
             return lstSolicitudDespachoDetalleDTO;
         }
-        public List<SolicitudDespachoDTO> ObtenerSolicitudesDespachoAtender(int IdSociedad, int IdBase,DateTime FechaInicio,DateTime FechaFin, int EstadoSolicitud,int SerieFiltro, string BaseDatos)
+        public List<SolicitudDespachoDTO> ObtenerSolicitudesDespachoAtender(int IdSociedad, int IdBase,DateTime FechaInicio,DateTime FechaFin, int EstadoSolicitud,int SerieFiltro, int Paginacion, string BaseDatos)
         {
             List<SolicitudDespachoDTO> lstSolicitudDespachoDTO = new List<SolicitudDespachoDTO>();
 
@@ -470,13 +470,14 @@ namespace DAO
                 {
 
                     cn.Open();
-                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarSolicitudDespachoCabezeraAprobadas", cn);
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarSolicitudDespachoCabezeraAprobadasPagination", cn);
                     da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
                     da.SelectCommand.Parameters.AddWithValue("@IdBase", IdBase);
                     da.SelectCommand.Parameters.AddWithValue("@FechaInicio", FechaInicio);
                     da.SelectCommand.Parameters.AddWithValue("@FechaFin", FechaFin);
                     da.SelectCommand.Parameters.AddWithValue("@EstadoSolicitud", EstadoSolicitud);
                     da.SelectCommand.Parameters.AddWithValue("@SerieFiltro", SerieFiltro);
+                    da.SelectCommand.Parameters.AddWithValue("@Paginacion", Paginacion);
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
                     SqlDataReader drd = da.SelectCommand.ExecuteReader();
                     while (drd.Read())
@@ -502,27 +503,28 @@ namespace DAO
 
 
                         int IdSolicitudDespacho = int.Parse(drd["Id"].ToString());
-                        Int32 filasdetalle = 0;
-                        using (SqlConnection cn2 = new Conexion().conectar(BaseDatos))
-                        {
-                            try
-                            {
-                                cn2.Open();
-                                SqlDataAdapter da2 = new SqlDataAdapter("SMC_ListarSolicitudDespachoDetallexIDAprobados", cn2);
-                                da2.SelectCommand.Parameters.AddWithValue("@IdSolicitudDespacho", IdSolicitudDespacho);
-                                da2.SelectCommand.CommandType = CommandType.StoredProcedure;
-                                SqlDataReader dr2 = da2.SelectCommand.ExecuteReader();
-                                while (dr2.Read())
-                                {
-                                    filasdetalle++;
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                            }
-                        }
+                        //Int32 filasdetalle = 0;
+                        //using (SqlConnection cn2 = new Conexion().conectar(BaseDatos))
+                        //{
+                        //    try
+                        //    {
+                        //        cn2.Open();
+                        //        SqlDataAdapter da2 = new SqlDataAdapter("SMC_ListarSolicitudDespachoDetallexIDAprobados", cn2);
+                        //        da2.SelectCommand.Parameters.AddWithValue("@IdSolicitudDespacho", IdSolicitudDespacho);
+                        //        da2.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        //        SqlDataReader dr2 = da2.SelectCommand.ExecuteReader();
+                        //        while (dr2.Read())
+                        //        {
+                        //            filasdetalle++;
+                        //        }
+                        //    }
+                        //    catch (Exception ex)
+                        //    {
+                        //    }
+                        //}
 
-                        oSolicitudDespachoDTO.Detalles = new SolicitudDespachoDetalleDTO[filasdetalle];
+                        //oSolicitudDespachoDTO.Detalles = new SolicitudDespachoDetalleDTO[filasdetalle];
+                        List<SolicitudDespachoDetalleDTO> solicitudDespachoDetalleDTOs = new List<SolicitudDespachoDetalleDTO>();
                         using (SqlConnection cn3 = new Conexion().conectar(BaseDatos))
                         {
                             try
@@ -532,7 +534,7 @@ namespace DAO
                                 da3.SelectCommand.Parameters.AddWithValue("@IdSolicitudDespacho", IdSolicitudDespacho);
                                 da3.SelectCommand.CommandType = CommandType.StoredProcedure;
                                 SqlDataReader drd3 = da3.SelectCommand.ExecuteReader();
-                                Int32 posicion = 0;
+                                //Int32 posicion = 0;
                                 while (drd3.Read())
                                 {
                                     SolicitudDespachoDetalleDTO oSolicitudDespachoDetalleDTO = new SolicitudDespachoDetalleDTO();
@@ -546,10 +548,10 @@ namespace DAO
                                     oSolicitudDespachoDetalleDTO.Cantidad = decimal.Parse(drd3["CantidadAprobada"].ToString());
                                     oSolicitudDespachoDetalleDTO.CantidadAtendida = decimal.Parse(drd3["CantidadAtendida"].ToString());
 
+                                    solicitudDespachoDetalleDTOs.Add(oSolicitudDespachoDetalleDTO);
 
-
-                                    oSolicitudDespachoDTO.Detalles[posicion] = oSolicitudDespachoDetalleDTO;
-                                    posicion = posicion + 1;
+                                    //oSolicitudDespachoDTO.Detalles[posicion] = oSolicitudDespachoDetalleDTO;
+                                    //posicion = posicion + 1;
                                 }
 
                             }
@@ -557,10 +559,67 @@ namespace DAO
                             {
                             }
 
-                            lstSolicitudDespachoDTO.Add(oSolicitudDespachoDTO);
 
                         }
 
+                        oSolicitudDespachoDTO.Detalles = solicitudDespachoDetalleDTOs;
+                        lstSolicitudDespachoDTO.Add(oSolicitudDespachoDTO);
+
+
+
+                    }
+                    drd.Close();
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+
+            return lstSolicitudDespachoDTO;
+        }
+
+        public List<SolicitudDespachoDTO> ObtenerSolicitudesDespachoAtenderFiltro(int IdSociedad, int IdBase, DateTime FechaInicio, DateTime FechaFin, int EstadoSolicitud, int SerieFiltro, string BaseDatos)
+        {
+            List<SolicitudDespachoDTO> lstSolicitudDespachoDTO = new List<SolicitudDespachoDTO>();
+
+
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarSolicitudDespachoCabezeraAprobadas", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
+                    da.SelectCommand.Parameters.AddWithValue("@IdBase", IdBase);
+                    da.SelectCommand.Parameters.AddWithValue("@FechaInicio", FechaInicio);
+                    da.SelectCommand.Parameters.AddWithValue("@FechaFin", FechaFin);
+                    da.SelectCommand.Parameters.AddWithValue("@EstadoSolicitud", EstadoSolicitud);
+                    da.SelectCommand.Parameters.AddWithValue("@SerieFiltro", SerieFiltro);
+
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        SolicitudDespachoDTO oSolicitudDespachoDTO = new SolicitudDespachoDTO();
+                        oSolicitudDespachoDTO.Id = int.Parse(drd["Id"].ToString());
+                        //oSolicitudDespachoDTO.IdSerie = int.Parse(drd["IdSerie"].ToString());
+                        //oSolicitudDespachoDTO.Serie = drd["Serie"].ToString();
+                        //oSolicitudDespachoDTO.Numero = int.Parse(drd["Numero"].ToString());
+                        //oSolicitudDespachoDTO.IdClaseProducto = int.Parse(drd["IdClaseProducto"].ToString());
+                        //oSolicitudDespachoDTO.IdTipoProducto = int.Parse(drd["IdTipoProducto"].ToString());
+                        //oSolicitudDespachoDTO.IdCuadrilla = int.Parse(drd["IdCuadrilla"].ToString());
+                        //oSolicitudDespachoDTO.IdObra = int.Parse(drd["IdObra"].ToString());
+                        //oSolicitudDespachoDTO.IdBase = int.Parse(drd["IdBase"].ToString());
+                        //oSolicitudDespachoDTO.FechaDocumento = Convert.ToDateTime(drd["FechaDocumento"].ToString());
+                        //oSolicitudDespachoDTO.FechaContabilizacion = Convert.ToDateTime(drd["FechaContabilizacion"].ToString());
+                        //oSolicitudDespachoDTO.Comentario = (String.IsNullOrEmpty(drd["Comentario"].ToString()) ? "" : drd["Comentario"].ToString());
+                        //oSolicitudDespachoDTO.NombCuadrilla = drd["NombCuadrilla"].ToString();
+                        oSolicitudDespachoDTO.SerieyNum = drd["SerieyNum"].ToString();
+                        //oSolicitudDespachoDTO.IdSolicitante = int.Parse(drd["IdSolicitante"].ToString());
+                        //oSolicitudDespachoDTO.EstadoSolicitud = int.Parse(drd["EstadoSolicitud"].ToString());
+       
+                        lstSolicitudDespachoDTO.Add(oSolicitudDespachoDTO);
 
 
 

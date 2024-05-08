@@ -179,12 +179,29 @@ namespace ConcyssaWeb.Controllers
                 return "error";
             }
         }
-        public string ObtenerSolicitudesDespachoAtender(int IdBase, DateTime FechaInicio, DateTime FechaFin, int EstadoSolicitud, int SerieFiltro)
+        public string ObtenerSolicitudesDespachoAtender(int IdBase, DateTime FechaInicio, DateTime FechaFin, int EstadoSolicitud, int SerieFiltro, int Paginacion = 0)
         {
             string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             SolicitudDespachoDAO oSolicitudDespachoDAO = new SolicitudDespachoDAO();
-            List<SolicitudDespachoDTO> lstSolicitudDespachoDTO = oSolicitudDespachoDAO.ObtenerSolicitudesDespachoAtender(IdSociedad, IdBase, FechaInicio, FechaFin, EstadoSolicitud, SerieFiltro,BaseDatos);
+            List<SolicitudDespachoDTO> lstSolicitudDespachoDTO = oSolicitudDespachoDAO.ObtenerSolicitudesDespachoAtender(IdSociedad, IdBase, FechaInicio, FechaFin, EstadoSolicitud, SerieFiltro, Paginacion, BaseDatos);
+
+            if (lstSolicitudDespachoDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstSolicitudDespachoDTO);
+            }
+            else
+            {
+                return "error";
+            }
+
+        }
+        public string ObtenerSolicitudesDespachoAtenderFiltro(int IdBase, DateTime FechaInicio, DateTime FechaFin, int EstadoSolicitud, int SerieFiltro)
+        {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            SolicitudDespachoDAO oSolicitudDespachoDAO = new SolicitudDespachoDAO();
+            List<SolicitudDespachoDTO> lstSolicitudDespachoDTO = oSolicitudDespachoDAO.ObtenerSolicitudesDespachoAtenderFiltro(IdSociedad, IdBase, FechaInicio, FechaFin, EstadoSolicitud, SerieFiltro, BaseDatos);
 
             if (lstSolicitudDespachoDTO.Count > 0)
             {
