@@ -137,6 +137,7 @@ function ConsultaServidor() {
                 //'<td>' + movimientos[i].Estado + '</td>' +
 
                 '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + movimientos[i].IdMovimiento + ')"></button>' +
+                '<button class="btn btn-danger fa fa-ban btn-xs" onclick="OcultarTransferencia(' + movimientos[i].IdMovimiento + ')"></button></td>' +
                 '</tr>';
 
 
@@ -1251,3 +1252,51 @@ function LimpiarObra() {
 }
 
 
+function OcultarTransferencia(IdMovimiento) {
+    Swal.fire({
+        title: 'DESEA RECHAZAR ESTA TRANSFERENCIA?',
+        html: "Esta acción no se puede revertir y No se podrá realizar el ingreso </br>",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si Generar!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: "/Movimientos/OcultarTransferenciaPendiente",
+                type: "POST",
+                async: true,
+                data: {
+                    IdMovimiento,
+                },
+                success: function (data) {
+                    if (data > 0) {
+                        ConsultaServidor()
+                        Swal.fire(
+                            'Exito!',
+                            'Se oculto la transferencia!',
+                            'error'
+                        )
+                    }else {
+                        Swal.fire(
+                            'Error!',
+                            'Ocurrio un Error!',
+                            'error'
+                        )
+
+                    }
+
+                }
+            }).fail(function () {
+                Swal.fire(
+                    'Error!',
+                    'Comunicarse con el Area Soporte: smarcode@smartcode.pe !',
+                    'error'
+                )
+            });
+        }
+    })
+
+
+}

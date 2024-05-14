@@ -443,5 +443,33 @@ namespace ConcyssaWeb.Controllers
 
         }
 
+        public int OcultarTransferenciaPendiente(int IdMovimiento)
+        {
+
+            string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            MovimientoDAO oMovimientoDAO = new MovimientoDAO();
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            int respuesta = oMovimientoDAO.OcultarTransPendiente(IdMovimiento, BaseDatos, ref mensaje_error);
+
+            if (mensaje_error.Length > 0)
+            {
+                return 0;
+            }
+            else
+            {
+                if (respuesta > 0)
+                {
+                    return respuesta;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+
+
+        }
+
     }
 }

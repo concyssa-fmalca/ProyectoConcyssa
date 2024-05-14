@@ -340,12 +340,12 @@ function ConsultaServidor() {
                             let IdFila = (i + 1).toString() + j.toString()
 
                             InsertarHTML += ` <tr id="FilaDetalle` + IdFila + `"> 
-                                                    <td><input type="text" style="display:none" value="` + (SolicitudDespacho[i].Detalles[j].Id) + `" id="txtIdSolicitud` + i + `" class="form-control IdDetalleCol` + i + `" style="max-width:60px" >` + (j + 1) + `</td>
+                                                    <td><input type="text" style="display:none" value="` + (SolicitudDespacho[i].Detalles[j].Id) + `" id="txtIdSolicitud` + i + `" class="form-control IdDetalleCol` + i + `" style="max-width:60px" ><p id="txtNumeroRegistro" validadorTable="`+j+`">` + (j + 1) + `</p></td>
                                                     <td class="DescripcionTabla`+ i + `">` + SolicitudDespacho[i].Detalles[j].CodigoArticulo + `-` + SolicitudDespacho[i].Detalles[j].Descripcion + `</td>
                                                     <td class="CantidadPedida`+ i + `">` + SolicitudDespacho[i].Detalles[j].Cantidad + `</td>
                                                     <td>`+ SolicitudDespacho[i].Detalles[j].CantidadAtendida + `</td>
-                                                    <td><input type="text" value="` + SolicitudDespacho[i].Detalles[j].Cantidad + `" id="txtCantidadAtendida` + i + `" onchange="ValidarCantidadNoMayor(` + IdFila + `,` + Saldo + `);VerificarEntregaStock(` + IdFila + `);ObtenerStocks(` + i + `)" class="form-control  EntregarDetalle` + i + ` NoPasarStock` + IdFila + `" style="max-width:60px"></td>
-                                                    <td id="StockDetalle`+ IdFila + `" class="ClassStockDetalle` + i + `">d</td>
+                                                    <td><input type="text" value="` + Saldo + `" id="txtCantidadAtendida` + i + `" onchange="ValidarCantidadNoMayor(` + IdFila + `,` + Saldo +`);  VerificarEntregaStock(` + IdFila + `);ObtenerStocks(` + i + `)" class="form-control  EntregarDetalle` + i + ` NoPasarStock` + IdFila + `" style="max-width:60px"></td>
+                                                    <td id="StockDetalle`+ IdFila + `" numfilastock="`+j+`" class="ClassStockDetalle` + i + `">d</td>
                                                     <td class="PrecioDetalle`+ i + `">Precio</td>
                                                     <td class="TotalDetalle`+ i + `">Total</td>
                                                     <td><button class="btn btn-xs btn-danger fa fa-times" onclick="EliminarFila(`+ IdFila + `,` + i + `)"></button></td>
@@ -466,6 +466,24 @@ function EliminarFila(IdFila, NroTable) {
     HayEliminados++
     $("#Ocultos" + NroTable).val(HayEliminados)
     $("#FilaDetalle" + IdFila).remove();
+
+    let arrayStocks = new Array();
+    $(".txtNumeroRegistro" + Num).each(function (indice, elemento) {
+        arrayStocks.push(+($(elemento).text()));
+    });
+    console.log(arrayStocks)
+    for (var i = 0; i < arrayStocks.length; i++) {
+        if (arrayStocks[i] == 0) {
+            Swal.fire(
+                'Error!',
+                'El Articulo de la Fila N° ' + (i + 1) + ' No cuenta con stock',
+                'error'
+            )
+            return
+        }
+    }
+
+
 }
 function EliminarFilaCreada(IdFila) {
 
@@ -651,14 +669,17 @@ function obtenerStockUnitario() {
 
 function GenerarSalida(Num,IdSolicitud,numserie,cuadrilla) {
     let arrayStocks = new Array();
+    let arratnumfilastock = new Array();
     $(".ClassStockDetalle"+Num).each(function (indice, elemento) {
         arrayStocks.push(+($(elemento).text()));
+        arratnumfilastock.push(+($(elemento).attr("numfilastock")));
     });
+    console.log(arrayStocks)
     for (var i = 0; i < arrayStocks.length; i++) {
         if (arrayStocks[i] == 0) {
             Swal.fire(
                 'Error!',
-                'El Articulo de la Fila N° '+(i+1)+' No cuenta con stock',
+                'El Articulo de la Fila N° ' + ((arratnumfilastock[i])+1)+' No cuenta con stock',
                 'error'
             )
             return
@@ -673,7 +694,7 @@ function GenerarSalida(Num,IdSolicitud,numserie,cuadrilla) {
         if (arrayStocks[j] < arrayCantidadEntregar[j]) {
             Swal.fire(
                 'Error!',
-                'No hay suficiente Stock para el Articulo de la Fila N° ' + (j + 1),
+                'No hay suficiente Stock para el Articulo de la Fila N° ' + ((arratnumfilastock[i]) + 1),
                 'error'
             )
             return
