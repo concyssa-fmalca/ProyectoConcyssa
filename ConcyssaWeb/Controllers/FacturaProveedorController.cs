@@ -7,6 +7,7 @@ using System.Net.Mail;
 using System.Xml;
 using FE;
 using System.Text;
+using System.Web.Helpers;
 
 namespace ConcyssaWeb.Controllers
 {
@@ -243,49 +244,28 @@ namespace ConcyssaWeb.Controllers
             MovimientoDAO oMovimimientoDAO = new MovimientoDAO();
             OpchDAO oOpchDAO = new OpchDAO();
             int respuesta = oMovimimientoDAO.InsertUpdateMovimientoOPCH(oOpchDTO,BaseDatos,ref mensaje_error);
-            int respuesta1 = 0;
+            object json = null;
             if (mensaje_error.Length > 0)
             {
-                return mensaje_error;
-            }
-            if (respuesta > 0)
-            {             
-                if (oOpchDTO.AnexoDetalle!=null)
-                {
-                    for (int i = 0; i < oOpchDTO.AnexoDetalle.Count; i++)
-                    {
-                        oOpchDTO.AnexoDetalle[i].ruta = "/Anexos/" + oOpchDTO.AnexoDetalle[i].NombreArchivo;
-                        oOpchDTO.AnexoDetalle[i].IdSociedad = oOpchDTO.IdSociedad;
-                        oOpchDTO.AnexoDetalle[i].Tabla = "Opch";
-                        oOpchDTO.AnexoDetalle[i].IdTabla = respuesta;
-
-                        oMovimimientoDAO.InsertAnexoMovimiento(oOpchDTO.AnexoDetalle[i],BaseDatos,ref mensaje_error);
-                    }
-                }
-
-            }
-
-            if (mensaje_error.Length > 0)
-            {
-                return mensaje_error;
+                json = new { status = false, mensaje = mensaje_error };
+                return JsonConvert.SerializeObject(json);
             }
             else
             {
-                if (respuesta > 0)      
+                if (respuesta > 0)
                 {
                     string tabla = oOpchDTO.TablaOrigen;
                     int tipo = oOpchDTO.IdTipoDocumento;
-                    if (tabla != "Entrega" && tipo == 18 )
+                    if (tabla != "Entrega" && tipo == 18)
                     {
                         enviarCorreo(respuesta);
                     }
-                  
-                    return respuesta.ToString();
                 }
-                else
-                {
-                    return respuesta.ToString();
-                }
+
+
+                json = new { status = true, mensaje = mensaje_error, Id = respuesta, };
+                return JsonConvert.SerializeObject(json);
+
             }
         }
 
@@ -322,31 +302,15 @@ namespace ConcyssaWeb.Controllers
             MovimientoDAO oMovimimientoDAO = new MovimientoDAO();
             OpchDAO oOpchDAO = new OpchDAO();
             int respuesta = oMovimimientoDAO.InsertUpdateMovimientoOPCH(oOpchDTO, BaseDatos, ref mensaje_error);
-            int respuesta1 = 0;
-            if (mensaje_error.Length > 0)
-            {
-                return mensaje_error;
-            }
-            if (respuesta > 0)
-            {
-                if (oOpchDTO.AnexoDetalle != null)
-                {
-                    for (int i = 0; i < oOpchDTO.AnexoDetalle.Count; i++)
-                    {
-                        oOpchDTO.AnexoDetalle[i].ruta = "/Anexos/" + oOpchDTO.AnexoDetalle[i].NombreArchivo;
-                        oOpchDTO.AnexoDetalle[i].IdSociedad = oOpchDTO.IdSociedad;
-                        oOpchDTO.AnexoDetalle[i].Tabla = "Opch";
-                        oOpchDTO.AnexoDetalle[i].IdTabla = respuesta;
+            object json = null;
 
-                        oMovimimientoDAO.InsertAnexoMovimiento(oOpchDTO.AnexoDetalle[i], BaseDatos, ref mensaje_error);
-                    }
-                }
 
-            }
+
 
             if (mensaje_error.Length > 0)
             {
-                return mensaje_error;
+                json = new { status = false, mensaje = mensaje_error };
+                return JsonConvert.SerializeObject(json);
             }
             else
             {
@@ -358,13 +322,12 @@ namespace ConcyssaWeb.Controllers
                     {
                         enviarCorreo(respuesta);
                     }
+                }
 
-                    return respuesta.ToString();
-                }
-                else
-                {
-                    return respuesta.ToString();
-                }
+
+                json = new { status = true, mensaje = mensaje_error,Id = respuesta, };
+                return JsonConvert.SerializeObject(json);
+
             }
         }
 
@@ -817,16 +780,22 @@ namespace ConcyssaWeb.Controllers
                 string RUC = lstProveedorDTO[0].NumeroDocumento;
                 string Serie = oOpchDTO.NumSerieTipoDocumentoRef.Split('-')[0];
                 string Numero = oOpchDTO.NumSerieTipoDocumentoRef.Split('-')[1];
+                if (Numero == "00003838")
+                {
+                    var a = "a";
+                }
+
                 DateTime FechaEmision = oOpchDTO.FechaDocumento;
                 string NumDocAdquiriente = sociedad[0].Ruc;
                 string TotalDocumento = oOpchDTO.Total.ToString("N2");
                 string TipoDoc = lstTiposDocumentosDTO[0].CodSunat;
 
 
-                string SunatID = "0a0af984-ae1e-47b3-a200-edc706a14fa0";
-                string SunatClave = "N61pn1uXKGoQZahHzp7B0Q==";
+                //string SunatID = "0a0af984-ae1e-47b3-a200-edc706a14fa0";
+                //string SunatClave = "N61pn1uXKGoQZahHzp7B0Q==";
 
-
+                string SunatID = "7fc36f81-0f5a-4813-a736-4c5bbe84c016";
+                string SunatClave = "yiFZbzzMmNMqVX8EMc98ag==";
 
 
                 ResponseDocumentoConsultaDTO reponseDocumento = new ResponseDocumentoConsultaDTO();
@@ -949,6 +918,12 @@ namespace ConcyssaWeb.Controllers
             documento.codComp = TipoDoc;
             documento.numeroSerie = Serie;
             documento.numero = Numero.ToString().TrimStart('0');
+
+            if (documento.numero == "0003838")
+            {
+                var a = "a";
+            }
+
             documento.fechaEmision = FechaEmision.ToString("dd/MM/yyyy");
             documento.monto = Convert.ToDecimal(TotalDocumento);
             _reponseDocumento = consultarCPESUNAT(NumDocAdquiriente, tokenSUNAT, documento);
@@ -1057,7 +1032,7 @@ namespace ConcyssaWeb.Controllers
             {
                 if (lstOpchDTO[i].IdTipoDocumentoRef==2 || lstOpchDTO[i].IdTipoDocumentoRef == 12 || lstOpchDTO[i].IdTipoDocumentoRef == 13 )
                 {
-                    if(lstOpchDTO[i].ValidadoSUNAT != 1)
+                    if(lstOpchDTO[i].ValidadoSUNAT == 0 || lstOpchDTO[i].ValidadoSUNAT == 2)
                     {
                         PendientesValidar.Add(lstOpchDTO[i]);
                     }
@@ -1160,7 +1135,7 @@ namespace ConcyssaWeb.Controllers
             return "";
         }
 
-        public string GenerarReporteFacturaServicioObra(string NombreReporte,DateTime FechaInicio,DateTime FechaFin, string Formato,int IdObra, int IdProveedor, string BaseDatos)
+        public string GenerarReporteFacturaServicioObra(string NombreReporte,DateTime FechaInicio,DateTime FechaFin, string Formato,int IdObra, int IdProveedor,int IdArticulo, string BaseDatos)
         {
             if (BaseDatos == "" || BaseDatos == null)
             {
@@ -1178,8 +1153,10 @@ namespace ConcyssaWeb.Controllers
 
             try
             {
-                string strNew = "Formato="  +Formato+"&IdObra=" + IdObra + "&IdProveedor=" + IdProveedor + "&BaseDatos=" + BaseDatos + "&NombreReporte=" + NombreReporte + "&FechaInicio=" + FechaInicio + "&FechaFin=" + FechaFin;
+               string strNew = "Formato="  +Formato+"&IdObra=" + IdObra + "&IdProveedor=" + IdProveedor + "&BaseDatos=" + BaseDatos + "&NombreReporte=" + NombreReporte + "&FechaInicio=" + FechaInicio + "&FechaFin=" + FechaFin+"&IdServicio="+IdArticulo;
+               // string strNew = "Formato="  +Formato+"&IdObra=" + IdObra + "&IdProveedor=" + IdProveedor + "&BaseDatos=" + BaseDatos + "&NombreReporte=" + NombreReporte + "&FechaInicio=" + FechaInicio + "&FechaFin=" + FechaFin;
                 cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ReporteFacturaServicioObra";
+                //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ReporteFacturaServicioObra";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
                 request = (HttpWebRequest)WebRequest.Create(uri);
 

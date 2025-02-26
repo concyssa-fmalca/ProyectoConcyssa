@@ -314,7 +314,9 @@ window.onload = function () {
     $("#txtFechaFin").val(getCurrentDateFinal())
     getDecimales();
     CargarBaseFiltro()
-    $("#IdResponsable").select2()
+    $("#IdResponsable").select2({
+        dropdownParent: $("#modal-form")
+    })
     //ObtenerConfiguracionDecimales();
     var url = "../Movimientos/ObtenerMovimientosIngresos";
 
@@ -416,7 +418,7 @@ window.onload = function () {
         });
     });
     $("#cboAgregarArticulo").select2({
-        dropdownParent: $("#ModalItem")
+        dropdownParent: $("#modal-form")
     })
 };
 
@@ -547,7 +549,9 @@ function ModalNuevo() {
 
     $("#file").val("");
 
-    $("#IdCuadrilla").select2();
+    $("#IdCuadrilla").select2({
+        dropdownParent: $("#modal-form")
+    });
 
     validarseriescontable();
 
@@ -1287,10 +1291,9 @@ function llenarComboTipoDocumentoOperacion(lista, idCombo, primerItem) {
     for (var i = 0; i < nRegistros; i++) {
 
         if (lista.length > 0) {
-            if (lista[i].CodeExt == "59") {
+            if (lista[i].IdTipoDocumento == "330" || lista[i].IdTipoDocumento == "331" || lista[i].IdTipoDocumento == "335" || lista[i].IdTipoDocumento == "1342" || lista[i].IdTipoDocumento == "1343") {
                 contenido += "<option value='" + lista[i].IdTipoDocumento + "'>" + lista[i].Descripcion + "</option>";
-
-            }
+           }
         }
         else { }
     }
@@ -1614,6 +1617,13 @@ function GuardarSolicitud() {
         return
     }
 
+    let validarFechaDoc = $("#txtFechaDocumento").val()
+    if (validarFechaDoc.split('-')[0] < 2024) {
+        Swal.fire("Error!", "Fecha Documento no Valida", "error")
+        return   
+    }
+
+
 
     $.ajax({
         url: "UpdateInsertMovimientoDesdeString",
@@ -1678,7 +1688,9 @@ function GuardarSolicitud() {
             });
         },
         success: function (data) {
-            if (data > 0) {
+
+            let datos = JSON.parse(data)
+            if (datos.status) {
                 Swal.fire(
                     'Correcto',
                     'Proceso Realizado Correctamente',
@@ -1686,7 +1698,7 @@ function GuardarSolicitud() {
                 )
                 //swal("Exito!", "Proceso Realizado Correctamente", "success")
                 CerrarModal();
-                ObtenerDatosxID(data);
+                ObtenerDatosxID(datos.id);
 
                 listarIngresosDT();
 
@@ -1694,7 +1706,7 @@ function GuardarSolicitud() {
             } else {
                 Swal.fire(
                     'Error!',
-                    'Ocurrio un Error!',
+                    'Ocurrio un Error!'+datos.mensaje,
                     'error'
                 )
 
@@ -2944,63 +2956,64 @@ function GenerarReporte(id) {
 
 function listarIngresosDT() {
     let varIdBaseFiltro = $("#cboObraFiltro").val()
+
     tableingresos = $('#table_id').dataTable({
-        language: lenguaje_data,
-        responsive: true,
-        ajax: {
-            url: '../Movimientos/ObtenerMovimientosIngresosDT',
-            type: 'POST',
-            data: {
-                'IdBase': varIdBaseFiltro,
-                'FechaInicial': $("#txtFechaInicio").val(),
-                'FechaFinal': $("#txtFechaFin").val(),
-                pagination: {
-                    perpage: 50,
-                },
-            },
+        "processing": true,
+        "serverSide": true,
+        //"searchDelay": 500,
+        "language": lenguaje_data,
+        //responsive: true,
+        search: {
+            return: true
         },
-
-        columnDefs: [
-            // {"className": "text-center", "targets": "_all"},
-            {
-                data: null,
-                targets: -1,
-                orderable: false,
-                render: function (data, type, full, meta) {
-                    return `<button class= "btn btn-primary fa fa-pencil btn-xs" onclick = "ObtenerDatosxID(` + full.IdMovimiento + `)"></button>`
-                        //<button class="btn btn-primary btn-xs" onclick="GenerarReporte(` + full.IdMovimiento + `)">R</button>`
-
-                },
+        ajax: {
+            type: 'POST',
+            url: '../Movimientos/ObtenerMovimientosIngresosDTDataTable',
+            data: function (dtParms) {
+                //enviamos al servidor
+                return {
+                    'ClientParameters': JSON.stringify(dtParms),
+                    'IdBase': varIdBaseFiltro,
+                    'FechaInicial': $("#txtFechaInicio").val(),
+                    'FechaFinal': $("#txtFechaFin").val(),
+                };
             },
+            dataFilter: function (res) {
+
+                //recibimos del servidor
+                var parsed = JSON.parse(res);
+                console.log(parsed);
+                //var parsed = JSON.parse(res);
+                return JSON.stringify(parsed);
+            },
+            error: function (x, y) {
+                console.log(x);
+            }
+        },
+        "filter": true,
+        columns: [
+          
             {
-                data: null,
-                targets: 0,
-                orderable: false,
-                render: function (data, type, full, meta) {
+                "data": null,
+                "render": function (data, type, full, meta) {
                     return meta.row + 1
-                },
+                }
             },
             {
-                data: null,
-                targets: 1,
-                orderable: false,
-                render: function (data, type, full, meta) {
+                "data": null,              
+                "render": function (data, type, full, meta) {
                     return full.FechaDocumento.split('T')[0]
                 },
             },
             {
-                data: null,
-                targets: 2,
-                orderable: false,
-                render: function (data, type, full, meta) {
+                "data": null,
+                "render": function (data, type, full, meta) {
                     return full.NombUsuario
                 },
             },
             {
-                data: null,
-                targets: 3,
-                orderable: false,
-                render: function (data, type, full, meta) {
+                "data": null,
+                "render": function (data, type, full, meta) {
                     if (full.IdDocExtorno == 1) {
                         return '<p style="color:red">' + full.NombTipoDocumentoOperacion +'</p>'
                     } else {
@@ -3009,95 +3022,241 @@ function listarIngresosDT() {
                 },
             },
             {
-                data: null,
-                targets: 4,
-                orderable: false,                          
-                render: function (data, type, full, meta) {
-                    return '<u style="color:blue;cursor:pointer" onclick="GenerarReporte(' + full.IdMovimiento + ')">'+full.NombSerie.toUpperCase() + '-' + full.Correlativo+'</u>' 
-                },             
+                "data": null,
+                "render": function (data, type, full, meta) {
+                    return '<u style="color:blue;cursor:pointer" onclick="GenerarReporte(' + full.IdMovimiento + ')">'+full.NombSerie.toUpperCase() + '-' + full.Correlativo+'</u>'
+                },
             },
             {
-                data: null,
-                targets: 5,
-                orderable: false,
-                render: function (data, type, full, meta) {
-                    if (full.EsDevolucionAdm == 0) {
+                "data": null,
+                "render": function (data, type, full, meta) {
+                   /* if (full.EsDevolucionAdm == 0) {*/
                         return full.TDocumento.toUpperCase();
-                    } else {
-                        return "APP MOVIL";
-                    }
+                    //} else {
+                    //    return "APP MOVIL";
+                    //}
 
                 },
             },
             {
-                data: null,
-                targets: 6,
-                orderable: false,
-                render: function (data, type, full, meta) {
-                    let SeriREF = "-"
-                    let datosext
-                    if (full.IdDocExtorno == 1) {
-                        $.post("/Movimientos/ValidarExtorno", { 'IdMovimiento': full.IdMovimiento }, function (data, status) {
-
-                            datosext = data.split("|");
-                            console.log(datosext);
-                        });
-
-                        SeriREF = "Extornado con Doc N°: " + datosext[1]
-                    }
-
-                    else {
-                        if (full.NumSerieTipoDocumentoRef) SeriREF = full.NumSerieTipoDocumentoRef.toUpperCase()
-                    }
-                    return SeriREF
+                "data": null,
+                "render": function (data, type, full, meta) {
+                    return full.NumSerieTipoDocumentoRef
                 },
             },
             {
-                data: null,
-                targets: 7,
-                orderable: false,
-                render: function (data, type, full, meta) {
+                "data": null,
+                "render": function (data, type, full, meta) {
                     return full.NombMoneda
                 },
             },
             {
-                data: null,
-                targets: 8,
-                orderable: false,
-                render: function (data, type, full, meta) {
+                "data": null,
+                "render": function (data, type, full, meta) {
                     return formatNumber(full.Total)
                 },
             },
-       
+
             {
-                data: null,
-                targets: 9,
-                orderable: false,
-                render: function (data, type, full, meta) {
+                "data": null,
+                "render": function (data, type, full, meta) {
+                    return full.CodigoCuadrilla
+                },
+            },
+            {
+                "data": null,
+                "render": function (data, type, full, meta) {
                     return full.NombObra
                 },
             },
             {
-                data: null,
-                targets: 10,
-                orderable: false,
-                render: function (data, type, full, meta) {
+                "data": null,
+                "render": function (data, type, full, meta) {
                     return full.NombAlmacen
                 },
             },
             {
-                data: null,
-                targets: 11,
-                orderable: false,
-                render: function (data, type, full, meta) {
+                "data": null,
+                "render": function (data, type, full, meta) {
                     return full.NroRef
                 },
-            }
+            } , {
+                "data": null,
+                "render": function (data, type, full, meta) {
+                    return `<button class= "btn btn-primary fa fa-pencil btn-xs" onclick = "ObtenerDatosxID(` + full.IdMovimiento + `)"></button>`
+                    //<button class="btn btn-primary btn-xs" onclick="GenerarReporte(` + full.IdMovimiento + `)">R</button>`
+
+                },
+            },
 
 
         ],
         "bDestroy": true
-    }).DataTable();
+    });
+
+
+    //tableingresos = $('#table_id').dataTable({
+    //    language: lenguaje_data,
+    //    responsive: true,
+    //    ajax: {
+    //        url: '../Movimientos/ObtenerMovimientosIngresosDT',
+    //        type: 'POST',
+    //        data: {
+    //            'IdBase': varIdBaseFiltro,
+    //            'FechaInicial': $("#txtFechaInicio").val(),
+    //            'FechaFinal': $("#txtFechaFin").val(),
+    //            pagination: {
+    //                perpage: 50,
+    //            },
+    //        },
+    //    },
+
+    //    columnDefs: [
+    //        // {"className": "text-center", "targets": "_all"},
+    //        {
+    //            data: null,
+    //            targets: -1,
+    //            orderable: false,
+    //            render: function (data, type, full, meta) {
+    //                return `<button class= "btn btn-primary fa fa-pencil btn-xs" onclick = "ObtenerDatosxID(` + full.IdMovimiento + `)"></button>`
+    //                    //<button class="btn btn-primary btn-xs" onclick="GenerarReporte(` + full.IdMovimiento + `)">R</button>`
+
+    //            },
+    //        },
+    //        {
+    //            data: null,
+    //            targets: 0,
+    //            orderable: false,
+    //            render: function (data, type, full, meta) {
+    //                return meta.row + 1
+    //            },
+    //        },
+    //        {
+    //            data: null,
+    //            targets: 1,
+    //            orderable: false,
+    //            render: function (data, type, full, meta) {
+    //                return full.FechaDocumento.split('T')[0]
+    //            },
+    //        },
+    //        {
+    //            data: null,
+    //            targets: 2,
+    //            orderable: false,
+    //            render: function (data, type, full, meta) {
+    //                return full.NombUsuario
+    //            },
+    //        },
+    //        {
+    //            data: null,
+    //            targets: 3,
+    //            orderable: false,
+    //            render: function (data, type, full, meta) {
+    //                if (full.IdDocExtorno == 1) {
+    //                    return '<p style="color:red">' + full.NombTipoDocumentoOperacion +'</p>'
+    //                } else {
+    //                 return full.NombTipoDocumentoOperacion
+    //                }
+    //            },
+    //        },
+    //        {
+    //            data: null,
+    //            targets: 4,
+    //            orderable: false,                          
+    //            render: function (data, type, full, meta) {
+    //                return '<u style="color:blue;cursor:pointer" onclick="GenerarReporte(' + full.IdMovimiento + ')">'+full.NombSerie.toUpperCase() + '-' + full.Correlativo+'</u>' 
+    //            },             
+    //        },
+    //        {
+    //            data: null,
+    //            targets: 5,
+    //            orderable: false,
+    //            render: function (data, type, full, meta) {
+    //                if (full.EsDevolucionAdm == 0) {
+    //                    return full.TDocumento.toUpperCase();
+    //                } else {
+    //                    return "APP MOVIL";
+    //                }
+
+    //            },
+    //        },
+    //        {
+    //            data: null,
+    //            targets: 6,
+    //            orderable: false,
+    //            render: function (data, type, full, meta) {
+    //                let SeriREF = "-"
+    //                let datosext
+    //                if (full.IdDocExtorno == 1) {
+    //                    $.post("/Movimientos/ValidarExtorno", { 'IdMovimiento': full.IdMovimiento }, function (data, status) {
+
+    //                        datosext = data.split("|");
+    //                        console.log(datosext);
+    //                    });
+
+    //                    SeriREF = "Extornado con Doc N°: " + datosext[1]
+    //                }
+
+    //                else {
+    //                    if (full.NumSerieTipoDocumentoRef) SeriREF = full.NumSerieTipoDocumentoRef.toUpperCase()
+    //                }
+    //                return SeriREF
+    //            },
+    //        },
+    //        {
+    //            data: null,
+    //            targets: 7,
+    //            orderable: false,
+    //            render: function (data, type, full, meta) {
+    //                return full.NombMoneda
+    //            },
+    //        },
+    //        {
+    //            data: null,
+    //            targets: 8,
+    //            orderable: false,
+    //            render: function (data, type, full, meta) {
+    //                return formatNumber(full.Total)
+    //            },
+    //        },
+       
+    //        {
+    //            data: null,
+    //            targets: 9,
+    //            orderable: false,
+    //            render: function (data, type, full, meta) {
+    //                return full.CodigoCuadrilla 
+    //            },
+    //        },
+    //        {
+    //            data: null,
+    //            targets: 10,
+    //            orderable: false,
+    //            render: function (data, type, full, meta) {
+    //                return full.NombObra
+    //            },
+    //        },
+    //        {
+    //            data: null,
+    //            targets: 11,
+    //            orderable: false,
+    //            render: function (data, type, full, meta) {
+    //                return full.NombAlmacen
+    //            },
+    //        },
+    //        {
+    //            data: null,
+    //            targets: 12,
+    //            orderable: false,
+    //            render: function (data, type, full, meta) {
+    //                return full.NroRef
+    //            },
+    //        }
+
+
+    //    ],
+    //    "bDestroy": true
+    /*}).DataTable();*/
 }
 
 
@@ -3117,7 +3276,7 @@ function ObtenerCapataz() {
         $.post("/Empleado/ObtenerCapatazXCuadrilla", { 'IdCuadrilla': IdCuadrilla }, function (data, status) {
             try {
                 let capataz = JSON.parse(data);
-                $("#IdResponsable").select2("val", capataz[0].IdEmpleado);
+                $("#IdResponsable").val(capataz[0].IdEmpleado).change();
             } catch (e) {
 
             }
@@ -3552,7 +3711,7 @@ function BuscarItemsExp() {
     $("#cboAgregarArticulo").select2({
         language: "es",
         width: '100%',
-
+        dropdownParent: $("#modal-form"),
         //theme: "classic",
         async: false,
         ajax: {

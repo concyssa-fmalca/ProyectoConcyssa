@@ -63,6 +63,8 @@ namespace DTO
         public string ConformidadPedido { get; set; }
         public int IdPedido { get; set; }
         public string TipoServicio { get; set; }
+        public string CodCuadrilla { get; set; }
+        public string CorreoAlmacen { get; set; }
 
     }
 }

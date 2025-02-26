@@ -4,6 +4,7 @@ using FE;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Security.Policy;
+using static ConcyssaWeb.Controllers.SolicitudDespachoController;
 
 namespace ConcyssaWeb.Controllers
 {
@@ -121,6 +122,39 @@ namespace ConcyssaWeb.Controllers
                 return mensaje_error;
             }
         }
+
+        public string ObtenerMovimientosSalidaDataTable(string ClientParameters,int IdBase, DateTime FechaInicial, DateTime FechaFinal, int Estado = 3, string OpRef = "")
+        {
+            string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            MovimientoDAO oMovimientoDAO = new MovimientoDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+
+            DataTableParameter dtp = JsonConvert.DeserializeObject<DataTableParameter>(ClientParameters);
+
+            object json = null;
+
+
+            List<MovimientoDTO> oMovimientoDTO = oMovimientoDAO.ObtenerMovimientosSalidaDataTable(dtp.start, dtp.length, dtp.search.value, IdBase, IdSociedad, BaseDatos, FechaInicial, FechaFinal, ref mensaje_error, Estado, IdUsuario, OpRef);
+
+            for (int i = 0; i < oMovimientoDTO.Count; i++)
+            {
+                if (oMovimientoDTO[i].IdDocExtorno == 1)
+                {
+                    string rpta = ValidarExtorno(oMovimientoDTO[i].IdMovimiento);
+                    oMovimientoDTO[i].NumSerieTipoDocumentoRef = "Extornado con Doc N°: " + rpta.Split('|')[1];
+                }
+            }
+
+
+            int Cantidad = oMovimientoDAO.ObtenerMovimientosSalidaTotal(dtp.search.value, IdBase, IdSociedad, BaseDatos, FechaInicial, FechaFinal, ref mensaje_error, Estado, IdUsuario, OpRef);
+
+            json = new { draw = dtp.draw, recordsFiltered = Cantidad, recordsTotal = Cantidad, data = oMovimientoDTO };
+
+            return JsonConvert.SerializeObject(json);
+        }
+
 
 
         public ResultadoGRDTO GenerarPDF(int IdMovimiento)
@@ -336,6 +370,40 @@ namespace ConcyssaWeb.Controllers
             {
                 return mensaje_error;
             }
+        }
+
+        public string ObtenerMovimientosIngresosDTDataTable(string ClientParameters,int IdBase, DateTime FechaInicial, DateTime FechaFinal, int Estado = 3)
+        {
+            string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            MovimientoDAO oMovimientoDAO = new MovimientoDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+
+            DataTableParameter dtp = JsonConvert.DeserializeObject<DataTableParameter>(ClientParameters);
+            object json = null;
+
+
+
+            List<MovimientoDTO> oMovimientoDTO = oMovimientoDAO.ObtenerMovimientosIngresosDataTable(dtp.start, dtp.length, dtp.search.value,IdBase, IdSociedad, FechaInicial, FechaFinal, BaseDatos, ref mensaje_error, Estado, IdUsuario);
+
+            for (int i = 0; i < oMovimientoDTO.Count; i++)
+            {
+                if (oMovimientoDTO[i].IdDocExtorno == 1)
+                {
+                    string rpta = ValidarExtorno(oMovimientoDTO[i].IdMovimiento);
+                    oMovimientoDTO[i].NumSerieTipoDocumentoRef = "Extornado con Doc N°: " + rpta.Split('|')[1];
+                }
+            }
+            
+            
+            int Cantidad = oMovimientoDAO.ObtenerMovimientosIngresosTotales(dtp.search.value,IdBase, IdSociedad, FechaInicial, FechaFinal, BaseDatos, ref mensaje_error, Estado, IdUsuario);
+
+            json = new { draw = dtp.draw, recordsFiltered = Cantidad, recordsTotal = Cantidad, data = oMovimientoDTO };
+
+
+            return JsonConvert.SerializeObject(json);
+          
         }
 
 

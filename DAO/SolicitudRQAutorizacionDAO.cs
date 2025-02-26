@@ -2,6 +2,7 @@
 using DTO;
 using System.Data;
 using System.Data.SqlClient;
+using System.Security.Cryptography;
 using System.Transactions;
 
 namespace DAO
@@ -128,7 +129,7 @@ namespace DAO
 
 
         
-        public List<DetalleSolicitudRqAprobacionDTO> ObtenerSolicitudesxAutorizarDetalle(string IdUsuario, string IdSociedad, string FechaInicio, string FechaFinal, int Estado,int IdObra, string BaseDatos)
+        public List<DetalleSolicitudRqAprobacionDTO> ObtenerSolicitudesxAutorizarDetalle(string IdUsuario, string IdSociedad, string FechaInicio, string FechaFinal, int Estado,int IdObra, string BaseDatos, ref string mensaje_error)
         {
             List<DetalleSolicitudRqAprobacionDTO> lstDetalleSolicitudRqAprobacionDTO = new List<DetalleSolicitudRqAprobacionDTO>();
             using (SqlConnection cn = new Conexion().conectar(BaseDatos))
@@ -137,13 +138,12 @@ namespace DAO
                 {
                     int aprobar = 0;
                     cn.Open();
-                    //SqlDataAdapter da = new SqlDataAdapter("SMC_ListarSolicitudesxAutorizar", cn);
+
                     SqlDataAdapter da = new SqlDataAdapter("SMC_ListarPedidosDetalleAutorizar", cn);
                     da.SelectCommand.Parameters.AddWithValue("@IdUsuario", int.Parse(IdUsuario));
                     da.SelectCommand.Parameters.AddWithValue("@IdSociedad", int.Parse(IdSociedad));
                     da.SelectCommand.Parameters.AddWithValue("@FechaInicio", FechaInicio);
                     da.SelectCommand.Parameters.AddWithValue("@FechaFinal", FechaFinal);
-                    //da.SelectCommand.Parameters.AddWithValue("@Estado", Estado);
                     da.SelectCommand.Parameters.AddWithValue("@EstadoPR", Estado);
                     da.SelectCommand.Parameters.AddWithValue("@IdObra", IdObra);
 
@@ -152,15 +152,13 @@ namespace DAO
                     while (drd.Read())
                     {
                         aprobar = 0;
-                        aprobar = ValidarSipuedeAprobarDetalle(Convert.ToInt32(drd["IdSolicitud"].ToString()), Convert.ToInt32(drd["IdEtapa"].ToString()), Convert.ToInt32(drd["IdSolicitudRQDetalle"].ToString()),BaseDatos);
-                        if (aprobar==1)
+                        aprobar = ValidarSipuedeAprobarDetalle(Convert.ToInt32(drd["IdSolicitud"].ToString()), Convert.ToInt32(drd["IdEtapa"].ToString()), Convert.ToInt32(drd["IdSolicitudRQDetalle"].ToString()), BaseDatos);
+                        if (aprobar == 1)
                         {
                             DetalleSolicitudRqAprobacionDTO oDetalleSolicitudRqAprobacionDTO = new DetalleSolicitudRqAprobacionDTO();
                             oDetalleSolicitudRqAprobacionDTO.IdArticulo = Convert.ToInt32(drd["IdArticulo"].ToString());
                             oDetalleSolicitudRqAprobacionDTO.PrecioInfo = Convert.ToDecimal(drd["PrecioInfo"].ToString());
                             oDetalleSolicitudRqAprobacionDTO.IdSolicitud = Convert.ToInt32(drd["IdSolicitud"].ToString());
-                            oDetalleSolicitudRqAprobacionDTO.NumeroPedido = (drd["Numero"].ToString());
-
                             oDetalleSolicitudRqAprobacionDTO.NumeroPedido = (drd["Numero"].ToString());
                             oDetalleSolicitudRqAprobacionDTO.ObraDescripcion = (drd["ObraDescripcion"].ToString());
                             oDetalleSolicitudRqAprobacionDTO.TipoProducto = (drd["TipoProducto"].ToString());
@@ -182,7 +180,7 @@ namespace DAO
 
                             lstDetalleSolicitudRqAprobacionDTO.Add(oDetalleSolicitudRqAprobacionDTO);
                         }
-                       
+
                     }
                     drd.Close();
 
@@ -190,6 +188,7 @@ namespace DAO
                 }
                 catch (Exception ex)
                 {
+                    mensaje_error = ex.Message.ToString();
                 }
             }
             return lstDetalleSolicitudRqAprobacionDTO;

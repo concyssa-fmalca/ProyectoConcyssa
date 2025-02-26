@@ -40,11 +40,22 @@
                 <label class="col-sm-1" for="cboObraFiltro">Almacén</label>
                 <div class="col-sm-3">
                     <select class="form-control" id="cboAlmacenFiltro"></select>
+                </div>            
+            </div>
+            <input style="display:none" type="text" id="txtIdPerfil"  value="@Accessor.HttpContext.Session.GetInt32("IdPerfil").ToString()"/>
+            <div class="col-xs-12 right">
+                <label class="col-sm-1" for="cboTipoArticulo">Tipo Articulo</label>
+                <div class="col-sm-3">
+                    <select class="form-control" id="cboTipoArticulo">
+                        <option value="0">TODOS</option>
+                        <option value="1">MATERIALES</option>
+                        <option value="2">AUXILIARES</option>
+                    </select>
                 </div>
                 <button class="btn btn-xs btn-primary res" style="margin-top:3px;border-radius:5px;margin-left:0" onclick="ObtenerStockxAlmacen()">Buscar</button>
                 <button class="btn btn-xs btn-success" style="margin-top:3px;border-radius:5px;margin-left:0;background-color:green" onclick="ImportarExcel()">Exportar  Excel</button>
             </div>
-            <input style="display:none" type="text" id="txtIdPerfil"  value="@Accessor.HttpContext.Session.GetInt32("IdPerfil").ToString()"/>
+            <input style="display:none" type="text" id="txtIdPerfil" value="@Accessor.HttpContext.Session.GetInt32("IdPerfil").ToString()" />
 
         </div>
 

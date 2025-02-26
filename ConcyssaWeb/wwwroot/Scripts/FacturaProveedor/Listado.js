@@ -274,7 +274,10 @@ function llenarComboProveedor(lista, idCombo, primerItem) {
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
-    $("#idCombo").select2();
+    $("#IdProveedor").select2({
+        dropdownParent: $("#modal-form")
+    });
+    //$("#idCombo").select2();
 }
 
 function CargarCondicionPago() {
@@ -320,7 +323,12 @@ function llenarTiposDocumentos(lista, idCombo, primerItem) {
     var campos;
     for (var i = 0; i < nRegistros; i++) {
 
-        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdTipoDocumento + "'>" + lista[i].Descripcion.toUpperCase() + "</option>"; }
+        if (lista.length > 0) {
+            if (lista[i].IdTipoDocumento != 13) {
+                contenido += "<option value='" + lista[i].IdTipoDocumento + "'>" + lista[i].Descripcion.toUpperCase() + "</option>";
+
+            }
+        }
         else { }
     }
     var cbo = document.getElementById(idCombo);
@@ -503,9 +511,13 @@ window.onload = function () {
     ObtenerConfiguracionDecimales();
     CargarBaseFiltro()
     var url = "../Movimientos/ObtenerMovimientosIngresos";
-    $("#IdResponsable").select2();
+    $("#IdResponsable").select2({
+        dropdownParent: $("#ModalItem .modal-content")
+    });
     ObtenerConfiguracionDecimales();
-    $("#IdCuadrilla").select2()
+    $("#IdCuadrilla").select2({
+        dropdownParent: $("#ModalItem .modal-content")
+    })
 
     DecimalesCantidades = GDecimalesCantidades;
     DecimalesImportes = GDecimalesImportes;
@@ -515,7 +527,7 @@ window.onload = function () {
 
     //KeyPressNumber($("#txtRedondeo"));
 
-    $("#IdProveedor").select2();
+    //$("#IdProveedor").select2();
 
     $("#SubirAnexos").on("submit", function (e) {
         e.preventDefault();
@@ -1113,10 +1125,16 @@ function AgregarLinea() {
         }
         llenarComboCuadrilla(DatosCuadrilla, "cboCuadrillaTablaId" + contador, "Seleccione")
         llenarComboEmpleados(DatosEmpleados, "cboResponsableTablaId" + contador, "Seleccione")
-        $(".cboCuadrillaTabla").select2()
-        $(".cboResponsableTabla").select2()
-        $("#cboCuadrillaTablaId").val($("#IdCuadrilla").val()).change()
-        $("#cboResponsableTablaId").val($("#IdResponsable").val()).change()
+        $(".cboCuadrillaTabla").select2({
+            dropdownParent: $("#modal-form")
+        })
+        $(".cboResponsableTabla").select2({
+            dropdownParent: $("#modal-form")
+        })
+        if ($("#cboClaseArticulo").val() == 2) {
+            $("#cboCuadrillaTablaId" + contador).val($("#IdCuadrilla").val()).change()
+        }
+        //$("#cboResponsableTablaId" + contador).val($("#IdResponsable").val()).change()
     }
     changeTipoDocumento()
 }
@@ -1919,6 +1937,14 @@ function GuardarSolicitud() {
         //Validar Items de Otra Tabla
 
 
+        for (var i = 0; i < arrayCantidadNecesaria.length; i++) {
+            if (arrayCantidadNecesaria[i] <= 0) {
+                Swal.fire("Error", "No puede ingresar Items con Cantidad 0", "error")
+                return;
+            }
+        }
+
+
         let detalles = [];
         if (arrayIdArticulo.length == arrayIdUnidadMedida.length && arrayCantidadNecesaria.length == arrayPrecioInfo.length) {
 
@@ -2039,8 +2065,11 @@ function GuardarSolicitud() {
                 });
             },
             success: function (data) {
-                if (data > 0) {
-                    let IdOpch = data;
+
+                let datos = JSON.parse(data);
+
+                if (datos.status) {
+                    let IdOpch = datos.Id;
                     $.post("ObtenerSerieOPCH", { 'IdOPCH': IdOpch }, function (data, status) {
                         Swal.fire(
                             'Correcto',
@@ -2068,32 +2097,10 @@ function GuardarSolicitud() {
                     });
                    
 
-                } else if (data == -1) {
+                }else {
                     Swal.fire(
                         'Error!',
-                        'Ocurrio un Error al Grabar La Factura!',
-                        'error'
-                    )
-
-                } else if (data == -2 || data == -3) {
-                    Swal.fire(
-                        'Error!',
-                        'Ocurrio un Error al Grabar los Detalles!',
-                        'error'
-                    )
-
-                }
-                else if (data == -5) {
-                    Swal.fire(
-                        'Información!',
-                        'La Factura ya fue registrada previamente!',
-                        'info'
-                    )
-
-                } else {
-                    Swal.fire(
-                        'Error!',
-                        'Ocurrio un Error!, ' + data,
+                        'Ocurrio un Error!, ' + datos.mensaje,
                         'error'
                     )
                 }
@@ -2371,7 +2378,12 @@ function GuardarSolicitud() {
             NombTablaOrigen = 'OPDN';
         }
         //Validar Items de Otra Tabla
-
+        for (var i = 0; i < arrayCantidadNecesaria.length; i++) {
+            if (arrayCantidadNecesaria[i] <= 0) {
+                Swal.fire("Error", "No puede ingresar Items con Cantidad 0", "error")
+                return;
+            }
+        }
 
         let detalles = [];
         if (arrayIdArticulo.length == arrayIdUnidadMedida.length && arrayCantidadNecesaria.length == arrayPrecioInfo.length) {
@@ -2481,54 +2493,41 @@ function GuardarSolicitud() {
                 });
             },
             success: function (data) {
-                if (data > 0) {
-                    let IdOpch = data;
+                let datos = JSON.parse(data);
+
+                if (datos.status) {
+                    let IdOpch = datos.Id;
                     $.post("ObtenerSerieOPCH", { 'IdOPCH': IdOpch }, function (data, status) {
                         Swal.fire(
                             'Correcto',
-                            'Documento '+data+' Registrado Correctamente',
+                            'Documento ' + data + ' Registrado Correctamente',
                             'success'
-                         )
-                         $.post("/Pedido/GenerarReporte", { 'NombreReporte': 'RPTFacturaProv', 'Formato': 'PDF', 'Id': IdOpch }, function (data, status) {
-                             let datos;
-                             if (validadJson(data)) {
-                                 let datobase64;
-                                 datobase64 = "data:application/octet-stream;base64,"
-                                 datos = JSON.parse(data);
-                                 //datobase64 += datos.Base64ArchivoPDF;
-                                 //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
-                                 //$("#reporteRPT").attr("href", datobase64);
-                                 //$("#reporteRPT")[0].click();
-                                 verBase64PDF(datos)
+                        )
 
-                             }
-                         });
-                        CerrarModal();                      
+                        $.post("/Pedido/GenerarReporte", { 'NombreReporte': 'RPTFacturaProv', 'Formato': 'PDF', 'Id': IdOpch }, function (data, status) {
+                            let datos;
+                            if (validadJson(data)) {
+                                let datobase64;
+                                datobase64 = "data:application/octet-stream;base64,"
+                                datos = JSON.parse(data);
+                                //datobase64 += datos.Base64ArchivoPDF;
+                                //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
+                                //$("#reporteRPT").attr("href", datobase64);
+                                //$("#reporteRPT")[0].click();
+                                verBase64PDF(datos)
+
+                            }
+                        });
+                        CerrarModal();
                         listarOpch()
+
                     });
-                } else if (data == -1) {
-                    Swal.fire(
-                        'Error!',
-                        'Ocurrio un Error al Grabar La Factura!',
-                        'error'
-                    )
-                } else if (data == -2 || data == -3) {
-                    Swal.fire(
-                        'Error!',
-                        'Ocurrio un Error al Grabar los Detalles!',
-                        'error'
-                    )
-                }
-                else if (data == -5) {
-                    Swal.fire(
-                        'Información!',
-                        'La Factura ya fue registrada previamente!',
-                        'info'
-                    )
+
+
                 } else {
                     Swal.fire(
                         'Error!',
-                        'Ocurrio un Error!, ' + data,
+                        'Ocurrio un Error!, ' + datos.mensaje,
                         'error'
                     )
                 }
@@ -2828,8 +2827,12 @@ function AgregarLineaDetalle(contador, detalle) {
  
     llenarComboCuadrilla(DatosCuadrilla, "cboCuadrillaTablaId" + contador, "Seleccione")
     llenarComboEmpleados(DatosEmpleados, "cboResponsableTablaId" + contador, "Seleccione")
-    $(".cboCuadrillaTabla").select2()
-    $(".cboResponsableTabla").select2()
+    $(".cboCuadrillaTabla").select2({
+        dropdownParent: $("#modal-form")
+    })
+    $(".cboResponsableTabla").select2({
+        dropdownParent: $("#modal-form")
+    })
     $("#cboCuadrillaTablaId"+contador).val(detalle.IdCuadrilla).change()
     $("#cboResponsableTablaId"+contador).val(detalle.IdResponsable).change()
     NumeracionDinamica();
@@ -3888,15 +3891,23 @@ function AgregarPedidoToEntradaMercancia(data) {
             llenarComboCuadrilla(DatosCuadrilla, "cboCuadrillaTablaId" + contador, "Seleccione")
             llenarComboEmpleados(DatosEmpleados, "cboResponsableTablaId" + contador, "Seleccione")
 
-            $(".cboCuadrillaTabla").select2()
-            $(".cboResponsableTabla").select2()
+            $(".cboCuadrillaTabla").select2({
+                dropdownParent: $("#modal-form")
+            })
+            $(".cboResponsableTabla").select2({
+                dropdownParent: $("#modal-form")
+            })
             totalIGV += datos[k].total_igv;
             TotalFinal += datos[k].total_item 
             LimpiarModalItem();
             NumeracionDinamica();
 
-            $(".cboCuadrillaTabla").select2()
-            $(".cboResponsableTabla").select2()
+            $(".cboCuadrillaTabla").select2({
+                dropdownParent: $("#modal-form")
+            })
+            $(".cboResponsableTabla").select2({
+                dropdownParent: $("#modal-form")
+            })
             CalcularTotalDetalle(contador)
         }
       
@@ -3994,7 +4005,7 @@ function AgregarOPNDDetalle(data) {
             //txtReferenciaItem
 
 
-            if (Number(CantidadItem) == 0) {
+            if (Number(CantidadItem) <= 0) {
                 continue;
             }
 
@@ -4189,8 +4200,12 @@ function AgregarOPNDDetalle(data) {
             $("#txtTipoServicio" + contador).val(TipoServicio);
             ObtenerCuadrillasTabla(contador)
             ObtenerEmpleadosxIdCuadrillaTabla(contador)
-            $(".cboCuadrillaTabla").select2()
-            $(".cboResponsableTabla").select2()
+            $(".cboCuadrillaTabla").select2({
+                dropdownParent: $("#modal-form")
+            })
+            $(".cboResponsableTabla").select2({
+                dropdownParent: $("#modal-form")
+            })
             if (IdCuadrillaParaTabla != 0) {
                 $("#cboCuadrillaTablaId" + contador).val(IdCuadrillaParaTabla).change();
                 if (IdResponsableParaTabla != 0) {
@@ -4583,7 +4598,7 @@ function ObtenerDatosxIDOPCH(IdOpch) {
             $("#IdResponsable").val("")
             $("#cboGlosaContable").val(movimiento.IdGlosaContable)
             $("#txtFechaDocumento").val((movimiento.FechaDocumento).split("T")[0])
-            $("#txtComentarios").html(movimiento.Comentario)
+            $("#txtComentarios").val(movimiento.Comentario)
             $("#txtFechaContabilizacion").val((movimiento.FechaContabilizacion).split("T")[0])
             $("#txtOrigen").val(movimiento.TablaOrigen)
             changeTipoDocumento()
@@ -4721,7 +4736,7 @@ function AgregarSeleccionadOPDN() {
             }
         });
 
-        $("#txtComentarios").html('BASADOS EN LAS ENTREGAS ' + numerospedidos)
+        $("#txtComentarios").val('BASADOS EN LAS ENTREGAS ' + numerospedidos)
         $('#ModalListadoEntrega').modal('hide');
         tableentrega.ajax.reload()
     }
@@ -4793,7 +4808,7 @@ function AgregarSeleccionadoPedido() {
             }
         });
 
-        $("#txtComentarios").html('BASADOS EN LOS PEDIDOS ' + numerospedidos)
+        $("#txtComentarios").val('BASADOS EN LOS PEDIDOS ' + numerospedidos)
         $('#ModalListadoPedido').modal('hide');
         tablepedido.ajax.reload()
     }
@@ -5991,8 +6006,8 @@ function Extornar() {
                         'Igv': 0,
                         'PrecioUnidadBase': arrayPrecioInfo[i],
                         'PrecioUnidadTotal': arrayPrecioInfo[i],
-                        'TotalBase': arrayTotal[i],
-                        'Total': arrayTotal[i],
+                        'TotalBase': arrayCantidadNecesaria[i] * arrayPrecioInfo[i],
+                        'Total': arrayCantidadNecesaria[i] * arrayPrecioInfo[i],
                         'CuentaContable': 1,
                         'IdCentroCosto': 7,
                         'IdAfectacionIgv': 1,
@@ -6090,7 +6105,8 @@ function Extornar() {
                                     //    });
                                     //},
                                     success: function (data) {
-                                        if (data > 0) {
+                                        let datos = JSON.parse(data);
+                                        if (datos.status) {
                                             $.post('ExtornoConfirmado', {
                                                 'IdOPCH': IdOPCH,
                                                 'EsServicio': TipoProductos,
@@ -6112,7 +6128,7 @@ function Extornar() {
                                         } else {
                                             Swal.fire(
                                                 'Error!',
-                                                'Ocurrio un Error al Generar la Salida!',
+                                                'Ocurrio un Error al Generar la Salida! ' + datos.mensaje,
                                                 'error'
                                             )
 
@@ -6634,7 +6650,7 @@ function listarOpchProveedor() {
                     }
 
                     return `<button class="btn btn-primary juntos fa fa-eye btn-xs" onclick="ObtenerDatosxIDOPCH(` + full.IdOPCH + `)"></button>
-                            <button class="btn btn-primary juntos fa fa-file-text btn-xs" onclick="VerDocsOrigen(` + full.IdOPCH + `)"></button>` + extrasBtn
+                            <button class="btn btn-primary juntos fa fa-file-text btn-xs" onclick="VerDocsOrigen(` + full.IdOPCH +  `,'` + full.NombSerie + `',` + full.Correlativo +`)"></button>` + extrasBtn
                 },
             },
             {

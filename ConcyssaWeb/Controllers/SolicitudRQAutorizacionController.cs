@@ -163,14 +163,14 @@ namespace ConcyssaWeb.Controllers
                 return valida;
             }
 
-
-
+            IdAutorizador = IdUsuario;
+            string mensaje_error = "";
             string Resultado = "";
             if (IdAutorizador != 0)
             {
                 SolicitudRQAutorizacionDAO oSolicitudRQAutorizacionDAO = new SolicitudRQAutorizacionDAO();
                 //List<SolicitudRQAutorizacionDTO> lstSolicitudRQAutorizacionDTO = oSolicitudRQAutorizacionDAO.ObtenerSolicitudesxAutorizar(IdAutorizador.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado);
-                List<DetalleSolicitudRqAprobacionDTO> lstDetalleSolicitudRqAprobacionDTO = oSolicitudRQAutorizacionDAO.ObtenerSolicitudesxAutorizarDetalle(IdUsuario.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado,IdObra,BaseDatos);
+                List<DetalleSolicitudRqAprobacionDTO> lstDetalleSolicitudRqAprobacionDTO = oSolicitudRQAutorizacionDAO.ObtenerSolicitudesxAutorizarDetalle(IdUsuario.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado,IdObra,BaseDatos, ref mensaje_error);
                 if (lstDetalleSolicitudRqAprobacionDTO.Count > 0)
                 {
                   
@@ -185,7 +185,7 @@ namespace ConcyssaWeb.Controllers
             {
                 SolicitudRQAutorizacionDAO oSolicitudRQAutorizacionDAO = new SolicitudRQAutorizacionDAO();
                 //List<SolicitudRQAutorizacionDTO> lstSolicitudRQAutorizacionDTO = oSolicitudRQAutorizacionDAO.ObtenerSolicitudesxAutorizar(IdUsuario.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado);
-                List<DetalleSolicitudRqAprobacionDTO> lstDetalleSolicitudRqAprobacionDTO = oSolicitudRQAutorizacionDAO.ObtenerSolicitudesxAutorizarDetalle(IdUsuario.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado, IdObra, BaseDatos);
+                List<DetalleSolicitudRqAprobacionDTO> lstDetalleSolicitudRqAprobacionDTO = oSolicitudRQAutorizacionDAO.ObtenerSolicitudesxAutorizarDetalle(IdUsuario.ToString(), IdSociedad.ToString(), FechaInicio, FechaFinal, Estado, IdObra, BaseDatos, ref mensaje_error);
                 if (lstDetalleSolicitudRqAprobacionDTO.Count > 0)
                 {
                     Resultado = JsonConvert.SerializeObject(lstDetalleSolicitudRqAprobacionDTO);

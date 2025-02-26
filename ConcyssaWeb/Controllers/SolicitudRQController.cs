@@ -218,8 +218,20 @@ namespace ConcyssaWeb.Controllers
         }
 
 
-        public int UpdateInsertSolicitud(SolicitudRQDTO solicitudRQDTO, SolicitudRQDetalleDTO solicitudRQDetalleDTO)
+        public int UpdateInsertSolicitud(string JsonDatosEnviar)
         {
+
+            JsonDatosEnviar = JsonDatosEnviar.Remove(JsonDatosEnviar.Length - 1, 1);
+            JsonDatosEnviar = JsonDatosEnviar.Remove(0, 1);
+
+            var settings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                MissingMemberHandling = MissingMemberHandling.Ignore
+            };
+            SolicitudRQDTO solicitudRQDTO = JsonConvert.DeserializeObject<SolicitudRQDTO>(JsonDatosEnviar, settings);
+
+
             int valida = 0;
             valida = validarEmpresaActualUpdateInsert();
             if (valida != 0)
@@ -233,7 +245,15 @@ namespace ConcyssaWeb.Controllers
 
 
             ModeloAutorizacionDAO oModeloAutorizacionDAO = new ModeloAutorizacionDAO();
-            var ModeloAuorizacion = oModeloAutorizacionDAO.VerificarExisteModeloSolicitud(int.Parse(IdSociedad.ToString()), 1, BaseDatos); //valida si existe alguina modelo aplicado a documento solicitud
+
+            int IdDocumento = 1;
+
+            if (solicitudRQDTO.EsSubContrato)
+            {
+                IdDocumento = 5;
+            }
+
+            var ModeloAuorizacion = oModeloAutorizacionDAO.VerificarExisteModeloSolicitud(int.Parse(IdSociedad.ToString()), IdDocumento, BaseDatos); //valida si existe alguina modelo aplicado a documento solicitud
             if (ModeloAuorizacion.Count > 0)
             {
                 int CantidadAutores = 0;
@@ -265,7 +285,7 @@ namespace ConcyssaWeb.Controllers
             
             }
 
-             var resultado = oSolicitudRQDAO.UpdateInsertSolicitud(solicitudRQDTO, solicitudRQDetalleDTO, IdSociedad.ToString(),BaseDatos);
+             var resultado = oSolicitudRQDAO.UpdateInsertSolicitud(solicitudRQDTO, IdSociedad.ToString(),BaseDatos);
 
             if (resultado[0] == 5) //es un insert
             {

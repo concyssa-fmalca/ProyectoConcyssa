@@ -240,5 +240,35 @@ namespace DAO
             }
             return responseBody;
         }
+
+        public string ConsultarDNI(string Documento)
+        {
+            string responseBody = "";
+            var url = "";
+                url = $"https://apiconsulta.smartcodeserver.pe/api/ConsultaSmartcode/ConsultaRucDni?ruc=" + Documento;
+
+            var request = (HttpWebRequest)WebRequest.Create(url);
+            request.Method = "POST";
+            try
+            {
+                using (WebResponse response = request.GetResponse())
+                {
+                    using (Stream strReader = response.GetResponseStream())
+                    {
+                        if (strReader == null) { }
+                        else
+                            using (StreamReader objReader = new StreamReader(strReader))
+                            {
+                                responseBody = objReader.ReadToEnd();
+                            }
+                    }
+                }
+            }
+            catch (WebException ex)
+            {
+                return "Error";
+            }
+            return responseBody;
+        }
     }
 }

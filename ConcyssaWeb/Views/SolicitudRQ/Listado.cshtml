@@ -197,7 +197,7 @@
                                 <div class='form-group-sm'>
                                     <label for="IdObra" class="control-label col-sm-2 left-align">Obra</label>
                                     <div class="col-sm-4">
-                                        <select id="IdObra" class="form-control input-sm" tabindex="0" onchange="ObtenerAlmacenxIdObra()"></select>
+                                        <select id="IdObra" class="form-control input-sm" tabindex="0" onchange="ObtenerAlmacenxIdObra();CargarCuadrillas()"></select>
                                     </div>
                                 </div>
                             </div>
@@ -334,6 +334,18 @@
                                     </div>
                                 </div>
                             </div>
+                              <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for="cobTipoRequerimiento" class="control-label col-sm-2 left-align">Tipo Req.</label>
+                                    <div class="col-sm-4">
+                                        <select id="cobTipoRequerimiento" class="form-control input-sm" tabindex="9">
+                                            <option value="0" selected>REQUERIMIENTO </option>
+                                            <option value="1">SUB CONTRATO</option>
+                                        </select>
+                                    </div>
+                                </div>
+                               
+                            </div>
 
 
 
@@ -373,13 +385,19 @@
                                 </div>
                                 <select id="cboAgregarArticulo" class="form-control" onchange="SeleccionarItemListado()"></select>
                                 <br />
-                                <div>
+                                <br />
+                                <div class="mt-5">
                                     <label>Stock:</label> <input id="txtStockAlmacenItem" type="text" disabled>
                                     <label>Pendiente Ent.:</label> <input id="txtStockObraPedido" type="text" disabled>
                                     <label>Cantidad:</label> <input id="txtCantidadItem" max="5" type="number" onkeyup="ValidarDecimalesCantidades('txtCantidadItem')">
                                 </div>
-                                <div>
-                                    <label>Referencia:</label>  <input id="txtReferenciaItem" name="txtReferenciaItem" style="width:50%"/>
+                                <div class="row" id="divCuadrilla">
+                                    <div class="col-md-4">
+                                        <label>Centro de Costo:</label> <select style="width:100%" class="form-control" id="cboCuadrilla" ></select>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <label>Referencia:</label>  <input id="txtReferenciaItem" name="txtReferenciaItem" style="width:50%" />
                                     <button id="btn_agregaritem" style="margin-bottom:10px;margin-top:5px" class="btn btn-xs btn-info" onclick="AgregarLinea()" type="button">Agregar Item</button>
                                 </div>
 
@@ -411,7 +429,7 @@
                                                 <th style="display:none">Numero de Fabricacion</th>
                                                 <th style="display:none">Numero de Serie</th>
                                                 <th style="display:none">Linea de Negocio</th>*@
-                                                <th style="min-width:90px;display:none">Centro Costos</th>
+                                                <th style="min-width:90px">Centro Costos</th>
                                                 <th style="min-width:130px;display:none">Proyecto</th>
                                                 @*<th style="display:none">Cantidad</th>
                                                 <th style="display:none">En Pedido</th>*@

@@ -31,7 +31,7 @@ namespace ConcyssaWeb.Controllers
             MovimientoDAO oMovimimientoDAO = new MovimientoDAO();
             int IdMovimientoInicial = oMovimientoDTO.IdMovimiento;
             oMovimientoDTO.IdMovimiento = 0;
-            int respuesta = oMovimimientoDAO.InsertUpdateMovimiento(oMovimientoDTO,BaseDatos,ref mensaje_error);
+            int respuesta = oMovimimientoDAO.RegistrarMovimientoCompleto(oMovimientoDTO, oMovimientoDTO.detalles[0].ValidarIngresoSalidaOAmbos, BaseDatos,ref mensaje_error);
             if (mensaje_error.Length > 0)
             {
                 return mensaje_error;
@@ -40,12 +40,7 @@ namespace ConcyssaWeb.Controllers
             {
                 var rpt = oMovimimientoDAO.ActualziarJsonTranferencia(oMovimientoDTO, IdMovimientoInicial,BaseDatos,ref mensaje_error);
                 //int respuesta = 0;
-                for (int i = 0; i < oMovimientoDTO.detalles.Count; i++)
-                {
-                    oMovimientoDTO.detalles[i].IdMovimiento = respuesta;
-                    int respuesta2 = oMovimimientoDAO.InsertUpdateMovimientoDetalleIngreso(oMovimientoDTO.detalles[i], oMovimientoDTO.detalles[i].ValidarIngresoSalidaOAmbos,BaseDatos,ref mensaje_error);
-
-                }
+               
 
                 
 

@@ -133,12 +133,12 @@ namespace ConcyssaWeb.Controllers
             }
 
         }
-        public string ObtenerDevolucionAdmAtender(int IdBase, DateTime FechaInicio, DateTime FechaFin, int EstadoDevolucion, int SerieFiltro)
+        public string ObtenerDevolucionAdmAtender(int IdBase,int IdObra, DateTime FechaInicio, DateTime FechaFin, int EstadoDevolucion, int SerieFiltro)
         {
             string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             DevolucionAdmDAO oDevolucionAdmDAO = new DevolucionAdmDAO();
-            List<DevolucionAdmDTO> lstDevolucionAdmDTO = oDevolucionAdmDAO.ObtenerDevolucionesAtender(IdBase, FechaInicio, FechaFin, EstadoDevolucion, SerieFiltro,BaseDatos);
+            List<DevolucionAdmDTO> lstDevolucionAdmDTO = oDevolucionAdmDAO.ObtenerDevolucionesAtender(IdBase, IdObra, FechaInicio, FechaFin, EstadoDevolucion, SerieFiltro,BaseDatos);
 
             if (lstDevolucionAdmDTO.Count > 0)
             {

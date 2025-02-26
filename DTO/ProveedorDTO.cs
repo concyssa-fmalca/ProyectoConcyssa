@@ -74,6 +74,9 @@ namespace DTO
         public IList<AnexoDTO> AnexoDetalle { get; set; }
         public int IdSociedad { get; set; }
         public bool Afecto4ta { get; set; }
+        public bool ConOrden { get; set; }
+        public bool SolicitarFTenPortalProv { get; set; }
+        public string EmailPortalProv { get; set; } = "";
     }
     public class RubroXProveedorDTO
     {

@@ -86,7 +86,13 @@
              <div class="col-xs-12 right">
                  <label class="col-sm-2" for="cboObraFiltro">Base</label>
                  <div class="col-sm-3">
-                    <select class="form-control" id="cboObraFiltro" onchange="CargarEmpleados()"></select>
+                    <select class="form-control" id="cboObraFiltro" onchange="ObtenerObraxIdBase()"></select>
+                 </div>
+            </div>
+               <div class="col-xs-12 right">
+                 <label class="col-sm-2" for="IdObra">Obra</label>
+                 <div class="col-sm-3">
+                    <select class="form-control" id="IdObra"></select>
                  </div>
             </div>
             <div class="col-xs-12 right">
@@ -108,7 +114,8 @@
                     <select class="form-control" id="EstadoFiltro" onchange="ConsultaServidorLimpio()">
                         <option value="0">Pendiente de Entrega</option>
                         <option value="1">Entregado Parcialmente</option>
-                        <option value="2">Cerrado</option>
+                        <option value="2">Cerrado Automatico</option>
+                        <option value="3">Cerrado Manual</option>
                     </select>
                 </div>
             </div>
@@ -288,7 +295,155 @@
         </div>
     </div>
 
-  
+    <!-- Modal -->
+    <div id="modal-guia" class="popup-lg allcp-form mfp-with-anim mfp-hide">
+        <div class="panel">
+            <div class="panel-heading">
+                <h5 id='lblTituloModal'></h5>
+            </div>
+            <div class="panel-body ">
+                <div class='col s12 m12 '>
+                    <div class='container-fluid'>
+                        <div class='form-horizontal'>
+                            <div class="row" style="display:none" >
+                                <div class="col-md-10">
+                                    <input class="form-control" id="txtIdSolicitud" type="text" />
+                                    <input class="form-control" id="txtNum" type="text" />
+                                    <input class="form-control" id="txtnumserie" type="text" />
+                                    <input class="form-control" id="txtcuadrilla" type="text" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label>Tipo Documento</label>
+                                    <Select id='IdTipoDocumentoRef' class='form-control' onchange="OcultarCampos()"></select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Serie</label>
+                                    <Select id='cboSerieExtorno' class='form-control'></select>
+                                </div>
+                                 <div class="col-md-3">
+                                    <label>Serie</label>
+                                    <input id='FechDocExtorno' type='date' class='form-control'/>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Serie</label>
+                                   <input id='FechContExtorno' type='date' disabled class='form-control'/>
+                                </div>
+                            </div>
+                            <div class="ocultate">
+                                 <div class="row">
+                                <div class="col-md-3">
+                                    <label>Tipo Transporte</label>
+                                    <select id="IdTipoTransporte" class="form-control input-sm" tabindex="21"><option value="0">SELECCIONE </option><option selected value="02">PRIVADO</option><option value="01">PUBLICO</option></select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>DESTINATARIO</label>
+                                    <select id="IdDestinatario" class="form-control input-sm" tabindex="0"><option value="0">SELECCIONE </option></select>
+                                </div>
+                                 <div class="col-md-3">
+                                    <label>MOTIVO TRASLADO</label>
+                                    <select id="IdMotivoTraslado" class="form-control input-sm" tabindex="0"><option value="0">SELECCIONE </option></select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>RUC TRANSPORTISTA</label>
+                                    <select id="IdTransportista" class="form-control input-sm" tabindex="0"><option value="0">SELECCIONE </option></select>
+                                </div>
+                            </div>
+
+                                <div class="row">
+                                <div class="col-md-3">
+                                    <label>PLACA VEHICULO</label>
+                                   <select id="PlacaVehiculo" class="form-control input-sm" tabindex="0" onchange="BuscarVehiculoxPlaca()" ><option value="0">SELECCIONE </option></select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>MARCA VEHICULO</label>
+                                    <input id="MarcaVehiculo" type="text" class="form-control " tabindex="16">
+                                </div>
+                                 <div class="col-md-3">
+                                    <label>DNI CONDUCTOR</label>
+                                    <div class="row">
+                                                <div class="col-md-10">
+                                                    <input id="NumIdentidadConductor" type="text" class="form-control " tabindex="16">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <button class="btn btn-info btn-xs fa fa-search" onclick="BuscarDNI()"></button>
+                                                </div>
+
+                                      </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>NOMBRES CONDUCTOR</label>
+                                     <input id="NombreConductor" type="text" class="form-control " tabindex="17">
+                                </div>
+                            </div>
+
+                              <div class="row">
+                                <div class="col-md-3">
+                                    <label>APELLIDOS CONDUCTOR</label>
+                                  <input id="ApellidoConductor" type="text" class="form-control " tabindex="17">
+                                </div>
+                                <div class="col-md-3">
+                                    <label>LICENCIA CONDUCTOR</label>
+                                     <input id="LicenciaConductor" type="text" class="form-control " tabindex="17">
+                                </div>
+                                 <div class="col-md-3">
+                                    <label>Peso Bruto</label>
+                                    <input id="Peso" type="text" class="form-control " tabindex="18">
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Bulto</label>
+                                     <input id="Bulto" type="text" class="form-control " tabindex="20">
+                                </div>
+                            </div>
+                           
+                            
+                              <div class="row">
+                                <div class="col-md-3">
+                                    <label>SGI</label>
+                                   <div class="row ocultate">
+                                         <div class="container-fluid">
+                                                <div class="col-sm-10">
+                                                    <input id="txtSGI" type="text" class="form-control " tabindex="17">
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <button class="btn btn-info btn-xs fa fa-search" onclick="BuscarSGI()"></button>
+                                                </div>
+                                         </div>
+
+                                     </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>Distrito de llegada</label>
+                                     <select id="DistritoLlegada" class="form-control " tabindex="18"></select>
+                                </div>
+                                 <div class="col-md-3">
+                                    <label>Direccion</label>
+                                  <input id="Direccion" type="text" class="form-control " tabindex="18">
+                                </div>
+                        
+                            </div>
+                           
+                                 
+                            </div>
+                            
+
+
+
+                           
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer text-right">
+                <div class="row">
+                    <button type="button" class="btn btn-danger pull-right" style="background-color:orange;" data-dismiss="modal" onclick="closePopup()">Cerrar</button>
+                    <button class="btn btn-primary" onclick="GuardarSalida()">Generar Salida</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @{
     Random rnd = new Random();

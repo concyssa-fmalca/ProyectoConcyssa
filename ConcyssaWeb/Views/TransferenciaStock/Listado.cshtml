@@ -110,8 +110,10 @@
                         <th>Tipo Documento</th>
                         <th>Serie y Numero</th>
                         <th>Estado GE</th>
-                        <th>Obra</th>
-                        <th>Almacen</th>
+                        <th>Obra Origen</th>
+                        <th>Almacen Origen</th>
+                         <th>Obra Destino</th>
+                        <th>Almacen Destino</th>
          
                        
                         <th>Mas</th>
@@ -154,7 +156,7 @@
                                 <div class='form-group-sm'>
                                     <label for="IdObraDestino" class="control-label col-sm-2 left-align">Obra Destino</label>
                                     <div class="col-sm-4">
-                                        <select id="IdObraDestino" class="form-control input-sm" tabindex="0" onchange="ObtenerAlmacenxIdObraDestino()"></select>
+                                        <select id="IdObraDestino" class="form-control input-sm" tabindex="0" onchange="ObtenerAlmacenxIdObraDestino();CargarVehiculos()"></select>
                                     </div>
                                 </div>
 
@@ -165,7 +167,7 @@
                                 <div class='form-group-sm' >
                                     <label for="IdObra" class="control-label col-sm-2 left-align">Obra de Origen</label>
                                     <div class="col-sm-4">
-                                        <select id="IdObra" class="form-control input-sm" tabindex="0" onchange="ObtenerAlmacenxIdObra()"></select>
+                                        <select id="IdObra" class="form-control input-sm" tabindex="0" onchange="ObtenerAlmacenxIdObra();CargarVehiculos()"></select>
                                     </div>
                                 </div>
                                 <div class='form-group-sm'>
@@ -519,7 +521,18 @@
                                     <hr class="ocultate" style="margin: 0px 0px 5px 0px" />
                                     <p class="ocultate">MARCA VEHICULO:<input id="MarcaVehiculo" type="text" class="form-control huser-20" tabindex="16"> </p>
                                     <hr class="ocultate" style="margin: 0px 0px 5px 0px" />
-                                    <p class="ocultate">DNI CONDUCTOR: <input id="NumIdentidadConductor" type="text" class="form-control huser-20" tabindex="16"></p>
+                                    <p class="ocultate">DNI CONDUCTOR:                                       
+                                        <div class="row">
+                                                <div class="col-sm-10">
+                                                    <input id="NumIdentidadConductor" type="text" class="form-control huser-20" tabindex="16">
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <button class="btn btn-info btn-xs fa fa-search" onclick="BuscarDNI()"></button>
+                                                </div>
+
+                                        </div>    
+                                       
+                                        </p>
                                     <hr class="ocultate" style="margin: 0px 0px 5px 0px" />
                                     <p class="ocultate">NOMBRES CONDUCTOR: <input id="NombreConductor" type="text" class="form-control huser-20" tabindex="17"></p>
                                     <hr class="ocultate" style="margin: 0px 0px 5px 0px" />
@@ -532,7 +545,7 @@
                                     <p class="ocultate">Bulto: <input id="Bulto" type="text" class="form-control huser-20" tabindex="16"></p>
                                     <hr class="ocultate" style="margin: 0px 0px 5px 0px" />
                                     
-                                    <p class="ocultate"><strong>Estado GE:</strong><select style="height: 20px" id="cboEstadoFE" class="form-control input-sm" tabindex="21"><option value="0">NO ACEPTADO</option><option value="1">ACEPTADO</option></select></p>
+                                    <p style="display:none"><strong>Estado GE:</strong><select style="height: 20px" id="cboEstadoFE" class="form-control input-sm" tabindex="21"><option value="0">NO ACEPTADO</option><option value="1">ACEPTADO</option></select></p>
 
 
 
@@ -554,7 +567,7 @@
                 <button type="button" id="btnEditar" onclick="Editar()" class="btn btn-primary pull-right plu">Grabar</button>
                 @*<button type="button" id="btnExtorno" onclick="GenerarGuia()" class="btn btn-primary pull-right plu">Generar Guia</button>*@
 
-                <button type="button" id="btnGenerarGuia" onclick="GenerarGuia()" style="display:none" class="btn btn-primary pull-right plu">Generar Guia</button>
+             @*   <button type="button" id="btnGenerarGuia" onclick="GenerarGuia()" style="display:none" class="btn btn-primary pull-right plu">Generar Guia</button>*@
 
                 <button type="button" id="btnCancelar" onclick="CerrarModal()" class="btn btn-danger pull-right" style="background-color:orange;">Cerrar</button>
                 <button type="button" id="btnGenerarPDF" onclick="GenerarPDF()" class="btn btn-primary pull-right plu">Generar PDF</button>

@@ -1,0 +1,85 @@
+﻿@{
+    ViewBag.Title = "Transferencias";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid" style="height:93%;">
+
+    <div class="panel">
+        <div class="container-fluid">
+            <div class="topbar-left col-xs-6">
+                <h3>Reporte de transferencias</h3>
+            </div>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="container-fluid">
+
+            <a id="reporteRPT" style="display:none"></a>
+            <div class="panel-footer text-left">
+                <div class="row">
+                    <div class='form-group-sm'>
+                        <label for="cboTipoArticulo" class="control-label col-sm-1 rigth-align">Tipo Material</label>
+                        <div class="col-sm-5">
+                            <select id="cboTipoArticulo" class="form-control input-sm" tabindex="1">
+                                <option value="1">Materiales</option>
+                                <option value="2">Auxiliares</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class='form-group-sm'>
+                        <label for="IdObra" class="control-label col-sm-1 right-align">Obra</label>
+                        <div class="col-sm-5">
+                            <select class="form-control input-sm" id="IdObra" onchange="CargarAlmacen()"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class='form-group-sm'>
+                        <label for="IdAlmacen" class="control-label col-sm-1 right-align">Almacen</label>
+                        <div class="col-sm-5">
+                            <select class="form-control input-sm" id="IdAlmacen"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class='form-group-sm'>
+                    <label class="col-sm-1" for="cboObraFiltro">Fecha Inicial</label>
+                    <div class="col-sm-3">
+                        <input class="form-control" type="date" id="txtFechaInicio" />
+                    </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class='form-group-sm'>
+                    <label class="col-sm-1" for="cboObraFiltro">Fecha Final</label>
+                    <div class="col-sm-3">
+                        <input class="form-control" type="date" id="txtFechaFin" />
+                    </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <button type="button" id="btnReporte" class="btn btn-primary pull-centers plu" onclick="GenerarReporte('pdf')">Generar Reporte PDF</button>
+                    <button type="button" id="btnReporte" style="background-color:green" class="btn btn-primary pull-centers plu" onclick="GenerarReporte('excel')">Generar Reporte Excel</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+@{
+    Random rnd = new Random();
+}
+
+<script src="~/Scripts/InformeTransferencia/Listado.js?v=@rnd.Next(1, 1000 + 1)"></script>
+<script src="~/Scripts/General.js"></script>
+<script src="~/js/pdf/jspdf.min.js"></script>
+<script src="~/js/pdf/faker.min.js"></script>
+<script src="~/js/pdf/jspdf.plugin.autotable.src.js"></script>
+
+

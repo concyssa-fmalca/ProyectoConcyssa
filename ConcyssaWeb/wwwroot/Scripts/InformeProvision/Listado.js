@@ -3,13 +3,20 @@ let contador = 0;
 let table_series;
 
 window.onload = function () {
+    let anio = new Date().getFullYear()  
+
+    $('#cboPeriodo').on('change', function () {
+        ObtenerSemanas()
+    });
+
+
     CargarBaseFiltro()
    /* CargarTipoRegistro();*/
     CargarObra();
     ObtenerTipoRegistroFiltro()
     KeyPressNumber($("#txtFondo"));
     $("#cboObraFiltro").prop("selectedIndex", 1);
-    $("#cboPeriodo").val(2024);
+    $("#cboPeriodo").val(anio);
     ObtenerSemanas()
 
 };

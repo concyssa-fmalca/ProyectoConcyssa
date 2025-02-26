@@ -12,6 +12,10 @@ namespace ConcyssaWeb.Controllers
         {
             return View();
         }
+        public IActionResult IndicadorEntregas()
+        {
+            return View();
+        }
         public IActionResult CompraProducto()
         {
             return View();
@@ -399,8 +403,90 @@ namespace ConcyssaWeb.Controllers
             return "";
         }
 
+        public string GenerarReporteStockSinConsumo2(string NombreReporte, string Formato, int IdObra, int IdTipo, int Meses, string BaseDatos)
+        {
+            if (BaseDatos == "" || BaseDatos == null)
+            {
+                BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            }
 
-        public string GenerarReporteListaPrecio(string NombreReporte, string Formato, int IdArticulo, string BaseDatos)
+            RespuestaDTO oRespuestaDTO = new RespuestaDTO();
+            WebResponse webResponse;
+            HttpWebRequest request;
+            Uri uri;
+            string cadenaUri;
+            string requestData;
+            string response;
+            string mensaje_error;
+
+            /*
+            WebServiceDTO oWebServiceDTO = new WebServiceDTO();
+            oWebServiceDTO.Formato = Formato;
+            oWebServiceDTO.NombreReporte = NombreReporte;
+            oWebServiceDTO.Id = Id;
+            requestData = JsonConvert.SerializeObject(oWebServiceDTO);
+            */
+
+            try
+            {
+                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdObra=" + IdObra + "&IdTipo=" + IdTipo + "&Meses=" + Meses + "&BaseDatos=" + BaseDatos;
+                cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteStockSinconsumo";
+
+                uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
+                request = (HttpWebRequest)WebRequest.Create(uri);
+
+                request.Method = "POST";
+                //request.ContentType = "application/json;charset=utf-8";
+                request.ContentType = "application/x-www-form-urlencoded";
+
+
+                StreamWriter requestWriter = new StreamWriter(request.GetRequestStream(), System.Text.Encoding.ASCII);
+
+                requestWriter.Write(strNew);
+
+
+                requestWriter.Close();
+
+
+
+                webResponse = request.GetResponse();
+                Stream webStream = webResponse.GetResponseStream();
+                StreamReader responseReader = new StreamReader(webStream);
+                response = responseReader.ReadToEnd();
+
+                //var Resultado = response;
+                //XmlSerializer xmlSerializer = new XmlSerializer(response);
+                var rr = 33;
+                XmlDocument xDoc = new XmlDocument();
+                xDoc.LoadXml(response);
+                var dd = "";
+
+                oRespuestaDTO.Result = xDoc.ChildNodes[1].ChildNodes[0].InnerText;
+                oRespuestaDTO.Mensaje = xDoc.ChildNodes[1].ChildNodes[1].InnerText;
+                oRespuestaDTO.Base64ArchivoPDF = xDoc.ChildNodes[1].ChildNodes[2].InnerText;
+
+                return JsonConvert.SerializeObject(oRespuestaDTO);
+            }
+            catch (WebException e)
+            {
+                using (WebResponse responses = e.Response)
+                {
+                    HttpWebResponse httpResponse = (HttpWebResponse)responses;
+                    using (Stream data = responses.GetResponseStream())
+                    using (var reader = new StreamReader(data))
+                    {
+                        mensaje_error = reader.ReadToEnd();
+
+                    }
+                }
+
+                string err = e.ToString();
+            }
+
+            return "";
+        }
+
+        public string GenerarReporteListaPrecio(string NombreReporte, string Formato, int IdArticulo,int IdProveedor, string BaseDatos)
         {
             if (BaseDatos == "" || BaseDatos == null)
             {
@@ -417,8 +503,8 @@ namespace ConcyssaWeb.Controllers
             string mensaje_error;
             try
             {
-                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdArticulo=" + IdArticulo + "&BaseDatos=" + BaseDatos; ;
-                cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteListaPrecios";
+                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdArticulo=" + IdArticulo + "&BaseDatos=" + BaseDatos + "&IdProveedor=" + IdProveedor; 
+                cadenaUri = "http://192.168.0.209/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteListaPrecios";
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteListaPrecios";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
                 request = (HttpWebRequest)WebRequest.Create(uri);
@@ -785,6 +871,86 @@ namespace ConcyssaWeb.Controllers
         }
 
 
+        public string GenerarReporteIndicadorEntregas(string NombreReporte, string Anno, Boolean Detalle, string Formato, int Id, string BaseDatos)
+        {
+            if (BaseDatos == "" || BaseDatos == null)
+            {
+                BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            }
+
+            RespuestaDTO oRespuestaDTO = new RespuestaDTO();
+            WebResponse webResponse;
+            HttpWebRequest request;
+            Uri uri;
+            string cadenaUri;
+            string requestData;
+            string response;
+            string mensaje_error;
+            WebServiceDTO oWebServiceDTO = new WebServiceDTO();
+            oWebServiceDTO.Formato = Formato;
+            oWebServiceDTO.NombreReporte = NombreReporte;
+            oWebServiceDTO.Id = Id;
+            requestData = JsonConvert.SerializeObject(oWebServiceDTO);
+
+
+            try
+            {
+                string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&Anno=" + Anno + "&Detalle=" + Detalle + "&BaseDatos=" + BaseDatos;
+                cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteIndicadorEntregas";
+                //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteCompraAnual";
+                uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
+                request = (HttpWebRequest)WebRequest.Create(uri);
+
+                request.Method = "POST";
+                //request.ContentType = "application/json;charset=utf-8";
+                request.ContentType = "application/x-www-form-urlencoded";
+
+
+                StreamWriter requestWriter = new StreamWriter(request.GetRequestStream(), System.Text.Encoding.ASCII);
+
+                requestWriter.Write(strNew);
+
+
+                requestWriter.Close();
+
+
+
+                webResponse = request.GetResponse();
+                Stream webStream = webResponse.GetResponseStream();
+                StreamReader responseReader = new StreamReader(webStream);
+                response = responseReader.ReadToEnd();
+
+                //var Resultado = response;
+                //XmlSerializer xmlSerializer = new XmlSerializer(response);
+                var rr = 33;
+                XmlDocument xDoc = new XmlDocument();
+                xDoc.LoadXml(response);
+                var dd = "";
+
+                oRespuestaDTO.Result = xDoc.ChildNodes[1].ChildNodes[0].InnerText;
+                oRespuestaDTO.Mensaje = xDoc.ChildNodes[1].ChildNodes[1].InnerText;
+                oRespuestaDTO.Base64ArchivoPDF = xDoc.ChildNodes[1].ChildNodes[2].InnerText;
+
+                return JsonConvert.SerializeObject(oRespuestaDTO);
+            }
+            catch (WebException e)
+            {
+                using (WebResponse responses = e.Response)
+                {
+                    HttpWebResponse httpResponse = (HttpWebResponse)responses;
+                    using (Stream data = responses.GetResponseStream())
+                    using (var reader = new StreamReader(data))
+                    {
+                        mensaje_error = reader.ReadToEnd();
+
+                    }
+                }
+
+                string err = e.ToString();
+            }
+
+            return "";
+        }
 
 
     }

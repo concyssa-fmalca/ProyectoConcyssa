@@ -101,7 +101,7 @@ function ObtenerCuadrillaxIdObra() {
 
 
 window.onload = function () {
-    $("#lblRptCategoria").html("Por Categoría (AÚN EN DESARROLLO)");
+    //$("#lblRptCategoria").html("Por Categoría (AÚN EN DESARROLLO)");
     $("#txtFechaInicio").val(getCurrentDate())
     $("#txtFechaFin").val(getCurrentDateFinal())
     CargarBaseFiltro()
@@ -286,7 +286,13 @@ function GenerarReporte(Formato) {
         nombreRPT = "InformeCuadrillasTotales"
     }
     if ($("#RptGrupo").is(':checked')) {
-        nombreRPT = "InformeCuadrillasPorGrupo"
+
+        if ($("#chkIncServicios").prop("checked") == true){
+            nombreRPT = "InformeCuadrillasPorGrupoServicios"
+        }else {
+            nombreRPT = "InformeCuadrillasPorGrupo"
+        }
+
 
     }
     if ($("#RptCategoria").is(':checked')) {

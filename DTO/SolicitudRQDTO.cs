@@ -52,6 +52,7 @@ namespace DTO
         public string OCRelacionadas { get; set; } = "";
         public decimal TotalCantidad { get; set; } = 0;
         public int Usuario { get; set; } = 0;
+        public bool EsSubContrato { get; set; }
 
     }
 

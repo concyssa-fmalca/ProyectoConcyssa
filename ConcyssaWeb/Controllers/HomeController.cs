@@ -62,6 +62,7 @@ namespace ConcyssaWeb.Controllers
                 if (oUsuarioDTO.Estado == true)
                 {
                     HttpContext.Session.SetInt32("IdUsuario", oUsuarioDTO.IdUsuario);
+                    //HttpContext.Session.SetInt32("IdUsuario", 4079);
                     HttpContext.Session.SetString("Usuario", oUsuarioDTO.Usuario);
                     HttpContext.Session.SetString("NombUsuario", oUsuarioDTO.Nombre);
                     HttpContext.Session.SetInt32("IdPerfil", oUsuarioDTO.IdPerfil);

@@ -113,7 +113,9 @@ function CargarProveedor() {
     $.post("/Proveedor/ObtenerProveedores", { estado: 1 }, function (data, status) {
         let proveedores = JSON.parse(data);
         llenarComboProveedor(proveedores, "IdProveedor", "Seleccione")
-        $("#IdProveedor").select2()
+        $("#IdProveedor").select2({
+            dropdownParent: $("#modal-form")
+        })
     });
 }
 
@@ -140,7 +142,9 @@ window.onload = function () {
     listarGrupoArticulo();
     CargarCateogiras() 
     CargarGrupoUnidadMedida();
-    $("#cboIdCodigoUbso").select2();
+    $("#cboIdCodigoUbso").select2({
+        dropdownParent: $("#modal-form")
+    });
     $("#divObraArticulo").hide();
     ObtenerObra();
 
@@ -428,7 +432,7 @@ function ConsultaServidor(url) {
 function ModalNuevo() {
     $("#lblTituloModal").html("Nuevo Articulo");
     $("#TablaAlmacenes").hide();
-
+    $(".radioitem").prop("disabled", false)
 
     AbrirModal("modal-form");
     ObtenerProveedores();
@@ -522,30 +526,34 @@ function GuardarArticulo() {
     let varDescripcion2 = $("#txtDescripcion2").val();
     let varIdUnidadMedida = $("#cboIdUnidadMedida").val();
     let IdCodigoUbso = $("#cboIdCodigoUbso").val();
-    let varEstadoActivoFijo = false;
     let varEstadoActivoCatalogo = false;
-
-
-    let varEstadoInvetario = false;
     let varVenta = false;
     let varCompra = false;
 
-    if ($('#chkActivoFijo')[0].checked) {
-        varEstadoActivoFijo = true;
-    }
-    if ($('#chkActivoCatalogo')[0].checked) {
-        varEstadoActivoCatalogo = true;
-    }
-
-    if ($('#chkArticulo')[0].checked) {
-        varEstadoInvetario = true;
-    }
     if ($('#chkArticuloVenta')[0].checked) {
         varVenta = true;
     }
     if ($('#chkArticuloCompra')[0].checked) {
         varCompra = true;
     }
+    if ($('#chkActivoCatalogo')[0].checked) {
+        varEstadoActivoCatalogo = true;
+    }
+
+
+    let varEstadoInvetario = false;
+    let varEstadoActivoFijo = false;
+
+    if ($("#ArtInventario").prop("checked")) {
+        varEstadoInvetario = true;
+    }
+    if ($("#ArtServicio").prop("checked")) {
+        varEstadoInvetario = false;
+    }
+    if ($("#ArtActivoFijo").prop("checked")) {
+        varEstadoActivoFijo = true;
+    }
+   
 
     varEstado = false;
     if ($('input:radio[name=inlineRadioOptions]:checked').val() == 1) {
@@ -585,7 +593,7 @@ function GuardarArticulo() {
             'Inventario': varEstadoInvetario,
             'Venta': varVenta,
             'Compra': varCompra,
-            'Estado': varEstado,
+            'Estado': 1,
             'IdGrupoUnidadMedida': IdGrupoUnidadMedida,
             'IdUnidadMedidaInv': IdUnidadMedidaInv,
             'IdCategoria': $("#cboCategoria").val(),
@@ -628,6 +636,8 @@ function ObtenerDatosxID(varIdArticulo) {
     CargarCondicionPago();
     listarPrecioProductoProveedor(varIdArticulo);
 
+    $(".radioitem").prop("disabled",true)
+
     //console.log(varIdUsuario);
 
     $.post('ObtenerDatosxID', {
@@ -651,22 +661,22 @@ function ObtenerDatosxID(varIdArticulo) {
             $("#IdGrupoUnidadMedida").val(articulos[0].IdGrupoUnidadMedida).change();
             //$("#idIdUnidadMedidaInv").val(articulos[0].IdUnidadMedidaInv);
             $("#txtProveedor").val(articulos[0].IdProveedor);
-            if (articulos[0].ActivoFijo) {
-                $("#chkActivoFijo").prop('checked', true);
-            }
-
-            if (articulos[0].ActivoCatalogo) {
+            if (articulos[0].Estado) {
                 $("#chkActivoCatalogo").prop('checked', true);
-            }
-
-            if (articulos[0].Inventario) {
-                $("#chkArticulo").prop('checked', true);
             }
             if (articulos[0].Compra) {
                 $("#chkArticuloCompra").prop('checked', true);
             }
             if (articulos[0].Venta) {
                 $("#chkArticuloVenta").prop('checked', true);
+            }
+            if (articulos[0].ActivoFijo) {
+                $("#ArtActivoFijo").prop('checked', true);
+            }
+            if (articulos[0].Inventario) {
+                $("#ArtInventario").prop('checked', true);
+            } else {
+                $("#ArtServicio").prop('checked', true);
             }
 
 

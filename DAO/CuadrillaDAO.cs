@@ -218,6 +218,92 @@ namespace DAO
             return lstCuadrillaDTO;
         }
 
+        public List<CuadrillaDTO> ObtenerCuadrillaxIdObraSelect2(int IdObra,string Texto, string BaseDatos, ref string mensaje_error)
+        {
+            List<CuadrillaDTO> lstCuadrillaDTO = new List<CuadrillaDTO>();
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarCuadrillaxIdObra_Select2", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdObra", IdObra);
+                    da.SelectCommand.Parameters.AddWithValue("@Texto", Texto);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        CuadrillaDTO oCuadrillaDTO = new CuadrillaDTO();
+                        oCuadrillaDTO.IdCuadrilla = int.Parse(drd["IdCuadrilla"].ToString());
+                        oCuadrillaDTO.IdObra = Convert.ToInt32(drd["IdObra"].ToString());
+                        oCuadrillaDTO.IdGrupo = Convert.ToInt32(drd["IdGrupo"].ToString());
+                        oCuadrillaDTO.IdSubGrupo = Convert.ToInt32(drd["IdSubGrupo"].ToString());
+                        oCuadrillaDTO.Codigo = (drd["Codigo"].ToString());
+                        oCuadrillaDTO.Descripcion = (drd["Descripcion"].ToString());
+                        oCuadrillaDTO.IdCapataz = Convert.ToInt32(drd["IdCapataz"].ToString());
+                        oCuadrillaDTO.IdSupervisor = Convert.ToInt32(drd["IdSupervisor"].ToString());
+                        oCuadrillaDTO.IdArea = Convert.ToInt32(drd["IdArea"].ToString());
+                        oCuadrillaDTO.IdSociedad = Convert.ToInt32(drd["IdSociedad"].ToString());
+                        oCuadrillaDTO.Estado = Convert.ToBoolean(drd["Estado"].ToString());
+                        oCuadrillaDTO.EsTercero = Convert.ToBoolean(drd["EsTercero"].ToString());
+
+                        lstCuadrillaDTO.Add(oCuadrillaDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstCuadrillaDTO;
+        }
+
+
+        public List<CuadrillaDTO> ObtenerCuadrillaxIdBase(int IdBase, string BaseDatos, ref string mensaje_error)
+        {
+            List<CuadrillaDTO> lstCuadrillaDTO = new List<CuadrillaDTO>();
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarCuadrillaxIdBase", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdBase", IdBase);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        CuadrillaDTO oCuadrillaDTO = new CuadrillaDTO();
+                        oCuadrillaDTO.IdCuadrilla = int.Parse(drd["IdCuadrilla"].ToString());
+                        oCuadrillaDTO.IdObra = Convert.ToInt32(drd["IdObra"].ToString());
+                        oCuadrillaDTO.IdGrupo = Convert.ToInt32(drd["IdGrupo"].ToString());
+                        oCuadrillaDTO.IdSubGrupo = Convert.ToInt32(drd["IdSubGrupo"].ToString());
+                        oCuadrillaDTO.Codigo = (drd["Codigo"].ToString());
+                        oCuadrillaDTO.Descripcion = (drd["Descripcion"].ToString());
+                        oCuadrillaDTO.IdCapataz = Convert.ToInt32(drd["IdCapataz"].ToString());
+                        oCuadrillaDTO.IdSupervisor = Convert.ToInt32(drd["IdSupervisor"].ToString());
+                        oCuadrillaDTO.IdArea = Convert.ToInt32(drd["IdArea"].ToString());
+                        oCuadrillaDTO.IdSociedad = Convert.ToInt32(drd["IdSociedad"].ToString());
+                        oCuadrillaDTO.Estado = Convert.ToBoolean(drd["Estado"].ToString());
+                        oCuadrillaDTO.EsTercero = Convert.ToBoolean(drd["EsTercero"].ToString());
+
+                        lstCuadrillaDTO.Add(oCuadrillaDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstCuadrillaDTO;
+        }
+
         public List<CuadrillaDTO> ObtenerNuevoCodigo(int CodigoUsar, int IdObra, string BaseDatos, ref string mensaje_error)
         {
             List<CuadrillaDTO> lstCuadrillaDTO = new List<CuadrillaDTO>();

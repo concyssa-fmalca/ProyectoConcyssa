@@ -167,6 +167,7 @@ namespace DAO
                         SqlDataAdapter da = new SqlDataAdapter("SMC_ActualizarCantidadPrecioDetalle", cn);
                         da.SelectCommand.CommandType = CommandType.StoredProcedure;
                         da.SelectCommand.Parameters.AddWithValue("@IdSolicitud", oSolicitudRQModeloAprobacionesDTO.IdSolicitud);
+                        da.SelectCommand.Parameters.AddWithValue("@IdDetalle", oSolicitudRQModeloAprobacionesDTO.IdDetalle);
                         da.SelectCommand.Parameters.AddWithValue("@IdArticulo", oSolicitudRQModeloAprobacionesDTO.IdArticulo);
                         da.SelectCommand.Parameters.AddWithValue("@Cantidad", oSolicitudRQModeloAprobacionesDTO.CantidadItem);
                         da.SelectCommand.Parameters.AddWithValue("@Precio", oSolicitudRQModeloAprobacionesDTO.PrecioItem);

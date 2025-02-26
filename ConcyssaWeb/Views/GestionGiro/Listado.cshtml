@@ -116,15 +116,14 @@
                                 <div class="col-md-4">
                                     <div class='form-group-sm'>
                                         <input id='txtId' style="display:none" name="txtId" class="form-control input-sm">
-                                        <label for="cboObra" class="control-label col-sm-2 left-align">Obra</label>
-                                        <div class="col-sm-10">
+                                        <label for="cboObra" class="control-label col-sm-12 left-align">Obra</label>
+                                        <div class="col-sm-12">
                                             <select id="cboObraM" onchange="onchangeObra()" type="text" class="form-control input-sm" tabindex="3"></select>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-4" style="display:none">
                                     <div class='form-group-sm'>
-
                                         <label for="cboTipoRegistro" class="control-label col-sm- left-align">Tipo Registro</label>
                                         <div class="col-sm-9">
                                             <select id="cboTipoRegistroM" type="text" class="form-control input-sm" tabindex="3" onchange="onchangeTipoRegistro()"></select>
@@ -132,24 +131,33 @@
                                     </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <div class='form-group-sm '>
-
-                                        <label for="cboSemana" class="control-label col-sm-2 left-align">Semana</label>
-                                        <div class="col-sm-10">
+                                    <div class='form-group-sm'>
+                                        <label for="cboSemana" class="control-label col-sm-12 left-align">Semana</label>
+                                        <div class="col-sm-12">
                                             <select id="cboSemanaM" type="text" class="form-control input-sm" tabindex="3"></select>
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-md-4">
+                                      <div class="col-md-6">
+                                         <div class='form-group-sm'>
+                                             <label for="cboSerie" class="control-label col-sm-12 left-align">Serie</label>
+                                             <div class="col-sm-12">
+                                                 <select id="cboSerie" type="text" class="form-control input-sm" tabindex="3"></select>
+                                             </div>
+                                         </div>
+                                     </div>
+                                      <div class="col-md-6">
+                                         <div class='form-group-sm'>                                                      
+                                             <label for="txtCorrelativo" class="control-label col-sm-12 left-align">Correlativo</label>
+                                             <div class="col-sm-12">
+                                                 <input id="txtCorrelativo" type="text" class="form-control input-sm" disabled tabindex="3"/>
+                                             </div>
+                                         </div>
+                                     </div>
 
-                                 <div class="col-md-4">
-                                    <div class='form-group-sm '>
-
-                                        <label for="cboSerie" class="control-label col-sm-2 left-align">Serie</label>
-                                        <div class="col-sm-10">
-                                            <select id="cboSerie" type="text" class="form-control input-sm" tabindex="3"></select>
-                                        </div>
-                                    </div>
                                 </div>
+                              
 
                             </div>
                             <div class="row pl30 pr30">
@@ -186,7 +194,7 @@
                                     <div class='form-group-sm col-md-6' id="divProveedor">
                                         <label for="cboEncargado" class="control-label col-sm-0 left-align"></label>
                                         <div class="col-sm-10">
-                                            <select id="cboEncargado" type="text" class="form-control input-sm" tabindex="3" onchange="CopiarProveedor()"></select>
+                                            <select id="cboEncargado" style="width:100%" type="text" class="form-control input-sm" tabindex="3" onchange="CopiarProveedor()"></select>
                                         </div>
                                     </div>
 
@@ -194,7 +202,7 @@
 
                                         <label for="cboSolicitante" class="control-label col-sm-0 left-align"></label>
                                         <div class="col-sm-10">
-                                            <select id="cboSolicitante" type="text" class="form-control input-sm" tabindex="3"></select>
+                                            <select id="cboSolicitante" style="width:100%" type="text" class="form-control input-sm" tabindex="3"></select>
                                         </div>
 
                                     </div>

@@ -307,8 +307,8 @@ function ListarDatatableKardexDT(url, IdArticulo, IdAlmacen, FechaInicio, FechaT
                 data: {
                     'IdArticulo': IdArticulo,
                     'IdAlmacen': IdAlmacen,
-                    'FechaInicio': FechaInicio,
-                    'FechaTermino': FechaTermino,
+                    'FechaInicio': FechaInicio + " 00:00:00",
+                    'FechaTermino': FechaTermino + " 23:59:59",
                     'ClaseArticulo': $("#cboClaseArticulo").val(),
                     'TipoArticulo': $("#IdTipoProducto").val(),
                     pagination: {

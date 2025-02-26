@@ -416,7 +416,7 @@ namespace DAO
             }
         }
 
-        public List<DevolucionAdmDTO> ObtenerDevolucionesAtender(int IdBase, DateTime FechaInicio, DateTime FechaFin, int EstadoDevolucion, int SerieFiltro, string BaseDatos)
+        public List<DevolucionAdmDTO> ObtenerDevolucionesAtender(int IdBase,int IdObra, DateTime FechaInicio, DateTime FechaFin, int EstadoDevolucion, int SerieFiltro, string BaseDatos)
         {
             List<DevolucionAdmDTO> lstSolicitudDespachoDTO = new List<DevolucionAdmDTO>();
 
@@ -429,6 +429,7 @@ namespace DAO
                     cn.Open();
                     SqlDataAdapter da = new SqlDataAdapter("SMC_ListarDevolucionesAdmCabezera", cn);
                     da.SelectCommand.Parameters.AddWithValue("@IdBase", IdBase);
+                    da.SelectCommand.Parameters.AddWithValue("@IdObra", IdObra);
                     da.SelectCommand.Parameters.AddWithValue("@FechaInicio", FechaInicio);
                     da.SelectCommand.Parameters.AddWithValue("@FechaFin", FechaFin);
                     da.SelectCommand.Parameters.AddWithValue("@EstadoDevolucion", EstadoDevolucion);

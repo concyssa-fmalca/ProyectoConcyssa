@@ -67,7 +67,7 @@ namespace ConcyssaWeb.Controllers
         }
 
 
-        public string UpdateInsertMovimientoNotaCredito(OrpcDTO oOrpcDTO)
+        public string UpdateInsertMovimientoNotaCredito(OrpcDTO oOrpcDTO,string TblOrigenNC, string IdOrigenNC)
         {
             string mensaje_error = "";
             int IdSociedad = Convert.ToInt32((String.IsNullOrEmpty(oOrpcDTO.IdSociedad.ToString())) ? Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad")) : oOrpcDTO.IdSociedad);
@@ -88,53 +88,48 @@ namespace ConcyssaWeb.Controllers
             MovimientoDAO oMovimimientoDAO = new MovimientoDAO();
             OrpcDAO oOrpcDAO = new OrpcDAO();
             string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
-            int respuesta = oMovimimientoDAO.InsertUpdateMovimientoORPC(oOrpcDTO,BaseDatos,ref mensaje_error);
-            int respuesta1 = 0;
-            if (mensaje_error.Length > 0)
+            int respuesta = oMovimimientoDAO.InsertUpdateMovimientoORPC_Completo(oOrpcDTO, TblOrigenNC, IdOrigenNC, BaseDatos, ref mensaje_error);
+            object json = null;
+            if (respuesta <= 0)
             {
-                return mensaje_error;
+                json = new { status = false, mensaje = mensaje_error };
+                return JsonConvert.SerializeObject(json);
             }
-            if (respuesta > 0)
-            {
-                for (int i = 0; i < oOrpcDTO.detalles.Count; i++)
-                {
-                    oOrpcDTO.detalles[i].IdORPC = respuesta;
-                    respuesta1 = oMovimimientoDAO.InsertUpdateORPCDetalle(oOrpcDTO.detalles[i],BaseDatos,ref mensaje_error);
-                    int respuesta2 = oMovimimientoDAO.InsertUpdateORPCDetalleCuadrilla(respuesta1, oOrpcDTO.detalles[i],BaseDatos,ref mensaje_error);
-                }
-                oOrpcDAO.UpdateTotalesORPC(respuesta,BaseDatos,ref mensaje_error);
-                if (oOrpcDTO.AnexoDetalle!=null)
-                {
-                    for (int i = 0; i < oOrpcDTO.AnexoDetalle.Count; i++)
-                    {
-                        oOrpcDTO.AnexoDetalle[i].ruta = "/Anexos/" + oOrpcDTO.AnexoDetalle[i].NombreArchivo;
-                        oOrpcDTO.AnexoDetalle[i].IdSociedad = oOrpcDTO.IdSociedad;
-                        oOrpcDTO.AnexoDetalle[i].Tabla = "Orpc";
-                        oOrpcDTO.AnexoDetalle[i].IdTabla = respuesta;
+            json = new { status = true, mensaje = mensaje_error };
+            return JsonConvert.SerializeObject(json);
+            //int respuesta1 = 0
+            //if (mensaje_error.Length > 0)
+            //{
+            //    return mensaje_error;
+            //}
+            //if (respuesta > 0)
+            //{
+            //    for (int i = 0; i < oOrpcDTO.detalles.Count; i++)
+            //    {
+            //        oOrpcDTO.detalles[i].IdORPC = respuesta;
+            //        respuesta1 = oMovimimientoDAO.InsertUpdateORPCDetalle(oOrpcDTO.detalles[i],BaseDatos,ref mensaje_error);
+            //        int respuesta2 = oMovimimientoDAO.InsertUpdateORPCDetalleCuadrilla(respuesta1, oOrpcDTO.detalles[i],BaseDatos,ref mensaje_error);
+            //    }
+            //    oOrpcDAO.UpdateTotalesORPC(respuesta,BaseDatos,ref mensaje_error);
+            //    if (oOrpcDTO.AnexoDetalle!=null)
+            //    {
+            //        for (int i = 0; i < oOrpcDTO.AnexoDetalle.Count; i++)
+            //        {
+            //            oOrpcDTO.AnexoDetalle[i].ruta = "/Anexos/" + oOrpcDTO.AnexoDetalle[i].NombreArchivo;
+            //            oOrpcDTO.AnexoDetalle[i].IdSociedad = oOrpcDTO.IdSociedad;
+            //            oOrpcDTO.AnexoDetalle[i].Tabla = "Orpc";
+            //            oOrpcDTO.AnexoDetalle[i].IdTabla = respuesta;
 
-                        oMovimimientoDAO.InsertAnexoMovimiento(oOrpcDTO.AnexoDetalle[i],BaseDatos,ref mensaje_error);
-                    }
-                }
-                
+            //            oMovimimientoDAO.InsertAnexoMovimiento(oOrpcDTO.AnexoDetalle[i],BaseDatos,ref mensaje_error);
+
+            //        }
+            //    }
 
 
-            }
 
-            if (mensaje_error.Length > 0)
-            {
-                return mensaje_error;
-            }
-            else
-            {
-                if (respuesta > 0)
-                {
-                    return respuesta.ToString();
-                }
-                else
-                {
-                    return mensaje_error;
-                }
-            }
+            //}
+
+
         }
 
         public string ObtenerDatosxIdOrpc(int IdOrpc)

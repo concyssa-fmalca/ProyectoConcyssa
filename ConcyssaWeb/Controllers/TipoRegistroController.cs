@@ -315,7 +315,7 @@ namespace ConcyssaWeb.Controllers
             List<TipoRegistroDTO> lstTipoRegistroDTO =  tipoRegistroDAO.ObtenerTipoRegistro(1, 1, BaseDatos, ref mensaje_error);
 
 
-            int year = 2024; // Puedes cambiar el año según necesites
+            int year = 2025; // Puedes cambiar el año según necesites
             DateTimeFormatInfo dfi = DateTimeFormatInfo.CurrentInfo;
             Calendar cal = dfi.Calendar;
 
@@ -336,7 +336,6 @@ namespace ConcyssaWeb.Controllers
                 Semanas.Add(semanaDTO);
                 
             }
-            return "";
 
             for (int i = 0; i < lstObraDTO.Count; i++)
             {

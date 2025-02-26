@@ -8,7 +8,7 @@ namespace DAO
 {
     public class ProveedorDAO
     {
-        public List<ProveedorDTO> ObtenerProveedores(string IdSociedad,string BaseDatos)
+        public List<ProveedorDTO> ObtenerProveedores(string IdSociedad,bool Logistica, bool AgregarConcyssa, string BaseDatos)
         {
             List<ProveedorDTO> lstProveedorDTO = new List<ProveedorDTO>();
             using (SqlConnection cn = new Conexion().conectar(BaseDatos))
@@ -18,6 +18,8 @@ namespace DAO
                     cn.Open();
                     SqlDataAdapter da = new SqlDataAdapter("SMC_ListarProveedores", cn);
                     da.SelectCommand.Parameters.AddWithValue("@IdSociedad", int.Parse(IdSociedad));
+                    da.SelectCommand.Parameters.AddWithValue("@Logistica", Logistica);
+                    da.SelectCommand.Parameters.AddWithValue("@AgregarConcyssa", AgregarConcyssa);
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
                     SqlDataReader drd = da.SelectCommand.ExecuteReader();
                     while (drd.Read())
@@ -62,6 +64,128 @@ namespace DAO
             }
             return lstProveedorDTO;
         }
+
+        public List<ProveedorDTO> ObtenerProveedoresSelect2(string Texto,string BaseDatos)
+        {
+            List<ProveedorDTO> lstProveedorDTO = new List<ProveedorDTO>();
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarProveedoresSelect2", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@Texto", Texto);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        ProveedorDTO oProveedorDTO = new ProveedorDTO();
+                        oProveedorDTO.IdProveedor = int.Parse(drd["Id"].ToString());                   
+                        oProveedorDTO.NumeroDocumento = drd["NumeroDocumento"].ToString();
+                        oProveedorDTO.RazonSocial = drd["RazonSocial"].ToString();                    
+                        lstProveedorDTO.Add(oProveedorDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            return lstProveedorDTO;
+        }
+
+        public List<ProveedorDTO> ObtenerProveedoresDataTable(int IgnorarPrimeros, int CantidadFilas, string SearchTerm,string IdSociedad, bool Logistica, string BaseDatos)
+        {
+            List<ProveedorDTO> lstProveedorDTO = new List<ProveedorDTO>();
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarProveedoresDataTable", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IgnorarPrimeros", IgnorarPrimeros);
+                    da.SelectCommand.Parameters.AddWithValue("@CantidadFilas", CantidadFilas);
+                    da.SelectCommand.Parameters.AddWithValue("@SearchTerm", SearchTerm);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSociedad", int.Parse(IdSociedad));
+                    da.SelectCommand.Parameters.AddWithValue("@Logistica", Logistica);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        ProveedorDTO oProveedorDTO = new ProveedorDTO();
+                        oProveedorDTO.IdProveedor = int.Parse(drd["Id"].ToString());
+                        oProveedorDTO.CodigoCliente = drd["CodigoCliente"].ToString();
+                        oProveedorDTO.TipoPersona = int.Parse(drd["TipoPersona"].ToString());
+                        oProveedorDTO.TipoDocumento = int.Parse(drd["TipoDocumento"].ToString());
+                        oProveedorDTO.NumeroDocumento = drd["NumeroDocumento"].ToString();
+                        oProveedorDTO.RazonSocial = drd["RazonSocial"].ToString();
+                        oProveedorDTO.EstadoContribuyente = drd["EstadoContribuyente"].ToString();
+                        oProveedorDTO.CondicionContribuyente = drd["CondicionContribuyente"].ToString();
+                        oProveedorDTO.DireccionFiscal = drd["DireccionFiscal"].ToString();
+                        oProveedorDTO.Departamento = int.Parse(drd["Departamento"].ToString());
+                        oProveedorDTO.Provincia = int.Parse(drd["Provincia"].ToString());
+                        oProveedorDTO.Distrito = int.Parse(drd["Distrito"].ToString());
+                        oProveedorDTO.Pais = int.Parse(drd["Pais"].ToString());
+                        oProveedorDTO.Telefono = drd["Telefono"].ToString();
+                        oProveedorDTO.ComprobantesElectronicos = drd["ComprobantesElectronicos"].ToString();
+                        oProveedorDTO.AfiliadoPLE = drd["AfiliadoPLE"].ToString();
+                        oProveedorDTO.CondicionPago = int.Parse(drd["CondicionPago"].ToString());
+                        oProveedorDTO.LineaCredito = drd["LineaCredito"].ToString();
+                        oProveedorDTO.Email = drd["Email"].ToString();
+                        oProveedorDTO.Web = drd["Web"].ToString();
+                        oProveedorDTO.Fax = drd["Fax"].ToString();
+                        oProveedorDTO.NombreContacto = drd["NombreContacto"].ToString();
+                        oProveedorDTO.TelefonoContacto = drd["TelefonoContacto"].ToString();
+                        oProveedorDTO.EmailContacto = drd["EmailContacto"].ToString();
+                        oProveedorDTO.FechaIngreso = Convert.ToDateTime(drd["FechaIngreso"].ToString());
+                        oProveedorDTO.Observacion = drd["Observacion"].ToString();
+                        oProveedorDTO.Estado = bool.Parse(drd["Estado"].ToString());
+                        lstProveedorDTO.Add(oProveedorDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            return lstProveedorDTO;
+        }
+
+        public int ObtenerProveedoresTotal(string SearchTerm, string IdSociedad, bool Logistica, string BaseDatos)
+        {
+            int resultado = 0;
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarProveedoresTOTAL", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSociedad", int.Parse(IdSociedad));
+                    da.SelectCommand.Parameters.AddWithValue("@Logistica", Logistica);
+                    da.SelectCommand.Parameters.AddWithValue("@SearchTerm", SearchTerm);
+
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        resultado = int.Parse(drd["Cantidad"].ToString());
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            return resultado;
+        }
+
+
 
         public int UpdateInsertProveedor(ProveedorDTO proveedorDTO, string IdSociedad, string BaseDatos)
         {
@@ -109,6 +233,9 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@IdSociedad", int.Parse(IdSociedad));
                         da.SelectCommand.Parameters.AddWithValue("@DiasEntrega", proveedorDTO.DiasEntrega);
                         da.SelectCommand.Parameters.AddWithValue("@Afecto4ta", proveedorDTO.Afecto4ta);
+                        da.SelectCommand.Parameters.AddWithValue("@ConOrden", proveedorDTO.ConOrden);
+                        da.SelectCommand.Parameters.AddWithValue("@SolicitarFTenPortalProv", proveedorDTO.SolicitarFTenPortalProv);
+                        da.SelectCommand.Parameters.AddWithValue("@EmailPortalProv", proveedorDTO.EmailPortalProv);
                         //int rpta = da.SelectCommand.ExecuteNonQuery();
                         int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
                         transactionScope.Complete();
@@ -168,6 +295,9 @@ namespace DAO
                         oProveedorDTO.Estado = bool.Parse(drd["Estado"].ToString());
                         oProveedorDTO.DiasEntrega = int.Parse(drd["DiasEntrega"].ToString());
                         oProveedorDTO.Afecto4ta = bool.Parse(drd["Afecto4ta"].ToString());
+                        oProveedorDTO.ConOrden = bool.Parse(drd["ConOrden"].ToString());
+                        oProveedorDTO.SolicitarFTenPortalProv = bool.Parse(drd["SolicitarFTenPortalProv"].ToString());
+                        oProveedorDTO.EmailPortalProv = (drd["EmailPortalProv"].ToString());
                         
                     }
                     drd.Close();
@@ -501,6 +631,42 @@ namespace DAO
                 }
             }
             return lstProveedorDTO;
+        }
+
+
+        public int CrearUsuarioPortalProv(ProveedorDTO proveedorDTO,string Password, string BaseDatos, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_SGC_CrearUsuarioPortal", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@Usuario", proveedorDTO.NumeroDocumento);
+                        da.SelectCommand.Parameters.AddWithValue("@Password", Password);
+                        da.SelectCommand.Parameters.AddWithValue("@IdProveedor", proveedorDTO.IdProveedor.ToString());
+                        da.SelectCommand.Parameters.AddWithValue("@DescProveedor", proveedorDTO.NumeroDocumento+"-"+ proveedorDTO.RazonSocial);
+                        da.SelectCommand.Parameters.AddWithValue("@Correo", proveedorDTO.EmailPortalProv);
+                        //int rpta = da.SelectCommand.ExecuteNonQuery();
+                        int rpta = Convert.ToInt32(da.SelectCommand.ExecuteNonQuery());
+                        transactionScope.Complete();
+
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+                }
+            }
         }
 
     }

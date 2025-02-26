@@ -8,12 +8,17 @@ using System.Xml;
 using OfficeOpenXml;
 using Microsoft.Win32;
 using OfficeOpenXml.Style;
+using Newtonsoft.Json.Linq;
 
 namespace ConcyssaWeb.Controllers
 {
     public class InformeKardexController : Controller
     {
         public IActionResult Listado()
+        {
+            return View();
+        }
+        public IActionResult KardexTributario()
         {
             return View();
         }
@@ -351,5 +356,258 @@ namespace ConcyssaWeb.Controllers
             return lstKardexDTO;
            
         }
+
+
+        public string GenerarExcelKardexTributario(int IdAlmacen, int Mes, int Anio, string CodOp, string LetraCorrelativo)
+        {
+
+            object json = null;
+            try
+            {
+                AlmacenDAO almacenDao = new AlmacenDAO();
+                KardexDAO oKardexDAO = new KardexDAO();
+
+                string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+                string mensaje_error = "";
+
+                //OBTENER EL NOMBRE DEL ALMACEN EN CASO SEA UNICO
+                string NombAlmacen = "TODOS";
+                List<AlmacenDTO> lstAlmacenDTO = new List<AlmacenDTO>();
+
+                if (IdAlmacen > 0)
+                {
+                    lstAlmacenDTO = almacenDao.ObtenerDatosxID(IdAlmacen, BaseDatos, ref mensaje_error);
+                }
+                if (lstAlmacenDTO.Count > 0)
+                {
+                    NombAlmacen = lstAlmacenDTO[0].Descripcion;
+                }
+
+                //OBTENEMOS LOS MOVIMIENTOS DEL MES
+                List<KardexTributario> lstKardexDTO = oKardexDAO.ObtenerKardexTributario(IdAlmacen, Mes, Anio, CodOp, LetraCorrelativo, BaseDatos, ref mensaje_error);
+                if (mensaje_error.Length > 0)
+                {
+                    json = new { status = false, mensaje = "No se pudieron cargar los movimientos del mes seleccionado: " + mensaje_error };
+                    return JsonConvert.SerializeObject(json);
+                }
+
+                //List<GrupoKardexTributarioDTO> agrupadosPorAlmacenYArticulo = lstKardexDTO
+                //.GroupBy(a => new { a.IdAlmacen, a.IdArticulo })
+                //.Select(g => new GrupoKardexTributarioDTO
+                //{
+                //    IDAlmacen = g.Key.IdAlmacen,
+                //    IDArticulo = g.Key.IdArticulo,
+                //    Kardex = g.ToList()
+                //})
+                //.ToList();
+
+                List<int> almacenesUnicos = new List<int>();
+
+
+                if (IdAlmacen > 0)
+                {
+                    almacenesUnicos.Add(IdAlmacen);
+      
+                }else
+                {
+                    List<AlmacenDTO> Almacenes = almacenDao.ObtenerAlmacen(1, BaseDatos, ref mensaje_error, 1);
+                    if (mensaje_error.Length > 0)
+                    {
+                        json = new { status = false, mensaje = "Ocurrió un error al cargar los almacenes: " + mensaje_error };
+                        return JsonConvert.SerializeObject(json);
+                    }
+                    for (int i = 0; i < Almacenes.Count(); i++)
+                    {
+                        almacenesUnicos.Add(Almacenes[i].IdAlmacen);
+                    }
+                }
+
+               
+
+                List<KardexTributario> SaldoInicialGlobal = new List<KardexTributario>();
+
+                foreach (int Almacen in almacenesUnicos)
+                {
+                    //string DatosArticulos = "";
+                    //int CantidadItems = 0;
+                    //foreach (var grupo in agrupadosPorAlmacenYArticulo)
+                    //{
+                    //    if (grupo.IDAlmacen == Almacen)
+                    //    {
+                    //        CantidadItems++;
+                    //        DatosArticulos += grupo.IDArticulo.ToString() + ",";
+                    //    }
+                    //}
+                    //DatosArticulos = DatosArticulos.Substring(0, DatosArticulos.Length - 1);
+
+                    List<KardexTributario> lstSaldoInicialxAlmacen = oKardexDAO.ObtenerSaldoInicialKardexTributario(Almacen, Mes, Anio, CodOp, "", BaseDatos, ref mensaje_error);
+                    if (mensaje_error.Length>0)
+                    {
+                        json = new { status = false, mensaje = "No se pudieron cargar los saldos iniciales: " + mensaje_error };
+                        return JsonConvert.SerializeObject(json);
+                    }
+                    //if (lstSaldoInicialxAlmacen.Count != CantidadItems)
+                    //{
+                    //    json = new { status = false, mensaje = "No se pudieron cargar todos los saldos iniciales: " + mensaje_error };
+                    //    return JsonConvert.SerializeObject(json);
+                    //}
+                    SaldoInicialGlobal.AddRange(lstSaldoInicialxAlmacen);
+                }
+
+                string NombreArchivo = "KardexTributario-" + NombAlmacen + " " + Anio.ToString() + "-" + Mes.ToString();
+                string filePath = "wwwroot/Anexos/" + NombreArchivo + ".xlsx";
+
+
+                lstKardexDTO.AddRange(SaldoInicialGlobal);
+
+                lstKardexDTO = lstKardexDTO.OrderBy(a => a.IdAlmacen).ThenBy(a => a.IdArticulo).ThenBy(a => a.IdKardex).ToList();
+
+
+
+                ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
+                // Crear un nuevo archivo Excel
+                FileInfo fileInfo = new FileInfo(filePath);
+
+                if (fileInfo.Exists)
+                {
+                    fileInfo.Delete();
+                    fileInfo = new FileInfo(filePath); // Crear un nuevo FileInfo después de eliminar
+                }
+
+                using (ExcelPackage package = new ExcelPackage(fileInfo))
+                {
+                    // Agregar una hoja al archivo
+                    ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Kardex");
+
+                    using (ExcelRange range = worksheet.Cells["A1:AJ1"])
+                    {
+                        range.Style.Font.Bold = true;
+                        range.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        range.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
+                        range.Style.Font.Color.SetColor(System.Drawing.Color.Black);
+                    }
+
+
+                    // Encabezados
+                    worksheet.Cells["A1"].Value = "PERIODO";// "CAMPO1";
+                    worksheet.Cells["B1"].Value = "N.OPERACION";//"CAMPO2";
+                    worksheet.Cells["C1"].Value = "CORRELATIVO";//"CAMPO3";
+                    worksheet.Cells["D1"].Value = "CODIGO ESTAB. SUNAT";//"CAMPO4";
+                    worksheet.Cells["E1"].Value = "CATALOGO";//"CAMPO5";
+                    worksheet.Cells["F1"].Value = "TIPO EXISTENCIA";//"CAMPO6";
+                    worksheet.Cells["G1"].Value = "CODIGO PRODUCTO";//"CAMPO7";
+                    worksheet.Cells["H1"].Value = "CATALOGO2";//"CAMPO8";
+                    worksheet.Cells["I1"].Value = "UNSPSC";//"CAMPO9";
+                    worksheet.Cells["J1"].Value = "FECHA OPERACION";//"CAMPO10";
+                    worksheet.Cells["K1"].Value = "TIPO DE DOC";//"CAMPO11";
+                    worksheet.Cells["L1"].Value = "SERIE";//"CAMPO12";
+                    worksheet.Cells["M1"].Value = "NUM.DOC";//"CAMPO13";
+                    worksheet.Cells["N1"].Value = "TIPO OPERACION";//"CAMPO14";
+                    worksheet.Cells["O1"].Value = "DESCRIPCION DEL PRODUCTO";//"CAMPO15";
+                    worksheet.Cells["P1"].Value = "UNIDAD MEDIDA";//"CAMPO16";
+                    worksheet.Cells["Q1"].Value = "METODO COSTO";//"CAMPO17";
+                    worksheet.Cells["R1"].Value = "UNIDADES ENTRADA";//"CAMPO18";
+                    worksheet.Cells["S1"].Value = "COSTO UNIT ENTRADA";//"CAMPO19";
+                    worksheet.Cells["T1"].Value = "ENTRADA EN SOLES";//"CAMPO20";
+                    worksheet.Cells["U1"].Value = "UNIDADES SALIDA";//"CAMPO21";
+                    worksheet.Cells["V1"].Value = "COSTO UNIT SALIDA";//"CAMPO22";
+                    worksheet.Cells["W1"].Value = "SALIDA EN SOLES";//"CAMPO23";
+                    worksheet.Cells["X1"].Value = "UNIDADES SALDO";//"CAMPO24";
+                    worksheet.Cells["Y1"].Value = "COSTO UNIT SALDO";//"CAMPO25";
+                    worksheet.Cells["Z1"].Value = "SALDO EN SOLES";//"CAMPO26";
+                    worksheet.Cells["AA1"].Value = "ESTADO OP.";//"CAMPO27";
+                    worksheet.Cells["AB1"].Value = "CAMPO28";//"CAMPO28";
+                    worksheet.Cells["AC1"].Value = "FechaContabilizacion";
+                    worksheet.Cells["AD1"].Value = "FechaSistema";
+                    worksheet.Cells["AE1"].Value = "FechaDocumento";
+                    worksheet.Cells["AF1"].Value = "NumUniversal";
+                    worksheet.Cells["AG1"].Value = "TipoArticulo";
+                    worksheet.Cells["AH1"].Value = "NombreContrato";
+                    worksheet.Cells["AI1"].Value = "Proveedor";
+                    worksheet.Cells["AJ1"].Value = "TIPO OP SGC";
+
+
+
+                    //// Definir el ancho de las columnas
+                    worksheet.Column(9).Width = 20; // Ancho de la primera columna (en caracteres)
+                    worksheet.Column(10).Width = 20;
+                    worksheet.Column(15).Width = 40;
+                    worksheet.Column(34).Width = 40;
+                    worksheet.Column(35).Width = 40;
+                    worksheet.Column(36).Width = 40;
+
+
+                    // Rellenar celdas con datos
+                    int row = 2; // Empezar en la segunda fila
+                    int contador = 1;
+                    foreach (var registro in lstKardexDTO)
+                    {
+
+                        worksheet.Cells["A" + row].Value = registro.CAMPO1;
+                        worksheet.Cells["B" + row].Value = registro.CAMPO2;
+                        worksheet.Cells["C" + row].Value = String.Format("{0}{1:D9}", LetraCorrelativo, contador);
+                        worksheet.Cells["D" + row].Value = registro.CAMPO4;
+                        worksheet.Cells["E" + row].Value = registro.CAMPO5;
+                        worksheet.Cells["F" + row].Value = registro.CAMPO6;
+                        worksheet.Cells["G" + row].Value = registro.CAMPO7;
+                        worksheet.Cells["H" + row].Value = registro.CAMPO8;
+                        worksheet.Cells["I" + row].Value = registro.CAMPO9;
+                        worksheet.Cells["J" + row].Value = registro.CAMPO10;
+                        worksheet.Cells["K" + row].Value = registro.CAMPO11;
+                        worksheet.Cells["L" + row].Value = registro.CAMPO12;
+                        worksheet.Cells["M" + row].Value = registro.CAMPO13;
+                        worksheet.Cells["N" + row].Value = registro.CAMPO14;
+                        worksheet.Cells["O" + row].Value = registro.CAMPO15;
+                        worksheet.Cells["P" + row].Value = registro.CAMPO16;
+                        worksheet.Cells["Q" + row].Value = registro.CAMPO17;
+                        worksheet.Cells["R" + row].Value = registro.CAMPO18;
+                        worksheet.Cells["S" + row].Value = registro.CAMPO19;
+                        worksheet.Cells["T" + row].Value = registro.CAMPO20;
+                        worksheet.Cells["U" + row].Value = registro.CAMPO21;
+                        worksheet.Cells["V" + row].Value = registro.CAMPO22;
+                        worksheet.Cells["W" + row].Value = registro.CAMPO23;
+                        worksheet.Cells["X" + row].Value = registro.CAMPO24;
+                        worksheet.Cells["Y" + row].Value = registro.CAMPO25;
+                        worksheet.Cells["Z" + row].Value = registro.CAMPO26;
+                        worksheet.Cells["AA" + row].Value = registro.CAMPO27;
+                        worksheet.Cells["AB" + row].Value = registro.CAMPO28;
+                        worksheet.Cells["AC" + row].Value = registro.FechaContabilizacion;
+                        worksheet.Cells["AD" + row].Value = registro.FechaRegistro;
+                        worksheet.Cells["AE" + row].Value = registro.CAMPO10;
+                        worksheet.Cells["AF" + row].Value = registro.IdKardex;
+                        worksheet.Cells["AG" + row].Value = registro.TipoArticulo;
+                        worksheet.Cells["AH" + row].Value = registro.NombreContrato;
+                        worksheet.Cells["AI" + row].Value = registro.RUC +" - "+ registro.RazonSocial;
+                        worksheet.Cells["AJ" + row].Value = registro.DescripcionMovimiento;
+                        row++;
+                        contador++;
+                    }
+
+                    // Guardar el archivo Excel
+                    package.Save();
+                }
+
+
+                if (mensaje_error.Length > 0)
+                {
+                    json = new { status = false, mensaje = mensaje_error };
+                    return JsonConvert.SerializeObject(json);
+                }
+
+                json = new { status = true, mensaje = mensaje_error, NombreArchivo = NombreArchivo };
+                return JsonConvert.SerializeObject(json);
+            }
+            catch(Exception e)
+            {
+                json = new { status = false, mensaje = e.Message.ToString() };
+                return JsonConvert.SerializeObject(json);
+            }
+
+           
+
+        }
+
+
+
     }
 }

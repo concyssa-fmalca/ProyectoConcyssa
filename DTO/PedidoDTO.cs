@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -65,6 +66,8 @@ namespace DTO
         public int Accion { get; set; }
         public int IdModelo { get; set; }
         public bool EnvioCorreo { get; set; }
+        public bool EntregasConAlmacen { get; set; }
+        public bool EsSubContrato { get; set; }
 
     }
     public class PedidoDetalleDTO
@@ -165,6 +168,17 @@ namespace DTO
         public int IdPedido { get; set; }
         
     }
+    public class PedidoPendienteDTO
+    {
+        public int IdObra { get; set; }
+        public int IdArticulo { get; set; }
+        public string? RazonSocial { get; set; }
+        public string? NumOC { get; set; }
+        public DateTime FechaDocumento { get; set; }
 
+        public decimal Cantidad { get; set; }
+        public decimal Entregado { get; set; }
+        public decimal Saldo { get; set; }
+    }
 
 }

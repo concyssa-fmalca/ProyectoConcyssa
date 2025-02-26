@@ -108,6 +108,40 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
+        public string ObtenerCuadrillaxIdObraSelect2(int IdObra,string Texto="")
+        {
+            string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            CuadrillaDAO oCuadrillaDAO = new CuadrillaDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            List<CuadrillaDTO> lstCuadrillaDTO = oCuadrillaDAO.ObtenerCuadrillaxIdObraSelect2(IdObra, Texto, BaseDatos, ref mensaje_error);
+            if (lstCuadrillaDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstCuadrillaDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
+
+        public string ObtenerCuadrillaxIdBase(int IdBase)
+        {
+            string mensaje_error = "";
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            CuadrillaDAO oCuadrillaDAO = new CuadrillaDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            List<CuadrillaDTO> lstCuadrillaDTO = oCuadrillaDAO.ObtenerCuadrillaxIdBase(IdBase, BaseDatos, ref mensaje_error);
+            if (lstCuadrillaDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstCuadrillaDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
+
         public string ObtenerNuevoCodigo(int CodigoUsar,int IdObra)
         {
             string mensaje_error = "";

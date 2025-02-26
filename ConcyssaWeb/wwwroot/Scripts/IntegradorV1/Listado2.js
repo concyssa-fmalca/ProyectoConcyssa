@@ -1290,8 +1290,12 @@ function AgregarLineaDetalle(contador, detalle) {
     console.log("CONTADOR :" + contador)
     ObtenerCuadrillasTabla(contador)
     ObtenerEmpleadosxIdCuadrillaTabla(contador)
-    $(".cboCuadrillaTabla").select2()
-    $(".cboResponsableTabla").select2()
+    $(".cboCuadrillaTabla").select2({
+        dropdownParent: $("#modal-form")
+    })
+    $(".cboResponsableTabla").select2({
+        dropdownParent: $("#modal-form")
+    })
     $("#cboCuadrillaTablaId" + contador).val(detalle.IdCuadrilla).change()
     $("#cboResponsableTablaId" + contador).val(detalle.IdResponsable).change()
     NumeracionDinamica();
@@ -1633,7 +1637,11 @@ function changeTipoDocumento() {
         $("#IdTipoDocumentoRef").val(valorTDInicial)
         return;
     }
-    let totalValor = ($("#txtTotal").val()).replace(/,/g,"")
+    let totalValor = ($("#txtTotal").val()).replace(/,/g, "")
+    if ($("#cboMoneda").val() == 2) {
+        let TipoCambio = +($("#txtTipoCambio").val()).replace(/,/g, "")
+        totalValor = totalValor * TipoCambio
+    }
 
     let TDocSelect = $("#IdTipoDocumentoRef").val()
     if (TDocSelect == 11) {

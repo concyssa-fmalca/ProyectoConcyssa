@@ -4094,3 +4094,22 @@ function SeleccionTrItem(ItemCodigo) {
     $("#rdSeleccionado" + ItemCodigo).prop("checked", true);
 
 }
+
+function BuscarDNI() {
+
+    let dni = $("#NumIdentidadConductor").val()
+
+    if (dni == "" || dni == null || dni == undefined) {
+        Swal.fire("Ingrese en Nro de DNI")
+        return;
+    }
+
+
+
+    $.post("/Cliente/ConsultarDNI", { 'Documento': dni }, function (data, status) {
+        let datos = JSON.parse(data);
+        console.log(datos)
+
+
+    });
+}

@@ -293,11 +293,17 @@ function ObtenerCuadrillas() {
 }
 function ObtenerCuadrillasxIdObra() {
     let IdObraCuadrilla = $("#IdObra").val();
-    $.ajaxSetup({ async: false });
-    $.post("/Cuadrilla/ObtenerCuadrillaxIdObra", { 'IdObra': IdObraCuadrilla }, function (data, status) {
-        let cuadrilla = JSON.parse(data);
-        llenarComboCuadrilla(cuadrilla, "IdCuadrilla", "Seleccione")
-    });
+
+    if (IdObraCuadrilla == 0 || IdObraCuadrilla == null || IdObraCuadrilla == undefined || IdObraCuadrilla == "") {
+        llenarComboCuadrilla([], "IdCuadrilla", "Seleccione")
+    } else {
+        $.ajaxSetup({ async: false });
+        $.post("/Cuadrilla/ObtenerCuadrillaxIdObra", { 'IdObra': IdObraCuadrilla }, function (data, status) {
+            let cuadrilla = JSON.parse(data);
+            llenarComboCuadrilla(cuadrilla, "IdCuadrilla", "Seleccione")
+        });
+    }
+
 }
 
 function llenarComboCuadrilla(lista, idCombo, primerItem) {
@@ -438,9 +444,9 @@ window.onload = function () {
     CargarBaseFiltro()
     var url = "../Movimientos/ObtenerMovimientosIngresos";
     $("#cboCentroCosto").val(7)
-    $("#IdResponsable").select2();
-    $("#IdCuadrilla").select2();
-    $("#IdProveedor").select2();
+    $("#IdResponsable").select2({ dropdownParent: $("#ModalItem .modal-content") });
+    $("#IdCuadrilla").select2({ dropdownParent: $("#ModalItem .modal-content") });
+    $("#IdProveedor").select2({ dropdownParent: $("#modal-form") });
     ObtenerConfiguracionDecimales();
     
     $("#SubirAnexos").on("submit", function (e) {
@@ -1040,8 +1046,8 @@ function AgregarLinea() {
         CalcularTotalDetalle(contador)
         ObtenerCuadrillasTabla(contador)
         ObtenerEmpleadosxIdCuadrillaTabla(contador)
-        $(".cboCuadrillaTabla").select2()
-        $(".cboResponsableTabla").select2()
+        $(".cboCuadrillaTabla").select2({ dropdownParent: $("#modal-form") })
+        $(".cboResponsableTabla").select2({ dropdownParent: $("#modal-form") })
         $("#cboCuadrillaTablaId").val($("#IdCuadrilla").val()).change()
         $("#cboResponsableTablaId").val($("#IdResponsable").val()).change()
         LimpiarModalItem();
@@ -1885,7 +1891,9 @@ function GuardarSolicitud() {
                 'IdTipoRegistro': $("#IdTipoRegistro").val(),
                 'IdSemana': SemanaOgiro,
                 'SerieDocBase': varSerieDocBase,
-                'SerieSAP': varSerieSAP
+                'SerieSAP': varSerieSAP,
+                'TblOrigenNC': $("#txtOrigen").val(),
+                'IdOrigenNC': $("#txtOrigenId").val(),
             },
             beforeSend: function () {
                 Swal.fire({
@@ -1896,60 +1904,24 @@ function GuardarSolicitud() {
                 });
             },
             success: function (data) {
-                if (data > 0) {
-                    $.ajax({
-                        url: "AccionesPorNotaCredito",
-                        type: "POST",
-                        async: false,
-                        data: {
-                            'TablaOrigen': $("#txtOrigen").val(),
-                            'IdOrigen': $("#txtOrigenId").val(),
-                            'IdORPC': data,
-                        },
-                        success: function (data2) {
-                            if (data2 == '1' || data2 == '2') {
-                                Swal.fire(
-                                    'Correcto',
-                                    'Proceso Realizado Correctamente',
-                                    'success'
-                                )
-                                CerrarModal();
-                                ObtenerDatosxIDORPC(data)
-                                //swal("Exito!", "Proceso Realizado Correctamente", "success")
-                                listarOrpc()
-                            } else {
-                                Swal.fire(
-                                    'Error!',
-                                    'Comunicarse con el Area Soporte: smarcode@smartcode.pe !',
-                                    'error'
-                                )
-                            }
 
-                        }
-                    }).fail(function () {
-                        Swal.fire(
-                            'Error!',
-                            'Comunicarse con el Area Soporte: smarcode@smartcode.pe !',
-                            'error'
-                        )
-                    });
+                let datos = JSON.parse(data)
 
-
-
-
-
-                    
-
+                if (datos.status) {
+                    Swal.fire(
+                        'Correcto',
+                        'Proceso Realizado Correctamente',
+                        'success'
+                    )
+                    CerrarModal();
+                    listarOrpc()
                 } else {
                     Swal.fire(
                         'Error!',
-                        'Ocurrio un Error!',
+                        datos.mensaje,
                         'error'
                     )
-
                 }
-
-
             }
         }).fail(function () {
             Swal.fire(
@@ -2244,8 +2216,8 @@ function AgregarLineaDetalle(contador, detalle) {
     //$("#cboPrioridadDetalle" + contador).val(Prioridad);
     ObtenerCuadrillasTabla(contador)
     ObtenerEmpleadosxIdCuadrillaTabla(contador)
-    $(".cboCuadrillaTabla").select2()
-    $(".cboResponsableTabla").select2()
+    $(".cboCuadrillaTabla").select2({ dropdownParent: $("#modal-form") })
+    $(".cboResponsableTabla").select2({ dropdownParent: $("#modal-form") })
     $("#cboCuadrillaTablaId" + contador).val(detalle.IdCuadrilla).change()
     $("#cboResponsableTablaId" + contador).val(detalle.IdResponsable).change()
     NumeracionDinamica();
@@ -4705,8 +4677,8 @@ function AgregarOpchDetalle(datos) {
                 $("#txtTipoServicio" + contador).val(detalles[d].TipoServicio);
                 ObtenerCuadrillasTabla(contador)
                 ObtenerEmpleadosxIdCuadrillaTabla(contador)
-                $(".cboCuadrillaTabla").select2()
-                $(".cboResponsableTabla").select2()
+                $(".cboCuadrillaTabla").select2({ dropdownParent: $("#modal-form") })
+                $(".cboResponsableTabla").select2({ dropdownParent: $("#modal-form") })
                 if (IdCuadrillaParaTabla != 0) {
                     $("#cboCuadrillaTablaId" + contador).val(IdCuadrillaParaTabla).change();
                     console.log("CONTADOR V" + contador)
@@ -4793,7 +4765,7 @@ function ObtenerCapataz() {
     //setTimeout(() => {
     $.post("/Empleado/ObtenerCapatazXCuadrilla", { 'IdCuadrilla': IdCuadrilla }, function (data, status) {
         let capataz = JSON.parse(data);
-        $("#IdResponsable").select2("val", capataz[0].IdEmpleado);
+        $("#IdResponsable").val(capataz[0].IdEmpleado).change();
     })
     /*  }, 1000);*/
 
@@ -5270,7 +5242,8 @@ function Extornar() {
 
                     },
                     success: function (data) {
-                        if (data > 0) {
+                        let datos = JSON.parse(data)
+                        if (datos.status) {
                             $.ajax({
                                 url: "ExtornarORPC",
                                 type: "POST",
@@ -5311,7 +5284,7 @@ function Extornar() {
                         } else {
                             Swal.fire(
                                 'Error!',
-                                'Ocurrio un Error! Error al Crear Entrada',
+                                'Ocurrio un Error! Error al Crear Entrada '+datos.mensaje,
                                 'error'
                             )
 
@@ -5733,8 +5706,8 @@ function AgregarDevProvDetalle(datos) {
                 $("#txtTipoServicio" + contador).val('No Aplica');
                 ObtenerCuadrillasTabla(contador)
                 ObtenerEmpleadosxIdCuadrillaTabla(contador)
-                $(".cboCuadrillaTabla").select2()
-                $(".cboResponsableTabla").select2()
+                $(".cboCuadrillaTabla").select2({ dropdownParent: $("#modal-form") })
+                $(".cboResponsableTabla").select2({ dropdownParent: $("#modal-form") })
                 if (IdCuadrillaParaTabla != 0) {
                     $("#cboCuadrillaTablaId" + contador).val(IdCuadrillaParaTabla).change();
                     console.log("CONTADOR V" + contador)

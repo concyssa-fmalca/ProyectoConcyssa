@@ -7,6 +7,11 @@ window.onload = function () {
     listarMacas();
     listarBase();
     listarEmpleado();
+    ObtenerCuadrillasxBase();
+    CargarProveedor();
+    $("#cboPropietario").select2({
+        dropdownParent: $("#modal-form")
+    });
 };
 
 
@@ -74,6 +79,9 @@ function GuardarVehiculo() {
     let Placa = $("#txtPlaca").val();
     let CertificadoInscripcion = $("#txtCertfificadoInscripcion").val();    
     let IdChofer = $("#cboIdChofer").val();
+    let IdCuadrilla = $("#cboCuadrilla").val();
+    let Brevete = $("#txtBrevete").val();
+    let IdPropietario = $("#cboPropietario").val();
     let Estado = false;
 
     if ($('#chkActivo')[0].checked) {
@@ -104,7 +112,7 @@ function GuardarVehiculo() {
         return
     }
     $.post('UpdateInsertVehiculo', {
-        IdVehiculo, IdMarca, IdBase, Condicion, CertificadoInscripcion, IdChofer, Placa, Estado
+        IdVehiculo, IdMarca, IdBase, Condicion, CertificadoInscripcion, IdChofer, Placa, Estado, IdCuadrilla, Brevete, IdPropietario
     }, function (data, status) {
 
         if (data == 1) {
@@ -112,6 +120,7 @@ function GuardarVehiculo() {
             //table.destroy();
             ConsultaServidor("ObtenerVehiculo");
             limpiarDatos();
+            closePopup()
 
         } else {
             swal("Error!", "Ocurrio un Error")
@@ -218,11 +227,15 @@ function ObtenerDatosxID(varIdVehiculo) {
             //console.log(usuarios);
             $("#txtId").val(Vehiculo[0].IdVehiculo);
             $("#cboIdMarca").val(Vehiculo[0].IdMarca);
-            $("#cboIdBase").val(Vehiculo[0].IdBase);
+            $("#cboIdBase").val(Vehiculo[0].IdBase).change();
             $("#cboCondicion").val(Vehiculo[0].Condicion);
             $("#txtCertfificadoInscripcion").val(Vehiculo[0].CertificadoInscripcion);
             $("#cboIdChofer").val(Vehiculo[0].IdChofer);
             $("#txtPlaca").val(Vehiculo[0].Placa);
+            $("#txtPlaca").val(Vehiculo[0].Placa);
+            $("#txtBrevete").val(Vehiculo[0].Brevete);
+            $("#cboCuadrilla").val(Vehiculo[0].IdCuadrilla);
+            $("#cboPropietario").val(Vehiculo[0].IdPropietario).change();
             
             if (Vehiculo[0].Estado) {
                 $("#chkActivo").prop('checked', true);
@@ -260,12 +273,73 @@ function eliminar(varIdLineaNegocio) {
 function limpiarDatos() {
     $("#txtId").val("");
     $("#cboIdMarca").val(0);
-    $("#cboIdBase").val(0);
+    $("#cboIdBase").val(0).change();
+
     $("#cboCondicion").val(0);
     $("#txtCertfificadoInscripcion").val("");
     $("#cboIdChofer").val(0);
     $("#txtPlaca").val("");
+    $("#txtBrevete").val("");
+    $("#cboPropietario").val(24154).change();
 }
 
 
 
+function ObtenerCuadrillasxBase() {
+    let IdBase = $("#cboIdBase").val()
+
+    let DatosCuadrilla = [];
+
+    $.ajaxSetup({ async: false });
+    $.post("/Cuadrilla/ObtenerCuadrillaxIdBase", { 'IdBase': IdBase }, function (data, status) {
+        try {
+            DatosCuadrilla = JSON.parse(data);
+        } catch (e) {
+            DatosCuadrilla = [];
+        }
+    });
+    llenarComboCuadrilla(DatosCuadrilla, "cboCuadrilla", "Seleccione")
+}
+
+
+function llenarComboCuadrilla(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdCuadrilla + "'>" + lista[i].Codigo + " - " + lista[i].Descripcion.toUpperCase() + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+  
+
+}
+
+
+function CargarProveedor() {
+    $.ajaxSetup({ async: false });
+    $.post("/Proveedor/ObtenerProveedores", { 'AgregarConcyssa': true }, function (data, status) {
+        let DatosProveedores = JSON.parse(data);
+        llenarComboProveedor(DatosProveedores, "cboPropietario", "Seleccione")
+    });
+}
+
+function llenarComboProveedor(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdProveedor + "'>" + lista[i].NumeroDocumento + " - " + lista[i].RazonSocial + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+    $("#" + idCombo).val(24154).change();
+}

@@ -163,57 +163,15 @@ namespace ConcyssaWeb.Controllers
             MovimientoDAO oMovimimientoDAO = new MovimientoDAO();
             OpdnDAO oOpdnDAO = new OpdnDAO();
             int respuesta = oMovimimientoDAO.InsertUpdateMovimientoOPDN(oOpdnDTO,BaseDatos,ref mensaje_error);
-            int respuesta1 = 0;
-            if (mensaje_error.Length > 0)
+            object json = null;
+         
+            if (respuesta <= 0)
             {
-                return mensaje_error;
+                json = new { status = false, mensaje = mensaje_error };
+                return JsonConvert.SerializeObject(json);
             }
-            if (respuesta > 0)
-            {
-                for (int i = 0; i < oOpdnDTO.detalles.Count; i++)
-                {
-                    oOpdnDTO.detalles[i].IdOPDN = respuesta;
-                    respuesta1 = oMovimimientoDAO.InsertUpdateOPDNDetalle(oOpdnDTO.detalles[i],BaseDatos,ref mensaje_error);
-                    int respuesta2 = oMovimimientoDAO.InsertUpdateOPDNDetalleCuadrilla(respuesta1, oOpdnDTO.detalles[i],BaseDatos,ref mensaje_error);
-                }
-
-                if (oOpdnDTO.AnexoDetalle != null)
-                {
-                    for (int i = 0; i < oOpdnDTO.AnexoDetalle.Count; i++)
-                    {
-                        oOpdnDTO.AnexoDetalle[i].ruta = "/Anexos/" + oOpdnDTO.AnexoDetalle[i].NombreArchivo;
-                        oOpdnDTO.AnexoDetalle[i].IdSociedad = oOpdnDTO.IdSociedad;
-                        oOpdnDTO.AnexoDetalle[i].Tabla = "Opdn";
-                        oOpdnDTO.AnexoDetalle[i].IdTabla = respuesta;
-
-                        oMovimimientoDAO.InsertAnexoMovimiento(oOpdnDTO.AnexoDetalle[i],BaseDatos,ref mensaje_error);
-                    }
-                }
-
-
-
-
-
-                oOpdnDAO.UpdateTotalesOPDN(respuesta,BaseDatos,ref mensaje_error);
-
-
-            }
-
-            if (mensaje_error.Length > 0)
-            {
-                return mensaje_error;
-            }
-            else
-            {
-                if (respuesta > 0)
-                {
-                    return respuesta.ToString();
-                }
-                else
-                {
-                    return mensaje_error;
-                }
-            }
+            json = new { status = true, mensaje = mensaje_error,id=respuesta };
+            return JsonConvert.SerializeObject(json);
         }
 
         public string UpdateInsertMovimientoEMLogisticaString(string JsonDatosEnviar)
@@ -252,58 +210,71 @@ namespace ConcyssaWeb.Controllers
             oOpdnDTO.IdUsuario = IdUsuario;
             MovimientoDAO oMovimimientoDAO = new MovimientoDAO();
             OpdnDAO oOpdnDAO = new OpdnDAO();
-            int respuesta = oMovimimientoDAO.InsertUpdateMovimientoOPDN(oOpdnDTO, BaseDatos, ref mensaje_error);
-            int respuesta1 = 0;
-            if (mensaje_error.Length > 0)
+
+        
+
+
+            int respuesta = oMovimimientoDAO.InsertUpdateMovimientoOPDN_Completo(oOpdnDTO, BaseDatos, ref mensaje_error);
+            object json = null;
+            //int respuesta1 = 0;
+            //if (mensaje_error.Length > 0)
+            //{
+            //    return mensaje_error;
+            //}
+            //if (respuesta > 0)
+            //{
+            //    for (int i = 0; i < oOpdnDTO.detalles.Count; i++)
+            //    {
+            //        oOpdnDTO.detalles[i].IdOPDN = respuesta;
+            //        respuesta1 = oMovimimientoDAO.InsertUpdateOPDNDetalle(oOpdnDTO.detalles[i], BaseDatos, ref mensaje_error);
+            //        int respuesta2 = oMovimimientoDAO.InsertUpdateOPDNDetalleCuadrilla(respuesta1, oOpdnDTO.detalles[i], BaseDatos, ref mensaje_error);
+            //    }
+
+            //    if (oOpdnDTO.AnexoDetalle != null)
+            //    {
+            //        MovimientoDAO oMovimientoDAO = new MovimientoDAO();
+            //        for (int i = 0; i < oOpdnDTO.AnexoDetalle.Count; i++)
+            //        {
+            //            oOpdnDTO.AnexoDetalle[i].ruta = "/Anexos/" + oOpdnDTO.AnexoDetalle[i].NombreArchivo;
+            //            oOpdnDTO.AnexoDetalle[i].IdSociedad = oOpdnDTO.IdSociedad;
+            //            oOpdnDTO.AnexoDetalle[i].Tabla = "Opdn";
+            //            oOpdnDTO.AnexoDetalle[i].IdTabla = respuesta;
+
+            //            oMovimimientoDAO.InsertAnexoMovimiento(oOpdnDTO.AnexoDetalle[i], BaseDatos, ref mensaje_error);
+            //        }
+            //    }
+
+
+
+
+
+            //    oOpdnDAO.UpdateTotalesOPDN(respuesta, BaseDatos, ref mensaje_error);
+
+
+            //}
+
+            //if (mensaje_error.Length > 0)
+            //{
+            //    return mensaje_error;
+            //}
+            //else
+            //{
+            //    if (respuesta > 0)
+            //    {
+            //        return respuesta.ToString();
+            //    }
+            //    else
+            //    {
+            //        return mensaje_error;
+            //    }
+            //}
+            if (respuesta <= 0)
             {
-                return mensaje_error;
+                json = new { status = false, mensaje = mensaje_error };
+                return JsonConvert.SerializeObject(json);
             }
-            if (respuesta > 0)
-            {
-                for (int i = 0; i < oOpdnDTO.detalles.Count; i++)
-                {
-                    oOpdnDTO.detalles[i].IdOPDN = respuesta;
-                    respuesta1 = oMovimimientoDAO.InsertUpdateOPDNDetalle(oOpdnDTO.detalles[i], BaseDatos, ref mensaje_error);
-                    int respuesta2 = oMovimimientoDAO.InsertUpdateOPDNDetalleCuadrilla(respuesta1, oOpdnDTO.detalles[i], BaseDatos, ref mensaje_error);
-                }
-
-                if (oOpdnDTO.AnexoDetalle != null)
-                {
-                    for (int i = 0; i < oOpdnDTO.AnexoDetalle.Count; i++)
-                    {
-                        oOpdnDTO.AnexoDetalle[i].ruta = "/Anexos/" + oOpdnDTO.AnexoDetalle[i].NombreArchivo;
-                        oOpdnDTO.AnexoDetalle[i].IdSociedad = oOpdnDTO.IdSociedad;
-                        oOpdnDTO.AnexoDetalle[i].Tabla = "Opdn";
-                        oOpdnDTO.AnexoDetalle[i].IdTabla = respuesta;
-
-                        oMovimimientoDAO.InsertAnexoMovimiento(oOpdnDTO.AnexoDetalle[i], BaseDatos, ref mensaje_error);
-                    }
-                }
-
-
-
-
-
-                oOpdnDAO.UpdateTotalesOPDN(respuesta, BaseDatos, ref mensaje_error);
-
-
-            }
-
-            if (mensaje_error.Length > 0)
-            {
-                return mensaje_error;
-            }
-            else
-            {
-                if (respuesta > 0)
-                {
-                    return respuesta.ToString();
-                }
-                else
-                {
-                    return mensaje_error;
-                }
-            }
+            json = new { status = true, mensaje = mensaje_error, id = respuesta };
+            return JsonConvert.SerializeObject(json);
         }
 
 
@@ -339,54 +310,62 @@ namespace ConcyssaWeb.Controllers
             {
               BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             }
-            int respuesta = oMovimimientoDAO.InsertUpdateMovimiento(oMovimientoDTO,BaseDatos,ref mensaje_error);
-            int respuesta1 = 0;
-            if (mensaje_error.Length > 0)
+            int respuesta = oMovimimientoDAO.RegistrarMovimientoCompleto(oMovimientoDTO,1,BaseDatos,ref mensaje_error);
+            object json = null;
+            if (respuesta <= 0)
             {
-                return mensaje_error;
+                json = new { status = false, mensaje = mensaje_error };
+                return JsonConvert.SerializeObject(json);
             }
-            if (respuesta > 0)
-            {
-                for (int i = 0; i < oMovimientoDTO.detalles.Count; i++)
-                {
-                    oMovimientoDTO.detalles[i].IdMovimiento = respuesta;
-                    oMovimientoDTO.detalles[i].IdMovimientoDetalle = 0;
-                    respuesta1 = oMovimimientoDAO.InsertUpdateMovimientoDetalle(oMovimientoDTO.detalles[i],0 ,BaseDatos,ref mensaje_error);
-                    int respuesta2 = oMovimimientoDAO.InsertUpdateMovimientoDetalleCuadrilla(respuesta1, oMovimientoDTO.detalles[i],BaseDatos,ref mensaje_error);
+            json = new { status = true, mensaje = mensaje_error, id = respuesta };
+            return JsonConvert.SerializeObject(json);
+            //int respuesta1 = 0;
+            //if (mensaje_error.Length > 0)
+            //{
+            //    return mensaje_error;
+            //}
+            //if (respuesta > 0)
+            //{
+            //    for (int i = 0; i < oMovimientoDTO.detalles.Count; i++)
+            //    {
+            //        oMovimientoDTO.detalles[i].IdMovimiento = respuesta;
+            //        oMovimientoDTO.detalles[i].IdMovimientoDetalle = 0;
+            //        respuesta1 = oMovimimientoDAO.InsertUpdateMovimientoDetalle(oMovimientoDTO.detalles[i],0 ,BaseDatos,ref mensaje_error);
+            //        int respuesta2 = oMovimimientoDAO.InsertUpdateMovimientoDetalleCuadrilla(respuesta1, oMovimientoDTO.detalles[i],BaseDatos,ref mensaje_error);
 
 
-                }
-                if (oMovimientoDTO.AnexoDetalle!=null)
-                {
-                    for (int i = 0; i < oMovimientoDTO.AnexoDetalle.Count; i++)
-                    {
-                        oMovimientoDTO.AnexoDetalle[i].ruta = "/Anexos/" + oMovimientoDTO.AnexoDetalle[i].NombreArchivo;
-                        oMovimientoDTO.AnexoDetalle[i].IdSociedad = oMovimientoDTO.IdSociedad;
-                        oMovimientoDTO.AnexoDetalle[i].Tabla = "Movimiento";
-                        oMovimientoDTO.AnexoDetalle[i].IdTabla = respuesta;
+            //    }
+            //    if (oMovimientoDTO.AnexoDetalle!=null)
+            //    {
+            //        for (int i = 0; i < oMovimientoDTO.AnexoDetalle.Count; i++)
+            //        {
+            //            oMovimientoDTO.AnexoDetalle[i].ruta = "/Anexos/" + oMovimientoDTO.AnexoDetalle[i].NombreArchivo;
+            //            oMovimientoDTO.AnexoDetalle[i].IdSociedad = oMovimientoDTO.IdSociedad;
+            //            oMovimientoDTO.AnexoDetalle[i].Tabla = "Movimiento";
+            //            oMovimientoDTO.AnexoDetalle[i].IdTabla = respuesta;
 
-                        oMovimimientoDAO.InsertAnexoMovimiento(oMovimientoDTO.AnexoDetalle[i],BaseDatos,ref mensaje_error);
-                    }
-                }
-                
+            //            oMovimimientoDAO.InsertAnexoMovimiento(oMovimientoDTO.AnexoDetalle[i],BaseDatos,ref mensaje_error);
+            //        }
+            //    }
 
-            }
 
-            if (mensaje_error.Length > 0)
-            {
-                return mensaje_error;
-            }
-            else
-            {
-                if (respuesta > 0)
-                {
-                    return respuesta.ToString();
-                }
-                else
-                {
-                    return mensaje_error;
-                }
-            }
+            //}
+
+            //if (mensaje_error.Length > 0)
+            //{
+            //    return mensaje_error;
+            //}
+            //else
+            //{
+            //    if (respuesta > 0)
+            //    {
+            //        return respuesta.ToString();
+            //    }
+            //    else
+            //    {
+            //        return mensaje_error;
+            //    }
+            //}
         }
 
         public string UpdateInsertMovimientoDesdeString(string JsonDatosEnviar)
@@ -429,38 +408,46 @@ namespace ConcyssaWeb.Controllers
             oMovimientoDTO.IdUsuario = IdUsuario;
             MovimientoDAO oMovimimientoDAO = new MovimientoDAO();
             string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
-            int respuesta = oMovimimientoDAO.InsertUpdateMovimiento(oMovimientoDTO,BaseDatos,ref mensaje_error);
+            int respuesta = oMovimimientoDAO.RegistrarMovimientoCompleto(oMovimientoDTO,1,BaseDatos,ref mensaje_error);
             int respuesta1 = 0;
-            if (mensaje_error.Length > 0)
+            object json = null;
+            if (respuesta <= 0)
             {
-                return mensaje_error;
+                json = new { status = false, mensaje = mensaje_error };
+                return JsonConvert.SerializeObject(json);
             }
-            if (respuesta > 0)
-            {
-                for (int i = 0; i < oMovimientoDTO.detalles.Count; i++)
-                {
-                    oMovimientoDTO.detalles[i].IdMovimiento = respuesta;
-                    oMovimientoDTO.detalles[i].IdMovimientoDetalle = 0;
-                    respuesta1 = oMovimimientoDAO.InsertUpdateMovimientoDetalle(oMovimientoDTO.detalles[i], 0,BaseDatos,ref mensaje_error);
-                    int respuesta2 = oMovimimientoDAO.InsertUpdateMovimientoDetalleCuadrilla(respuesta1, oMovimientoDTO.detalles[i],BaseDatos,ref mensaje_error);
+            json = new { status = true, mensaje = mensaje_error, id = respuesta };
+            return JsonConvert.SerializeObject(json);
+            //if (mensaje_error.Length > 0)
+            //{
+            //    return mensaje_error;
+            //}
+            //if (respuesta > 0)
+            //{
+            //    for (int i = 0; i < oMovimientoDTO.detalles.Count; i++)
+            //    {
+            //        oMovimientoDTO.detalles[i].IdMovimiento = respuesta;
+            //        oMovimientoDTO.detalles[i].IdMovimientoDetalle = 0;
+            //        respuesta1 = oMovimimientoDAO.InsertUpdateMovimientoDetalle(oMovimientoDTO.detalles[i], 0,BaseDatos,ref mensaje_error);
+            //        int respuesta2 = oMovimimientoDAO.InsertUpdateMovimientoDetalleCuadrilla(respuesta1, oMovimientoDTO.detalles[i],BaseDatos,ref mensaje_error);
 
-                }
+            //    }
 
-                if (oMovimientoDTO.AnexoDetalle != null)
-                {
-                    for (int i = 0; i < oMovimientoDTO.AnexoDetalle.Count; i++)
-                    {
-                        oMovimientoDTO.AnexoDetalle[i].ruta = "/Anexos/" + oMovimientoDTO.AnexoDetalle[i].NombreArchivo;
-                        oMovimientoDTO.AnexoDetalle[i].IdSociedad = oMovimientoDTO.IdSociedad;
-                        oMovimientoDTO.AnexoDetalle[i].Tabla = "Movimiento";
-                        oMovimientoDTO.AnexoDetalle[i].IdTabla = respuesta;
+            //    if (oMovimientoDTO.AnexoDetalle != null)
+            //    {
+            //        for (int i = 0; i < oMovimientoDTO.AnexoDetalle.Count; i++)
+            //        {
+            //            oMovimientoDTO.AnexoDetalle[i].ruta = "/Anexos/" + oMovimientoDTO.AnexoDetalle[i].NombreArchivo;
+            //            oMovimientoDTO.AnexoDetalle[i].IdSociedad = oMovimientoDTO.IdSociedad;
+            //            oMovimientoDTO.AnexoDetalle[i].Tabla = "Movimiento";
+            //            oMovimientoDTO.AnexoDetalle[i].IdTabla = respuesta;
 
-                        oMovimimientoDAO.InsertAnexoMovimiento(oMovimientoDTO.AnexoDetalle[i],BaseDatos,ref mensaje_error);
-                    }
-                }
+            //            oMovimimientoDAO.InsertAnexoMovimiento(oMovimientoDTO.AnexoDetalle[i],BaseDatos,ref mensaje_error);
+            //        }
+            //    }
 
 
-            }
+            //}
 
             if (mensaje_error.Length > 0)
             {
@@ -1136,6 +1123,7 @@ namespace ConcyssaWeb.Controllers
             oMovimientoDTO.IdSerie = Serie;
             oMovimientoDTO.FechaDocumento = FechaDoc;
             oMovimientoDTO.FechaContabilizacion = FechaCont;
+            oMovimientoDTO.IdMovDevolucion = IdEntrada;
 
             oSalidaMercanciaController.UpdateInsertMovimiento(oMovimientoDTO, BaseDatos);
 

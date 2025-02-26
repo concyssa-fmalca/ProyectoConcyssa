@@ -186,72 +186,8 @@ namespace DAO
                     try
                     {
                         cn.Open();
-                        SqlDataAdapter da = new SqlDataAdapter("SMC_InsertUpdateMovimiento", cn);
-                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
-                        da.SelectCommand.Parameters.AddWithValue("@IdMovimiento", oMovimientoDTO.IdMovimiento);
-                        da.SelectCommand.Parameters.AddWithValue("@IdSociedad", oMovimientoDTO.IdSociedad);
-                        da.SelectCommand.Parameters.AddWithValue("@IdAlmacen", oMovimientoDTO.IdAlmacen);
-                        da.SelectCommand.Parameters.AddWithValue("@IdSerie", oMovimientoDTO.IdSerie);
-                        da.SelectCommand.Parameters.AddWithValue("@IdTipoDocumento", oMovimientoDTO.IdTipoDocumento);
-                        da.SelectCommand.Parameters.AddWithValue("@ObjType", oMovimientoDTO.ObjType);
-                        da.SelectCommand.Parameters.AddWithValue("@IdMoneda", oMovimientoDTO.IdMoneda);
-                        da.SelectCommand.Parameters.AddWithValue("@CodMoneda", oMovimientoDTO.CodMoneda);
-                        da.SelectCommand.Parameters.AddWithValue("@TipoCambio", oMovimientoDTO.TipoCambio);
-                        da.SelectCommand.Parameters.AddWithValue("@IdCliente", oMovimientoDTO.IdCliente);
-                        da.SelectCommand.Parameters.AddWithValue("@FechaContabilizacion", oMovimientoDTO.FechaContabilizacion.ToString("yyyyMMdd"));
-                        da.SelectCommand.Parameters.AddWithValue("@FechaDocumento", oMovimientoDTO.FechaDocumento.ToString("yyyyMMdd"));
-                        da.SelectCommand.Parameters.AddWithValue("@FechaVencimiento", oMovimientoDTO.FechaVencimiento.ToString("yyyyMMdd"));
-                        da.SelectCommand.Parameters.AddWithValue("@IdListaPrecios", oMovimientoDTO.IdListaPrecios);
-                        da.SelectCommand.Parameters.AddWithValue("@Referencia", oMovimientoDTO.Referencia);
-                        da.SelectCommand.Parameters.AddWithValue("@Comentario", oMovimientoDTO.Comentario);
-                        da.SelectCommand.Parameters.AddWithValue("@SubTotal", oMovimientoDTO.SubTotal);
-                        da.SelectCommand.Parameters.AddWithValue("@Impuesto", oMovimientoDTO.Impuesto);
-                        da.SelectCommand.Parameters.AddWithValue("@Total", oMovimientoDTO.Total);
-                        da.SelectCommand.Parameters.AddWithValue("@IdCuadrilla", oMovimientoDTO.IdCuadrilla);
-                        da.SelectCommand.Parameters.AddWithValue("@IdAlmacenDestino", oMovimientoDTO.IdAlmacenDestino);
-                        da.SelectCommand.Parameters.AddWithValue("@IdResponsable", oMovimientoDTO.IdResponsable);
-                        da.SelectCommand.Parameters.AddWithValue("@IdTipoDocumentoRef", oMovimientoDTO.IdTipoDocumentoRef);
-                        da.SelectCommand.Parameters.AddWithValue("@NumSerieTipoDocumentoRef", oMovimientoDTO.NumSerieTipoDocumentoRef);
-                        da.SelectCommand.Parameters.AddWithValue("@EntregadoA", oMovimientoDTO.EntregadoA);
-                        da.SelectCommand.Parameters.AddWithValue("@IdUsuario", oMovimientoDTO.IdUsuario);
-                        da.SelectCommand.Parameters.AddWithValue("@IdCentroCosto", oMovimientoDTO.IdCentroCosto);
-
-                        da.SelectCommand.Parameters.AddWithValue("@IdDestinatario", oMovimientoDTO.IdDestinatario);
-                        da.SelectCommand.Parameters.AddWithValue("@IdMotivoTraslado", oMovimientoDTO.IdMotivoTraslado);
-                        da.SelectCommand.Parameters.AddWithValue("@IdTransportista", oMovimientoDTO.IdTransportista);
-                        da.SelectCommand.Parameters.AddWithValue("@PlacaVehiculo", oMovimientoDTO.PlacaVehiculo);
-                        da.SelectCommand.Parameters.AddWithValue("@MarcaVehiculo", oMovimientoDTO.MarcaVehiculo);
-                        da.SelectCommand.Parameters.AddWithValue("@NumIdentidadConductor", oMovimientoDTO.NumIdentidadConductor);
-                        da.SelectCommand.Parameters.AddWithValue("@NombreConductor", oMovimientoDTO.NombreConductor);
-                        da.SelectCommand.Parameters.AddWithValue("@ApellidoConductor", oMovimientoDTO.ApellidoConductor);
-                        da.SelectCommand.Parameters.AddWithValue("@LicenciaConductor", oMovimientoDTO.LicenciaConductor);
-                        da.SelectCommand.Parameters.AddWithValue("@TipoTransporte", oMovimientoDTO.TipoTransporte);
-                        //da.SelectCommand.Parameters.AddWithValue("@UbigeoPartida", oMovimientoDTO.UbigeoPartida);
-                        //da.SelectCommand.Parameters.AddWithValue("@UbigeoLlegada", oMovimientoDTO.UbigeoLlegada);
-                        da.SelectCommand.Parameters.AddWithValue("@Peso", oMovimientoDTO.Peso);
-                        da.SelectCommand.Parameters.AddWithValue("@Bulto", oMovimientoDTO.Bulto);
-
-
-                        da.SelectCommand.Parameters.AddWithValue("@IdObraDestino", oMovimientoDTO.IdObraDestino);
-
-                        da.SelectCommand.Parameters.AddWithValue("@IdDocExtorno", oMovimientoDTO.detalles[0].IdMovimiento);
-
-                        da.SelectCommand.Parameters.AddWithValue("@SGI", oMovimientoDTO.SGI);
-                        da.SelectCommand.Parameters.AddWithValue("@AnexoLlegada", oMovimientoDTO.CodigoAnexoLlegada);
-                        da.SelectCommand.Parameters.AddWithValue("@UbigeoLlegada", oMovimientoDTO.CodigoUbigeoLlegada);
-                        da.SelectCommand.Parameters.AddWithValue("@DistritoLlegada", oMovimientoDTO.DistritoLlegada);
-                        da.SelectCommand.Parameters.AddWithValue("@DireccionLlegada", oMovimientoDTO.DireccionLlegada);
-
-
-                        //Nuevo de Despacho
-                        da.SelectCommand.Parameters.AddWithValue("@OrigenDespacho", oMovimientoDTO.OrigenDespacho);
-                        da.SelectCommand.Parameters.AddWithValue("@EsDevolucionAdm", oMovimientoDTO.EsDevolucionAdm);
-                        da.SelectCommand.Parameters.AddWithValue("@IdProveedor", oMovimientoDTO.IdProveedor);
-                        da.SelectCommand.Parameters.AddWithValue("@NroRef", oMovimientoDTO.NroRef);
-                        da.SelectCommand.Parameters.AddWithValue("@IdTransfAnulada", oMovimientoDTO.IdTransfAnulada);
-
-
-                        int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
+                        int rpta = registrarCabeceraMovimiento(oMovimientoDTO, cn, ref mensaje_error);
+                        if (mensaje_error.Length > 0) {return 0;}
                         transactionScope.Complete();
                         return rpta;
                     }
@@ -279,33 +215,8 @@ namespace DAO
                     try
                     {
                         cn.Open();
-                        SqlDataAdapter da = new SqlDataAdapter("SMC_InsertUpdateMovimientoDetalle", cn);
-                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
-                        da.SelectCommand.Parameters.AddWithValue("@IdMovimientoDetalle", oMovimientoDetalleDTO.IdMovimientoDetalle);
-                        da.SelectCommand.Parameters.AddWithValue("@IdMovimiento", oMovimientoDetalleDTO.IdMovimiento);
-                        da.SelectCommand.Parameters.AddWithValue("@IdArticulo", oMovimientoDetalleDTO.IdArticulo);
-                        da.SelectCommand.Parameters.AddWithValue("@DescripcionArticulo", oMovimientoDetalleDTO.DescripcionArticulo);
-                        da.SelectCommand.Parameters.AddWithValue("@IdDefinicionGrupoUnidad", oMovimientoDetalleDTO.IdDefinicionGrupoUnidad);
-                        da.SelectCommand.Parameters.AddWithValue("@IdAlmacen", oMovimientoDetalleDTO.IdAlmacen);
-                        da.SelectCommand.Parameters.AddWithValue("@Cantidad", oMovimientoDetalleDTO.Cantidad);
-                        da.SelectCommand.Parameters.AddWithValue("@Igv", oMovimientoDetalleDTO.Igv);
-                        da.SelectCommand.Parameters.AddWithValue("@PrecioUnidadBase", oMovimientoDetalleDTO.PrecioUnidadBase);
-                        da.SelectCommand.Parameters.AddWithValue("@PrecioUnidadTotal", oMovimientoDetalleDTO.PrecioUnidadTotal);
-                        da.SelectCommand.Parameters.AddWithValue("@TotalBase", oMovimientoDetalleDTO.TotalBase);
-                        da.SelectCommand.Parameters.AddWithValue("@Total", oMovimientoDetalleDTO.Total);
-                        da.SelectCommand.Parameters.AddWithValue("@CuentaContable", oMovimientoDetalleDTO.CuentaContable);
-                        da.SelectCommand.Parameters.AddWithValue("@IdCentroCosto", oMovimientoDetalleDTO.IdCentroCosto);
-                        da.SelectCommand.Parameters.AddWithValue("@IdAfectacionIgv", oMovimientoDetalleDTO.IdAfectacionIgv);
-                        da.SelectCommand.Parameters.AddWithValue("@Descuento", oMovimientoDetalleDTO.Descuento);
-                        da.SelectCommand.Parameters.AddWithValue("@IdAlmacenDestino", oMovimientoDetalleDTO.IdAlmacenDestino);
-                        da.SelectCommand.Parameters.AddWithValue("@Referencia", oMovimientoDetalleDTO.Referencia);
-                        da.SelectCommand.Parameters.AddWithValue("@TablaOrigen", oMovimientoDetalleDTO.TablaOrigen);
-                        da.SelectCommand.Parameters.AddWithValue("@IdOrigen", oMovimientoDetalleDTO.IdOrigen);
-
-                        da.SelectCommand.Parameters.AddWithValue("@ValidarIngresoSalidaOAmbos", ValidarIngresoSalidaOAmbos);
-                        
-
-                        int rpta = int.Parse(da.SelectCommand.ExecuteScalar().ToString());
+                        int rpta = registrarDetalleMovimiento(oMovimientoDetalleDTO, ValidarIngresoSalidaOAmbos, cn, ref mensaje_error);
+                        if (mensaje_error.Length > 0) { return 0; }
                         transactionScope.Complete();
                         return rpta;
                     }
@@ -333,13 +244,9 @@ namespace DAO
                     try
                     {
                         cn.Open();
-                        SqlDataAdapter da = new SqlDataAdapter("SMC_InsertUpdateMovimientoDetalleCuadrilla", cn);
-                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
-                        da.SelectCommand.Parameters.AddWithValue("@IdMovimientoDetalle", MovDetalle);
-                        da.SelectCommand.Parameters.AddWithValue("@IdCuadrilla", oMovimientoDetalleDTO.IdCuadrilla);
-                        da.SelectCommand.Parameters.AddWithValue("@IdResponsable", oMovimientoDetalleDTO.IdResponsable);
-                        
-                        int rpta = da.SelectCommand.ExecuteNonQuery();
+
+                        int rpta = registrarActualizacionCuadrillaDetalle(MovDetalle, oMovimientoDetalleDTO, cn, ref mensaje_error);
+                        if (mensaje_error.Length > 0) { return 0; }
                         transactionScope.Complete();
                         return rpta;
                     }
@@ -562,6 +469,8 @@ namespace DAO
                         oMovimientoDTO.EstadoFE = Convert.ToInt32(String.IsNullOrEmpty(drd["EstadoFE"].ToString()) ? "0" : drd["EstadoFE"].ToString());
                         oMovimientoDTO.IdDocExtorno = Convert.ToInt32(drd["IdDocExtorno"].ToString());
                         oMovimientoDTO.IdTransfAnulada = Convert.ToInt32(drd["IdTransfAnulada"].ToString());
+                        oMovimientoDTO.NombObraDestino = (drd["NombObraDestino"].ToString());
+                        oMovimientoDTO.NombAlmacenDestino = (drd["NombAlmacenDestino"].ToString());
                         lstMovimientoDTO.Add(oMovimientoDTO);
                     }
                     drd.Close();
@@ -698,7 +607,7 @@ namespace DAO
                         oMovimientoDTO.NroRef   = (String.IsNullOrEmpty(drd["NroRef"].ToString()) ? "" : drd["NroRef"].ToString());
 
                         oMovimientoDTO.NombUsuario = (drd["NombUsuario"].ToString());
-
+                        oMovimientoDTO.CodigoCuadrilla = (drd["CodigoCuadrilla"].ToString());
                         lstMovimientoDTO.Add(oMovimientoDTO);
                     }
                     drd.Close();
@@ -712,9 +621,118 @@ namespace DAO
             }
             return lstMovimientoDTO;
         }
-        #endregion
 
-        
+        public List<MovimientoDTO> ObtenerMovimientosIngresosDataTable(int IgnorarPrimeros, int CantidadFilas, string SearchTerm, int IdBase, int IdSociedad, DateTime FechaInicial, DateTime FechaFinal, string BaseDatos, ref string mensaje_error, int Estado = 3, int IdUsuario = 0)
+        {
+            List<MovimientoDTO> lstMovimientoDTO = new List<MovimientoDTO>();
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerMovimientosIngresosDataTable", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IgnorarPrimeros", IgnorarPrimeros);
+                    da.SelectCommand.Parameters.AddWithValue("@CantidadFilas", CantidadFilas);
+                    da.SelectCommand.Parameters.AddWithValue("@SearchTerm", SearchTerm);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
+                    da.SelectCommand.Parameters.AddWithValue("@Estado", Estado);
+                    da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
+                    da.SelectCommand.Parameters.AddWithValue("@IdBase", IdBase);
+                    da.SelectCommand.Parameters.AddWithValue("@FechaInicial", FechaInicial);
+                    da.SelectCommand.Parameters.AddWithValue("@FechaFinal", FechaFinal);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        MovimientoDTO oMovimientoDTO = new MovimientoDTO();
+                        oMovimientoDTO.IdMovimiento = Convert.ToInt32(drd["IdMovimiento"].ToString());
+                        oMovimientoDTO.IdTipoDocumento = Convert.ToInt32(drd["IdTipoDocumento"].ToString());
+                        oMovimientoDTO.ObjType = (drd["ObjType"].ToString());
+                        oMovimientoDTO.IdMoneda = Convert.ToInt32(drd["IdMoneda"].ToString());
+                        oMovimientoDTO.CodMoneda = (drd["CodMoneda"].ToString());
+                        oMovimientoDTO.TipoCambio = Convert.ToDecimal(drd["TipoCambio"].ToString());
+                        oMovimientoDTO.IdCliente = Convert.ToInt32(drd["IdCliente"].ToString());
+                        oMovimientoDTO.FechaContabilizacion = Convert.ToDateTime(drd["FechaContabilizacion"].ToString());
+                        oMovimientoDTO.FechaDocumento = Convert.ToDateTime(drd["FechaDocumento"].ToString());
+                        oMovimientoDTO.FechaVencimiento = Convert.ToDateTime(drd["FechaVencimiento"].ToString());
+                        oMovimientoDTO.IdListaPrecios = Convert.ToInt32(drd["IdListaPrecios"].ToString());
+                        oMovimientoDTO.Referencia = (drd["Referencia"].ToString());
+                        oMovimientoDTO.Comentario = (drd["Comentario"].ToString());
+                        oMovimientoDTO.DocEntrySap = Convert.ToInt32(drd["DocEntrySap"].ToString());
+                        oMovimientoDTO.DocNumSap = (drd["DocNumSap"].ToString());
+                        oMovimientoDTO.IdCentroCosto = Convert.ToInt32(drd["IdCentroCosto"].ToString());
+                        oMovimientoDTO.SubTotal = Convert.ToDecimal(drd["SubTotal"].ToString());
+                        oMovimientoDTO.Impuesto = Convert.ToDecimal(drd["Impuesto"].ToString());
+                        oMovimientoDTO.IdTipoAfectacionIgv = Convert.ToInt32(drd["IdTipoAfectacionIgv"].ToString());
+                        oMovimientoDTO.Total = Convert.ToDecimal(drd["Total"].ToString());
+                        oMovimientoDTO.IdAlmacen = Convert.ToInt32(drd["IdAlmacen"].ToString());
+                        oMovimientoDTO.IdSerie = Convert.ToInt32(drd["IdSerie"].ToString());
+                        oMovimientoDTO.Correlativo = Convert.ToInt32(drd["Correlativo"].ToString());
+                        oMovimientoDTO.IdSociedad = Convert.ToInt32(drd["IdSociedad"].ToString());
+                        oMovimientoDTO.NombTipoDocumentoOperacion = (drd["NombTipoDocumentoOperacion"].ToString());
+                        oMovimientoDTO.NombSerie = (drd["NombSerie"].ToString());
+                        oMovimientoDTO.Estado = Convert.ToBoolean(drd["Estado"].ToString());
+                        oMovimientoDTO.DescCuadrilla = (drd["DescCuadrilla"].ToString());
+                        oMovimientoDTO.NombAlmacen = (drd["NombAlmacen"].ToString());
+                        oMovimientoDTO.NombObra = (drd["NombObra"].ToString());
+                        oMovimientoDTO.NombMoneda = (drd["NombMoneda"].ToString());
+                        oMovimientoDTO.TDocumento = drd["TDocumento"].ToString();
+                        oMovimientoDTO.NumSerieTipoDocumentoRef = drd["NumSerieTipoDocumentoRef"].ToString();
+                        oMovimientoDTO.IdDocExtorno = Convert.ToInt32(drd["IdDocExtorno"].ToString());
+                        oMovimientoDTO.EsDevolucionAdm = Convert.ToInt32(drd["EsDevolucionAdm"].ToString());
+                        oMovimientoDTO.NroRef = (String.IsNullOrEmpty(drd["NroRef"].ToString()) ? "" : drd["NroRef"].ToString());
+                        oMovimientoDTO.NombUsuario = (drd["NombUsuario"].ToString());
+                        oMovimientoDTO.CodigoCuadrilla = (drd["CodigoCuadrilla"].ToString());
+                        lstMovimientoDTO.Add(oMovimientoDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstMovimientoDTO;
+        }
+
+        #endregion
+        public int ObtenerMovimientosIngresosTotales(string SearchTerm, int IdBase, int IdSociedad, DateTime FechaInicial, DateTime FechaFinal, string BaseDatos, ref string mensaje_error, int Estado = 3, int IdUsuario = 0)
+        {
+            int Cantidad = 0;
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerMovimientosIngresosTotal", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@SearchTerm", SearchTerm);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
+                    da.SelectCommand.Parameters.AddWithValue("@Estado", Estado);
+                    da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
+                    da.SelectCommand.Parameters.AddWithValue("@IdBase", IdBase);
+                    da.SelectCommand.Parameters.AddWithValue("@FechaInicial", FechaInicial);
+                    da.SelectCommand.Parameters.AddWithValue("@FechaFinal", FechaFinal);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        Cantidad = Convert.ToInt32(drd["Cantidad"].ToString());
+                       
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return Cantidad;
+        }
+
         public List<MovimientoDTO> ObtenerMovimientosSalidaModal(int IdSociedad,int IdAlmacen, string BaseDatos, ref string mensaje_error, int Estado = 3)
         {
             List<MovimientoDTO> lstMovimientoDTO = new List<MovimientoDTO>();
@@ -829,6 +847,7 @@ namespace DAO
                         oMovimientoDTO.NombSerie = (drd["NombSerie"].ToString());
                         oMovimientoDTO.Estado = Convert.ToBoolean(drd["Estado"].ToString());
                         oMovimientoDTO.DescCuadrilla = (drd["DescCuadrilla"].ToString());
+                        oMovimientoDTO.CodigoCuadrilla = (drd["CodigoCuadrilla"].ToString());
                         oMovimientoDTO.NombAlmacen = (drd["NombAlmacen"].ToString());
                         oMovimientoDTO.NombMoneda = (drd["NombMoneda"].ToString());
                         oMovimientoDTO.NombUsuario = (drd["NombUsuario"].ToString());
@@ -851,6 +870,119 @@ namespace DAO
                 }
             }
             return lstMovimientoDTO;
+        }
+
+        public List<MovimientoDTO> ObtenerMovimientosSalidaDataTable(int IgnorarPrimeros, int CantidadFilas, string SearchTerm,int IdBase, int IdSociedad, string BaseDatos, DateTime FechaInicial, DateTime FechaFinal, ref string mensaje_error, int Estado = 3, int IdUsuario = 0, string OpRef = "")
+        {
+            List<MovimientoDTO> lstMovimientoDTO = new List<MovimientoDTO>();
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerMovimientosSalidasDataTable", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IgnorarPrimeros", IgnorarPrimeros);
+                    da.SelectCommand.Parameters.AddWithValue("@CantidadFilas", CantidadFilas);
+                    da.SelectCommand.Parameters.AddWithValue("@SearchTerm", SearchTerm);
+                    da.SelectCommand.Parameters.AddWithValue("@IdBase", IdBase);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
+                    da.SelectCommand.Parameters.AddWithValue("@Estado", Estado);
+                    da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
+                    da.SelectCommand.Parameters.AddWithValue("@FechaInicial", FechaInicial);
+                    da.SelectCommand.Parameters.AddWithValue("@FechaFinal", FechaFinal);
+                    da.SelectCommand.Parameters.AddWithValue("@OpRef", OpRef);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        MovimientoDTO oMovimientoDTO = new MovimientoDTO();
+                        oMovimientoDTO.IdMovimiento = Convert.ToInt32(drd["IdMovimiento"].ToString());
+                        oMovimientoDTO.IdTipoDocumento = Convert.ToInt32(drd["IdTipoDocumento"].ToString());
+                        oMovimientoDTO.ObjType = (drd["ObjType"].ToString());
+                        oMovimientoDTO.IdMoneda = Convert.ToInt32(drd["IdMoneda"].ToString());
+                        oMovimientoDTO.CodMoneda = (drd["CodMoneda"].ToString());
+                        oMovimientoDTO.TipoCambio = Convert.ToDecimal(drd["TipoCambio"].ToString());
+                        oMovimientoDTO.IdCliente = Convert.ToInt32(drd["IdCliente"].ToString());
+                        oMovimientoDTO.FechaContabilizacion = Convert.ToDateTime(drd["FechaContabilizacion"].ToString());
+                        oMovimientoDTO.FechaDocumento = Convert.ToDateTime(drd["FechaDocumento"].ToString());
+                        oMovimientoDTO.FechaVencimiento = Convert.ToDateTime(drd["FechaVencimiento"].ToString());
+                        oMovimientoDTO.IdListaPrecios = Convert.ToInt32(drd["IdListaPrecios"].ToString());
+                        oMovimientoDTO.Referencia = (drd["Referencia"].ToString());
+                        oMovimientoDTO.Comentario = (drd["Comentario"].ToString());
+                        oMovimientoDTO.DocEntrySap = Convert.ToInt32(drd["DocEntrySap"].ToString());
+                        oMovimientoDTO.DocNumSap = (drd["DocNumSap"].ToString());
+                        oMovimientoDTO.IdCentroCosto = Convert.ToInt32(drd["IdCentroCosto"].ToString());
+                        oMovimientoDTO.SubTotal = Convert.ToDecimal(drd["SubTotal"].ToString());
+                        oMovimientoDTO.Impuesto = Convert.ToDecimal(drd["Impuesto"].ToString());
+                        oMovimientoDTO.IdTipoAfectacionIgv = Convert.ToInt32(drd["IdTipoAfectacionIgv"].ToString());
+                        oMovimientoDTO.Total = Convert.ToDecimal(drd["Total"].ToString());
+                        oMovimientoDTO.IdAlmacen = Convert.ToInt32(drd["IdAlmacen"].ToString());
+                        oMovimientoDTO.IdSerie = Convert.ToInt32(drd["IdSerie"].ToString());
+                        oMovimientoDTO.Correlativo = Convert.ToInt32(drd["Correlativo"].ToString());
+                        oMovimientoDTO.IdSociedad = Convert.ToInt32(drd["IdSociedad"].ToString());
+                        oMovimientoDTO.NombTipoDocumentoOperacion = (drd["NombTipoDocumentoOperacion"].ToString());
+                        oMovimientoDTO.NombSerie = (drd["NombSerie"].ToString());
+                        oMovimientoDTO.Estado = Convert.ToBoolean(drd["Estado"].ToString());
+                        oMovimientoDTO.DescCuadrilla = (drd["DescCuadrilla"].ToString());
+                        oMovimientoDTO.CodigoCuadrilla = (drd["CodigoCuadrilla"].ToString());
+                        oMovimientoDTO.NombAlmacen = (drd["NombAlmacen"].ToString());
+                        oMovimientoDTO.NombMoneda = (drd["NombMoneda"].ToString());
+                        oMovimientoDTO.NombUsuario = (drd["NombUsuario"].ToString());
+                        oMovimientoDTO.IdDocExtorno = Convert.ToInt32(drd["IdDocExtorno"].ToString());
+                        oMovimientoDTO.TDocumento = (drd["TDocumento"].ToString());
+                        oMovimientoDTO.SerieGuiaElectronica = (String.IsNullOrEmpty(drd["SerieGuiaElectronica"].ToString()) ? "" : drd["SerieGuiaElectronica"].ToString());
+                        oMovimientoDTO.OrigenDespacho = (String.IsNullOrEmpty(drd["OrigenDespacho"].ToString()) ? "" : drd["OrigenDespacho"].ToString());
+                        oMovimientoDTO.NumeroGuiaElectronica = Convert.ToInt32(String.IsNullOrEmpty(drd["NumeroGuiaElectronica"].ToString()) ? "0" : drd["NumeroGuiaElectronica"].ToString());
+                        oMovimientoDTO.EstadoFE = Convert.ToInt32(String.IsNullOrEmpty(drd["EstadoFE"].ToString()) ? "0" : drd["EstadoFE"].ToString());
+                        oMovimientoDTO.NroRef = (String.IsNullOrEmpty(drd["NroRef"].ToString()) ? "" : drd["NroRef"].ToString());
+                        lstMovimientoDTO.Add(oMovimientoDTO);
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return lstMovimientoDTO;
+        }
+
+        public int ObtenerMovimientosSalidaTotal(string SearchTerm, int IdBase, int IdSociedad, string BaseDatos, DateTime FechaInicial, DateTime FechaFinal, ref string mensaje_error, int Estado = 3, int IdUsuario = 0, string OpRef = "")
+        {
+            int Cantidad = 0;
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerMovimientosSalidasTotal", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@SearchTerm", SearchTerm);
+                    da.SelectCommand.Parameters.AddWithValue("@IdBase", IdBase);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
+                    da.SelectCommand.Parameters.AddWithValue("@Estado", Estado);
+                    da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
+                    da.SelectCommand.Parameters.AddWithValue("@FechaInicial", FechaInicial);
+                    da.SelectCommand.Parameters.AddWithValue("@FechaFinal", FechaFinal);
+                    da.SelectCommand.Parameters.AddWithValue("@OpRef", OpRef);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        Cantidad = Convert.ToInt32(drd["Cantidad"].ToString());
+                        
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return Cantidad;
         }
 
 
@@ -1141,8 +1273,7 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@Comentario", oOpchDTO.Comentario);
                         da.SelectCommand.Parameters.AddWithValue("@SubTotal", oOpchDTO.SubTotal);
                         da.SelectCommand.Parameters.AddWithValue("@Impuesto", oOpchDTO.Impuesto);
-                        da.SelectCommand.Parameters.AddWithValue("Redondeo", oOpchDTO.Redondeo);
-                        
+                        da.SelectCommand.Parameters.AddWithValue("Redondeo", oOpchDTO.Redondeo);                       
                         da.SelectCommand.Parameters.AddWithValue("@Total", oOpchDTO.Total);
                         da.SelectCommand.Parameters.AddWithValue("@IdCuadrilla", oOpchDTO.IdCuadrilla);
                         da.SelectCommand.Parameters.AddWithValue("@IdAlmacenDestino", oOpchDTO.IdAlmacenDestino);
@@ -1171,15 +1302,16 @@ namespace DAO
 
 
 
-                        if(IdOPCH == 0)
+                        if(IdOPCH <= 0)
                         {
+                            mensaje_error = "Error al registrar la cabecera del Documento";
                             return -1;
                         }
 
-
-                        if (IdOPCH == -5)
+                        if (oOpchDTO.detalles.Count == 0)
                         {
-                            return -5;
+                            mensaje_error = "No puede registrar un documento sin items";
+                            return 0;
                         }
 
                         for (int i = 0; i < oOpchDTO.detalles.Count; i++)
@@ -1188,7 +1320,7 @@ namespace DAO
                             SqlDataAdapter dadet = new SqlDataAdapter("SMC_InsertUpdateOPCHDetalle", cn);
                             dadet.SelectCommand.CommandType = CommandType.StoredProcedure;
                             dadet.SelectCommand.Parameters.AddWithValue("@IdOPCHDetalle", oOpchDTO.detalles[i].IdOPCHDetalle);
-                            dadet.SelectCommand.Parameters.AddWithValue("@IdOPCH", oOpchDTO.detalles[i].IdOPCH);
+                            dadet.SelectCommand.Parameters.AddWithValue("@IdOPCH", IdOPCH);
                             dadet.SelectCommand.Parameters.AddWithValue("@IdArticulo", oOpchDTO.detalles[i].IdArticulo);
                             dadet.SelectCommand.Parameters.AddWithValue("@DescripcionArticulo", oOpchDTO.detalles[i].DescripcionArticulo);
                             dadet.SelectCommand.Parameters.AddWithValue("@IdDefinicionGrupoUnidad", oOpchDTO.detalles[i].IdDefinicionGrupoUnidad);
@@ -1221,8 +1353,9 @@ namespace DAO
 
                             int IdOPCHDetalle = Convert.ToInt32(dadet.SelectCommand.ExecuteScalar());
 
-                            if(IdOPCHDetalle == 0)
+                            if(IdOPCHDetalle <= 0)
                             {
+                                mensaje_error = "Error al Registrar el detalle del documento";
                                 return -2;
                             }
 
@@ -1235,16 +1368,40 @@ namespace DAO
                             int rpta3 = Convert.ToInt32(daCu.SelectCommand.ExecuteNonQuery());
 
 
-                            if(rpta3 == 0)
+                            if(rpta3 <= 0)
                             {
+                                mensaje_error = "Error al actualizar el detalle del documento";
                                 return -3;
                             }
+
+                        }
 
                             SqlDataAdapter daTot = new SqlDataAdapter("SMC_UpdateTotalesOPCH", cn);
                             daTot.SelectCommand.CommandType = CommandType.StoredProcedure;
                             daTot.SelectCommand.Parameters.AddWithValue("@IdOPCH", IdOPCH);
                             int rpta4 = daTot.SelectCommand.ExecuteNonQuery();
+
+                        if (rpta4 <= 0)
+                        {
+                            mensaje_error = "Error al actualizar el Total del documento";
+                            return -3;
                         }
+
+                        if (oOpchDTO.AnexoDetalle != null)
+                        {
+
+                            MovimientoDAO oMovimientoDAO = new MovimientoDAO();
+                            for (int i = 0; i < oOpchDTO.AnexoDetalle.Count; i++)
+                            {
+                                oOpchDTO.AnexoDetalle[i].ruta = "/Anexos/" + oOpchDTO.AnexoDetalle[i].NombreArchivo;
+                                oOpchDTO.AnexoDetalle[i].IdSociedad = oOpchDTO.IdSociedad;
+                                oOpchDTO.AnexoDetalle[i].Tabla = "Opch";
+                                oOpchDTO.AnexoDetalle[i].IdTabla = IdOPCH;
+
+                                oMovimientoDAO.registrarAnexoMov(oOpchDTO.AnexoDetalle[i], cn, ref mensaje_error);
+                            }
+                        }
+
 
                         transactionScope.Complete();
                         return IdOPCH;
@@ -1369,14 +1526,9 @@ namespace DAO
                     try
                     {
                         cn.Open();
-                        SqlDataAdapter da = new SqlDataAdapter("SMC_InsertUpdateAnexo", cn);
-                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
-                        da.SelectCommand.Parameters.AddWithValue("@ruta", oAnexoDTO.ruta);
-                        da.SelectCommand.Parameters.AddWithValue("@IdSociedad", oAnexoDTO.IdSociedad);
-                        da.SelectCommand.Parameters.AddWithValue("@Tabla", oAnexoDTO.Tabla);
-                        da.SelectCommand.Parameters.AddWithValue("@IdTabla", oAnexoDTO.IdTabla);
-                        da.SelectCommand.Parameters.AddWithValue("@NombreArchivo", oAnexoDTO.NombreArchivo);
-                        int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
+
+                        int rpta = registrarAnexoMov(oAnexoDTO, cn, ref mensaje_error);
+                        if (mensaje_error.Length > 0) { return 0; }
                         transactionScope.Complete();
                         return rpta;
                     }
@@ -2347,6 +2499,593 @@ namespace DAO
                         int rpta = int.Parse(da.SelectCommand.ExecuteNonQuery().ToString());
                         transactionScope.Complete();
                         return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+                }
+            }
+        }
+
+        public int registrarCabeceraMovimiento(MovimientoDTO oMovimientoDTO, SqlConnection cn, ref string mensaje_error)
+        {
+            int IdMovimiento = 0;
+            try
+            {
+                SqlDataAdapter da = new SqlDataAdapter("SMC_InsertUpdateMovimiento", cn);
+                da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                da.SelectCommand.Parameters.AddWithValue("@IdMovimiento", oMovimientoDTO.IdMovimiento);
+                da.SelectCommand.Parameters.AddWithValue("@IdSociedad", oMovimientoDTO.IdSociedad);
+                da.SelectCommand.Parameters.AddWithValue("@IdAlmacen", oMovimientoDTO.IdAlmacen);
+                da.SelectCommand.Parameters.AddWithValue("@IdSerie", oMovimientoDTO.IdSerie);
+                da.SelectCommand.Parameters.AddWithValue("@IdTipoDocumento", oMovimientoDTO.IdTipoDocumento);
+                da.SelectCommand.Parameters.AddWithValue("@ObjType", oMovimientoDTO.ObjType);
+                da.SelectCommand.Parameters.AddWithValue("@IdMoneda", oMovimientoDTO.IdMoneda);
+                da.SelectCommand.Parameters.AddWithValue("@CodMoneda", oMovimientoDTO.CodMoneda);
+                da.SelectCommand.Parameters.AddWithValue("@TipoCambio", oMovimientoDTO.TipoCambio);
+                da.SelectCommand.Parameters.AddWithValue("@IdCliente", oMovimientoDTO.IdCliente);
+                da.SelectCommand.Parameters.AddWithValue("@FechaContabilizacion", oMovimientoDTO.FechaContabilizacion.ToString("yyyyMMdd"));
+                da.SelectCommand.Parameters.AddWithValue("@FechaDocumento", oMovimientoDTO.FechaDocumento.ToString("yyyyMMdd"));
+                da.SelectCommand.Parameters.AddWithValue("@FechaVencimiento", oMovimientoDTO.FechaVencimiento.ToString("yyyyMMdd"));
+                da.SelectCommand.Parameters.AddWithValue("@IdListaPrecios", oMovimientoDTO.IdListaPrecios);
+                da.SelectCommand.Parameters.AddWithValue("@Referencia", oMovimientoDTO.Referencia);
+                da.SelectCommand.Parameters.AddWithValue("@Comentario", oMovimientoDTO.Comentario);
+                da.SelectCommand.Parameters.AddWithValue("@SubTotal", oMovimientoDTO.SubTotal);
+                da.SelectCommand.Parameters.AddWithValue("@Impuesto", oMovimientoDTO.Impuesto);
+                da.SelectCommand.Parameters.AddWithValue("@Total", oMovimientoDTO.Total);
+                da.SelectCommand.Parameters.AddWithValue("@IdCuadrilla", oMovimientoDTO.IdCuadrilla);
+                da.SelectCommand.Parameters.AddWithValue("@IdAlmacenDestino", oMovimientoDTO.IdAlmacenDestino);
+                da.SelectCommand.Parameters.AddWithValue("@IdResponsable", oMovimientoDTO.IdResponsable);
+                da.SelectCommand.Parameters.AddWithValue("@IdTipoDocumentoRef", oMovimientoDTO.IdTipoDocumentoRef);
+                da.SelectCommand.Parameters.AddWithValue("@NumSerieTipoDocumentoRef", oMovimientoDTO.NumSerieTipoDocumentoRef);
+                da.SelectCommand.Parameters.AddWithValue("@EntregadoA", oMovimientoDTO.EntregadoA);
+                da.SelectCommand.Parameters.AddWithValue("@IdUsuario", oMovimientoDTO.IdUsuario);
+                da.SelectCommand.Parameters.AddWithValue("@IdCentroCosto", oMovimientoDTO.IdCentroCosto);
+
+                da.SelectCommand.Parameters.AddWithValue("@IdDestinatario", oMovimientoDTO.IdDestinatario);
+                da.SelectCommand.Parameters.AddWithValue("@IdMotivoTraslado", oMovimientoDTO.IdMotivoTraslado);
+                da.SelectCommand.Parameters.AddWithValue("@IdTransportista", oMovimientoDTO.IdTransportista);
+                da.SelectCommand.Parameters.AddWithValue("@PlacaVehiculo", oMovimientoDTO.PlacaVehiculo);
+                da.SelectCommand.Parameters.AddWithValue("@MarcaVehiculo", oMovimientoDTO.MarcaVehiculo);
+                da.SelectCommand.Parameters.AddWithValue("@NumIdentidadConductor", oMovimientoDTO.NumIdentidadConductor);
+                da.SelectCommand.Parameters.AddWithValue("@NombreConductor", oMovimientoDTO.NombreConductor);
+                da.SelectCommand.Parameters.AddWithValue("@ApellidoConductor", oMovimientoDTO.ApellidoConductor);
+                da.SelectCommand.Parameters.AddWithValue("@LicenciaConductor", oMovimientoDTO.LicenciaConductor);
+                da.SelectCommand.Parameters.AddWithValue("@TipoTransporte", oMovimientoDTO.TipoTransporte);
+                da.SelectCommand.Parameters.AddWithValue("@Peso", oMovimientoDTO.Peso);
+                da.SelectCommand.Parameters.AddWithValue("@Bulto", oMovimientoDTO.Bulto);
+                da.SelectCommand.Parameters.AddWithValue("@IdObraDestino", oMovimientoDTO.IdObraDestino);
+                da.SelectCommand.Parameters.AddWithValue("@IdDocExtorno", oMovimientoDTO.detalles[0].IdMovimiento);
+                da.SelectCommand.Parameters.AddWithValue("@SGI", oMovimientoDTO.SGI);
+                da.SelectCommand.Parameters.AddWithValue("@AnexoLlegada", oMovimientoDTO.CodigoAnexoLlegada);
+                da.SelectCommand.Parameters.AddWithValue("@UbigeoLlegada", oMovimientoDTO.CodigoUbigeoLlegada);
+                da.SelectCommand.Parameters.AddWithValue("@DistritoLlegada", oMovimientoDTO.DistritoLlegada);
+                da.SelectCommand.Parameters.AddWithValue("@DireccionLlegada", oMovimientoDTO.DireccionLlegada);
+
+                //Nuevo de Despacho
+                da.SelectCommand.Parameters.AddWithValue("@OrigenDespacho", oMovimientoDTO.OrigenDespacho);
+                da.SelectCommand.Parameters.AddWithValue("@EsDevolucionAdm", oMovimientoDTO.EsDevolucionAdm);
+                da.SelectCommand.Parameters.AddWithValue("@IdProveedor", oMovimientoDTO.IdProveedor);
+                da.SelectCommand.Parameters.AddWithValue("@NroRef", oMovimientoDTO.NroRef);
+                da.SelectCommand.Parameters.AddWithValue("@IdTransfAnulada", oMovimientoDTO.IdTransfAnulada);
+                da.SelectCommand.Parameters.AddWithValue("@IdMovDevolucion", oMovimientoDTO.IdMovDevolucion);
+
+
+                IdMovimiento = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
+            }
+            catch (Exception ex)
+            {
+                mensaje_error = ex.Message.ToString();
+            }
+            return IdMovimiento;
+        }
+
+        public int registrarDetalleMovimiento(MovimientoDetalleDTO oMovimientoDetalleDTO, int ValidarIngresoSalidaOAmbos, SqlConnection cn, ref string mensaje_error)
+        {
+
+            try
+            {
+                SqlDataAdapter da = new SqlDataAdapter("SMC_InsertUpdateMovimientoDetalle", cn);
+                da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                da.SelectCommand.Parameters.AddWithValue("@IdMovimientoDetalle", oMovimientoDetalleDTO.IdMovimientoDetalle);
+                da.SelectCommand.Parameters.AddWithValue("@IdMovimiento", oMovimientoDetalleDTO.IdMovimiento);
+                da.SelectCommand.Parameters.AddWithValue("@IdArticulo", oMovimientoDetalleDTO.IdArticulo);
+                da.SelectCommand.Parameters.AddWithValue("@DescripcionArticulo", oMovimientoDetalleDTO.DescripcionArticulo);
+                da.SelectCommand.Parameters.AddWithValue("@IdDefinicionGrupoUnidad", oMovimientoDetalleDTO.IdDefinicionGrupoUnidad);
+                da.SelectCommand.Parameters.AddWithValue("@IdAlmacen", oMovimientoDetalleDTO.IdAlmacen);
+                da.SelectCommand.Parameters.AddWithValue("@Cantidad", oMovimientoDetalleDTO.Cantidad);
+                da.SelectCommand.Parameters.AddWithValue("@Igv", oMovimientoDetalleDTO.Igv);
+                da.SelectCommand.Parameters.AddWithValue("@PrecioUnidadBase", oMovimientoDetalleDTO.PrecioUnidadBase);
+                da.SelectCommand.Parameters.AddWithValue("@PrecioUnidadTotal", oMovimientoDetalleDTO.PrecioUnidadTotal);
+                da.SelectCommand.Parameters.AddWithValue("@TotalBase", oMovimientoDetalleDTO.TotalBase);
+                da.SelectCommand.Parameters.AddWithValue("@Total", oMovimientoDetalleDTO.Total);
+                da.SelectCommand.Parameters.AddWithValue("@CuentaContable", oMovimientoDetalleDTO.CuentaContable);
+                da.SelectCommand.Parameters.AddWithValue("@IdCentroCosto", oMovimientoDetalleDTO.IdCentroCosto);
+                da.SelectCommand.Parameters.AddWithValue("@IdAfectacionIgv", oMovimientoDetalleDTO.IdAfectacionIgv);
+                da.SelectCommand.Parameters.AddWithValue("@Descuento", oMovimientoDetalleDTO.Descuento);
+                da.SelectCommand.Parameters.AddWithValue("@IdAlmacenDestino", oMovimientoDetalleDTO.IdAlmacenDestino);
+                da.SelectCommand.Parameters.AddWithValue("@Referencia", oMovimientoDetalleDTO.Referencia);
+                da.SelectCommand.Parameters.AddWithValue("@TablaOrigen", oMovimientoDetalleDTO.TablaOrigen);
+                da.SelectCommand.Parameters.AddWithValue("@IdOrigen", oMovimientoDetalleDTO.IdOrigen);
+
+                da.SelectCommand.Parameters.AddWithValue("@ValidarIngresoSalidaOAmbos", ValidarIngresoSalidaOAmbos);
+
+                int rpta = int.Parse(da.SelectCommand.ExecuteScalar().ToString());
+               
+                return rpta;
+            }
+            catch (Exception ex)
+            {
+                mensaje_error = ex.Message.ToString();
+                return 0;
+            }
+        }
+
+        public int registrarActualizacionCuadrillaDetalle(int MovDetalle, MovimientoDetalleDTO oMovimientoDetalleDTO, SqlConnection cn, ref string mensaje_error)
+        {
+
+            try
+            {
+                SqlDataAdapter da = new SqlDataAdapter("SMC_InsertUpdateMovimientoDetalleCuadrilla", cn);
+                da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                da.SelectCommand.Parameters.AddWithValue("@IdMovimientoDetalle", MovDetalle);
+                da.SelectCommand.Parameters.AddWithValue("@IdCuadrilla", oMovimientoDetalleDTO.IdCuadrilla);
+                da.SelectCommand.Parameters.AddWithValue("@IdResponsable", oMovimientoDetalleDTO.IdResponsable);
+                int rpta = da.SelectCommand.ExecuteNonQuery();
+                return rpta;
+            }
+            catch (Exception ex)
+            {
+                mensaje_error = ex.Message.ToString();
+                return 0;
+            }
+
+        }
+
+        public int registrarAnexoMov(AnexoDTO oAnexoDTO, SqlConnection cn, ref string mensaje_error)
+        {
+          
+                    try
+                    {
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_InsertUpdateAnexo", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@ruta", oAnexoDTO.ruta);
+                        da.SelectCommand.Parameters.AddWithValue("@IdSociedad", oAnexoDTO.IdSociedad);
+                        da.SelectCommand.Parameters.AddWithValue("@Tabla", oAnexoDTO.Tabla);
+                        da.SelectCommand.Parameters.AddWithValue("@IdTabla", oAnexoDTO.IdTabla);
+                        da.SelectCommand.Parameters.AddWithValue("@NombreArchivo", oAnexoDTO.NombreArchivo);
+                        int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
+                 
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+             
+        }
+
+        public int RegistrarMovimientoCompleto(MovimientoDTO oMovimientoDTO,int ValidarIngresoSalidaOAmbos, string BaseDatos, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        int IdMovimiento = registrarCabeceraMovimiento(oMovimientoDTO, cn, ref mensaje_error);
+
+                        if (IdMovimiento <= 0) { return 0; }
+
+                        if (oMovimientoDTO.detalles.Count == 0)
+                        {
+                            mensaje_error = "No puede registrar un documento sin items";
+                            return 0;
+                        }
+
+                        for (int i = 0; i < oMovimientoDTO.detalles.Count; i++)
+                        {
+                            oMovimientoDTO.detalles[i].IdMovimiento = IdMovimiento;
+                            oMovimientoDTO.detalles[i].IdMovimientoDetalle = 0;
+                            int IdDetalle = registrarDetalleMovimiento(oMovimientoDTO.detalles[i], ValidarIngresoSalidaOAmbos, cn, ref mensaje_error);
+                            if (IdDetalle <= 0) { return 0; }
+                            int rptaUpdateCuadrilla = registrarActualizacionCuadrillaDetalle(IdDetalle, oMovimientoDTO.detalles[i], cn, ref mensaje_error);
+                            if (rptaUpdateCuadrilla <= 0) { return 0; }
+                        }
+
+                        if(oMovimientoDTO.AnexoDetalle != null)
+                        {
+                            for (int i = 0; i < oMovimientoDTO.AnexoDetalle.Count; i++)
+                            {
+                                oMovimientoDTO.AnexoDetalle[i].ruta = "/Anexos/" + oMovimientoDTO.AnexoDetalle[i].NombreArchivo;
+                                oMovimientoDTO.AnexoDetalle[i].IdSociedad = oMovimientoDTO.IdSociedad;
+                                oMovimientoDTO.AnexoDetalle[i].Tabla = "Movimiento";
+                                oMovimientoDTO.AnexoDetalle[i].IdTabla = IdMovimiento;
+                                int rptaAnexo = registrarAnexoMov(oMovimientoDTO.AnexoDetalle[i], cn, ref mensaje_error);
+                                if(rptaAnexo <= 0 ) { return 0; }
+
+                            }
+                        }
+
+                        transactionScope.Complete();
+                        return IdMovimiento;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+                }
+            }
+        }
+
+        public int InsertUpdateMovimientoORPC_Completo(OrpcDTO oOrpcDTO, string TblOrigenNC, string IdOrigenNC, string BaseDatos, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_InsertUpdateMovimientoORPC", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdORPC", oOrpcDTO.IdORPC);
+                        da.SelectCommand.Parameters.AddWithValue("@IdSociedad", oOrpcDTO.IdSociedad);
+                        da.SelectCommand.Parameters.AddWithValue("@IdAlmacen", oOrpcDTO.IdAlmacen);
+                        da.SelectCommand.Parameters.AddWithValue("@IdSerie", oOrpcDTO.IdSerie);
+                        da.SelectCommand.Parameters.AddWithValue("@IdTipoDocumento", oOrpcDTO.IdTipoDocumento);
+                        da.SelectCommand.Parameters.AddWithValue("@ObjType", oOrpcDTO.ObjType);
+                        da.SelectCommand.Parameters.AddWithValue("@IdMoneda", oOrpcDTO.IdMoneda);
+                        da.SelectCommand.Parameters.AddWithValue("@CodMoneda", oOrpcDTO.CodMoneda);
+                        da.SelectCommand.Parameters.AddWithValue("@TipoCambio", oOrpcDTO.TipoCambio);
+                        da.SelectCommand.Parameters.AddWithValue("@IdCliente", oOrpcDTO.IdCliente);
+                        da.SelectCommand.Parameters.AddWithValue("@FechaContabilizacion", oOrpcDTO.FechaContabilizacion.ToString("yyyyMMdd"));
+                        da.SelectCommand.Parameters.AddWithValue("@FechaDocumento", oOrpcDTO.FechaDocumento.ToString("yyyyMMdd"));
+                        da.SelectCommand.Parameters.AddWithValue("@FechaVencimiento", oOrpcDTO.FechaVencimiento.ToString("yyyyMMdd"));
+                        da.SelectCommand.Parameters.AddWithValue("@IdListaPrecios", oOrpcDTO.IdListaPrecios);
+                        da.SelectCommand.Parameters.AddWithValue("@Referencia", oOrpcDTO.Referencia);
+                        da.SelectCommand.Parameters.AddWithValue("@Comentario", oOrpcDTO.Comentario);
+                        da.SelectCommand.Parameters.AddWithValue("@SubTotal", oOrpcDTO.SubTotal);
+                        da.SelectCommand.Parameters.AddWithValue("@Impuesto", oOrpcDTO.Impuesto);
+                        da.SelectCommand.Parameters.AddWithValue("@Total", oOrpcDTO.Total);
+                        da.SelectCommand.Parameters.AddWithValue("@IdCuadrilla", oOrpcDTO.IdCuadrilla);
+                        da.SelectCommand.Parameters.AddWithValue("@IdAlmacenDestino", oOrpcDTO.IdAlmacenDestino);
+                        da.SelectCommand.Parameters.AddWithValue("@IdResponsable", oOrpcDTO.IdResponsable);
+                        da.SelectCommand.Parameters.AddWithValue("@IdTipoDocumentoRef", oOrpcDTO.IdTipoDocumentoRef);
+                        da.SelectCommand.Parameters.AddWithValue("@NumSerieTipoDocumentoRef", oOrpcDTO.NumSerieTipoDocumentoRef);
+                        da.SelectCommand.Parameters.AddWithValue("@EntregadoA", oOrpcDTO.EntregadoA);
+                        da.SelectCommand.Parameters.AddWithValue("@IdUsuario", oOrpcDTO.IdUsuario);
+                        da.SelectCommand.Parameters.AddWithValue("@IdCentroCosto", oOrpcDTO.IdCentroCosto);
+                        da.SelectCommand.Parameters.AddWithValue("@IdProveedor", oOrpcDTO.IdProveedor);
+                        da.SelectCommand.Parameters.AddWithValue("@IdCondicionPago", oOrpcDTO.idCondicionPago);
+                        da.SelectCommand.Parameters.AddWithValue("@IdGlosaContable", oOrpcDTO.IdGlosaContable);
+                        da.SelectCommand.Parameters.AddWithValue("@IdTipoRegistro", oOrpcDTO.IdTipoRegistro);
+                        da.SelectCommand.Parameters.AddWithValue("@IdSemana", oOrpcDTO.IdSemana);
+                        da.SelectCommand.Parameters.AddWithValue("@SerieDocBase", oOrpcDTO.SerieDocBase);
+                        da.SelectCommand.Parameters.AddWithValue("@SerieSAP", oOrpcDTO.SerieSAP);
+
+                        int IdORPC = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
+
+                        if(IdORPC <= 0)
+                        {
+                            mensaje_error = "Error al registrar la cabecera del Documento";
+                            return 0;
+                        }
+
+                        if (oOrpcDTO.detalles.Count == 0)
+                        {
+                            mensaje_error = "No puede registrar un documento sin items";
+                            return 0;
+                        }
+
+                        for (int i = 0; i < oOrpcDTO.detalles.Count; i++)
+                        {
+                            SqlDataAdapter da2 = new SqlDataAdapter("SMC_InsertUpdateORPCDetalle", cn);
+                            da2.SelectCommand.CommandType = CommandType.StoredProcedure;
+                            da2.SelectCommand.Parameters.AddWithValue("@IdORPCDetalle", oOrpcDTO.detalles[i].IdORPCDetalle);
+                            da2.SelectCommand.Parameters.AddWithValue("@IdORPC", IdORPC);
+                            da2.SelectCommand.Parameters.AddWithValue("@IdArticulo", oOrpcDTO.detalles[i].IdArticulo);
+                            da2.SelectCommand.Parameters.AddWithValue("@DescripcionArticulo", oOrpcDTO.detalles[i].DescripcionArticulo);
+                            da2.SelectCommand.Parameters.AddWithValue("@IdDefinicionGrupoUnidad", oOrpcDTO.detalles[i].IdDefinicionGrupoUnidad);
+                            da2.SelectCommand.Parameters.AddWithValue("@IdAlmacen", oOrpcDTO.detalles[i].IdAlmacen);
+                            da2.SelectCommand.Parameters.AddWithValue("@Cantidad", oOrpcDTO.detalles[i].Cantidad);
+                            da2.SelectCommand.Parameters.AddWithValue("@Igv", oOrpcDTO.detalles[i].Igv);
+                            da2.SelectCommand.Parameters.AddWithValue("@PrecioUnidadBase", oOrpcDTO.detalles[i].PrecioUnidadBase);
+                            da2.SelectCommand.Parameters.AddWithValue("@PrecioUnidadTotal", oOrpcDTO.detalles[i].PrecioUnidadTotal);
+                            da2.SelectCommand.Parameters.AddWithValue("@TotalBase", oOrpcDTO.detalles[i].TotalBase);
+                            da2.SelectCommand.Parameters.AddWithValue("@Total", oOrpcDTO.detalles[i].Total);
+                            da2.SelectCommand.Parameters.AddWithValue("@CuentaContable", oOrpcDTO.detalles[i].CuentaContable);
+                            da2.SelectCommand.Parameters.AddWithValue("@IdCentroCosto", oOrpcDTO.detalles[i].IdCentroCosto);
+                            da2.SelectCommand.Parameters.AddWithValue("@IdAfectacionIgv", oOrpcDTO.detalles[i].IdAfectacionIgv);
+                            da2.SelectCommand.Parameters.AddWithValue("@Descuento", oOrpcDTO.detalles[i].Descuento);
+                            da2.SelectCommand.Parameters.AddWithValue("@IdAlmacenDestino", oOrpcDTO.detalles[i].IdAlmacenDestino);
+                            da2.SelectCommand.Parameters.AddWithValue("@valor_unitario", oOrpcDTO.detalles[i].valor_unitario);
+                            da2.SelectCommand.Parameters.AddWithValue("@precio_unitario", oOrpcDTO.detalles[i].precio_unitario);
+                            da2.SelectCommand.Parameters.AddWithValue("@total_base_igv", oOrpcDTO.detalles[i].total_base_igv);
+                            da2.SelectCommand.Parameters.AddWithValue("@porcentaje_igv", oOrpcDTO.detalles[i].porcentaje_igv);
+                            da2.SelectCommand.Parameters.AddWithValue("@total_igv", oOrpcDTO.detalles[i].total_igv);
+                            da2.SelectCommand.Parameters.AddWithValue("@total_impuestos", oOrpcDTO.detalles[i].total_impuestos);
+                            da2.SelectCommand.Parameters.AddWithValue("@total_valor_item", oOrpcDTO.detalles[i].total_valor_item);
+                            da2.SelectCommand.Parameters.AddWithValue("@total_item", oOrpcDTO.detalles[i].total_item);
+                            da2.SelectCommand.Parameters.AddWithValue("@IdIndicadorImpuesto", oOrpcDTO.detalles[i].IdIndicadorImpuesto);
+                            da2.SelectCommand.Parameters.AddWithValue("@Referencia", oOrpcDTO.detalles[i].Referencia);
+                            da2.SelectCommand.Parameters.AddWithValue("@NombTablaOrigen", oOrpcDTO.detalles[i].NombTablaOrigen);
+                            da2.SelectCommand.Parameters.AddWithValue("@IdOrigen", oOrpcDTO.detalles[i].IdOrigen);
+                            da2.SelectCommand.Parameters.AddWithValue("@TipoServicio", oOrpcDTO.detalles[i].TipoServicio);
+
+                            int IdORPCDetalle = Convert.ToInt32(da2.SelectCommand.ExecuteScalar());
+                            if (IdORPCDetalle <= 0)
+                            {
+                                mensaje_error = "Error al registrar el detalle del Documento";
+                                return 0;
+                            }
+
+                            SqlDataAdapter da3 = new SqlDataAdapter("SMC_InsertUpdateORPCDetalleCuadrilla", cn);
+                            da3.SelectCommand.CommandType = CommandType.StoredProcedure;
+                            da3.SelectCommand.Parameters.AddWithValue("@IdORPCDetalle", IdORPCDetalle);
+                            da3.SelectCommand.Parameters.AddWithValue("@IdCuadrilla", oOrpcDTO.detalles[i].IdCuadrilla);
+                            da3.SelectCommand.Parameters.AddWithValue("@IdResponsable", oOrpcDTO.detalles[i].IdResponsable);
+                            int rptaCuadrilla = da3.SelectCommand.ExecuteNonQuery();
+                            if (rptaCuadrilla <= 0)
+                            {
+                                mensaje_error = "Error al actualizar el detalle del Documento";
+                                return 0;
+                            }
+                        }
+
+
+                        SqlDataAdapter da4 = new SqlDataAdapter("SMC_UpdateTotalesORPC", cn);
+                        da4.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da4.SelectCommand.Parameters.AddWithValue("@IdORPC", IdORPC);
+                        int rptaTotales = da4.SelectCommand.ExecuteNonQuery();
+                        if (rptaTotales <= 0)
+                        {
+                            mensaje_error = "Error al actualizar los Totales del Documento";
+                            return 0;
+                        }
+
+
+                        if (oOrpcDTO.IdORPC == 0)
+                        {
+                            SqlDataAdapter da5 = new SqlDataAdapter("SMC_AccionesPorNotaCredito", cn);
+                            da5.SelectCommand.CommandType = CommandType.StoredProcedure;
+                            da5.SelectCommand.Parameters.AddWithValue("@TablaOrigen", TblOrigenNC);
+                            da5.SelectCommand.Parameters.AddWithValue("@IdOrigen", IdOrigenNC);
+                            da5.SelectCommand.Parameters.AddWithValue("@IdORPC", IdORPC);
+
+                            int rptaAcciones = Convert.ToInt32(da5.SelectCommand.ExecuteScalar());
+                            if (rptaAcciones <= 0)
+                            {
+                                mensaje_error = "Error Al finalizar el registro del Documento";
+                                return 0;
+                            }
+                        }
+
+                        if (oOrpcDTO.AnexoDetalle != null)
+                        {
+                            MovimientoDAO oMovimientoDAO = new MovimientoDAO();
+                            for (int i = 0; i < oOrpcDTO.AnexoDetalle.Count; i++)
+                            {
+                                oOrpcDTO.AnexoDetalle[i].ruta = "/Anexos/" + oOrpcDTO.AnexoDetalle[i].NombreArchivo;
+                                oOrpcDTO.AnexoDetalle[i].IdSociedad = oOrpcDTO.IdSociedad;
+                                oOrpcDTO.AnexoDetalle[i].Tabla = "Orpc";
+                                oOrpcDTO.AnexoDetalle[i].IdTabla = IdORPC;
+
+                                oMovimientoDAO.registrarAnexoMov(oOrpcDTO.AnexoDetalle[i], cn, ref mensaje_error);
+                            }
+                        }
+
+                        transactionScope.Complete();
+                        return IdORPC;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+                }
+            }
+        }
+
+
+        public int InsertUpdateMovimientoOPDN_Completo(OpdnDTO oOpdnDTO, string BaseDatos, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_InsertUpdateMovimientoOPDN", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdOPDN", oOpdnDTO.IdOPDN);
+                        da.SelectCommand.Parameters.AddWithValue("@IdSociedad", oOpdnDTO.IdSociedad);
+                        da.SelectCommand.Parameters.AddWithValue("@IdAlmacen", oOpdnDTO.IdAlmacen);
+                        da.SelectCommand.Parameters.AddWithValue("@IdSerie", oOpdnDTO.IdSerie);
+                        da.SelectCommand.Parameters.AddWithValue("@IdTipoDocumento", oOpdnDTO.IdTipoDocumento);
+                        da.SelectCommand.Parameters.AddWithValue("@ObjType", oOpdnDTO.ObjType);
+                        da.SelectCommand.Parameters.AddWithValue("@IdMoneda", oOpdnDTO.IdMoneda);
+                        da.SelectCommand.Parameters.AddWithValue("@CodMoneda", oOpdnDTO.CodMoneda);
+                        da.SelectCommand.Parameters.AddWithValue("@TipoCambio", oOpdnDTO.TipoCambio);
+                        da.SelectCommand.Parameters.AddWithValue("@IdCliente", oOpdnDTO.IdCliente);
+                        da.SelectCommand.Parameters.AddWithValue("@FechaContabilizacion", oOpdnDTO.FechaContabilizacion.ToString("yyyyMMdd"));
+                        da.SelectCommand.Parameters.AddWithValue("@FechaDocumento", oOpdnDTO.FechaDocumento.ToString("yyyyMMdd"));
+                        da.SelectCommand.Parameters.AddWithValue("@FechaVencimiento", oOpdnDTO.FechaVencimiento.ToString("yyyyMMdd"));
+                        da.SelectCommand.Parameters.AddWithValue("@FechaEntrega", oOpdnDTO.FechaEntrega.ToString("yyyyMMdd"));
+                        da.SelectCommand.Parameters.AddWithValue("@IdListaPrecios", oOpdnDTO.IdListaPrecios);
+                        da.SelectCommand.Parameters.AddWithValue("@Referencia", oOpdnDTO.Referencia);
+                        da.SelectCommand.Parameters.AddWithValue("@Comentario", oOpdnDTO.Comentario);
+                        da.SelectCommand.Parameters.AddWithValue("@SubTotal", oOpdnDTO.SubTotal);
+                        da.SelectCommand.Parameters.AddWithValue("@Impuesto", oOpdnDTO.Impuesto);
+                        da.SelectCommand.Parameters.AddWithValue("@Total", oOpdnDTO.Total);
+                        da.SelectCommand.Parameters.AddWithValue("@IdCuadrilla", oOpdnDTO.IdCuadrilla);
+                        da.SelectCommand.Parameters.AddWithValue("@IdAlmacenDestino", oOpdnDTO.IdAlmacenDestino);
+                        da.SelectCommand.Parameters.AddWithValue("@IdResponsable", oOpdnDTO.IdResponsable);
+                        da.SelectCommand.Parameters.AddWithValue("@IdTipoDocumentoRef", oOpdnDTO.IdTipoDocumentoRef);
+                        da.SelectCommand.Parameters.AddWithValue("@NumSerieTipoDocumentoRef", oOpdnDTO.NumSerieTipoDocumentoRef);
+                        da.SelectCommand.Parameters.AddWithValue("@EntregadoA", oOpdnDTO.EntregadoA);
+                        da.SelectCommand.Parameters.AddWithValue("@IdUsuario", oOpdnDTO.IdUsuario);
+                        da.SelectCommand.Parameters.AddWithValue("@IdCentroCosto", oOpdnDTO.IdCentroCosto);
+                        da.SelectCommand.Parameters.AddWithValue("@IdProveedor", oOpdnDTO.IdProveedor);
+                        da.SelectCommand.Parameters.AddWithValue("@IdCondicionPago", oOpdnDTO.IdCondicionPago);
+                        int IdOPDN = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
+
+                        if (IdOPDN <= 0)
+                        {
+                            mensaje_error = "Error al registrar el Documento";
+                            return 0;
+
+                        }
+
+                        if (oOpdnDTO.detalles.Count == 0)
+                        {
+                            mensaje_error = "No puede registrar un documento sin items";
+                            return 0;
+                        }
+
+                        for (int i = 0; i < oOpdnDTO.detalles.Count; i++)
+                        {
+                            //if (oOpdnDTO.detalles[i].IdOrigen != 0)
+                            //{
+                            //    int ValidacionFTPortal = 0;
+                            //    try
+                            //    {
+                            //        SqlDataAdapter da5 = new SqlDataAdapter("SMC_AP_ValidarExisteFacturaEnPortal", cn);
+                            //        da5.SelectCommand.Parameters.AddWithValue("@IdPedidoDetalle", oOpdnDTO.detalles[i].IdOrigen);
+                            //        da5.SelectCommand.Parameters.AddWithValue("@IdProveedor", oOpdnDTO.IdProveedor);
+
+                            //        da5.SelectCommand.CommandType = CommandType.StoredProcedure;
+                            //        SqlDataReader drd5 = da5.SelectCommand.ExecuteReader();
+                            //        while (drd5.Read())
+                            //        {
+                            //            ValidacionFTPortal = int.Parse(drd5["Cantidad"].ToString());
+
+                            //        }
+                            //        drd5.Close();
+
+
+                            //    }
+                            //    catch (Exception ex)
+                            //    {
+                            //        ValidacionFTPortal = 1;
+
+                            //    }
+
+                            //    if (ValidacionFTPortal == 0)
+                            //    {
+
+                            //        mensaje_error = "La Factura relacionada a esta OC no se Encuentra Registrada en el Portal de Proveedores";
+                            //        return 0;
+                            //    }
+
+                            //}
+
+
+                            SqlDataAdapter da2 = new SqlDataAdapter("SMC_InsertUpdateOPDNDetalle", cn);
+                            da2.SelectCommand.CommandType = CommandType.StoredProcedure;
+                            da2.SelectCommand.Parameters.AddWithValue("@IdOPDNDetalle", oOpdnDTO.detalles[i].IdOPDNDetalle);
+                            da2.SelectCommand.Parameters.AddWithValue("@IdOPDN", IdOPDN);
+                            da2.SelectCommand.Parameters.AddWithValue("@IdArticulo", oOpdnDTO.detalles[i].IdArticulo);
+                            da2.SelectCommand.Parameters.AddWithValue("@DescripcionArticulo", oOpdnDTO.detalles[i].DescripcionArticulo);
+                            da2.SelectCommand.Parameters.AddWithValue("@IdDefinicionGrupoUnidad", oOpdnDTO.detalles[i].IdDefinicionGrupoUnidad);
+                            da2.SelectCommand.Parameters.AddWithValue("@IdAlmacen", oOpdnDTO.detalles[i].IdAlmacen);
+                            da2.SelectCommand.Parameters.AddWithValue("@Cantidad", oOpdnDTO.detalles[i].Cantidad);
+                            da2.SelectCommand.Parameters.AddWithValue("@Igv", oOpdnDTO.detalles[i].Igv);
+                            da2.SelectCommand.Parameters.AddWithValue("@PrecioUnidadBase", oOpdnDTO.detalles[i].PrecioUnidadBase);
+                            da2.SelectCommand.Parameters.AddWithValue("@PrecioUnidadTotal", oOpdnDTO.detalles[i].PrecioUnidadTotal);
+                            da2.SelectCommand.Parameters.AddWithValue("@TotalBase", oOpdnDTO.detalles[i].TotalBase);
+                            da2.SelectCommand.Parameters.AddWithValue("@Total", oOpdnDTO.detalles[i].Total);
+                            da2.SelectCommand.Parameters.AddWithValue("@CuentaContable", oOpdnDTO.detalles[i].CuentaContable);
+                            da2.SelectCommand.Parameters.AddWithValue("@IdCentroCosto", oOpdnDTO.detalles[i].IdCentroCosto);
+                            da2.SelectCommand.Parameters.AddWithValue("@IdAfectacionIgv", oOpdnDTO.detalles[i].IdAfectacionIgv);
+                            da2.SelectCommand.Parameters.AddWithValue("@Descuento", oOpdnDTO.detalles[i].Descuento);
+                            da2.SelectCommand.Parameters.AddWithValue("@IdAlmacenDestino", oOpdnDTO.detalles[i].IdAlmacenDestino);
+                            da2.SelectCommand.Parameters.AddWithValue("@valor_unitario", oOpdnDTO.detalles[i].valor_unitario);
+                            da2.SelectCommand.Parameters.AddWithValue("@precio_unitario", oOpdnDTO.detalles[i].precio_unitario);
+                            //da2.SelectCommand.Parameters.AddWithValue("@codigo_tipo_afectacion_igv", oOpdnDTO.detalles[i].codigo_tipo_afectacion_igv);
+                            da2.SelectCommand.Parameters.AddWithValue("@total_base_igv", oOpdnDTO.detalles[i].total_base_igv);
+                            da2.SelectCommand.Parameters.AddWithValue("@porcentaje_igv", oOpdnDTO.detalles[i].porcentaje_igv);
+                            da2.SelectCommand.Parameters.AddWithValue("@total_igv", oOpdnDTO.detalles[i].total_igv);
+                            da2.SelectCommand.Parameters.AddWithValue("@total_impuestos", oOpdnDTO.detalles[i].total_impuestos);
+                            da2.SelectCommand.Parameters.AddWithValue("@total_valor_item", oOpdnDTO.detalles[i].total_valor_item);
+                            da2.SelectCommand.Parameters.AddWithValue("@total_item", oOpdnDTO.detalles[i].total_item);
+                            da2.SelectCommand.Parameters.AddWithValue("@IdIndicadorImpuesto", oOpdnDTO.detalles[i].IdIndicadorImpuesto);
+                            da2.SelectCommand.Parameters.AddWithValue("@Referencia", oOpdnDTO.detalles[i].Referencia);
+                            da2.SelectCommand.Parameters.AddWithValue("@NombTablaOrigen", oOpdnDTO.detalles[i].NombTablaOrigen);
+                            da2.SelectCommand.Parameters.AddWithValue("@IdOrigen", oOpdnDTO.detalles[i].IdOrigen);
+                            da2.SelectCommand.Parameters.AddWithValue("@TipoServicio", oOpdnDTO.detalles[i].TipoServicio);
+
+                            int IdOPDNDetalle = int.Parse(da2.SelectCommand.ExecuteScalar().ToString());
+
+                            if (IdOPDNDetalle <= 0)
+                            {
+                                mensaje_error = "Error al registrar el detalle del Documento";
+                                return 0;
+
+                            }
+
+                            SqlDataAdapter da3 = new SqlDataAdapter("SMC_InsertUpdateOPDNDetalleCuadrilla", cn);
+                            da3.SelectCommand.CommandType = CommandType.StoredProcedure;
+                            da3.SelectCommand.Parameters.AddWithValue("@IdOPDNDetalle", IdOPDNDetalle);
+                            da3.SelectCommand.Parameters.AddWithValue("@IdCuadrilla", oOpdnDTO.detalles[i].IdCuadrilla);
+                            da3.SelectCommand.Parameters.AddWithValue("@IdResponsable", oOpdnDTO.detalles[i].IdResponsable);
+
+                            int rptaCuadrillas = da3.SelectCommand.ExecuteNonQuery();
+
+                            if (IdOPDNDetalle <= 0)
+                            {
+                                mensaje_error = "Error al actualizar el detalle del Documento";
+                                return 0;
+
+                            }
+                        }
+
+                        SqlDataAdapter da4 = new SqlDataAdapter("SMC_UpdateTotalesOPDN", cn);
+                        da4.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da4.SelectCommand.Parameters.AddWithValue("@IdOPDN", IdOPDN);
+                        int rptaTotales = da4.SelectCommand.ExecuteNonQuery();
+
+                        if (rptaTotales <= 0)
+                        {
+                            mensaje_error = "Error al actualizar los Totales del Documento";
+                            return 0;
+
+                        }
+
+
+                        if (oOpdnDTO.AnexoDetalle != null)
+                        {
+                            for (int i = 0; i < oOpdnDTO.AnexoDetalle.Count; i++)
+                            {
+                                oOpdnDTO.AnexoDetalle[i].ruta = "/Anexos/" + oOpdnDTO.AnexoDetalle[i].NombreArchivo;
+                                oOpdnDTO.AnexoDetalle[i].IdSociedad = oOpdnDTO.IdSociedad;
+                                oOpdnDTO.AnexoDetalle[i].Tabla = "Opdn";
+                                oOpdnDTO.AnexoDetalle[i].IdTabla = IdOPDN;
+
+                                registrarAnexoMov(oOpdnDTO.AnexoDetalle[i], cn, ref mensaje_error);
+                            }
+                        }
+
+                        transactionScope.Complete();
+                        return IdOPDN;
                     }
                     catch (Exception ex)
                     {

@@ -101,6 +101,7 @@ function listarPedidoDt() {
                 targets: -1,
                 orderable: false,
                 render: function (data, type, full, meta) {
+
                     let ExtrasBtn = ""
                     if (full.EstadoOC == 0 && full.Conformidad == 1) {
                         ExtrasBtn = "<button class='btn btn-primary juntos  btn-xs' onclick='AnularOC(" + full.IdPedido + ")'>ANULAR</button>"
@@ -108,7 +109,7 @@ function listarPedidoDt() {
                     } else if (full.EstadoOC == 0 && full.Conformidad != 1) {
                         ExtrasBtn = "<button class='btn btn-primary juntos  btn-xs' onclick='AnularOC(" + full.IdPedido + ")'>ANULAR</button>"
                     }else if (full.EstadoOC == 3) {
-                        ExtrasBtn = "";
+                        ExtrasBtn = "<button class='btn btn-primary juntos  btn-xs' onclick='ActivarOC(" + full.IdPedido + ")'>ACTIVAR</button>";
                     } else if (full.EstadoOC == 1) {
                         ExtrasBtn = "<button class='btn btn-primary juntos  btn-xs' onclick='LiberarOC(" + full.IdPedido + ")'>LIBERAR</button>"
                     }
@@ -131,9 +132,16 @@ function listarPedidoDt() {
                     //    //ANULADO
                     //    ExtrasBtn = "<button class='btn btn-primary juntos  btn-xs' onclick='LiberarOC(" + full.IdPedido + ")'>LIBERAR</button>"
                     //}
+                    if ($("#IdPerfilSesion").val() == 1 || $("#IdPerfilSesion").val() == 1018) {
+                       
+                        return `<button class="btn btn-primary editar  juntos fa fa-eye  btn-xs" style="width:30px;height:30px"  onclick="ObtenerDatosxID(` + full.IdPedido + `)"></button>                          
+                               `+ ExtrasBtn
 
-                    return `<button class="btn btn-primary editar  juntos fa fa-eye  btn-xs" style="width:30px;height:30px"  onclick="ObtenerDatosxID(` + full.IdPedido + `)"></button>                          
-                           `+ ExtrasBtn
+                    } else {
+                        return "-";
+                    }
+
+
                            
                 },
             },
@@ -230,7 +238,7 @@ function listarPedidoDt() {
                         if (full.EstadoOC == 1) {
                             return "ANULADO"
                         } else if (full.EstadoOC == 2) {
-                            return "ANULADO"
+                            return "ANULADO - LIBERADO"
                         } else {
                             return "CERRADO"
                         }
@@ -252,10 +260,15 @@ function listarPedidoDt() {
                 targets: 10,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return `<button class="btn btn-xs btn-danger" onclick="verCuadroComparativo(`+ full.IdPedido+`)">CC</button>`
+
+                   
+                        return `<button class="btn btn-xs btn-danger" onclick="verCuadroComparativo(` + full.IdPedido + `)">CC</button>`
+
+
 
                 },
-            }
+            },
+          
 
         ],
         "bDestroy": true
@@ -316,6 +329,42 @@ function ReporteCuadroComparativo(id) {
         }
     });
 }
+
+function ReporteOrdenesPendientes(id) {
+    Swal.fire({
+        title: "Abriendo Ordenes pendientes...",
+        text: "Por favor espere",
+        showConfirmButton: false,
+        allowOutsideClick: false
+    });
+
+    setTimeout(() => {
+
+        $.ajaxSetup({ async: false });
+        $.post("GenerarReporte", { 'NombreReporte': 'OrdenesPendientes', 'Formato': 'PDF', 'Id': id }, function (data, status) {
+            let datos;
+
+            if (validadJson(data)) {
+                let datobase64;
+                datobase64 = "data:application/octet-stream;base64,"
+                datos = JSON.parse(data);
+
+                verBase64PDF(datos)
+
+                Swal.fire(
+                    'Correcto',
+                    'Orden Encontrada',
+                    'success'
+                )
+
+            } else {
+                console.log("error");
+            }
+        });
+
+    }, 100)
+}
+
 
 function ReporteOrdenComrpa(id, conformidad) {
     Swal.fire({
@@ -1610,32 +1659,40 @@ function GuardarPedido() {
         console.log("detalles");
     }
 
+    let MovimientoEnviar = []
+
+    MovimientoEnviar.push({
+        detalles,
+        AnexoDetalle,
+        //cabecera
+        'IdAlmacen': IdAlmacen,
+        'Serie': $("#IdSerie").val(),
+        'IdProveedor': $("#IdProveedor").val(),
+        'Direccion': $("#Direccion").val(),
+        'Telefono': $("#Telefono").val(),
+        'FechaEntrega': $("#FechaEntrega").val(),
+        'FechaContabilizacion': $("#txtFechaContabilizacion").val(),
+        'FechaDocumento': $("#txtFechaDocumento").val(),
+        'IdTipoPedido': $("#IdTipoPedido").val(),
+        'LugarEntrega': $("#LugarEntrega").val(),
+        'IdCondicionPago': $("#IdCondicionPago").val(),
+        'ElaboradoPor': 1,
+        'IdMoneda': $("#cboMoneda").val(),
+        'Observacion': $("#txtComentarios").val(),
+        'TipoCambio': $("#txtTipoCambio").val(),
+        'EntregasConAlmacen': $("#chkGestionAlmacen").prop("checked"),
+        'EsSubContrato': $("#chkSubContrato").prop("checked") 
+    })
+
+
     $.ajax({
         //url: "UpdateInsertPedido",
         url: "InsertPedidoModeloAut",
         type: "POST",
         async: true,
         data: {
-            detalles,
-            AnexoDetalle,
-            //cabecera
-            'IdAlmacen': IdAlmacen,
-            'Serie': $("#IdSerie").val(),
-            'IdProveedor': $("#IdProveedor").val(),
-            'Direccion': $("#Direccion").val(),
-            'Telefono': $("#Telefono").val(),
-            'FechaEntrega': $("#FechaEntrega").val(),
-            'FechaContabilizacion': $("#txtFechaContabilizacion").val(),
-            'FechaDocumento': $("#txtFechaDocumento").val(),
-            'IdTipoPedido': $("#IdTipoPedido").val(),
-            'LugarEntrega': $("#LugarEntrega").val(),
-            'IdCondicionPago': $("#IdCondicionPago").val(),
-            'ElaboradoPor': 1,
-            'IdMoneda': $("#cboMoneda").val(),
-            'Observacion': $("#txtComentarios").val(),
-            'TipoCambio': $("#txtTipoCambio").val(),
-
-
+      
+            'JsonDatosEnviar': JSON.stringify(MovimientoEnviar)
         },
         beforeSend: function () {
             Swal.fire({
@@ -1723,6 +1780,11 @@ function ObtenerDatosxID(id) {
         $("#txtFechaContabilizacion").val((pedido.FechaContabilizacion).split("T")[0])
         //$("#cboMoneda").html(pedido.IdMoneda).change();
         $("#cboMoneda").val(pedido.IdMoneda).change();
+
+        $("#chkGestionAlmacen").prop("checked", pedido.EntregasConAlmacen)
+
+        $("#chkSubContrato").prop("checked", pedido.EsSubContrato)
+
 
         //AnxoDetalle
         let AnexoDetalle = pedido.AnexoDetalle;
@@ -2019,7 +2081,7 @@ function updateProvedorArticulos() {
 
     console.log(IdObra);
 
-    $.post("ObtenerDatosProveedorXRQAsignados", { 'IdProveedor': IdProveedor, 'TipoItem': TipoItem, 'IdObra': IdObra }, function (data, status) {
+    $.post("ObtenerDatosProveedorXRQAsignados", { 'IdProveedor': IdProveedor, 'TipoItem': TipoItem, 'IdObra': IdObra,'EsSubContrato': $("#chkSubContrato").prop("checked") }, function (data, status) {
         if (!validadJson(data)) {
             return "error";
         }
@@ -2174,7 +2236,7 @@ function listarProductosAsignadosRQAgrupados() {
         let tr = "";
        
       //  $("#tabla").find('tbody').remove();
-
+        //console.log('AQUII')
         ObtenerDatosProveedorXRQ(data.IdProveedor, data)
         $("#ModalOrdenAgrupadaporProductoAprobador").modal('hide');
         //$("#tbody_detalle").find('tbody').empty();
@@ -2212,12 +2274,21 @@ function ObtenerDatosProveedorXRQ(IdProveedor, dataa) {
         TipoItem = 2;
         $("#IdTipoPedido").val(2);
         $("#cboClaseArticulo").val(2);
+        $("#chkSubContrato").prop("checked",false);
 
         $("#IdTipoProducto").hide();
 
+    }else if (dataa.TipoItem == "SUBCONTRATO") {
+        TipoItem = 2;
+        $("#IdTipoPedido").val(2);
+        $("#chkSubContrato").prop("checked", true);
+        $("#cboClaseArticulo").val(2);
+
+        $("#IdTipoProducto").show();
     } else if (dataa.TipoItem == "PRODUCTO") {
         TipoItem = 1;
         $("#IdTipoPedido").val(1);
+        $("#chkSubContrato").prop("checked", false);
         $("#cboClaseArticulo").val(1);
 
         $("#IdTipoProducto").show();
@@ -2225,7 +2296,7 @@ function ObtenerDatosProveedorXRQ(IdProveedor, dataa) {
         TipoItem = 3;
         $("#IdTipoPedido").val(1);
         $("#cboClaseArticulo").val(3);
-
+        $("#chkSubContrato").prop("checked", false);
         $("#IdTipoProducto").show();
     }
 
@@ -2250,8 +2321,7 @@ function ObtenerDatosProveedorXRQ(IdProveedor, dataa) {
     });
 
 
-
-    $.post("ObtenerDatosProveedorXRQAsignados", { 'IdProveedor': IdProveedor, 'TipoItem': TipoItem, 'IdObra': IdObra }, function (data, status) {
+    $.post("ObtenerDatosProveedorXRQAsignados", { 'IdProveedor': IdProveedor, 'TipoItem': TipoItem, 'IdObra': IdObra, 'EsSubContrato': $("#chkSubContrato").prop("checked") }, function (data, status) {
         if (!validadJson(data)) {
             return "error";
         }
@@ -2765,7 +2835,11 @@ function listarItemAprobados(IdDetalleSeleccionado = 0) {
                 targets: 7,
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    return full.Referencia
+                    if (full.Pendientes == 0) {
+                        return ''
+                    } else {
+                        return '<a style="color:blue;text-decoration:underline;cursor:pointer" onclick="ReporteOrdenesPendientes(' + full.IdDetalle + ')" > Ver </a>'
+                    }
                 },
             },
             {
@@ -2773,7 +2847,24 @@ function listarItemAprobados(IdDetalleSeleccionado = 0) {
                 targets: 8,
                 orderable: false,
                 render: function (data, type, full, meta) {
+                    return full.Referencia
+                },
+            },
+            {
+                data: null,
+                targets: 9,
+                orderable: false,
+                render: function (data, type, full, meta) {
                     return full.NombProveedor
+                },
+            },
+            {
+                data: null,
+                targets: 10,
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    return '<button title="Eliminar requerimiento" class="btn btn-danger btn-xs fa fa-trash" onClick="EliminarItem(' + full.IdDetalle + ')" ></button>'
+
                 },
             }
 
@@ -3290,6 +3381,8 @@ function limpiarDatos() {
     $("#IdCondicionPago").val(0);
     $("#tbody_detalle").html('');
     $("#txtTipoCambio").val('');
+    $("#chkGestionAlmacen").prop("checked", false);
+    $("#chkSubContrato").prop("checked", false)
    
 }
 
@@ -3804,4 +3897,52 @@ function CargarDatosBaseObraAlmacen() {
     }
 
 
+}
+
+function EliminarItem(idDetalle) {
+
+    alertify.confirm('Confirmar', '¿Desea eliminar este item?', function () {
+
+        swal({
+            title: "Eliminando y Notificando al Almacén...",
+            text: "Por favor espere",
+            showConfirmButton: false,
+            allowOutsideClick: false
+        });
+
+        setTimeout(() => {
+            $.post("EliminarItemRQ", { 'IdDetalle': idDetalle }, function (data) {
+                if (data == 0) {
+                    swal("Error!", "Ocurrio un Error")
+                    limpiarDatos();
+                } else {
+                    swal("Exito!", "Item eliminado", "success")
+                    //table.destroy();
+                    mostrarproductosaprobados();
+                    limpiarDatos();
+                }
+            });
+
+        }, 200)
+
+    }, function () { });
+
+}
+
+function ActivarOC(IdPedido) {
+    alertify.confirm('Confirmar', '¿Desea activar esta OC?', function () {
+        $.ajax({
+            url: 'ActivarPedido',
+            type: 'POST',
+            data: { 'IdPedido': IdPedido },
+            success: function (data) {
+                swal("Exito!", "Proceso Realizado Correctamente", "success")
+                listarPedidoDt()
+            },
+            error: function () {
+                swal("Error!", "El Proceso Falló", "error")
+            }
+        })
+
+    }, function () { });
 }

@@ -34,5 +34,6 @@ namespace DTO
         public List<int> Prioridad { get; set; }
         public List<int> EstadoItemAutorizado { get; set; }
         public List<string> TipoServicio { get; set; }
+        public List<string> CodCuadrilla { get; set; }
     }
 }

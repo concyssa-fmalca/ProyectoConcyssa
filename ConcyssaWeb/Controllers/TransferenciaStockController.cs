@@ -30,31 +30,8 @@ namespace ConcyssaWeb.Controllers
 
             if (oMovimientoDTO.TranferenciaDirecta == 1)
             {
-                respuesta = oMovimimientoDAO.InsertUpdateMovimiento(oMovimientoDTO,BaseDatos,ref mensaje_error);
-                if (respuesta > 0)
-                {
-                    for (int i = 0; i < oMovimientoDTO.detalles.Count; i++)
-                    {
-                        oMovimientoDTO.detalles[i].IdMovimiento = respuesta;
-                        int respuesta1 = oMovimimientoDAO.InsertUpdateMovimientoDetalle(oMovimientoDTO.detalles[i], oMovimientoDTO.detalles[i].ValidarIngresoSalidaOAmbos,BaseDatos,ref mensaje_error);
-                    }
-
-
-                    if (oMovimientoDTO.AnexoDetalle != null)
-                    {
-                        for (int i = 0; i < oMovimientoDTO.AnexoDetalle.Count; i++)
-                        {
-                            oMovimientoDTO.AnexoDetalle[i].ruta = "/Anexos/" + oMovimientoDTO.AnexoDetalle[i].NombreArchivo;
-                            oMovimientoDTO.AnexoDetalle[i].IdSociedad = oMovimientoDTO.IdSociedad;
-                            oMovimientoDTO.AnexoDetalle[i].Tabla = "Movimiento";
-                            oMovimientoDTO.AnexoDetalle[i].IdTabla = respuesta;
-
-                            oMovimimientoDAO.InsertAnexoMovimiento(oMovimientoDTO.AnexoDetalle[i],BaseDatos,ref mensaje_error);
-                        }
-                    }
-
-                }
-
+                respuesta = oMovimimientoDAO.RegistrarMovimientoCompleto(oMovimientoDTO, oMovimientoDTO.detalles[0].ValidarIngresoSalidaOAmbos, BaseDatos,ref mensaje_error);
+              
 
                 TranferenciaStockFinalController tr = new TranferenciaStockFinalController();
                 oMovimientoDTO.ValidarIngresoSalidaOAmbos = 1;
@@ -64,33 +41,11 @@ namespace ConcyssaWeb.Controllers
             }
             else
             {
-                respuesta = oMovimimientoDAO.InsertUpdateMovimiento(oMovimientoDTO,BaseDatos,ref mensaje_error);
-                if (mensaje_error.Length > 0)
-                {
-                    return mensaje_error;
-                }
+                respuesta = oMovimimientoDAO.RegistrarMovimientoCompleto(oMovimientoDTO, oMovimientoDTO.detalles[0].ValidarIngresoSalidaOAmbos, BaseDatos, ref mensaje_error);
+               
                 if (respuesta > 0)
                 {
-                    for (int i = 0; i < oMovimientoDTO.detalles.Count; i++)
-                    {
-                        oMovimientoDTO.detalles[i].IdMovimiento = respuesta;
-                        int respuesta1 = oMovimimientoDAO.InsertUpdateMovimientoDetalle(oMovimientoDTO.detalles[i], oMovimientoDTO.detalles[i].ValidarIngresoSalidaOAmbos,BaseDatos,ref mensaje_error);
-                    }
-
-
-                    if (oMovimientoDTO.AnexoDetalle != null)
-                    {
-                        for (int i = 0; i < oMovimientoDTO.AnexoDetalle.Count; i++)
-                        {
-                            oMovimientoDTO.AnexoDetalle[i].ruta = "/Anexos/" + oMovimientoDTO.AnexoDetalle[i].NombreArchivo;
-                            oMovimientoDTO.AnexoDetalle[i].IdSociedad = oMovimientoDTO.IdSociedad;
-                            oMovimientoDTO.AnexoDetalle[i].Tabla = "Movimiento";
-                            oMovimientoDTO.AnexoDetalle[i].IdTabla = respuesta;
-
-                            oMovimimientoDAO.InsertAnexoMovimiento(oMovimientoDTO.AnexoDetalle[i],BaseDatos,ref mensaje_error);
-                        }
-                    }
-
+                  
 
                     if (oMovimientoDTO.ValidarIngresoSalidaOAmbos == 2) //solo salida
                     {

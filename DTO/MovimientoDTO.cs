@@ -130,7 +130,12 @@ namespace DTO
         public string OrigenDespacho { get; set; }
         public int EsDevolucionAdm { get; set; }
         public string NroRef { get; set; }
+        public string CodigoCuadrilla { get; set; }
+        public int IdMovDevolucion { get; set; } = 0;
 
+        public string NombObraDestino { get; set; }
+        public string NombAlmacenDestino { get; set; }
+     
     }
 
 

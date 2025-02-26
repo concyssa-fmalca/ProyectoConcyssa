@@ -91,7 +91,7 @@ namespace DAO
                             var FechaI = Convert.ToDateTime(drd["FechaI"].ToString());
                             var FechaF = Convert.ToDateTime(drd["FechaF"].ToString());
                             string CorrelatvioUsar = drd["Correlativo"].ToString().PadLeft(3, '0'); ;
-                            oSemanaDTO.Descripcion = CorrelatvioUsar +  " - Semana " + drd["NumSemana"].ToString() + " del " + FechaI.ToString("dd/MM") + " al " + FechaF.ToString("dd/MM");
+                            oSemanaDTO.Descripcion = CorrelatvioUsar +  " - Semana " + drd["NumSemana"].ToString() + " del " + FechaI.ToString("dd/MM/yyyy") + " al " + FechaF.ToString("dd/MM/yyyy");
                             lstSemanaDTO.Add(oSemanaDTO);
                         }
                                 

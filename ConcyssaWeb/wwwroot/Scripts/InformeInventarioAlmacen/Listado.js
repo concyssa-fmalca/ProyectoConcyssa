@@ -154,6 +154,7 @@ function ObtenerStockxAlmacen() {
                 type: 'POST',
                 data: {
                     'IdAlmacen': $("#cboAlmacenFiltro").val(),
+                    'TipoArticulo': $("#cboTipoArticulo").val(),
                     pagination: {
                         perpage: 50,
                     },
@@ -308,6 +309,7 @@ function ImportarExcel() {
 
     $.post('GenerarExcel', {
         'IdAlmacen': $("#cboAlmacenFiltro").val(),
+        'TipoArticulo': $("#cboTipoArticulo").val(),
     }, function (data, status) {
         if (data=="ERROR") {
             Swal.fire("Error!","No se pudo generar el Archivo Excel","error")

@@ -731,7 +731,7 @@ namespace DAO
 
 
 
-        public int ActualizarEstadoContabilizado(int IdGiro, bool Estado, string BaseDatos)
+        public int ActualizarEstadoContabilizado(int IdGiro, bool Estado, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
@@ -756,7 +756,7 @@ namespace DAO
                     }
                     catch (Exception ex)
                     {
-                       
+                        mensaje_error = ex.Message.ToString();
                         return 0;
                     }
                 }

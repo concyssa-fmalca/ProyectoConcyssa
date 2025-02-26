@@ -110,7 +110,9 @@
     </div>
     <div class="panel">
         <div class="container-fluid">
-
+            <div class="pull-right">
+                <p>**Presione enter para Buscar</p>              
+            </div>
             <table id="table_id" class="table" style="width:100%">
                 <thead>
                     <tr>
@@ -123,7 +125,7 @@
                         <th>Serie y Número</th>
                          <th>Moneda</th>
                         <th>Total</th>
-
+                        <th>Cuadrilla</th>
                         <th>Obra</th>
                         <th>Almacen</th>
                         <th>Nro. Ref</th>
@@ -180,7 +182,7 @@
                                 <div class='form-group-sm'>
                                     <label for="txtFechaDocumento" class="control-label col-sm-2 left-align">Fecha Documento</label>
                                     <div class="col-sm-4">
-                                        <input id="txtFechaDocumento" value="@DateTime.Now.ToString("yyyy-MM-dd")" onchange="ValidarMonedaBase()" type="date" class="form-control input-sm" tabindex="10">
+                                        <input id="txtFechaDocumento" value="@DateTime.Now.ToString("yyyy-MM-dd")" min="2024-01-01" onchange="ValidarMonedaBase()" type="date" class="form-control input-sm" tabindex="10">
                                     </div>
                                 </div>
 
@@ -338,9 +340,9 @@
 
 
                                 <div class='form-group-sm'>                                  
-                                @*    <div class="col-sm-2">
+                                   <div class="col-sm-2">
                                         <button style="margin-bottom:10px;margin-top:5px" class="btn btn-xs btn-info" id="btn_agregaritem" onclick="OpenModalImportacion()" type="button">Importar Datos</button>
-                                    </div>*@
+                                    </div>
                                 </div>
 
                                 <select id="cboAgregarArticulo" class="form-control" onchange="SeleccionarItemListado()"></select>
@@ -523,7 +525,7 @@
                                     </select> </p>
                                 <hr style="margin: 0px 0px 5px 0px"/>
 
-                                <p>Responsable:<select  style="height: 20px"  id="IdResponsable" type="text" class="form-control input-sm" tabindex="0"  onchange="SetearEmpleadosEnTabla()">
+                                <p>Responsable:<select  style="height: 20px;width:100%"   id="IdResponsable" type="text" class="form-control input-sm" tabindex="0"  onchange="SetearEmpleadosEnTabla()">
                                             <option value="0">SELECCIONE Responsable </option>
                                         </select> </p>
                                     <hr style="margin: 0px 0px 5px 0px; display:none" />

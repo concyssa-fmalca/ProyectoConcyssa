@@ -41,6 +41,9 @@ namespace DTO
 
 #pragma warning disable CS8618 // El elemento propiedad "ChoferDescripcion" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declarar el elemento propiedad como que admite un valor NULL.
         public string ChoferDescripcion { get; set; }
+        public int IdCuadrilla { get; set; }
+        public string Brevete { get; set; }
+        public int IdPropietario { get; set; }
 #pragma warning restore CS8618 // El elemento propiedad "ChoferDescripcion" que no acepta valores NULL debe contener un valor distinto de NULL al salir del constructor. Considere la posibilidad de declarar el elemento propiedad como que admite un valor NULL.
 }
 }

@@ -70,7 +70,20 @@ namespace ConcyssaWeb.Controllers
         }
 
 
-        public string InsertPedidoModeloAut(PedidoDTO oPedidoDTO) {
+        public string InsertPedidoModeloAut(string JsonDatosEnviar) 
+        {
+            JsonDatosEnviar = JsonDatosEnviar.Remove(JsonDatosEnviar.Length - 1, 1);
+            JsonDatosEnviar = JsonDatosEnviar.Remove(0, 1);
+
+            var settings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                MissingMemberHandling = MissingMemberHandling.Ignore
+            };
+            PedidoDTO oPedidoDTO = JsonConvert.DeserializeObject<PedidoDTO>(JsonDatosEnviar, settings);
+
+
+
             string mensaje_error = "";
             string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             int IdSociedad = Convert.ToInt32((String.IsNullOrEmpty(oPedidoDTO.IdSociedad.ToString())) ? Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad")) : oPedidoDTO.IdSociedad);
@@ -84,9 +97,21 @@ namespace ConcyssaWeb.Controllers
             {
                 IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             }
+            int IdInsert = 0;
+            UsuarioDAO oUsuarioDAO = new UsuarioDAO();
+            List<UsuarioDTO> lstUsuarioDTO = oUsuarioDAO.ObtenerDatosxID(IdUsuario, BaseDatos, ref mensaje_error);
+            PedidoDAO OPedidoDAO = new PedidoDAO();
+            if (lstUsuarioDTO[0].CrearOCdirecto || oPedidoDTO.EsSubContrato)
+            {
+                IdInsert = int.Parse(UpdateInsertPedido(oPedidoDTO));
+                OPedidoDAO.AprobarPedido(IdInsert, BaseDatos, ref mensaje_error);
+
+                return IdInsert.ToString(); 
+            }
+
+
             //Validar Modelos Aprobacion 
             ModeloAutorizacionDAO oModeloAutorizacionDAO = new ModeloAutorizacionDAO();
-            PedidoDAO OPedidoDAO = new PedidoDAO();
             var ModeloAuorizacion = oModeloAutorizacionDAO.VerificarExisteModeloSolicitud(1, 4, BaseDatos); //valida si existe alguina modelo aplicado a documento solicitud Despacho
 
             if (ModeloAuorizacion.Count > 0)
@@ -99,7 +124,7 @@ namespace ConcyssaWeb.Controllers
                         if (ResultadoModelo[0].DetallesAutor[a].IdAutor == IdUsuario)
                         {
                             SolicitudDespachoDAO oSolicitudDespachoDAO = new SolicitudDespachoDAO();
-                            int IdInsert = 0;
+                           
                             try
                             {
                                 IdInsert = int.Parse(UpdateInsertPedido(oPedidoDTO));
@@ -558,13 +583,13 @@ namespace ConcyssaWeb.Controllers
             return JsonConvert.SerializeObject(oDataTableDTO);
         }
 
-        public string ObtenerDatosProveedorXRQAsignados(int IdProveedor,int TipoItem,int IdObra)
+        public string ObtenerDatosProveedorXRQAsignados(int IdProveedor,int TipoItem,int IdObra,bool EsSubContrato)
         {
             string mensaje_error = "";
             string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             List<AsignadoPedidoRequeridoDTO> lstAsignadoPedidoRequeridoDTO = new List<AsignadoPedidoRequeridoDTO>();
             PedidoDAO oPedidoDAO = new PedidoDAO();
-            lstAsignadoPedidoRequeridoDTO = oPedidoDAO.ListarProductosAsignadosxProveedorDetalle(IdProveedor,TipoItem, IdObra,BaseDatos,ref mensaje_error);
+            lstAsignadoPedidoRequeridoDTO = oPedidoDAO.ListarProductosAsignadosxProveedorDetalle(IdProveedor,TipoItem, IdObra,EsSubContrato, BaseDatos,ref mensaje_error);
             return JsonConvert.SerializeObject(lstAsignadoPedidoRequeridoDTO);
         }
 
@@ -1054,9 +1079,10 @@ namespace ConcyssaWeb.Controllers
 
                 //mail.To.Add(correoObra);
                 //mail.To.Add("garrieta@concyssa.com");
-    
-
-                mail.To.Add("cristhian.chacaliaza@smartcode.pe");
+                mail.To.Add(correoObra);
+                mail.To.Add("compras@concyssa.com");
+   
+                //mail.To.Add("cristhian.chacaliaza@smartcode.pe");
 
 
                 mail.Subject = "SE OBSERVÓ EL PEDIDO " + oPedidoDTO.NombSerie + "-" + oPedidoDTO.Correlativo;
@@ -1223,6 +1249,176 @@ namespace ConcyssaWeb.Controllers
             {
                 oPedidoDAO.CorregirPedidoSinModelo(lstPedidoDTO[i].IdPedido, lstPedidoDTO[i].IdUsuario, BaseDatos);
             }
+        }
+
+        public string ObtenerOcPendientes(int idObra, int idArticulo)
+        {
+            PedidoDAO oPedidoDAO = new PedidoDAO();
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            List<PedidoPendienteDTO> lstPedidoDTO = oPedidoDAO.ObtenerOCPendientes(IdSociedad, idObra, idArticulo, BaseDatos);
+            if (lstPedidoDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstPedidoDTO);
+            }
+            else
+            {
+                return "error";
+            }
+        }
+
+        public int EliminarItemRQ(int IdDetalle)
+        {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            string mensaje_error = "";
+            PedidoDAO oPedidoDAO = new PedidoDAO();
+            SolicitudRQDAO oSolicitudRQDAO = new SolicitudRQDAO();
+            SolicitudDetalleDTO oSolicitudDetalleDTO = oSolicitudRQDAO.ObtenerSolicitudDetallexId(IdDetalle,BaseDatos,ref mensaje_error);
+            int resultado = oPedidoDAO.Delete(IdDetalle, BaseDatos);
+            if (resultado == 0)
+            {
+                resultado = 1;
+
+                EnviarCorreItemRQEliminado(oSolicitudDetalleDTO);
+
+            }
+
+            return resultado;
+        }
+        public string ActivarPedido(PedidoDTO oPedidoDTO)
+        {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            string mensaje_error = "";
+            PedidoDAO oPedidoDAO = new PedidoDAO();
+            int respuesta = oPedidoDAO.ActivarPedido(oPedidoDTO, BaseDatos, ref mensaje_error);
+
+            if (mensaje_error.Length > 0)
+            {
+                return mensaje_error;
+            }
+            else
+            {
+                if (respuesta == 1)
+                {
+                    EnviarCorreoAnulacionCierre(oPedidoDTO.IdPedido, "cerrado");
+                    return "1";
+                }
+                else
+                {
+                    return "error";
+                }
+            }
+
+        }
+
+
+        public int EnviarCorreItemRQEliminado(SolicitudDetalleDTO datos)
+        {
+
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            try
+            {
+
+                string base64;
+                string html = @"";
+                string mensaje_error = "";
+                PedidoDAO oPedidoDAO = new PedidoDAO();
+                PedidoDTO oPedidoDTO = new PedidoDTO();
+
+                string body;
+                body = "BASE PRUBAS";
+
+           
+
+                string msge = "";
+                string from = "concyssa.smc@gmail.com";
+                string correo = from;
+                string password = "tlbvngkvjcetzunr";
+                string displayName = "[SGC] "+datos.NumeroSerie+" ITEM DE REQUERIMIENTO RECHAZADO POR LOGISTICA";
+                MailMessage mail = new MailMessage();
+                mail.From = new MailAddress(from, displayName);
+
+         
+                mail.To.Add(datos.CorreoAlmacen);
+
+
+
+                //mail.To.Add("cristhian.chacaliaza@smartcode.pe");
+
+
+                mail.Subject = "[SGC] "+datos.NumeroSerie+" ITEM DE REQUERIMIENTO RECHAZADO POR LOGISTICA";
+                //mail.CC.Add(new MailAddress("camala145@gmail.com"));
+                mail.Body = @"<html><head><meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>
+	                            <title></title>
+	
+                            </head>
+                            <br>
+
+                            <p>Le informamos que un Item del requerimiento "+datos.NumeroSerie +@" fue rechazado por el área de logisitca, a continuación los detalles: </p>
+
+                            <p><b>Articulo/Servicio: </b> "+datos.CodArticulo +"-"+ datos.DescripcionItem + @" </p></br>
+                            <p><b>Cantidad: </b> "+ Math.Round(datos.CantidadNecesaria,2) +@" </p></br>
+                         
+                            <p>Si tiene inquietud respecto debe comunicarse con el área de logistica</p>
+
+                            <label>---------------------------------------------------------------------------------------</label><br>
+                            <label>Este es un sistema automático de notificaciones, por favor no responda este mensaje al correo.</label><br>
+                            <label>Desarrollado por <a href=""https://smartcode.pe/"">SmartCode</a></label><br>
+                            <label>---------------------------------------------------------------------------------------</label><br>
+
+                            </body></html>";
+
+                mail.IsBodyHtml = true;
+                SmtpClient client = new SmtpClient("smtp.gmail.com", 587); //Aquí debes sustituir tu servidor SMTP y el puerto
+                client.Credentials = new NetworkCredential(from, password);
+                client.EnableSsl = true;//En caso de que tu servidor de correo no utilice cifrado SSL,poner en false
+
+
+
+                WebResponse webResponse;
+                HttpWebRequest request;
+                Uri uri;
+                string cadenaUri;
+                string response;
+       
+                client.Send(mail);
+        
+            }
+            catch (WebException e)
+            {
+                using (WebResponse responses = e.Response)
+                {
+                    HttpWebResponse httpResponse = (HttpWebResponse)responses;
+                    using (Stream data = responses.GetResponseStream())
+                    using (var reader = new StreamReader(data))
+                    {
+                        var dd = reader.ReadToEnd();
+                    }
+                }
+                string err = e.ToString();
+            }
+
+
+
+
+            //string path = "C:\\inetpub\\wwwroot\\Binario\\Anexos\\" + pathPDF + ".pdf";
+            //string path = "C:\\Users\\soporte.sap\\source\\repos\\SMC_AddonRequerimientos\\SMC_AddonRequerimientos\\Anexos\\" + pathPDF + ".pdf";
+            //bool result = System.IO.File.Exists(path);
+            //if (result == true)
+            //{ }
+            //else
+            //{
+            //    //GenerarPDF(IdSolicitud.ToString());
+            //}
+
+            ////Attachment archivo = new Attachment("C:\\inetpub\\wwwroot\\Binario\\Anexos\\" + pathPDF + ".pdf");
+            //Attachment archivo = new Attachment("C:\\Users\\soporte.sap\\source\\repos\\SMC_AddonRequerimientos\\SMC_AddonRequerimientos\\Anexos\\" + pathPDF + ".pdf");
+            //mail.Attachments.Add(archivo);
+
+
+
+
+            return 0;
         }
 
     }

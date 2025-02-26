@@ -183,5 +183,15 @@ namespace ConcyssaWeb.Controllers
 
         }
 
+
+        public string ObtenerDireccionUsoSD(int IdSolicitud)
+        {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+
+            SolicitudDespachoDAO oSolicitudDespachoDAO = new SolicitudDespachoDAO();
+            string direccion = oSolicitudDespachoDAO.ObtenerDireccionUsoSD(IdSolicitud, BaseDatos);
+            return direccion;
+        }
+
     }
 }

@@ -31,7 +31,7 @@ window.onload = function () {
 
 
     $("#cboAgregarArticulo").select2({
-        dropdownParent: $("#ModalItem")
+        dropdownParent: $("#modal-form")
     })
     BuscarItemsExp()
     $.post('/Usuario/ObtenerUsuariosCreadores', function (data, status) {
@@ -578,14 +578,17 @@ function CambiarClaseArticulo() {
 
     if (ClaseArticulo == "2") {
         $("#IdTipoProducto").hide();
+        $("#divCuadrilla").show();
         $("#IdTipoProducto").val(0);
     } else if (ClaseArticulo == "3") {
         $("#IdTipoProducto").hide();
         $("#IdTipoProducto").val(0);
+        $("#divCuadrilla").hide();
     }
     else {
         $("#IdTipoProducto").show();
         $("#IdTipoProducto").val(0);
+        $("#divCuadrilla").hide();
     }
 
 }
@@ -708,15 +711,15 @@ function AgregarLinea() {
         arrayIdArticulo.push($(elemento).val());
     });
 
-    for (var i = 0; i < arrayIdArticulo.length; i++) {
-        if (arrayIdArticulo[i] == CodigoItem) {
+    //for (var i = 0; i < arrayIdArticulo.length; i++) {
+    //    if (arrayIdArticulo[i] == CodigoItem) {
 
-            swal("Informacion!", "Ya existe el producto en la solicitud!");
-            return;
-        } else {
+    //        swal("Informacion!", "Ya existe el producto en la solicitud!");
+    //        return;
+    //    } else {
 
-        }
-    }
+    //    }
+    //}
 
 
 
@@ -869,10 +872,10 @@ function AgregarLinea() {
     Almacen = DatosAlmacenes
     Moneda = DatosMonedas
 
-    if (limitador >= 30) {
-        swal("Informacion!", "Solo se pueden agregar Hasta 30 items");
-        return;
-    }
+    //if (limitador >= 30) {
+    //    swal("Informacion!", "Solo se pueden agregar Hasta 30 items");
+    //    return;
+    //}
     for (var J = 0; J < valorfor; J++) {
 
 
@@ -986,6 +989,7 @@ function AgregarLinea() {
             </td>
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
+            <td><input type="text" class="form-control" name="txtCuadrillaDetalle[]" id="txtCuadrillaDetalle`+contador+`"/></td>
             <td><textarea class="form-control" type="text" value="" id="txtReferencia`+ contador + `" name="txtReferencia[]"></textarea></td>
             <td style="display:none" ><input style="width:50px" class="form-control" type="text" value="" id="txtTipoServicio`+ contador + `" name="txtTipoServicio[]"></input></td>
             <td style="display:none;"><input class="form-control" type="text" value="1" id="txtEstadoDetalle`+ contador + `" name="txtEstadoDetalle[]"></td>
@@ -1029,6 +1033,7 @@ function AgregarLinea() {
         $("#txtReferencia" + contador).val(ReferenciaItem);
 
         $("#txtTipoServicio" + contador).val(TipoServicio);
+        $("#txtCuadrillaDetalle" + contador).val($("#cboCuadrilla option:selected").text().split('-')[0]);
 
 
         if (ClaseArticulo == 3) {
@@ -1039,7 +1044,11 @@ function AgregarLinea() {
     }
 
     $("#cboAgregarArticulo").val(0).change()
+    $("#cboCuadrilla").val(0).change()
+    CargarCuadrillas()
     ValidarItems()
+    $('#cboCuadrilla').select2('open');
+    $('#cboCuadrilla').select2('close');
     $('#cboAgregarArticulo').select2('open');
     ValidarOCAbiertas(IdItem)
 }
@@ -1647,140 +1656,15 @@ function GuardarSolicitud() {
     }
 
 
-    //$.post('UpdateInsertSolicitud', {
-    //    'IdSolicitudRQ': varIdSolicitud,
-    //    'IdSerie': varSerie,
-    //    'Serie': varSerieDescripcion,
-    //    'Numero': varNumero,
-    //    'IdSolicitante': varSolicitante,
-    //    'IdSucursal': varSucursal,
-    //    'IdDepartamento': varDepartamento,
-    //    'IdClaseArticulo': varClaseArticulo,
-    //    'IdTitular': varTitular,
-    //    'IdMoneda': varMoneda,
-    //    'TipoCambio': varTipoCambio,
-    //    'IndicadorImpuesto': 0,
-    //    'TotalAntesDescuento': varTotalAntesDescuento,
-    //    'Impuesto': varImpuesto,
-    //    'Total': varTotal,
-    //    'FechaContabilizacion': varFechaContabilizacion,
-    //    'FechaValidoHasta': varFechaValidoHasta,
-    //    'FechaDocumento': varFechaDocumento,
-    //    'Comentarios': varComentarios,
-    //    'Estado': varEstado,
-    //    'Prioridad': varPrioridad,
-    //    'IdArticulo': arrayIdArticulo,
-    //    'IdUnidadMedida': arrayIdUnidadMedida,
-    //    'FechaNecesaria': arrayFechaNecesaria,
-    //    'IdItemMoneda': arrayIdMoneda,
-    //    'ItemTipoCambio': arrayTipoCambio,
-    //    'CantidadNecesaria': arrayCantidadNecesaria,
-    //    'PrecioInfo': arrayPrecioInfo,
-    //    'IdIndicadorImpuesto': arrayIndicadorImpuesto,
-    //    'ItemTotal': arrayTotal,
-    //    'IdAlmacen': arrayAlmacen,
-    //    'IdProveedor': arrayProveedor,
-    //    'NumeroFabricacion': arrayNumeroFabricacion,
-    //    'NumeroSerie': arrayNumeroSerie,
-    //    'IdLineaNegocio': arrayLineaNegocio,
-    //    'IdCentroCostos': arrayCentroCosto,
-    //    'IdProyecto': arrayProyecto,
-    //    'Referencia':arrayReferencia,
-    //    'IdSolicitudRQDetalle': arrayIdSolicitudDetalle,
-    //    'DetalleAnexo': arrayGeneralAnexo
-
-    //}, function (data, status) {
-
-    //    if (data == 1) {
-    //        swal("Exito!", "Proceso Realizado Correctamente", "success")
-    //        table.destroy();
-    //        ConsultaServidor("ObtenerSolicitudesRQ");
-    //        //limpiarDatos();
-    //    } else {
-    //        swal("Error!", "Ocurrio un Error")
-    //        //limpiarDatos();
-    //    }
-
-    //    });
-
-
-
-
-    //$.ajax({
-    //    url: "UpdateInsertSolicitud",
-    //    data: {
-    //        'IdSolicitudRQ': varIdSolicitud,
-    //        'IdSerie': varSerie,
-    //        'Serie': varSerieDescripcion,
-    //        'Numero': varNumero,
-    //        'IdSolicitante': varSolicitante,
-    //        'IdSucursal': varSucursal,
-    //        'IdDepartamento': varDepartamento,
-    //        'IdClaseArticulo': varClaseArticulo,
-    //        'IdTitular': varTitular,
-    //        'IdMoneda': varMoneda,
-    //        'TipoCambio': varTipoCambio,
-    //        'IndicadorImpuesto': 0,
-    //        'TotalAntesDescuento': varTotalAntesDescuento,
-    //        'Impuesto': varImpuesto,
-    //        'Total': varTotal,
-    //        'FechaContabilizacion': varFechaContabilizacion,
-    //        'FechaValidoHasta': varFechaValidoHasta,
-    //        'FechaDocumento': varFechaDocumento,
-    //        'Comentarios': varComentarios,
-    //        'Estado': varEstado,
-    //        'Prioridad': varPrioridad,
-    //        'IdArticulo': arrayIdArticulo,
-    //        'Prioridad': arrayPrioridad,
-    //        'IdUnidadMedida': arrayIdUnidadMedida,
-    //        'FechaNecesaria': arrayFechaNecesaria,
-    //        'IdItemMoneda': arrayIdMoneda,
-    //        'ItemTipoCambio': arrayTipoCambio,
-    //        'CantidadNecesaria': arrayCantidadNecesaria,
-    //        'PrecioInfo': arrayPrecioInfo,
-    //        'IdIndicadorImpuesto': arrayIndicadorImpuesto,
-    //        'ItemTotal': arrayTotal,
-    //        'IdAlmacen': arrayAlmacen,
-    //        'IdProveedor': arrayProveedor,
-    //        'NumeroFabricacion': arrayNumeroFabricacion,
-    //        'NumeroSerie': arrayNumeroSerie,
-    //        'IdLineaNegocio': arrayLineaNegocio,
-    //        'IdCentroCostos': arrayCentroCosto,
-    //        'IdProyecto': arrayProyecto,
-    //        'Referencia': arrayReferencia,
-    //        'IdSolicitudRQDetalle': arrayIdSolicitudDetalle,
-    //        'DetalleAnexo': arrayGeneralAnexo
-    //    },
-    //    type: "POST",
-    //    cache: false,
-    //    beforeSend: function () {
-    //        Swal.fire({
-    //            title: "Cargando...",
-    //            text: "Por favor espere",
-    //            showConfirmButton: false,
-    //            allowOutsideClick: false
-    //        });
-    //    },
-    //    success: function (data) {
-    //        if (data == 1) {
-    //            swal("Exito!", "Proceso Realizado Correctamente", "success")
-    //            table.destroy();
-    //            ConsultaServidor("ObtenerSolicitudesRQ");
-
-    //        } else {
-    //            swal("Error!", "Ocurrio un Error")
-
-    //        }
-    //    }
-    //}).fail(function () {
-
-    //    });
-
-
     //AnexoDetalle
     let arrayTxtNombreAnexo = new Array();
     $("input[name='txtNombreAnexo[]']").each(function (indice, elemento) {
         arrayTxtNombreAnexo.push($(elemento).val());
+    });
+
+    let arrayCuadrillas= new Array();
+    $("input[name='txtCuadrillaDetalle[]']").each(function (indice, elemento) {
+        arrayCuadrillas.push($(elemento).val());
     });
 
     let AnexoDetalle = [];
@@ -1790,62 +1674,88 @@ function GuardarSolicitud() {
         });
     }
 
+    let Detalle = [];
+    for (var i = 0; i < arrayIdArticulo.length; i++) {
+        Detalle.push({
+            'IdSolicitudRQDetalle': arrayIdSolicitudDetalle[i],
+            'IdArticulo': arrayIdArticulo[i],
+            'Descripcion': arrayDescripcionArticulo[i],
+            'IdUnidadMedida': arrayIdUnidadMedida[i],
+            'FechaNecesaria': arrayFechaNecesaria[i],
+            'CantidadNecesaria': arrayCantidadNecesaria[i],
+            'PrecioInfo': arrayPrecioInfo[i],
+            'ItemTotal': arrayTotal[i],
+            'IdAlmacen': arrayAlmacen[i],
+            'IdProveedor': arrayProveedor[i],
+            'NumeroFabricacion': arrayNumeroFabricacion[i],
+            'NumeroSerie': arrayNumeroSerie[i],
+            'Referencia': arrayReferencia[i],
+            'EstadoDetalle': arrayEstadoDetalle[i],
+            'Prioridad': arrayPrioridad[i],
+            'TipoServicio': arrayTipoServicio[i],
+            'CodCuadrilla': arrayCuadrillas[i]
+
+        })
+    }
 
 
-    //return;
 
+    if (varClaseArticulo == 2 && AnexoDetalle.length == 0) {
+        Swal.fire("Los Requeminientos de servicio deben tener al menos un documento adjunto");
+        return
+    }
+
+    let EsSubContrato = false;
+
+    if ($("#cobTipoRequerimiento").val() == "1") {
+        EsSubContrato = true;
+    }
+
+
+
+    if (EsSubContrato && $("#cboClaseArticulo").val() != "2") {
+        Swal.fire("Los subcontratos solo pueden contener Servicios");
+        return;
+    }
+
+
+    let MovimientoEnviar = []
+
+    MovimientoEnviar.push({
+        'IdSolicitudRQ': varIdSolicitud,
+        'IdSerie': varSerie,
+        'Serie': varSerieDescripcion,
+        'Numero': varNumero,
+        'IdSolicitante': varSolicitante,
+        'IdSucursal': varSucursal,
+        'IdDepartamento': varDepartamento,
+        'NombreDepartamento': varNombreDepartamento,
+        'IdClaseArticulo': varClaseArticulo,
+        'IdTitular': varTitular,
+        'TipoCambio': varTipoCambio,
+        'TotalAntesDescuento': varTotalAntesDescuento,
+        'IdIndicadorImpuesto': 0,
+        'Impuesto': varImpuesto,
+        'Total': varTotal,
+        'FechaContabilizacion': varFechaContabilizacion,
+        'FechaValidoHasta': varFechaValidoHasta,
+        'FechaDocumento': varFechaDocumento,
+        'Comentarios': varComentarios,
+        'Estado': varEstado,
+        'Prioridad': varPrioridad,
+        'EsSubContrato': EsSubContrato,
+        'AnexoDetalle': AnexoDetalle,
+        'Detalle': Detalle
+    })
+ 
 
     $.ajax({
         url: "UpdateInsertSolicitud",
         type: "POST",
         async: true,
         data: {
-            'IdSolicitudRQ': varIdSolicitud,
-            'IdSerie': varSerie,
-            'Serie': varSerieDescripcion,
-            'Numero': varNumero,
-            'IdSolicitante': varSolicitante,
-            'IdSucursal': varSucursal,
-            'IdDepartamento': varDepartamento,
-            'NombreDepartamento': varNombreDepartamento,
-            'IdClaseArticulo': varClaseArticulo,
-            'IdTitular': varTitular,
-            'IdMoneda': varMoneda,
-            'TipoCambio': varTipoCambio,
-            'IndicadorImpuesto': 0,
-            'TotalAntesDescuento': varTotalAntesDescuento,
-            'Impuesto': varImpuesto,
-            'Total': varTotal,
-            'FechaContabilizacion': varFechaContabilizacion,
-            'FechaValidoHasta': varFechaValidoHasta,
-            'FechaDocumento': varFechaDocumento,
-            'Comentarios': varComentarios,
-            'Estado': varEstado,
-            'Prioridad': varPrioridad,
-            'IdArticulo': arrayIdArticulo,
-            'Descripcion': arrayDescripcionArticulo,
-            'Prioridad': arrayPrioridad,
-            'IdUnidadMedida': arrayIdUnidadMedida,
-            'FechaNecesaria': arrayFechaNecesaria,
-            'IdItemMoneda': arrayIdMoneda,
-            'ItemTipoCambio': arrayTipoCambio,
-            'CantidadNecesaria': arrayCantidadNecesaria,
-            'CantidadSolicitada': arrayCantidadNecesaria,
-            'PrecioInfo': arrayPrecioInfo,
-            'IdIndicadorImpuesto': arrayIndicadorImpuesto,
-            'ItemTotal': arrayTotal,
-            'IdAlmacen': arrayAlmacen,
-            'IdProveedor': arrayProveedor,
-            'NumeroFabricacion': arrayNumeroFabricacion,
-            'NumeroSerie': arrayNumeroSerie,
-            'IdLineaNegocio': arrayLineaNegocio,
-            'IdCentroCostos': arrayCentroCosto,
-            'IdProyecto': arrayProyecto,
-            'Referencia': arrayReferencia,
-            'IdSolicitudRQDetalle': arrayIdSolicitudDetalle,
-            'EstadoDetalle': arrayEstadoDetalle,
-            'AnexoDetalle': AnexoDetalle,
-            'TipoServicio' : arrayTipoServicio,
+        
+            'JsonDatosEnviar': JSON.stringify(MovimientoEnviar)
         },
         beforeSend: function () {
             Swal.fire({
@@ -1960,6 +1870,8 @@ function limpiarDatos() {
 
     $("#file").val('');
     limitador = 0;
+    $("#cobTipoRequerimiento").prop("disabled", false)
+    $("#cobTipoRequerimiento").val(0)
     //------------ANTERIOR AL 12/06/23
     //$("#txtId").val('');
     //$("#cboSerie").val('');
@@ -2079,6 +1991,13 @@ function ObtenerDatosxID(IdSolicitudRQ) {
             $("#cboAlmacen").val(solicitudes[0].Detalle[0].IdAlmacen)
             $("#cboImpuesto").val(1); //2 titan EXO  //5 CROACIA EXO
 
+            $("#cobTipoRequerimiento").prop("disabled",true)
+            if (solicitudes[0].EsSubContrato) {
+                $("#cobTipoRequerimiento").val(1)
+            } else {
+                $("#cobTipoRequerimiento").val(0)
+            }
+
             //agrega detalle
             let tr = '';
 
@@ -2116,6 +2035,7 @@ function ObtenerDatosxID(IdSolicitudRQ) {
                     Detalle[i].FechaDocumentoPedido,
                     Detalle[i].ConformidadPedido,
                     Detalle[i].TipoServicio,
+                    Detalle[i].CodCuadrilla,
                 );
 
                 $("#cboImpuesto").val(Detalle[0].IdIndicadorImpuesto);
@@ -2232,7 +2152,7 @@ function CalcularTotales() {
 }
 
 
-function AgregarLineaDetalle(datos, DescripcionServicio, Numero, EstadoCabecera, contador, Prioridad, IdArticulo, IdSolicitudRQDetalle, IdUnidadMedida, IdIndicadorImpuesto, IdAlmacen, IdProveedor, IdLineaNegocio, IdCentroCosto, IdProyecto, IdMoneda, ItemTipoCambio, CantidadNecesaria, CantidadSolicitada, PrecioInfo, ItemTotal, NumeroFabricacion, NumeroSerie, FechaNecesaria, Referencia, DescripcionItem, EstadoDetalle,SeriePedido,FechaDocumentoPedido,ConformidadPedido,TipoServicio) {
+function AgregarLineaDetalle(datos, DescripcionServicio, Numero, EstadoCabecera, contador, Prioridad, IdArticulo, IdSolicitudRQDetalle, IdUnidadMedida, IdIndicadorImpuesto, IdAlmacen, IdProveedor, IdLineaNegocio, IdCentroCosto, IdProyecto, IdMoneda, ItemTipoCambio, CantidadNecesaria, CantidadSolicitada, PrecioInfo, ItemTotal, NumeroFabricacion, NumeroSerie, FechaNecesaria, Referencia, DescripcionItem, EstadoDetalle,SeriePedido,FechaDocumentoPedido,ConformidadPedido,TipoServicio,CodCuadrilla) {
 
     let UnidadMedida;
     let IndicadorImpuesto;
@@ -2454,6 +2374,7 @@ function AgregarLineaDetalle(datos, DescripcionServicio, Numero, EstadoCabecera,
             </td>
             <td style="display:none"><input class="form-control" type="text" value="0" disabled></td>
             <td style="display:none"><input class="form-control" type="text" value="0" disabled></td>
+            <td ><input class="form-control" type="text" value="`+ CodCuadrilla + `"  name="txtCuadrillaDetalle[]" disabled/></td>
             <td ><textarea class="form-control" type="text" value="`+ Referencia + `"  name="txtReferencia[]" disabled>` + Referencia + `</textarea></td>
             <td style="display:none"><input style="width:50px" class="form-control" type="text" value="`+ TipoServicio + `" name="txtTipoServicio[]" disabled></input></td>
             <td style="display:none;"><input class="form-control" type="text" value="`+ EstadoDetalle + `"  name="txtEstadoDetalle[]"></td>
@@ -3969,7 +3890,7 @@ function BuscarItemsExp() {
     $("#cboAgregarArticulo").select2({
         language: "es",
         width: '100%',
-
+        dropdownParent: $("#modal-form"),
         //theme: "classic",
         async: false,
         ajax: {
@@ -4020,4 +3941,40 @@ function ValidarItems() {
         $("#cboClaseArticulo").prop("disabled", false)
         $("#IdTipoProducto").prop("disabled", false)
     }
+}
+
+
+function CargarCuadrillas() {
+    $("#cboCuadrilla").val(0).change()
+    $("#cboCuadrilla").select2({
+        language: "es",
+        dropdownParent: $("#modal-form"),
+        language: "es",
+        width: '100%',
+        //theme: "classic",
+        async: false,
+        ajax: {
+            url: "/Cuadrilla/ObtenerCuadrillaxIdObraSelect2",
+            type: "post",
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    Texto: params.term, IdObra: $("#IdObra").val()
+                };
+            },
+            processResults: function (response) {
+                var results = [];
+                $.each(response, function (index, item) {
+                    results.push({ id: item.IdCuadrilla, text: item.Codigo + '-' + item.Descripcion })
+                });
+                return { results }
+            },
+            cache: true,
+        },
+        placeholder: 'Seleccione',
+        minimunInputLength: 3
+    });
+
+   
 }

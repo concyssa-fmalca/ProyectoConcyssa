@@ -396,14 +396,13 @@ namespace DAO
                     try
                     {
                         cn.Open();
-                        SqlDataAdapter da = new SqlDataAdapter("SMC_AccionesPorNotaCredito", cn);
-                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
-                        da.SelectCommand.Parameters.AddWithValue("@TablaOrigen", TablaOrigen);
-                        da.SelectCommand.Parameters.AddWithValue("@IdOrigen", IdOrigen);
-                        da.SelectCommand.Parameters.AddWithValue("@IdORPC", IdORPC);
+                        SqlDataAdapter da5 = new SqlDataAdapter("SMC_AccionesPorNotaCredito", cn);
+                        da5.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da5.SelectCommand.Parameters.AddWithValue("@TablaOrigen", TablaOrigen);
+                        da5.SelectCommand.Parameters.AddWithValue("@IdOrigen", IdOrigen);
+                        da5.SelectCommand.Parameters.AddWithValue("@IdORPC", IdORPC);
 
-
-                        int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
+                        int rpta = Convert.ToInt32(da5.SelectCommand.ExecuteScalar());
                         transactionScope.Complete();
                         return rpta.ToString();
                     }

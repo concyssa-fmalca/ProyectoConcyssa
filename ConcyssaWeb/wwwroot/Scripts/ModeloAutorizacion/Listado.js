@@ -128,6 +128,10 @@ function GuardarModeloAutorizacion() {
         varcheckSolicitudGiro = 4;
         arrayGeneralDocumento.push({ 'IdModeloAutorizacionDocumento': varIdModeloAutorizacionDocumento, 'IdDocumento': varcheckSolicitudGiro });
     }
+    if ($('#chkSubContrato')[0].checked) {
+        varcheckSolicitudGiro = 5;
+        arrayGeneralDocumento.push({ 'IdModeloAutorizacionDocumento': varIdModeloAutorizacionDocumento, 'IdDocumento': varcheckSolicitudGiro });
+    }
    
     //documento
 
@@ -349,6 +353,10 @@ function AgregarLineaDocumentos() {
                   <input type="checkbox" id="chkOrdenCompra" />
               <label for="chkOrdenCompra">Orden Compra</label>
               </div>
+               <div class="checkbox-custom col-xs-6">
+                  <input type="checkbox" id="chkSubContrato" />
+              <label for="chkSubContrato">Req. SubContrato</label>
+              </div>
             </td>
             </tr>`;
 
@@ -498,6 +506,10 @@ function AgregarLineaDetalleDocumentos(contador, IdModeloAutorizacionDocumento, 
                   <input type="checkbox" id="chkOrdenCompra" />
                   <label for="chkOrdenCompra">Orden Compra</label>
               </div>
+               <div class="checkbox-custom col-xs-6">
+                  <input type="checkbox" id="chkSubContrato" />
+                  <label for="chkSubContrato">Req. SubContrato</label>
+              </div>
             </td>
             </tr>`;
 
@@ -516,6 +528,9 @@ function AgregarLineaDetalleDocumentos(contador, IdModeloAutorizacionDocumento, 
     }
     if (IdDocumento == 4) {
         $('#chkOrdenCompra').prop('checked', true);
+    }
+    if (IdDocumento == 5) {
+        $('#chkSubContrato').prop('checked', true);
     }
 
 }
@@ -764,8 +779,9 @@ function validacionesAutor(elemento) {
     let chkDespacho = $("#chkSolicitudDespacho").prop("checked")
     let chkGiro = $("#chkSolicitudGiro").prop("checked")
     let chkOrdenCompra = $("#chkOrdenCompra").prop("checked")
+    let chkSubContrato = $("#chkSubContrato").prop("checked")
 
-    if (chkRQ == false && chkDespacho == false && chkGiro == false && chkOrdenCompra==false) {
+    if (chkRQ == false && chkDespacho == false && chkGiro == false && chkOrdenCompra == false && chkSubContrato == false) {
         Swal.fire("Espere", "Debe seleccionar primero una opción en la Pestaña de Documentos", "info");
         $(elemento).val(0)
         return
@@ -779,6 +795,7 @@ function validacionesAutor(elemento) {
     if (chkGiro) IdTipoDoc=2
     if (chkDespacho) IdTipoDoc=3
     if (chkOrdenCompra) IdTipoDoc=4
+    if (chkSubContrato) IdTipoDoc=5
 
     $.post("ValidarAutoresxTipoDocumento", { 'IdAutor': IdAutor, 'IdTipoDocumento': IdTipoDoc }, function (data, status) {
 

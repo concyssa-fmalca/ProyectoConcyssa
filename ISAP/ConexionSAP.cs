@@ -283,7 +283,7 @@ namespace ISAP
                 {
                     ObjSAPComprobante.UserFields.Fields.Item("U_CON_TASADET").Value = auxComprobante.TasaDetraccion.ToString();
                     ObjSAPComprobante.UserFields.Fields.Item("U_CON_GRUPODET").Value = auxComprobante.GrupoDetraccion.ToString();
-
+                    datosProveedor[0].Afecto4ta = false;
                     //if (auxComprobante.CondicionPagoDet > 0)
                     //{
                     //    ObjSAPComprobante.PaymentGroupCode = auxComprobante.CondicionPagoDet;
@@ -454,6 +454,15 @@ namespace ISAP
                         SUMASubTotal += auxdetalle.total_valor_item;
                         SUMATotal += auxdetalle.total_item;
                     }
+                    if (auxdetalle.IdIndicadorImpuesto == 4)
+                    {
+                        ObjSAPComprobante.Lines.UnitPrice = (double)Math.Round(auxdetalle.total_valor_item, 2); //sin igv
+                        ObjSAPComprobante.Lines.TaxCode = "IGV_RHA";//"IGV";
+                        //ObjSAPComprobante.Lines.PriceAfterVAT = (double)Math.Round(auxdetalle.total_valor_item, 2); // sin igv
+                        SUMASubTotal += auxdetalle.total_valor_item;
+                        SUMAIGV += auxdetalle.total_valor_item * auxdetalle.porcentaje_igv;
+                        SUMATotal += auxdetalle.total_item;
+                    }
 
 
                     ObjSAPComprobante.Lines.Add();
@@ -489,65 +498,65 @@ namespace ISAP
                 }
                 //REDONDEO
 
+                //ANEXOS
+                //try
+                //{
+                //    for (int i = 0; i < auxComprobante.AnexoDetalle.Count(); i++)
+                //    {
+                //        string ruta = @"C:\SMC\Binario\ProyectoConcyssa\wwwroot\Anexos\";
 
-                try
-                {
-                    for (int i = 0; i < auxComprobante.AnexoDetalle.Count(); i++)
-                    {
-                        string ruta = @"C:\SMC\Binario\ProyectoConcyssa\wwwroot\Anexos\";
-
-                        SAPbobsCOM.Attachments2 oAttachment = (SAPbobsCOM.Attachments2)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oAttachments2);
-
-
-                        if (oAttachment.GetByKey(ObjSAPComprobante.AttachmentEntry))
-                        //if (oAttachment.GetByKey(Convert.ToInt32(docentry)))
-                        {
-                            int s223232adasdasdasdas = oAttachment.Lines.Count;
-                            // the document has already attachments 
-                            oAttachment.Lines.Add();
-                            int sadasdasdasdas = oAttachment.Lines.Count;
-                            oAttachment.Lines.SetCurrentLine(oAttachment.Lines.Count - 1);
-                            oAttachment.Lines.FileName = auxComprobante.AnexoDetalle[i].NombreArchivo; ;//"OS SADE.pdf";
-                            oAttachment.Lines.SourcePath = ruta;
-                            oAttachment.Lines.Override = SAPbobsCOM.BoYesNoEnum.tYES;
+                //        SAPbobsCOM.Attachments2 oAttachment = (SAPbobsCOM.Attachments2)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oAttachments2);
 
 
-
-                            if (oAttachment.Update() != 0)
-                            {
-                                errMsg = oCompany.GetLastErrorDescription();
-                                mensaje_error = errMsg;
-                            }
-                        }
-                        else
-                        {
-                            oAttachment.Lines.FileName = auxComprobante.AnexoDetalle[i].NombreArchivo; //ARCHIVO.XML
-                            oAttachment.Lines.SourcePath = ruta;// RUTA DE CARPETA
-                            oAttachment.Lines.Override = SAPbobsCOM.BoYesNoEnum.tYES;
-                            if (oAttachment.Add() != 0)
-                            {
-                                errMsg = oCompany.GetLastErrorDescription();
-                                mensaje_error = errMsg;
-                                throw new Exception(errMsg);
-                            }
-
-                            // END Adjuntar PDF
-
-                            string objKey = oCompany.GetNewObjectKey();
-                            oAttachment.GetByKey(Convert.ToInt32(objKey));
-                            int absEntry = oAttachment.AbsoluteEntry;
-                            ObjSAPComprobante.AttachmentEntry = oAttachment.AbsoluteEntry;
-                        }
+                //        if (oAttachment.GetByKey(ObjSAPComprobante.AttachmentEntry))
+                //        //if (oAttachment.GetByKey(Convert.ToInt32(docentry)))
+                //        {
+                //            int s223232adasdasdasdas = oAttachment.Lines.Count;
+                //            // the document has already attachments 
+                //            oAttachment.Lines.Add();
+                //            int sadasdasdasdas = oAttachment.Lines.Count;
+                //            oAttachment.Lines.SetCurrentLine(oAttachment.Lines.Count - 1);
+                //            oAttachment.Lines.FileName = auxComprobante.AnexoDetalle[i].NombreArchivo; ;//"OS SADE.pdf";
+                //            oAttachment.Lines.SourcePath = ruta;
+                //            oAttachment.Lines.Override = SAPbobsCOM.BoYesNoEnum.tYES;
 
 
 
+                //            if (oAttachment.Update() != 0)
+                //            {
+                //                errMsg = oCompany.GetLastErrorDescription();
+                //                mensaje_error = errMsg;
+                //            }
+                //        }
+                //        else
+                //        {
+                //            oAttachment.Lines.FileName = auxComprobante.AnexoDetalle[i].NombreArchivo; //ARCHIVO.XML
+                //            oAttachment.Lines.SourcePath = ruta;// RUTA DE CARPETA
+                //            oAttachment.Lines.Override = SAPbobsCOM.BoYesNoEnum.tYES;
+                //            if (oAttachment.Add() != 0)
+                //            {
+                //                errMsg = oCompany.GetLastErrorDescription();
+                //                mensaje_error = errMsg;
+                //                throw new Exception(errMsg);
+                //            }
 
-                    }
-                }
-                catch (Exception ex)
-                {
-                    return mensaje_error = ex.Message.ToString();
-                }
+                //            // END Adjuntar PDF
+
+                //            string objKey = oCompany.GetNewObjectKey();
+                //            oAttachment.GetByKey(Convert.ToInt32(objKey));
+                //            int absEntry = oAttachment.AbsoluteEntry;
+                //            ObjSAPComprobante.AttachmentEntry = oAttachment.AbsoluteEntry;
+                //        }
+
+
+
+
+                //    }
+                //}
+                //catch (Exception ex)
+                //{
+                //    return mensaje_error = ex.Message.ToString();
+                //}
 
 
                 var algo = ObjSAPComprobante.GroupNumber;
@@ -560,7 +569,8 @@ namespace ISAP
                     //DesconectarSAP();
                     mensaje_error = "Error en " + DatosSerie[0].Serie + "-" + auxComprobante.Correlativo + ":" + errMsg + " Esta Facutra volverá a los registros originales";
                     //ERROR 10000047 - La fecha difiere de ámbito permitido (VALIDAR FECHA DE VENCIMIENTO)
-                    //GC.Collect();
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(ObjSAPComprobante);
+                    GC.Collect();
                 }
                 else
                 {
@@ -611,7 +621,8 @@ namespace ISAP
 
 
                     mensaje_error = "Factura " + DatosSerie[0].Serie + "-" + auxComprobante.Correlativo + " Enviada a SAP con Exito";
-                    //GC.Collect();
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(ObjSAPComprobante);
+                    GC.Collect();
                     //DesconectarSAP();
                 }
                 return mensaje_error;
@@ -963,7 +974,8 @@ namespace ISAP
                     int errCode = oCompany.GetLastErrorCode();
                     //DesconectarSAP();
                     mensaje_error = "Error en " + DatosSerie[0].Serie + "-" + auxComprobante.Correlativo + ":" + errMsg + " Esta Nota de Crédito volverá a los registros originales";
-                    //GC.Collect();
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(ObjSAPComprobante);
+                    GC.Collect();
                 }
                 else
                 {
@@ -1035,7 +1047,8 @@ namespace ISAP
                     int errCode = oCompany.GetLastErrorCode();
                     //DesconectarSAP();
                     mensaje_error = "Error:" + errMsg;
-                    //GC.Collect();
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(ObjSAPComprobante);
+                    GC.Collect();
                 }
                 else
                 {
@@ -1048,7 +1061,8 @@ namespace ISAP
 
 
                     mensaje_error = "Enviada a SAP con Exito";
-                    //GC.Collect();
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(ObjSAPComprobante);
+                    GC.Collect();
                     //DesconectarSAP();
                 }
                 return mensaje_error;

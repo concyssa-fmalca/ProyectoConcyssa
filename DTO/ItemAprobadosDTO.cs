@@ -22,6 +22,7 @@
         public string Referencia { get; set; }
 
         public string TipoServicio { get; set; }
+        public int Pendientes { get; set; }
 
     }
 }

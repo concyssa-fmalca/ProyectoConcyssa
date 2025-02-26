@@ -69,7 +69,7 @@
 
 <div class="container-fluid" style="height:93%;">
     <input style="display:none" id="IdPerfilSesion" type="text" value="@httpContextAccessor.HttpContext.Session.GetInt32("IdPerfil")" disabled></input>
-    <input style="display:none" id="IdUsuarioSesion" type="text" value="@httpContextAccessor.HttpContext.Session.GetInt32("IdUsuario")"/>
+    <input style="display:none" id="IdUsuarioSesion" type="text" value="@httpContextAccessor.HttpContext.Session.GetInt32("IdUsuario")" />
     <div class="panel">
         <div class="container-fluid">
             <div class="topbar-left col-xs-6">
@@ -84,34 +84,18 @@
             </div>
             <div class="col-xs-6 right">
                 <button class="btn btn-sm  btn-primary pull-right plu" data-target="modal1" onclick="ModalNuevo()" style="margin-left:10px;">Nuevo</button>              
-                @*<button class="btn btn-sm  btn-success pull-right plu" id="btnPdf" style="margin-left:10px;">Descargar PDF</button>
-                <button class="btn btn-sm btn-info pull-right plu" id="btnExcel" style="margin-left:10px;">Descargar Excel</button>*@
             </div>
-           <div class="col-xs-12 right">
+            <div class="col-xs-12 right">
                 <label class="col-sm-2" for="cboObraFiltro">Obra</label>
                 <div class="col-sm-3">
                     <select class="form-control" id="cboObraFiltro" onchange="changeTipoRegistroFiltro();esRendicionFiltro()"></select>
                 </div>
                 <div class="col-md-1"></div>
-                 <label class="col-sm-2" for="cboObraFiltro">Proveedor</label>
+                <label class="col-sm-2" for="cboObraFiltro">Proveedor</label>
                 <div class="col-sm-3">
-                    <select class="form-control" id="cboProveedorFiltro"></select>
+                    <select class="form-control" id="cboProveedorFiltro" style="width:100%"></select>
                 </div>
-            </div>
-           @* <div class="col-xs-12 right">
-                <label class="col-sm-2" for="txtFechaInicio">Fecha Inicio</label>
-                <div class="col-sm-3">
-                    <input type="date" class="form-control col-sm-3" id="txtFechaInicio" />
-                </div>
-
-            </div>
-            <div class="col-xs-12 right">             
-                <label class="col-sm-2" for="txtFechaFin">Fecha Fin</label>
-                <div class="col-sm-3">
-                  <input type="date" class="form-control col-sm-3"  id="txtFechaFin" />    
-                </div>
-                <button class="btn btn-primary" style="margin-top:3px" onclick="listarOpch()">Buscar</button>
-            </div>*@
+            </div>         
             <div class="col-xs-12 right">
                 <label class="col-sm-2" for="cboTipoRegistro">Tipo de Registro</label>
                 <div class="col-sm-3">
@@ -124,7 +108,7 @@
                 </div>
             </div>
 
-             <div class="col-xs-12 right" id="DivSemana" style="display:none">
+            <div class="col-xs-12 right" id="DivSemana" style="display:none">
                 <label class="col-sm-2" for="cboSemana">Semana</label>
                 <div class="col-sm-3">
                     <select class="form-control" id="cboSemanaFiltro"></select>
@@ -137,17 +121,16 @@
                     <select class="form-control" id="cboGiroFiltro"></select>
                 </div>
             </div>
-             <div class="col-xs-12">
-               <div class="col-md-5">
+            <div class="col-xs-12">
+                <div class="col-md-5">
 
                     <button class="btn btn-primary" onclick="listarOpch()"> buscar por Tipo Registro</button>
-               </div>
-               <div class="col-md-1"></div>
-               <div class="col-md-5">
+                </div>
+                <div class="col-md-1"></div>
+                <div class="col-md-5">
 
                     <button class="btn btn-primary" onclick="listarOpchProveedor()"> Buscar por Proveedor</button>
-               </div>
-                @*<button class="btn btn-primary" onclick="ValidacionSUNATMasivo()"> Validacion SUNAT Masivo</button>*@
+                </div>              
             </div>
         </div>
     </div>
@@ -155,9 +138,9 @@
         <div class="container-fluid">
             <div class="row">
                 <label>Total S/.</label>
-                <input type="text" id="TotalRegistrosSol" disabled/>
-                   <label>Total $.</label>
-                <input type="text" id="TotalRegistrosDol" disabled/>
+                <input type="text" id="TotalRegistrosSol" disabled />
+                <label>Total $.</label>
+                <input type="text" id="TotalRegistrosDol" disabled />
             </div>
             <br />
             <table id="table_id" class="table" style="width:100%">
@@ -202,8 +185,6 @@
                                 <input placeholder='' id='txtId' type='text' style="display:none;">
                                 <input id='IdPedido' type='text' style="display:none;">
                                 <input id='IdOPDN' type='text' style="display:none;">
-
-                                @*<input placeholder='' id='txtEstado' type='text' style="display:none;">*@
                             </div>
 
                             <div class="row">
@@ -235,19 +216,8 @@
                                     <div class="col-sm-4">
                                         <input id="txtFechaDocumento" value="@DateTime.Now.ToString("yyyy-MM-dd")" type="date" class="form-control input-sm" tabindex="10" onchange="ValidarFechaDoc()">
                                     </div>
-                                </div>
-
-                                @* <div class='form-group-sm'>
-                                <label for="cboTipoDocumentoOperacion" class="control-label col-sm-2 left-align">Tipo Documento</label>
-                                <div class="col-sm-4">
-                                <select id="cboTipoDocumentoOperacion" class="form-control input-sm" tabindex="0"></select>
-                                </div>
-                                </div>*@
+                                </div>                          
                             </div>
-
-
-
-
                             <div class="row">
                                 <div class='form-group-sm'>
                                     <label for="cboSerie" class="control-label col-sm-2 left-align">Serie</label>
@@ -274,8 +244,7 @@
                                     </div>
                                 </div>
 
-                                <div class='form-group-sm'>
-                                    @*<label for="cboMoneda" class="control-label col-sm-2 left-align">Tipo de Cambio</label>*@
+                                <div class='form-group-sm'>                                
                                     <label for="cboMoneda" class="control-label col-sm-2 left-align">Moneda</label>
                                     <div class="col-sm-4">
                                         <select id="cboMoneda" type="text" class="form-control input-sm" tabindex="3" onchange="ValidarMonedaBase()" disabled></select>
@@ -283,7 +252,6 @@
                                 </div>
                                 <div id="Origenes" style="display:none">
                                     <div class='form-group-sm'>
-                                        @*<label for="cboMoneda" class="control-label col-sm-2 left-align">Tipo de Cambio</label>*@
 
                                         <div class="col-sm-4">
                                             <input id="txtOrigen" type="text" class="form-control input-sm" disabled></input>
@@ -291,7 +259,6 @@
                                     </div>
 
                                     <div class='form-group-sm'>
-                                        @*<label for="cboMoneda" class="control-label col-sm-2 left-align">Tipo de Cambio</label>*@
 
                                         <div class="col-sm-4">
                                             <input id="txtOrigenId" type="text" class="form-control input-sm" disabled></input>
@@ -302,13 +269,6 @@
 
 
                             <div class="row">
-
-                                @*     <div class='form-group-sm'>
-                                <label for="txtFechaContabilizacion" class="control-label col-sm-2 left-align">Fecha Contabilizacion</label>
-                                <div class="col-sm-4">
-                                <input id="txtFechaContabilizacion" value="@DateTime.Now.ToString("yyyy-MM-dd")" type="date" class="form-control input-sm" tabindex="6">
-                                </div>
-                                </div>*@
                                 <div class='form-group-sm'>
                                     <label for="txtNumeracion" class="control-label col-sm-2 left-align">Tipo Cambio</label>
                                     <div class="col-sm-4">
@@ -321,45 +281,9 @@
                                         <input id="txtSerieSAP" type="number" class="form-control input-sm" value="0" tabindex="4">
                                     </div>
                                 </div>
-
-
-
-                                @*<div class='form-group-sm'>
-                                <label for="IdCuadrilla" class="control-label col-sm-2 left-align">Cuadrilla</label>
-                                <div class="col-sm-4">
-                                <select id="IdCuadrilla" type="text" class="form-control input-sm" tabindex="3" >
-                                <option value="0">SELECCIONE CUADRILLAS </option>
-                                </select>
-                                </div>
-                                </div>*@
-
-                                @* <div class='form-group-sm'>
-                                <label for="txtFechaDocumento" class="control-label col-sm-2 left-align">Fecha Documento</label>
-                                <div class="col-sm-4">
-                                <input id="txtFechaDocumento" value="@DateTime.Now.ToString("yyyy-MM-dd")" type="date" class="form-control input-sm" tabindex="10" >
-                                </div>
-                                </div>*@
-
-
                             </div>
 
-                            <div class="row">
-                                @*<div class='form-group-sm'>
-                                <label for="IdCuadrilla" class="control-label col-sm-1 left-align">Cuadrilla</label>
-                                <div class="col-sm-4">
-                                <select id="IdCuadrilla" type="text" class="form-control input-sm" tabindex="3">
-                                <option value="0">SELECCIONE CUADRILLAS </option>
-                                </select>
-                                </div>
-                                </div>*@
-                                @* <div class='form-group-sm'>
-                                <label for="IdResponsable" style="text-align: right;" class="control-label col-sm-1 right-align">Responsable</label>
-                                <div class="col-sm-2">
-                                <select id="IdResponsable" type="text" class="form-control input-sm" tabindex="3">
-                                <option value="0">SELECCIONE Responsable </option>
-                                </select>
-                                </div>
-                                </div>*@
+                            <div class="row">                           
                                 <div class='form-group-sm' style="display:none">
                                     <label for="cboCentroCosto" class="control-label col-sm-2 left-align">Centro de Costo</label>
                                     <div class="col-sm-4">
@@ -381,7 +305,7 @@
                                 <div class='form-group-sm'>
                                     <label for="txtNumeracion" class="control-label col-sm-2 left-align">Proveedor</label>
                                     <div class="col-sm-10">
-                                        <select id="IdProveedor" type="text" class="form-control input-sm" tabindex="3" onchange="ObtenerProveedorxId()"></select>
+                                        <select id="IdProveedor" class="form-select" style="width:100%" onchange="ObtenerProveedorxId()"></select>
                                     </div>
                                 </div>
                             </div>
@@ -410,21 +334,6 @@
                                 </div>
 
                             </div>
-                            <br />
-
-                            <div class="row">
-                                @*<div class='form-group-sm'>
-                                <label for="cboTipoAlmacen" class="control-label col-sm-2 left-align">Tipo Almacen</label>
-                                <div class="col-sm-4">
-                                <select id="cboTipoAlmacen" class="form-control input-sm" tabindex="9">
-                                </select>
-                                </div>
-                                </div>*@
-
-                            </div>
-
-
-
                             <br />
 
                             <div class="tab">
@@ -784,11 +693,9 @@
 
     <!-- Modal -->
     <div class="modal fade" data-backdrop="static"
-         data-keyboard="false" id="ModalItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        data-keyboard="false" id="ModalItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" style="margin-top:120px" role="document">
             <div class="modal-content">
-
-
                 <div class="panel" style="margin-bottom:0px">
                     <div class="modal-header">
                         <h5 class="modal-title" id="lblTituloModalItem">Agregar Item</h5>
@@ -810,16 +717,6 @@
                                         </div>
                                     </div>
 
-
-                                    @*<div class='form-group-sm'>
-                                    <label for="cboPrioridadItem" class="control-label col-sm-2 left-align">Prioridad</label>
-                                    <div class="col-sm-4">
-                                    <select id="cboPrioridadItem" class="form-control input-sm" tabindex="2" style="height:26px">
-                                    <option value="1">ALTA</option>
-                                    <option value="2">BAJA</option>
-                                    </select>
-                                    </div>
-                                    </div>*@
                                     <div class='form-group-sm'>
                                         <label for="txtCodigoItem" class="control-label col-sm-2 left-align">Codigo</label>
                                         <div class="col-sm-3">
@@ -833,31 +730,13 @@
 
 
                                 </div>
-                                <div class="row">
-                                    @*<div class='form-group-sm'>
-                                    <label for="txtCodigoItem" class="control-label col-sm-2 left-align">Codigo</label>
-                                    <div class="col-sm-3">
-                                    <input id="txtCodigoItem" type="text" class="form-control input-sm" tabindex="1" disabled>
-                                    <input id="txtIdItem" type="hidden" class="form-control input-sm" tabindex="1">
-                                    </div>
-                                    <div class="col-sm-1">
-                                    <button type="button" classs="btn-primary" onclick="BuscarCodigoProducto()" style="height:26px"><i class="fa fa-search" aria-hidden="true"></i></button>
-                                    </div>
-                                    </div>*@
-                                    @*<div class='form-group-sm'>
-                                    <label for="txtMedidaItem" class="control-label col-sm-2 left-align">Medida</label>
-                                    <div class="col-sm-4">
-                                    <input id="txtMedidaItem" type="text" class="form-control input-sm" tabindex="2">
-                                    </div>
-                                    </div>*@
-
+                                <div class="row">                               
                                     <div class='form-group-sm'>
                                         <label for="cboGrupoUnidadMedida" class="control-label col-sm-2 left-align">Grupo Unidad</label>
                                         <div class="col-sm-4">
                                             <select id="cboGrupoUnidadMedida" class="form-control input-sm" tabindex="2" style="height:26px" onchange="CargarDefinicionxGrupo()" disabled></select>
                                         </div>
                                     </div>
-
                                     <div class='form-group-sm'>
                                         <label for="cboMedidaItem" class="control-label col-sm-2 left-align">Medida</label>
                                         <div class="col-sm-4">
@@ -866,27 +745,20 @@
                                     </div>
                                 </div>
                                 <div class="row">
-
                                     <div class='form-group-sm'>
                                         <label for="txtDescripcionItem" class="control-label col-sm-2 left-align">Descripcion</label>
                                         <div class="col-sm-10">
-                                            <input id="txtDescripcionItem" type="text" class="form-control input-sm" tabindex="3" disabled style="height:50px">
+                                            <input id="txtDescripcionItem" type="text" class="form-control input-sm" tabindex="3" disabled>
                                         </div>
                                     </div>
-
                                 </div>
-
-
                                 <div class="row">
-
-
                                     <div class='form-group-sm'>
                                         <label for="txtPrecioUnitarioItem" class="control-label col-sm-2 left-align">Precio Unitario</label>
                                         <div class="col-sm-4">
                                             <input id="txtPrecioUnitarioItem" type="text" class="form-control input-sm" tabindex="4">
                                         </div>
                                     </div>
-
                                     <div class='form-group-sm'>
                                         <label for="IdIndicadorImpuesto" class="control-label col-sm-2 left-align">Indicador Impuesto</label>
                                         <div class="col-sm-4">
@@ -895,32 +767,24 @@
                                     </div>
                                 </div>
                                 <div class="row">
-
-
                                     <div class='form-group-sm'>
                                         <label for="txtCantidadItem" class="control-label col-sm-2 left-align">Cantidad</label>
                                         <div class="col-sm-4">
                                             <input id="txtCantidadItem" max="5" type="number" class="form-control input-sm" tabindex="6" onkeyup="ValidarDecimalesCantidades('txtCantidadItem')">
                                         </div>
                                     </div>
-
                                     <div class='form-group-sm'>
                                         <label id="lblStockItem" for="txtStockAlmacenItem" class="control-label col-sm-2 left-align">Stock en Almacen</label>
                                         <div class="col-sm-4">
                                             <input id="txtStockAlmacenItem" type="text" class="form-control input-sm" tabindex="5" disabled>
                                         </div>
                                     </div>
-
-
                                 </div>
-
-
                                 <div class="row">
-
                                     <div class='form-group-sm'>
                                         <label id="lblStockItem" for="IdCuadrilla" class="control-label col-sm-2 left-align">Centro de Costo</label>
                                         <div class="col-sm-10">
-                                            <select id="IdCuadrilla" type="text" class="form-control input-sm" tabindex="0">
+                                            <select id="IdCuadrilla" style="width:100%" type="text" class="form-control input-sm" tabindex="0">
                                                 <option value="0">SELECCIONE CUADRILLAS </option>
                                             </select>
                                         </div>
@@ -931,14 +795,12 @@
                                     <div class='form-group-sm'>
                                         <label id="lblStockItem" for="IdResponsable" class="control-label col-sm-2 left-align">Responsable</label>
                                         <div class="col-sm-10">
-                                            <select id="IdResponsable" type="text" class="form-control input-sm" tabindex="0">
+                                            <select id="IdResponsable" style="width:100%" type="text" class="form-control input-sm" tabindex="0">
                                                 <option value="0">SELECCIONE Responsable </option>
                                             </select>
                                         </div>
                                     </div>
                                 </div>
-
-
                                 <div class="row" style="display:none">
 
                                     <div class='form-group-sm'>
@@ -1442,74 +1304,74 @@
         </div>
     </div>
 
-@*    <!-- Modal Docs Origen-->
+    @*    <!-- Modal Docs Origen-->
     <div class="modal fade" data-backdrop="static"
-         data-keyboard="false" id="" tabindex="-2" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered allcp-form" style="margin-top:120px">
-            <div class="modal-content">
+    data-keyboard="false" id="" tabindex="-2" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered allcp-form" style="margin-top:120px">
+    <div class="modal-content">
 
 
-                <div class="panel" style="margin-bottom:0px">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="lblTituloModalDocsOrigen">Anexos</h5>
-                    </div>
-                    <div class="panel-body ">
-                        <div class='col s12 m12 '>
-                            <div class='container-fluid'>
-
-
-                                <div class="table-responsive">
-                                    <table class="table" id="tabla_DocsOrigen">
-                                        <thead>
-                                            <tr>
-                                                <th>Origen</th>
-                                                <th>Nro Doc</th>
-                                                <th>Ver Reporte</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="tbody_ModalDocsOrigen"></tbody>
-                                    </table>
-                                </div>
-
-
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger pull-right" style="background-color:orange;" data-dismiss="modal">Cerrar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="panel" style="margin-bottom:0px">
+    <div class="modal-header">
+    <h5 class="modal-title" id="lblTituloModalDocsOrigen">Anexos</h5>
     </div>
-*@
+    <div class="panel-body ">
+    <div class='col s12 m12 '>
+    <div class='container-fluid'>
+
+
+    <div class="table-responsive">
+    <table class="table" id="tabla_DocsOrigen">
+    <thead>
+    <tr>
+    <th>Origen</th>
+    <th>Nro Doc</th>
+    <th>Ver Reporte</th>
+    </tr>
+    </thead>
+    <tbody id="tbody_ModalDocsOrigen"></tbody>
+    </table>
+    </div>
+
+
+    </div>
+    </div>
+
+    </div>
+    <div class="modal-footer">
+    <button type="button" class="btn btn-danger pull-right" style="background-color:orange;" data-dismiss="modal">Cerrar</button>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    *@
     <div id="ModalDocsOrigen" class="popup-sm allcp-form mfp-with-anim mfp-hide">
         <div class="panel">
             <div class="panel-heading">
-                 <h5 class="modal-title" id="lblTituloModalDocsOrigen">Anexos</h5>
+                <h5 class="modal-title" id="lblTituloModalDocsOrigen">Anexos</h5>
             </div>
             <div class="panel-body ">
-              <div class='col s12 m12 '>
-                            <div class='container-fluid'>
+                <div class='col s12 m12 '>
+                    <div class='container-fluid'>
 
 
-                                <div class="table-responsive">
-                                    <table class="table" id="tabla_DocsOrigen">
-                                        <thead>
-                                            <tr>
-                                                <th>Origen</th>
-                                                <th>Nro Doc</th>
-                                                <th>Ver Reporte</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="tbody_ModalDocsOrigen"></tbody>
-                                    </table>
-                                </div>
-
-
-                            </div>
+                        <div class="table-responsive">
+                            <table class="table" id="tabla_DocsOrigen">
+                                <thead>
+                                    <tr>
+                                        <th>Origen</th>
+                                        <th>Nro Doc</th>
+                                        <th>Ver Reporte</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody_ModalDocsOrigen"></tbody>
+                            </table>
                         </div>
+
+
+                    </div>
+                </div>
             </div>
             <div class="panel-footer text-right">
                 <div class="row">

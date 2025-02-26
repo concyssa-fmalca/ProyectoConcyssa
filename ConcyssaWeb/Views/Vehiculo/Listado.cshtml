@@ -89,7 +89,7 @@
                                 <div class='form-group-sm'>
                                     <label for='cboIdBase' class="control-label col-sm-4 left-align">Base</label>
                                     <div class="col-sm-8">
-                                        <select class="form-control" id="cboIdBase"> Seleccione Base</select>
+                                        <select class="form-control" id="cboIdBase" onchange="ObtenerCuadrillasxBase()"> Seleccione Base</select>
                                     </div>
                                 </div>
                             </div>
@@ -113,6 +113,33 @@
                                     <label for='cboIdChofer' class="control-label col-sm-4 left-align">Chofer</label>
                                     <div class="col-sm-8">
                                         <select class="form-control" id="cboIdChofer"> Seleccione Chofer</select>
+                                    </div>
+                                </div>
+                            </div>
+
+                              <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='cboCuadrilla' class="control-label col-sm-4 left-align">Cuadrilla</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control" id="cboCuadrilla"> Seleccione Cuadrilla</select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='txtBrevete' class="control-label col-sm-4 left-align">Brevete</label>
+                                    <div class="col-sm-8">
+                                        <input id='txtBrevete' name="txtBrevete" type='text' class="form-control input-sm" tabindex="1">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class='form-group-sm'>
+                                    <label for='cboPropietario' class="control-label col-sm-4 left-align">Propietario</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control" style="width:100%" id="cboPropietario"> Seleccione Propietario</select>
                                     </div>
                                 </div>
                             </div>
@@ -144,9 +171,13 @@
 
 
 </div>
+@{
+    Random rnd = new Random();
+}
 
 
-<script src="~/Scripts/Vehiculo/Listado.js"></script>
+
+<script src="~/Scripts/Vehiculo/Listado.js?v=@rnd.Next(1, 1000 + 1)"></script>
 <script src="~/Scripts/General.js"></script>
 <script src="~/js/pdf/jspdf.min.js"></script>
 <script src="~/js/pdf/faker.min.js"></script>

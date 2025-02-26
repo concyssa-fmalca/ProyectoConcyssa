@@ -19,7 +19,26 @@ namespace ConcyssaWeb.Controllers
             string mensaje_error = "";
             VehiculoDAO oVehiculoDAO = new VehiculoDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<VehiculoDTO> lstVehiculoDTO = oVehiculoDAO.ObtenerVehiculo(IdSociedad,BaseDatos,ref mensaje_error, estado);
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            List<VehiculoDTO> lstVehiculoDTO = oVehiculoDAO.ObtenerVehiculo(IdSociedad,BaseDatos,IdUsuario,ref mensaje_error, estado);
+            if (lstVehiculoDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstVehiculoDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
+        }
+
+        public string ObtenerVehiculoxIdUsuario()
+        {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            string mensaje_error = "";
+            VehiculoDAO oVehiculoDAO = new VehiculoDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            List<VehiculoDTO> lstVehiculoDTO = oVehiculoDAO.ObtenerVehiculoxIdUsuario(IdSociedad, BaseDatos, IdUsuario, ref mensaje_error);
             if (lstVehiculoDTO.Count > 0)
             {
                 return JsonConvert.SerializeObject(lstVehiculoDTO);
@@ -105,6 +124,44 @@ namespace ConcyssaWeb.Controllers
             }
 
             return resultado;
+        }
+
+        public string ObtenerVehiculosxIdCuadrilla(int IdCuadrilla)
+        {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            string mensaje_error = "";
+            VehiculoDAO oVehiculoDAO = new VehiculoDAO();
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            List<VehiculoDTO> lstVehiculoDTO = oVehiculoDAO.ObtenerVehiculosxIdCuadrilla(IdCuadrilla, BaseDatos, IdUsuario, ref mensaje_error);
+
+            object json = null;
+
+            if (mensaje_error.Length > 0)
+            {
+                json = new { status = false, mensaje = mensaje_error, cantidad = 0,datos = lstVehiculoDTO };
+                return JsonConvert.SerializeObject(json);
+            }
+            else { 
+                json = new { status = true, mensaje = mensaje_error, cantidad = lstVehiculoDTO.Count, datos = lstVehiculoDTO };
+                return JsonConvert.SerializeObject(json);
+            }
+
+        }
+
+        public string ObtenerVehiculoTransferencia(int IdObraOrigen, int IdObraDestino)
+        {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            string mensaje_error = "";
+            VehiculoDAO oVehiculoDAO = new VehiculoDAO();
+            List<VehiculoDTO> lstVehiculoDTO = oVehiculoDAO.ObtenerVehiculoTransferencia(IdObraOrigen, IdObraDestino, BaseDatos, ref mensaje_error);
+            if (lstVehiculoDTO.Count > 0)
+            {
+                return JsonConvert.SerializeObject(lstVehiculoDTO);
+            }
+            else
+            {
+                return mensaje_error;
+            }
         }
 
     }

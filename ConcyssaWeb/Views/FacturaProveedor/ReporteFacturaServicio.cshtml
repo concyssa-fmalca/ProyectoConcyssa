@@ -47,7 +47,25 @@
                     <div class='form-group-sm'>
                         <label for="IdObra" class="control-label col-sm-2 left-align">Obra</label>
                         <div class="col-sm-4">
-                            <select class="form-control input-sm" id="IdObra"></select>
+                            <select class="form-control input-sm" id="IdObra" onchange="ObtenerAlmacenxIdObra()"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class='form-group-sm'>
+                        <label for="IdAlmacen" class="control-label col-sm-2 left-align">Almacen</label>
+                        <div class="col-sm-4">
+                            <select class="form-control input-sm" id="IdAlmacen" onchange="BuscarItemsExp()"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class='form-group-sm'>
+                        <label for="IdServicio" class="control-label col-sm-2 rigth-align">Servicio</label>
+                        <div class="col-sm-4">
+                            <select id="IdServicio" style="width:100%" class="form-control input-sm" tabindex="1">
+                                
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -55,7 +73,7 @@
                     <div class='form-group-sm'>
                         <label for="IdProveedor" class="control-label col-sm-2 rigth-align">Proveedor</label>
                         <div class="col-sm-4">
-                            <select id="IdProveedor" class="form-control input-sm" tabindex="1">
+                            <select id="IdProveedor" style="width:100%" class="form-control input-sm" tabindex="1">
                                 <
                             </select>
                         </div>

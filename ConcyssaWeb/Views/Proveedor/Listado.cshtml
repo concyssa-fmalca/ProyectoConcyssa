@@ -1,7 +1,9 @@
-﻿
+﻿@model List<string>
+@using Microsoft.AspNetCore.Http;
 @{
     ViewBag.Title = "Listado";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    HttpContextAccessor httpContextAccessor = new HttpContextAccessor();
 }
 
 <div class="container-fluid" style="height:93%;">
@@ -12,11 +14,20 @@
             </div>
         </div>
         <div class="container-fluid">
+            <input id="txtIdPerfil" style="display:none" value="@httpContextAccessor.HttpContext.Session.GetInt32("IdPerfil")" disabled/>
             <div class="col-xs-6">
                 <div class="topbar-left col-xs-6">
                     <h4 style="font-size:1.2em;">Total de Registros: <span id="spnTotalRegistros"></span></h4>
                 </div>
+                <div class="col-md-12">
+                    <input type="checkbox" id="chkSoloLogistica" name="c1" tabindex="6" onclick="ConsultaServidor('ObtenerProveedores')" />
+                    <label for="chkSoloLogistica">Mostrar Solo Proveedores de Logistica</label>
+                </div>
+                   
+             
             </div>
+           
+
             <div class="col-sm-4 right">
                 <button class="btn btn-sm btn-info pull-right" id="btn_agregaritem" onclick="OpenModalImportacionProv()" type="button">Importar Precio x Prov Excel</button>
             </div>
@@ -363,15 +374,22 @@
                                     <label for="chk4ta">Afecto 4ta Categoria</label>
                                 </div>
                             </div>
+                          
                         </div>
                         <div class="row">
                             <div class='form-group-sm'>
-                                <div class="checkbox-custom col-xs-4">
+                                <div class="checkbox-custom">
                                     <input type="checkbox" id="chkActivo" />
                                     <label for="chkActivo">Activo</label>
                                 </div>
                             </div>
-
+                            <div class='form-group-sm'>
+                                <div class="checkbox-custom">
+                                    <input type="checkbox" id="chkLogistica" />
+                                    <label for="chkLogistica">Proveedor de Logistica</label>
+                                </div>
+                            </div>
+                             
                         </div>    
                         <div class="row">
                             <div class='form-group-sm'>
@@ -382,7 +400,22 @@
                             </div>
                         </div>
 
+                        <div class="row">
+                            <div class='form-group-sm'>
+                                <label for="txtEmailPortaProv" class="control-label col-sm-2 left-align">Email Portal Prov.</label>
+                                <div class="col-sm-3">
+                                    <input id="txtEmailPortaProv" type="text" class="form-control input-sm" tabindex="15">
+                                </div>
+                            </div>
+                             <div class='form-group-sm col-md-12'>
+                                    <div class="checkbox-custom">
+                                        <input type="checkbox" id="chkFactuaPortal" />
+                                        <label for="chkFactuaPortal">Solicitar Facturas en el Portal de Proveedores antes de Ingresar Guía en el SGC</label>
+                                    </div>
+                             </div>
+                        </div>
 
+                        <br />
                         <div id="Anexos" class="tabcontent" >
 
                             @using (Html.BeginForm("GuardarFile", "Proveedor", FormMethod.Post, new { id = "SubirAnexos", enctype = "multipart/form-data" }))

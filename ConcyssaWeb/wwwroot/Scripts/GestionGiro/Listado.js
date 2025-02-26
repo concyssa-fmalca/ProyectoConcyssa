@@ -54,7 +54,9 @@ function CargarEncargado(tipo = 0) {
         //    $("#cboEncargado").select2()
         //});
         CargarProveedor();
-        $("#cboEncargado").select2();
+        $("#cboEncargado").select2({
+            dropdownParent: $("#modal-form")
+        });
 
         $("#divSolicitante").hide();
         $("#divProveedor").show();
@@ -70,7 +72,9 @@ function CargarEncargado(tipo = 0) {
             //    $("#cboSolicitante").select2()
             //});
             CargarSolicitante();
-            $("#cboSolicitante").select2();
+            $("#cboSolicitante").select2({
+                dropdownParent: $("#modal-form")
+            });
 
             $("#divSolicitante").show();
             $("#divProveedor").hide();
@@ -110,7 +114,9 @@ function CargarSolicitante() {
     $.post("/Empleado/ObtenerEmpleados", { estado: 1 }, function (data, status) {
         let proveedores = JSON.parse(data);
         llenarComboEmpleado(proveedores, "cboSolicitante", "Seleccione")
-        $("#cboSolicitante").select2()
+        $("#cboSolicitante").select2({
+            dropdownParent: $("#modal-form")
+        })
     });
 
 
@@ -256,7 +262,7 @@ function CargarSemana(Tipo = 0) {
         obra = $('#cboObraM').val();
     }
     $.ajaxSetup({ async: false });
-    $.post("/TipoRegistro/ObtenerSemanaAjax", { estado: 1, IdTipoRegistro: +tipo, IdObra: obra }, function (data, status) {
+    $.post("/TipoRegistro/ObtenerSemanaAjax", { estado: 1, IdTipoRegistro: 4, IdObra: obra }, function (data, status) {
         let monedas = JSON.parse(data);
         if (Tipo != 0)
             llenarComboSemana(monedas, "cboSemana", "Seleccione");
@@ -471,7 +477,9 @@ function ModalNuevo() {
     CargarProveedor();
     $("#cboTipoRegistroM").val("4").change();
 
-    $("#IdProveedor").select2();
+    $("#IdProveedor").select2({
+        dropdownParent: $("#modal-form")
+    });
     $("#btnGrabarCabecera").prop("disabled", true);
 
     if (tableDetalle) {
@@ -508,14 +516,14 @@ function Guardar() {
         )
         return;
     }
-    if (IdTipoRegistro == 0 || IdTipoRegistro == null) {
-        Swal.fire(
-            'Error!',
-            'Complete el campo de Tipo Registro',
-            'error'
-        )
-        return;
-    }
+    //if (IdTipoRegistro == 0 || IdTipoRegistro == null) {
+    //    Swal.fire(
+    //        'Error!',
+    //        'Complete el campo de Tipo Registro',
+    //        'error'
+    //    )
+    //    return;
+    //}
     if (IdSemana == 0 || IdSemana == null) {
         Swal.fire(
             'Error!',
@@ -613,7 +621,7 @@ function Guardar() {
         'IdGiro': +$("#txtId").val(),
         'IdObra': +IdObra,
         'Tipo': tipo,
-        'IdTipoRegistro': +IdTipoRegistro,
+        'IdTipoRegistro': 4,
         'IdSemana': +IdSemana,
         'IdResponsable': +IdEncargado,
         'IdSolicitante': IdSocilitante,
@@ -944,14 +952,15 @@ function limpiarDatos() {
     $("#cboObraM").empty();
     $("#cboTipoRegistroM").empty();
     $("#CboSemanaM").empty();
-    $("#cboEncargado").empty();
-    $("#cboSolicitante").empty();
-    CargarEstadosGiro();
-    CargarTipoRegistro(2);
+    $("#cboEncargado").val(0).change();
+    $("#cboSolicitante").val(0).change();
+    $("#txtCorrelativo").val("");
+    //CargarEstadosGiro();
+    //CargarTipoRegistro(2);
     CargarObra(2);
-    CargarSemana();
-    CargarSolicitante();
-    CargarEncargado();
+    //CargarSemana();
+    //CargarSolicitante();
+    //CargarEncargado();
     filenamereset(false);
     if (tableDetalle) {
         tableDetalle
@@ -1131,7 +1140,7 @@ function ObtenerGiros() {
                     let readonly = "disabled"
                     if (full.Contabilizado) { estado = "Checked" }
                     if ($("#IdPerfilSesion").val() == 1022 || $("#IdPerfilSesion").val() == 1) { readonly = "" }
-                    return '<input type="checkbox" id="chkGiro' + full.IdGiro + '" onchange="ActualizarEstadoContabilizado(' + full.IdGiro + ')" ' + estado + ' ' + readonly +'/>';
+                    return '<input type="checkbox" id="chkGiro' + full.IdGiro + '" onclick="ActualizarEstadoContabilizado(' + full.IdGiro + ')" ' + estado + ' ' + readonly +'/>';
 
                 },
             },
@@ -1155,8 +1164,11 @@ function ActualizarEstadoContabilizado(Id) {
         'IdGiro': Id,
         'Estado' : Estado
     }, function (data, status) {
-
-        console.log(data)
+        let datos = JSON.parse(data);
+        if (!datos.status) {
+            Swal.fire("Error", datos.mensaje, "error");
+            $("#chkGiro" + Id).prop("checked",false)
+        }
     });
 }
 
@@ -1293,7 +1305,9 @@ function ObtenerDatosxID(Id) {
     $("#lblTituloModal").html("Editar Giro");
     AbrirModal("modal-form");
 
-    $("#IdProveedor").select2();
+    $("#IdProveedor").select2({
+        dropdownParent: $("#modal-form")
+    });
 
 
     $.post('ObtenerGiroxID', {
@@ -1330,6 +1344,7 @@ function ObtenerDatosxID(Id) {
             $("#cboObraM").val(dato.IdObra).trigger('change.select2');
             $("#cboTipoRegistroM").val(dato.IdTipoRegistro).change();;
             $("#cboSemanaM").val(dato.IdSemana);
+            $("#txtCorrelativo").val(dato.Correlativo);
             $("#btnGrabarCabecera").html("Grabar");
 
 
@@ -1456,18 +1471,28 @@ function modalHistorialEstado(IdGiro) {
                                                 <th>NroDocumento</th>
                                                 <th>Aprobador</th>
                                                 <th>Aprobacion</th>
+                                                <th>Fecha</th>
                                             </tr>
                                         </thead>
                                     <tbody>`;
                 if (datos.ListGiroModelo[i].ListModeloAprobacionesDTO.length > 0) {
+
+                   
                     console.log(datos.ListGiroModelo[i].ListModeloAprobacionesDTO)
 
                     for (var j = 0; j < datos.ListGiroModelo[i].ListModeloAprobacionesDTO.length; j++) {
+
+                        let FechaAprobacion = (datos.ListGiroModelo[i].ListModeloAprobacionesDTO[j].FechaAprobacion).split('T')[0]
+                        let HoraAprobacion = datos.ListGiroModelo[i].ListModeloAprobacionesDTO[j].FechaAprobacion.split('T')[1]
+                        FechaAprobacion = FechaAprobacion.split('-')[2] + '-' + FechaAprobacion.split('-')[1] + '-' + FechaAprobacion.split('-')[0];
+
+
                         tablee += `<tr>
                             <td>`+ datos.ListGiroModelo[i].ListModeloAprobacionesDTO[j].Proveedor + `</td>
                             <td>`+ datos.ListGiroModelo[i].ListModeloAprobacionesDTO[j].NroDocumento + `</td>
                             <td>`+ datos.ListGiroModelo[i].ListModeloAprobacionesDTO[j].Autorizador.toUpperCase() + `</td>
                            <td>`+ datos.ListGiroModelo[i].ListModeloAprobacionesDTO[j].NombEstado + `</td>
+                           <td>`+ FechaAprobacion + ` ` + HoraAprobacion  + `</td>
                             </tr>`;
                     }
                 }

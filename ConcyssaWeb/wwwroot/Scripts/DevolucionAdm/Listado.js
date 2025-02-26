@@ -37,8 +37,32 @@ function llenarComboBaseFiltro(lista, idCombo, primerItem) {
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
-    $("#cboObraFiltro").val($("#cboObraFiltro option:first").val());
+    $("#cboObraFiltro").val($("#cboObraFiltro option:first").val()).change();
 
+}
+function ObtenerObraxIdBase() {
+    let IdBase = $("#cboObraFiltro").val();
+    $.ajaxSetup({ async: false });
+    $.post("/Obra/ObtenerObraxIdUsuarioSession", { 'IdBase': IdBase }, function (data, status) {
+        let obra = JSON.parse(data);
+        llenarComboObra(obra, "IdObra", "seleccione")
+    });
+}
+
+function llenarComboObra(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdObra + "'>" + lista[i].Descripcion.toUpperCase() + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+    $("#" + idCombo).prop("selectedIndex", 1)
 }
 function getCurrentDate() {
     var currentDate = new Date();
@@ -212,10 +236,11 @@ function ConsultaServidor() {
     let FechaInicio = $("#txtFechaInicio").val()
     let FechaFin = $("#txtFechaFin").val()
     let IdBase = $("#cboObraFiltro").val()
+    let IdObra = $("#IdObra").val()
     let EstadoSolicitud = $("#EstadoFiltro").val()
     let SerieFiltro = $("#cboSeries").val()
     $.ajaxSetup({ async: false });
-    $.post('/DevolucionAdm/ObtenerDevolucionAdmAtender', { 'IdBase': IdBase, 'FechaInicio': FechaInicio, 'FechaFin': FechaFin, 'EstadoDevolucion': EstadoSolicitud, 'SerieFiltro': SerieFiltro }, function (data, status) {
+    $.post('/DevolucionAdm/ObtenerDevolucionAdmAtender', { 'IdBase': IdBase,'IdObra':IdObra, 'FechaInicio': FechaInicio, 'FechaFin': FechaFin, 'EstadoDevolucion': EstadoSolicitud, 'SerieFiltro': SerieFiltro }, function (data, status) {
         if (data != 'error') {
             let SolicitudDespacho = JSON.parse(data);
             //console.log(SolicitudDespacho)
@@ -757,57 +782,68 @@ function GenerarEntrada(Num, IdSolicitud, numserie, cuadrilla) {
         confirmButtonText: 'Si Generar!'
     }).then((result) => {
         if (result.isConfirmed) {
+
+            let MovimientoEnviar = []
+
+            MovimientoEnviar.push({
+                detalles,
+                AnexoDetalle,
+                //cabecera
+                'IdAlmacen': almacen,
+                'IdTipoDocumento': 331,
+                'IdSerie': $("#cboSerieExtorno").val(),
+                'Correlativo': '',
+                'IdMoneda': 1,
+                'TipoCambio': 1,
+                'FechaContabilizacion': $("#FechContExtorno").val(),
+                'FechaDocumento': $("#FechDocExtorno").val(),
+                'IdCentroCosto': 7,
+                'Comentario': 'Generado al Atender la Devolucion N° ' + numserie,
+                'SubTotal': TotalGeneral,
+                'Impuesto': 0,
+                'Total': TotalGeneral,
+                'IdCuadrilla': 2582,
+                'EntregadoA': 24151,
+                'IdTipoDocumentoRef': 10,
+                'NumSerieTipoDocumentoRef': '',
+                'IdDestinatario': '',
+                'IdMotivoTraslado': '',
+                'IdTransportista': '',
+                'PlacaVehiculo': '',
+                'MarcaVehiculo': '',
+                'NumIdentidadConductor': '',
+
+                'NombreConductor': '',
+                'ApellidoConductor': '',
+                'LicenciaConductor': '',
+                'TipoTransporte': '',
+
+                'Peso': 0,
+                'Bulto': 0,
+
+                'SGI': '',
+                'CodigoAnexoLlegada': '',
+                'CodigoUbigeoLlegada': '',
+                'DistritoLlegada': '',
+                'DireccionLlegada': '',
+                'EsDevolucionAdm': 1,
+
+            })
+
+
+
+
             $.ajax({
-                url: "/EntradaMercancia/UpdateInsertMovimiento",
+                url: "/EntradaMercancia/UpdateInsertMovimientoDesdeString",
                 type: "POST",
                 async: true,
                 data: {
-                    detalles,
-                    AnexoDetalle,
-                    //cabecera
-                    'IdAlmacen': almacen,
-                    'IdTipoDocumento': 331,
-                    'IdSerie': $("#cboSerieExtorno").val(),
-                    'Correlativo': '',
-                    'IdMoneda': 1,
-                    'TipoCambio': 1,
-                    'FechaContabilizacion': $("#FechContExtorno").val(),
-                    'FechaDocumento': $("#FechDocExtorno").val(),
-                    'IdCentroCosto': 7,
-                    'Comentario': 'Generado al Atender la Devolucion N° ' + numserie,
-                    'SubTotal': TotalGeneral,
-                    'Impuesto': 0,
-                    'Total': TotalGeneral,
-                    'IdCuadrilla': 2582,
-                    'EntregadoA': 24151,
-                    'IdTipoDocumentoRef': 10,
-                    'NumSerieTipoDocumentoRef': '',
-                    'IdDestinatario': '',
-                    'IdMotivoTraslado': '',
-                    'IdTransportista': '',
-                    'PlacaVehiculo': '',
-                    'MarcaVehiculo': '',
-                    'NumIdentidadConductor': '',
-
-                    'NombreConductor': '',
-                    'ApellidoConductor': '',
-                    'LicenciaConductor': '',
-                    'TipoTransporte': '',
-
-                    'Peso': 0,
-                    'Bulto': 0,
-
-                    'SGI': '',
-                    'CodigoAnexoLlegada': '',
-                    'CodigoUbigeoLlegada': '',
-                    'DistritoLlegada': '',
-                    'DireccionLlegada': '',
-                    'EsDevolucionAdm': 1,
-
+                    'JsonDatosEnviar': JSON.stringify(MovimientoEnviar)
 
                 },
                 success: function (data) {
-                    if (data > 0) {
+                    let datos = JSON.parse(data)
+                    if (datos.status) {
                         let EstadoSolicitud
                         if (EsParcial > 0) {
                             EstadoSolicitud = 1
@@ -869,7 +905,7 @@ function GenerarEntrada(Num, IdSolicitud, numserie, cuadrilla) {
                     } else {
                         Swal.fire(
                             'Error!',
-                            'Ocurrio un Error!',
+                            'Ocurrio un Error! ' + datos.mensaje,
                             'error'
                         )
 
@@ -931,10 +967,11 @@ function ListarSeries() {
     let FechaInicio = $("#txtFechaInicio").val()
     let FechaFin = $("#txtFechaFin").val()
     let IdBase = $("#cboObraFiltro").val()
+    let IdObra = $("#IdObra").val()
     let EstadoSolicitud = $("#EstadoFiltro").val()
     let SerieFiltro = 0
     $.ajaxSetup({ async: false });
-    $.post('/DevolucionAdm/ObtenerDevolucionAdmAtender', { 'IdBase': IdBase, 'FechaInicio': FechaInicio, 'FechaFin': FechaFin, 'EstadoSolicitud': EstadoSolicitud, 'SerieFiltro': SerieFiltro }, function (data, status) {
+    $.post('/DevolucionAdm/ObtenerDevolucionAdmAtender', { 'IdBase': IdBase, 'IdObra': IdObra, 'FechaInicio': FechaInicio, 'FechaFin': FechaFin, 'EstadoSolicitud': EstadoSolicitud, 'SerieFiltro': SerieFiltro }, function (data, status) {
         try {
             let Series = JSON.parse(data);
             llenarComboSerieFiltro(Series, "cboSeries", "Todos")

@@ -235,7 +235,7 @@ function ObtenerCapataz() {
     //setTimeout(() => {
     $.post("/Empleado/ObtenerCapatazXCuadrilla", { 'IdCuadrilla': IdCuadrilla }, function (data, status) {
         let capataz = JSON.parse(data);
-        $("#IdResponsable").select2("val", capataz[0].IdEmpleado);
+        $("#IdResponsable").val(capataz[0].IdEmpleado).change();
     })
     /*  }, 1000);*/
 
@@ -258,7 +258,7 @@ function llenarComboCuadrilla(lista, idCombo, primerItem) {
     var campos;
     for (var i = 0; i < nRegistros; i++) {
 
-        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdCuadrilla + "'>" + lista[i].Descripcion.toUpperCase() + "</option>"; }
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdCuadrilla + "'>"+lista[i].Codigo+"-" + lista[i].Descripcion.toUpperCase() + "</option>"; }
         else { }
     }
     var cbo = document.getElementById(idCombo);
@@ -404,8 +404,12 @@ window.onload = function () {
     Decimales();
     /* ConsultaServidor(url);*/
     //listaropdnDT();
-    $("#IdProveedor").select2();
-    $("#IdCuadrilla").select2();
+    $("#IdProveedor").select2({
+        dropdownParent: $("#modal-form")
+    });
+    $("#IdCuadrilla").select2({
+        dropdownParent: $("#ModalItem .modal-content")
+    });
 
     $("#SubirAnexos").on("submit", function (e) {
         e.preventDefault();
@@ -428,8 +432,12 @@ window.onload = function () {
         });
     });
     listaropdnDT()
-    $("#IdCuadrila").select2();
-    $("#IdResponsable").select2();
+    //$("#IdCuadrila").select2({
+    //    dropdownParent: $("#ModalItem .modal-content")
+    //});
+    $("#IdResponsable").select2({
+        dropdownParent: $("#ModalItem .modal-content")
+    });
 
 };
 
@@ -616,7 +624,7 @@ function OpenModalItem() {
         $("#cboPrioridadItem").val(2);
         $("#cboClaseArticulo").prop("disabled", true);
         $("#IdTipoProducto").prop("disabled", true);
-        $("#ModalItem").modal();
+        $("#ModalItem").modal('show');
         CargarUnidadMedidaItem();
         CargarGrupoUnidadMedida();
         /* CargarProyectos();*/
@@ -895,6 +903,7 @@ function AgregarLinea() {
         tr += `<tr id="tritem` + contador + `">
             <td style="display:none;"><input input style="display:none;" class="form-control" type="text" value="0" id="txtIdSolicitudRQDetalle" name="txtIdSolicitudRQDetalle[]"/></td>
 <td>`+ limitador + `</td>
+<td><button class="btn btn-xs btn-danger borrar fa fa-trash" onclick="borrartditem(`+ contador + `);restarLimitador()"></button></td>
             <td input style="display:none;"> 
              <input  class="form-control" type="text" id="txtIdArticulo`+ contador + `" name="txtIdArticulo[]" />         
             <td> <input class="form-control" type="text" id="txtCodigoArticulo`+ contador + `" name="txtCodigoArticulo[]" /></td>
@@ -919,7 +928,7 @@ function AgregarLinea() {
         tr += `</select>
             </td>
             <td input style="display:none;"><input class="form-control TipoCambioDeCabecera" type="number" name="txtTipoCambio[]" id="txtTipoCambioDetalle`+ contador + `" disabled></td>
-            <td><input class="form-control" id="txtCantidadBloq`+ contador + `" disabled></input></td>
+            <td ><input class="form-control" id="txtCantidadBloq`+ contador + `" disabled></input></td>
             <td><input class="form-control" type="text" name="txtCantidadNecesaria[]" value="0" id="txtCantidadNecesaria`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)"></td>
             <td><input class="form-control" type="text" name="txtPrecioInfo[]" value="0" id="txtPrecioInfo`+ contador + `" onchange="CalcularTotalDetalle(` + contador + `)" disabled></td>
             <td >
@@ -965,7 +974,7 @@ function AgregarLinea() {
             <td ><input class="form-control" type="text" value="" id="txtReferencia`+ contador + `" name="txtReferencia[]"></td>
 <td style="display:none"><input style="width:50px" class="form-control" type="text" value="" id="txtTipoServicio`+ contador + `" name="txtTipoServicio[]"></input></td>
 
-<td><button class="btn btn-xs btn-danger borrar fa fa-trash" onclick="borrartditem(`+ contador + `);restarLimitador()"></button></td>
+
           </tr>`;
 
         $("#tabla").find('tbody').append(tr);
@@ -1014,8 +1023,12 @@ function AgregarLinea() {
 
 
 
-        $(".cboCuadrillaTabla").select2()
-        $(".cboResponsableTabla").select2()
+        $(".cboCuadrillaTabla").select2({
+            dropdownParent: $("#modal-form")
+        })
+        $(".cboResponsableTabla").select2({
+            dropdownParent: $("#modal-form")
+        })
         llenarComboCuadrilla(DatosCuadrilla, "cboCuadrillaTablaId" + contador, "Seleccione")
         llenarComboEmpleados(DatosEmpleados, "cboResponsableTablaId" + contador, "Seleccione")
 
@@ -1381,7 +1394,7 @@ function llenarComboTipoDocumentoOperacion(lista, idCombo, primerItem) {
     for (var i = 0; i < nRegistros; i++) {
 
         if (lista.length > 0) {
-            if (lista[i].CodeExt == "20") {
+            if (lista[i].IdTipoDocumento == "20") {
                 PrimerId = lista[0].IdTipoDocumento;
                 contenido += "<option value='" + lista[i].IdTipoDocumento + "'>" + lista[i].Descripcion + "</option>";
 
@@ -1743,9 +1756,9 @@ function GuardarSolicitud() {
     if ($("#IdPedido").val() != 0) {
         NombTablaOrigen = 'PEDIDO';
     }
-    if ($("#IdOPCH").val() != 0) {
-        NombTablaOrigen = 'OPCH';
-    }
+    //if ($("#IdOPCH").val() != 0) {
+    //    NombTablaOrigen = 'OPCH';
+    //}
     //Validar Items de Otra Tabla
 
     let detalles = [];
@@ -1843,8 +1856,11 @@ function GuardarSolicitud() {
                 allowOutsideClick: false
             });
         },
-        success: function (data) {
-            if (data >0) {
+        success: function (data) { 
+
+            let datos = JSON.parse(data)
+
+            if (datos.status) {
                 Swal.fire(
                     'Correcto',
                     'Proceso Realizado Correctamente',
@@ -1852,7 +1868,7 @@ function GuardarSolicitud() {
                 )
 
                 CerrarModal();
-                ObtenerDatosxIDOPDN(data)
+                ObtenerDatosxIDOPDN(datos.id)
               /*  ModalNuevo();*/
                 //swal("Exito!", "Proceso Realizado Correctamente", "success")
                 listaropdnDT()
@@ -1860,7 +1876,7 @@ function GuardarSolicitud() {
             } else {
                 Swal.fire(
                     'Error!',
-                    'Ocurrio un Error!',
+                    datos.mensaje,
                     'error'
                 )
 
@@ -2233,7 +2249,9 @@ function AgregarLineaDetalle(contador, detalle) {
         <td style="display:none">
           <input  class="form-control" type="text" value="`+ (contador + 1) + `" disabled />
         </td>
-
+        <td>
+            <button type="button" class="btn-sm btn btn-danger borrar fa fa-trash" disabled></button>   
+         </td>
         <td>`+ detalle.CodigoArticulo +`</td>
         <td style="display:none">
           <input class="form-control" type="text"  id="txtIdArticulo`+ contador + `" name="txtIdArticulo[]" value="` + detalle.IdArticulo + `" disabled/>
@@ -2298,17 +2316,19 @@ function AgregarLineaDetalle(contador, detalle) {
         <td>
             <input class="form-control" type="text" style="width:100px" value="`+ detalle.Referencia +`" disabled>
         </td>
-        <td>
-            <button type="button" class="btn-sm btn btn-danger borrar fa fa-trash" disabled></button>   
-         </td>
+       
     </tr>`
 
     $("#tabla").find('tbody').append(tr);
     //$("#cboPrioridadDetalle" + contador).val(Prioridad);
     llenarComboCuadrilla(DatosCuadrilla, "cboCuadrillaTablaId" + contador, "Seleccione")
     llenarComboEmpleados(DatosEmpleados, "cboResponsableTablaId" + contador, "Seleccione")
-    $(".cboCuadrillaTabla").select2()
-    $(".cboResponsableTabla").select2()
+    $(".cboCuadrillaTabla").select2({
+        dropdownParent: $("#modal-form")
+    })
+    $(".cboResponsableTabla").select2({
+        dropdownParent: $("#modal-form")
+    })
    
     console.log("--------detalle.IdCuadrilla")
     console.log("#cboCuadrillaTablaId" + contador)
@@ -3067,6 +3087,7 @@ function AgregarPedidoToEntradaMercancia(data) {
     $("#IdOPCH").val(0);
 
     $("#cboMoneda").val(data.IdMoneda).change();
+    $("#cboMoneda").prop("disabled",true);
 
     $("#IdBase").val(data['IdBase']).change();
     $("#IdObra").val(data['IdObra']).change();
@@ -3096,14 +3117,14 @@ function AgregarPedidoToEntradaMercancia(data) {
                 if (datos[k]['IdPedidoDetalle'] == ($(elemento).val())) {
                     swal("Informacion!", "Hay un producto que ya se cargo previamente!");
                     pasarsiguiente++;
-                    return ;
+                    return;
                 }
             });
             if (pasarsiguiente > 0) {
                 return;
             }
 
-            if ((datos[k]['Cantidad'] - datos[k]['CantidadObtenida']) == 0) {
+            if ((datos[k]['Cantidad'] - datos[k]['CantidadObtenida']) <= 0) {
                 console.log(datos[k]['Cantidad']);
                 console.log(datos[k]['CantidadObtenida']);
                 pasardato = 1;
@@ -3217,7 +3238,7 @@ function AgregarPedidoToEntradaMercancia(data) {
             
             <input class="form-control" type="text" id="txtCodigoArticulo`+ contador + `" name="txtCodigoArticulo[]" />
             </td>
-
+             <td><button class="btn btn-xs btn-danger borrar fa fa-trash" onclick="borrartditem(`+ contador + `);CalcularTotales()"></button></td>
             <td>`+ CodigoItem +`</td>
 
 
@@ -3293,7 +3314,7 @@ function AgregarPedidoToEntradaMercancia(data) {
             <td input style="display:none;"><input class="form-control" type="text" value="0" disabled></td>
             <td ><input class="form-control" type="text" value="" id="txtReferencia`+ contador + `" name="txtReferencia[]"></td>
             <td style="display:none"><input style="width:50px" class="form-control" type="text" value="" id="txtTipoServicio`+ contador + `" name="txtTipoServicio[]"></input></td>
-            <td><button class="btn btn-xs btn-danger borrar fa fa-trash" onclick="borrartditem(`+ contador + `);CalcularTotales()"></button></td>
+           
           </tr>`;
             if (pasardato==0) {
 
@@ -3331,8 +3352,12 @@ function AgregarPedidoToEntradaMercancia(data) {
                 $("#txtTipoServicio" + contador).val(TipoServicio);
                 ObtenerCuadrillasTabla(contador)
                 ObtenerEmpleadosxIdCuadrillaTabla(contador)
-                $(".cboCuadrillaTabla").select2()
-                $(".cboResponsableTabla").select2()
+                $(".cboCuadrillaTabla").select2({
+                    dropdownParent: $("#modal-form")
+                })
+                $(".cboResponsableTabla").select2({
+                    dropdownParent: $("#modal-form")
+                })
                 //$("#txtItemTotal" + contador).val(formatNumber(datos[k].total_item));
                 NumeracionDinamica();
                 LimpiarModalItem();
@@ -4110,8 +4135,8 @@ function Extornar() {
                                     'Igv': 0,
                                     'PrecioUnidadBase': arrayPrecioInfo[i],
                                     'PrecioUnidadTotal': arrayPrecioInfo[i],
-                                    'TotalBase': arrayTotal[i],
-                                    'Total': arrayTotal[i],
+                                    'TotalBase': arrayCantidadNecesaria[i] * arrayPrecioInfo[i],
+                                    'Total': arrayCantidadNecesaria[i] * arrayPrecioInfo[i],
                                     'CuentaContable': 1,
                                     'IdCentroCosto': 7,
                                     'IdAfectacionIgv': 1,
@@ -4198,7 +4223,8 @@ function Extornar() {
                                 //    });
                                 //},
                                 success: function (data) {
-                                    if (data > 0) {
+                                    let datos = JSON.parse(data);
+                                    if (datos.status){
                                         $.post('ExtornoConfirmado', {
                                             'IdOPDN': IdOPDN,
                                             'EsServicio': TipoProductos,
@@ -4219,7 +4245,7 @@ function Extornar() {
                                     } else {
                                         Swal.fire(
                                             'Error!',
-                                            'Ocurrio un Error!',
+                                            datos.mensaje,
                                             'error'
                                         )
 

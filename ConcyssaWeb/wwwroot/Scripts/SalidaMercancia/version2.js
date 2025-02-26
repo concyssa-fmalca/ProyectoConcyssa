@@ -29,8 +29,7 @@ function CargarDatosModal() {
         CargarTipoDocumentoOperacion()
         CargarSeries();
         CargarMotivoTraslado();
-        CargarProveedor();
-        CargarVehiculos();
+        CargarProveedor();       
         CargarSolicitante(1);
         CargarSucursales();
         CargarMoneda();
@@ -323,7 +322,8 @@ function llenarTiposDocumentos(lista, idCombo, primerItem) {
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
-    $("#IdTipoDocumentoRef").val(14)
+    //$("#IdTipoDocumentoRef").val(14)
+    $("#IdTipoDocumentoRef").val(1).change()
 }
 
 
@@ -395,10 +395,13 @@ function llenarComboCentroCosto(lista, idCombo, primerItem) {
 window.onload = function () {
     CargarUnidadMedidaItem()
     CargarGrupoUnidadMedida()
+    CargarVehiculos();
     $("#txtFechaInicio").val(getCurrentDate())
     $("#txtFechaFin").val(getCurrentDateFinal())
     CargarBaseFiltro()
-    $("#EntregadoA").select2()
+    $("#EntregadoA").select2({
+        dropdownParent: $("#modal-form")
+    })
     //ObtenerConfiguracionDecimales();
     getDecimales();
     $("#SubirAnexos").on("submit", function (e) {
@@ -422,7 +425,7 @@ window.onload = function () {
         });
     });
     $("#cboAgregarArticulo").select2({
-        dropdownParent: $("#ModalItem")
+        dropdownParent: $("#modal-form")
     })
 };
 
@@ -477,104 +480,264 @@ function llenarComboBaseFiltro(lista, idCombo, primerItem) {
 
 function ConsultaServidor() {
     let varIdBaseFiltro = $("#cboObraFiltro").val()
-    $.post("../Movimientos/ObtenerMovimientosSalida", { 'IdBase': varIdBaseFiltro, 'FechaInicial': $("#txtFechaInicio").val(), 'FechaFinal': $("#txtFechaFin").val(), 'OpRef': $("#txtOpRef").val() }, function (data, status) {
 
-        //console.log(data);
-        if (data == "error") {
-            table = $("#table_id").DataTable(lenguaje);
-            console.log("ERRRORR")
-            return;
-        }
 
-        let tr = '';
-        $("#tbody_Solicitudes").html(tr);
-        let movimientos = JSON.parse(data);
-        let total_solicitudes = movimientos.length;
-        console.log("cabecera");
-        console.log(movimientos);
-        for (var i = 0; i < movimientos.length; i++) {
-            let varSNGE = "-"
-            let varEstadoGE = "-"
-            if (movimientos[i].SerieGuiaElectronica) {
-                varSNGE = movimientos[i].SerieGuiaElectronica.toUpperCase() + "-" + movimientos[i].NumeroGuiaElectronica
-                if (movimientos[i].EstadoFE == 1) {
-                    varEstadoGE = "ACEPTADO"
-                } else {
-                    varEstadoGE = "NO ACEPTADO"
+    table = $('#table_id').dataTable({
+        "processing": true,
+        "serverSide": true,
+        //"searchDelay": 500,
+        "language": lenguaje_data,
+        //responsive: true,
+        search: {
+            return: true
+        },
+        ajax: {
+            type: 'POST',
+            url: '../Movimientos/ObtenerMovimientosSalidaDataTable',
+            data: function (dtParms) {
+                //enviamos al servidor
+                return {
+                    'ClientParameters': JSON.stringify(dtParms),
+                    'IdBase': varIdBaseFiltro,
+                    'FechaInicial': $("#txtFechaInicio").val(),
+                    'FechaFinal': $("#txtFechaFin").val(),
+                    'OpRef': $("#txtOpRef").val()
+                };
+            },
+            dataFilter: function (res) {
+
+                //recibimos del servidor
+                var parsed = JSON.parse(res);
+                console.log(parsed);
+                //var parsed = JSON.parse(res);
+                return JSON.stringify(parsed);
+            },
+            error: function (x, y) {
+                console.log(x);
+            }
+        },
+        "filter": true,
+        columns: [
+
+            {
+                "data": null,
+                "render": function (data, type, full, meta) {
+                    return meta.row + 1
                 }
-            }
-            console.log(movimientos[i].OrigenDespacho)
-            if (movimientos[i].OrigenDespacho != "") {
-                varSNGE = "APP MOVIL SD"+ movimientos[i].OrigenDespacho.split("SD")[1]??""
-            }
-            let datosext
-            if (movimientos[i].IdDocExtorno == 1) {
-                $.post("/Movimientos/ValidarExtorno", { 'IdMovimiento': movimientos[i].IdMovimiento }, function (data, status) {
+            },
+            {
+                "data": null,
+                "render": function (data, type, full, meta) {
+                    return full.FechaDocumento.split('T')[0]
+                },
+            },
+            {
+                "data": null,
+                "render": function (data, type, full, meta) {
+                    return full.NombUsuario
+                },
+            },
+            {
+                "data": null,
+                "render": function (data, type, full, meta) {
+                    if (full.IdDocExtorno == 1) {
+                        return '<p style="color:red">' + full.NombTipoDocumentoOperacion + '</p>'
+                    } else {
+                        return full.NombTipoDocumentoOperacion
+                    }
+                },
+            },
+            {
+                "data": null,
+                "render": function (data, type, full, meta) {
+                    return '<u style="color:blue;cursor:pointer" onclick="GenerarReporte(' + full.IdMovimiento + ')">' + full.NombSerie.toUpperCase() + '-' + full.Correlativo + '</u>'
+                },
+            },
+            {
+                "data": null,
+                "render": function (data, type, full, meta) {
+                   
+                        return full.TDocumento.toUpperCase();
+                    
 
-                    datosext = data.split("|");
-                    console.log(datosext);
-                });
+                },
+            },
+            {
+                "data": null,
+                "render": function (data, type, full, meta) {
+                    let varSNGE = "-"
+ 
+                    if (full.SerieGuiaElectronica) {
+                        varSNGE = full.SerieGuiaElectronica.toUpperCase() + "-" + full.NumeroGuiaElectronica
+                    }
+                    
+                    if (full.OrigenDespacho != "") {
+                        varSNGE = "APP MOVIL SD" + full.OrigenDespacho.split("SD")[1] ?? ""
+                    }
+                    return varSNGE
+                },
+            },
+            {
+                "data": null,
+                "render": function (data, type, full, meta) {
+                    let varEstadoGE = "-"
+                    if (full.SerieGuiaElectronica) {
+                        if (full.EstadoFE == 1) {
+                            varEstadoGE = "ACEPTADO"
+                        } else {
+                            varEstadoGE = "NO ACEPTADO"
+                        }
+                    }
+                    return varEstadoGE
+                },
+            },
+            {
+                "data": null,
+                "render": function (data, type, full, meta) {
+                    return full.NombMoneda
+                },
+            },
+            {
+                "data": null,
+                "render": function (data, type, full, meta) {
+                    return formatNumberDecimales(full.Total,2)
+                },
+            },
 
-               
-                tr += '<tr>' +
-                    '<td>' + (i + 1) + '</td>' +
-                    '<td>' + movimientos[i].FechaDocumento.split('T')[0] + '</td>' +
-                    '<td>' + movimientos[i].NombUsuario + '</td>' +
-                    '<td style="color:red">' + movimientos[i].NombTipoDocumentoOperacion.toUpperCase() + '</td>' +
-                    '<td style="color:blue;cursor:pointer;text-decoration:underline" onclick="GenerarReporte(' + movimientos[i].IdMovimiento + ',' + movimientos[i].IdDocExtorno + ')">' + movimientos[i].NombSerie.toUpperCase() + '-' + movimientos[i].Correlativo + '</td>' +
-                    '<td>' + movimientos[i].TDocumento.toUpperCase() + '</td>' +
-                    '<td> Extornado con Doc N°: ' + datosext[1] + '</td>' +
-                    '<td>' + varEstadoGE + '</td>' +
-                    '<td>' + movimientos[i].NombMoneda + '</td>' +
+            {
+                "data": null,
+                "render": function (data, type, full, meta) {
+                    return full.CodigoCuadrilla
+                },
+            },          
+            {
+                "data": null,
+                "render": function (data, type, full, meta) {
+                    return full.NombAlmacen
+                },
+            },
+            {
+                "data": null,
+                "render": function (data, type, full, meta) {
+                    return full.NroRef
+                },
+            }, {
+                "data": null,
+                "render": function (data, type, full, meta) {
+                    return `<button class= "btn btn-primary fa fa-pencil btn-xs" onclick = "ObtenerDatosxID(` + full.IdMovimiento + `)"></button>`
+                    //<button class="btn btn-primary btn-xs" onclick="GenerarReporte(` + full.IdMovimiento + `)">R</button>`
 
-                    '<td>' + formatNumberDecimales(movimientos[i].Total, 3) + '</td>' +
-                    /*    '<td>' + movimientos[i].NombObra + '</td>' +*/
-
-                    '<td>' + movimientos[i].NombAlmacen + '</td>' +
-                    '<td>' + movimientos[i].NroRef + '</td>' +
-                    '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + movimientos[i].IdMovimiento + ')"></button>' +
-                    // '<button class="btn btn-primary" onclick="GenerarReporte(' + movimientos[i].IdMovimiento + ',' + movimientos[i].IdDocExtorno + ')">R</button></td>' +
-                    //'<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + solicitudes[i].IdSolicitudRQ + ')"></button></td >' +
-                    '</tr>';
-            } else {
-               
-                tr += '<tr>' +
-                    '<td>' + (i + 1) + '</td>' +
-                    '<td>' + movimientos[i].FechaDocumento.split('T')[0] + '</td>' +
-                    '<td>' + movimientos[i].NombUsuario + '</td>' +
-                    '<td>' + movimientos[i].NombTipoDocumentoOperacion.toUpperCase() + '</td>' +
-                    '<td style="color:blue;cursor:pointer;text-decoration:underline" onclick="GenerarReporte(' + movimientos[i].IdMovimiento + ',' + movimientos[i].IdDocExtorno + ')">' + movimientos[i].NombSerie.toUpperCase() + '-' + movimientos[i].Correlativo + '</td>' +
-                    '<td>' + movimientos[i].TDocumento.toUpperCase() + '</td>' +
-                    '<td>' + varSNGE + '</td>' +
-                    '<td>' + varEstadoGE + '</td>' +
-                    '<td>' + movimientos[i].NombMoneda + '</td>' +
-
-                    '<td>' + formatNumberDecimales(movimientos[i].Total, 3) + '</td>' +
-                    /*    '<td>' + movimientos[i].NombObra + '</td>' +*/
-
-                    '<td>' + movimientos[i].NombAlmacen + '</td>' +
-                    '<td>' + movimientos[i].NroRef + '</td>' +
-                    '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + movimientos[i].IdMovimiento + ')"></button>' +
-                    // '<button class="btn btn-primary" onclick="GenerarReporte(' + movimientos[i].IdMovimiento + ',' + movimientos[i].IdDocExtorno + ')">R</button></td>' +
-                    //'<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + solicitudes[i].IdSolicitudRQ + ')"></button></td >' +
-                    '</tr>';
-            }
+                },
+            },
 
 
-
-        }
-
-        if (table) {
-            table.destroy();
-
-        }
-        $("#tbody_Solicitudes").html(tr);
-        $("#spnTotalRegistros").html(total_solicitudes);
-
-
-        table = $("#table_id").DataTable(lenguaje);
-
+        ],
+        "bDestroy": true
     });
+
+
+
+
+
+    //$.post("../Movimientos/ObtenerMovimientosSalida", { 'IdBase': varIdBaseFiltro, 'FechaInicial': $("#txtFechaInicio").val(), 'FechaFinal': $("#txtFechaFin").val(), 'OpRef': $("#txtOpRef").val() }, function (data, status) {
+
+    //    //console.log(data);
+    //    if (data == "error") {
+    //        table = $("#table_id").DataTable(lenguaje);
+    //        console.log("ERRRORR")
+    //        return;
+    //    }
+
+    //    let tr = '';
+    //    $("#tbody_Solicitudes").html(tr);
+    //    let movimientos = JSON.parse(data);
+    //    let total_solicitudes = movimientos.length;
+    //    console.log("cabecera");
+    //    console.log(movimientos);
+    //    for (var i = 0; i < movimientos.length; i++) {
+    //        let varSNGE = "-"
+    //        let varEstadoGE = "-"
+    //        if (movimientos[i].SerieGuiaElectronica) {
+    //            varSNGE = movimientos[i].SerieGuiaElectronica.toUpperCase() + "-" + movimientos[i].NumeroGuiaElectronica
+    //            if (movimientos[i].EstadoFE == 1) {
+    //                varEstadoGE = "ACEPTADO"
+    //            } else {
+    //                varEstadoGE = "NO ACEPTADO"
+    //            }
+    //        }
+    //        console.log(movimientos[i].OrigenDespacho)
+    //        if (movimientos[i].OrigenDespacho != "") {
+    //            varSNGE = "APP MOVIL SD"+ movimientos[i].OrigenDespacho.split("SD")[1]??""
+    //        }
+    //        let datosext
+    //        if (movimientos[i].IdDocExtorno == 1) {
+    //            $.post("/Movimientos/ValidarExtorno", { 'IdMovimiento': movimientos[i].IdMovimiento }, function (data, status) {
+
+    //                datosext = data.split("|");
+    //                console.log(datosext);
+    //            });
+
+               
+    //            tr += '<tr>' +
+    //                '<td>' + (i + 1) + '</td>' +
+    //                '<td>' + movimientos[i].FechaDocumento.split('T')[0] + '</td>' +
+    //                '<td>' + movimientos[i].NombUsuario + '</td>' +
+    //                '<td style="color:red">' + movimientos[i].NombTipoDocumentoOperacion.toUpperCase() + '</td>' +
+    //                '<td style="color:blue;cursor:pointer;text-decoration:underline" onclick="GenerarReporte(' + movimientos[i].IdMovimiento + ',' + movimientos[i].IdDocExtorno + ')">' + movimientos[i].NombSerie.toUpperCase() + '-' + movimientos[i].Correlativo + '</td>' +
+    //                '<td>' + movimientos[i].TDocumento.toUpperCase() + '</td>' +
+    //                '<td> Extornado con Doc N°: ' + datosext[1] + '</td>' +
+    //                '<td>' + varEstadoGE + '</td>' +
+    //                '<td>' + movimientos[i].NombMoneda + '</td>' +
+
+    //                '<td>' + formatNumberDecimales(movimientos[i].Total, 3) + '</td>' +
+    //                /*    '<td>' + movimientos[i].NombObra + '</td>' +*/
+    //                '<td>' + movimientos[i].CodigoCuadrilla + '</td>' +
+    //                '<td>' + movimientos[i].NombAlmacen + '</td>' +
+    //                '<td>' + movimientos[i].NroRef + '</td>' +
+    //                '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + movimientos[i].IdMovimiento + ')"></button>' +
+    //                // '<button class="btn btn-primary" onclick="GenerarReporte(' + movimientos[i].IdMovimiento + ',' + movimientos[i].IdDocExtorno + ')">R</button></td>' +
+    //                //'<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + solicitudes[i].IdSolicitudRQ + ')"></button></td >' +
+    //                '</tr>';
+    //        } else {
+               
+    //            tr += '<tr>' +
+    //                '<td>' + (i + 1) + '</td>' +
+    //                '<td>' + movimientos[i].FechaDocumento.split('T')[0] + '</td>' +
+    //                '<td>' + movimientos[i].NombUsuario + '</td>' +
+    //                '<td>' + movimientos[i].NombTipoDocumentoOperacion.toUpperCase() + '</td>' +
+    //                '<td style="color:blue;cursor:pointer;text-decoration:underline" onclick="GenerarReporte(' + movimientos[i].IdMovimiento + ',' + movimientos[i].IdDocExtorno + ')">' + movimientos[i].NombSerie.toUpperCase() + '-' + movimientos[i].Correlativo + '</td>' +
+    //                '<td>' + movimientos[i].TDocumento.toUpperCase() + '</td>' +
+    //                '<td>' + varSNGE + '</td>' +
+    //                '<td>' + varEstadoGE + '</td>' +
+    //                '<td>' + movimientos[i].NombMoneda + '</td>' +
+
+    //                '<td>' + formatNumberDecimales(movimientos[i].Total, 3) + '</td>' +
+    //                /*    '<td>' + movimientos[i].NombObra + '</td>' +*/
+
+    //                '<td>' + movimientos[i].CodigoCuadrilla + '</td>' +
+    //                '<td>' + movimientos[i].NombAlmacen + '</td>' +
+    //                '<td>' + movimientos[i].NroRef + '</td>' +
+    //                '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + movimientos[i].IdMovimiento + ')"></button>' +
+    //                // '<button class="btn btn-primary" onclick="GenerarReporte(' + movimientos[i].IdMovimiento + ',' + movimientos[i].IdDocExtorno + ')">R</button></td>' +
+    //                //'<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + solicitudes[i].IdSolicitudRQ + ')"></button></td >' +
+    //                '</tr>';
+    //        }
+
+
+
+    //    }
+
+    //    if (table) {
+    //        table.destroy();
+
+    //    }
+    //    $("#tbody_Solicitudes").html(tr);
+    //    $("#spnTotalRegistros").html(total_solicitudes);
+
+
+    //    table = $("#table_id").DataTable(lenguaje);
+
+    //});
 
 }
 
@@ -611,17 +774,19 @@ function ModalNuevo() {
     AbrirModal("modal-form");
 
 
-    $("#IdCuadrilla").select2();
+    $("#IdCuadrilla").select2({
+        dropdownParent: $("#modal-form")
+    });
 
     //setearValor_ComboRenderizado("cboCodigoArticulo");
     validarseriescontable();
 
     $("#cboTipoDocumentoOperacion").val(332).change();
-    $("#IdTipoDocumentoRef").val(14).change();
-
+    //$("#IdTipoDocumentoRef").val(14).change();
+    $("#IdTipoDocumentoRef").val(1).change()
     $("#IdDestinatario").val(24163).change();
     $("#IdTransportista").val(24154).change();
-    $("#IdMotivoTraslado").val(13).change();
+    $("#IdMotivoTraslado").val(14).change();
 
     $("#Peso").val(1);
     $("#Bulto").val(1);
@@ -1497,22 +1662,14 @@ function ObtenerNumeracion() {
 
 function GuardarSolicitud() {
 
-    //CerrarModal();
-    //ObtenerDatosxID(7463);
-    ////table.destroy();
-    //ConsultaServidor();
-    //return;
-
 
     let ArrayGeneral = new Array();
-
 
     let arrayFechaNecesaria = new Array();
     let arrayIdMoneda = new Array();
     let arrayTipoCambio = new Array();
 
     let arrayIndicadorImpuesto = new Array();
-
 
     let arrayProveedor = new Array();
     let arrayNumeroFabricacion = new Array();
@@ -1523,34 +1680,17 @@ function GuardarSolicitud() {
 
     let arrayIdSolicitudDetalle = new Array();
 
-    //let arrayIdAlmacen = new Array();
     let arrayPrioridad = new Array();
-    //$("select[name='cboMoneda[]']").each(function (indice, elemento) {
-    //    arrayIdMoneda.push($(elemento).val());
-    //});
-
-    //$("input[name='txtTipoCambio[]']").each(function (indice, elemento) {
-    //    arrayTipoCambio.push($(elemento).val());
-    //});
-
-    //$("select[name='cboIndicadorImpuesto[]']").each(function (indice, elemento) {
-    //    arrayIndicadorImpuesto.push($(elemento).val());
-    //});
-
-
 
     let arrayIdArticulo = new Array();
     $("input[name='txtIdArticulo[]']").each(function (indice, elemento) {
         arrayIdArticulo.push($(elemento).val());
     });
 
-
     let arraytxtDescripcionArticulo = new Array();
     $("input[name='txtDescripcionArticulo[]']").each(function (indice, elemento) {
         arraytxtDescripcionArticulo.push($(elemento).val());
     });
-
-
 
     let arrayIdUnidadMedida = new Array();
     $("select[name='cboUnidadMedida[]']").each(function (indice, elemento) {
@@ -1597,22 +1737,6 @@ function GuardarSolicitud() {
     $("input[name='txtNombreAnexo[]']").each(function (indice, elemento) {
         arrayTxtNombreAnexo.push($(elemento).val());
     });
-
-
-    //let arrayCboCuadrillaTabla = new Array();
-    //$(".cboCuadrillaTabla").each(function (indice, elemento) {
-    //    arrayCboCuadrillaTabla.push($(elemento).val());
-    //});
-
-    //let arrayCboResponsableTabla = new Array();
-    //$(".cboResponsableTabla").each(function (indice, elemento) {
-    //    arrayCboResponsableTabla.push($(elemento).val());
-    //});
-
-
-
-
-
 
     //Cabecera
     let IdAlmacen = $("#cboAlmacen").val();
@@ -1694,6 +1818,61 @@ function GuardarSolicitud() {
 
 
     if ($("#IdTipoDocumentoRef").val() == 1) {
+
+
+        if ($("#IdTipoTransporte").val() == "0") {
+            Swal.fire('Error!', 'Complete el campo Tipo Transporte', 'error')
+            return;
+        }
+
+        if ($("#IdDestinatario").val() == "0") {
+            Swal.fire('Error!', 'Complete el campo Destinatario', 'error')
+            return;
+        }
+        if ($("#IdMotivoTraslado").val() == "0") {
+            Swal.fire('Error!', 'Complete el campo Motivo Traslado', 'error')
+            return;
+        }
+        if ($("#IdTransportista").val() == "0") {
+            Swal.fire('Error!', 'Complete el campo Transportista', 'error')
+            return;
+        }
+        if ($("#PlacaVehiculo").val() == "0" || $("#PlacaVehiculo").val() == 0 || $("#PlacaVehiculo").val() == null || $("#PlacaVehiculo").val() == undefined) {
+            Swal.fire('Error!', 'Complete el campo Placa Vehiculo', 'error')
+            return;
+        }
+        if ($("#MarcaVehiculo").val() == "") {
+            Swal.fire('Error!', 'Complete el campo Marca Vehiculo', 'error')
+            return;
+        }
+        if ($("#NumIdentidadConductor").val() == "") {
+            Swal.fire('Error!', 'Complete el campo Num IdentidadConductor', 'error')
+            return;
+        }
+        if ($("#NombreConductor").val() == "") {
+            Swal.fire('Error!', 'Complete el campo Nombre Conductor', 'error')
+            return;
+        }
+        if ($("#ApellidoConductor").val() == "") {
+            Swal.fire('Error!', 'Complete el campo Apellido Conductor', 'error')
+            return;
+        }
+        if ($("#LicenciaConductor").val() == "") {
+            Swal.fire('Error!', 'Complete el campo Licencia Conductor', 'error')
+            return;
+        }
+        //if ($("#txtSGI").val() == "") {
+        //    Swal.fire('Error!', 'Complete el campo SGI', 'error')
+        //    return;
+        //}
+        if ($("#DistritoLlegada").val() == "") {
+            Swal.fire('Error!', 'Complete el campo Distrito Llegada', 'error')
+            return;
+        }
+        if ($("#Direccion").val() == "") {
+            Swal.fire('Error!', 'Complete el campo Direccion de Guia', 'error')
+            return;
+        }
       
         if ($("#EntregadoA").val() == 0) {
             Swal.fire(
@@ -1720,17 +1899,27 @@ function GuardarSolicitud() {
             )
             return;
         }
+
+        if ($("#IdTipoTransporte").val() == "01" && $("#IdTransportista").val() == "24154") {
+            Swal.fire(
+                'Error!',
+                'Transportista Publico no puede ser Concyssa',
+                'error'
+            )
+            return;
+        }
+
+        if ($("#NumIdentidadConductor").val().length != 8) {
+            Swal.fire('Error!', 'El DNI del Conductor debe Tener 8 Digitos', 'error')
+            return;
+        }
+
+
+
+
+
+
     }
-
-
-
-    //End Validaciones
-
-
-
-
-    //let oMovimientoDetalleDTO = {};
-    //oMovimientoDetalleDTO.Total = arrayTotal
 
     let detalles = [];
     if (arrayIdArticulo.length == arrayIdUnidadMedida.length && arrayCantidadNecesaria.length == arrayPrecioInfo.length) {
@@ -1838,29 +2027,26 @@ function GuardarSolicitud() {
             });
         },
         success: function (data) {
-            if (data > 0) {
+
+            let datos = JSON.parse(data)
+
+            if (datos.status) {
                 Swal.fire(
                     'Correcto',
                     'Proceso Realizado Correctamente',
                     'success'
                 )
-                //swal("Exito!", "Proceso Realizado Correctamente", "success")
-                //CerrarModal();
-                //ModalNuevo();
                 CerrarModal();
-                ObtenerDatosxID(data);
+                ObtenerDatosxID(datos.id);
                 //table.destroy();
                 ConsultaServidor();
-                $.post("/EntradaMercancia/GenerarReporte", { 'NombreReporte': 'SalidaMercancia', 'Formato': 'PDF', 'Id': data }, function (data, status) {
+                $.post("/EntradaMercancia/GenerarReporte", { 'NombreReporte': 'SalidaMercancia', 'Formato': 'PDF', 'Id': datos.id }, function (data, status) {
                     let datos;
                     if (validadJson(data)) {
                         let datobase64;
                         datobase64 = "data:application/octet-stream;base64,"
                         datos = JSON.parse(data);
-                        //datobase64 += datos.Base64ArchivoPDF;
-                        //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
-                        //$("#reporteRPT").attr("href", datobase64);
-                        //$("#reporteRPT")[0].click();
+
                         verBase64PDF(datos)
                     }
                 });
@@ -1869,7 +2055,7 @@ function GuardarSolicitud() {
             } else {
                 Swal.fire(
                     'Error!',
-                    'Ocurrio un Error!' +data,
+                    'Ocurrio un Error!' +datos.mensaje,
                     'error'
                 )
 
@@ -1889,17 +2075,13 @@ function GuardarSolicitud() {
 function limpiarDatos() {
 
     $("#txtId").val('');
-    //$("#cboSerie").val('');
+
     $("#txtNumeracion").val('');
     $("#cboMoneda").val('');
     $("#txtTipoCambio").val('');
-    //$("#cboClaseArticulo").val('');
-    //$("#cboEmpleado").val('');
-    //$("#txtFechaContabilizacion").val(strDate);
+
     $("#cboSucursal").val('');
-    //$("#txtFechaValidoHasta").val(strDate);
-    //$("#cboDepartamento").val('');
-    //$("#txtFechaDocumento").val(strDate);
+
     $("#cboTitular").val('');
     $("#txtTotalAntesDescuento").val('');
     $("#txtComentarios").val('');
@@ -1921,10 +2103,6 @@ function limpiarDatos() {
     $("#SerieNumeroRef").val('');
     $("#NumRef").val('')
     limitador = 0;
-
-
-
-
 }
 
 
@@ -1941,11 +2119,7 @@ function ObtenerDatosxID(IdMovimiento) {
     CargarProveedor();
     CargarMotivoTraslado();
 
-
-
-
-
-    CargarVehiculos();
+   // CargarVehiculos();
 
     let EstaExtornado = false
 
@@ -2023,7 +2197,7 @@ function ObtenerDatosxID(IdMovimiento) {
 
             $("#txtSGI").val(movimiento.SGI);
             $("#Anexo").val(movimiento.CodigoAnexoLlegada);
-            //$("#DistritoLlegada").val(movimiento.DistritoLlegada);
+
             $("#DistritoLlegada option").filter(function () {
                 return $(this).text() === movimiento.DistritoLlegada.trim();
             }).prop("selected", true);
@@ -2042,9 +2216,6 @@ function ObtenerDatosxID(IdMovimiento) {
             $("#Bulto").val(movimiento.Bulto)
             $("#IdCuadrilla").val("")
             $("#IdCuadrilla").prop("disabled", true)
-
-            // $("#EntregadoA").val(movimiento.EntregadoA).change();
-
 
             //AnxoDetalle
             let AnexoDetalle = movimiento.AnexoDetalle;
@@ -2171,13 +2342,6 @@ function ObtenerDatosxID(IdMovimiento) {
                 $("#EntregadoA").val(Detalle[0].IdResponsable).change()
             }
 
-
-            //let DetalleAnexo = solicitudes[0].DetallesAnexo;
-            //for (var i = 0; i < DetalleAnexo.length; i++) {
-            //    AgregarLineaDetalleAnexo(DetalleAnexo[i].IdSolicitudRQAnexos, DetalleAnexo[i].Nombre)
-            //}
-
-
         }
 
     });
@@ -2190,11 +2354,7 @@ function ObtenerDatosxID(IdMovimiento) {
         $("#btnExtorno").show();
         $("#btnEditar").show();
     }
-    //$("#SerieNumeroRef").prop("disabled", false)
-    //$("#IdTipoDocumentoRef").prop("disabled", false)
-    //$("#IdCuadrilla").prop("disabled", false)
-    //$("#EntregadoA").prop("disabled", false)
-    //$("#txtComentarios").prop("disabled", false)
+
     if ($("#cboTipoDocumentoOperacion").val() == '329') {
 
 
@@ -2209,8 +2369,6 @@ function ObtenerDatosxID(IdMovimiento) {
         $(".devolucion").hide()
         $(".cuadrillas").show()
     }
-
-
 }
 
 
@@ -3172,25 +3330,30 @@ function CargarMotivoTraslado() {
                 option += `<option value="` + datos[i].IdMotivoTraslado + `">` + datos[i].CodigoSunat + '-' + datos[i].Descripcion + `</option>`
             }
             $("#IdMotivoTraslado").html(option);
-            $("#IdMotivoTraslado").select2();
+            $("#IdMotivoTraslado").select2({
+                dropdownParent: $("#modal-form")
+            });
         } else {
 
         }
     });
 }
 
-
+let DatosVehiculos;
 function CargarVehiculos() {
     $.ajaxSetup({ async: false });
-    $.post("/Vehiculo/ObtenerVehiculo", function (data, status) {
+    $.post("/Vehiculo/ObtenerVehiculoxIdUsuario", function (data, status) {
         if (validadJson(data)) {
             let datos = JSON.parse(data);
+            DatosVehiculos = JSON.parse(data);
             let option = '<option value="0">SELECCIONE</option>';
             for (var i = 0; i < datos.length; i++) {
                 option += `<option value="` + datos[i].Placa + `">` + datos[i].Placa + `</option>`
             }
             $("#PlacaVehiculo").html(option);
-            $("#PlacaVehiculo").select2();
+            $("#PlacaVehiculo").select2({
+                dropdownParent: $("#modal-form")
+            });
         } else {
 
         }
@@ -3229,7 +3392,7 @@ function BuscarVehiculoxPlaca() {
 var DatosProveedor = []
 
 function CargarProveedor() {
-    $.post("/Proveedor/ObtenerProveedores", function (data, status) {
+    $.post("/Proveedor/ObtenerProveedores", { 'AgregarConcyssa': true }, function (data, status) {
         Proveedor = JSON.parse(data);
         DatosProveedor = JSON.parse(data);
         let option = `<option value="0">SELECCIONE PROVEEDOR</option>`;
@@ -3241,8 +3404,12 @@ function CargarProveedor() {
         $("#IdTransportista").html(option);
         $("#IdDestinatario").html(option);
         $("#cboProveedor").html(option);
-        $("#IdTransportista").select2();
-        $("#IdDestinatario").select2();
+        $("#IdTransportista").select2({
+            dropdownParent: $("#modal-form")
+        });
+        $("#IdDestinatario").select2({
+            dropdownParent: $("#modal-form")
+        });
 
     });
 }
@@ -3707,10 +3874,10 @@ function OcultarCampos() {
     if ($("#IdTipoDocumentoRef").val() == 1) {
         console.log("mostrars")
         $(".ocultate").show()
-        $("#IdDestinatario").val(24163).change();
-        $("#IdTransportista").val(24154).change();
+        //$("#IdDestinatario").val(24154).change();
+        //$("#IdTransportista").val(24154).change();
         $("#IdMotivoTraslado").val(14).change();
-        $("#PlacaVehiculo").val(0).change();
+        //$("#PlacaVehiculo").val(0).change();
         $("#Peso").val(1);
         $("#Bulto").val(1);
         $("#IdTipoTransporte").val('02')
@@ -3822,7 +3989,7 @@ function ObtenerCapataz() {
     $.post("/Empleado/ObtenerCapatazXCuadrilla", { 'IdCuadrilla': IdCuadrilla }, function (data, status) {
         try {
             let capataz = JSON.parse(data);
-            $("#EntregadoA").select2("val", capataz[0].IdEmpleado);
+            $("#EntregadoA").val(capataz[0].IdEmpleado).change();
         } catch (e) {
             console.log("sin cuadrilla")
         }
@@ -4043,7 +4210,11 @@ function llenarComboUbigeos(lista, idCombo, primerItem) {
     var campos;
     for (var i = 0; i < nRegistros; i++) {
 
-        if (lista.length > 0) { contenido += "<option value='" + lista[i].CodUbigeo + "'>" + lista[i].Descripcion + "</option>"; }
+        if (lista.length > 0) {
+            if (lista[i].CodUbigeo.substr(0, 4) == '1501') {
+                contenido += "<option value='" + lista[i].CodUbigeo + "'>" + lista[i].Descripcion + "</option>";
+            }
+        }
         else { }
     }
     var cbo = document.getElementById(idCombo);
@@ -4072,7 +4243,7 @@ function ValidarCamposDevolucion() {
 
 
 function CargarProveedorDevolucion() {
-    $.post("/Proveedor/ObtenerProveedores", function (data, status) {
+    $.post("/Proveedor/ObtenerProveedores", { 'AgregarConcyssa': true }, function (data, status) {
         Proveedor = JSON.parse(data);
         let option = `<option value="0">SELECCIONE PROVEEDOR</option>`;
 
@@ -4082,7 +4253,9 @@ function CargarProveedorDevolucion() {
 
         $("#cboProveedor").html(option);
 
-        $("#cboProveedor").select2();
+        $("#cboProveedor").select2({
+            dropdownParent: $("#modal-form")
+        });
 
 
     });
@@ -4100,7 +4273,7 @@ function BuscarItemsExp() {
     $("#cboAgregarArticulo").select2({
         language: "es",
         width: '100%',
-
+        dropdownParent: $("#modal-form"),
         //theme: "classic",
         async: false,
         ajax: {
@@ -4231,4 +4404,68 @@ function CargarDatosBaseObraAlmacen() {
     }
 
 
+}
+
+function BuscarDNI() {
+
+    let dni = $("#NumIdentidadConductor").val()
+
+    if (dni == "" || dni == null || dni == undefined) {
+        Swal.fire("Ingrese en Nro de DNI")
+        return;
+    }
+
+    if (dni.length != 8) {
+        Swal.fire("DNI debe tener 8 Digitos")
+        return;
+    }
+
+
+
+    $.post("/Cliente/ConsultarDNI", { 'Documento': dni }, function (data, status) {
+        try {
+            let datos = JSON.parse(data);
+            console.log(datos)
+
+            $("#NombreConductor").val(datos.nombres)
+            $("#ApellidoConductor").val(datos.apellidoPaterno +" "+ datos.apellidoMaterno)
+
+
+        } catch (e) {
+        }
+
+
+    });
+}
+function BuscarVehiculosxCuadrilla() {
+    $.ajaxSetup({ async: false });
+    $.post("/Vehiculo/ObtenerVehiculosxIdCuadrilla", { 'IdCuadrilla': $("#IdCuadrilla").val() }, function (data, status) {
+
+        let respuesta = JSON.parse(data);
+
+        if (respuesta.status == null || respuesta.cantidad == 0) {
+            let option = '<option value="0">SELECCIONE</option>';
+            for (var i = 0; i < DatosVehiculos.length; i++) {
+                option += `<option value="` + DatosVehiculos[i].Placa + `">` + DatosVehiculos[i].Placa + `</option>`
+            }
+            $("#PlacaVehiculo").html(option);
+            $("#PlacaVehiculo").select2({
+                dropdownParent: $("#modal-form")
+            });
+            $("#PlacaVehiculo").prop("selectedIndex", 1).change();
+           
+
+        } else {
+            let option = '<option value="0">SELECCIONE</option>';
+            for (var i = 0; i < respuesta.datos.length; i++) {
+                option += `<option value="` + respuesta.datos[i].Placa + `">` + respuesta.datos[i].Placa + `</option>`
+            }
+            $("#PlacaVehiculo").html(option);
+            $("#PlacaVehiculo").select2({
+                dropdownParent: $("#modal-form")
+            });
+            $("#PlacaVehiculo").prop("selectedIndex", 1).change();
+        }
+
+    });
 }

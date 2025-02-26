@@ -1,5 +1,4 @@
-﻿
-@using Microsoft.AspNetCore.Http
+﻿@using Microsoft.AspNetCore.Http
 @using Karambolo.AspNetCore.Bundling.ViewHelpers
 @addTagHelper *, Karambolo.AspNetCore.Bundling
 @inject IHttpContextAccessor Accessor
@@ -35,18 +34,18 @@
                     <h4 style="font-size:1.2em;">Total de Registros: <span id="spnTotalRegistros"></span></h4>
                 </div>
             </div>
-             <div class="col-sm-2 right">
-                <button class="btn btn-sm btn-info pull-right" id="btn_agregaritem" onclick="OpenModalImportacion()" style="display:none" type="button">Importar Articulos Excel</button>
-             </div>
             <div class="col-sm-2 right">
-                <button class="btn btn-sm btn-info pull-right" id="btn_agregaritem" onclick="OpenModalImportacionArtProv()" style="display:none"  type="button">Importar Precio x Prov Excel</button>
+                <button class="btn btn-sm btn-info pull-right" id="btn_agregaritem" onclick="OpenModalImportacion()" style="display:none" type="button">Importar Articulos Excel</button>
+            </div>
+            <div class="col-sm-2 right">
+                <button class="btn btn-sm btn-info pull-right" id="btn_agregaritem" onclick="OpenModalImportacionArtProv()" style="display:none" type="button">Importar Precio x Prov Excel</button>
             </div>
             <div class="col-xs-2 right">
                 <button class="btn btn-sm  btn-primary pull-right plu" data-target="modal1" id="btnNuevoArt" onclick="ModalNuevo()" style="margin-left:10px;">Nuevo</button>
                 @*<button class="btn btn-sm  btn-success pull-right plu" id="btnPdf" style="margin-left:10px;">Descargar PDF</button>
                 <button class="btn btn-sm btn-info pull-right plu" id="btnExcel" style="margin-left:10px;">Descargar Excel</button>*@
             </div>
-      
+
         </div>
     </div>
     <div class="panel">
@@ -97,7 +96,7 @@
                                             <label for='cboIdUnidadMedida' class="control-label col-sm-1 left-align">CODIGO CUBSO</label>
                                             <div class="col-sm-7">
                                                 <label class="col-sm-12">
-                                                    <select id="cboIdCodigoUbso" class="form-control input-sm" tabindex="5"></select>
+                                                    <select id="cboIdCodigoUbso" style="width:100%" class="form-control input-sm" tabindex="5"></select>
 
                                                     <i class="arrow"></i>
                                                 </label>
@@ -117,7 +116,7 @@
                                     </div>
                                     </div>
                                     *@
-                            
+
 
                                     @*      <div class="row">
                                     <div class='form-group-sm'>
@@ -180,43 +179,69 @@
                             </div>
                             <div class="row pl30 pr30">
                                 <div class="row">
+                                    <input id="ArtIdPerfil" hidden value="@Accessor.HttpContext.Session.GetInt32("IdPerfil").ToString()" />
 
-                                    <div class='form-group-sm'>
-                                        <div class="checkbox-custom col-xs-6">
-                                            <input type="checkbox" id="chkArticulo" name="c1" tabindex="6"/>
-                                            <label for="chkArticulo">Articulo inventario</label>
+
+
+                                    Tipo de Articulo:
+
+                                    <div class="row">
+                                        <div class="col-md-4">
+   
+                                            <div class="radio-custom col-xs-6">
+                                              <input class="radioitem" type="radio" id="ArtInventario" name="TipoItem" checked />
+                                              <label for="ArtInventario">Item Articulo Inventario</label>
+                                            </div>                                            
+                                        </div>
+                                        <div class='col-md-4'>
+                                            <div class="checkbox-custom col-xs-6">
+                                                <input type="checkbox" id="chkArticuloCompra" name="c3" tabindex="8" />
+                                                <label for="chkArticuloCompra">Articulo Compra</label>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div class='form-group-sm '>
-                                        <div class="checkbox-custom col-xs-6">
-                                            <input type="checkbox" id="chkArticuloVenta" name="c2" tabindex="7" />
-                                            <label for="chkArticuloVenta">Articulo Venta</label>
+                                    <div class="row">
+                                        <div class="col-md-4">
+
+                                            <div class="radio-custom col-xs-6">
+                                                <input  class="radioitem" type="radio" id="ArtServicio" name="TipoItem" />
+                                                        <label for="ArtServicio">Item Servicio</label>
+                                            </div>
                                         </div>
-                                        <input id="ArtIdPerfil" hidden value="@Accessor.HttpContext.Session.GetInt32("IdPerfil").ToString()" />
-                                    </div>
-
-                                    <div class='form-group-sm '>
-                                        <div class="checkbox-custom col-xs-6">
-                                            <input type="checkbox" id="chkArticuloCompra" name="c3" tabindex="8" />
-                                            <label for="chkArticuloCompra">Articulo Compra</label>
-                                        </div>
-                                    </div>
-
-
-                                    <div class='form-group-sm '>
-                                        <div class="checkbox-custom col-xs-6">
-                                            <input type="checkbox" id="chkActivoFijo" name="c3" tabindex="9" />
-                                            <label for="chkActivoFijo">Activo Fijo</label>
+                                     
+                                        <div class='col-md-4'>
+                                            <div class="checkbox-custom col-xs-6">
+                                                <input  type="checkbox" id="chkArticuloVenta" name="c2" tabindex="7" />
+                                                <label for="chkArticuloVenta">Articulo Venta</label>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div class='form-group-sm '>
-                                        <div class="checkbox-custom col-xs-6">
-                                            <input type="checkbox" id="chkActivoCatalogo" name="c3" tabindex="10" />
-                                            <label for="chkActivoCatalogo">Activo Catalogo</label>
+                                    <div class="row">
+                                            <div class="col-md-4">
+
+                                            <div class="radio-custom col-xs-6">
+                                                <input class="radioitem" type="radio" id="ArtActivoFijo" name="TipoItem" />
+                                                         <label for="ArtActivoFijo">Item Activo Fijo</label>
+                                            </div>
                                         </div>
+                                     
+                                        <div class='col-md-4'>
+                                            <div class="checkbox-custom col-xs-6">
+                                                <input type="checkbox" id="chkActivoCatalogo" name="c3" tabindex="10" />
+                                                <label for="chkActivoCatalogo">Activo Catalogo</label>
+                                            </div>
+                                        </div>
+
+
                                     </div>
+
+
+
+
+
+
                                 </div>
                                 <br />
 
@@ -248,54 +273,54 @@
                                 <div class="tab-content pl15 pr15 ">
                                     <div id="tab15_5" class="tab-pane">
                                         <div class="container">
-                                                <div class="row">
-                                                    <div class="col-xs-2">
-                                                        Proveedor:
-                                                         <select id="IdProveedor" class="form-control input-sm" style="width:100%" tabindex="0"></select>
-                                                    
-                                                    </div>
-                                                    <div class="col-xs-1">
-                                                        Precio Soles:
-                                                        <input type="text" id="PrecioSoles" class="form-control" placeholder="Precio Soles">
-                                                    </div>
+                                            <div class="row">
+                                                <div class="col-xs-2">
+                                                    Proveedor:
+                                                    <select id="IdProveedor" style="width:100%" class="form-control input-sm" style="width:100%" tabindex="0"></select>
 
-                                                    <div class="col-xs-1">
-                                                        Precio Dolares:
-                                                        <input type="text" id="PrecioDolares" class="form-control" placeholder="Precio Dolares">
-                                                    </div>
-                                                    <div class="col-xs-2">
-                                                        Condicion de Pago:
-                                                        <select id="IdCondicionPagoProveedor" class="form-control input-sm" style="width:100%" tabindex="0"></select>
-                                                    </div>
-                                                    <div class="col-xs-2">
-                                                        Numero de Entrega:
-                                                        <input type="text" id="numeroentrega" class="form-control" placeholder="Numero Entrega">
-                                                    </div>
-                                                     <div class="col-xs-1">
-                                                        Precio:
-                                                        <div class="col-xs-12">
-                                                            <input type="radio" id="PrecioXGeneral" name="TipoPrecio" onclick="alertar()" checked />
-                                                            <label style="font-size:1.5rem" for="PrecioXGeneral">General</label>
-                                                       
-                                                        </div>
-                                                        <div class="col-xs-12">
-                                         
-                                                            <input type="radio" id="PrecioXObra" name="TipoPrecio" onclick="alertar()" />
-                                                            <label style="font-size:1.5rem" for="PrecioXObra">Por Obra</label>
-                                                        </div>
-                                                    </div>
+                                                </div>
+                                                <div class="col-xs-1">
+                                                    Precio Soles:
+                                                    <input type="text" id="PrecioSoles" class="form-control" placeholder="Precio Soles">
+                                                </div>
 
-                                                    <div class="col-xs-1">
+                                                <div class="col-xs-1">
+                                                    Precio Dolares:
+                                                    <input type="text" id="PrecioDolares" class="form-control" placeholder="Precio Dolares">
+                                                </div>
+                                                <div class="col-xs-2">
+                                                    Condicion de Pago:
+                                                    <select id="IdCondicionPagoProveedor" class="form-control input-sm" style="width:100%" tabindex="0"></select>
+                                                </div>
+                                                <div class="col-xs-2">
+                                                    Numero de Entrega:
+                                                    <input type="text" id="numeroentrega" class="form-control" placeholder="Numero Entrega">
+                                                </div>
+                                                <div class="col-xs-1">
+                                                    Precio:
+                                                    <div class="col-xs-12">
+                                                        <input type="radio" id="PrecioXGeneral" name="TipoPrecio" onclick="alertar()" checked />
+                                                        <label style="font-size:1.5rem" for="PrecioXGeneral">General</label>
+
+                                                    </div>
+                                                    <div class="col-xs-12">
+
+                                                        <input type="radio" id="PrecioXObra" name="TipoPrecio" onclick="alertar()" />
+                                                        <label style="font-size:1.5rem" for="PrecioXObra">Por Obra</label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-xs-1">
 
                                                     <button class="btn btn-sm btn-success" onclick="addprecioproductoproveedor()" style="background-color:var(--colorN-primario)">Guardar</button>
-                                                    </div>
-                                                 </div>
-                                                 <div class="row">
-                                                    <div class="col-sm-3" id="divObraArticulo">
-                                                        Obra:
-                                                        <select type="text" id="ObraArticulo" class="form-control"></select>
-                                                    </div>
-                                                 </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-3" id="divObraArticulo">
+                                                    Obra:
+                                                    <select type="text" id="ObraArticulo" class="form-control"></select>
+                                                </div>
+                                            </div>
                                         </div>
                                         <br />
 
@@ -303,7 +328,7 @@
                                         <div class="row">
                                             <table class="table table-bordered text-center">
                                                 <thead>
-                                          
+
                                                 <th>Proveedor</th>
                                                 <th>Soles</th>
                                                 <th>Dolares</th>
@@ -475,7 +500,7 @@
                                                 </div>
                                             </div>
 
-                                             <div class="col-lg-6 pl20 pr40">
+                                            <div class="col-lg-6 pl20 pr40">
                                                 <div class="row">
                                                     <div class='form-group-sm'>
                                                         <label for='cboCategoria' cl class="control-label col-sm-7 left-align">Categoria</label>
@@ -487,7 +512,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                              
+
                                             </div>
 
 
@@ -627,7 +652,7 @@
     </div>
 
 
-     <!-- Modal Importar excel-->
+    <!-- Modal Importar excel-->
     <div class="modal fade" data-backdrop="static"
          data-keyboard="false" id="ModalImportarDatosPrecioProv" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered allcp-form" style="margin-top:120px" role="document">

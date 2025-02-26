@@ -363,9 +363,13 @@ function listarEmpleados() {
                     options += `<option value="` + datos[i].IdEmpleado + `">` + datos[i].RazonSocial + `</option>`;
                 }
                 $("#IdSupervisor").html(options);
-                $("#IdSupervisor").select2();
+                $("#IdSupervisor").select2({
+                    dropdownParent: $("#modal-form")
+                });
                 $("#IdCapataz").html(options);
-                $("#IdCapataz").select2();
+                $("#IdCapataz").select2({
+                    dropdownParent: $("#modal-form")
+                });
             }
         }
     });

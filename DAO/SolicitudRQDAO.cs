@@ -119,7 +119,7 @@ namespace DAO
 
 
 
-        public List<int> UpdateInsertSolicitud(SolicitudRQDTO oSolicitudRQDTO, SolicitudRQDetalleDTO oSolicitudRQDetalleDTO, string IdSociedad, string BaseDatos)
+        public List<int> UpdateInsertSolicitud(SolicitudRQDTO oSolicitudRQDTO, string IdSociedad, string BaseDatos)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
@@ -158,6 +158,7 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@Estado", oSolicitudRQDTO.Estado);
                         da.SelectCommand.Parameters.AddWithValue("@IdSociedad", int.Parse(IdSociedad));
                         da.SelectCommand.Parameters.AddWithValue("@Prioridad", oSolicitudRQDTO.Prioridad);
+                        da.SelectCommand.Parameters.AddWithValue("@EsSubContrato", oSolicitudRQDTO.EsSubContrato);
                         int IdInsert = 0;
                         bool EsNuevoIngreso = false;
                         if (oSolicitudRQDTO.IdSolicitudRQ > 0)
@@ -173,35 +174,36 @@ namespace DAO
 
                         //int rpta = da.SelectCommand.ExecuteNonQuery();
                         //int IdInsertDetalle = 0;
-                        for (int i = 0; i < oSolicitudRQDetalleDTO.IdArticulo.Count; i++)
+                        for (int i = 0; i < oSolicitudRQDTO.Detalle.Count; i++)
                         {
                             SqlDataAdapter dad = new SqlDataAdapter("SMC_UpdateInsertSolicitudRQDetalle", cn);
                             dad.SelectCommand.CommandType = CommandType.StoredProcedure;
-                            dad.SelectCommand.Parameters.AddWithValue("@IdSolicitudRQDetalle", oSolicitudRQDetalleDTO.IdSolicitudRQDetalle[i]);
+                            dad.SelectCommand.Parameters.AddWithValue("@IdSolicitudRQDetalle", oSolicitudRQDTO.Detalle[i].IdSolicitudRQDetalle);
                             dad.SelectCommand.Parameters.AddWithValue("@IdSolicitudRQ", IdInsert);
-                            dad.SelectCommand.Parameters.AddWithValue("@IdArticulo", oSolicitudRQDetalleDTO.IdArticulo[i]);
-                            dad.SelectCommand.Parameters.AddWithValue("@Descripcion", oSolicitudRQDetalleDTO.Descripcion[i]);
-                            dad.SelectCommand.Parameters.AddWithValue("@IdUnidadMedida", oSolicitudRQDetalleDTO.IdUnidadMedida[i]);
-                            dad.SelectCommand.Parameters.AddWithValue("@FechaNecesaria", oSolicitudRQDetalleDTO.FechaNecesaria[i]);
-                            dad.SelectCommand.Parameters.AddWithValue("@CantidadNecesaria", oSolicitudRQDetalleDTO.CantidadNecesaria[i]);
-                            dad.SelectCommand.Parameters.AddWithValue("@CantidadSolicitada", oSolicitudRQDetalleDTO.CantidadNecesaria[i]);
-                            dad.SelectCommand.Parameters.AddWithValue("@PrecioInfo", oSolicitudRQDetalleDTO.PrecioInfo[i]);
+                            dad.SelectCommand.Parameters.AddWithValue("@IdArticulo", oSolicitudRQDTO.Detalle[i].IdArticulo);
+                            dad.SelectCommand.Parameters.AddWithValue("@Descripcion", oSolicitudRQDTO.Detalle[i].Descripcion);
+                            dad.SelectCommand.Parameters.AddWithValue("@IdUnidadMedida", oSolicitudRQDTO.Detalle[i].IdUnidadMedida);
+                            dad.SelectCommand.Parameters.AddWithValue("@FechaNecesaria", oSolicitudRQDTO.Detalle[i].FechaNecesaria);
+                            dad.SelectCommand.Parameters.AddWithValue("@CantidadNecesaria", oSolicitudRQDTO.Detalle[i].CantidadNecesaria);
+                            dad.SelectCommand.Parameters.AddWithValue("@CantidadSolicitada", oSolicitudRQDTO.Detalle[i].CantidadNecesaria);
+                            dad.SelectCommand.Parameters.AddWithValue("@PrecioInfo", oSolicitudRQDTO.Detalle[i].PrecioInfo);
                             dad.SelectCommand.Parameters.AddWithValue("@IdIndicadorImpuesto", 1);
-                            dad.SelectCommand.Parameters.AddWithValue("@Total", oSolicitudRQDetalleDTO.ItemTotal[i]);
-                            dad.SelectCommand.Parameters.AddWithValue("@IdAlmacen", oSolicitudRQDetalleDTO.IdAlmacen[i]);
-                            dad.SelectCommand.Parameters.AddWithValue("@IdProveedor", oSolicitudRQDetalleDTO.IdProveedor[i]);
-                            dad.SelectCommand.Parameters.AddWithValue("@NumeroFabricacion", oSolicitudRQDetalleDTO.NumeroFabricacion[i]);
-                            dad.SelectCommand.Parameters.AddWithValue("@NumeroSerie", oSolicitudRQDetalleDTO.NumeroSerie[i]);
+                            dad.SelectCommand.Parameters.AddWithValue("@Total", oSolicitudRQDTO.Detalle[i].ItemTotal);
+                            dad.SelectCommand.Parameters.AddWithValue("@IdAlmacen", oSolicitudRQDTO.Detalle[i].IdAlmacen);
+                            dad.SelectCommand.Parameters.AddWithValue("@IdProveedor", oSolicitudRQDTO.Detalle[i].IdProveedor);
+                            dad.SelectCommand.Parameters.AddWithValue("@NumeroFabricacion", oSolicitudRQDTO.Detalle[i].NumeroFabricacion);
+                            dad.SelectCommand.Parameters.AddWithValue("@NumeroSerie", oSolicitudRQDTO.Detalle[i].NumeroSerie);
                             dad.SelectCommand.Parameters.AddWithValue("@IdLineaNegocio", 0);
                             dad.SelectCommand.Parameters.AddWithValue("@IdCentroCostos", 0);
                             dad.SelectCommand.Parameters.AddWithValue("@IdProyecto", 0);
                             dad.SelectCommand.Parameters.AddWithValue("@IdMoneda", 1);
                             dad.SelectCommand.Parameters.AddWithValue("@TipoCambio", 1);
                             dad.SelectCommand.Parameters.AddWithValue("@IdSociedad", int.Parse(IdSociedad));
-                            dad.SelectCommand.Parameters.AddWithValue("@Referencia", oSolicitudRQDetalleDTO.Referencia[i]);
-                            dad.SelectCommand.Parameters.AddWithValue("@EstadoDetalle", oSolicitudRQDetalleDTO.EstadoDetalle[i]);//;oSolicitudRQDetalleDTO.EstadoDetalle[i]);
-                            dad.SelectCommand.Parameters.AddWithValue("@Prioridad", oSolicitudRQDetalleDTO.Prioridad[i]);
-                            dad.SelectCommand.Parameters.AddWithValue("@TipoServicio", oSolicitudRQDetalleDTO.TipoServicio[i]);
+                            dad.SelectCommand.Parameters.AddWithValue("@Referencia", oSolicitudRQDTO.Detalle[i].Referencia);
+                            dad.SelectCommand.Parameters.AddWithValue("@EstadoDetalle", oSolicitudRQDTO.Detalle[i].EstadoDetalle);//;oSolicitudRQDTO.Detalle[i].EstadoDetalle);
+                            dad.SelectCommand.Parameters.AddWithValue("@Prioridad", oSolicitudRQDTO.Detalle[i].Prioridad);
+                            dad.SelectCommand.Parameters.AddWithValue("@TipoServicio", oSolicitudRQDTO.Detalle[i].TipoServicio);
+                            dad.SelectCommand.Parameters.AddWithValue("@CodCuadrilla", oSolicitudRQDTO.Detalle[i].CodCuadrilla);
                             rpta = dad.SelectCommand.ExecuteNonQuery();
 
                         }
@@ -703,6 +705,7 @@ namespace DAO
                         oSolicitudRQDTO.Estado = int.Parse(drd["Estado"].ToString());
                         oSolicitudRQDTO.DetalleEstado = drd["DetalleEstado"].ToString();
                         oSolicitudRQDTO.Prioridad = int.Parse(drd["Prioridad"].ToString());
+                        oSolicitudRQDTO.EsSubContrato = bool.Parse(drd["EsSubContrato"].ToString());
                         oSolicitudRQDTO.Usuario = IdUsuario;
 
                         //oSolicitudRQDTO.NombObra = (drd["NombObra"].ToString());
@@ -801,6 +804,7 @@ namespace DAO
                         oSolicitudRQDetalleDTO.ConformidadPedido = (drd["ConformidadPedido"].ToString());
                         oSolicitudRQDetalleDTO.IdPedido = int.Parse((drd["IdPedido"].ToString()));
                         oSolicitudRQDetalleDTO.TipoServicio = drd["TipoServicio"].ToString();
+                        oSolicitudRQDetalleDTO.CodCuadrilla = (String.IsNullOrEmpty(drd["CodCuadrilla"].ToString()) ? "" : drd["CodCuadrilla"].ToString());
                         //oSolicitudRQDetalleDTO.DescripcionItem = drd["DescripcionItem"].ToString();
                         //lstSolicitudRQDTO.Add(oSolicitudRQDTO.Detalle.Add(oSolicitudRQDetalleDTO));
                         oSolicitudRQDTO.Detalle[posicion] = oSolicitudRQDetalleDTO;
@@ -1549,6 +1553,42 @@ namespace DAO
                     }
                 }
             }
+
+            
+
+        }
+
+        public SolicitudDetalleDTO ObtenerSolicitudDetallexId(int IdSolicitudRQDetalle, string BaseDatos,ref string mensaje_error)
+        {
+            SolicitudDetalleDTO oSolicitudDetalleDTO = new SolicitudDetalleDTO();
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerDatosRQDetallexId", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSolicitudRQDetalle", IdSolicitudRQDetalle);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+
+                        oSolicitudDetalleDTO.CodArticulo = (drd["CodArticulo"].ToString());
+                        oSolicitudDetalleDTO.DescripcionItem =(drd["Descripcion"].ToString());
+                        oSolicitudDetalleDTO.CantidadNecesaria = Convert.ToDecimal(drd["CantidadNecesaria"].ToString());
+                        oSolicitudDetalleDTO.NumeroSerie = (drd["NumeroSerie"].ToString());                
+                        oSolicitudDetalleDTO.CorreoAlmacen = (drd["CorreoAlmacen"].ToString());                
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+            }
+            return oSolicitudDetalleDTO;
         }
 
     }

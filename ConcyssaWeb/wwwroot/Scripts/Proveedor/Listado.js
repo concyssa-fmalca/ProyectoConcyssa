@@ -116,35 +116,102 @@ function EliminarAnexoEnMemoria(contAnexo) {
 
 function ConsultaServidor(url) {
 
-    $.post(url, function (data, status) {
-        if (data == "error") {
-            table = $("#table_id").DataTable(lenguaje);
-            return;
-        }
 
-        let tr = '';
+    let logistica = false;
+    if ($("#chkSoloLogistica").prop("checked")){
+        logistica = true;
+    }
 
-        let proveedores = JSON.parse(data);
-        let total_proveedores = proveedores.length;
+    tableItems = $('#table_id').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "searchDelay": 1000,
+        ajax: {
+            type: "POST",
+            url: "ObtenerProveedoresDataTable",
+            //contentType: 'application/json; charset=utf-8',
+            //dataType: "json",
+            data: function (dtParms) {
+                //enviamos al servidor
+                return { 'ClientParameters': JSON.stringify(dtParms), 'Logistica': logistica };
+            },
+            dataFilter: function (res) {          
 
-        for (var i = 0; i < proveedores.length; i++) {
+                //recibimos del servidor
+                var parsed = JSON.parse(res);
+                console.log(parsed);
+                //var parsed = JSON.parse(res);
+                return JSON.stringify(parsed);
+            },
+            error: function (x, y) {
+                console.log(x);
+            }
+        },
+        "filter": true,
+        columns: [
+            
+            {
+                "data": null,
+                "render": function (data, type, full, meta) {
+                    return meta.row+1
+                }
+            },
+            { "data": "NumeroDocumento" },
+            { "data": "RazonSocial" },
+            {
+                "data": null,
+                "render": function (data, type, full, meta) {
+                    let html = '<button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + full.IdProveedor + ')"></button>' +
+                        '<button class="btn btn-primary btn-xs" onclick="ObtenerRubrosxID(' + full.IdProveedor + ');ListarRubrosxID(' + full.IdProveedor + ')">RUBRO</button>';
 
-            tr += '<tr>' +
-                '<td>' + (i + 1) + '</td>' +
-                '<td>' + proveedores[i].NumeroDocumento.toUpperCase() + '</td>' +
-                '<td>' + proveedores[i].RazonSocial.toUpperCase() + '</td>' +
-                '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + proveedores[i].IdProveedor + ')"></button>' +
-                '<button class="btn btn-primary btn-xs" onclick="ObtenerRubrosxID(' + proveedores[i].IdProveedor + ');ListarRubrosxID(' + proveedores[i].IdProveedor + ')">RUBRO</button>' +
-                '<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + proveedores[i].IdProveedor + ')"></button></td >' +
-                '</tr>';
-        }
+                    if ($("#txtIdPerfil").val() == 1) {
+                            html+='<button class="btn btn-primary btn-xs" onclick="CrearCuentaPortal(' + full.IdProveedor + ')">CREAR USUARIO PORTAL PROVEEDOR</button>'
+                        }
 
-        $("#tbody_Proveedores").html(tr);
-        $("#spnTotalRegistros").html(total_proveedores);
+                    html+='<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + full.IdProveedor + ')"></button>'
 
-        table = $("#table_id").DataTable(lenguaje);
+                    return html
+                }
+            },    
+
+        ],
+        "bDestroy": true,
+        "responsive": true
 
     });
+
+
+
+    //$.post(url, { 'Logistica': logistica }, function (data, status) {
+    //    if (data == "error") {
+    //        table = $("#table_id").DataTable(lenguaje);
+
+    //        return;
+    //    }
+
+    //    let tr = '';
+
+    //    let proveedores = JSON.parse(data);
+    //    let total_proveedores = proveedores.length;
+
+    //    for (var i = 0; i < proveedores.length; i++) {
+
+    //        tr += '<tr>' +
+    //            '<td>' + (i + 1) + '</td>' +
+    //            '<td>' + proveedores[i].NumeroDocumento.toUpperCase() + '</td>' +
+    //            '<td>' + proveedores[i].RazonSocial.toUpperCase() + '</td>' +
+    //            '<td><button class="btn btn-primary fa fa-pencil btn-xs" onclick="ObtenerDatosxID(' + proveedores[i].IdProveedor + ')"></button>' +
+    //            '<button class="btn btn-primary btn-xs" onclick="ObtenerRubrosxID(' + proveedores[i].IdProveedor + ');ListarRubrosxID(' + proveedores[i].IdProveedor + ')">RUBRO</button>' +
+    //            '<button class="btn btn-danger btn-xs  fa fa-trash" onclick="eliminar(' + proveedores[i].IdProveedor + ')"></button></td >' +
+    //            '</tr>';
+    //    }
+
+    //    $("#tbody_Proveedores").html(tr);
+    //    $("#spnTotalRegistros").html(total_proveedores);
+
+    //    table = $("#table_id").DataTable(lenguaje);
+
+    //});
 
 }
 
@@ -162,6 +229,9 @@ function ModalNuevo() {
     CargarPaises();
     CargarDepartamentos();
     $("#cboPais").val(193);
+    $("#txtDireccionFiscal").val("LIMA");
+    $("#cboCondicionPago").val(1);
+    $("#txtDiasEntrega").val(1);
     $("#txtFechaIngreso").val(getFechaHoy())
 }
 function pad(str, max) { str = str.toString(); return str.length < max ? pad("0" + str, max) : str; }
@@ -209,12 +279,21 @@ function GuardarProveedor() {
     let varTipo = 2; // proveedor
     let varEstado = false;
     let varAfecto = false;
+    let varLogistica = false;
+    let varSolicitarFTenPortalProv = false;
+    let varEmailPortalProv = $("#txtEmailPortaProv").val();
 
     if ($('#chkActivo')[0].checked) {
         varEstado = true;
     }
     if ($('#chk4ta')[0].checked) {
         varAfecto = true;
+    }
+    if ($('#chkLogistica')[0].checked) {
+        varLogistica = true;
+    }
+    if ($('#chkFactuaPortal')[0].checked) {
+        varSolicitarFTenPortalProv = true;
     }
 
     if (varTipoPersona == 0 || varTipoPersona == null || varTipoPersona == undefined) {
@@ -243,10 +322,10 @@ function GuardarProveedor() {
         Swal.fire("Advertencia", "Llene el Campo Condicion de Pago", "info");
         return
     }
-    if (varEmail == "" || varEmail == null || varEmail == undefined) {
-        Swal.fire("Advertencia", "Llene el Campo Email", "info");
-        return
-    }
+    //if (varEmail == "" || varEmail == null || varEmail == undefined) {
+    //    Swal.fire("Advertencia", "Llene el Campo Email", "info");
+    //    return
+    //}
     if (varFechaIngreso == "" || varFechaIngreso == null || varFechaIngreso == undefined) {
         Swal.fire("Advertencia", "Llene el Campo Fecha de Ingreso", "info");
         return
@@ -312,7 +391,10 @@ function GuardarProveedor() {
         'Tipo': varTipo,
         'Estado': varEstado,
         'DiasEntrega': varDiasEntrega,
-        'Afecto4ta': varAfecto
+        'Afecto4ta': varAfecto,
+        'ConOrden': varLogistica,
+        'SolicitarFTenPortalProv': varSolicitarFTenPortalProv,
+        'EmailPortalProv': varEmailPortalProv
     }, function (data, status) {
 
         if (data == -2) {
@@ -376,6 +458,7 @@ function ObtenerDatosxID(varIdProveedor) {
             $("#txtTlfContacto").val(proveedores.TelefonoContacto);
             $("#txtEmailContacto").val(proveedores.EmailContacto);
             $("#txtDiasEntrega").val(proveedores.DiasEntrega);
+            $("#txtEmailPortaProv").val(proveedores.EmailPortalProv);
 
             var fechaSplit = (proveedores.FechaIngreso.substring(0, 10)).split("-");
             var fecha = fechaSplit[0] + "-" + fechaSplit[1] + "-" + fechaSplit[2];
@@ -431,6 +514,12 @@ function ObtenerDatosxID(varIdProveedor) {
 
             if (proveedores.Afecto4ta) {
                 $("#chk4ta").prop('checked', true);
+            }
+            if (proveedores.ConOrden) {
+                $("#chkLogistica").prop('checked', true);
+            }
+            if (proveedores.SolicitarFTenPortalProv) {
+                $("#chkFactuaPortal").prop('checked', true);
             }
 
         }
@@ -725,7 +814,6 @@ function limpiarDatos() {
     $("#txtRazonSocial").val("");
     $("#txtEstadoContribuyente").val("");
     $("#txtCondicionContribuyente").val("");
-    $("#txtDireccionFiscal").val("");
     $("#txtTlf1").val("");
     $("#txtComprobantesElectronicos").val("");
     $("#txtAfiliadoPLE").val("");
@@ -742,11 +830,16 @@ function limpiarDatos() {
     $("#cboDepartamento").val("");
     $("#cboProvincia").val("");
     $("#cboDistrito").val("");
+    $("#txtEmailPortaProv").val("");
     //$("#cboPais").val("");
-    $("#cboCondicionPago").val("");
+    $("#txtDireccionFiscal").val("LIMA");
+    $("#cboCondicionPago").val(1);
+    $("#txtDiasEntrega").val(1);
 
     $("#chkActivo").prop('checked', true);
     $("#chk4ta").prop('checked', false);
+    $("#chkLogistica").prop('checked', false);
+ /*   $("#chkFactuaPortal").prop('checked', false);*/
     var f = new Date();
     fecha = f.getFullYear() + '-' + pad(f.getMonth(), 2) + '-' + f.getDate();
     $("#txtFechaIngreso").val(fecha)
@@ -915,4 +1008,35 @@ function obtenerUltimaParteDespuesDelPunto(cadena) {
 
         return cadena;
     }
+}
+
+function CrearCuentaPortal(IdProveedor) {
+    Swal.fire({
+        title: 'DESEA GENERAR USUARIO EN PORTAL DE PROVEEDORES?',
+        html: "Se enviará el usuario por correo y Se validará que no se haya creado previamente",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si Generar!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+
+
+            $.post("CrearUsuarioPortalProv", { 'IdProveedor': IdProveedor }, function (data, status) {
+
+                let datos = JSON.parse(data);
+
+                if (datos.status) {
+                    Swal.fire("Correcto!","Se creó correctamente el usuario","success")
+                } else {
+                    Swal.fire("Error!", datos.mensaje, "error")
+                }
+
+            });
+          
+        
+        }
+    })
+
 }

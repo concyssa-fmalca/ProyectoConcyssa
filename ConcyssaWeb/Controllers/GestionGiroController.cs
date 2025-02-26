@@ -561,16 +561,27 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
-        public int ActualizarEstadoContabilizado(int IdGiro, bool Estado)
+        public string ActualizarEstadoContabilizado(int IdGiro, bool Estado)
         {
 
             string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             GiroDAO oSemanaDAO = new GiroDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             //oSemanaDTO.IdSociedad = IdSociedad;
-            int respuesta = oSemanaDAO.ActualizarEstadoContabilizado( IdGiro,  Estado, BaseDatos);
+            string mensaje_error = "";
 
-            return respuesta;
+            object json = null;
+
+            int respuesta = oSemanaDAO.ActualizarEstadoContabilizado( IdGiro,  Estado, BaseDatos, ref mensaje_error);
+
+            if (mensaje_error.Length > 0)
+            {
+                json = new { status = false, mensaje = mensaje_error };
+                return JsonConvert.SerializeObject(json);
+            }
+            json = new { status = true,respuesta = respuesta, mensaje = mensaje_error };
+
+            return JsonConvert.SerializeObject(json);
         }
 
         public string ObtenerSerieGiro(int IdGiro)

@@ -8,7 +8,7 @@
     <div class="panel">
         <div class="container-fluid">
             <div class="topbar-left col-xs-6">
-                <h3>Compra Compra Pendiente</h3>
+                <h3>Orden de Compra Pendiente</h3>
             </div>
         </div>
     </div>
@@ -20,7 +20,7 @@
                 <div class="row">
                     <div class='form-group-sm'>
                         <label for="txtFechaInicio" class="control-label col-sm-2 left-align">Fecha Inicio</label>
-                        <div class="col-sm-4">
+                        <div class="col-sm-5">
                             <input class="form-control input-sm" type="date" id="txtFechaInicio"/>
                         </div>
                     </div>
@@ -28,7 +28,7 @@
                 <div class="row">
                     <div class='form-group-sm'>
                         <label for="txtFechaFin" class="control-label col-sm-2 rigth-align">Fecha Fin</label>
-                        <div class="col-sm-4">
+                        <div class="col-sm-5">
                             <input class="form-control input-sm" type="date" id="txtFechaFin"/>
                         </div>
                     </div>
@@ -36,15 +36,15 @@
                 <div class="row">
                     <div class='form-group-sm'>
                         <label for="IdBase" class="control-label col-sm-2 left-align">Base</label>
-                        <div class="col-sm-4">
-                            <select class="form-control input-sm" id="IdBase" onchange="CargarObra()"></select>
+                        <div class="col-sm-5">
+                            <select class="form-control input-sm" id="IdBase" onchange="CargarObra()" style="width:100%"></select>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class='form-group-sm'>
                         <label for="IdObra" class="control-label col-sm-2 left-align">Obra</label>
-                        <div class="col-sm-4">
+                        <div class="col-sm-5">
                             <select class="form-control input-sm" id="IdObra"></select>
                         </div>
                     </div>
@@ -52,8 +52,8 @@
                 <div class="row">
                     <div class='form-group-sm'>
                         <label for="cboTipoPersona" class="control-label col-sm-2 rigth-align">Proveedor</label>
-                        <div class="col-sm-4">
-                            <select id="IdProveedor" class="form-control input-sm" tabindex="1">
+                        <div class="col-sm-5">
+                            <select id="IdProveedor" class="form-control input-sm" tabindex="1" style="width:100%">
                                 <option value="1">Materiales</option>
                             </select>
                         </div>
@@ -69,8 +69,12 @@
     </div>
 
 </div>
+@{
+    Random rnd = new Random();
+}
 
-<script src="~/Scripts/ReporteLogistica/OrdenCompraPendiente.js"></script>
+
+<script src="~/Scripts/ReporteLogistica/OrdenCompraPendiente.js?v=@rnd.Next(1, 1000 + 1)"></script>
 <script src="~/Scripts/General.js"></script>
 <script src="~/js/pdf/jspdf.min.js"></script>
 <script src="~/js/pdf/faker.min.js"></script>

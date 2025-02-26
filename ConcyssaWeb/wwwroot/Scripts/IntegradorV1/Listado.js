@@ -375,8 +375,8 @@ function llenarComboObrae(lista, idCombo, primerItem) {
     for (var i = 0; i < nRegistros; i++) {
         if (lista.length > 0) {
             let fechagc = lista[i].FechaCreacionTabla.split('T')[0]
-            let horagc = lista[i].FechaCreacionTabla.split('T')[1]
-            contenido += "<option value='" + lista[i].GrupoCreacion + "'>" + lista[i].Usuario + '/' + fechagc + '/' + horagc + '/ '+ lista[i].EstadoEnviado+"</option>"; ultimoindice = i
+         /*   let horagc = lista[i].FechaCreacionTabla.split('T')[1]*/
+            contenido += "<option value='" + lista[i].GrupoCreacion + "'>" + lista[i].GrupoCreacion + ' | ' + fechagc + ' | '+ lista[i].EstadoEnviado+"</option>"; ultimoindice = i
         }
     }
     var cbo = document.getElementById(idCombo);

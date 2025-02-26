@@ -38,16 +38,26 @@
 
 
                 <div class="row">
-                    <div class='form-group-sm'>
+                    <div class='col-md-6'>
                         <label for="IdArticulo" class="control-label col-sm-2 left-align">Articulo</label>
-                        <div class="col-sm-4">
-                            <select id="IdArticulo" class="form-control input-sm" tabindex="1">
+                        <div class="col-sm-12">
+                            <select id="IdArticulo" style="width:100%" class="form-control input-sm" tabindex="1">
                             </select>
                         </div>
                     </div>
                    
                 </div>
 
+                <div class="row">
+                    <div class='col-md-6'>
+                        <label for="IdProveedor" class="control-label col-sm-2 left-align">Proveedor</label>
+                        <div class="col-sm-12">
+                            <select id="IdProveedor" style="width:100%" class="form-control input-sm" tabindex="1">
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
 
 
 
@@ -61,8 +71,11 @@
     </div>
 
 </div>
+@{
+    Random rnd = new Random();
+}
 
-<script src="~/Scripts/ReporteLogistica/ListaPrecio.js"></script>
+<script src="~/Scripts/ReporteLogistica/ListaPrecio.js?v=@rnd.Next(1, 1000 + 1)"></script>
 <script src="~/Scripts/General.js"></script>
 <script src="~/js/pdf/jspdf.min.js"></script>
 <script src="~/js/pdf/faker.min.js"></script>

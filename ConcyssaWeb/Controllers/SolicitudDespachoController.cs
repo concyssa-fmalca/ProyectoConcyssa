@@ -179,12 +179,12 @@ namespace ConcyssaWeb.Controllers
                 return "error";
             }
         }
-        public string ObtenerSolicitudesDespachoAtender(int IdBase, DateTime FechaInicio, DateTime FechaFin, int EstadoSolicitud, int SerieFiltro, int Paginacion = 0)
+        public string ObtenerSolicitudesDespachoAtender(int IdBase,int IdObra, DateTime FechaInicio, DateTime FechaFin, int EstadoSolicitud, int SerieFiltro, int Paginacion = 0)
         {
             string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             SolicitudDespachoDAO oSolicitudDespachoDAO = new SolicitudDespachoDAO();
-            List<SolicitudDespachoDTO> lstSolicitudDespachoDTO = oSolicitudDespachoDAO.ObtenerSolicitudesDespachoAtender(IdSociedad, IdBase, FechaInicio, FechaFin, EstadoSolicitud, SerieFiltro, Paginacion, BaseDatos);
+            List<SolicitudDespachoDTO> lstSolicitudDespachoDTO = oSolicitudDespachoDAO.ObtenerSolicitudesDespachoAtender(IdSociedad, IdBase, IdObra,FechaInicio, FechaFin, EstadoSolicitud, SerieFiltro, Paginacion, BaseDatos);
 
             if (lstSolicitudDespachoDTO.Count > 0)
             {
@@ -196,12 +196,12 @@ namespace ConcyssaWeb.Controllers
             }
 
         }
-        public string ObtenerSolicitudesDespachoAtenderFiltro(int IdBase, DateTime FechaInicio, DateTime FechaFin, int EstadoSolicitud, int SerieFiltro)
+        public string ObtenerSolicitudesDespachoAtenderFiltro(int IdBase,int IdObra, DateTime FechaInicio, DateTime FechaFin, int EstadoSolicitud, int SerieFiltro)
         {
             string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
             SolicitudDespachoDAO oSolicitudDespachoDAO = new SolicitudDespachoDAO();
-            List<SolicitudDespachoDTO> lstSolicitudDespachoDTO = oSolicitudDespachoDAO.ObtenerSolicitudesDespachoAtenderFiltro(IdSociedad, IdBase, FechaInicio, FechaFin, EstadoSolicitud, SerieFiltro, BaseDatos);
+            List<SolicitudDespachoDTO> lstSolicitudDespachoDTO = oSolicitudDespachoDAO.ObtenerSolicitudesDespachoAtenderFiltro(IdSociedad, IdBase, IdObra, FechaInicio, FechaFin, EstadoSolicitud, SerieFiltro, BaseDatos);
 
             if (lstSolicitudDespachoDTO.Count > 0)
             {
@@ -236,7 +236,7 @@ namespace ConcyssaWeb.Controllers
                 }
             }
         }
-        public int AtencionConfirmada(int Cantidad, int IdSolicitud, int IdArticulo, int EstadoSolicitud)
+        public int AtencionConfirmada(decimal Cantidad, int IdSolicitud, int IdArticulo, int EstadoSolicitud)
         {
             string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
@@ -383,6 +383,69 @@ namespace ConcyssaWeb.Controllers
                 return 1;
             }
             return resultado;
+
+        }
+
+        public string GenerarSalidaAtencionDespacho(MovimientoDTO oMovimientoDTO, int IdSolicitudDespacho, int EstadoSolicitud)
+        {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            string mensaje_error = "";
+            object json = null;
+
+
+            int IdSociedad = Convert.ToInt32((String.IsNullOrEmpty(oMovimientoDTO.IdSociedad.ToString())) ? Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad")) : oMovimientoDTO.IdSociedad);
+            int IdUsuario = Convert.ToInt32((String.IsNullOrEmpty(oMovimientoDTO.IdUsuario.ToString())) ? Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad")) : oMovimientoDTO.IdUsuario);
+
+
+            if (IdSociedad == 0)
+            {
+                IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            }
+
+            if (IdUsuario == 0)
+            {
+                IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            }
+
+            oMovimientoDTO.IdSociedad = IdSociedad;
+            oMovimientoDTO.IdUsuario = IdUsuario;
+
+            KardexDAO oKardexDAO = new KardexDAO();
+            ArticuloStockDTO oArticuloStockDTO = new ArticuloStockDTO();
+            string MensajeNoStock = "";
+            int validadStock = 0;
+            for (int i = 0; i < oMovimientoDTO.detalles.Count(); i++)
+            {
+                oArticuloStockDTO = oKardexDAO.ObtenerArticuloxIdArticuloxIdAlm(oMovimientoDTO.detalles[i].IdArticulo, oMovimientoDTO.IdAlmacen, BaseDatos, ref mensaje_error);
+                if (oArticuloStockDTO.Stock < oMovimientoDTO.detalles[i].CantidadBase)
+                {
+                    validadStock = 1;
+                    MensajeNoStock += oMovimientoDTO.detalles[i].CodigoArticulo + "-" + oMovimientoDTO.detalles[i].DescripcionArticulo + " </br> ";
+                }
+            }
+            if (validadStock == 1)
+            {
+                json = new { status = false, mensaje = "No hay suficiente Stock en este Almacén </br> " + MensajeNoStock };
+                return JsonConvert.SerializeObject(json);
+            }
+
+            if (mensaje_error.Length > 0)
+            {
+                json = new { status = false, mensaje = mensaje_error };
+                return JsonConvert.SerializeObject(json);
+            }
+
+
+            SolicitudDespachoDAO oSolicitudDespachoDAO = new SolicitudDespachoDAO();
+            int Respuesta = oSolicitudDespachoDAO.RegistrarSalidaAtencionDespacho(oMovimientoDTO, IdSolicitudDespacho, EstadoSolicitud, BaseDatos, ref mensaje_error);
+            if (Respuesta <= 0)
+            {
+                json = new { status = false, mensaje = mensaje_error };
+                return JsonConvert.SerializeObject(json);
+            }
+            json = new { status = true, mensaje = mensaje_error };
+            return JsonConvert.SerializeObject(json);
+
 
         }
     }

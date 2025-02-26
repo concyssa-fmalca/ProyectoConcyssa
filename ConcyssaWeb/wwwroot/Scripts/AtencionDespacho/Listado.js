@@ -1,6 +1,12 @@
 ﻿window.onload = function () {
     $.ajaxSetup({ async: false });
     CargarBaseFiltro()
+    ObtenerTiposDocumentos()
+    ObtenerSerieExtorno()
+    CargarProveedor()
+    CargarMotivoTraslado()
+    CargarVehiculos()
+    CargarTodosUbigeo() 
     $("#txtFechaInicio").val(getCurrentDate())
     $("#txtFechaFin").val(getCurrentDateFinal())
     $("#txtFechaInicioRpt").val(getCurrentDate())
@@ -13,8 +19,159 @@
         dropdownParent: $("#ModalAgregar")
     })
 
+
+
+}
+function CargarTodosUbigeo() {
+    $.ajaxSetup({ async: false });
+    $.post("/Ubigeo/ObtenerTodosUbigeo", function (data, status) {
+        let ubigeo = JSON.parse(data);
+        llenarComboUbigeos(ubigeo, "DistritoLlegada", "Seleccione")
+    });
 }
 
+
+function llenarComboUbigeos(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value=''>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) {
+            if (lista[i].CodUbigeo.substr(0, 4) == '1501') {
+                contenido += "<option value='" + lista[i].CodUbigeo + "'>" + lista[i].Descripcion + "</option>";
+            }
+        }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+}
+
+let DatosVehiculos;
+function CargarVehiculos() {
+    $.ajaxSetup({ async: false });
+    $.post("/Vehiculo/ObtenerVehiculoxIdUsuario", function (data, status) {
+        if (validadJson(data)) {
+            let datos = JSON.parse(data);
+            DatosVehiculos = JSON.parse(data);
+            let option = '<option value="0">SELECCIONE</option>';
+            for (var i = 0; i < datos.length; i++) {
+                option += `<option value="` + datos[i].Placa + `">` + datos[i].Placa + `</option>`
+            }
+            $("#PlacaVehiculo").html(option);
+            $("#PlacaVehiculo").select2();
+        } else {
+
+        }
+    });
+}
+
+
+function BuscarVehiculoxPlaca() {
+
+    var Placa = $("#PlacaVehiculo").val();
+    $.ajaxSetup({ async: false });
+    $.post("/Vehiculo/ObtenerDatosConductorxPlaca", { 'Placa': Placa }, function (data, status) {
+
+        if (validadJson(data)) {
+            let datos = JSON.parse(data);
+            console.log(datos);
+            $("#MarcaVehiculo").val(datos[0].MarcaDescripcion);
+            $("#LicenciaConductor").val(datos[0].Licencia);
+            $("#NumIdentidadConductor").val(datos[0].NumeroDocumento);
+
+            var NombreApellido = datos[0].RazonSocial;
+            var a = NombreApellido.split(" ");
+            var Nombre = a[2];
+            var Apellido = a[0] + " " + a[1];
+            $("#NombreConductor").val(Nombre);
+            $("#ApellidoConductor").val(Apellido);
+        } else {
+
+        }
+
+    });
+
+
+}
+
+function CargarMotivoTraslado() {
+    $.ajaxSetup({ async: false });
+    $.post("/EntradaMercancia/ObtenerMotivoTraslado", function (data, status) {
+        if (validadJson(data)) {
+            let datos = JSON.parse(data);
+            let option = "";
+            option = `<option value="0">SELECCIONE MOTIVO TRASLADO</option>`
+            for (var i = 0; i < datos.length; i++) {
+                option += `<option value="` + datos[i].IdMotivoTraslado + `">` + datos[i].CodigoSunat + '-' + datos[i].Descripcion + `</option>`
+            }
+            $("#IdMotivoTraslado").html(option);
+            $("#IdMotivoTraslado").select2();
+        } else {
+
+        }
+    });
+}
+
+
+function CargarProveedor() {
+    $.post("/Proveedor/ObtenerProveedores", { 'AgregarConcyssa': true }, function (data, status) {
+        Proveedor = JSON.parse(data);
+        DatosProveedor = JSON.parse(data);
+        let option = `<option value="0">SELECCIONE PROVEEDOR</option>`;
+        console.log(Proveedor);
+        for (var i = 0; i < Proveedor.length; i++) {
+            option += `<option value="` + Proveedor[i].IdProveedor + `">` + Proveedor[i].NumeroDocumento + `-` + Proveedor[i].RazonSocial + `</option>`
+        }
+
+        $("#IdTransportista").html(option);
+        $("#IdDestinatario").html(option);
+        $("#cboProveedor").html(option);
+        $("#IdTransportista").select2();
+        $("#IdDestinatario").select2();
+
+    });
+}
+
+
+function ObtenerSerieExtorno() {
+    $.post("/Serie/ObtenerSeries", { estado: 1 }, function (data, status) {
+        let series = JSON.parse(data);
+        llenarComboSerieExtorno(series, "cboSerieExtorno", "Seleccione")
+    });
+}
+
+function ObtenerTiposDocumentos() {
+    $.ajaxSetup({ async: false });
+    $.post("/TiposDocumentos/ObtenerTiposDocumentos", { 'estado': 1 }, function (data, status) {
+        let tiposdocumentos = JSON.parse(data);
+        llenarTiposDocumentos(tiposdocumentos, "IdTipoDocumentoRef", "Seleccione")
+    });
+}
+
+function llenarTiposDocumentos(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) {
+            if (lista[i].IdTipoDocumento == 1 || lista[i].IdTipoDocumento == 14) {
+                contenido += "<option value='" + lista[i].IdTipoDocumento + "'>" + lista[i].Descripcion.toUpperCase() + "</option>";
+            }
+        }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+    //$("#IdTipoDocumentoRef").val(14)
+    $("#IdTipoDocumentoRef").val(1).change()
+}
 
 
 function CargarBaseFiltro() {
@@ -40,9 +197,36 @@ function llenarComboBaseFiltro(lista, idCombo, primerItem) {
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
-    $("#cboObraFiltro").val($("#cboObraFiltro option:first").val());
+    $("#cboObraFiltro").val($("#cboObraFiltro option:first").val()).change();
 
 }
+function ObtenerObraxIdBase() {
+    let IdBase = $("#cboObraFiltro").val();
+    $.ajaxSetup({ async: false });
+    $.post("/Obra/ObtenerObraxIdUsuarioSession", { 'IdBase': IdBase }, function (data, status) {
+        let obra = JSON.parse(data);
+        llenarComboObra(obra, "IdObra", "seleccione")
+    });
+}
+
+function llenarComboObra(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdObra + "'>" + lista[i].Descripcion.toUpperCase() + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+    $("#" + idCombo).prop("selectedIndex", 1)
+}
+
+
+
 function getCurrentDate() {
     var currentDate = new Date();
     var year = currentDate.getFullYear();
@@ -218,6 +402,7 @@ function ConsultaServidor() {
     let FechaInicio = $("#txtFechaInicio").val()
     let FechaFin = $("#txtFechaFin").val()
     let IdBase = $("#cboObraFiltro").val()
+    let IdObra = $("#IdObra").val()
     let EstadoSolicitud = $("#EstadoFiltro").val()
     let SerieFiltro = $("#cboSeries").val()
 
@@ -235,7 +420,7 @@ function ConsultaServidor() {
         type: "POST",
         async: true,
         data: {
-            'IdBase': IdBase, 'FechaInicio': FechaInicio, 'FechaFin': FechaFin, 'EstadoSolicitud': EstadoSolicitud, 'SerieFiltro': SerieFiltro, 'Paginacion': OffSet
+            'IdBase': IdBase, 'IdObra': IdObra, 'FechaInicio': FechaInicio, 'FechaFin': FechaFin, 'EstadoSolicitud': EstadoSolicitud, 'SerieFiltro': SerieFiltro, 'Paginacion': OffSet
         },
         beforeSend: function () {
             $("#SolicitudesCard").html('<div style="width:100%; display:flex;justify-content:center;align-items:center">Cargando...</div>')
@@ -259,46 +444,69 @@ function ConsultaServidor() {
                                     <label class="col-md-2" style="max-width:130px;color:black">Serie y Número:</label>
                                     <p class="col-md-1">`+ SolicitudDespacho[i].SerieyNum + `</p>
                                     <label class="col-md-2" style="max-width:70px;color:black">Fecha:</label>
-                                    <p class="col-md-1">`+ Fecha + `</p>
-                                    <label for="cboAlmacen`+ i + `" class="col-md-1" style="color:black">Almacen:</label>
-                                    <div class="col-md-4" style="margin-top:-3px">`;
+                                    <p class="col-md-1">`+ Fecha + `</p>`
+                                  
 
-                    InsertarHTML += `<select id="cboAlmacen` + i + `" class="form-control" name="cboAlmacenGeneral" onchange="ObtenerStocks(` + i + `)" >`;
+                    if (EstadoSolicitud == 0 || EstadoSolicitud == 1) {
+                        InsertarHTML += ` <label for="cboAlmacen` + i + `" class="col-md-1" style="color:black">Almacen:</label>
+                                             <div class="col-md-4" style="margin-top:-3px">
+                                            <select id="cboAlmacen` + i + `" class="form-control" name="cboAlmacenGeneral" onchange="ObtenerStocks(` + i + `)" >`;
+                        $.ajax({
+                            url: "/Almacen/ObtenerAlmacenxIdObra",
+                            type: 'POST',
+                            async: false,
+                            dataType: 'json',
+                            data: { 'IdObra': SolicitudDespacho[i].IdObra },
+                            success: function (datos) {
+                                //console.log(datos);
 
+                                for (var k = 0; k < datos.length; k++) {
+                                    InsertarHTML += `<option value="` + datos[k].IdAlmacen + `">` + datos[k].Descripcion + `</option>`;
+                                }
 
-                    $.ajax({
-                        url: "/Almacen/ObtenerAlmacenxIdObra",
-                        type: 'POST',
-                        async: false,
-                        dataType: 'json',
-                        data: { 'IdObra': SolicitudDespacho[i].IdObra },
-                        success: function (datos) {
-                            //console.log(datos);
-
-                            for (var k = 0; k < datos.length; k++) {
-                                InsertarHTML += `<option value="` + datos[k].IdAlmacen + `">` + datos[k].Descripcion + `</option>`;
+                            },
+                            error: function () {
+                                Swal("Error!", "Ocurrió un Error", "error");
                             }
+                        })
+                        InsertarHTML += `</select>`
 
-                        },
-                        error: function () {
-                            Swal("Error!", "Ocurrió un Error", "error");
-                        }
-                    })
+                    } else {
+                        InsertarHTML += ` <label for="cboAlmacen` + i + `" class="col-md-1" style="color:black">OBRA:</label>
+                                 <div class="col-md-4" style="margin-top:-3px">
+                            <input class="form-control" value="` + SolicitudDespacho[i].DescripcionObra + `" disabled/>`;
+                    }
 
 
+                    
 
-                    InsertarHTML += `</select> 
-                                </div>`
+
+                  
+                           InsertarHTML += `</div>`
                         /*  <button class="btn btn-primary" style="margin-top:0px" onclick="AgregarItem(`+ SolicitudDespacho[i].IdObra + `,` + SolicitudDespacho[i].IdTipoProducto + `,` + i + `)">Agregar Artículo</button>*/
                         + ` </div>
                                 <div class="row">
                                     <label class="col-md-2" style="max-width:130px;color:black">Centro de Costo:</label>
-                                    <p class="col-md-5">`+ SolicitudDespacho[i].NombCuadrilla + `</p>
-                                    <label for="cboResponsable" class="col-md-2" style="max-width:130px;color:black">Entregado A:</label>
-                                    <div class="col-md-4" style="margin-top:-3px">
-                                        <select id="cboResponsable`+ i + `" name="cboResponsableGeneral" class="form-control"></select>
-                                    </div>
-                                    <input style="display:none" id="Ocultos`+ i + `" value="0"/>
+                                    <p class="col-md-5">`+ SolicitudDespacho[i].NombCuadrilla + `</p>`
+                                    
+                    
+                    if (EstadoSolicitud == 0 || EstadoSolicitud == 1) {
+                        InsertarHTML += `  <label for="cboResponsable" class="col-md-2" style="max-width:130px;color:black">Entregado A:</label>
+                                             <div class="col-md-4" style="margin-top:-3px">
+                                                <select id="cboResponsable`+ i + `" name="cboResponsableGeneral" class="form-control"></select>
+                                            </div>`
+
+                    }
+                    else {
+                        InsertarHTML += ` <label for="cboResponsable" class="col-md-2" style="max-width:130px;color:black">Entregado A:</label>
+                                        <div class="col-md-4" style="margin-top:-3px">
+                                            <input class="form-control" value="`+ SolicitudDespacho[i].DescripcionEmpleado +`"/>
+                                        </div>`
+                    }
+
+
+
+                    InsertarHTML += `<input style="display:none" id="Ocultos`+ i + `" value="0"/>
                                 </div>
                                 <div class="row">
                                     <table id="table_id`+ i + `" class="table" style="width:100%">
@@ -328,9 +536,9 @@ function ConsultaServidor() {
                                                     <td class="CantidadPedida`+ i + `">` + SolicitudDespacho[i].Detalles[j].Cantidad + `</td>
                                                     <td>`+ SolicitudDespacho[i].Detalles[j].CantidadAtendida + `</td>
                                                     <td><input type="text" value="` + Saldo + `" id="txtCantidadAtendida` + i + `" onchange="ValidarCantidadNoMayor(` + IdFila + `,` + Saldo + `);  VerificarEntregaStock(` + IdFila + `);ObtenerStocks(` + i + `)" class="form-control  EntregarDetalle` + i + ` NoPasarStock` + IdFila + `" style="max-width:60px"></td>
-                                                    <td id="StockDetalle`+ IdFila + `" class="ClassStockDetalle` + i + `">d</td>
-                                                    <td class="PrecioDetalle`+ i + `">Precio</td>
-                                                    <td class="TotalDetalle`+ i + `">Total</td>
+                                                    <td id="StockDetalle`+ IdFila + `" class="ClassStockDetalle` + i + `">-</td>
+                                                    <td class="PrecioDetalle`+ i + `">-</td>
+                                                    <td class="TotalDetalle`+ i + `">-</td>
                                                     <td><button class="btn btn-xs btn-danger fa fa-times" onclick="EliminarFila(`+ IdFila + `,` + i + `)"></button></td>
                                                     <td style="display:none" class="IdItemDetalle`+ i + `" >` + SolicitudDespacho[i].Detalles[j].IdItem + `</td> 
                                                     </tr>`
@@ -345,9 +553,9 @@ function ConsultaServidor() {
                                                     <td class="CantidadPedida`+ i + `">` + SolicitudDespacho[i].Detalles[j].Cantidad + `</td>
                                                     <td>`+ SolicitudDespacho[i].Detalles[j].CantidadAtendida + `</td>
                                                     <td><input type="text" value="` + Saldo + `" id="txtCantidadAtendida` + i + `" onchange="ValidarCantidadNoMayor(` + IdFila + `,` + Saldo +`);  VerificarEntregaStock(` + IdFila + `);ObtenerStocks(` + i + `)" class="form-control  EntregarDetalle` + i + ` NoPasarStock` + IdFila + `" style="max-width:60px"></td>
-                                                    <td id="StockDetalle`+ IdFila + `" numfilastock="`+j+`" class="ClassStockDetalle` + i + `">d</td>
-                                                    <td class="PrecioDetalle`+ i + `">Precio</td>
-                                                    <td class="TotalDetalle`+ i + `">Total</td>
+                                                    <td id="StockDetalle`+ IdFila + `" numfilastock="`+j+`" class="ClassStockDetalle` + i + `">-</td>
+                                                    <td class="PrecioDetalle`+ i + `">-</td>
+                                                    <td class="TotalDetalle`+ i + `">-</td>
                                                     <td><button class="btn btn-xs btn-danger fa fa-times" onclick="EliminarFila(`+ IdFila + `,` + i + `)"></button></td>
                                                     <td style="display:none" class="IdItemDetalle`+ i + `" >` + SolicitudDespacho[i].Detalles[j].IdItem + `</td> 
                                                     </tr>`
@@ -359,6 +567,7 @@ function ConsultaServidor() {
                                                     </table>
                                                 </div>
                                             <label class="col-md-2" style="max-width:130px;color:black">Comentario:</label><input disabled value="`+ SolicitudDespacho[i].Comentario + `" id="txtComentario` + i + `" class="form-control" type="text">
+                                            <label class="col-md-2" style="max-width:130px;color:black">Dirección:</label><input disabled value="`+ SolicitudDespacho[i].DireccionUso + `" class="form-control" type="text">
                                             <div class=row>`
                     if (SolicitudDespacho[i].EstadoSolicitud != 2) {
                         InsertarHTML += `<button class="btn btn-primary" style="margin-top:0px" onclick="GenerarSalida(` + i + `,` + SolicitudDespacho[i].Id + `,'` + SolicitudDespacho[i].SerieyNum + `',` + SolicitudDespacho[i].IdCuadrilla + `)">Crear Salida</button>
@@ -369,7 +578,12 @@ function ConsultaServidor() {
                                             </div>
                                             <br/>`;
                     $("#SolicitudesCard").html(InsertarHTML);
-                    ObtenerEmpleados(i, SolicitudDespacho[i].IdSolicitante)                             
+
+
+                    if (EstadoSolicitud == 0 || EstadoSolicitud == 1) {
+                        ObtenerEmpleados(i, SolicitudDespacho[i].IdSolicitante)                             
+
+                    }
                 }
 
                 ListarSeries()
@@ -388,7 +602,10 @@ function ConsultaServidor() {
 
                 //ObtenerStocks(i)
                 //console.log(i);
-                LlenarStocks()
+                if (EstadoSolicitud == 0 || EstadoSolicitud == 1) {
+                    LlenarStocks()
+
+                }
             } else {
                 $("#SolicitudesCard").empty()
                 ListarSeries()
@@ -699,7 +916,187 @@ function GenerarSalida(Num,IdSolicitud,numserie,cuadrilla) {
             )
             return
         }
+    }   
+    console.log("direccion")
+
+    $.post("ObtenerDireccionUsoSD", { 'IdSolicitud': IdSolicitud }, function (data, status) {
+
+        console.log(data)
+        $("#Direccion").val(data)
+
+    });
+
+
+
+    $("#txtIdSolicitud").val(IdSolicitud)
+    $("#txtNum").val(Num)
+    $("#txtnumserie").val(numserie)
+    $("#txtcuadrilla").val(cuadrilla)
+    $("#IdTipoDocumentoRef").val(1).change()
+    $("#IdDestinatario").val(24163).change();
+    $("#IdTransportista").val(24154).change();
+    $("#IdMotivoTraslado").val(14).change();
+
+    $("#Peso").val(1);
+    $("#Bulto").val(1);
+
+
+   
+        $.ajaxSetup({ async: false });
+    $.post("/Vehiculo/ObtenerVehiculosxIdCuadrilla", { 'IdCuadrilla': cuadrilla }, function (data, status) {
+
+            let respuesta = JSON.parse(data);
+
+            if (respuesta.status == null || respuesta.cantidad == 0) {
+                let option = '<option value="0">SELECCIONE</option>';
+                for (var i = 0; i < DatosVehiculos.length; i++) {
+                    option += `<option value="` + DatosVehiculos[i].Placa + `">` + DatosVehiculos[i].Placa + `</option>`
+                }
+                $("#PlacaVehiculo").html(option);
+                $("#PlacaVehiculo").select2();
+                $("#PlacaVehiculo").prop("selectedIndex", 1).change();
+
+            } else {
+                let option = '<option value="0">SELECCIONE</option>';
+                for (var i = 0; i < respuesta.datos.length; i++) {
+                    option += `<option value="` + respuesta.datos[i].Placa + `">` + respuesta.datos[i].Placa + `</option>`
+                }
+                $("#PlacaVehiculo").html(option);
+                $("#PlacaVehiculo").select2();
+                $("#PlacaVehiculo").prop("selectedIndex", 1).change();
+            }
+
+        });
+    
+
+
+
+
+
+
+    AbrirModal('modal-guia')
+}
+
+
+function GuardarSalida() {
+
+    let IdSolicitud = $("#txtIdSolicitud").val()
+    let Num = $("#txtNum").val()
+    let numserie = $("#txtnumserie").val()
+    let cuadrilla = $("#txtcuadrilla").val()
+
+    if ($("#IdTipoDocumentoRef").val() == 1) {
+
+
+        if ($("#IdTipoTransporte").val() == "0") {
+            Swal.fire('Error!', 'Complete el campo Tipo Transporte', 'error')
+            return;
+        }
+
+        if ($("#IdDestinatario").val() == "0") {
+            Swal.fire('Error!', 'Complete el campo Destinatario', 'error')
+            return;
+        }
+        if ($("#IdMotivoTraslado").val() == "0") {
+            Swal.fire('Error!', 'Complete el campo Motivo Traslado', 'error')
+            return;
+        }
+        if ($("#IdTransportista").val() == "0") {
+            Swal.fire('Error!', 'Complete el campo Transportista', 'error')
+            return;
+        }
+        if ($("#PlacaVehiculo").val() == "0" || $("#PlacaVehiculo").val() == 0 || $("#PlacaVehiculo").val() == null || $("#PlacaVehiculo").val() == undefined) {
+            Swal.fire('Error!', 'Complete el campo Placa Vehiculo', 'error')
+            return;
+        }
+        if ($("#MarcaVehiculo").val() == "") {
+            Swal.fire('Error!', 'Complete el campo Marca Vehiculo', 'error')
+            return;
+        }
+        if ($("#NumIdentidadConductor").val() == "") {
+            Swal.fire('Error!', 'Complete el campo Num IdentidadConductor', 'error')
+            return;
+        }
+        if ($("#NombreConductor").val() == "") {
+            Swal.fire('Error!', 'Complete el campo Nombre Conductor', 'error')
+            return;
+        }
+        if ($("#ApellidoConductor").val() == "") {
+            Swal.fire('Error!', 'Complete el campo Apellido Conductor', 'error')
+            return;
+        }
+        if ($("#LicenciaConductor").val() == "") {
+            Swal.fire('Error!', 'Complete el campo Licencia Conductor', 'error')
+            return;
+        }
+        //if ($("#txtSGI").val() == "") {
+        //    Swal.fire('Error!', 'Complete el campo SGI', 'error')
+        //    return;
+        //}
+        if ($("#DistritoLlegada").val() == "") {
+            Swal.fire('Error!', 'Complete el campo Distrito Llegada', 'error')
+            return;
+        }
+        if ($("#Direccion").val() == "") {
+            Swal.fire('Error!', 'Complete el campo Direccion de Guia', 'error')
+            return;
+        }
+
+        if ($("#EntregadoA").val() == 0) {
+            Swal.fire(
+                'Error!',
+                'Complete el campo Entregado A',
+                'error'
+            )
+            return;
+        }
+
+        if ($("#Peso").val() == 0) {
+            Swal.fire(
+                'Error!',
+                'Peso debe ser mayor a 0',
+                'error'
+            )
+            return;
+        }
+        if ($("#Bulto").val() == 0) {
+            Swal.fire(
+                'Error!',
+                'Bulto debe ser mayor a 0',
+                'error'
+            )
+            return;
+        }
+
+
+        if ($("#IdTipoTransporte").val() == "01" && $("#IdTransportista").val() == "24154") {
+            Swal.fire(
+                'Error!',
+                'Transportista Publico no puede ser Concyssa',
+                'error'
+            )
+            return;
+        }
+
+        if ($("#NumIdentidadConductor").val().length != 8) {
+            Swal.fire('Error!', 'El DNI del Conductor debe Tener 8 Digitos', 'error')
+            return;
+        }
     }
+
+    let arrayStocks = new Array();
+    let arratnumfilastock = new Array();
+    $(".ClassStockDetalle" + Num).each(function (indice, elemento) {
+        arrayStocks.push(+($(elemento).text()));
+        arratnumfilastock.push(+($(elemento).attr("numfilastock")));
+    });
+    
+    let arrayCantidadEntregar = new Array();
+    $(".EntregarDetalle" + Num).each(function (indice, elemento) {
+        arrayCantidadEntregar.push(+($(elemento).val()));
+    });
+
+
 
     let arrayIdDetalle = new Array();
     $(".IdDetalleCol" + Num).each(function (indice, elemento) {
@@ -719,7 +1116,7 @@ function GenerarSalida(Num,IdSolicitud,numserie,cuadrilla) {
     });
     let arrayPrecioDetalle = new Array();
     $(".PrecioDetalle" + Num).each(function (indice, elemento) {
-        arrayPrecioDetalle.push(($(elemento).text()).replace(/,/g,""));
+        arrayPrecioDetalle.push(($(elemento).text()).replace(/,/g, ""));
     });
     let arrayCantidadPedidaDetalle = new Array();
     $(".CantidadPedida" + Num).each(function (indice, elemento) {
@@ -729,7 +1126,7 @@ function GenerarSalida(Num,IdSolicitud,numserie,cuadrilla) {
     let arrayTotalDetalle = new Array();
     $(".TotalDetalle" + Num).each(function (indice, elemento) {
         arrayTotalDetalle.push(($(elemento).text()).replace(/,/g, ""));
-        TotalGeneral +=  +($(elemento).text()).replace(/,/g, "")
+        TotalGeneral += +($(elemento).text()).replace(/,/g, "")
     });
     let AnexoDetalle = [];
     let NroEliminados = $("#Ocultos" + Num).val()
@@ -738,35 +1135,35 @@ function GenerarSalida(Num,IdSolicitud,numserie,cuadrilla) {
     for (var k = 0; k < arrayIdDetalle.length; k++) {
         if (arrayIdDetalle[k] == 0) {
             $.ajax({
-            url: "/SolicitudDespacho/UpdateInsertSolicitudDespachoDetalle",
-            type: 'POST',
-            async: false,
-            dataType: 'json',
-            data: {
-                'Id': arrayIdDetalle[k],
-                'IdSolicitudDespacho': IdSolicitud,
-                'IdItem': arrayIdItemDetalle[k] ,
-                'Descripcion' : arrayDescripcionItem[k],
-                'IdUnidadMedida' : 1,
-                'Cantidad': arrayCantidadEntregar[k]
-            },
-            success: function (datos) {
-                //console.log(datos);
-                if (datos > 0) {
-                    Swal.fire("Exito!", "Se Registro el Nuevo Detalle", "success");
-                } else { Swal.fire("Error!", "Ocurrió un Error", "error"); }
-            },
-            error: function () {
-                Swal.fire("Error!", "Ocurrió un Error", "error");
-            }
-        })  
+                url: "/SolicitudDespacho/UpdateInsertSolicitudDespachoDetalle",
+                type: 'POST',
+                async: false,
+                dataType: 'json',
+                data: {
+                    'Id': arrayIdDetalle[k],
+                    'IdSolicitudDespacho': IdSolicitud,
+                    'IdItem': arrayIdItemDetalle[k],
+                    'Descripcion': arrayDescripcionItem[k],
+                    'IdUnidadMedida': 1,
+                    'Cantidad': arrayCantidadEntregar[k]
+                },
+                success: function (datos) {
+                    //console.log(datos);
+                    if (datos > 0) {
+                        Swal.fire("Exito!", "Se Registro el Nuevo Detalle", "success");
+                    } else { Swal.fire("Error!", "Ocurrió un Error", "error"); }
+                },
+                error: function () {
+                    Swal.fire("Error!", "Ocurrió un Error", "error");
+                }
+            })
         }
     }
-    
+
     //CREAR SALIDA
     let almacen = $("#cboAlmacen" + Num).val()
     let responsable = $("#cboResponsable" + Num).val()
-   
+
 
     let detalles = [];
     if (arrayCantidadEntregar.length == arrayPrecioDetalle.length) {
@@ -803,8 +1200,8 @@ function GenerarSalida(Num,IdSolicitud,numserie,cuadrilla) {
     }
     console.log(detalles)
     console.log(TotalGeneral)
-  
-   
+
+
     let EsParcial = 0;
     for (var p = 0; p < arrayCantidadPedidaDetalle.length; p++) {
         if (arrayCantidadEntregar[p] < arrayCantidadPedidaDetalle[p]) {
@@ -813,29 +1210,24 @@ function GenerarSalida(Num,IdSolicitud,numserie,cuadrilla) {
     }
     console.log(EsParcial)
 
-    let IdOPCH = $("#txtId").val();
-    let TablaOrigen = $("#txtOrigen").val();
-    Swal.fire({
-        title: 'DESEA GENERAR LA SALIDA?',
-        html: "Verifique los siguientes campos antes de Proceder</br>" +
-            "</br>" +
-            "Serie Para Salida </br>" +
-            "<Select id='cboSerieExtorno' class='form-control'></select>" +
-            "</br>" +
-            "Fecha De Documento </br>" +
-            "<input id='FechDocExtorno' type='date' class='form-control'/>" +
-            "</br>" +
-            "Fecha de Contabilizacion </br>" +
-            "<input id='FechContExtorno' type='date' disabled class='form-control'/>",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Si Generar!'
-    }).then((result) => {
-        if (result.isConfirmed) {
+    let SGI = $("#txtSGI").val();
+    let Anexo = $("#Anexo").val();
+    let Ubigeo = $("#DistritoLlegada").val();
+    let DistritoLlegada = $("#DistritoLlegada").find('option:selected').text();
+    let DireccionLlegada = $("#Direccion").val();
+
+    let EstadoSolicitud
+    if (EsParcial > 0) {
+        EstadoSolicitud = 1
+    } else {
+        EstadoSolicitud = 2
+    }
+    if (NroEliminados > 0) {
+        EstadoSolicitud = 1
+    }
+
             $.ajax({
-                url: "/SalidaMercancia/UpdateInsertMovimiento",
+                url: "/SolicitudDespacho/GenerarSalidaAtencionDespacho",
                 type: "POST",
                 async: true,
                 data: {
@@ -851,79 +1243,90 @@ function GenerarSalida(Num,IdSolicitud,numserie,cuadrilla) {
                     'FechaContabilizacion': $("#FechContExtorno").val(),
                     'FechaDocumento': $("#FechDocExtorno").val(),
                     'IdCentroCosto': 7,
-                    'Comentario': $("#txtComentario"+Num).val() + ' / ' + numserie,
+                    'Comentario': $("#txtComentario" + Num).val() + ' / ' + numserie,
                     'SubTotal': TotalGeneral,
                     'Impuesto': 0,
                     'Total': TotalGeneral,
                     'IdCuadrilla': 2582,
                     'EntregadoA': 24151,
-                    'IdTipoDocumentoRef': 1,
+                    'IdTipoDocumentoRef': $("#IdTipoDocumentoRef").val(),
                     'NumSerieTipoDocumentoRef': '',
-                    'IdDestinatario': '',
-                    'IdMotivoTraslado': '',
-                    'IdTransportista': '',
-                    'PlacaVehiculo': '',
-                    'MarcaVehiculo': '',
-                    'NumIdentidadConductor': '',
 
-                    'NombreConductor': '',
-                    'ApellidoConductor': '',
-                    'LicenciaConductor': '',
-                    'TipoTransporte': '',
+                    'IdDestinatario': $("#IdDestinatario").val(),
+                    'IdMotivoTraslado': $("#IdMotivoTraslado").val(),
+                    'IdTransportista': $("#IdTransportista").val(),
+                    'PlacaVehiculo': $("#PlacaVehiculo").val(),
+                    'MarcaVehiculo': $("#MarcaVehiculo").val(),
+                    'NumIdentidadConductor': $("#NumIdentidadConductor").val(),
 
-                    'Peso': 0,
-                    'Bulto': 0,
+                    'NombreConductor': $("#NombreConductor").val(),
+                    'ApellidoConductor': $("#ApellidoConductor").val(),
+                    'LicenciaConductor': $("#LicenciaConductor").val(),
+                    'TipoTransporte': $("#IdTipoTransporte").val(),
 
-                    'SGI': '',
-                    'CodigoAnexoLlegada': '',
-                    'CodigoUbigeoLlegada': '',
-                    'DistritoLlegada': '',
-                    'DireccionLlegada': '',
+                    'Peso': $("#Peso").val(),
+                    'Bulto': $("#Bulto").val(),
+
+
+
+
+
+                    'SGI': SGI,
+                    'CodigoAnexoLlegada': Anexo,
+                    'CodigoUbigeoLlegada': Ubigeo,
+                    'DistritoLlegada': DistritoLlegada,
+                    'DireccionLlegada': DireccionLlegada,
+                   
                     'OrigenDespacho': 'Generado al Atender la Solicitud de Despacho N° ' + numserie,
+
+                    'IdSolicitudDespacho': IdSolicitud,
+                    'EstadoSolicitud':EstadoSolicitud,
 
 
                 },
                 success: function (data) {
-                    if (data > 0) {
-                        let EstadoSolicitud
-                        if (EsParcial > 0) {
-                            EstadoSolicitud = 1
+
+                    let datos = JSON.parse(data);
+
+                    if (datos.status) {
+                        if (EstadoSolicitud == 1) {
+                            Swal.fire("Exito!", "Proceso Completado Correctamente,Aún tiene cantidades por atender, La Solicitud se Movió a Entregado Parcialmente", "success");
+                        } else if (EstadoSolicitud == 2) {
+                            Swal.fire("Exito!", "Proceso Completado Correctamente,Todos los articulos fueron atendidos, La Solicitud Fue Cerrada", "success");
                         } else {
-                            EstadoSolicitud = 2
+                            Swal.fire("Exito!", "Proceso Completado Correctamente", "success");
                         }
-                        if (NroEliminados > 0) {
-                            EstadoSolicitud = 1
-                        }
-                        for (var i = 0; i < arrayCantidadEntregar.length; i++) {
-                            $.ajax({
-                                url: "/SolicitudDespacho/AtencionConfirmada",
-                                type: 'POST',
-                                async: false,
-                                dataType: 'json',
-                                data: {
-                                    'Cantidad': arrayCantidadEntregar[i],
-                                    'IdSolicitud': IdSolicitud,
-                                    'IdArticulo': arrayIdItemDetalle[i],
-                                    'EstadoSolicitud': EstadoSolicitud,
-                                },
-                                success: function (datos) {
-                                    //console.log(datos);
-                                    if (datos > 0) {
-                                        if (EstadoSolicitud == 1) {
-                                            Swal.fire("Exito!", "Proceso Completado Correctamente,Aún tiene cantidades por atender, La Solicitud se Movió a Entregado Parcialmente", "success");
-                                        } else if (EstadoSolicitud == 2) {
-                                            Swal.fire("Exito!", "Proceso Completado Correctamente,Todos los articulos fueron atendidos, La Solicitud Fue Cerrada", "success");
-                                        } else {
-                                            Swal.fire("Exito!", "Proceso Completado Correctamente", "success");
-                                        }
-                                        ConsultaServidor()
-                                    } else { Swal.fire("Error!", "Ocurrió un Error en Atender Pedido", "error"); }
-                                },
-                                error: function () {
-                                    Swal.fire("Error!", "Ocurrió un Error", "error");
-                                }
-                            })
-                        }
+                        ConsultaServidor()
+                        closePopup()
+                    } else {
+                        Swal.fire("Error", datos.mensaje, "error");
+                    }
+
+
+                    //if (data > 0) {                      
+                    //    for (var i = 0; i < arrayCantidadEntregar.length; i++) {
+                    //        $.ajax({
+                    //            url: "/SolicitudDespacho/AtencionConfirmada",
+                    //            type: 'POST',
+                    //            async: false,
+                    //            dataType: 'json',
+                    //            data: {
+                    //                'Cantidad': arrayCantidadEntregar[i],
+                    //                'IdSolicitud': IdSolicitud,
+                    //                'IdArticulo': arrayIdItemDetalle[i],
+                    //                'EstadoSolicitud': EstadoSolicitud,
+                    //            },
+                    //            success: function (datos) {
+                    //                //console.log(datos);
+                    //                if (datos > 0) {
+                                        
+                    //                } else { Swal.fire("Error!", "Ocurrió un Error en Atender Pedido", "error"); }
+                    //            },
+                    //            error: function () {
+                    //                Swal.fire("Error!", "Ocurrió un Error", "error");
+                    //            }
+                    //        })
+                    //    }
 
 
                         //$.post('ExtornoConfirmado', {
@@ -943,33 +1346,18 @@ function GenerarSalida(Num,IdSolicitud,numserie,cuadrilla) {
                         //});
 
 
-                    } else {
-                        Swal.fire(
-                            'Error!',
-                            'Ocurrio un Error!',
-                            'error'
-                        )
+                    //} else {
+                    //    Swal.fire(
+                    //        'Error!',
+                    //        'Ocurrio un Error!',
+                    //        'error'
+                    //    )
 
-                    }
+                    //}
 
                 }
-            }).fail(function () {
-                Swal.fire(
-                    'Error!',
-                    'Comunicarse con el Area Soporte: smarcode@smartcode.pe !',
-                    'error'
-                )
-            });
-        }
-    })
-
-    
-    $.post("/Serie/ObtenerSeries", { estado: 1 }, function (data, status) {
-        let series = JSON.parse(data);
-        llenarComboSerieExtorno(series, "cboSerieExtorno", "Seleccione")
-    });
-
-    console.log('bien')
+           
+            });  
 }
 
 function llenarComboSerieExtorno(lista, idCombo, primerItem) {
@@ -1010,10 +1398,11 @@ function ListarSeries() {
     let FechaInicio = $("#txtFechaInicio").val()
     let FechaFin = $("#txtFechaFin").val()
     let IdBase = $("#cboObraFiltro").val()
+    let IdObra = $("#IdObra").val()
     let EstadoSolicitud = $("#EstadoFiltro").val()
     let SerieFiltro = 0
     $.ajaxSetup({ async: false });
-    $.post('/SolicitudDespacho/ObtenerSolicitudesDespachoAtenderFiltro', { 'IdBase': IdBase, 'FechaInicio': FechaInicio, 'FechaFin': FechaFin, 'EstadoSolicitud': EstadoSolicitud, 'SerieFiltro': SerieFiltro }, function (data, status) {
+    $.post('/SolicitudDespacho/ObtenerSolicitudesDespachoAtenderFiltro', { 'IdBase': IdBase, 'IdObra':IdObra,'FechaInicio': FechaInicio, 'FechaFin': FechaFin, 'EstadoSolicitud': EstadoSolicitud, 'SerieFiltro': SerieFiltro }, function (data, status) {
         try {
             let Series = JSON.parse(data);
             llenarComboSerieFiltro(Series, "cboSeries", "Todos")
@@ -1141,14 +1530,14 @@ function CargarObra() {
     $.post("/Obra/ObtenerObraxIdUsuarioSessionSinBase", {}, function (data, status) {
         try {
             let bases = JSON.parse(data);
-            llenarComboObra(bases, "cboObraReporte", "Seleccione")
+            llenarComboObraRPT(bases, "cboObraReporte", "Seleccione")
         } catch (e) {
             $("#IdObra").html("<option value='0'>TODOS</option>")
         }
     });
 }
 
-function llenarComboObra(lista, idCombo, primerItem) {
+function llenarComboObraRPT(lista, idCombo, primerItem) {
     var contenido = "";
     if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
     var nRegistros = lista.length;
@@ -1306,4 +1695,55 @@ function avanzarPaginacion() {
 function ConsultaServidorLimpio() {
     PaginaActual = 1
     ConsultaServidor()
+}
+function OcultarCampos() {
+    if ($("#IdTipoDocumentoRef").val() == 1) {
+        console.log("mostrars")
+        $(".ocultate").show()
+        //$("#IdDestinatario").val(24154).change();
+        //$("#IdTransportista").val(24154).change();
+        $("#IdMotivoTraslado").val(14).change();
+        //$("#PlacaVehiculo").val(0).change();
+        $("#Peso").val(1);
+        $("#Bulto").val(1);
+        $("#IdTipoTransporte").val('02')
+        $("#SerieNumeroRef").prop("disabled", true)
+        $("#SerieNumeroRef").val("")
+    } else {
+        console.log("ocultars")
+        $(".ocultate").hide()
+        $("#SerieNumeroRef").prop("disabled", false)
+    }
+
+}
+function BuscarDNI() {
+
+    let dni = $("#NumIdentidadConductor").val()
+
+    if (dni == "" || dni == null || dni == undefined) {
+        Swal.fire("Ingrese en Nro de DNI")
+        return;
+    }
+
+    if (dni.length != 8) {
+        Swal.fire("DNI debe tener 8 Digitos")
+        return;
+    }
+
+
+
+    $.post("/Cliente/ConsultarDNI", { 'Documento': dni }, function (data, status) {
+        try {
+            let datos = JSON.parse(data);
+            console.log(datos)
+
+            $("#NombreConductor").val(datos.nombres)
+            $("#ApellidoConductor").val(datos.apellidoPaterno + " " + datos.apellidoMaterno)
+
+
+        } catch (e) {
+        }
+
+
+    });
 }

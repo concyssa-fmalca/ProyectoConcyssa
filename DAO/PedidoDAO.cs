@@ -464,6 +464,7 @@ namespace DAO
                         oItemAprobadosDTO.NombUnidadMedida = (drd["UnidadMedida"].ToString());
                         oItemAprobadosDTO.Referencia = drd["Referencia"].ToString();
                         oItemAprobadosDTO.TipoServicio = drd["TipoServicio"].ToString();
+                        oItemAprobadosDTO.Pendientes = Convert.ToInt32(drd["Pendientes"].ToString());
 
 
                         lstItemAprobadosDTO.Add(oItemAprobadosDTO);
@@ -639,7 +640,7 @@ namespace DAO
 
 
 
-        public List<AsignadoPedidoRequeridoDTO> ListarProductosAsignadosxProveedorDetalle(int IdProveedor,int TipoItem,int IdObra, string BaseDatos, ref string mensaje_error)
+        public List<AsignadoPedidoRequeridoDTO> ListarProductosAsignadosxProveedorDetalle(int IdProveedor,int TipoItem,int IdObra, bool EsSubContrato, string BaseDatos, ref string mensaje_error)
         {
             List<AsignadoPedidoRequeridoDTO> lstAsignadoPedidoRequeridoDTO = new List<AsignadoPedidoRequeridoDTO>();
             using (SqlConnection cn = new Conexion().conectar(BaseDatos))
@@ -651,6 +652,7 @@ namespace DAO
                     da.SelectCommand.Parameters.AddWithValue("@IdProveedor", IdProveedor);
                     da.SelectCommand.Parameters.AddWithValue("@TipoItem", TipoItem);
                     da.SelectCommand.Parameters.AddWithValue("@IdObra", IdObra);
+                    da.SelectCommand.Parameters.AddWithValue("@EsSubContrato", EsSubContrato);
                     da.SelectCommand.CommandType = CommandType.StoredProcedure;
                     SqlDataReader drd = da.SelectCommand.ExecuteReader();
                     while (drd.Read())
@@ -763,6 +765,8 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@Serie", oPedidoDTO.Serie);
                         da.SelectCommand.Parameters.AddWithValue("@Correlativo", oPedidoDTO.Correlativo);
                         da.SelectCommand.Parameters.AddWithValue("@TipoCambio", oPedidoDTO.TipoCambio);
+                        da.SelectCommand.Parameters.AddWithValue("@EntregasConAlmacen", oPedidoDTO.EntregasConAlmacen);
+                        da.SelectCommand.Parameters.AddWithValue("@EsSubContrato", oPedidoDTO.EsSubContrato);
 
                         int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
                         transactionScope.Complete();
@@ -927,6 +931,8 @@ namespace DAO
                         oPedidoDTO.ComentarioConformidad = ((String.IsNullOrEmpty(drd["ComentarioConformidad"].ToString()) ? "" : drd["ComentarioConformidad"].ToString()));
                         oPedidoDTO.EmailProveedor = ((String.IsNullOrEmpty(drd["EmailProveedor"].ToString()) ? "" : drd["EmailProveedor"].ToString()));
                         oPedidoDTO.EnvioCorreo = Convert.ToBoolean(drd["EnvioCorreo"].ToString());
+                        oPedidoDTO.EntregasConAlmacen = Convert.ToBoolean(drd["EntregasConAlmacen"].ToString());
+                        oPedidoDTO.EsSubContrato = Convert.ToBoolean(drd["EsSubContrato"].ToString());
 
 
                         
@@ -1512,5 +1518,127 @@ namespace DAO
                 }
             }
         }
+        public List<PedidoPendienteDTO> ObtenerOCPendientes(int idSociedad, int idObra, int idArticulo, string BaseDatos)
+        {
+            List<PedidoPendienteDTO> lstPedidosDTO = new List<PedidoPendienteDTO>();
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerPedidoPendienteObraArticulo", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSociedad", idSociedad);
+                    da.SelectCommand.Parameters.AddWithValue("@IdObra", idObra);
+                    da.SelectCommand.Parameters.AddWithValue("@IdArticulo", idArticulo);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        PedidoPendienteDTO oPedido = new PedidoPendienteDTO();
+                        oPedido.Cantidad = decimal.Parse(drd["Cantidad"].ToString());
+                        oPedido.Entregado = decimal.Parse(drd["Entregado"].ToString());
+                        oPedido.Saldo = decimal.Parse(drd["Saldo"].ToString());
+                        oPedido.FechaDocumento = DateTime.Parse(drd["FechaDocumento"].ToString());
+                        oPedido.NumOC = drd["NumOC"].ToString();
+                        oPedido.RazonSocial = drd["RazonSocial"].ToString();
+                        lstPedidosDTO.Add(oPedido);
+                    }
+                    drd.Close();
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            return lstPedidosDTO;
+        }
+        public int Delete(int IdDetalle, string BaseDatos)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_EliminarItemRQAprobado", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdDetalle", IdDetalle);
+                        int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        return -1;
+                    }
+                }
+            }
+        }
+
+        public int ActivarPedido(PedidoDTO oPedidoDTO, string BaseDatos, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_ActivarPedido", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdPedido", oPedidoDTO.IdPedido);
+                        int rpta = da.SelectCommand.ExecuteNonQuery();
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+                }
+            }
+        }
+
+
+        public int AprobarPedido(int IdPedido, string BaseDatos, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_AprobarPedido", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@IdPedido", IdPedido);
+                        int rpta = da.SelectCommand.ExecuteNonQuery();
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+                }
+            }
+        }
+
+       
+
     }
 }

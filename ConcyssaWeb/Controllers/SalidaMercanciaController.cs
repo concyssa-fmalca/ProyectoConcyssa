@@ -40,11 +40,8 @@ namespace ConcyssaWeb.Controllers
                 IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             }
 
-
             string mensaje_error = "";
           
-            //int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            //int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             oMovimientoDTO.IdSociedad = IdSociedad;
             oMovimientoDTO.IdUsuario = IdUsuario;
 
@@ -66,66 +63,85 @@ namespace ConcyssaWeb.Controllers
                 return "No hay suficiente Stock en este Almacén </br> " + MensajeNoStock;
             }
 
+            object json = null;
+            DateTime FechaHoy = DateTime.Today;
+            FechaHoy = FechaHoy.AddDays(3);
 
-
+            if (oMovimientoDTO.FechaDocumento == FechaHoy)
+            {
+                json = new { status = false, mensaje = " La fecha del documento no puede ser mayor a 3 días desde la fecha actual" };
+                return JsonConvert.SerializeObject(json);
+            }
 
             MovimientoDAO oMovimimientoDAO = new MovimientoDAO();
-            int respuesta = oMovimimientoDAO.InsertUpdateMovimiento(oMovimientoDTO,BaseDatos,ref mensaje_error);
-            int respuesta1 = 0;
             if (mensaje_error.Length > 0)
             {
                 GC.Collect();
                 return mensaje_error;
             }
-            if (respuesta > 0)
+            int respuesta = oMovimimientoDAO.RegistrarMovimientoCompleto(oMovimientoDTO,2,BaseDatos,ref mensaje_error);
+            if (respuesta <= 0)
             {
-                for (int i = 0; i < oMovimientoDTO.detalles.Count; i++)
-                {
-                    oMovimientoDTO.detalles[i].IdMovimiento = respuesta;
-                    oMovimientoDTO.detalles[i].IdMovimientoDetalle = 0;
-                    respuesta1 = oMovimimientoDAO.InsertUpdateMovimientoDetalle(oMovimientoDTO.detalles[i], 0,BaseDatos,ref mensaje_error);
-                    int respuesta2 = oMovimimientoDAO.InsertUpdateMovimientoDetalleCuadrilla(respuesta1, oMovimientoDTO.detalles[i],BaseDatos,ref mensaje_error);
-
-                }
-                //for (int i = 0; i < oMovimientoDTO.detalles.Count; i++)
-                //{
-                //    oMovimientoDTO.detalles[i].IdMovimientoDetalle = respuesta1;
-                //    int respuesta2 = oMovimimientoDAO.InsertUpdateMovimientoDetalleCuadrilla(respuesta1, oMovimientoDTO.detalles[i],BaseDatos,ref mensaje_error);
-                //}
-                if (oMovimientoDTO.AnexoDetalle != null)
-                {
-                    for (int i = 0; i < oMovimientoDTO.AnexoDetalle.Count; i++)
-                    {
-                        oMovimientoDTO.AnexoDetalle[i].ruta = "/Anexos/" + oMovimientoDTO.AnexoDetalle[i].NombreArchivo;
-                        oMovimientoDTO.AnexoDetalle[i].IdSociedad = oMovimientoDTO.IdSociedad;
-                        oMovimientoDTO.AnexoDetalle[i].Tabla = "Movimiento";
-                        oMovimientoDTO.AnexoDetalle[i].IdTabla = respuesta;
-
-                        oMovimimientoDAO.InsertAnexoMovimiento(oMovimientoDTO.AnexoDetalle[i],BaseDatos,ref mensaje_error);
-                    }
-                }
-                 
-
+                json = new { status = false, mensaje = mensaje_error };
+                return JsonConvert.SerializeObject(json);
             }
+            json = new { status = true, mensaje = mensaje_error,id=respuesta };
+            return JsonConvert.SerializeObject(json);
+            //int respuesta1 = 0;
+            //if (mensaje_error.Length > 0)
+            //{
+            //    GC.Collect();
+            //    return mensaje_error;
+            //}
+            //if (respuesta > 0)
+            //{
+            //    for (int i = 0; i < oMovimientoDTO.detalles.Count; i++)
+            //    {
+            //        oMovimientoDTO.detalles[i].IdMovimiento = respuesta;
+            //        oMovimientoDTO.detalles[i].IdMovimientoDetalle = 0;
+            //        respuesta1 = oMovimimientoDAO.InsertUpdateMovimientoDetalle(oMovimientoDTO.detalles[i], 0,BaseDatos,ref mensaje_error);
+            //        int respuesta2 = oMovimimientoDAO.InsertUpdateMovimientoDetalleCuadrilla(respuesta1, oMovimientoDTO.detalles[i],BaseDatos,ref mensaje_error);
 
-            if (mensaje_error.Length > 0)
-            {
-                GC.Collect();
-                return mensaje_error;
-            }
-            else
-            {
-                if (respuesta > 0)
-                {
-                    GC.Collect();
-                    return respuesta.ToString();
-                }
-                else
-                {
-                    GC.Collect();
-                    return mensaje_error;
-                }
-            }
+            //    }
+            //    //for (int i = 0; i < oMovimientoDTO.detalles.Count; i++)
+            //    //{
+            //    //    oMovimientoDTO.detalles[i].IdMovimientoDetalle = respuesta1;
+            //    //    int respuesta2 = oMovimimientoDAO.InsertUpdateMovimientoDetalleCuadrilla(respuesta1, oMovimientoDTO.detalles[i],BaseDatos,ref mensaje_error);
+            //    //}
+            //    if (oMovimientoDTO.AnexoDetalle != null)
+            //    {
+            //        for (int i = 0; i < oMovimientoDTO.AnexoDetalle.Count; i++)
+            //        {
+            //            oMovimientoDTO.AnexoDetalle[i].ruta = "/Anexos/" + oMovimientoDTO.AnexoDetalle[i].NombreArchivo;
+            //            oMovimientoDTO.AnexoDetalle[i].IdSociedad = oMovimientoDTO.IdSociedad;
+            //            oMovimientoDTO.AnexoDetalle[i].Tabla = "Movimiento";
+            //            oMovimientoDTO.AnexoDetalle[i].IdTabla = respuesta;
+
+            //            oMovimimientoDAO.InsertAnexoMovimiento(oMovimientoDTO.AnexoDetalle[i],BaseDatos,ref mensaje_error);
+            //        }
+            //    }
+
+
+            //}
+
+            //if (mensaje_error.Length > 0)
+            //{
+            //    GC.Collect();
+            //    return mensaje_error;
+            //}
+            //else
+            //{
+            //    if (respuesta > 0)
+            //    {
+            //        GC.Collect();
+            //        return respuesta.ToString();
+            //    }
+            //    else
+            //    {
+            //        GC.Collect();
+            //        return mensaje_error;
+            //    }
+            //}
         }
 
         public string UpdateInsertMovimientoString(string JsonDatosEnviar, string BaseDatos = "")
@@ -187,66 +203,81 @@ namespace ConcyssaWeb.Controllers
                 return "No hay suficiente Stock en este Almacén </br> " + MensajeNoStock;
             }
 
+            object json = null;
+            DateTime FechaHoy = DateTime.Today;
+            FechaHoy = FechaHoy.AddDays(3);
 
+            if (oMovimientoDTO.FechaDocumento == FechaHoy)
+            {
+                json = new { status = false, mensaje = " La fecha del documento no puede ser mayor a 3 días desde la fecha actual" };
+                return JsonConvert.SerializeObject(json);
+            } 
 
 
             MovimientoDAO oMovimimientoDAO = new MovimientoDAO();
-            int respuesta = oMovimimientoDAO.InsertUpdateMovimiento(oMovimientoDTO, BaseDatos, ref mensaje_error);
-            int respuesta1 = 0;
-            if (mensaje_error.Length > 0)
+            int respuesta = oMovimimientoDAO.RegistrarMovimientoCompleto(oMovimientoDTO,2, BaseDatos, ref mensaje_error);
+            if (respuesta <= 0)
             {
-                GC.Collect();
-                return mensaje_error;
+                json = new { status = false, mensaje = mensaje_error };
+                return JsonConvert.SerializeObject(json);
             }
-            if (respuesta > 0)
-            {
-                for (int i = 0; i < oMovimientoDTO.detalles.Count; i++)
-                {
-                    oMovimientoDTO.detalles[i].IdMovimiento = respuesta;
-                    oMovimientoDTO.detalles[i].IdMovimientoDetalle = 0;
-                    respuesta1 = oMovimimientoDAO.InsertUpdateMovimientoDetalle(oMovimientoDTO.detalles[i], 0, BaseDatos, ref mensaje_error);
-                    int respuesta2 = oMovimimientoDAO.InsertUpdateMovimientoDetalleCuadrilla(respuesta1, oMovimientoDTO.detalles[i], BaseDatos, ref mensaje_error);
+            json = new { status = true, mensaje = mensaje_error, id = respuesta };
+            return JsonConvert.SerializeObject(json);
+            //int respuesta1 = 0;
+            //if (mensaje_error.Length > 0)
+            //{
+            //    GC.Collect();
+            //    return mensaje_error;
+            //}
+            //if (respuesta > 0)
+            //{
+            //    for (int i = 0; i < oMovimientoDTO.detalles.Count; i++)
+            //    {
+            //        oMovimientoDTO.detalles[i].IdMovimiento = respuesta;
+            //        oMovimientoDTO.detalles[i].IdMovimientoDetalle = 0;
+            //        respuesta1 = oMovimimientoDAO.InsertUpdateMovimientoDetalle(oMovimientoDTO.detalles[i], 0, BaseDatos, ref mensaje_error);
+            //        int respuesta2 = oMovimimientoDAO.InsertUpdateMovimientoDetalleCuadrilla(respuesta1, oMovimientoDTO.detalles[i], BaseDatos, ref mensaje_error);
 
-                }
-                //for (int i = 0; i < oMovimientoDTO.detalles.Count; i++)
-                //{
-                //    oMovimientoDTO.detalles[i].IdMovimientoDetalle = respuesta1;
-                //    int respuesta2 = oMovimimientoDAO.InsertUpdateMovimientoDetalleCuadrilla(respuesta1, oMovimientoDTO.detalles[i],BaseDatos,ref mensaje_error);
-                //}
-                if (oMovimientoDTO.AnexoDetalle != null)
-                {
-                    for (int i = 0; i < oMovimientoDTO.AnexoDetalle.Count; i++)
-                    {
-                        oMovimientoDTO.AnexoDetalle[i].ruta = "/Anexos/" + oMovimientoDTO.AnexoDetalle[i].NombreArchivo;
-                        oMovimientoDTO.AnexoDetalle[i].IdSociedad = oMovimientoDTO.IdSociedad;
-                        oMovimientoDTO.AnexoDetalle[i].Tabla = "Movimiento";
-                        oMovimientoDTO.AnexoDetalle[i].IdTabla = respuesta;
+            //    }
+            //    //for (int i = 0; i < oMovimientoDTO.detalles.Count; i++)
+            //    //{
+            //    //    oMovimientoDTO.detalles[i].IdMovimientoDetalle = respuesta1;
+            //    //    int respuesta2 = oMovimimientoDAO.InsertUpdateMovimientoDetalleCuadrilla(respuesta1, oMovimientoDTO.detalles[i],BaseDatos,ref mensaje_error);
+            //    //}
+            //    if (oMovimientoDTO.AnexoDetalle != null)
+            //    {
+            //        for (int i = 0; i < oMovimientoDTO.AnexoDetalle.Count; i++)
+            //        {
+            //            oMovimientoDTO.AnexoDetalle[i].ruta = "/Anexos/" + oMovimientoDTO.AnexoDetalle[i].NombreArchivo;
+            //            oMovimientoDTO.AnexoDetalle[i].IdSociedad = oMovimientoDTO.IdSociedad;
+            //            oMovimientoDTO.AnexoDetalle[i].Tabla = "Movimiento";
+            //            oMovimientoDTO.AnexoDetalle[i].IdTabla = respuesta;
 
-                        oMovimimientoDAO.InsertAnexoMovimiento(oMovimientoDTO.AnexoDetalle[i], BaseDatos, ref mensaje_error);
-                    }
-                }
+            //            oMovimimientoDAO.InsertAnexoMovimiento(oMovimientoDTO.AnexoDetalle[i], BaseDatos, ref mensaje_error);
+            //        }
+            //    }
 
 
-            }
+            //}
 
-            if (mensaje_error.Length > 0)
-            {
-                GC.Collect();
-                return mensaje_error;
-            }
-            else
-            {
-                if (respuesta > 0)
-                {
-                    GC.Collect();
-                    return respuesta.ToString();
-                }
-                else
-                {
-                    GC.Collect();
-                    return mensaje_error;
-                }
-            }
+            //if (mensaje_error.Length > 0)
+            //{
+            //    GC.Collect();
+            //    return mensaje_error;
+            //}
+            //else
+            //{
+            //    if (respuesta > 0)
+            //    {
+            //        GC.Collect();
+            //        return respuesta.ToString();
+            //    }
+            //    else
+            //    {
+            //        GC.Collect();
+            //        return mensaje_error;
+            //    }
+            //}
         }
 
 

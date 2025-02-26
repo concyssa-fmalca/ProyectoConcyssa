@@ -16,5 +16,6 @@ namespace DTO
         public string Alias { get; set; }="";
         public string ctaAsocFT { get; set; }="";
         public string ctaAsocNC { get; set; }="";
+        public string BasePortalProv { get; set; }="";
     }
 }

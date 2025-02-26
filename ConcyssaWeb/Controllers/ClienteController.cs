@@ -88,5 +88,19 @@ namespace ConcyssaWeb.Controllers
                 return "error";
             }
         }
+
+        public string ConsultarDNI(string Documento)
+        {
+            ClienteDAO oClienteDAO = new ClienteDAO();
+            string datos = oClienteDAO.ConsultarDNI( Documento);
+            if (datos != "Error")
+            {
+                return datos;
+            }
+            else
+            {
+                return "error";
+            }
+        }
     }
 }

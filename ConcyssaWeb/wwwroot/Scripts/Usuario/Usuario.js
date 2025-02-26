@@ -187,6 +187,7 @@ function GuardarUsuario() {
     let varAbrobar = $("#cboAbrobar").val();
     let varEstado = false;
     let MovimientoInventario = false;
+    let varCrearOCdirecto = false;
 
     let varDepartamento = $("#cboDepartamento").val();
     let varUsuarioSAP = $("#txtUsuarioSap").val();
@@ -200,6 +201,9 @@ function GuardarUsuario() {
 
     if ($('#MovimientoInventario')[0].checked) {
         MovimientoInventario = true;
+    }
+    if ($('#CrearOCDirecta')[0].checked) {
+        varCrearOCdirecto = true;
     }
 
 
@@ -243,6 +247,7 @@ function GuardarUsuario() {
         'AprobarGiro': varAbrobar,
         'Correo': varCorreo,
         'IdEmpleado': varEmpleado,
+        'CrearOCdirecto': varCrearOCdirecto,
         'Celular': $("#txtCelular").val()
     }, function (data, status) {
 
@@ -294,6 +299,10 @@ function ObtenerDatosxID(varIdUsuario) {
 
             if (usuarios[0].MovimientoInventario) {
                 $("#MovimientoInventario").prop('checked', true);
+            }
+
+            if (usuarios[0].CrearOCdirecto) {
+                $("#CrearOCDirecta").prop('checked', true);
             }
 
 
@@ -386,6 +395,7 @@ function limpiarDatos() {
     $("#txtContraseña").val("");
     $("#chkActivo").prop('checked', false);
     $("#MovimientoInventario").prop('checked', false);
+    $("#CrearOCDirecta").prop('checked', false);
     $("#txtCelular").val("");
     $("#txtCorreo").val("");
     $("#txtContrasenaSap").val("");

@@ -163,6 +163,7 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@AprobarGiro", oUsuarioDTO.AprobarGiro);
                         da.SelectCommand.Parameters.AddWithValue("@IdEmpleado", oUsuarioDTO.IdEmpleado);
                         da.SelectCommand.Parameters.AddWithValue("@Celular", oUsuarioDTO.Celular);
+                        da.SelectCommand.Parameters.AddWithValue("@CrearOCdirecto", oUsuarioDTO.CrearOCdirecto);
 
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
@@ -202,6 +203,7 @@ namespace DAO
                         oUsuarioDTO.IdSociedad = int.Parse(drd["IdSociedad"].ToString());
                         oUsuarioDTO.NombreSociedad = drd["NombreSociedad"].ToString();
                         oUsuarioDTO.Estado = bool.Parse(drd["Estado"].ToString());
+                        oUsuarioDTO.CrearOCdirecto = bool.Parse(drd["CrearOCdirecto"].ToString());
                         oUsuarioDTO.MovimientoInventario = bool.Parse(drd["MovimientoInventario"].ToString());
 
                         oUsuarioDTO.SapUsuario = drd["SapUsuario"].ToString();

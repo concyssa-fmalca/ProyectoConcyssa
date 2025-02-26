@@ -4,6 +4,7 @@
     let IdObra = $("#IdObra").val();
     let FechaInicial = $("#txtFechaInicio").val();
     let FechaFinal = $("#txtFechaFin").val();
+    let IdArticulo = $("#IdServicio").val();
 
     let respustavalidacion = "";
 
@@ -37,7 +38,7 @@
     setTimeout(() => {
        
             $.ajaxSetup({ async: false });
-        $.post("GenerarReporteFacturaServicioObra", { 'NombreReporte': nombreRpt, 'Formato': Formato, 'IdProveedor': IdProveedor, 'IdObra': IdObra, 'FechaInicio': $("#txtFechaInicio").val(), 'FechaFin': $("#txtFechaFin").val() }, function (data, status) {
+        $.post("GenerarReporteFacturaServicioObra", { 'NombreReporte': nombreRpt, 'Formato': Formato, 'IdProveedor': IdProveedor, 'IdObra': IdObra, 'FechaInicio': $("#txtFechaInicio").val(), 'FechaFin': $("#txtFechaFin").val(), 'IdArticulo': IdArticulo }, function (data, status) {
                 let datos;
                 if (validadJson(data)) {
                     if (Formato == 'excel') {
@@ -140,7 +141,7 @@ function llenarComboObra(lista, idCombo, primerItem) {
     }
     var cbo = document.getElementById(idCombo);
     if (cbo != null) cbo.innerHTML = contenido;
-    $("#"+idCombo).prop("selectedIndex",1)
+    $("#" + idCombo).prop("selectedIndex", 1).change();
 }
 
 function validadJson(json) {
@@ -205,4 +206,80 @@ function verBase64PDF(datos) {
 
     // y de esta manera simplemente lo abro en una nueva ventana:
     window.open(url, '_blank');
+}
+
+function ObtenerAlmacenxIdObra() {
+    let IdObra = $("#IdObra").val();
+    $.ajaxSetup({ async: false });
+    $.post("/Almacen/ObtenerAlmacenxIdObra", { 'IdObra': IdObra }, function (data, status) {
+        if (validadJson(data)) {
+
+            let datos = JSON.parse(data);
+            llenarComboAlmacen(datos, "IdAlmacen", "seleccione")
+        } else {
+            $("#cboAlmacen").html('<option value="0">SELECCIONE</option>')
+        }
+    });
+
+}
+function llenarComboAlmacen(lista, idCombo, primerItem) {
+    var contenido = "";
+    if (primerItem != null) contenido = "<option value='0'>" + primerItem + "</option>";
+    var nRegistros = lista.length;
+    var nCampos;
+    var campos;
+    for (var i = 0; i < nRegistros; i++) {
+
+        if (lista.length > 0) { contenido += "<option value='" + lista[i].IdAlmacen + "'>" + lista[i].Descripcion + "</option>"; }
+        else { }
+    }
+    var cbo = document.getElementById(idCombo);
+    if (cbo != null) cbo.innerHTML = contenido;
+    $("#IdAlmacen").prop("selectedIndex", 1).change();
+}
+
+
+function BuscarItemsExp() {
+
+
+    $("#IdServicio").select2({
+        language: "es",
+        width: '100%',
+        //theme: "classic",
+        async: false,
+        ajax: {
+            url: "/Articulo/ListarArticulosxAlmacenSelect2",
+            type: "post",
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+
+                return {
+                    searchTerm: params.term, // search term
+                    IdTipoProducto: 2,
+                    IdAlmacen: $("#IdAlmacen").val(),
+                    IdClaseArticulo: 2
+                };
+
+
+
+            },
+            processResults: function (response) {
+
+                var results = [];
+                results.push({ id: '0', text: 'TODOS' })
+                $.each(response, function (index, item) {
+                    results.push({ id: item.IdArticulo, text: item.Codigo + '-' + item.Descripcion1 })
+                });
+
+
+                return { results }
+
+
+            },
+            cache: true,
+        },
+        placeholder: 'Ingrese Nombre de Producto',
+        minimunInputLength: 3
+    });
 }

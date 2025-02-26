@@ -48,13 +48,13 @@ namespace ConcyssaWeb.Controllers
 
 
 
-        public string ListarInventarioxAlmacen(int IdAlmacen, DateTime FechaInicio, DateTime FechaTermino)
+        public string ListarInventarioxAlmacen(int IdAlmacen,int TipoArticulo, DateTime FechaInicio, DateTime FechaTermino)
         {
             string mensaje_error = "";
             string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             KardexDAO oKardexDAO = new KardexDAO();
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-            List<ArticuloStockDTO> lstArticuloStockDTO = oKardexDAO.ObtenerStockxAlmacen(IdAlmacen,BaseDatos,ref mensaje_error);
+            List<ArticuloStockDTO> lstArticuloStockDTO = oKardexDAO.ObtenerStockxAlmacen(IdAlmacen, TipoArticulo,BaseDatos, ref mensaje_error);
 
             DataTableDTO oDataTableDTO = new DataTableDTO();
             if (lstArticuloStockDTO.Count > 0)
@@ -237,7 +237,7 @@ namespace ConcyssaWeb.Controllers
         }
 
 
-        public string GenerarExcel(int IdAlmacen, DateTime FechaInicio, DateTime FechaTermino)
+        public string GenerarExcel(int IdAlmacen,int TipoArticulo, DateTime FechaInicio, DateTime FechaTermino)
         {
             try
             {
@@ -257,7 +257,7 @@ namespace ConcyssaWeb.Controllers
 
                 KardexDAO oKardexDAO = new KardexDAO();
                 int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-                List<ArticuloStockDTO> lstArticuloStockDTO = oKardexDAO.ObtenerStockxAlmacen(IdAlmacen, BaseDatos, ref mensaje_error);
+                List<ArticuloStockDTO> lstArticuloStockDTO = oKardexDAO.ObtenerStockxAlmacen(IdAlmacen, TipoArticulo, BaseDatos, ref mensaje_error);
 
                 ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
                 // Crear un nuevo archivo Excel
@@ -274,7 +274,7 @@ namespace ConcyssaWeb.Controllers
                     // Agregar una hoja al archivo
                     ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Kardex");
 
-                    using (ExcelRange range = worksheet.Cells["A1:E1"])
+                    using (ExcelRange range = worksheet.Cells["A1:G1"])
                     {
                         range.Style.Font.Bold = true;
                         range.Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -289,6 +289,8 @@ namespace ConcyssaWeb.Controllers
                     worksheet.Cells["C1"].Value = "STOCK";
                     worksheet.Cells["D1"].Value = "PRECIO PROMEDIO";
                     worksheet.Cells["E1"].Value = "VALORIZADO";
+                    worksheet.Cells["F1"].Value = "UNIDAD MEDIDA";
+                    worksheet.Cells["G1"].Value = "TIPO";
 
                     // Definir el ancho de las columnas
                     worksheet.Column(1).Width = 20; // Ancho de la primera columna (en caracteres)
@@ -307,6 +309,8 @@ namespace ConcyssaWeb.Controllers
                         worksheet.Cells["C" + row].Value = registro.Stock;
                         worksheet.Cells["D" + row].Value = registro.PrecioPromedio;
                         worksheet.Cells["E" + row].Value = registro.Stock * registro.PrecioPromedio;
+                        worksheet.Cells["F" + row].Value = registro.UnidadMedida;
+                        worksheet.Cells["G" + row].Value = registro.TipoArticulo;
                         row++;
                     }
 

@@ -459,7 +459,7 @@ namespace DAO
             }
             return lstSolicitudDespachoDetalleDTO;
         }
-        public List<SolicitudDespachoDTO> ObtenerSolicitudesDespachoAtender(int IdSociedad, int IdBase,DateTime FechaInicio,DateTime FechaFin, int EstadoSolicitud,int SerieFiltro, int Paginacion, string BaseDatos)
+        public List<SolicitudDespachoDTO> ObtenerSolicitudesDespachoAtender(int IdSociedad, int IdBase,int IdObra,DateTime FechaInicio,DateTime FechaFin, int EstadoSolicitud,int SerieFiltro, int Paginacion, string BaseDatos)
         {
             List<SolicitudDespachoDTO> lstSolicitudDespachoDTO = new List<SolicitudDespachoDTO>();
 
@@ -473,6 +473,7 @@ namespace DAO
                     SqlDataAdapter da = new SqlDataAdapter("SMC_ListarSolicitudDespachoCabezeraAprobadasPagination", cn);
                     da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
                     da.SelectCommand.Parameters.AddWithValue("@IdBase", IdBase);
+                    da.SelectCommand.Parameters.AddWithValue("@IdObra", IdObra);
                     da.SelectCommand.Parameters.AddWithValue("@FechaInicio", FechaInicio);
                     da.SelectCommand.Parameters.AddWithValue("@FechaFin", FechaFin);
                     da.SelectCommand.Parameters.AddWithValue("@EstadoSolicitud", EstadoSolicitud);
@@ -499,6 +500,9 @@ namespace DAO
                         oSolicitudDespachoDTO.SerieyNum = drd["SerieyNum"].ToString();
                         oSolicitudDespachoDTO.IdSolicitante = int.Parse(drd["IdSolicitante"].ToString());
                         oSolicitudDespachoDTO.EstadoSolicitud = int.Parse(drd["EstadoSolicitud"].ToString());
+                        oSolicitudDespachoDTO.DescripcionObra = (drd["DescripcionObra"].ToString());
+                        oSolicitudDespachoDTO.DescripcionEmpleado = (drd["DescripcionEmpleado"].ToString());
+                        oSolicitudDespachoDTO.DireccionUso = (drd["DireccionUso"].ToString());
 
 
 
@@ -578,7 +582,7 @@ namespace DAO
             return lstSolicitudDespachoDTO;
         }
 
-        public List<SolicitudDespachoDTO> ObtenerSolicitudesDespachoAtenderFiltro(int IdSociedad, int IdBase, DateTime FechaInicio, DateTime FechaFin, int EstadoSolicitud, int SerieFiltro, string BaseDatos)
+        public List<SolicitudDespachoDTO> ObtenerSolicitudesDespachoAtenderFiltro(int IdSociedad, int IdBase,int IdObra, DateTime FechaInicio, DateTime FechaFin, int EstadoSolicitud, int SerieFiltro, string BaseDatos)
         {
             List<SolicitudDespachoDTO> lstSolicitudDespachoDTO = new List<SolicitudDespachoDTO>();
 
@@ -589,9 +593,10 @@ namespace DAO
                 {
 
                     cn.Open();
-                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarSolicitudDespachoCabezeraAprobadas", cn);
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ListarSolicitudDespachoCabezeraAprobadasFiltro", cn);
                     da.SelectCommand.Parameters.AddWithValue("@IdSociedad", IdSociedad);
                     da.SelectCommand.Parameters.AddWithValue("@IdBase", IdBase);
+                    da.SelectCommand.Parameters.AddWithValue("@IdObra", IdObra);
                     da.SelectCommand.Parameters.AddWithValue("@FechaInicio", FechaInicio);
                     da.SelectCommand.Parameters.AddWithValue("@FechaFin", FechaFin);
                     da.SelectCommand.Parameters.AddWithValue("@EstadoSolicitud", EstadoSolicitud);
@@ -670,7 +675,7 @@ namespace DAO
             }
         }
 
-        public int AtencionConfirmada(int Cantidad,int IdSolicitud,int IdArticulo, int EstadoSolicitud, string BaseDatos, ref string mensaje_error)
+        public int AtencionConfirmada(decimal Cantidad,int IdSolicitud,int IdArticulo, int EstadoSolicitud, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
@@ -930,6 +935,120 @@ namespace DAO
                 }
             }
             return lstSolicitudDespachoDTO;
+        }
+
+
+        public string ObtenerDireccionUsoSD(int IdSolicitud, string BaseDatos)
+        {
+
+            string direccion = "";
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerDireccionUsoSD", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdSolicitud", IdSolicitud);
+
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        direccion = drd["DireccionUso"].ToString();
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                    direccion = "";
+                }
+            }
+            return direccion;
+        }
+
+        public int registrarAtencionConfirmada(decimal Cantidad, int IdSolicitud, int IdArticulo, int EstadoSolicitud, SqlConnection cn, ref string mensaje_error)
+        {
+
+            try
+            {
+                SqlDataAdapter dad = new SqlDataAdapter("SMC_SolicitudAtendida", cn);
+                dad.SelectCommand.CommandType = CommandType.StoredProcedure;
+                dad.SelectCommand.Parameters.AddWithValue("@Cantidad", Cantidad);
+                dad.SelectCommand.Parameters.AddWithValue("@IdSolicitud", IdSolicitud);
+                dad.SelectCommand.Parameters.AddWithValue("@IdArticulo", IdArticulo);
+                dad.SelectCommand.Parameters.AddWithValue("@EstadoSolicitud", EstadoSolicitud);
+                int rpta = Convert.ToInt32(dad.SelectCommand.ExecuteNonQuery());
+                return rpta;
+
+            }
+            catch (Exception ex)
+            {
+                mensaje_error = ex.Message.ToString();
+                return 0;
+            }
+
+        }
+
+
+        public int RegistrarSalidaAtencionDespacho(MovimientoDTO oMovimientoDTO,int IdSolicitudDespacho,int EstadoSolicitud, string BaseDatos, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        MovimientoDAO oMovimientoDAO = new MovimientoDAO();
+                        int IdMovimiento = oMovimientoDAO.registrarCabeceraMovimiento(oMovimientoDTO, cn, ref mensaje_error);
+
+                        if (IdMovimiento <= 0) { return 0; }
+
+                        for (int i = 0; i < oMovimientoDTO.detalles.Count; i++)
+                        {
+                            oMovimientoDTO.detalles[i].IdMovimiento = IdMovimiento;
+                            int IdDetalle = oMovimientoDAO.registrarDetalleMovimiento(oMovimientoDTO.detalles[i], 2, cn, ref mensaje_error);
+                            if (IdDetalle <= 0) { return 0; }
+                            int rptaUpdateCuadrilla = oMovimientoDAO.registrarActualizacionCuadrillaDetalle(IdDetalle, oMovimientoDTO.detalles[i], cn, ref mensaje_error);
+                            if (rptaUpdateCuadrilla <= 0) { return 0; }
+                        }
+
+                        if (oMovimientoDTO.AnexoDetalle != null)
+                        {
+                            for (int i = 0; i < oMovimientoDTO.AnexoDetalle.Count; i++)
+                            {
+                                oMovimientoDTO.AnexoDetalle[i].ruta = "/Anexos/" + oMovimientoDTO.AnexoDetalle[i].NombreArchivo;
+                                oMovimientoDTO.AnexoDetalle[i].IdSociedad = oMovimientoDTO.IdSociedad;
+                                oMovimientoDTO.AnexoDetalle[i].Tabla = "Movimiento";
+                                oMovimientoDTO.AnexoDetalle[i].IdTabla = IdMovimiento;
+                                int rptaAnexo = oMovimientoDAO.registrarAnexoMov(oMovimientoDTO.AnexoDetalle[i], cn, ref mensaje_error);
+                                if (rptaAnexo <= 0) { return 0; }
+
+                            }
+                        }
+
+                        for (int i = 0; i < oMovimientoDTO.detalles.Count; i++)
+                        {
+                            int rtpaAtencion = registrarAtencionConfirmada(oMovimientoDTO.detalles[i].Cantidad,IdSolicitudDespacho, oMovimientoDTO.detalles[i].IdArticulo, EstadoSolicitud, cn, ref mensaje_error);
+                            if (rtpaAtencion <= 0) { return 0; }
+                        }
+
+                        transactionScope.Complete();
+                        return IdMovimiento;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+                }
+            }
         }
 
     }

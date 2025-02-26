@@ -2,6 +2,7 @@
     let IdDivision = $("#IdDivision").val();
     let IdTipoProducto = $("#IdTipoProducto").val();
     let IdArticulo = $("#IdArticulo").val();
+    let IdProveedor = $("#IdProveedor").val();
 
     let respustavalidacion = "";
 
@@ -15,7 +16,7 @@
     setTimeout(() => {
         if (Tipo == 'excel') {
             $.ajaxSetup({ async: false });
-            $.post("GenerarReporteListaPrecio", { 'NombreReporte': 'ListaPrecios', 'Formato': 'excel', 'IdArticulo': IdArticulo }, function (data, status) {                let datos;
+            $.post("GenerarReporteListaPrecio", { 'NombreReporte': 'ListaPrecios', 'Formato': 'excel', 'IdArticulo': IdArticulo, 'IdProveedor': IdProveedor }, function (data, status) {                let datos;
                 if (validadJson(data)) {
 
                     window.open("http://192.168.0.209/Anexos/ExcelReporte/ListaPrecios.xlsx", '_blank', 'noreferrer');
@@ -34,7 +35,7 @@
             });
         } else {
             $.ajaxSetup({ async: false });
-            $.post("GenerarReporteListaPrecio", { 'NombreReporte': 'ListaPrecios', 'Formato': 'PDF', 'IdArticulo': IdArticulo }, function (data, status) {
+            $.post("GenerarReporteListaPrecio", { 'NombreReporte': 'ListaPrecios', 'Formato': 'PDF', 'IdArticulo': IdArticulo, 'IdProveedor': IdProveedor }, function (data, status) {
                 let datos;
                 if (validadJson(data)) {
                     let datobase64;
@@ -101,6 +102,7 @@ function llenarComboArticulo(lista, idCombo, primerItem) {
 window.onload = function () {
     CargarArticulos();
     $("#IdArticulo").select2();
+    CargarProveedores()
 };
 
 function verBase64PDF(datos) {
@@ -129,4 +131,45 @@ function verBase64PDF(datos) {
 
     // y de esta manera simplemente lo abro en una nueva ventana:
     window.open(url, '_blank');
+}
+function CargarProveedores() {
+
+
+    $("#IdProveedor").select2({
+        language: "es",
+        width: '100%',
+        //theme: "classic",
+        async: false,
+        ajax: {
+            url: "/Proveedor/ObtenerProveedoresSelect2",
+            type: "post",
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+
+                return {
+                    searchTerm: params.term, // search term                
+                };
+
+
+
+            },
+            processResults: function (response) {
+
+                var results = [];
+                results.push({ id: '0', text: 'TODOS' })
+                $.each(response, function (index, item) {
+                    results.push({ id: item.IdProveedor, text: item.NumeroDocumento + '-' + item.RazonSocial })
+                });
+
+
+                return { results }
+
+
+            },
+            cache: true,
+        },
+        placeholder: 'Seleccione el Proveedor',
+        minimunInputLength: 3
+    });
 }

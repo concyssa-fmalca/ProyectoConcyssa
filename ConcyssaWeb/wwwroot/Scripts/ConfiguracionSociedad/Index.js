@@ -20,6 +20,7 @@ function ConsultaServidor(url) {
         $("#txtAlias").val(datos[0].Alias);
         $("#ctaAsocFT").val(datos[0].ctaAsocFT);
         $("#ctaAsocNC").val(datos[0].ctaAsocNC);
+        $("#txtBasePortalProv").val(datos[0].BasePortalProv);
         //console.log(data);
 
 
@@ -37,6 +38,7 @@ function GuardarConfiguracion() {
     let Alias = $("#txtAlias").val();
     let ctaAsocFT = $("#ctaAsocFT").val();
     let ctaAsocNC = $("#ctaAsocNC").val();
+    let BasePortalProv = $("#txtBasePortalProv").val();
 
 
     $.post('UpdateInsertConfiguracionSociedad', {
@@ -48,6 +50,7 @@ function GuardarConfiguracion() {
         'Alias': Alias,
         'ctaAsocFT': ctaAsocFT,
         'ctaAsocNC': ctaAsocNC,
+        'BasePortalProv': BasePortalProv,
        
     }, function (data, status) {
 

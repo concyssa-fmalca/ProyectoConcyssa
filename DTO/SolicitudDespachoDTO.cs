@@ -18,6 +18,7 @@ namespace DTO
         public string DescripcionCuadrilla { get; set; }
         public int IdObra { get; set; }
         public string DescripcionObra { get; set; }
+        public string DescripcionEmpleado { get; set; }
         public int IdBase { get; set; }
         public string DescripcionBase { get; set; }
         public string Comentario { get; set; }
@@ -29,6 +30,7 @@ namespace DTO
         public decimal Cantidad { get; set; }
         public string Codigo { get; set; }
         public string Descripcion { get; set; }
+        public string DireccionUso { get; set; }
         public int IdSolicitante { get; set; }
         public int EstadoSolicitud { get; set; }
         public List<SolicitudDespachoDetalleDTO> Detalle { get; set; }
