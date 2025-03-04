@@ -673,97 +673,124 @@ namespace ConcyssaWeb.Controllers
         {
 
             string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            //System.Net.ServicePointManager.SecurityProtocol =  SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+            PedidoDAO oPedidoDAO = new PedidoDAO();
+            PedidoDTO oPedidoDTO = new PedidoDTO();
+            ObraDAO obraDao = new ObraDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            string mensaje_error = "";
+            oPedidoDTO = oPedidoDAO.ObtenerPedidoxId(IdPedido, BaseDatos, ref mensaje_error);
+            List<ObraDTO> datosObra = obraDao.ObtenerDatosxID(oPedidoDTO.IdObra, BaseDatos, ref mensaje_error);
+            CorreoDAO oCorreoDAO = new CorreoDAO();
+            CorreoDTO oCorreoDTO = oCorreoDAO.ObtenerDatosCorreo("COMPRAS", BaseDatos, ref mensaje_error);
+            string errorCode = "OK";
             try
             {
 
-                string base64;
-                string html = @"";
-                string mensaje_error = "";
-                PedidoDAO oPedidoDAO = new PedidoDAO();
-                PedidoDTO oPedidoDTO = new PedidoDTO();
-                int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
-
-
-                oPedidoDTO = oPedidoDAO.ObtenerPedidoxId(IdPedido,BaseDatos,ref mensaje_error);
-                string body;
-                body = "BASE PRUBAS";
-
-                ObraDAO obraDao = new ObraDAO();
-                List<ObraDTO> datosObra = obraDao.ObtenerDatosxID(oPedidoDTO.IdObra,BaseDatos,ref mensaje_error);
-                string correoObra = "";
-                if (datosObra.Count > 0) correoObra = datosObra[0].CorreoObra;
-                //body = "<body>" +
-                //    "<h2>Se "+Estado+" una Solicitud</h2>" +
-                //    "<h4>Detalles de Solicitud:</h4>" +
-                //    "<span>N° Solicitud: " + Serie + "-" + Numero + "</span>" +
-                //    "<br/><span>Solicitante: " + Solicitante + "</span>" +
-                //    "</body>";
-
-
-                string msge = "";
-                string from = "concyssa.smc@gmail.com";
-                string correo = from;
-                string password = "tlbvngkvjcetzunr";
-                string displayName = "CONCYSSA "+ oPedidoDTO.NombSerie + "-"+oPedidoDTO.Correlativo;
-                MailMessage mail = new MailMessage();
-                mail.From = new MailAddress(from, displayName);
-
-                int count = oPedidoDTO.EmailProveedor.Split(";").Count();
-
-                for (int i = 0; i < count; i++)
+                using (SmtpClient SmtpServer = new SmtpClient(oCorreoDTO.Servidor))
                 {
-                    string email = oPedidoDTO.EmailProveedor.Split(';')[i].Trim();
-                    mail.To.Add(email);
+                    using (MailMessage message = new MailMessage())
+                    {
+                        string Asunto = "CONCYSSA " + oPedidoDTO.NombSerie + "-" + oPedidoDTO.Correlativo;
+                        message.From = new MailAddress(oCorreoDTO.Email, Asunto);
+
+                        string correoObra = "";
+                        if (datosObra.Count > 0) correoObra = datosObra[0].CorreoObra;
+
+                        int count = oPedidoDTO.EmailProveedor.Split(";").Count();
+                        for (int i = 0; i < count; i++)
+                        {
+                            string email = oPedidoDTO.EmailProveedor.Split(';')[i].Trim();
+                            message.To.Add(email);
+                        }
+
+                        message.To.Add(correoObra);
+                        //message.To.Add("compras@concyssa.com");
+                        //message.To.Add("cristhian.chacaliaza@smartcode.pe");
+
+                        message.Subject = Asunto;
+                        message.IsBodyHtml = true;
+                        message.Body = TemplateEmail(correoObra);
+
+                        SmtpServer.Port = oCorreoDTO.Puerto;
+                        SmtpServer.EnableSsl = oCorreoDTO.SSL;
+                        SmtpServer.UseDefaultCredentials = false;
+                        SmtpServer.Credentials = new NetworkCredential(oCorreoDTO.Email, oCorreoDTO.Clave);
+
+                        SmtpServer.DeliveryMethod = SmtpDeliveryMethod.Network;
+
+                        WebResponse webResponse;
+                        HttpWebRequest request;
+                        Uri uri;
+                        string cadenaUri;
+                        string response;
+
+                        string strNew = "NombreReporte=OrdenCompra&Formato=PDF&Id=" + IdPedido + "&BaseDatos=" + BaseDatos;
+                        cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReportCrystal";
+                        uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
+                        request = (HttpWebRequest)WebRequest.Create(uri);
+                        request.Method = "POST";
+                        request.ContentType = "application/x-www-form-urlencoded";
+                        StreamWriter requestWriter = new StreamWriter(request.GetRequestStream(), System.Text.Encoding.ASCII);
+                        requestWriter.Write(strNew);
+                        requestWriter.Close();
+                        webResponse = request.GetResponse();
+                        Stream webStream = webResponse.GetResponseStream();
+                        StreamReader responseReader = new StreamReader(webStream);
+                        response = responseReader.ReadToEnd();
+                        XmlDocument xDoc = new XmlDocument();
+                        xDoc.LoadXml(response);
+                        string base64 = xDoc.ChildNodes[1].ChildNodes[2].InnerText;
+                        Byte[] archivopdf = Convert.FromBase64String(base64);
+                        Attachment att = new Attachment(new MemoryStream(archivopdf), "OrdenCompra.pdf");
+                        message.Attachments.Add(att);
+
+                        bool exception = false;
+                        try
+                        {
+                            SmtpServer.Send(message);
+                            oPedidoDAO.UpdateEnvioCorreoPedido(IdPedido, BaseDatos, ref mensaje_error);
+                        }
+                        catch (SmtpFailedRecipientsException ex)
+                        {
+                            exception = true;
+                            for (int i = 0; i < ex.InnerExceptions.Length; i++)
+                            {
+                                SmtpStatusCode status = ex.InnerExceptions[i].StatusCode;
+                                errorCode = status.ToString();
+                                if (status == SmtpStatusCode.MailboxBusy)
+                                {
+                                    mensaje_error = "Receptor ocupado";
+                                }
+                                if (status == SmtpStatusCode.MailboxUnavailable)
+                                {
+                                    mensaje_error = "Dirección de correo no disponible";
+                                }
+                                else
+                                {
+                                    mensaje_error = "Falló el envío" ;
+                                }
+                            }
+                        }
+                        catch (SmtpException ex)
+                        {
+                            errorCode = ex.StatusCode.ToString();
+                            exception = true;
+                            mensaje_error =  "Error " + ex.Message + "(" + errorCode + ")";
+                        }
+
+
+                        catch (Exception ex)
+                        {
+                            errorCode = "**";
+                            exception = true;
+                            mensaje_error = "Límite de reitentos: {0}" + ex.ToString() + errorCode;
+                        }
+
+                       
+                    }
                 }
-
-                mail.To.Add(correoObra);
-                mail.To.Add("compras@concyssa.com");
-         
-
-               //mail.To.Add("cristhian.chacaliaza@smartcode.pe");
-
-
-                mail.Subject = "CONCYSSA " + oPedidoDTO.NombSerie + "-" + oPedidoDTO.Correlativo;
-                //mail.CC.Add(new MailAddress("camala145@gmail.com"));
-                mail.Body = TemplateEmail(correoObra);
-
-                mail.IsBodyHtml = true; 
-                SmtpClient client = new SmtpClient("smtp.gmail.com", 587); //Aquí debes sustituir tu servidor SMTP y el puerto
-                client.Credentials = new NetworkCredential(from, password);
-                client.EnableSsl = true;//En caso de que tu servidor de correo no utilice cifrado SSL,poner en false
-
-
-
-                WebResponse webResponse;
-                HttpWebRequest request;
-                Uri uri;
-                string cadenaUri;
-                string response;
               
-                string strNew = "NombreReporte=OrdenCompra&Formato=PDF&Id=" + IdPedido + "&BaseDatos=" + BaseDatos;
-                cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReportCrystal";
-                //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReportCrystal";
-                uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
-                request = (HttpWebRequest)WebRequest.Create(uri);
-                request.Method = "POST";
-                request.ContentType = "application/x-www-form-urlencoded";
-                StreamWriter requestWriter = new StreamWriter(request.GetRequestStream(), System.Text.Encoding.ASCII);
-                requestWriter.Write(strNew);
-                requestWriter.Close();
-                webResponse = request.GetResponse();
-                Stream webStream = webResponse.GetResponseStream();
-                StreamReader responseReader = new StreamReader(webStream);
-                response = responseReader.ReadToEnd();
-                XmlDocument xDoc = new XmlDocument();
-                xDoc.LoadXml(response);
-                base64 = xDoc.ChildNodes[1].ChildNodes[2].InnerText;
-                Byte[] archivopdf = Convert.FromBase64String(base64);
-                Attachment att = new Attachment(new MemoryStream(archivopdf), "OrdenCompra.pdf");
-                mail.Attachments.Add(att);
-                client.Send(mail);
-
-
-                oPedidoDAO.UpdateEnvioCorreoPedido(IdPedido,BaseDatos,ref mensaje_error);
             }
             catch (WebException e)
             {
