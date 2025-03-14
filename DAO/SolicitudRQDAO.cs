@@ -1576,8 +1576,10 @@ namespace DAO
                         oSolicitudDetalleDTO.CodArticulo = (drd["CodArticulo"].ToString());
                         oSolicitudDetalleDTO.DescripcionItem =(drd["Descripcion"].ToString());
                         oSolicitudDetalleDTO.CantidadNecesaria = Convert.ToDecimal(drd["CantidadNecesaria"].ToString());
+                        oSolicitudDetalleDTO.CantidadSolicitada = Convert.ToDecimal(drd["CantidadSolicitada"].ToString());
                         oSolicitudDetalleDTO.NumeroSerie = (drd["NumeroSerie"].ToString());                
                         oSolicitudDetalleDTO.CorreoAlmacen = (drd["CorreoAlmacen"].ToString());                
+                        oSolicitudDetalleDTO.IdAlmacen = (drd["IdAlmacen"].ToString());                
                     }
                     drd.Close();
 

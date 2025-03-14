@@ -620,6 +620,33 @@ namespace ConcyssaWeb.Controllers
                 EnviarCorreoObservaciones(oConformidadPedidoDTO.IdPedido);
 
             }
+            if (respuesta >= 0 && oConformidadPedidoDTO.Conformidad == 3)
+            {
+                ConfiguracionSociedadController homeController = new ConfiguracionSociedadController();
+
+                CorreoDAO oCorreoDAO = new CorreoDAO();
+                CorreoDTO oCorreoDTO = oCorreoDAO.ObtenerDatosCorreo("GENERAL", BaseDatos, ref mensaje_error);
+                PedidoDTO oPedidoDTO = new PedidoDTO();
+                ObraDAO obraDao = new ObraDAO();
+                oPedidoDTO = oPedidoDAO.ObtenerPedidoxId(oConformidadPedidoDTO.IdPedido, BaseDatos, ref mensaje_error);
+                List<ObraDTO> datosObra = obraDao.ObtenerDatosxID(oPedidoDTO.IdObra, BaseDatos, ref mensaje_error);
+                string correoObra = "";
+
+                List<string> Correos = new List<string>();
+                Correos.Add("garrieta@concyssa.com");
+
+                if (datosObra.Count > 0)
+                {
+                    correoObra = datosObra[0].CorreoObra;
+                    Correos.Add(correoObra);
+                }
+
+                string HTML = TemplateCierreAnulacion(oPedidoDTO, "Rechazado");
+                string Asunto = "SE RECHAZO EL PEDIDO " + oPedidoDTO.NombSerie + "-" + oPedidoDTO.Correlativo;
+
+                homeController.EnviarCorreo2025(oCorreoDTO, Asunto, Correos, HTML, BaseDatos, ref mensaje_error);      
+
+            }
             return respuesta.ToString();
         }
 
@@ -705,7 +732,7 @@ namespace ConcyssaWeb.Controllers
                         }
 
                         message.To.Add(correoObra);
-                        //message.To.Add("compras@concyssa.com");
+                        message.To.Add("garrieta@concyssa.com");
                         //message.To.Add("cristhian.chacaliaza@smartcode.pe");
 
                         message.Subject = Asunto;

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net;
 using System.Net.Mail;
+using System.Xml;
 
 namespace ConcyssaWeb.Controllers
 {
@@ -228,7 +229,7 @@ namespace ConcyssaWeb.Controllers
                 return valida;
             }
 
-
+            List<SolicitudRQModeloAprobacionesDTO> Rechazos = new List<SolicitudRQModeloAprobacionesDTO>();
 
             SolicitudRQModeloAprobacionesDAO oSolicitudRQModeloAprobacionesDAO = new SolicitudRQModeloAprobacionesDAO();
             SolicitudRQDAO oSolicitudRQDAO = new SolicitudRQDAO();
@@ -239,9 +240,18 @@ namespace ConcyssaWeb.Controllers
             if (resultado != 0)
             {
 
+                
+
                 //Valida si hay cambio en precio o cantidad y realiza la actualizacion dependiendo de eso
                 for (int i = 0; i < solicitudRQModeloAprobacionesDTO.Count; i++)
                 {
+
+                    if (solicitudRQModeloAprobacionesDTO[i].Accion == 1)
+                    {
+                        Rechazos.Add(solicitudRQModeloAprobacionesDTO[i]);
+                    }
+
+
                     var DatosSolicitud = oSolicitudRQDAO.ObtenerDatosxID(solicitudRQModeloAprobacionesDTO[i].IdSolicitud, BaseDatos);
                     //{
                         for (int j = 0; j < DatosSolicitud[0].Detalle.Count; j++) //datos de solicitud
@@ -252,10 +262,6 @@ namespace ConcyssaWeb.Controllers
                                 {
                                     oSolicitudRQModeloAprobacionesDAO.ActualizarCantidadPrecioDetalle(solicitudRQModeloAprobacionesDTO[i], IdSociedad.ToString(),BaseDatos);
                                 }
-                                //if (solicitudRQModeloAprobacionesDTO[i].PrecioItem != DatosSolicitud[0].Detalle[j].PrecioInfo)
-                                //{
-                                //    oSolicitudRQModeloAprobacionesDAO.ActualizarCantidadPrecioDetalle(solicitudRQModeloAprobacionesDTO[i], IdSociedad.ToString());
-                                //}
                             }
                         }
                     //}
@@ -270,11 +276,6 @@ namespace ConcyssaWeb.Controllers
 
                 for (int i = 0; i < solicitudRQModeloAprobacionesDTO.Count; i++)
                 {
-
-                    //for (int j = 0; j < SolicitudRQModeloResult.Count; j++)
-                    //{
-                    //encuentras las etapas
-
 
                     //valida cuantas autorizaciones tiene el item
                     int validarItemsAutorizados = oSolicitudRQModeloAprobacionesDAO.ValidarItemsAutorizados(solicitudRQModeloAprobacionesDTO[i].IdSolicitudModelo, solicitudRQModeloAprobacionesDTO[i].IdArticulo, solicitudRQModeloAprobacionesDTO[i].IdDetalle,BaseDatos);
@@ -294,127 +295,44 @@ namespace ConcyssaWeb.Controllers
                     {
                         oSolicitudRQModeloAprobacionesDAO.ActualizarEstadoDisabledItem(solicitudRQModeloAprobacionesDTO[i], IdSociedad.ToString(),BaseDatos);
                     }
-                    //}
 
                 }
 
 
-
-                var DatosItemsAprobados = ObtenerDatosxID(solicitudRQModeloAprobacionesDTO[0].IdSolicitud, solicitudRQModeloAprobacionesDTO[0].IdAutorizador, SolicitudRQModeloResult[0].IdEtapa);
-                List<SolicitudRQDTO> lstSolicitudRQDTO = JsonConvert.DeserializeObject<List<SolicitudRQDTO>>(DatosItemsAprobados);
+                // List<SolicitudRQDTO> lstSolicitudRQDTO = JsonConvert.DeserializeObject<List<SolicitudRQDTO>>(DatosItemsAprobados);
 
 
-                //enviar correo
-                //for (int k = 0; k < EtapasAutorizacionResult[0].Detalles.Count; k++)
-                //{
-                //    var Solicitante = oUsuarioDAO.ObtenerDatosxID(DatosSolicitud[0].IdSolicitante);
-                //    var Autorizadores = oUsuarioDAO.ObtenerDatosxID(EtapasAutorizacionResult[0].Detalles[k].IdUsuario);
+                string mensaje_error = "";
+                List<SolicitudDetalleDTO> detallesCorreo = new List<SolicitudDetalleDTO>();
 
-                //    EnviarCorreoEstado(solicitudRQModeloAprobacionesDTO[0].IdSolicitud, Autorizadores[0].Correo, Solicitante[0].NombreUsuario, DatosSolicitud[0].Serie, DatosSolicitud[0].Numero, lstSolicitudRQDTO);
+                for (int i = 0; i < Rechazos.Count; i++)
+                {
+                    SolicitudDetalleDTO solicitudRQDetalleDTO = oSolicitudRQDAO.ObtenerSolicitudDetallexId(Rechazos[i].IdDetalle, BaseDatos, ref mensaje_error);
+                    detallesCorreo.Add(solicitudRQDetalleDTO);
+                }
 
-
-                //}
-                //enviar correo
-
+                if (detallesCorreo.Count > 0) {
 
 
+                    List<List<SolicitudDetalleDTO>> Lista = detallesCorreo.GroupBy(x => x.IdAlmacen).Select(g =>  g.ToList()).ToList();
 
+                    for (int i = 0; i < Lista.Count; i++)
+                    {
+                        ConfiguracionSociedadController homeController = new ConfiguracionSociedadController();
 
+                        CorreoDAO oCorreoDAO = new CorreoDAO();
+                        CorreoDTO oCorreoDTO = oCorreoDAO.ObtenerDatosCorreo("GENERAL", BaseDatos, ref mensaje_error);
 
+                        List<string> Correos = new List<string>();
+                        Correos.Add("garrieta@concyssa.com");
+                        Correos.Add(Lista[i][0].CorreoAlmacen);
 
+                        homeController.EnviarCorreo2025(oCorreoDTO, "REQUERIMIENTOS DESAPROBADOS", Correos, CuerpoCorreoRechazo(Lista[i]), BaseDatos, ref mensaje_error);
 
+                    }
 
+                }
 
-
-                ////Validar cantidad de aprobaciones y rechazo
-                //for (int i = 0; i < solicitudRQModeloAprobacionesDTO.Count; i++)
-                //{
-
-                //    //valida cuantas autorizaciones tiene el item
-                //    int validarItemsAutorizados = oSolicitudRQModeloAprobacionesDAO.ValidarItemsAutorizados(solicitudRQModeloAprobacionesDTO[i].IdSolicitudModelo, solicitudRQModeloAprobacionesDTO[i].IdArticulo);
-                //    int validarItemsRechazados = oSolicitudRQModeloAprobacionesDAO.ValidarItemsDesAutorizados(solicitudRQModeloAprobacionesDTO[i].IdSolicitudModelo, solicitudRQModeloAprobacionesDTO[i].IdArticulo);
-
-
-
-                //    if (EtapasAutorizacionResult[0].AutorizacionesRequeridas == validarItemsAutorizados)
-                //    {
-                //        var ActualizarEstadoDisabledItem = oSolicitudRQModeloAprobacionesDAO.ActualizarEstadoDisabledItem(solicitudRQModeloAprobacionesDTO[i], IdSociedad.ToString());
-                //    }
-
-                //    if (EtapasAutorizacionResult[0].RechazosRequeridos == validarItemsRechazados)
-                //    {
-                //        var ActualizarEstadoDisabledItem = oSolicitudRQModeloAprobacionesDAO.ActualizarEstadoDisabledItem(solicitudRQModeloAprobacionesDTO[i], IdSociedad.ToString());
-                //    }
-
-                //}
-
-
-                //var DatosItemsAprobados = ObtenerDatosxID(solicitudRQModeloAprobacionesDTO[0].IdSolicitud, solicitudRQModeloAprobacionesDTO[0].IdAutorizador);
-                //List<SolicitudRQDTO> lstSolicitudRQDTO = JsonConvert.DeserializeObject<List<SolicitudRQDTO>>(DatosItemsAprobados);
-
-
-                //for (int i = 0; i < EtapasAutorizacionResult[0].Detalles.Count; i++)
-                //{
-                //    var Solicitante = oUsuarioDAO.ObtenerDatosxID(DatosSolicitud[0].IdSolicitante);
-                //    var Autorizadores = oUsuarioDAO.ObtenerDatosxID(EtapasAutorizacionResult[0].Detalles[i].IdUsuario);
-                //    for (int j = 0; j < Autorizadores.Count; j++)
-                //    {
-                //        EnviarCorreoEstado(solicitudRQModeloAprobacionesDTO[0].IdSolicitud, Autorizadores[j].Correo, Solicitante[0].NombreUsuario, DatosSolicitud[0].Serie, DatosSolicitud[0].Numero, lstSolicitudRQDTO);
-                //    }
-
-                //}
-
-
-
-
-
-
-                //for (int i = 0; i < solicitudRQModeloAprobacionesDTO.Count; i++)
-                //{
-                //    if (solicitudRQModeloAprobacionesDTO[i].Accion == 1)
-                //    {
-                //        oSolicitudRQModeloAprobacionesDAO.AprobarSolicitudRQ(solicitudRQModeloAprobacionesDTO[i].IdSolicitud, solicitudRQModeloAprobacionesDTO[i].IdSolicitudModelo);
-                //    }
-                //    else
-                //    {
-                //        oSolicitudRQModeloAprobacionesDAO.RechazarSolicitudRQ(solicitudRQModeloAprobacionesDTO[i].IdSolicitud, solicitudRQModeloAprobacionesDTO[i].IdSolicitudModelo);
-                //    }
-
-                //    var ValidarSiEstaAceptado = oSolicitudRQDAO.ObtenerDatosxID(solicitudRQModeloAprobacionesDTO[i].IdSolicitud);
-                //    var SolicitudRQModeloResult = oSolicitudRQModeloDAO.ObtenerDatosxID(solicitudRQModeloAprobacionesDTO[i].IdSolicitudModelo, IdSociedad.ToString());
-                //    var EtapasAutorizacionResult = oEtapaAutorizacionDAO.ObtenerDatosxID(SolicitudRQModeloResult[0].IdEtapa);
-                //    UsuarioDAO oUsuarioDAO = new UsuarioDAO();
-
-                //    var Solicitante = oUsuarioDAO.ObtenerDatosxID(ValidarSiEstaAceptado[0].IdSolicitante);
-
-                //    //solicitud aprobada
-                //    if (ValidarSiEstaAceptado[0].Estado == 2)
-                //    {
-                //        //enviar correo a usuarios
-                //        for (int k = 0; k < EtapasAutorizacionResult[0].Detalles.Count; k++)
-                //        {
-                //            var Usuario = oUsuarioDAO.ObtenerDatosxID(EtapasAutorizacionResult[0].Detalles[k].IdUsuario);
-                //            EnviarCorreoEstado(solicitudRQModeloAprobacionesDTO[i].IdSolicitud, Usuario[0].Correo, Solicitante[0].NombreUsuario, ValidarSiEstaAceptado[0].Serie, ValidarSiEstaAceptado[0].Numero,"Aprobo");
-                //        }
-                //        //envia correo a solicitante
-                //        EnviarCorreoEstado(solicitudRQModeloAprobacionesDTO[i].IdSolicitud, Solicitante[0].Correo, Solicitante[0].NombreUsuario, ValidarSiEstaAceptado[0].Serie, ValidarSiEstaAceptado[0].Numero, "Aprobo");
-                //    }
-                //    //solicitud desaprobada
-                //    else if (ValidarSiEstaAceptado[0].Estado == 3)
-                //    {
-                //        //enviar correo a usuarios
-                //        for (int k = 0; k < EtapasAutorizacionResult[0].Detalles.Count; k++)
-                //        {
-                //            var Usuario = oUsuarioDAO.ObtenerDatosxID(EtapasAutorizacionResult[0].Detalles[k].IdUsuario);
-                //            EnviarCorreoEstado(solicitudRQModeloAprobacionesDTO[i].IdSolicitud, Usuario[0].Correo, Solicitante[0].NombreUsuario, ValidarSiEstaAceptado[0].Serie, ValidarSiEstaAceptado[0].Numero,"Desaprobo");
-                //        }
-                //        //envia correo a solicitante
-                //         EnviarCorreoEstado(solicitudRQModeloAprobacionesDTO[i].IdSolicitud, Solicitante[0].Correo, Solicitante[0].NombreUsuario, ValidarSiEstaAceptado[0].Serie, ValidarSiEstaAceptado[0].Numero, "Desaprobo");
-                //    }
-
-                //}
-
-                //resultado = 1;
             }
 
             return resultado;
@@ -478,240 +396,6 @@ namespace ConcyssaWeb.Controllers
 
 
 
-        public void EnviarCorreoEstado(int IdSolicitud, string Correo, string Solicitante, string Serie, int Numero, List<SolicitudRQDTO> lstSolicitudRQDTO)
-        //public void EnviarCorreo()
-        {
-
-
-            string body;
-            body = TemplateEmail(Serie, Numero, Solicitante, lstSolicitudRQDTO);
-
-            //body = "<body>" +
-            //    "<h2>Se "+Estado+" una Solicitud</h2>" +
-            //    "<h4>Detalles de Solicitud:</h4>" +
-            //    "<span>N° Solicitud: " + Serie + "-" + Numero + "</span>" +
-            //    "<br/><span>Solicitante: " + Solicitante + "</span>" +
-            //    "</body>";
-
-            string msge = "";
-            string from = "concyssa.smc@gmail.com";
-            string correo = from;
-            string password = "tlbvngkvjcetzunr";
-            string displayName = "SMC - Proceso de Autorizacion";
-            MailMessage mail = new MailMessage();
-            mail.From = new MailAddress(from, displayName);
-            mail.To.Add(Correo);
-
-            mail.Subject = "Autorizacion";
-            mail.Body = body;
-
-            mail.IsBodyHtml = true;
-            SmtpClient client = new SmtpClient("smtp.gmail.com", 587); //Aquí debes sustituir tu servidor SMTP y el puerto
-            client.Credentials = new NetworkCredential(from, password);
-            client.EnableSsl = true;//En caso de que tu servidor de correo no utilice cifrado SSL,poner en false
-
-
-
-            string pathPDF = IdSolicitud + "-Solicitud-" + Serie + "-" + Numero;
-
-            //string path = "C:\\inetpub\\wwwroot\\Binario\\Anexos\\" + pathPDF + ".pdf";
-            string path = "C:\\Users\\soporte.sap\\source\\repos\\SMC_AddonRequerimientos\\SMC_AddonRequerimientos\\Anexos\\" + pathPDF + ".pdf";
-            bool result = System.IO.File.Exists(path);
-            if (result == true)
-            { }
-            else
-            {
-                //GenerarPDF(IdSolicitud.ToString());
-            }
-
-            //Attachment archivo = new Attachment("C:\\inetpub\\wwwroot\\Binario\\Anexos\\" + pathPDF + ".pdf");
-            Attachment archivo = new Attachment("C:\\Users\\soporte.sap\\source\\repos\\SMC_AddonRequerimientos\\SMC_AddonRequerimientos\\Anexos\\" + pathPDF + ".pdf");
-            mail.Attachments.Add(archivo);
-
-            client.Send(mail);
-
-
-
-        }
-
-
-
-        public string TemplateEmail(string Serie, int Numero, string Solicitante, List<SolicitudRQDTO> lstSolicitudRQDTO)
-        {
-            string bodyhtml;
-            bodyhtml = @"
-            <!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'
-            'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
-            <html xmlns='http://www.w3.org/1999/xhtml'
-            style='font-family:  Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;'>
-            <head>
-            <meta name='viewport' content='width=device-width'/>
-            <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
-            <title>Adminto - Responsive Bootstrap 5 Admin Dashboard</title>
-
-            </head>
-
-            <body itemscope itemtype='http://schema.org/EmailMessage'
-            style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: none; width: 100% !important; height: 100%; line-height: 1.6em; background-color: #f6f6f6; margin: 0;'
-            bgcolor='#f6f6f6'>
-
-            <table class='body-wrap'
-            style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; width: 100%; background-color: #f6f6f6; margin: 0;'
-            bgcolor='#f6f6f6'>
-            <tr style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;'>
-            <td style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0;'
-                valign='top'></td>
-            <td class='container' width='600'
-                style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; display: block !important; max-width: 600px !important; clear: both !important; margin: 0 auto;'
-                valign='top'>
-                <div class='content'
-                     style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; max-width: 600px; display: block; margin: 0 auto; padding: 20px;'>
-                    <table class='main' width='100%' cellpadding='0' cellspacing='0'
-                           style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; border-radius: 3px;  margin: 0; border: none;'
-                           >
-                        <tr style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;'>
-                            <td class='content-wrap aligncenter'
-                                style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0;padding: 20px;border: 3px solid #4fc6e1;border-radius: 7px; background-color: #fff;'
-                                align='center' valign='top'>
-                                <table width='100%' cellpadding='0' cellspacing='0'
-                                       style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;'>
-                                    <tr style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;'>
-                                        <td class='content-block'
-                                            style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;'
-                                            valign='top'>
-                                            <h2 class='aligncenter'
-                                                style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 24px; color: #000; line-height: 1.2em; font-weight: 400; text-align: center; margin: 40px 0 0;'
-                                                align='center'>
-                                                <a href='#' style='display: block;margin-bottom: 10px;'> <img src='https://smartcode.pe/img/elements/LOGO%20SMARTCODE.png' height='50' alt='logo'/></a> <br/>
-                                                Informacion de la Solicitud</h2>
-                                        </td>
-                                    </tr>
-                                    <tr style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;'>
-                                        <td class='content-block aligncenter'
-                                            style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: center; margin: 0; padding: 0 0 20px;'
-                                            align='center' valign='top'>
-                                            <table class='invoice'
-                                                   style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; text-align: left; width: 80%; margin: 40px auto;'>
-                                                <tr style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;'>
-                                                    <td style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 5px 0;'
-                                                        valign='top'><b>DETALLES:</b>
-                                                    </td>
-                                                </tr>
-                                                <tr style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;'>
-                                                    <td style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 5px 0;'
-                                                        valign='top'><b>N° Solicitud: " + Serie + "-" + Numero + @"</b>
-                                                    </td>
-                                                </tr>
-                                                <tr style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;'>
-                                                    <td style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 5px 0;'
-                                                        valign='top'><b>Solicitante: " + Solicitante + @"</b>
-                                                    </td>
-                                                </tr>
-            
-                                                <tr style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;'>
-                                                    <td style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 5px 0;'
-                                                        valign='top'>
-                                                            <table class='invoice-items' cellpadding='0' cellspacing='0'
-                                                               style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; width: 100%; margin: 0;'>";
-
-
-            //if (lstSolicitudRQDTO[0].Detalle.Count() > 0)
-            {
-                for (int i = 0; i < lstSolicitudRQDTO[0].Detalle.Count(); i++)
-                {
-                    string estadoItem = "";
-                    if (lstSolicitudRQDTO[0].Detalle[i].EstadoItemAutorizado == 1)
-                    {
-                        estadoItem = @"<strong>Pendiente</strong>";
-                    }
-                    else if (lstSolicitudRQDTO[0].Detalle[i].EstadoItemAutorizado == 2)
-                    {
-                        estadoItem = @"<strong>Aprobado</strong>";
-                    }
-                    else
-                    {
-                        estadoItem = @"<strong>Rechazado</strong>";
-                    }
-
-                    //ConsultasHana consultas = new ConsultasHana();
-                    List<ArticuloDTO> Item;
-                    var DescripcionItem = "";
-                    if (lstSolicitudRQDTO[0].IdClaseArticulo == 2)
-                    {
-                        //Item = consultas.ListarServicioxIDDescripcionHana(lstSolicitudRQDTO[0].Detalle[i].IdArticulo);
-                        //bodyhtml += @"<tr style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;'>
-                        //                                        <td style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; border-top-width: 1px; border-top-color: #eee; border-top-style: solid; margin: 0; padding: 5px 0;'
-                        //                                            valign='top'>" + Item[0].Descripcion1 + @"
-                        //                                        </td>
-                        //                                        <td class='alignright'
-                        //                                            style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: right; border-top-width: 1px; border-top-color: #eee; border-top-style: solid; margin: 0; padding: 5px 0;'
-                        //                                            align='right' valign='top'>" + estadoItem + @"
-                        //                                        </td>
-                        //                                    </tr>";
-                    }
-                    else
-                    {
-                        DescripcionItem = lstSolicitudRQDTO[0].Detalle[i].Descripcion;//consultas.ListarProductosxIDDescripcionHana(lstSolicitudRQDTO[0].Detalle[i].IdArticulo);
-                        bodyhtml += @"<tr style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;'>
-                                                                <td style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; border-top-width: 1px; border-top-color: #eee; border-top-style: solid; margin: 0; padding: 5px 0;'
-                                                                    valign='top'>" + DescripcionItem + @"
-                                                                </td>
-                                                                <td class='alignright'
-                                                                    style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: right; border-top-width: 1px; border-top-color: #eee; border-top-style: solid; margin: 0; padding: 5px 0;'
-                                                                    align='right' valign='top'>" + estadoItem + @"
-                                                                </td>
-                                                            </tr>";
-                    }
-
-
-
-
-                }
-            }
-
-
-
-
-            bodyhtml += @"
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                    <tr style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;'>
-                                        <td class='content-block aligncenter'
-                                            style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: center; margin: 0; padding: 0 0 20px;'
-                                            align='center' valign='top'>
-                                            <a href='http://192.168.0.209/'
-                                               style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; color: #02c0ce; text-decoration: underline; margin: 0;'>IR a Nuestra Pagina</a>
-                                        </td>
-                                    </tr>
-                        
-                                </table>
-                            </td>
-                        </tr>
-                    </table>
-                    <div class='footer'
-                         style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; width: 100%; clear: both; color: #999; margin: 0; padding: 20px;'>
-                        <table width='100%'
-                               style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;'>
-                            <tr style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;'>
-                    
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </td>
-            <td style = 'font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0;'
-                valign= 'top' ></ td >
-            </tr>
-            </table>";
-
-            return bodyhtml;
-        }
-
-
 
         public int PasarPendiente(int IdSolicitud)
         {
@@ -753,5 +437,120 @@ namespace ConcyssaWeb.Controllers
             return rpta;
         }
 
+        public string CuerpoCorreoRechazo(List<SolicitudDetalleDTO> lstSolicitudDetalleDTO)
+        {
+            string html = @"<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN'
+                            'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+                            <html xmlns='http://www.w3.org/1999/xhtml'
+                            style='font-family:  Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;'>
+                            <head>
+                            <meta name='viewport' content='width=device-width'/>
+                            <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
+                            <title>Adminto - Responsive Bootstrap 5 Admin Dashboard</title>
+
+                            </head>
+
+                            <body itemscope itemtype='http://schema.org/EmailMessage'
+                            style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: none; width: 100% !important; height: 100%; line-height: 1.6em; background-color: #f6f6f6; margin: 0;'
+                            bgcolor='#f6f6f6'>
+
+                            <table class='body-wrap'
+                            style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; width: 100%; background-color: #f6f6f6; margin: 0;'
+                            bgcolor='#f6f6f6'>
+                            <tr style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;'>
+                            <td style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0;'
+                                valign='top'></td>
+                            <td class='container' width='900'
+                                style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; display: block !important; max-width: 900px !important; clear: both !important; margin: 0 auto;'
+                                valign='top'>
+                                <div class='content'
+                                     style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; max-width: 900px; display: block; margin: 0 auto; padding: 20px;'>
+                                    <table class='main' width='100%' cellpadding='0' cellspacing='0'
+                                           style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; border-radius: 3px;  margin: 0'>
+                                        <tr style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;'>
+                                            <td class='content-wrap aligncenter'
+                                                style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0;padding: 20px;border: 3px solid #4fc6e1;border-radius: 7px; background-color: #fff;'
+                                                align='center' valign='top'>
+                                                <table width='100%' cellpadding='0' cellspacing='0'
+                                                       style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;'>
+                                                    <tr style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;'>
+                                                        <td class='content-block'
+                                                            style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;'
+                                                            valign='top'>
+                                                            <h2 class='aligncenter'
+                                                            style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 24px; color: #000; line-height: 1.2em; font-weight: 400; text-align: center; margin: 40px 0 0;'
+                                                            align='center'>                  
+                                                            Requerimientos Rechazados</h2>
+                                                        </td>
+                                                    </tr>
+                                                    <tr style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;'>
+                                                        <td class='content-block aligncenter'
+                                                            style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: center; margin: 0; padding: 0 0 20px;'
+                                                            align='center' valign='top'>
+                                                            <table class='invoice'
+                                                                   style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; text-align: left; width: 90%; margin: auto;'>
+                                                                <tr align='center'  style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;'>
+                                                                    <td style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 5px 0;'
+                                                                        valign='top'><span>Estimado/a:
+                                                
+                                                                            Se notificada que los siguientes Correos Item no fueron aprobados:<br>
+                                                
+                                                                           </span>
+                                                                    </td>
+                                                                </tr>
+                                                
+                                                            </table>
+                              
+                                                            <table class='invoice'
+                                                            style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; text-align: left; width: 90%; margin: auto;'>
+                                                            <thead style='background-color: #ccc;'>
+                                                                <th align='center'  style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;'>
+                                                                    NRO. REQ.
+                                                                </th>
+                                                                <th align='center'  style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;'>
+                                                                   ITEM
+                                                                </th>
+                                                                <th align='center'  style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;'>
+                                                                    CANTIDAD
+                                                                </th>
+                                                            </thead>
+                                                            <tbody style='background-color: #eee;'>";
+
+                                                                for (int i = 0; i < lstSolicitudDetalleDTO.Count; i++)
+                                                                {
+                                                                    html += @"  <tr align='left'  style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0'>
+                                                                         <td style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 5px 0;'
+                                                                             valign='top'><span>"+ lstSolicitudDetalleDTO[i].NumeroSerie + @"</span>
+                                                                         </td>
+                                                                         <td style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 5px 0;'
+                                                                             valign='top'><span>"+ lstSolicitudDetalleDTO[i].CodArticulo +"-"+ lstSolicitudDetalleDTO[i].DescripcionItem + @"</span>
+                                                                         </td>
+                                                                         <td style='font-family: Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 5px 0;'
+                                                                             valign='top'><span>"+ Math.Round(lstSolicitudDetalleDTO[i].CantidadSolicitada,2) + @"</span>
+                                                                         </td>
+                                                                     </tr>";
+                                                                }
+ 
+                                                           
+                                                            html += @"</tbody>
+                                
+                                   
+                                                        </table>                       
+                               
+                                                    </table>
+                                                        </td>
+                                                    </tr>                  
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>     
+                                </div>
+                            </td>
+                            </tr>
+                            </table>";
+
+            return html;
+        }
+     
     }
 }
