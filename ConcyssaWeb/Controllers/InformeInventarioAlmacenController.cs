@@ -405,7 +405,7 @@ namespace ConcyssaWeb.Controllers
             return "";
         }
 
-        public string GenerarReporteMovMensual(string Formato,int IdObra, int IdTipoProducto, int Anio, int Mes,string BaseDatos)
+        public string GenerarReporteMovMensual(string Formato,int IdObra, int IdTipoProducto, int Anio, int Mes,int IncluirExtornos,string BaseDatos)
         {
             if (BaseDatos == "" || BaseDatos == null)
             {
@@ -425,7 +425,7 @@ namespace ConcyssaWeb.Controllers
 
             try
             {
-                string strNew = "IdObra=" + IdObra + "&IdTipoProducto=" + IdTipoProducto + "&Anio=" + Anio + "&Mes=" + Mes+ "&BaseDatos=" + BaseDatos+ "&Formato="+ Formato;
+                string strNew = "IdObra=" + IdObra + "&IdTipoProducto=" + IdTipoProducto + "&Anio=" + Anio + "&Mes=" + Mes+ "&BaseDatos=" + BaseDatos+ "&Formato="+ Formato+ "&IncluirExtornos=" + IncluirExtornos;
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteStockMinimo";
                 cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ReporteMovMensual";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);

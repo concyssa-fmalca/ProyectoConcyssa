@@ -4,7 +4,13 @@ function GenerarReporte(Formato) {
     let IdTipoProducto = $("#cboTipoArticulo").val();
     let AnioI = $("#txtAnioI").val();
     let MesI = $("#txtMesI").val();
+    let chkExtorno = $("#chkExtornos").prop("checked");
 
+    let ValchkExtorno = 0;
+
+    if (chkExtorno) {
+        ValchkExtorno = 1;
+    }
 
     let respustavalidacion = "";
 
@@ -19,7 +25,7 @@ function GenerarReporte(Formato) {
 
 
         $.ajaxSetup({ async: false });
-        $.post("GenerarReporteMovMensual", { 'Formato': Formato , 'IdObra': IdObra, 'IdTipoProducto': IdTipoProducto, 'Anio': AnioI, 'Mes': MesI}, function (data, status) {
+        $.post("GenerarReporteMovMensual", { 'Formato': Formato, 'IdObra': IdObra, 'IdTipoProducto': IdTipoProducto, 'Anio': AnioI, 'Mes': MesI, 'IncluirExtornos': ValchkExtorno }, function (data, status) {
             let datos;
             if (validadJson(data)) {
                 if (Formato == 'excel') {
