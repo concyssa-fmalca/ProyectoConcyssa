@@ -38,8 +38,7 @@ namespace DAO
                         oUsuarioDTO.Estado = Convert.ToBoolean(drd["Estado"].ToString());
                         oUsuarioDTO.MovimientoInventario = Convert.ToBoolean(drd["MovimientoInventario"].ToString());
                         oUsuarioDTO.NombBase = drd["NombBase"].ToString();
-
-
+                        oUsuarioDTO.FechaExpiracion = DateTime.Parse(drd["FechaExpiracion"].ToString());
 
                         lstUsuarioDTO.Add(oUsuarioDTO);
                     }
@@ -486,6 +485,37 @@ namespace DAO
                 }
             }
             return lstUsuarioDTO;
+        }
+
+        public int CambiarPassword(string ClaveActual, string ClaveNueva, int IdUsuario, string BaseDatos, ref string mensaje_error)
+        {
+            TransactionOptions transactionOptions = default(TransactionOptions);
+            transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+            transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+            TransactionOptions option = transactionOptions;
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                {
+                    try
+                    {
+                        cn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter("SMC_CambiarClave", cn);
+                        da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                        da.SelectCommand.Parameters.AddWithValue("@ClaveActual", ClaveActual);
+                        da.SelectCommand.Parameters.AddWithValue("@ClaveNueva", ClaveNueva);
+                        da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
+                        int rpta = Convert.ToInt32(da.SelectCommand.ExecuteNonQuery());
+                        transactionScope.Complete();
+                        return rpta;
+                    }
+                    catch (Exception ex)
+                    {
+                        mensaje_error = ex.Message.ToString();
+                        return 0;
+                    }
+                }
+            }
         }
     }
 }

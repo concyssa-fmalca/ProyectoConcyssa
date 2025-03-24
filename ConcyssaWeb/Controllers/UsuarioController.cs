@@ -16,6 +16,10 @@ namespace ConcyssaWeb.Controllers
         {
             return View();
         }
+        public IActionResult CambiarClave()
+        {
+            return View();
+        }
 
 
         public string ObtenerUsuarios()
@@ -334,6 +338,59 @@ namespace ConcyssaWeb.Controllers
 
             return resultado;
         }
+
+        public string CambiarPassword(string ClaveActual, string ClaveNueva)
+        {
+            string mensaje_error = "";
+            string Clave2 = ClaveActual.ToUpper();
+            string BaseDatos = HttpContext.Session.GetString("BaseDatos").ToString();
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
+            UsuarioDAO oUsuarioDAO = new UsuarioDAO();
+
+            using (SHA512 sha512 = SHA512.Create())
+            {
+                byte[] passwordBytes = Encoding.UTF8.GetBytes(Clave2);
+                byte[] hashedBytes = sha512.ComputeHash(passwordBytes);
+                Clave2 = BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
+            }
+
+            using (SHA512 sha512 = SHA512.Create())
+            {
+                byte[] passwordBytes = Encoding.UTF8.GetBytes(ClaveActual);
+                byte[] hashedBytes = sha512.ComputeHash(passwordBytes);
+                ClaveActual = BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
+            }
+
+            using (SHA512 sha512 = SHA512.Create())
+            {
+                byte[] passwordBytes = Encoding.UTF8.GetBytes(ClaveNueva);
+                byte[] hashedBytes = sha512.ComputeHash(passwordBytes);
+                ClaveNueva = BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
+            }
+
+
+            int rpta = oUsuarioDAO.CambiarPassword(ClaveActual, ClaveNueva, IdUsuario, BaseDatos, ref mensaje_error);
+
+            if (mensaje_error.Length > 0)
+            {
+                mensaje_error = "";
+                rpta = oUsuarioDAO.CambiarPassword(Clave2, ClaveNueva, IdUsuario, BaseDatos, ref mensaje_error);
+            }
+
+            object json = null;
+
+            if (rpta == 0)
+            {
+                json = new { status = false, mensaje = mensaje_error };
+            }
+            else
+            {
+                json = new { status = true, mensaje = mensaje_error };
+            }
+
+            return JsonConvert.SerializeObject(json);
+        }
+
 
 
     }

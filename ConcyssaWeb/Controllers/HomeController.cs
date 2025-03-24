@@ -38,17 +38,18 @@ namespace ConcyssaWeb.Controllers
 
         public string login(string usuario, string password,int idsociedad,string BaseDatos,string Alias)
         {
-            bool respuesta = false;
+            object json = null;
             string mensajeError = "";
+            string password2 = password.ToUpper();
             UsuarioDTO oUsuarioDTO = null;
             try
             {
                 UsuarioDAO oUsuarioDAO = new UsuarioDAO();
 
-                using (SHA512 sha512 = SHA512.Create())
+                using (SHA512 sha512 = SHA512.Create())//////
                 {
                     // Convierte la contraseña en un array de bytes
-                    byte[] passwordBytes = Encoding.UTF8.GetBytes(password.ToUpper());
+                    byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
 
                     // Calcula el hash de la contraseña
                     byte[] hashedBytes = sha512.ComputeHash(passwordBytes);
@@ -60,6 +61,23 @@ namespace ConcyssaWeb.Controllers
 
 
                 List<UsuarioDTO> lstUsuarioDTO = oUsuarioDAO.ValidarUsuario(usuario, password, idsociedad,BaseDatos, ref mensajeError);
+
+                if (lstUsuarioDTO.Count == 0)
+                {
+                    using (SHA512 sha512 = SHA512.Create())
+                    {
+                        // Convierte la contraseña en un array de bytes
+                        byte[] passwordBytes = Encoding.UTF8.GetBytes(password2);
+
+                        // Calcula el hash de la contraseña
+                        byte[] hashedBytes = sha512.ComputeHash(passwordBytes);
+
+                        // Convierte el hash en una cadena hexadecimal
+                        password2 = BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
+                    }
+                    lstUsuarioDTO = oUsuarioDAO.ValidarUsuario(usuario, password2, idsociedad, BaseDatos, ref mensajeError);
+                }
+
                 oUsuarioDTO = lstUsuarioDTO[0];
                 if (oUsuarioDTO.Estado == true)
                 {
@@ -75,11 +93,19 @@ namespace ConcyssaWeb.Controllers
                     HttpContext.Session.SetString("NombBase", oUsuarioDTO.NombBase);
                     HttpContext.Session.SetString("Alias", Alias);
                     HttpContext.Session.SetString("BaseDatos", BaseDatos);
+                    if(oUsuarioDTO.FechaExpiracion <= DateTime.Now)
+                    {
+                        json = new {status=true,Usuario =  oUsuarioDTO, ClaveExpira = true};
+                        return JsonConvert.SerializeObject(json);
+                    }
 
-                    return JsonConvert.SerializeObject(oUsuarioDTO);
+
+                    json = new { status = true, Usuario = oUsuarioDTO, ClaveExpira = false };
+                    return JsonConvert.SerializeObject(json);
                 }
                 else
                 {
+                    json = new { status = false, Usuario = oUsuarioDTO, ClaveExpira = false };
                     return JsonConvert.SerializeObject(oUsuarioDTO);
                 }
 
@@ -87,7 +113,8 @@ namespace ConcyssaWeb.Controllers
             }
             catch (Exception ex)
             {
-                return JsonConvert.SerializeObject(oUsuarioDTO);
+                json = new { status = false, Usuario = oUsuarioDTO, ClaveExpira = false,mensaje=ex.Message.ToString() };
+                return JsonConvert.SerializeObject(json);
                 throw;
 
             }
