@@ -429,13 +429,17 @@ namespace ConcyssaWeb.Controllers
             //oWebServiceDTO.Id = Id;
             requestData = JsonConvert.SerializeObject(oWebServiceDTO);
 
+            IConfiguration _IConfiguration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .Build();
+
+
 
             try
             {
                 int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
                 string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdSemana=" + IdSemana + "&IdObra=" + IdObra + "&IdSociedad=" + IdSociedad;
-                //cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReportCrystal";
-                //cadenaUri = "http://192.168.0.209/ReporteCrystal/ReportCrystal.asmx/ObtenerReportCrystal";
                 cadenaUri = "http://192.168.0.209/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteSemanaGiro";
 
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);

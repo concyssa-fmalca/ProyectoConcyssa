@@ -19,6 +19,13 @@ namespace ConcyssaWeb.Controllers
             {
                 BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             }
+
+            IConfiguration _IConfiguration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .Build();
+
+
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
             HttpWebRequest request;
@@ -35,7 +42,7 @@ namespace ConcyssaWeb.Controllers
             {
                 string strNew = "IdObra=" + IdObra + "&IdAlmacen=" + IdAlmacen + "&IdTipoProducto=" + IdTipoProducto + "&NombreReporte=" + NombreReporte + "&BaseDatos=" + BaseDatos + "&Formato=" + Formato + "&FechaInicio=" + FechaInicio + "&FechaFin=" + FechaFin;
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ReporteTransferencias";
-                cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ReporteTransferencias";
+                cadenaUri = _IConfiguration["Reporte:UrlBase"] + "/ReportCrystal.asmx/ReporteTransferencias";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
                 request = (HttpWebRequest)WebRequest.Create(uri);
 

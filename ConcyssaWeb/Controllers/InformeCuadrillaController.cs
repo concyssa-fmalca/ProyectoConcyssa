@@ -28,6 +28,12 @@ namespace ConcyssaWeb.Controllers
             //string fechaInicio3 = fechaInicio2[2] + "/" + fechaInicio2[1] + "/" + fechaInicio2[0];
             //string FechaFin3 = FechaFin2[2] + "/" + FechaFin2[1] + "/" + FechaFin2[0];
 
+            IConfiguration _IConfiguration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .Build();
+
+
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
             HttpWebRequest request;
@@ -53,7 +59,7 @@ namespace ConcyssaWeb.Controllers
             {
                 string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&Cuadrillas=" + Cuadrillas + "&Materiales=" + Materiales + "&Auxiliares=" + Auxiliares + "&Servicios=" + Servicios + "&Extornos=" + Extornos + "&FechaInicio=" + FechaInicioS + "&FechaFin=" + FechaFin +"&BaseDatos="+BaseDatos;
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteInformeConsumoCuadrillas";
-                cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteInformeConsumoCuadrillas";
+                cadenaUri = _IConfiguration["Reporte:UrlBase"] + "/ReportCrystal.asmx/ObtenerReporteInformeConsumoCuadrillas";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
                 request = (HttpWebRequest)WebRequest.Create(uri);
 

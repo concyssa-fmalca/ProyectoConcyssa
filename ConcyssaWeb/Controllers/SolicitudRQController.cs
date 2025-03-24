@@ -467,6 +467,13 @@ namespace ConcyssaWeb.Controllers
 
         public string GenerarReporte(string NombreReporte, string Formato, int Id)
         {
+
+            IConfiguration _IConfiguration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .Build();
+
+
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
             HttpWebRequest request;
@@ -485,7 +492,7 @@ namespace ConcyssaWeb.Controllers
             try
             {
                 string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&Id=" + Id;
-                cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReportCrystal";
+                cadenaUri = _IConfiguration["Reporte:UrlBase"] + "/ReportCrystal.asmx/ObtenerReportCrystal";
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReportCrystal";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
                 request = (HttpWebRequest)WebRequest.Create(uri);
