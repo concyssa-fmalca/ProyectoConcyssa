@@ -34,6 +34,7 @@ namespace DTO
         public int IdEmpleado { get; set; }
         public string Celular { get; set; }
         public bool CrearOCdirecto { get; set; }
+        public DateTime FechaExpiracion { get; set; }
     }
 
     public class UsuarioBaseAlmacenDTO{

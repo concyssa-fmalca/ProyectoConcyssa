@@ -825,3 +825,49 @@ function ImportarExcel() {
 
    
 }
+
+function BuscarItemsExp() {
+
+
+    $("#IdArticulo").select2({
+        language: "es",
+        width: '100%',
+        //dropdownParent: $("#modal-form"),
+        //theme: "classic",
+        async: false,
+        ajax: {
+            url: "/Articulo/ListarArticulosxAlmacenSelect2",
+            type: "post",
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+
+                return {
+                    searchTerm: params.term, // search term
+                    IdTipoProducto: $("#IdTipoProducto").val(),
+                    IdAlmacen: $("#IdAlmacen").val(),
+                    IdClaseArticulo: $("#cboClaseArticulo").val()
+                };
+
+
+
+            },
+            processResults: function (response) {
+
+                var results = [];
+                results.push({ id: 0, text: "TODOS" })
+                $.each(response, function (index, item) {
+                    results.push({ id: item.IdArticulo, text: item.Codigo + '-' + item.Descripcion1 })
+                });
+
+
+                return { results }
+
+
+            },
+            cache: true,
+        },
+        placeholder: 'Ingrese Nombre de Producto',
+        minimunInputLength: 3
+    });
+}

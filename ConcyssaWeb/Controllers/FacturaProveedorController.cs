@@ -1064,6 +1064,11 @@ namespace ConcyssaWeb.Controllers
                 BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             }
 
+            IConfiguration _IConfiguration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .Build();
+
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
             HttpWebRequest request;
@@ -1079,8 +1084,8 @@ namespace ConcyssaWeb.Controllers
             try
             {
                 string strNew = "IdObra=" + IdObra + "&IdTipoRegistro=" + IdTipoRegistro + "&IdSemana=" + IdSemana + "&BaseDatos=" + BaseDatos;
-                //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReportCrystal";
-                cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ReporteValidacionSUNAT";
+
+                cadenaUri = _IConfiguration["Reporte:UrlBase"] + "/ReportCrystal.asmx/ReporteValidacionSUNAT";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
                 request = (HttpWebRequest)WebRequest.Create(uri);
 
@@ -1142,6 +1147,12 @@ namespace ConcyssaWeb.Controllers
                 BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             }
 
+            IConfiguration _IConfiguration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .Build();
+
+
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
             HttpWebRequest request;
@@ -1154,9 +1165,7 @@ namespace ConcyssaWeb.Controllers
             try
             {
                string strNew = "Formato="  +Formato+"&IdObra=" + IdObra + "&IdProveedor=" + IdProveedor + "&BaseDatos=" + BaseDatos + "&NombreReporte=" + NombreReporte + "&FechaInicio=" + FechaInicio + "&FechaFin=" + FechaFin+"&IdServicio="+IdArticulo;
-               // string strNew = "Formato="  +Formato+"&IdObra=" + IdObra + "&IdProveedor=" + IdProveedor + "&BaseDatos=" + BaseDatos + "&NombreReporte=" + NombreReporte + "&FechaInicio=" + FechaInicio + "&FechaFin=" + FechaFin;
-                cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ReporteFacturaServicioObra";
-                //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ReporteFacturaServicioObra";
+                cadenaUri = _IConfiguration["Reporte:UrlBase"] + "/ReportCrystal.asmx/ReporteFacturaServicioObra";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
                 request = (HttpWebRequest)WebRequest.Create(uri);
 
@@ -1210,6 +1219,12 @@ namespace ConcyssaWeb.Controllers
                 BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             }
 
+            IConfiguration _IConfiguration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .Build();
+
+
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
             HttpWebRequest request;
@@ -1222,7 +1237,7 @@ namespace ConcyssaWeb.Controllers
             try
             {
                 string strNew = "Formato=" + Formato + "&IdObra=" + IdObra + "&IdTipoRegistro=" + IdTipoRegistro + "&BaseDatos=" + BaseDatos + "&NombreReporte=" + NombreReporte + "&FechaInicio=" + FechaInicio + "&FechaFin=" + FechaFin;
-                cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ReporteFacturasPendienteSAP";
+                cadenaUri = _IConfiguration["Reporte:UrlBase"] + "/ReportCrystal.asmx/ReporteFacturasPendienteSAP";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
                 request = (HttpWebRequest)WebRequest.Create(uri);
 

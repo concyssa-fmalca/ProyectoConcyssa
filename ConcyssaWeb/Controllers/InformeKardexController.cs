@@ -80,12 +80,17 @@ namespace ConcyssaWeb.Controllers
             string mensaje_error;
             int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
 
+            IConfiguration _IConfiguration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .Build();
+
 
             try
             {
                 string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdSociedad=" + IdSociedad + "&IdArticulo=" + IdArticulo + "&IdAlmacen=" + IdAlmacen + "&FechaInicio=" + FechaInicio.ToString("yyyy-MM-dd") + "&FechaTermino=" + FechaTermino.ToString("yyyy-MM-dd");
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerKardexReportCrystal";
-                cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerKardexReportCrystal";
+                cadenaUri = _IConfiguration["Reporte:UrlBase"] + "/ReportCrystal.asmx/ObtenerKardexReportCrystal";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
                 request = (HttpWebRequest)WebRequest.Create(uri);
 

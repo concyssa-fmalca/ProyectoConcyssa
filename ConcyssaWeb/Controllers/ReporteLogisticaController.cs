@@ -67,6 +67,12 @@ namespace ConcyssaWeb.Controllers
                 BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             }
 
+            IConfiguration _IConfiguration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .Build();
+
+
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
             HttpWebRequest request;
@@ -85,7 +91,7 @@ namespace ConcyssaWeb.Controllers
             try
             {
                 string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&Anno=" + Anno + "&Detalle=" + Detalle + "&BaseDatos=" + BaseDatos;
-                cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteCompraAnual";
+                cadenaUri = _IConfiguration["Reporte:UrlBase"] + "/ReportCrystal.asmx/ObtenerReporteCompraAnual";
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteCompraAnual";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
                 request = (HttpWebRequest)WebRequest.Create(uri);
@@ -150,6 +156,12 @@ namespace ConcyssaWeb.Controllers
                 BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             }
 
+            IConfiguration _IConfiguration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .Build();
+
+
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
             HttpWebRequest request;
@@ -162,7 +174,7 @@ namespace ConcyssaWeb.Controllers
             try
             {
                 string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdArticulo=" + IdArticulo + "&BaseDatos=" + BaseDatos;
-                cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteCompraPorProducto";
+                cadenaUri = _IConfiguration["Reporte:UrlBase"] + "/ReportCrystal.asmx/ObtenerReporteCompraPorProducto";
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteCompraPorProducto";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
                 request = (HttpWebRequest)WebRequest.Create(uri);
@@ -209,6 +221,12 @@ namespace ConcyssaWeb.Controllers
                 BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             }
 
+            IConfiguration _IConfiguration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .Build();
+
+
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
             HttpWebRequest request;
@@ -224,7 +242,7 @@ namespace ConcyssaWeb.Controllers
             try
             {
                 string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdProveedor=" + IdProveedor + "&fechaIni=" + fechaIni + "&fechaFin=" + fechaFin + "&IdTIpo=" + IdTIpo + "&BaseDatos=" + BaseDatos;
-                cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteCompraProveedor";
+                cadenaUri = _IConfiguration["Reporte:UrlBase"] + "/ReportCrystal.asmx/ObtenerReporteCompraProveedor";
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteCompraProveedor";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
                 request = (HttpWebRequest)WebRequest.Create(uri);
@@ -272,6 +290,12 @@ namespace ConcyssaWeb.Controllers
                 BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             }
 
+            IConfiguration _IConfiguration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .Build();
+
+
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
             HttpWebRequest request;
@@ -283,7 +307,7 @@ namespace ConcyssaWeb.Controllers
             try
             {
                 string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&Anno=" + Anno + "&BaseDatos=" + BaseDatos;
-                cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteEntrega";
+                cadenaUri = _IConfiguration["Reporte:UrlBase"] + "/ReportCrystal.asmx/ObtenerReporteEntrega";
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteCompraAnual";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
                 request = (HttpWebRequest)WebRequest.Create(uri);
@@ -346,6 +370,12 @@ namespace ConcyssaWeb.Controllers
                 BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             }
 
+            IConfiguration _IConfiguration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .Build();
+
+
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
             HttpWebRequest request;
@@ -357,7 +387,7 @@ namespace ConcyssaWeb.Controllers
             try
             {
                 string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdObra=" + IdObra + "&IdTipo=" + IdTipo + "&Meses=" + Meses + "&BaseDatos=" + BaseDatos;
-                cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteStockSinconsumo";
+                cadenaUri = _IConfiguration["Reporte:UrlBase"] + "/ReportCrystal.asmx/ObtenerReporteStockSinconsumo";
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteStockSinconsumo";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
                 request = (HttpWebRequest)WebRequest.Create(uri);
@@ -410,6 +440,12 @@ namespace ConcyssaWeb.Controllers
                 BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             }
 
+            IConfiguration _IConfiguration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .Build();
+
+
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
             HttpWebRequest request;
@@ -430,7 +466,7 @@ namespace ConcyssaWeb.Controllers
             try
             {
                 string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdObra=" + IdObra + "&IdTipo=" + IdTipo + "&Meses=" + Meses + "&BaseDatos=" + BaseDatos;
-                cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteStockSinconsumo";
+                cadenaUri = _IConfiguration["Reporte:UrlBase"] + "/ReportCrystal.asmx/ObtenerReporteStockSinconsumo";
 
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
                 request = (HttpWebRequest)WebRequest.Create(uri);
@@ -560,6 +596,12 @@ namespace ConcyssaWeb.Controllers
                 BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             }
 
+            IConfiguration _IConfiguration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .Build();
+
+
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
             HttpWebRequest request;
@@ -571,7 +613,7 @@ namespace ConcyssaWeb.Controllers
             try
             {
                 string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&Anio=" + Anio + "&BaseDatos=" + BaseDatos; ;
-                cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteProveedoresNuevos";
+                cadenaUri = _IConfiguration["Reporte:UrlBase"] + "/ReportCrystal.asmx/ObtenerReporteProveedoresNuevos";
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteProveedoresNuevos";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
                 request = (HttpWebRequest)WebRequest.Create(uri);
@@ -624,6 +666,13 @@ namespace ConcyssaWeb.Controllers
             {
                 BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             }
+
+            IConfiguration _IConfiguration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .Build();
+
+
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
             HttpWebRequest request;
@@ -637,7 +686,7 @@ namespace ConcyssaWeb.Controllers
             try
             {
                 string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&FechaIni=" + FechaIni + "&FechaFin=" + FechaFin + "&BaseDatos=" + BaseDatos; 
-                cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteProveedoresUnicos";
+                cadenaUri = _IConfiguration["Reporte:UrlBase"] + "/ReportCrystal.asmx/ObtenerReporteProveedoresUnicos";
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteProveedoresUnicos";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
                 request = (HttpWebRequest)WebRequest.Create(uri);
@@ -690,6 +739,12 @@ namespace ConcyssaWeb.Controllers
                 BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             }
 
+            IConfiguration _IConfiguration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .Build();
+
+
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
             HttpWebRequest request;
@@ -701,7 +756,7 @@ namespace ConcyssaWeb.Controllers
             try
             {
                 string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdProveedor=" + IdProveedor + "&IdBase=" + IdBase + "&IdObra=" + IdObra + "&FechaInicial=" + FechaInicial + "&FechaFinal=" + FechaFinal + "&BaseDatos=" + BaseDatos;
-                cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteOcPendiente";
+                cadenaUri = _IConfiguration["Reporte:UrlBase"] + "/ReportCrystal.asmx/ObtenerReporteOcPendiente";
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteOcPendiente";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
                 request = (HttpWebRequest)WebRequest.Create(uri);
@@ -751,6 +806,13 @@ namespace ConcyssaWeb.Controllers
             {
                 BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             }
+
+            IConfiguration _IConfiguration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .Build();
+
+
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
             HttpWebRequest request;
@@ -762,7 +824,7 @@ namespace ConcyssaWeb.Controllers
             try
             {
                 string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&IdProyecto=" + IdProyecto + "&BaseDatos=" + BaseDatos; ;
-                cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteOsPendiente";
+                cadenaUri = _IConfiguration["Reporte:UrlBase"] + "/ReportCrystal.asmx/ObtenerReporteOsPendiente";
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteOsPendiente";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
                 request = (HttpWebRequest)WebRequest.Create(uri);
@@ -815,6 +877,12 @@ namespace ConcyssaWeb.Controllers
             {
                 BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             }
+
+            IConfiguration _IConfiguration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .Build();
+
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
             HttpWebRequest request;
@@ -830,7 +898,7 @@ namespace ConcyssaWeb.Controllers
             try
             {
                 string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&fechaIni=" + fechaIni + "&fechaFin=" + fechaFin + "&BaseDatos=" + BaseDatos;
-                cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteGuiaSinFactura";
+                cadenaUri = _IConfiguration["Reporte:UrlBase"] + "/ReportCrystal.asmx/ObtenerReporteGuiaSinFactura";
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteGuiaSinFactura";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
                 request = (HttpWebRequest)WebRequest.Create(uri);
@@ -878,6 +946,12 @@ namespace ConcyssaWeb.Controllers
                 BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             }
 
+            IConfiguration _IConfiguration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .Build();
+
+
             RespuestaDTO oRespuestaDTO = new RespuestaDTO();
             WebResponse webResponse;
             HttpWebRequest request;
@@ -896,7 +970,7 @@ namespace ConcyssaWeb.Controllers
             try
             {
                 string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&Anno=" + Anno + "&Detalle=" + Detalle + "&BaseDatos=" + BaseDatos;
-                cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteIndicadorEntregas";
+                cadenaUri = _IConfiguration["Reporte:UrlBase"] + "/ReportCrystal.asmx/ObtenerReporteIndicadorEntregas";
                 //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteCompraAnual";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
                 request = (HttpWebRequest)WebRequest.Create(uri);
