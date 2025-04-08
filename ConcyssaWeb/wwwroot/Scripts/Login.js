@@ -83,7 +83,8 @@ function ConsultaServidor() {
                      let chktxt = "";
                      if(i==0) chktxt = 'checked'
 
-                     tr += '<tr onclick="clickCheck('+i+')">' +
+                     //tr += '<tr onclick="clickCheck(' + i + ')">' +
+                     tr += '<tr>' +
                          '<td>  <input type="radio" clase="" id="rdSeleccionado' + sociedades[i].IdSociedad + '" value="' + sociedades[i].BaseDatos + '" ' + chktxt + ' idSociedad="' + sociedades[i].IdSociedad + '" name="rdSeleccionado" alias="' + sociedades[i].Alias+'"  ></td>' +
                          '<td>' + sociedades[i].Alias.toUpperCase() + '</td>' +
                          '<td>' + sociedades[i].BaseDatos.toUpperCase() + '</td>' +

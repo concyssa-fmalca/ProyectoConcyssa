@@ -15,12 +15,10 @@ let UltimoAlmacen = 0;
 
 var DatosModalCargados = false;
 function CargarDatosModal() {
-
+    
     if (!DatosModalCargados) {
         $.ajaxSetup({ async: false });
         CargarBasesObraAlmacenSegunAsignado();
-
-
         CargarCentroCosto();
         ObtenerTiposDocumentos()
         CargarTipoDocumentoOperacion()
@@ -83,7 +81,8 @@ function validarseriescontableParaCrear() {
 }
 
 function ListarBasesxUsuario() {
-    $.post("/Usuario/ObtenerBasesxIdUsuario", function (data, status) {
+    
+    $.post("/Usuario/ObtenerBasesxIdUsuario", function (data, status) {        
         let datos = JSON.parse(data);
         $("#IdBase").val(datos[0].IdBase).change();
         if (datos.length == 1) {
@@ -118,6 +117,7 @@ function CambiarClaseArticulo() {
 }
 
 function CargarBaseFiltro() {
+    
     $.ajaxSetup({ async: false });
     $.post("/Base/ObtenerBasexIdUsuario", function (data, status) {
         let base = JSON.parse(data);
@@ -126,7 +126,6 @@ function CargarBaseFiltro() {
     });
 
 }
-
 
 function llenarComboBaseFiltro(lista, idCombo, primerItem) {
     var contenido = "";
@@ -509,7 +508,7 @@ window.onload = function () {
     CargarTipoRegistroFiltro()
     //$("#btn_nuevo_proveedor").prop("disabled", true);
     ObtenerConfiguracionDecimales();
-    CargarBaseFiltro()
+    CargarBaseFiltro()    
     var url = "../Movimientos/ObtenerMovimientosIngresos";
     $("#IdResponsable").select2({
         dropdownParent: $("#ModalItem .modal-content")
@@ -1159,6 +1158,7 @@ function CargarSeries() {
     $.post("/Serie/ObtenerSeries", { estado: 1 }, function (data, status) {
         let series = JSON.parse(data);
         llenarComboSerie(series, "cboSerie", "Seleccione")
+        llenarComboSerie(series, "cboSerie2", "Seleccione")
     });
 }
 var DatosIndicadorImpuestos = [];
@@ -1598,9 +1598,21 @@ function changeTipoRegistro() {
     $.post("/TipoRegistro/ObtenerSemanaAjax", { 'estado': 1, 'IdTipoRegistro': varIdTipoRegistro, 'IdObra': varIdObra }, function (data, status) {
         let tipoRegistros = JSON.parse(data);
         llenarComboSemana(tipoRegistros, "IdSemana", "Seleccione")
-
     });
    
+}
+
+function changeTipoRegistro2() {
+    
+    let varIdObra = $("#IdObra").val();
+    console.log("varIdObra", varIdObra);
+    $.ajaxSetup({ async: false });
+    $.post("/TipoRegistro/ObtenerSemanaAjax", { 'estado': 1, 'IdTipoRegistro': 1, 'IdObra': varIdObra }, function (data, status) {
+        let tipoRegistros = JSON.parse(data);
+        console.log("tipoRegistros", tipoRegistros);
+        llenarComboSemana(tipoRegistros, "IdSemana2", "Seleccione")
+    });
+
 }
 
 
@@ -1625,12 +1637,13 @@ function ObtenerNumeracion() {
 }
 
 
-function GuardarSolicitud() {
+function GuardarSolicitud() {    
 
     if (validarseriescontableParaCrear() == false) {
         Swal.fire("Error!", "No Puede Crear este Documento en una Fecha No Habilitada", "error")
         return
     }
+
 
     UltimoTipoRegistro = $("#IdTipoRegistro").val()
     UltimaSemana = $("#IdSemana").val()
@@ -2047,6 +2060,8 @@ function GuardarSolicitud() {
             'SerieSAP': varSerieSAP,
             'CondicionPagoDet': varCondPagoDet
         })
+
+        console.log("Movimiento enviar", MovimientoEnviar);
 
 
         $.ajax({
@@ -3949,7 +3964,7 @@ function AgregarOPNDDetalle(data) {
         for (var k = 0; k < datos.length; k++) {
 
    
-            console.log(datos[k]['TipoServicio'])
+            
             if (datos[k]['TipoServicio'].toUpperCase() == 'NO APLICA') {
                 $("#cboClaseArticulo").val(1).change()
             } else {
@@ -4868,11 +4883,13 @@ function disabledmodal(valorbolean) {
 
 var ValidacionBases = 'false';
 function CargarBasesObraAlmacenSegunAsignado() {
+    
     ValidacionBases = 'false';
     $.ajaxSetup({ async: false });
     $.post("/Usuario/ObtenerBaseAlmacenxIdUsuarioSession", function (data, status) {
         if (validadJson(data)) {
             let datos = JSON.parse(data);
+            
             contadorBase = datos[0].CountBase;
             contadorObra = datos[0].CountObra;
             contadorAlmacen = datos[0].CountAlmacen;
@@ -5021,6 +5038,7 @@ function CargarSemana() {
     $.post("/TipoRegistro/ObtenerSemanaAjax", { 'estado': 1 }, function (data, status) {
         let tipoRegistros = JSON.parse(data);
         llenarComboSemana(tipoRegistros, "IdSemana", "Seleccione")
+        llenarComboSemana(tipoRegistros, "IdSemana2", "Seleccione")
     });
 }
 
@@ -6859,6 +6877,7 @@ function CargarDatosBaseObraAlmacen() {
 
         });
         llenarComboBase(DatosBase, "IdBase", "Seleccione")
+        llenarComboBase(DatosBase, "IdBase2", "Seleccione")
 
     } catch (e) {
         Swal.fire("Error!", "No se pudieron Cargar las Bases", "error");
@@ -6888,5 +6907,393 @@ function CargarDatosBaseObraAlmacen() {
         return;
     }
 
+
+}
+
+// PEX
+function ModalPEX() {
+    //swal("Informacion!", "Se ingresó a ModalPEX");
+    console.log("Cargar datos Modal PEX.....");
+    CargarDatosModal()
+
+    $("#IdProveedor").prop("disabled", false);
+    $("#Direccion").prop("disabled", false);
+    $("#Telefono").prop("disabled", false);
+    $("#cboMoneda").prop("disabled", false);
+    contador = 0
+
+    $("#IdProveedor").val(0).change()
+    $("#Direccion").val("").change()
+    arrayCboCuadrillaTabla = []
+    arrayCboResponsableTabla = []
+    $("#btnEditar").hide()
+    $("#btnExtornar").hide()
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+
+    today = yyyy + '-' + mm + '-' + dd;
+    $("#txtFechaDocumento").val(today)
+    $("#txtFechaContabilizacion").val(today)
+
+
+    $("#cboGlosaContable").prop("disabled", false)
+    $("#IdPedido").val(0);
+    $("#IdOPDN").val(0);
+    disabledmodal(false)
+    let seguiradelante = 'false';
+    seguiradelante = ValidacionBases;
+
+    if (seguiradelante == 'false') {
+        swal("Informacion!", "No tiene acceso a ninguna base, comunicarse con su administrador");
+        return true;
+    }
+
+    $("#lblTituloModal").html("Carga de facturas PEX");
+
+    $("#cboImpuesto").val(2).change();
+    $("#IdTipoDocumentoRef").val(2).change();
+
+
+
+    $("#cboMoneda").val(1);
+    $("#cboPrioridad").val(2);
+    $("#cboClaseArticulo").prop("disabled", false);
+    $("#IdTipoProducto").prop("disabled", false);
+    $("#cboClaseArticulo").val(0);
+    $("#IdTipoProducto").val(0);
+    $("#total_items").html("");
+    $("#NombUsuario").html("");
+    $("#CreatedAt").html("");
+    $("#SerieNumeroRef").val("");
+
+
+    AbrirModal("modal-pex");
+
+    $("#IdTipoRegistro").val(UltimoTipoRegistro).change()
+    $("#IdSemana").val(UltimaSemana).change()
+    $("#IdGiro").val(UltimoGiro).change()
+
+    $("#IdCuadrilla").val(1008).change();
+    $("#IdResponsable").val(10781).change();
+    $("#IdCondicionPago").val(1).change();
+
+    if (UltimaBase != 0) {
+        $("#IdBase").val(UltimaBase).change();
+        $("#IdObra").val(UltimaObra).change();
+        $("#cboAlmacen").val(UltimoAlmacen).change();
+
+    }
+
+}
+
+function leerExcel(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const sheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[sheetName];
+            const json = XLSX.utils.sheet_to_json(worksheet);
+            resolve(json);
+        };
+        reader.onerror = function (error) {
+            reject(error);
+        };
+        reader.readAsArrayBuffer(file);
+    });
+}
+
+
+async function GuardarSolicitudPEX() {
+
+    if (validarseriescontableParaCrear() == false) {
+        Swal.fire("Error!", "No Puede Crear este Documento en una Fecha No Habilitada", "error")
+        return
+    }
+
+    if ($("#IdSemana2").val() == 0 || $("#IdSemana2").val() == null) {
+        Swal.fire(
+            'Error!',
+            'Complete el campo de Semana',
+            'error'
+        )
+        return;
+    }    
+
+    $("#cboTipoRegistroFiltro").val("1").change();
+
+
+    UltimaSemana = $("#IdSemana").val()
+
+    let IdAlmacen = 0;        
+    let IdTipoDocumento = 0;
+    let IdSerie = $("#cboSerie").val();
+    let Correlativo = $("#txtNumeracion").val();
+    let IdMoneda = 0;
+    let TipoCambio = 0.00;
+    let FechaContabilizacion;
+    let FechaDocumento;
+    let IdCentroCosto = 0;
+    let IdGlosaContable = 0;
+    let Comentario = "";    
+    let AnexoDetalle = [];
+    let detalles = [];
+    let IdTipoDocumentoRef = 0;
+    let SerieNumeroRef = '';
+    let IdProveedor = 0;
+    let IdCondicionPago = 1;
+    let IdTipoRegistro = 0;
+    let IdSemana = 0;
+    let IdCuadrilla = 0;
+    let IdResponsable = 0;
+    let TablaOrigen = "Pedido";
+    let IdOrigen = 0;
+    let Redondeo = 0;
+    let varConsumoM3 = 0
+    let varConsumoHW = 0
+    let varTasaDet = 0
+    let varGrupoDet = 0
+    let varSerieSAP = 0
+    let varCondPagoDet = 0    
+    
+    let SubTotal = 0;
+    let Impuesto = 0;
+    let Total = 0;     
+
+    const fileInput = document.getElementById('fileExcel');
+    const file = fileInput.files[0];
+
+    if (file) {
+        try {
+            const registros = await leerExcel(file);            
+            // Aquí puedes validar los datos de los registros si es necesario
+            // Crear un nuevo array con solo los índices 3, 4, 13, 15, 16 y 17
+            const registrosFiltrados = registros.map(registro => ({                
+                ruc: registro[Object.keys(registro)[3]],
+                placa: registro[Object.keys(registro)[4]],
+                comentario: registro[Object.keys(registro)[23]],
+                importe: parseFloat(registro[Object.keys(registro)[15]]),
+                nroDocumento: registro[Object.keys(registro)[16]],
+                fechaDocumento: registro[Object.keys(registro)[17]].split("/").reverse().join("-"),
+                idAlmacen: parseInt(registro[Object.keys(registro)[18]]),                
+                idCuadrilla: parseInt(registro[Object.keys(registro)[24]]), 
+                idSerie: parseInt(registro[Object.keys(registro)[25]])
+            }));
+
+            console.log('filtrados',registrosFiltrados)
+
+            //Recorrer el archivo Excel e insertar las facturas
+            registrosFiltrados.forEach(registro => {                
+                
+                                  
+                IdAlmacen = registro.idAlmacen;                    
+                FechaDocumento = registro.fechaDocumento;
+                SerieNumeroRef = registro.nroDocumento;                
+                IdCuadrilla = registro.idCuadrilla
+                Comentario = registro.comentario;                
+                IdProveedor = 25670;
+                IdTipoDocumento = 1338;
+                IdSerie = registro.idSerie;
+                Correlativo = 0;
+                IdMoneda = 1;
+                TipoCambio = 1.00;
+                FechaContabilizacion = currentDate();                
+                IdCentroCosto = 0;
+                IdGlosaContable = 0;
+                
+                AnexoDetalle = [];
+                detalles = [];
+                IdTipoDocumentoRef = 2;
+                IdCondicionPago = 1;
+                IdTipoRegistro = 1;
+                IdSemana = $("#IdSemana2").val();                
+                IdResponsable = 0;
+                TablaOrigen = "Factura";
+                IdOrigen = 0;
+                Redondeo = 0;
+                varConsumoM3 = "";
+                varConsumoHW = "";
+                varTasaDet = 0
+                varGrupoDet = 0
+                varSerieSAP = 0
+                varCondPagoDet = 0
+                SubTotal = (registro.importe/1.18).toFixed(2)
+                Impuesto = (SubTotal * 0.18).toFixed(2);
+                Total = registro.importe;
+
+                detalles.push({
+                    'IdArticulo': 16035,
+                    'DescripcionArticulo': 'SERVICIO DE PEAJE',
+                    'IdDefinicionGrupoUnidad': 33,
+                    'IdAlmacen': IdAlmacen,
+                    'Cantidad': 1,
+                    'Igv': 0,
+                    'PrecioUnidadBase': SubTotal,
+                    'PrecioUnidadTotal': SubTotal,
+                    'TotalBase': Total,
+                    'Total': Total,
+                    'CuentaContable': 1,
+                    'IdCentroCosto': IdCentroCosto,
+                    'IdAfectacionIgv': 1,
+                    'Descuento': 0,
+                    'valor_unitario': SubTotal,
+                    'precio_unitario': 0,
+                    'IdIndicadorImpuesto': 1,
+                    'total_base_igv': 0,
+                    'porcentaje_igv': 0,
+                    'total_igv': 0,
+                    'total_impuestos': Impuesto,
+                    'total_valor_item': SubTotal,
+                    'total_item': Total,
+                    'Referencia': "",
+                    'NombTablaOrigen': "",
+                    'IdOrigen': 0,
+                    'IdCuadrilla': IdCuadrilla,
+                    'IdResponsable': 0,
+                    'TipoServicio': "Ninguno",
+                })
+
+
+                let MovimientoEnviar = []
+
+                MovimientoEnviar.push({
+                    detalles,
+                    AnexoDetalle,
+                    //cabecera
+                    'IdAlmacen': IdAlmacen,
+                    'IdTipoDocumento': IdTipoDocumento,
+                    'IdSerie': IdSerie,
+                    'Correlativo': Correlativo,
+                    'IdMoneda': IdMoneda,
+                    'TipoCambio': TipoCambio,
+                    'FechaContabilizacion': FechaContabilizacion,
+                    'FechaDocumento': FechaDocumento,
+                    'IdCentroCosto': IdCentroCosto,
+                    'IdGlosaContable': IdGlosaContable,
+
+                    'Comentario': Comentario,
+                    'SubTotal': SubTotal,
+                    'Impuesto': Impuesto,
+                    'Redondeo': Redondeo,
+                    'Total': Total,
+                    'IdCuadrilla': IdCuadrilla,
+                    'IdResponsable': 0,
+                    'IdTipoDocumentoRef': IdTipoDocumentoRef,
+                    'NumSerieTipoDocumentoRef': SerieNumeroRef,
+                    'IdProveedor': IdProveedor,
+                    'IdCondicionPago': IdCondicionPago,
+                    'IdTipoRegistro': IdTipoRegistro,
+                    'IdSemana': IdSemana,
+                    'TablaOrigen': TablaOrigen,
+                    'IdOrigen': IdOrigen,
+                    'ConsumoM3': varConsumoM3,
+                    'ConsumoHW': varConsumoHW,
+                    'TasaDetraccion': varTasaDet,
+                    'GrupoDetraccion': varGrupoDet,
+                    'SerieSAP': varSerieSAP,
+                    'CondicionPagoDet': varCondPagoDet
+                })
+
+                console.log('MovimientoEnviar', MovimientoEnviar);
+
+                // Enviar los registros a la API
+                $.ajax({
+                    url: "UpdateInsertMovimientoFacturaProveedorString",
+                    type: "POST",
+                    async: true,
+                    data: {
+                        'JsonDatosEnviar': JSON.stringify(MovimientoEnviar)
+                    },
+                    beforeSend: function () {
+                        Swal.fire({
+                            title: "Cargando...",
+                            text: "Por favor espere",
+                            showConfirmButton: false,
+                            allowOutsideClick: false
+                        });
+                    },
+                    success: function (data) {
+
+                        let datos = JSON.parse(data);
+
+                        if (datos.status) {
+                            let IdOpch = datos.Id;
+                            $.post("ObtenerSerieOPCH", { 'IdOPCH': IdOpch }, function (data, status) {
+                                Swal.fire(
+                                    'Correcto',
+                                    'Documento ' + data + ' Registrado Correctamente',
+                                    'success'
+                                )
+
+                               /******* HABILITAR DESPUES DE PRUEBAS**********
+                                 * 
+                                 
+                                $.post("/Pedido/GenerarReporte", { 'NombreReporte': 'RPTFacturaProv', 'Formato': 'PDF', 'Id': IdOpch }, function (data, status) {
+                                    let datos;
+                                    if (validadJson(data)) {
+                                        let datobase64;
+                                        datobase64 = "data:application/octet-stream;base64,"
+                                        datos = JSON.parse(data);
+                                        //datobase64 += datos.Base64ArchivoPDF;
+                                        //$("#reporteRPT").attr("download", 'Reporte.' + "pdf");
+                                        //$("#reporteRPT").attr("href", datobase64);
+                                        //$("#reporteRPT")[0].click();
+                                        verBase64PDF(datos)
+    
+                                    }
+                                });
+                                */
+
+                                CerrarModal();
+                                listarOpch()
+
+                            });
+
+
+                        } else {
+                            Swal.fire(
+                                'Error!',
+                                'Ocurrio un Error!, ' + datos.mensaje,
+                                'error'
+                            )
+                        }
+                    }
+                }).fail(function () {
+                    Swal.fire(
+                        'Error!',
+                        'Error en el Controlador </br> Comunicarse con el Area Soporte: smarcode@smartcode.pe !',
+                        'error'
+                    )
+                });
+                arrayCboCuadrillaTabla = [];
+                arrayCboResponsableTabla = [];
+
+
+
+            });
+
+
+
+
+        } catch (error) {
+            console.error('Error al leer el archivo Excel', error);
+            alert('Error al leer el archivo Excel');
+        }
+    } else {
+        // Validaciones y lógica existente para guardar un solo registro
+        // ...
+    }
+}
+
+function currentDate() {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0'); // Meses van de 0 a 11
+    const dd = String(today.getDate()).padStart(2, '0');
+
+    return `${yyyy}-${mm}-${dd}`;    
 
 }

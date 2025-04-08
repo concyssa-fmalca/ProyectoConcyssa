@@ -130,7 +130,10 @@
                 <div class="col-md-5">
 
                     <button class="btn btn-primary" onclick="listarOpchProveedor()"> Buscar por Proveedor</button>
-                </div>              
+                </div>      
+                <div class="col-md-5">
+                    <button class="btn btn-primary" onclick="ModalPEX()">Importar PEX</button>
+                </div>
             </div>
         </div>
     </div>
@@ -1521,8 +1524,143 @@
     </div>
 </div>
 
+<!-- Modal PEX-->
+<div id="modal-pex" class="popup-xl allcp-form mfp-with-anim mfp-hide">
+    <div class="panel">
+        <div class="panel-heading">
+            <h5 id='lblTituloModal'></h5>
+        </div>
+        <div class="panel-body ">
+            <div class='col s12 m12 '>
+                <div class='container-fluid row'>
 
-@{
+                    <div class='form-horizontal col-9 col-sm-9'>
+                        <div class="form-group-sm" style="display:none;">
+                            <input placeholder='' id='txtId' type='text' style="display:none;">
+                            <input id='IdPedido' type='text' style="display:none;">
+                            <input id='IdOPDN' type='text' style="display:none;">
+                        </div>
+
+                        <div class="row">
+                            <div class='form-group-sm'>
+                                <label for="IdBase2" class="control-label col-sm-2 left-align">Base</label>
+                                <div class="col-sm-4">
+                                    <select id="IdBase2" class="form-control input-sm" tabindex="0" onchange="ObtenerObraxIdBase();listarEmpleados()"></select>
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label for="IdObra" class="control-label col-sm-2 left-align">Obra</label>
+                                <div class="col-sm-4">
+                                    <select id="IdObra" class="form-control input-sm" tabindex="0" onchange="ObtenerAlmacenxIdObra();ObtenerCuadrillasxIdObra();changeTipoRegistro2()"></select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class='form-group-sm'>
+                                <label for="cboAlmacen" class="control-label col-sm-2 left-align">Almacen</label>
+                                <div class="col-sm-4">
+                                    <select id="cboAlmacen" class="form-control input-sm" tabindex="0"></select>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class='form-group-sm'>
+                                <label for="cboSerie2" class="control-label col-sm-2 left-align">Serie</label>
+                                <div class="col-sm-4">
+                                    <select id="cboSerie2" class="form-control input-sm" tabindex="0" onchange="validarseriescontable()"></select>
+                                </div>
+                            </div>
+
+                            <div class='form-group-sm'>
+                                <label for="txtFechaContabilizacion" class="control-label col-sm-2 left-align">Fecha Contabilizacion</label>
+                                <div class="col-sm-4">
+                                    <input id="txtFechaContabilizacion" value="@DateTime.Now.ToString("yyyy-MM-dd")" type="date" disabled class="form-control input-sm" tabindex="6" onchange="validarseriescontable()">
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        <div class="row">
+                            <div class='form-group-sm'>
+                                <label for="txtNumeracion" class="control-label col-sm-2 left-align">Numeracion</label>
+                                <div class="col-sm-4">
+                                    <input id="txtNumeracion" type="text" class="form-control input-sm" tabindex="2" disabled>
+                                </div>
+                            </div>
+
+                            <div id="Origenes" style="display:none">
+                                <div class='form-group-sm'>
+
+                                    <div class="col-sm-4">
+                                        <input id="txtOrigen" type="text" class="form-control input-sm" disabled></input>
+                                    </div>
+                                </div>
+
+                                <div class='form-group-sm'>
+
+                                    <div class="col-sm-4">
+                                        <input id="txtOrigenId" type="text" class="form-control input-sm" disabled></input>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <hr style="margin:6px" />
+                        <div class="row mt-5">
+                            <div style="display:flex; justify-content:center">
+                                <form class="form-horizontal" id="formGuardarSolicitud" enctype="multipart/form-data">
+                                    <!-- Otros campos del formulario -->
+                                    <input type="file" id="fileExcel" class="btn btn-primary" style="margin-top:0px" name="fileExcel" accept=".xlsx, .xls" />
+                                    <button type="button" class="btn btn-primary" style="margin-top:0px" onclick="GuardarSolicitudPEX()">Guardar</button>
+                                    <button type="button" id="btnCancelar" onclick="CerrarModal()" class="btn btn-danger pull-right" style="background-color:orange;">Cerrar</button>
+                                </form>
+                                </<div>
+                                </div>
+
+
+                                <br />
+
+
+
+
+                                <div class='form-horizontal col-3 col-sm-3'>
+
+                                    <div class="row" id="global" style="font-size:10px">
+                                        <div class='container-fluid' id="mensajes">
+                                            <hr style="margin: 0px 0px 5px 0px" />
+                                            <p id="DivSemana">
+                                                Semana:
+                                                <select style="height: 20px" id="IdSemana2" type="text" class="form-control input-sm" tabindex="0">
+                                                    <option value="0"> - Semana - </option>
+                                                </select>
+                                            </p>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+        @{
     Random rnd = new Random();
 }
 
@@ -1533,5 +1671,5 @@
 <script src="~/js/pdf/jspdf.min.js"></script>
 <script src="~/js/pdf/faker.min.js"></script>
 <script src="~/js/pdf/jspdf.plugin.autotable.src.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
 
