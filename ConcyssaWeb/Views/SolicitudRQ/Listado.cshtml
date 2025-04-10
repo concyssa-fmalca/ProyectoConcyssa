@@ -445,8 +445,7 @@
 
                             <div id="Anexos" class="tabcontent">
 
-                                @using (Html.BeginForm("GuardarFile", "SolicitudRQ", FormMethod.Post, new { id = "SubirAnexos", enctype = "multipart/form-data" }))
-                                {
+                               
                                     <div class="row">
                                         <div class=''>
                                             <div class="col-sm-8">
@@ -457,12 +456,12 @@
                                         <div class='form-group-sm'>
                                             <div class="col-sm-4">
                                                 @*<label for="file">Subir Anexos</label>*@
-                                                <input type="submit" value="Subir Archivo" class="btn btn-primary" />
+                                                <button type="submit" class="btn btn-primary" onclick="SubirAnexosLinea()">Subir Archivo</button>
                                             </div>
                                         </div>
                                     </div>
                                     <br />
-                                    @ViewBag.Message
+                         
                                     <br />
                                     <div class="table-responsive">
                                         <table class="table" id="tabla_files">
@@ -485,7 +484,7 @@
                                         </table>
 
                                     </div>
-                                }
+                                
 
                             </div>
 

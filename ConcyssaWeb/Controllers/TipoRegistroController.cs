@@ -339,6 +339,11 @@ namespace ConcyssaWeb.Controllers
 
             for (int i = 0; i < lstObraDTO.Count; i++)
             {
+                if (lstObraDTO[i].IdObra != 2050)
+                {
+                    continue;
+                }
+
                 for (int j = 0;j< lstTipoRegistroDTO.Count; j++)
                 {
                     for (int k = 0; k < Semanas.Count-1; k++)

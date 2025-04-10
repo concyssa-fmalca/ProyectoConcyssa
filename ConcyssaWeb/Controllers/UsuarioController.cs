@@ -157,7 +157,7 @@ namespace ConcyssaWeb.Controllers
             using (SHA512 sha512 = SHA512.Create())
             {
                 // Convierte la contraseña en un array de bytes
-                byte[] passwordBytes = Encoding.UTF8.GetBytes(usuarioDTO.Password.ToUpper());
+                byte[] passwordBytes = Encoding.UTF8.GetBytes(usuarioDTO.Password);
 
                 // Calcula el hash de la contraseña
                 byte[] hashedBytes = sha512.ComputeHash(passwordBytes);

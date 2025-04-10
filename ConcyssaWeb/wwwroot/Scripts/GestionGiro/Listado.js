@@ -1079,7 +1079,7 @@ function ObtenerGiros() {
                 orderable: false,
                 render: function (data, type, full, meta) {
                     let OrdenGiro = "";
-                    if (full.Responsable == "") {
+                    if (full.Responsable == "-") {
                         OrdenGiro = full.Solicitante
                     } else {
                         OrdenGiro = full.Responsable

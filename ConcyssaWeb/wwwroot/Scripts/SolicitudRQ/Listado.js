@@ -75,6 +75,123 @@ window.onload = function () {
     ConsultaServidor()
 };
 
+
+
+function SubirAnexosLinea() {
+
+    Swal.fire({
+        title: "Cargando...",
+        text: "Por favor espere",
+        showConfirmButton: false,
+        allowOutsideClick: false
+    });
+
+    setTimeout(() => {
+        const fileInput = $('#file')[0];
+
+
+        let fileName = "";
+        const folderPath = "portalprov";
+
+
+        const file = fileInput.files[0];
+        if (!file) {
+            Swal.fire('Por favor selecciona un archivo');
+            return;
+        }
+
+        // Validar tamaño máximo: 10MB (10 * 1024 * 1024 bytes)
+        const maxSizeMB = 5;
+        const maxSizeBytes = maxSizeMB * 1000 * 1000;
+        if (file.size > maxSizeBytes) {
+            Swal.fire(`El archivo no debe superar los ${maxSizeMB} MB`);
+            return;
+        }
+
+        console.log(file)
+
+        fileName = file.name; // Nombre de archivo por defecto
+        let ultimoPuntoIndex = fileName.lastIndexOf('.');
+        let parteAntesDelUltimoPunto = fileName.substring(0, ultimoPuntoIndex);
+        let fileExtension = fileName.substring(ultimoPuntoIndex + 1);
+
+        // Agregar la fecha al nombre
+        let fecha = new Date();
+        let fechaString = fecha.toLocaleDateString('es-ES').replace(/\//g, '-') + ' ' +
+            fecha.toLocaleTimeString('es-ES').replace(/:/g, '_');
+
+        fileName = parteAntesDelUltimoPunto + ' ' + fechaString;
+
+        // Reemplazar caracteres no permitidos
+        fileName = fileName.replace(/[+%?@&#=;:'"`]/g, ' ');
+        fileName += "." + fileExtension;
+
+
+
+        try {
+            // Preparar la URL con los parámetros
+            let url = 'https://pzmnyh8wx3.execute-api.us-east-1.amazonaws.com/upload';
+            const params = [];
+
+            params.push(`filename=${encodeURIComponent(fileName)}`);
+
+            params.push(`folder=${encodeURIComponent(folderPath)}`);
+
+
+            // Añadir los parámetros a la URL
+            if (params.length > 0) {
+                url += `?${params.join('&')}`;
+            }
+
+            // Crear un objeto XMLHttpRequest para poder monitorear el progreso
+            const xhr = new XMLHttpRequest();
+
+            // Configurar el evento de progreso
+            xhr.upload.addEventListener('progress', function (event) {
+                if (event.lengthComputable) {
+                    const percentComplete = Math.round((event.loaded / event.total) * 100);
+                }
+            });
+
+            // Configurar el evento de completado
+            xhr.addEventListener('load', function () {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    const response = JSON.parse(xhr.responseText);
+
+                    let ObjetoAnexo = {
+                        'Nombre': fileName,
+                        'url': response.fileUrl
+                    }
+
+                    Swal.close()
+                    AgregarLineaAnexo(ObjetoAnexo);
+
+
+                } else {
+                    Swal.fire("Error!", 'Error al subir el archivo: ' + xhr.status, "error");
+                }
+            });
+
+            // Configurar el evento de error
+            xhr.addEventListener('error', function () {
+                Swal.fire("Error!", 'Error de red al intentar subir el archivo', "error");
+            });
+
+            // Abrir y enviar la solicitud
+            xhr.open('POST', url, true);
+            xhr.send(file);
+
+        } catch (message) {
+            Swal.fire("Error!", 'Error de red al intentar subir el archivo: ' + message, "error");
+        }
+
+    }, 150)
+
+
+
+}
+
+
 function seleccionarAlmacenItem() {
 
     $("#cboAlmacenItem").val($("#cboAlmacen").val());
@@ -599,17 +716,18 @@ function CambiarClaseArticulo() {
 
 let contadorAnexo = 0;
 
-function AgregarLineaAnexo(Nombre) {
+function AgregarLineaAnexo(ObjetoArchivo) {
     contadorAnexo++
     let tr = '';
     tr += `<tr id="filaAnexo` + contadorAnexo +`">
             <td style="display:none"><input  class="form-control" type="text" value="0" id="txtIdSolicitudRQAnexo" name="txtIdSolicitudRQAnexo[]"/></td>
             <td>
-               `+ Nombre + `
-               <input  class="form-control" type="hidden" value="`+ Nombre + `" id="txtNombreAnexo" name="txtNombreAnexo[]"/>
+               `+ ObjetoArchivo.Nombre + `
+               <input  class="form-control" type="hidden" value="`+ ObjetoArchivo.Nombre + `" id="txtNombreAnexo" name="txtNombreAnexo[]"/>
+               <input  class="form-control" type="hidden" value="`+ ObjetoArchivo.Nombre + `" id="txtUrlAnexo" name="txtUrlAnexo[]"/>
             </td>
             <td>
-               <a href="/Anexos/`+ Nombre + `" target="_blank" >Descargar</a>
+               <a href="`+ ObjetoArchivo.url + `" target="_blank" >Descargar</a>
             </td>
             <td><button type="button" class="btn btn-xs btn-danger borrar  fa fa-trash " onclick="EliminarAnexoEnMemoria(`+ contadorAnexo +`)"></button></td>
             </tr>`;
@@ -1661,6 +1779,10 @@ function GuardarSolicitud() {
     $("input[name='txtNombreAnexo[]']").each(function (indice, elemento) {
         arrayTxtNombreAnexo.push($(elemento).val());
     });
+    let arrayTxtUrlAnexo = new Array();
+    $("input[name='txtUrlAnexo[]']").each(function (indice, elemento) {
+        arrayTxtUrlAnexo.push($(elemento).val());
+    });
 
     let arrayCuadrillas= new Array();
     $("input[name='txtCuadrillaDetalle[]']").each(function (indice, elemento) {
@@ -1670,7 +1792,8 @@ function GuardarSolicitud() {
     let AnexoDetalle = [];
     for (var i = 0; i < arrayTxtNombreAnexo.length; i++) {
         AnexoDetalle.push({
-            'NombreArchivo': arrayTxtNombreAnexo[i]
+            'NombreArchivo': arrayTxtNombreAnexo[i],
+            'ruta': arrayTxtUrlAnexo
         });
     }
 

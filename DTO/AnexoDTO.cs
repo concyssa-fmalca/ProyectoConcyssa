@@ -15,5 +15,6 @@ namespace DTO
         public int IdSociedad { get; set; } = 0;
         public string Tabla { get; set; } = "";
         public int IdTabla { get; set; } = 0;
+        public bool web { get; set; } = false;
     }
 }

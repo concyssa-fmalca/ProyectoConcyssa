@@ -214,11 +214,12 @@ namespace DAO
                             {
                                 SqlDataAdapter dad = new SqlDataAdapter("SMC_InsertUpdateAnexo", cn);
                                 dad.SelectCommand.CommandType = CommandType.StoredProcedure;
-                                dad.SelectCommand.Parameters.AddWithValue("@ruta", "/Anexos/" + oSolicitudRQDTO.AnexoDetalle[i].NombreArchivo);
+                                dad.SelectCommand.Parameters.AddWithValue("@ruta", oSolicitudRQDTO.AnexoDetalle[i].ruta);
                                 dad.SelectCommand.Parameters.AddWithValue("@IdSociedad", int.Parse(IdSociedad));
                                 dad.SelectCommand.Parameters.AddWithValue("@Tabla", "SolicitudRQ");
                                 dad.SelectCommand.Parameters.AddWithValue("@IdTabla", IdInsert);
                                 dad.SelectCommand.Parameters.AddWithValue("@NombreArchivo", oSolicitudRQDTO.AnexoDetalle[i].NombreArchivo);
+                                dad.SelectCommand.Parameters.AddWithValue("@web", 1);
                                 rpta = dad.SelectCommand.ExecuteNonQuery();
                             }
                         }
