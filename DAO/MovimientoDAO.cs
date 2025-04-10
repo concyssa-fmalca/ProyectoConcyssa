@@ -1393,7 +1393,14 @@ namespace DAO
                             MovimientoDAO oMovimientoDAO = new MovimientoDAO();
                             for (int i = 0; i < oOpchDTO.AnexoDetalle.Count; i++)
                             {
-                                oOpchDTO.AnexoDetalle[i].ruta = "/Anexos/" + oOpchDTO.AnexoDetalle[i].NombreArchivo;
+                                if (oOpchDTO.AnexoDetalle[i].web)
+                                {
+                                    oOpchDTO.AnexoDetalle[i].ruta = oOpchDTO.AnexoDetalle[i].ruta;
+                                } else
+                                {
+                                    oOpchDTO.AnexoDetalle[i].ruta = "/Anexos/" + oOpchDTO.AnexoDetalle[i].NombreArchivo;
+                                }
+                                oOpchDTO.AnexoDetalle[i].web = oOpchDTO.AnexoDetalle[i].web;
                                 oOpchDTO.AnexoDetalle[i].IdSociedad = oOpchDTO.IdSociedad;
                                 oOpchDTO.AnexoDetalle[i].Tabla = "Opch";
                                 oOpchDTO.AnexoDetalle[i].IdTabla = IdOPCH;
@@ -2656,6 +2663,7 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@Tabla", oAnexoDTO.Tabla);
                         da.SelectCommand.Parameters.AddWithValue("@IdTabla", oAnexoDTO.IdTabla);
                         da.SelectCommand.Parameters.AddWithValue("@NombreArchivo", oAnexoDTO.NombreArchivo);
+                        da.SelectCommand.Parameters.AddWithValue("@web", oAnexoDTO.web);
                         int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
                  
                         return rpta;
@@ -3075,7 +3083,11 @@ namespace DAO
                         {
                             for (int i = 0; i < oOpdnDTO.AnexoDetalle.Count; i++)
                             {
-                                oOpdnDTO.AnexoDetalle[i].ruta = "/Anexos/" + oOpdnDTO.AnexoDetalle[i].NombreArchivo;
+                                if (!oOpdnDTO.AnexoDetalle[i].web)
+                                {
+                                    oOpdnDTO.AnexoDetalle[i].ruta = "/Anexos/" + oOpdnDTO.AnexoDetalle[i].NombreArchivo;
+                                }
+                                    
                                 oOpdnDTO.AnexoDetalle[i].IdSociedad = oOpdnDTO.IdSociedad;
                                 oOpdnDTO.AnexoDetalle[i].Tabla = "Opdn";
                                 oOpdnDTO.AnexoDetalle[i].IdTabla = IdOPDN;

@@ -724,7 +724,7 @@ function AgregarLineaAnexo(ObjetoArchivo) {
             <td>
                `+ ObjetoArchivo.Nombre + `
                <input  class="form-control" type="hidden" value="`+ ObjetoArchivo.Nombre + `" id="txtNombreAnexo" name="txtNombreAnexo[]"/>
-               <input  class="form-control" type="hidden" value="`+ ObjetoArchivo.Nombre + `" id="txtUrlAnexo" name="txtUrlAnexo[]"/>
+               <input  class="form-control" type="hidden" value="`+ ObjetoArchivo.url + `" id="txtUrlAnexo" name="txtUrlAnexo[]"/>
             </td>
             <td>
                <a href="`+ ObjetoArchivo.url + `" target="_blank" >Descargar</a>
@@ -1793,9 +1793,11 @@ function GuardarSolicitud() {
     for (var i = 0; i < arrayTxtNombreAnexo.length; i++) {
         AnexoDetalle.push({
             'NombreArchivo': arrayTxtNombreAnexo[i],
-            'ruta': arrayTxtUrlAnexo
+            'ruta': arrayTxtUrlAnexo[i],
+            'web': 1
         });
     }
+
 
     let Detalle = [];
     for (var i = 0; i < arrayIdArticulo.length; i++) {
@@ -2180,7 +2182,7 @@ function ObtenerDatosxID(IdSolicitudRQ) {
                     <td>
                        <a target="_blank" href="`+ AnexoDetalle[k].ruta + `"> Descargar </a>
                     </td>
-                    <td><button class="btn btn-xs btn-danger" onclick="EliminarAnexo(`+ AnexoDetalle[k].IdAnexo + `,this)">-</button></td>
+                    <td><button class="btn btn-xs btn-danger  fa fa-trash" onclick="EliminarAnexo(`+ AnexoDetalle[k].IdAnexo + `,this)"></button></td>
                 </tr>`;
             }
             $("#tabla_files").find('tbody').append(trAnexo);

@@ -219,7 +219,7 @@ namespace DAO
                                 dad.SelectCommand.Parameters.AddWithValue("@Tabla", "SolicitudRQ");
                                 dad.SelectCommand.Parameters.AddWithValue("@IdTabla", IdInsert);
                                 dad.SelectCommand.Parameters.AddWithValue("@NombreArchivo", oSolicitudRQDTO.AnexoDetalle[i].NombreArchivo);
-                                dad.SelectCommand.Parameters.AddWithValue("@web", 1);
+                                dad.SelectCommand.Parameters.AddWithValue("@web", oSolicitudRQDTO.AnexoDetalle[i].web);
                                 rpta = dad.SelectCommand.ExecuteNonQuery();
                             }
                         }
@@ -861,6 +861,7 @@ namespace DAO
                         oAnexoDTO.Tabla = (drd["Tabla"].ToString());
                         oAnexoDTO.IdTabla = Convert.ToInt32(drd["IdTabla"].ToString());
                         oAnexoDTO.NombreArchivo = (drd["NombreArchivo"].ToString());
+                        oAnexoDTO.web = bool.Parse(drd["web"].ToString());
                         oSolicitudRQDTO.AnexoDetalle[posicion] = oAnexoDTO;
                         posicion = posicion + 1;
                     }

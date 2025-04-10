@@ -308,6 +308,7 @@ namespace DAO
                 {
                 }
             }
+
             #region AnexoDetalle
             Int32 filasdetalleAnexo = 0;
             using (SqlConnection cn = new Conexion().conectar(BaseDatos))
@@ -349,6 +350,7 @@ namespace DAO
                         oAnexoDTO.Tabla = (dr2["Tabla"].ToString());
                         oAnexoDTO.IdTabla = Convert.ToInt32(dr2["IdTabla"].ToString());
                         oAnexoDTO.NombreArchivo = (dr2["NombreArchivo"].ToString());
+                        oAnexoDTO.web = bool.Parse(dr2["web"].ToString());
                         oProveedorDTO.AnexoDetalle[posicion] = oAnexoDTO;
                         posicion = posicion + 1;
                     }
