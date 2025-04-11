@@ -186,9 +186,6 @@ function SubirAnexosLinea() {
         }
 
     }, 150)
-
-
-
 }
 
 

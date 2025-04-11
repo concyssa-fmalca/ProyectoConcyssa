@@ -2664,9 +2664,10 @@ namespace DAO
                         da.SelectCommand.Parameters.AddWithValue("@IdTabla", oAnexoDTO.IdTabla);
                         da.SelectCommand.Parameters.AddWithValue("@NombreArchivo", oAnexoDTO.NombreArchivo);
                         da.SelectCommand.Parameters.AddWithValue("@web", oAnexoDTO.web);
-                        int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
-                 
-                        return rpta;
+                        //int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
+                        int rpta = da.SelectCommand.ExecuteNonQuery();
+
+                return rpta;
                     }
                     catch (Exception ex)
                     {
@@ -2713,7 +2714,11 @@ namespace DAO
                         {
                             for (int i = 0; i < oMovimientoDTO.AnexoDetalle.Count; i++)
                             {
-                                oMovimientoDTO.AnexoDetalle[i].ruta = "/Anexos/" + oMovimientoDTO.AnexoDetalle[i].NombreArchivo;
+                                if (!oMovimientoDTO.AnexoDetalle[i].web)
+                                {
+                                    oMovimientoDTO.AnexoDetalle[i].ruta = "/Anexos/" + oMovimientoDTO.AnexoDetalle[i].NombreArchivo;
+                                }
+
                                 oMovimientoDTO.AnexoDetalle[i].IdSociedad = oMovimientoDTO.IdSociedad;
                                 oMovimientoDTO.AnexoDetalle[i].Tabla = "Movimiento";
                                 oMovimientoDTO.AnexoDetalle[i].IdTabla = IdMovimiento;

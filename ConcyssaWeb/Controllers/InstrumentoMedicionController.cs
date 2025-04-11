@@ -30,7 +30,11 @@ namespace ConcyssaWeb.Controllers
                 {
                     for (int i = 0; i < oInstrumentoMedicionDTO.AnexoDetalle.Count; i++)
                     {
-                        oInstrumentoMedicionDTO.AnexoDetalle[i].ruta = "/Anexos/" + oInstrumentoMedicionDTO.AnexoDetalle[i].NombreArchivo;
+                        if (!oInstrumentoMedicionDTO.AnexoDetalle[i].web)
+                        {
+                            oInstrumentoMedicionDTO.AnexoDetalle[i].ruta = "/Anexos/" + oInstrumentoMedicionDTO.AnexoDetalle[i].NombreArchivo;
+                        }
+
                         oInstrumentoMedicionDTO.AnexoDetalle[i].IdSociedad = oInstrumentoMedicionDTO.IdSociedad;
                         oInstrumentoMedicionDTO.AnexoDetalle[i].Tabla = "InstrumentoMedicion";
                         oInstrumentoMedicionDTO.AnexoDetalle[i].IdTabla = respuesta;

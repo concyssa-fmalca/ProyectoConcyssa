@@ -249,7 +249,11 @@ namespace ConcyssaWeb.Controllers
                     {
                         for (int i = 0; i < oPedidoDTO.AnexoDetalle.Count; i++)
                         {
-                            oPedidoDTO.AnexoDetalle[i].ruta = "/Anexos/" + oPedidoDTO.AnexoDetalle[i].NombreArchivo;
+                            if (!oPedidoDTO.AnexoDetalle[i].web)
+                            {
+                                oPedidoDTO.AnexoDetalle[i].ruta = "/Anexos/" + oPedidoDTO.AnexoDetalle[i].NombreArchivo;
+                            }
+
                             oPedidoDTO.AnexoDetalle[i].IdSociedad = oPedidoDTO.IdSociedad;
                             oPedidoDTO.AnexoDetalle[i].Tabla = "Pedido";
                             oPedidoDTO.AnexoDetalle[i].IdTabla = respuesta;
