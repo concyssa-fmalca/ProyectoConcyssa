@@ -1302,59 +1302,6 @@ function GuardarSalida() {
                         Swal.fire("Error", datos.mensaje, "error");
                     }
 
-
-                    //if (data > 0) {                      
-                    //    for (var i = 0; i < arrayCantidadEntregar.length; i++) {
-                    //        $.ajax({
-                    //            url: "/SolicitudDespacho/AtencionConfirmada",
-                    //            type: 'POST',
-                    //            async: false,
-                    //            dataType: 'json',
-                    //            data: {
-                    //                'Cantidad': arrayCantidadEntregar[i],
-                    //                'IdSolicitud': IdSolicitud,
-                    //                'IdArticulo': arrayIdItemDetalle[i],
-                    //                'EstadoSolicitud': EstadoSolicitud,
-                    //            },
-                    //            success: function (datos) {
-                    //                //console.log(datos);
-                    //                if (datos > 0) {
-                                        
-                    //                } else { Swal.fire("Error!", "Ocurrió un Error en Atender Pedido", "error"); }
-                    //            },
-                    //            error: function () {
-                    //                Swal.fire("Error!", "Ocurrió un Error", "error");
-                    //            }
-                    //        })
-                    //    }
-
-
-                        //$.post('ExtornoConfirmado', {
-                        //    'IdOPDN': IdOPDN,
-                        //    'EsServicio': TipoProductos,
-                        //}, function (data, status) {
-
-                        //    if (data != 0) {
-                        //swal("Exito!", "Proceso Realizado Correctamente", "success")
-                        //        CerrarModal()
-                        //        listaropdnDT()
-                        //    } else {
-                        //        swal("Error!", "Ocurrio un Error")
-                        //        CerrarModal()
-                        //    }
-
-                        //});
-
-
-                    //} else {
-                    //    Swal.fire(
-                    //        'Error!',
-                    //        'Ocurrio un Error!',
-                    //        'error'
-                    //    )
-
-                    //}
-
                 }
            
             });  
