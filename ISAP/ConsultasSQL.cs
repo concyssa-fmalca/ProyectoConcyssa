@@ -78,7 +78,34 @@ namespace ISAP
                 return lstOPCHDetalle;
             }
         }
+        public string ObtenerCondicionPagoDET(string FormatoDet, string CardCode, string BaseDatosSAP)
+        {
+            string GroupNum = "";
+            using (SqlConnection cn = new ConexionSQL().conectar(BaseDatosSAP))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerCondicionPagoDETSAP", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@FormatoDet", FormatoDet);
+                    da.SelectCommand.Parameters.AddWithValue("@CardCode", CardCode);
 
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        GroupNum = (drd["GroupNum"].ToString());
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            return GroupNum;
+        }
 
     }
 }

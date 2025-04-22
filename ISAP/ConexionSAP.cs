@@ -496,6 +496,13 @@ namespace ISAP
                     ObjSAPComprobante.RoundingDiffAmount = (double)auxComprobante.Redondeo;
 
                 }
+
+                if (auxComprobante.PorcDet > 0)
+                {
+                    string FormatoDet = "DT" +  Math.Round(auxComprobante.PorcDet).ToString().PadLeft(2,'0');
+
+                    string CondicionPagoDet = oConsultasSQL.ObtenerCondicionPagoDET(FormatoDet, "P" + datosProveedor[0].NumeroDocumento, BaseDatosSAP);
+                }
                 //REDONDEO
 
                 //ANEXOS

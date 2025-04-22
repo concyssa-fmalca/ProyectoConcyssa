@@ -92,6 +92,7 @@ namespace DTO
         public int EnviadoPor { get; set; }
         public int SerieSAP { get; set; }
         public int CondicionPagoDet { get; set; }
+        public decimal PorcDet { get; set; }
         public IList<IntegradorV1Detalle> detalles { get; set; }
         public IList<AnexoDTO> AnexoDetalle { get; set; }
     }

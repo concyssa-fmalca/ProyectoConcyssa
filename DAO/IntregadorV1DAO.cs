@@ -1305,6 +1305,7 @@ namespace DAO
                         oIntegradorV1DTO.SerieSAP = int.Parse(drd["SerieSAP"].ToString());
                         oIntegradorV1DTO.CondicionPagoDet = int.Parse(drd["CondicionPagoDet"].ToString());
                         oIntegradorV1DTO.Redondeo = decimal.Parse(drd["Redondeo"].ToString());
+                        oIntegradorV1DTO.PorcDet = decimal.Parse(drd["PorcDet"].ToString());
 
 
 
