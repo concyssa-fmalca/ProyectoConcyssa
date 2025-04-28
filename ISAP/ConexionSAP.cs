@@ -39,6 +39,7 @@ namespace ISAP
             SapPassword = oUsuarioDTO[0].SapPassword;
 
 
+
             int SapDbServerType = 12;
             bool SapUseTrusted = false;
             string SapDbUserName = "sa";
@@ -174,10 +175,10 @@ namespace ISAP
                 TipoRegistroDAO oTipoRegistroDAO = new TipoRegistroDAO();
                 List<TipoRegistroDTO> lstTipoRegistroDTO = oTipoRegistroDAO.ObtenerDatosxID(auxComprobante.IdTipoRegistro, BaseDatos, ref mensaje_error);
 
-               
 
 
-            
+
+
 
                 ProveedorDAO oProveedorDAO = new ProveedorDAO();
                 var datosProveedor = oProveedorDAO.ObtenerDatosxID(auxComprobante.IdProveedor, BaseDatos);
@@ -192,7 +193,8 @@ namespace ISAP
                 if (auxComprobante.IdTipoRegistro == 5)
                 {
                     datosProveedor[0].Afecto4ta = false;
-                }else
+                }
+                else
                 {
                     if (datosProveedorSAP.WTLiable == "Y")
                     {
@@ -206,6 +208,7 @@ namespace ISAP
 
                 ObjSAPComprobante.CardName = datosProveedorSAP.CardName;
                 ObjSAPComprobante.GroupNumber = datosProveedorSAP.GroupNum;
+                ObjSAPComprobante.PaymentGroupCode = datosProveedorSAP.GroupNum;
 
                 ObjSAPComprobante.DocDate = auxComprobante.FechaContabilizacion; //fecha contabilizacion
 
@@ -226,7 +229,7 @@ namespace ISAP
                 var datosCondicionPago = oCondicionPagoDAO.ObtenerDatosxID(auxComprobante.idCondicionPago, BaseDatos);
                 var fechaVencimiento = auxComprobante.FechaContabilizacion.AddDays(datosCondicionPago[0].Dias);
 
-               // ObjSAPComprobante.DocDueDate = fechaVencimiento; //fecha vencimiento
+                // ObjSAPComprobante.DocDueDate = fechaVencimiento; //fecha vencimiento
 
 
 
@@ -303,7 +306,7 @@ namespace ISAP
                     SemanaDAO semanaDAO = new SemanaDAO();
                     List<SemanaDTO> semanas = semanaDAO.ObtenerDatosxID(auxComprobante.IdSemana, BaseDatos, ref mensaje_error);
                     ObjSAPComprobante.Comments = lstTipoRegistroDTO[0].NombTipoRegistro + " - Semana " + semanas[0].NumSemana + " - " + datosObra[0].Descripcion;
-                    NumeroSemana = semanas[0].NumSemana.ToString().PadLeft(2,'0');
+                    NumeroSemana = semanas[0].NumSemana.ToString().PadLeft(2, '0');
                 }
 
 
@@ -355,8 +358,8 @@ namespace ISAP
 
                 TiposDocumentosDAO oTiposDocumentosDAO = new TiposDocumentosDAO();
                 List<TiposDocumentosDTO> lstTiposDocumentosDTO = oTiposDocumentosDAO.ObtenerDatosxID(auxComprobante.IdTipoDocumentoRef, BaseDatos, ref mensaje_error);
-                
-                if(lstTiposDocumentosDTO[0].CodeSAP == "0" || lstTiposDocumentosDTO[0].CodeSAP == null)
+
+                if (lstTiposDocumentosDTO[0].CodeSAP == "0" || lstTiposDocumentosDTO[0].CodeSAP == null)
                 {
                     ObjSAPComprobante.Indicator = "01";
                     ObjSAPComprobante.FolioPrefixString = "FP";
@@ -391,16 +394,16 @@ namespace ISAP
 
                     if (auxComprobante.IdTipoDocumento == 18)
                     {
-                        cuentaContable = oConsultasSQL.ObtenerCuentaContable(datosDivision[0].CuentaContable,BaseDatosSAP);
+                        cuentaContable = oConsultasSQL.ObtenerCuentaContable(datosDivision[0].CuentaContable, BaseDatosSAP);
                     }
                     else if (auxComprobante.IdTipoDocumento == 1338)
                     {
                         ObraCatalogoServicioDTO oObraCatalogoServicioDTO = oObraDAO.ObtenerDatosCatalogoServicioxId(auxdetalle.IdArticulo, auxComprobante.IdObra, BaseDatos, ref mensaje_error);
-                        cuentaContable = oConsultasSQL.ObtenerCuentaContable(oObraCatalogoServicioDTO.CuentaContable,BaseDatosSAP);
+                        cuentaContable = oConsultasSQL.ObtenerCuentaContable(oObraCatalogoServicioDTO.CuentaContable, BaseDatosSAP);
                     }
 
                     ObjSAPComprobante.Lines.AccountCode = cuentaContable;
-                    if(cuentaContable == "6343403-05-96")
+                    if (cuentaContable == "6343403-05-96")
                     {
                         datosProveedor[0].Afecto4ta = true;
                     }
@@ -417,17 +420,17 @@ namespace ISAP
 
                     if (auxdetalle.IdIndicadorImpuesto == 1)
                     {
-                        ObjSAPComprobante.Lines.UnitPrice = (double) Math.Round(auxdetalle.total_valor_item,2); //sin igv
+                        ObjSAPComprobante.Lines.UnitPrice = (double)Math.Round(auxdetalle.total_valor_item, 2); //sin igv
                         ObjSAPComprobante.Lines.TaxCode = "IGV";//"IGV";
-                        ObjSAPComprobante.Lines.PriceAfterVAT = (double)Math.Round(auxdetalle.total_valor_item,2); // sin igv
+                        ObjSAPComprobante.Lines.PriceAfterVAT = (double)Math.Round(auxdetalle.total_valor_item, 2); // sin igv
                         ObjSAPComprobante.Lines.TaxJurisdictions.JurisdictionCode = "IGV";
                         ObjSAPComprobante.Lines.TaxJurisdictions.JurisdictionType = 1;
                         ObjSAPComprobante.Lines.TaxJurisdictions.TaxAmount = Convert.ToDouble(auxdetalle.total_valor_item * auxdetalle.porcentaje_igv); //MontoIGV
-                        ObjSAPComprobante.Lines.TaxTotal = Convert.ToDouble(Math.Round(auxdetalle.total_item,2));
+                        ObjSAPComprobante.Lines.TaxTotal = Convert.ToDouble(Math.Round(auxdetalle.total_item, 2));
 
-                        SUMASubTotal += Math.Round(auxdetalle.total_valor_item,2);
+                        SUMASubTotal += Math.Round(auxdetalle.total_valor_item, 2);
                         SUMAIGV += auxdetalle.total_valor_item * auxdetalle.porcentaje_igv;
-                        SUMATotal += Math.Round(auxdetalle.total_item,2);
+                        SUMATotal += Math.Round(auxdetalle.total_item, 2);
 
                     }
                     if (auxdetalle.IdIndicadorImpuesto == 2)
@@ -437,8 +440,8 @@ namespace ISAP
                             ObjSAPComprobante.Lines.UnitPrice = (double)Math.Round(auxdetalle.total_valor_item, 2); //sin igv
                             ObjSAPComprobante.Lines.TaxCode = "EXO";//"IGV";
                             //ObjSAPComprobante.Lines.PriceAfterVAT = (double)Math.Round(auxdetalle.total_valor_item * 8/100, 2); // sin igv
-                            SUMASubTotal += auxdetalle.total_valor_item - (auxdetalle.total_valor_item * 8 /100);
-                            SUMATotal += auxdetalle.total_item - (auxdetalle.total_item * 8/100);
+                            SUMASubTotal += auxdetalle.total_valor_item - (auxdetalle.total_valor_item * 8 / 100);
+                            SUMATotal += auxdetalle.total_item - (auxdetalle.total_item * 8 / 100);
                         }
                         else
                         {
@@ -454,7 +457,7 @@ namespace ISAP
                     {
                         ObjSAPComprobante.Lines.UnitPrice = (double)Math.Round(auxdetalle.total_valor_item, 2); //sin igv
                         ObjSAPComprobante.Lines.TaxCode = "INA";//"IGV";
-                        ObjSAPComprobante.Lines.PriceAfterVAT = (double)Math.Round(auxdetalle.total_valor_item,2); // sin igv
+                        ObjSAPComprobante.Lines.PriceAfterVAT = (double)Math.Round(auxdetalle.total_valor_item, 2); // sin igv
                         SUMASubTotal += auxdetalle.total_valor_item;
                         SUMATotal += auxdetalle.total_item;
                     }
@@ -472,12 +475,12 @@ namespace ISAP
                     ObjSAPComprobante.Lines.Add();
                 }
 
-               
+
                 decimal IGVRedondado = Math.Round(SUMAIGV, 2, MidpointRounding.AwayFromZero);
 
 
                 decimal Monto2Decimales = auxComprobante.SubTotal + auxComprobante.Impuesto;
-                decimal MontoDecimalesCompletos = SUMASubTotal +IGVRedondado;
+                decimal MontoDecimalesCompletos = SUMASubTotal + IGVRedondado;
 
                 if (Monto2Decimales != MontoDecimalesCompletos)
                 {
@@ -503,10 +506,16 @@ namespace ISAP
 
                 if (auxComprobante.PorcDet > 0)
                 {
-                    string FormatoDet = "DT" +  Math.Round(auxComprobante.PorcDet).ToString().PadLeft(2,'0');
+                    string FormatoDet = "DT" + Math.Round(auxComprobante.PorcDet).ToString().PadLeft(2, '0');
 
                     string CondicionPagoDet = oConsultasSQL.ObtenerCondicionPagoDET(FormatoDet, "P" + datosProveedor[0].NumeroDocumento, BaseDatosSAP);
+
+                    ObjSAPComprobante.PaymentGroupCode = int.Parse(CondicionPagoDet);
+
                 }
+                
+
+
                 //REDONDEO
 
                 //ANEXOS
