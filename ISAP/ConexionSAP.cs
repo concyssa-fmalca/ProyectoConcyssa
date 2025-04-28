@@ -400,6 +400,10 @@ namespace ISAP
                     }
 
                     ObjSAPComprobante.Lines.AccountCode = cuentaContable;
+                    if(cuentaContable == "6343403-05-96")
+                    {
+                        datosProveedor[0].Afecto4ta = true;
+                    }
 
                     if (datosProveedor[0].Afecto4ta == true)
                     {
