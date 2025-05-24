@@ -58,7 +58,7 @@ namespace ConcyssaWeb.Controllers
             try
             {
                 string strNew = "NombreReporte=" + NombreReporte + "&Formato=" + Formato + "&Cuadrillas=" + Cuadrillas + "&Materiales=" + Materiales + "&Auxiliares=" + Auxiliares + "&Servicios=" + Servicios + "&Extornos=" + Extornos + "&FechaInicio=" + FechaInicioS + "&FechaFin=" + FechaFin +"&BaseDatos="+BaseDatos;
-                //cadenaUri = "https://localhost:44315/ReportCrystal.asmx/ObtenerReporteInformeConsumoCuadrillas";
+                //cadenaUri = "http://localhost/ReporteCrystal/ReportCrystal.asmx/ObtenerReporteInformeConsumoCuadrillas";
                 cadenaUri = _IConfiguration["Reporte:UrlBase"] + "/ReportCrystal.asmx/ObtenerReporteInformeConsumoCuadrillas";
                 uri = new Uri(cadenaUri, UriKind.RelativeOrAbsolute);
                 request = (HttpWebRequest)WebRequest.Create(uri);
@@ -66,7 +66,8 @@ namespace ConcyssaWeb.Controllers
                 request.Method = "POST";
                 //request.ContentType = "application/json;charset=utf-8";
                 request.ContentType = "application/x-www-form-urlencoded";
-
+                request.Timeout = 300000;
+                request.ReadWriteTimeout = 300000;
 
                 StreamWriter requestWriter = new StreamWriter(request.GetRequestStream(), System.Text.Encoding.ASCII);
 
