@@ -107,5 +107,34 @@ namespace ISAP
             return GroupNum;
         }
 
+        public string ObtenerGrupoDetDesdeSGC(string TipoDet, string BaseDatosSAP)
+        {
+            string GrupoDet = "";
+            using (SqlConnection cn = new ConexionSQL().conectar(BaseDatosSAP))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ObtenerGrupoDetDesdeSGC", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@TipoDet", TipoDet);
+
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        GrupoDet = (drd["Code"].ToString());
+                    }
+                    drd.Close();
+
+
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+            return GrupoDet;
+        }
+
     }
 }

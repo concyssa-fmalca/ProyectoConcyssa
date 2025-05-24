@@ -268,6 +268,7 @@ namespace ISAP
                 ObjSAPComprobante.UserFields.Fields.Item("U_CON_nrosisgestion").Value = DatosSerie[0].Serie + "-" + auxComprobante.Correlativo;
 
                 ObjSAPComprobante.UserFields.Fields.Item("U_CON_OCCompras").Value = auxComprobante.NumOC;
+                ObjSAPComprobante.UserFields.Fields.Item("U_CON_PDFFACTURA").Value = "http://192.168.0.201/factdocs/?ruc="+ datosProveedor[0].NumeroDocumento + "&factura="+ SerieRef;
 
                 // ObjSAPComprobante.FolioPrefixString = "FT";//auxComprobante.SerieCpe;
                 //auxComprobante.SerieCpe;
@@ -491,11 +492,15 @@ namespace ISAP
                     }
                     else
                     {
-                        ObjSAPComprobante.DocTotal = Convert.ToDouble(auxComprobante.Total);
+                        //ObjSAPComprobante.DocTotal = Convert.ToDouble(auxComprobante.Total);
                         auxComprobante.Redondeo += Monto2Decimales - MontoDecimalesCompletos;
+
+
                     }
                 }
 
+                var a = ObjSAPComprobante.Rounding;
+                var b = ObjSAPComprobante.RoundingDiffAmount;
 
                 if (auxComprobante.Redondeo != 0)
                 {
@@ -506,9 +511,38 @@ namespace ISAP
 
                 if (auxComprobante.PorcDet > 0)
                 {
+                    //ObjSAPComprobante.Rounding = SAPbobsCOM.BoYesNoEnum.tNO;
+                    //ObjSAPComprobante.RoundingDiffAmount = 0;
+                    //ObjSAPComprobante.DocTotal = Convert.ToDouble(MontoDecimalesCompletos);
+
+
                     string FormatoDet = "DT" + Math.Round(auxComprobante.PorcDet).ToString().PadLeft(2, '0');
 
                     string CondicionPagoDet = oConsultasSQL.ObtenerCondicionPagoDET(FormatoDet, "P" + datosProveedor[0].NumeroDocumento, BaseDatosSAP);
+                    string GrupoDet = oConsultasSQL.ObtenerGrupoDetDesdeSGC(auxComprobante.TipoDet, BaseDatosSAP);
+
+                    switch (FormatoDet)
+                    {
+                        case "DT1.5":
+                            ObjSAPComprobante.UserFields.Fields.Item("U_CON_TASADET").Value = "1";
+                            break;
+                        case "DT04":
+                            ObjSAPComprobante.UserFields.Fields.Item("U_CON_TASADET").Value = "2";
+                            break;
+                        case "DT10":
+                            ObjSAPComprobante.UserFields.Fields.Item("U_CON_TASADET").Value = "3";
+                            break;
+                        case "DT12":
+                            ObjSAPComprobante.UserFields.Fields.Item("U_CON_TASADET").Value = "4";
+                            break;
+                        case "DT15":
+                            ObjSAPComprobante.UserFields.Fields.Item("U_CON_TASADET").Value = "5";
+                            break;
+
+                    }
+
+                    ObjSAPComprobante.UserFields.Fields.Item("U_CON_GRUPODET").Value = GrupoDet;
+
 
                     ObjSAPComprobante.PaymentGroupCode = int.Parse(CondicionPagoDet);
 
@@ -710,7 +744,7 @@ namespace ISAP
 
               
 
-                ObjSAPComprobante.DocTotal = Convert.ToDouble(auxComprobante.Total);
+                //ObjSAPComprobante.DocTotal = Convert.ToDouble(auxComprobante.Total);
 
                 ProveedorDAO oProveedorDAO = new ProveedorDAO();
                 var datosProveedor = oProveedorDAO.ObtenerDatosxID(auxComprobante.IdProveedor, BaseDatos);
