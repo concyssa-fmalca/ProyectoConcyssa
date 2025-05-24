@@ -3988,7 +3988,7 @@ function MostrarAnexos(IdSolicitud) {
                 for (var i = 0; i < datos.length; i++) {
                     tr += '<tr>' +
                         '<td>' + datos[i].NombreArchivo + '</td>' +
-                        '<td> <a href="/Anexos/' + datos[i].NombreArchivo +'" target="_blank">Ver</a> </td>' + 
+                        '<td> <a href="' + datos[i].ruta +'" target="_blank">Ver</a> </td>' + 
                         '</tr>';
                 }
                 $("#body_anexos_solicitud").html(tr)

@@ -400,13 +400,13 @@ namespace ISAP
                     {
                         ObraCatalogoServicioDTO oObraCatalogoServicioDTO = oObraDAO.ObtenerDatosCatalogoServicioxId(auxdetalle.IdArticulo, auxComprobante.IdObra, BaseDatos, ref mensaje_error);
                         cuentaContable = oConsultasSQL.ObtenerCuentaContable(oObraCatalogoServicioDTO.CuentaContable, BaseDatosSAP);
+                        if (oObraCatalogoServicioDTO.CuentaContable == "6343403-05-96")
+                        {
+                            datosProveedor[0].Afecto4ta = true;
+                        }
                     }
 
                     ObjSAPComprobante.Lines.AccountCode = cuentaContable;
-                    if (cuentaContable == "6343403-05-96")
-                    {
-                        datosProveedor[0].Afecto4ta = true;
-                    }
 
                     if (datosProveedor[0].Afecto4ta == true)
                     {

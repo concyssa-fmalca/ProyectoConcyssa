@@ -2300,6 +2300,15 @@ function CalcularTotalDetalle(contador) {
     let varTotal = 0;
     let impuesto = 0;
 
+
+    console.log("-------------------------------")
+    console.log(varPorcentaje)
+    console.log(varCantidadNecesaria)
+    console.log(varPrecioInfo)
+    console.log(subtotal)
+    console.log("-------------------------------")
+
+
     if (Number(varPorcentaje) == 0) {
         varTotal = subtotal;
     } else {

@@ -4367,7 +4367,7 @@ function llenarComboUbigeos(lista, idCombo, primerItem) {
     for (var i = 0; i < nRegistros; i++) {
 
         if (lista.length > 0) {
-            if (lista[i].CodUbigeo.substr(0, 4) == '1501') {
+            if (lista[i].CodUbigeo.substr(0, 4) == '1501' || lista[i].CodUbigeo.substr(0, 4) == '0701') {
                 contenido += "<option value='" + lista[i].CodUbigeo + "'>" + lista[i].Descripcion + "</option>";
             }
         }

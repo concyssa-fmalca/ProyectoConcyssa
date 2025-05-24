@@ -638,7 +638,7 @@ window.onload = function () {
     DecimalesPorcentajes = GDecimalesPorcentajes;
 
 
-    KeyPressNumber($("#txtRedondeo"));
+    //KeyPressNumber($("#txtRedondeo"));
 
     $("#IdProveedor").select2();
 
