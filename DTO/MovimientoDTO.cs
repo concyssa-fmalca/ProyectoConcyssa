@@ -135,6 +135,7 @@ namespace DTO
 
         public string NombObraDestino { get; set; }
         public string NombAlmacenDestino { get; set; }
+        public string ResultadoGuia { get; set; }
      
     }
 

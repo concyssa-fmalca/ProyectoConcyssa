@@ -935,6 +935,7 @@ namespace DAO
                         oMovimientoDTO.NumeroGuiaElectronica = Convert.ToInt32(String.IsNullOrEmpty(drd["NumeroGuiaElectronica"].ToString()) ? "0" : drd["NumeroGuiaElectronica"].ToString());
                         oMovimientoDTO.EstadoFE = Convert.ToInt32(String.IsNullOrEmpty(drd["EstadoFE"].ToString()) ? "0" : drd["EstadoFE"].ToString());
                         oMovimientoDTO.NroRef = (String.IsNullOrEmpty(drd["NroRef"].ToString()) ? "" : drd["NroRef"].ToString());
+                        oMovimientoDTO.ResultadoGuia = (String.IsNullOrEmpty(drd["ResultadoGuia"].ToString()) ? "" : drd["ResultadoGuia"].ToString());
                         lstMovimientoDTO.Add(oMovimientoDTO);
                     }
                     drd.Close();

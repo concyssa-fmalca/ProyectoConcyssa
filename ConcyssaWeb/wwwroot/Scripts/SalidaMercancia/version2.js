@@ -568,12 +568,7 @@ function ConsultaServidor() {
             {
                 "data": null,
                 "render": function (data, type, full, meta) {
-                    let varSNGE = "-"
- 
-                    if (full.SerieGuiaElectronica) {
-                        varSNGE = full.SerieGuiaElectronica.toUpperCase() + "-" + full.NumeroGuiaElectronica
-                    }
-                    
+                    let varSNGE = "-"    
                     if (full.OrigenDespacho != "") {
                         varSNGE = "APP MOVIL SD" + full.OrigenDespacho.split("SD")[1] ?? ""
                     }
@@ -583,15 +578,15 @@ function ConsultaServidor() {
             {
                 "data": null,
                 "render": function (data, type, full, meta) {
-                    let varEstadoGE = "-"
-                    if (full.SerieGuiaElectronica) {
-                        if (full.EstadoFE == 1) {
-                            varEstadoGE = "ACEPTADO"
-                        } else {
-                            varEstadoGE = "NO ACEPTADO"
-                        }
-                    }
-                    return varEstadoGE
+                    
+                    return full.ResultadoGuia
+                },
+            },
+            {
+                "data": null,
+                "render": function (data, type, full, meta) {
+                    let SerieNumGuia = full.SerieGuiaElectronica.toUpperCase() + "-" + full.NumeroGuiaElectronica                    
+                    return SerieNumGuia
                 },
             },
             {
