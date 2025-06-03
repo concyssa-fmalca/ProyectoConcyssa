@@ -45,6 +45,7 @@ namespace DTO
         public string Cuadrilla { get; set; }
         public string NumRef { get; set; }
         public int DocEntrySap { get; set; }
+        public string NombResponsable { get; set; }
 
     }
     public class KardexTributario

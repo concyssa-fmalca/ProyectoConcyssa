@@ -874,6 +874,15 @@ function GuardarSolicitud() {
 function AlmacenDestinoDetalle() {
 
     let AlmacenDestino = $("#IdAlmacenDestino").val();
+
+    let AlmacenOrigen = $("#cboAlmacen").val();
+
+    if (AlmacenDestino == AlmacenOrigen) {
+        Swal.fire("El Almacén de Destino no puede ser el mismo de origen")
+        $("#IdAlmacenDestino").val(0)
+        return;
+    }
+
     $("select[name='cboAlmacen[]']").val(AlmacenDestino);
 
 }

@@ -169,7 +169,7 @@ namespace ConcyssaWeb.Controllers
                 // Agregar una hoja al archivo
                 ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Kardex");
 
-                using (ExcelRange range = worksheet.Cells["A1:T1"])
+                using (ExcelRange range = worksheet.Cells["A1:U1"])
                 {
                     range.Style.Font.Bold = true;
                     range.Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -199,6 +199,7 @@ namespace ConcyssaWeb.Controllers
                 worksheet.Cells["R1"].Value = "Usuario";
                 worksheet.Cells["S1"].Value = "Cuadrilla";
                 worksheet.Cells["T1"].Value = "NroRef";
+                worksheet.Cells["U1"].Value = "Operario";
 
 
                 // Definir el ancho de las columnas
@@ -249,6 +250,7 @@ namespace ConcyssaWeb.Controllers
                     worksheet.Cells["R" + row].Value = registro.NombUsuario;
                     worksheet.Cells["S" + row].Value = registro.Cuadrilla;
                     worksheet.Cells["T" + row].Value = registro.NumRef;
+                    worksheet.Cells["U" + row].Value = registro.NombResponsable;
                     row++;
                 }
 

@@ -59,6 +59,7 @@ namespace DAO
                         oKardexDTO.TipoDocumentoRef = drd["TipoDocumentoRef"].ToString();
                         oKardexDTO.Cuadrilla = drd["Cuadrilla"].ToString();
                         oKardexDTO.NumRef = drd["NumRef"].ToString();
+                        oKardexDTO.NombResponsable = (String.IsNullOrEmpty(drd["NombResponsable"].ToString()) ? "-" : drd["NombResponsable"].ToString());
 
 
 
