@@ -514,7 +514,10 @@ namespace ISAP
                     //ObjSAPComprobante.Rounding = SAPbobsCOM.BoYesNoEnum.tNO;
                     //ObjSAPComprobante.RoundingDiffAmount = 0;
                     //ObjSAPComprobante.DocTotal = Convert.ToDouble(MontoDecimalesCompletos);
-
+                    if (auxComprobante.PorcDet <= 0.12m)
+                    {
+                        auxComprobante.PorcDet = auxComprobante.PorcDet * 100;
+                    }
 
                     string FormatoDet = "DT" + Math.Round(auxComprobante.PorcDet).ToString().PadLeft(2, '0');
 
