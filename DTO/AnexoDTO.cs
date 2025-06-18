@@ -16,5 +16,9 @@ namespace DTO
         public string Tabla { get; set; } = "";
         public int IdTabla { get; set; } = 0;
         public bool web { get; set; } = false;
+        public int IdProveedor { get; set; } = 0;
+        public string Proveedor { get; set; } = "";
+        public string NroCotizacion { get; set; } = "";
+        public decimal MontoCotizacion { get; set; } = 0;
     }
 }

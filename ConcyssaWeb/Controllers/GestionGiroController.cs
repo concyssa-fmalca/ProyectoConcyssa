@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Xml;
 
 namespace ConcyssaWeb.Controllers
@@ -344,29 +345,32 @@ namespace ConcyssaWeb.Controllers
         public string  UpLoadFile(IFormFile uploadfile)
         {
            
-            FileUploadDTO fileUploadDTO = new FileUploadDTO(); 
+            FileUploadDTO fileUploadDTO = new FileUploadDTO();
+
+            string nombre = Regex.Replace(uploadfile.FileName, @"[+%?@&#=;:'""`]", " ").Trim();
+
             if (uploadfile != null && uploadfile.Length > 0)
             {
                 try
                 {
-                    string dir = "wwwroot/Requerimiento/" + uploadfile.FileName;
+                    string dir = "wwwroot/Requerimiento/" + nombre;
                     if (Directory.Exists(dir))
                     {
                         ViewBag.Message = "Archivo ya existe";
                         fileUploadDTO.success = true;                   
-                        fileUploadDTO.msg = uploadfile.FileName;
-                        fileUploadDTO.filename = uploadfile.FileName;
+                        fileUploadDTO.msg = nombre;
+                        fileUploadDTO.filename = nombre;
                     }
                     else
                     {
-                        string filePath = Path.Combine(dir, Path.GetFileName(uploadfile.FileName));
+                        string filePath = Path.Combine(dir, nombre);
                         using (Stream fileStream = new FileStream(dir, FileMode.Create, FileAccess.Write))
                         {
                             uploadfile.CopyTo(fileStream);
                             fileUploadDTO.success = true;
                             fileUploadDTO.msg = uploadfile.FileName;
                        
-                            fileUploadDTO.filename = uploadfile.FileName;
+                            fileUploadDTO.filename = nombre;
 
                         }
 

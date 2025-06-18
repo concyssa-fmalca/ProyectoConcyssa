@@ -1042,5 +1042,28 @@ namespace ConcyssaWeb.Controllers
             }
         }
 
+        public string ValidarNroCotizacion(int IdProveedor,string NroCotizacion)
+        {
+            string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            string mensaje_error = "";
+            SolicitudRQDAO oSolicitudRQDAO = new SolicitudRQDAO();
+            int IdSociedad = Convert.ToInt32(HttpContext.Session.GetInt32("IdSociedad"));
+            string Documento = oSolicitudRQDAO.ValidarAnexoNroCotizacion(IdProveedor, NroCotizacion, BaseDatos);
+            object json = null;
+
+            if (Documento == "")
+            {
+                json = new { existe = false, documento = "" };
+            }
+            else
+            {
+                json = new { existe = true, documento = Documento };
+            }
+
+            return JsonConvert.SerializeObject(json);
+
+
+        }
+
     }
 }

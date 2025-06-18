@@ -220,6 +220,9 @@ namespace DAO
                                 dad.SelectCommand.Parameters.AddWithValue("@IdTabla", IdInsert);
                                 dad.SelectCommand.Parameters.AddWithValue("@NombreArchivo", oSolicitudRQDTO.AnexoDetalle[i].NombreArchivo);
                                 dad.SelectCommand.Parameters.AddWithValue("@web", oSolicitudRQDTO.AnexoDetalle[i].web);
+                                dad.SelectCommand.Parameters.AddWithValue("@IdProveedor", oSolicitudRQDTO.AnexoDetalle[i].IdProveedor);
+                                dad.SelectCommand.Parameters.AddWithValue("@NroCotizacion", oSolicitudRQDTO.AnexoDetalle[i].NroCotizacion);
+                                dad.SelectCommand.Parameters.AddWithValue("@MontoCotizacion", oSolicitudRQDTO.AnexoDetalle[i].MontoCotizacion);
                                 rpta = dad.SelectCommand.ExecuteNonQuery();
                             }
                         }
@@ -862,6 +865,9 @@ namespace DAO
                         oAnexoDTO.IdTabla = Convert.ToInt32(drd["IdTabla"].ToString());
                         oAnexoDTO.NombreArchivo = (drd["NombreArchivo"].ToString());
                         oAnexoDTO.web = bool.Parse(drd["web"].ToString());
+                        oAnexoDTO.Proveedor = (String.IsNullOrEmpty(drd["Proveedor"].ToString()) ? "" : drd["Proveedor"].ToString());
+                        oAnexoDTO.NroCotizacion = (String.IsNullOrEmpty(drd["NroCotizacion"].ToString()) ? "" : drd["NroCotizacion"].ToString());
+                        oAnexoDTO.MontoCotizacion = Convert.ToDecimal(String.IsNullOrEmpty(drd["MontoCotizacion"].ToString()) ? "0" : drd["MontoCotizacion"].ToString());
                         oSolicitudRQDTO.AnexoDetalle[posicion] = oAnexoDTO;
                         posicion = posicion + 1;
                     }
@@ -1593,6 +1599,38 @@ namespace DAO
                 }
             }
             return oSolicitudDetalleDTO;
+        }
+
+
+        public string ValidarAnexoNroCotizacion(int IdProveedor,string NroCotizacion,string BaseDatos)
+        {
+            List<SolicitudRQDTO> lstSolicitudRQDTO = new List<SolicitudRQDTO>();
+
+            string Documento = "";
+            using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_ValidarAnexoNroCotizacion", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@IdProveedor", IdProveedor);
+                    da.SelectCommand.Parameters.AddWithValue("@NroCotizacion", NroCotizacion);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        Documento = drd["Documento"].ToString();
+                        
+                    }
+                    drd.Close();
+                }
+                catch (Exception ex)
+                {
+                    Documento = "";
+                }
+            }
+            return Documento;
+
         }
 
     }

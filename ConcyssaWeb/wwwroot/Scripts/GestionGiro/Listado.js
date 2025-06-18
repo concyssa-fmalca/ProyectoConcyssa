@@ -385,6 +385,9 @@ function cargarUpload() {
         },
 
         onComplete: function (filename, response) {
+
+            filename = filename.replace(/[+%?@&#=;:'"`]/g, ' ');
+
             idbtn.innerHTML = 'Examinar';
             progressOuter.style.display = 'none';
 

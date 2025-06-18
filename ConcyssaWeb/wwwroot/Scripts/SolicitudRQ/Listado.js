@@ -28,7 +28,7 @@ window.onload = function () {
     comprobarSesion()
     CargarBaseFiltro()
     ObtenerConfiguracionDecimales();
-
+    CargarProveedores()
 
     $("#cboAgregarArticulo").select2({
         dropdownParent: $("#modal-form")
@@ -87,6 +87,12 @@ function SubirAnexosLinea() {
     });
 
     setTimeout(() => {
+
+       
+
+
+
+
         const fileInput = $('#file')[0];
 
 
@@ -160,11 +166,27 @@ function SubirAnexosLinea() {
 
                     let ObjetoAnexo = {
                         'Nombre': fileName,
-                        'url': response.fileUrl
+                        'url': response.fileUrl,
+                        'IdProveedor': $("#cboProveedor").val() == null ? 0 : $("#cboProveedor").val(),
+                        'Proveedor': $("#cboProveedor option:selected").text(),
+                        'NroCotizacion': $("#txtNroCotizacion").val(),
+                        'MontoCotizacion': $("#txtMontoCotizacion").val()
                     }
 
                     Swal.close()
                     AgregarLineaAnexo(ObjetoAnexo);
+                     $("#cboProveedor").val(0).change()
+                     $("#txtNroCotizacion").val(''),
+                        $("#txtMontoCotizacion").val(0)
+
+                    $.post("ValidarNroCotizacion", { 'IdProveedor': ObjetoAnexo.IdProveedor, 'NroCotizacion': ObjetoAnexo.NroCotizacion }, function (data, status) {
+                        let datos = JSON.parse(data);
+
+                        if (datos.existe) {
+                            Swal.fire("Se encontró la Cotización en el siguiente documento: " + datos.documento)
+                        }
+
+                    });
 
 
                 } else {
@@ -694,16 +716,23 @@ function CambiarClaseArticulo() {
         $("#IdTipoProducto").hide();
         $("#divCuadrilla").show();
         $("#IdTipoProducto").val(0);
+        $(".validacionServicio").show()
+    
+
     } else if (ClaseArticulo == "3") {
         $("#IdTipoProducto").hide();
         $("#IdTipoProducto").val(0);
         $("#divCuadrilla").hide();
+        $(".validacionServicio").hide()
     }
     else {
         $("#IdTipoProducto").show();
         $("#IdTipoProducto").val(0);
         $("#divCuadrilla").hide();
+        $(".validacionServicio").hide()
     }
+
+
 
 }
 
@@ -722,6 +751,18 @@ function AgregarLineaAnexo(ObjetoArchivo) {
                `+ ObjetoArchivo.Nombre + `
                <input  class="form-control" type="hidden" value="`+ ObjetoArchivo.Nombre + `" id="txtNombreAnexo" name="txtNombreAnexo[]"/>
                <input  class="form-control" type="hidden" value="`+ ObjetoArchivo.url + `" id="txtUrlAnexo" name="txtUrlAnexo[]"/>
+            </td>
+             <td>
+               `+ ObjetoArchivo.Proveedor + `
+               <input  class="form-control" type="hidden" value="`+ ObjetoArchivo.IdProveedor + `" id="txtIdProveedorAnexo" name="txtIdProveedorAnexo[]"/>
+            </td>
+              <td>
+               `+ ObjetoArchivo.NroCotizacion + `    
+                <input  class="form-control" type="hidden" value="`+ ObjetoArchivo.NroCotizacion + `" id="txtNroCotizacionAnexo" name="txtNroCotizacionAnexo[]"/>
+            </td>
+             <td>
+               `+ ObjetoArchivo.MontoCotizacion + `  
+                <input  class="form-control" type="hidden" value="`+ ObjetoArchivo.MontoCotizacion + `" id="txtMontoCotizacionAnexo" name="txtMontoCotizacionAnexo[]"/>
             </td>
             <td>
                <a href="`+ ObjetoArchivo.url + `" target="_blank" >Descargar</a>
@@ -1786,12 +1827,33 @@ function GuardarSolicitud() {
         arrayCuadrillas.push($(elemento).val());
     });
 
+    let arrayIdProveedorAnexo = new Array();
+    $("input[name='txtIdProveedorAnexo[]']").each(function (indice, elemento) {
+        arrayIdProveedorAnexo.push($(elemento).val());
+    });
+
+    let arrayNroCotizacionAnexoAnexo = new Array();
+    $("input[name='txtNroCotizacionAnexo[]']").each(function (indice, elemento) {
+        arrayNroCotizacionAnexoAnexo.push($(elemento).val());
+    });
+
+    let arrayMontoCotizacionAnexo = new Array();
+    $("input[name='txtMontoCotizacionAnexo[]']").each(function (indice, elemento) {
+        arrayMontoCotizacionAnexo.push($(elemento).val());
+    });
+
+
+
+
     let AnexoDetalle = [];
     for (var i = 0; i < arrayTxtNombreAnexo.length; i++) {
         AnexoDetalle.push({
             'NombreArchivo': arrayTxtNombreAnexo[i],
             'ruta': arrayTxtUrlAnexo[i],
-            'web': 1
+            'web': 1,
+            'IdProveedor': arrayIdProveedorAnexo[i],
+            'NroCotizacion': arrayNroCotizacionAnexoAnexo[i],
+            'MontoCotizacion': arrayMontoCotizacionAnexo[i],
         });
     }
 
@@ -2175,6 +2237,15 @@ function ObtenerDatosxID(IdSolicitudRQ) {
                    
                     <td>
                        `+ AnexoDetalle[k].NombreArchivo + `
+                    </td>
+                     <td>
+                       `+ AnexoDetalle[k].Proveedor + `
+                    </td>
+                     <td>
+                       `+ AnexoDetalle[k].NroCotizacion + `
+                    </td>
+                     <td>
+                       `+ AnexoDetalle[k].MontoCotizacion + `
                     </td>
                     <td>
                        <a target="_blank" href="`+ AnexoDetalle[k].ruta + `"> Descargar </a>
@@ -4099,4 +4170,46 @@ function CargarCuadrillas() {
     });
 
    
+}
+function CargarProveedores() {
+
+
+    $("#cboProveedor").select2({
+        language: "es",
+        width: '100%',
+        dropdownParent: $("#modal-form"),
+        //theme: "classic",
+        async: false,
+        ajax: {
+            url: "/Proveedor/ObtenerProveedoresSelect2",
+            type: "post",
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+
+                return {
+                    searchTerm: params.term, // search term                
+                };
+
+
+
+            },
+            processResults: function (response) {
+
+                var results = [];
+                results.push({ id: '0', text: 'TODOS' })
+                $.each(response, function (index, item) {
+                    results.push({ id: item.IdProveedor, text: item.NumeroDocumento + '-' + item.RazonSocial })
+                });
+
+
+                return { results }
+
+
+            },
+            cache: true,
+        },
+        placeholder: 'Seleccione el Proveedor',
+        minimunInputLength: 3
+    });
 }
