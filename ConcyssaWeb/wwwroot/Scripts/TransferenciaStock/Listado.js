@@ -1861,55 +1861,61 @@ function GuardarSolicitud() {
         return
     }
 
+    let MovimientoEnviar = []
+
+    MovimientoEnviar.push({
+        detalles,
+        AnexoDetalle,
+        //cabecera
+        'IdAlmacen': IdAlmacen,
+        'IdTipoDocumento': IdTipoDocumento,
+        'IdSerie': IdSerie,
+        'Correlativo': Correlativo,
+        'IdMoneda': IdMoneda,
+        'TipoCambio': TipoCambio,
+        'FechaContabilizacion': FechaContabilizacion,
+        'FechaDocumento': FechaDocumento,
+        'IdCentroCosto': IdCentroCosto,
+        'Comentario': Comentario,
+        'SubTotal': SubTotal,
+        'Impuesto': Impuesto,
+        'Total': Total,
+        'IdTipoProducto': IdTipoProducto,
+        'IdAlmacenDestino': IdAlmacenDestino,
+        'IdCuadrilla': IdCuadrilla,
+
+        'IdObraDestino': ObraFin,
+
+
+        'IdTipoDocumentoRef': $("#IdTipoDocumentoRef").val(),
+        'NumSerieTipoDocumentoRef': $("#SerieNumeroRef").val(),
+        'IdDestinatario': $("#IdDestinatario").val(),
+        'IdMotivoTraslado': $("#IdMotivoTraslado").val(),
+        'IdTransportista': $("#IdTransportista").val(),
+        'PlacaVehiculo': $("#PlacaVehiculo").val(),
+        'MarcaVehiculo': $("#MarcaVehiculo").val(),
+        'NumIdentidadConductor': $("#NumIdentidadConductor").val(),
+
+        'NombreConductor': $("#NombreConductor").val(),
+        'ApellidoConductor': $("#ApellidoConductor").val(),
+        'LicenciaConductor': $("#LicenciaConductor").val(),
+        'TipoTransporte': $("#IdTipoTransporte").val(),
+
+        'Peso': $("#Peso").val(),
+        'Bulto': $("#Bulto").val(),
+
+        'ValidarIngresoSalidaOAmbos': DatoValidarIngresoSalidaOAmbos,
+        'TranferenciaDirecta': TranferenciaDirecta
+    })
+
 
     if (validarGuardado == 0) {
         $.ajax({
-            url: "UpdateInsertMovimiento",
+            url: "UpdateInsertMovimientoString",
             type: "POST",
             async: true,
             data: {
-                detalles,
-                AnexoDetalle,
-                //cabecera
-                'IdAlmacen': IdAlmacen,
-                'IdTipoDocumento': IdTipoDocumento,
-                'IdSerie': IdSerie,
-                'Correlativo': Correlativo,
-                'IdMoneda': IdMoneda,
-                'TipoCambio': TipoCambio,
-                'FechaContabilizacion': FechaContabilizacion,
-                'FechaDocumento': FechaDocumento,
-                'IdCentroCosto': IdCentroCosto,
-                'Comentario': Comentario,
-                'SubTotal': SubTotal,
-                'Impuesto': Impuesto,
-                'Total': Total,
-                'IdTipoProducto': IdTipoProducto,
-                'IdAlmacenDestino': IdAlmacenDestino,
-                'IdCuadrilla': IdCuadrilla,
-
-                'IdObraDestino': ObraFin,
-
-
-                'IdTipoDocumentoRef': $("#IdTipoDocumentoRef").val(),
-                'NumSerieTipoDocumentoRef': $("#SerieNumeroRef").val(),
-                'IdDestinatario': $("#IdDestinatario").val(),
-                'IdMotivoTraslado': $("#IdMotivoTraslado").val(),
-                'IdTransportista': $("#IdTransportista").val(),
-                'PlacaVehiculo': $("#PlacaVehiculo").val(),
-                'MarcaVehiculo': $("#MarcaVehiculo").val(),
-                'NumIdentidadConductor': $("#NumIdentidadConductor").val(),
-
-                'NombreConductor': $("#NombreConductor").val(),
-                'ApellidoConductor': $("#ApellidoConductor").val(),
-                'LicenciaConductor': $("#LicenciaConductor").val(),
-                'TipoTransporte': $("#IdTipoTransporte").val(),
-
-                'Peso': $("#Peso").val(),
-                'Bulto': $("#Bulto").val(),
-
-                'ValidarIngresoSalidaOAmbos': DatoValidarIngresoSalidaOAmbos,
-                'TranferenciaDirecta': TranferenciaDirecta
+                'JsonDatosEnviar': JSON.stringify(MovimientoEnviar)
                 
             },
             beforeSend: function () {
@@ -1937,7 +1943,7 @@ function GuardarSolicitud() {
                 } else {
                     Swal.fire(
                         'Error!',
-                        'Ocurrio un Error!',
+                         data,
                         'error'
                     )
 

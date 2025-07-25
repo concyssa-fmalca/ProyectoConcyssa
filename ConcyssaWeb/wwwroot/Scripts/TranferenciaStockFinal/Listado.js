@@ -709,6 +709,11 @@ function GuardarSolicitud() {
     let IdCuadrilla = $("#IdCuadrilla").val();
     let IdAlmacenDestino = $("#IdAlmacenDestino").val();
 
+
+    if (Total == "-") {
+        Total = 0
+    }
+
     //END Cabecera
 
 
@@ -776,48 +781,56 @@ function GuardarSolicitud() {
 
     }
 
+
+    let MovimientoEnviar = []
+
+    MovimientoEnviar.push({
+        detalles,
+        //cabecera
+        'IdAlmacen': IdAlmacen,
+        'IdTipoDocumento': IdTipoDocumento,
+        'IdSerie': IdSerie,
+        'Correlativo': Correlativo,
+        'IdMoneda': IdMoneda,
+        'TipoCambio': TipoCambio,
+        'FechaContabilizacion': FechaContabilizacion,
+        'FechaDocumento': FechaDocumento,
+        'IdCentroCosto': IdCentroCosto,
+        'Comentario': Comentario,
+        'SubTotal': SubTotal,
+        'Impuesto': Impuesto,
+        'Total': Total,
+        'IdTipoProducto': IdTipoProducto,
+        'IdAlmacenDestino': IdAlmacenDestino,
+        'IdCuadrilla': IdCuadrilla,
+        'IdMovimiento': IdMovimiento,
+
+        'IdObraDestino': ObraFin,
+
+        'IdTipoDocumentoRef': $("#IdTipoDocumentoRef").val(),
+        'NumSerieTipoDocumentoRef': $("#SerieNumeroRef").val(),
+        'IdDestinatario': $("#IdDestinatario").val(),
+        'IdMotivoTraslado': $("#IdMotivoTraslado").val(),
+        'IdTransportista': $("#IdTransportista").val(),
+        'PlacaVehiculo': $("#PlacaVehiculo").val(),
+        'NumIdentidadConductor': $("#NumIdentidadConductor").val(),
+        'Peso': $("#Peso").val(),
+        'Bulto': $("#Bulto").val()
+
+
+        //end cabecera
+    })
+
+
     if (validarGuardado == 0) {
         $.ajax({
-            url: "UpdateInsertMovimientoFinal",
+            url: "UpdateInsertMovimientoFinalString",
             type: "POST",
             async: true,
             data: {
-                detalles,
-                //cabecera
-                'IdAlmacen': IdAlmacen,
-                'IdTipoDocumento': IdTipoDocumento,
-                'IdSerie': IdSerie,
-                'Correlativo': Correlativo,
-                'IdMoneda': IdMoneda,
-                'TipoCambio': TipoCambio,
-                'FechaContabilizacion': FechaContabilizacion,
-                'FechaDocumento': FechaDocumento,
-                'IdCentroCosto': IdCentroCosto,
-                'Comentario': Comentario,
-                'SubTotal': SubTotal,
-                'Impuesto': Impuesto,
-                'Total': Total,
-                'IdTipoProducto': IdTipoProducto,
-                'IdAlmacenDestino': IdAlmacenDestino,
-                'IdCuadrilla': IdCuadrilla,
-                'IdMovimiento': IdMovimiento,
+             
 
-                'IdObraDestino': ObraFin,
-
-                'IdTipoDocumentoRef': $("#IdTipoDocumentoRef").val(),
-                'NumSerieTipoDocumentoRef': $("#SerieNumeroRef").val(),
-                'IdDestinatario': $("#IdDestinatario").val(),
-                'IdMotivoTraslado': $("#IdMotivoTraslado").val(),
-                'IdTransportista': $("#IdTransportista").val(),
-                'PlacaVehiculo': $("#PlacaVehiculo").val(),
-                'NumIdentidadConductor': $("#NumIdentidadConductor").val(),
-                'Peso': $("#Peso").val(),
-                'Bulto': $("#Bulto").val()
-
-
-                //end cabecera
-
-
+                'JsonDatosEnviar': JSON.stringify(MovimientoEnviar)
             },
             beforeSend: function () {
                 Swal.fire({
@@ -846,7 +859,7 @@ function GuardarSolicitud() {
                 } else {
                     Swal.fire(
                         'Error!',
-                        'Ocurrio un Error!',
+                        data,
                         'error'
                     )
 

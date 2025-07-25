@@ -383,6 +383,12 @@ namespace ISAP
 
                     ObjSAPComprobante.Lines.ItemDescription = auxdetalle.DescripcionArticulo;
 
+                    if(auxComprobante.IdTipoRegistro==4 || auxComprobante.IdTipoRegistro == 5)
+                    {
+                        ObjSAPComprobante.Lines.ItemDescription = auxComprobante.Comentario;
+                    }
+
+
                     ObjSAPComprobante.Lines.ProjectCode = datosObra[0].CodProyecto;
                     ObjSAPComprobante.Lines.ShipDate = auxComprobante.FechaDocumento;
 

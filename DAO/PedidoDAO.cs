@@ -1233,7 +1233,7 @@ namespace DAO
                 }
             }
         }
-        public int CerrarPedido(PedidoDTO oPedidoDTO, string BaseDatos, ref string mensaje_error)
+        public int CerrarPedido(PedidoDTO oPedidoDTO,int IdUsuario, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
@@ -1249,6 +1249,7 @@ namespace DAO
                         SqlDataAdapter da = new SqlDataAdapter("SMC_CerrarPedido", cn);
                         da.SelectCommand.CommandType = CommandType.StoredProcedure;
                         da.SelectCommand.Parameters.AddWithValue("@IdPedido", oPedidoDTO.IdPedido);
+                        da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
                         return rpta;
@@ -1261,7 +1262,7 @@ namespace DAO
                 }
             }
         }
-        public int LiberarPedido(PedidoDTO oPedidoDTO, string BaseDatos, ref string mensaje_error)
+        public int LiberarPedido(PedidoDTO oPedidoDTO, int IdUsuario, string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
@@ -1277,6 +1278,7 @@ namespace DAO
                         SqlDataAdapter da = new SqlDataAdapter("SMC_LiberarPedido", cn);
                         da.SelectCommand.CommandType = CommandType.StoredProcedure;
                         da.SelectCommand.Parameters.AddWithValue("@IdPedido", oPedidoDTO.IdPedido);
+                        da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
                         int rpta = da.SelectCommand.ExecuteNonQuery();
                         transactionScope.Complete();
                         return rpta;
@@ -1289,7 +1291,7 @@ namespace DAO
                 }
             }
         }
-        public int AnularPedido(PedidoDTO oPedidoDTO, string BaseDatos, ref string mensaje_error)
+        public int AnularPedido(PedidoDTO oPedidoDTO, int IdUsuario,string BaseDatos, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);
             transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
@@ -1305,6 +1307,7 @@ namespace DAO
                         SqlDataAdapter da = new SqlDataAdapter("SMC_AnularPedido", cn);
                         da.SelectCommand.CommandType = CommandType.StoredProcedure;
                         da.SelectCommand.Parameters.AddWithValue("@IdPedido", oPedidoDTO.IdPedido);
+                        da.SelectCommand.Parameters.AddWithValue("@IdUsuario", IdUsuario);
                         int rpta = Convert.ToInt32(da.SelectCommand.ExecuteScalar());
                         transactionScope.Complete();
                         return rpta;

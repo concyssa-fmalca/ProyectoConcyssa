@@ -1003,8 +1003,9 @@ namespace ConcyssaWeb.Controllers
         {
             string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             PedidoDAO oPedidoDAO = new PedidoDAO();
-            int respuesta = oPedidoDAO.CerrarPedido(oPedidoDTO,BaseDatos,ref mensaje_error);
+            int respuesta = oPedidoDAO.CerrarPedido(oPedidoDTO, IdUsuario,BaseDatos, ref mensaje_error);
 
             if (mensaje_error.Length > 0)
             {
@@ -1028,8 +1029,9 @@ namespace ConcyssaWeb.Controllers
         {
             string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
             string mensaje_error = "";
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             PedidoDAO oPedidoDAO = new PedidoDAO();
-            int respuesta = oPedidoDAO.LiberarPedido(oPedidoDTO,BaseDatos,ref mensaje_error);
+            int respuesta = oPedidoDAO.LiberarPedido(oPedidoDTO, IdUsuario,BaseDatos, ref mensaje_error);
 
             if (mensaje_error.Length > 0)
             {
@@ -1052,9 +1054,10 @@ namespace ConcyssaWeb.Controllers
         public string AnularPedido(PedidoDTO oPedidoDTO)
         {
             string BaseDatos = String.IsNullOrEmpty(HttpContext.Session.GetString("BaseDatos")) ? "" : HttpContext.Session.GetString("BaseDatos")!;
+            int IdUsuario = Convert.ToInt32(HttpContext.Session.GetInt32("IdUsuario"));
             string mensaje_error = "";
             PedidoDAO oPedidoDAO = new PedidoDAO();
-            int respuesta = oPedidoDAO.AnularPedido(oPedidoDTO,BaseDatos,ref mensaje_error);
+            int respuesta = oPedidoDAO.AnularPedido(oPedidoDTO, IdUsuario, BaseDatos,ref mensaje_error);
 
             if (mensaje_error.Length > 0)
             {
