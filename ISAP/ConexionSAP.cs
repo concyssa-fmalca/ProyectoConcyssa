@@ -385,7 +385,10 @@ namespace ISAP
 
                     if(auxComprobante.IdTipoRegistro==4 || auxComprobante.IdTipoRegistro == 5)
                     {
-                        ObjSAPComprobante.Lines.ItemDescription = auxComprobante.Comentario;
+                        if(auxComprobante.Comentario != null && auxComprobante.Comentario != "")
+                        {
+                            ObjSAPComprobante.Lines.ItemDescription = auxComprobante.Comentario;
+                        }
                     }
 
 
