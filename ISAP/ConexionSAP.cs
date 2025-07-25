@@ -387,6 +387,7 @@ namespace ISAP
                     {
                         if(auxComprobante.Comentario != null && auxComprobante.Comentario != "")
                         {
+                            ObjSAPComprobante.JournalMemo = auxComprobante.Comentario;
                             ObjSAPComprobante.Lines.ItemDescription = auxComprobante.Comentario;
                         }
                     }
