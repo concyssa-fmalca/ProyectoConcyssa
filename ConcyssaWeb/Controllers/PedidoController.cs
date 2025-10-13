@@ -1229,9 +1229,16 @@ namespace ConcyssaWeb.Controllers
                 if (CierreAnulacion == "anulado") { displayAsunto = "ANULÓ"; }
 
                 string msge = "";
-                string from = "concyssa.smc@gmail.com";
+
+                CorreoDAO oCorreoDAO = new CorreoDAO();
+                CorreoDTO oCorreoDTO = oCorreoDAO.ObtenerDatosCorreo("COMPRAS", BaseDatos, ref mensaje_error);
+
+                string from = oCorreoDTO.Email;
                 string correo = from;
-                string password = "tlbvngkvjcetzunr";
+                string password = oCorreoDTO.Clave;
+
+
+
                 string displayName = "SE "+ displayAsunto + " EL PEDIDO " + oPedidoDTO.NombSerie + "-" + oPedidoDTO.Correlativo;
                 MailMessage mail = new MailMessage();
                 mail.From = new MailAddress(from, displayName);
@@ -1249,9 +1256,9 @@ namespace ConcyssaWeb.Controllers
                 mail.Body = TemplateCierreAnulacion(oPedidoDTO, CierreAnulacion);
 
                 mail.IsBodyHtml = true;
-                SmtpClient client = new SmtpClient("smtp.gmail.com", 587); //Aquí debes sustituir tu servidor SMTP y el puerto
+                SmtpClient client = new SmtpClient(oCorreoDTO.Servidor, oCorreoDTO.Puerto); //Aquí debes sustituir tu servidor SMTP y el puerto
                 client.Credentials = new NetworkCredential(from, password);
-                client.EnableSsl = true;//En caso de que tu servidor de correo no utilice cifrado SSL,poner en false
+                client.EnableSsl = oCorreoDTO.SSL;//En caso de que tu servidor de correo no utilice cifrado SSL,poner en false
 
 
 
