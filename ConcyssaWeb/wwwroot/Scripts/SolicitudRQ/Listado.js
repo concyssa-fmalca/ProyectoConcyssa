@@ -427,6 +427,7 @@ function ConsultaServidor() {
             var fecha = fechaSplit[2] + "/" + fechaSplit[1] + "/" + fechaSplit[0];
             tr += '<td>' + fecha + '</td>';
             tr += '<td>' + solicitudes[i].OCRelacionadas + '</td>';
+            tr += '<td>' + solicitudes[i].FechaCreacion.replace('T',' ') + '</td>';
 
             //var fechaSplitvalidohasta = (solicitudes[i].FechaValidoHasta.substring(0, 10)).split("-");
             ////var fechavalidohasta = fechaSplitvalidohasta[0] + "/" + fechaSplitvalidohasta[1] + "/" + fechaSplitvalidohasta[2];

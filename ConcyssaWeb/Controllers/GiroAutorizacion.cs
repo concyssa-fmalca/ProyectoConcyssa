@@ -121,7 +121,13 @@ namespace ConcyssaWeb.Controllers
             int resultado = oGiroModeloAprobacionesDAO.UpdateInsertModeloAprobacionesGiro(giroModeloAprobacionesDTO, IdSociedad.ToString(),BaseDatos);
             //if (resultado != 0)
             //{
+            try
+            {
+                int validar = oGiroModeloAprobacionesDAO.ValidarEstadoGiro(giroModeloAprobacionesDTO, IdSociedad.ToString(), BaseDatos);
+            } catch (Exception ex)
+            {
 
+            }
 
 
             //    var SolicitudRQModeloResult = oSolicitudRQModeloDAO.ObtenerDatosxID(solicitudRQModeloAprobacionesDTO[0].IdSolicitudModelo, IdSociedad.ToString());

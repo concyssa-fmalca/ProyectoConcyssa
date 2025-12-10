@@ -60,6 +60,47 @@ namespace DAO
 
         }
 
+        public int ValidarEstadoGiro(List<GiroModeloAprobacionesDTO> oGiroModeloAprobacionesDTO, string IdSociedad, string BaseDatos)
+        {
+            if (oGiroModeloAprobacionesDTO.Count() > 0)
+            {
+                int rpta = 0;
+                for (int i = 0; i < oGiroModeloAprobacionesDTO.Count; i++)
+                {
+                    TransactionOptions transactionOptions = default(TransactionOptions);
+                    transactionOptions.IsolationLevel = System.Transactions.IsolationLevel.ReadCommitted;
+                    transactionOptions.Timeout = TimeSpan.FromSeconds(60.0);
+                    TransactionOptions option = transactionOptions;
+                    using (SqlConnection cn = new Conexion().conectar(BaseDatos))
+                    {
+                        using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, option))
+                        {
+                            try
+                            {
+                                cn.Open();
+                                SqlDataAdapter da = new SqlDataAdapter("SMC_VALIDAR_ESTADO_GIRO", cn);
+                                da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                                da.SelectCommand.Parameters.AddWithValue("@IdGiroModelo", oGiroModeloAprobacionesDTO[i].IdGiroModelo);
+                                rpta = da.SelectCommand.ExecuteNonQuery();
+                                transactionScope.Complete();
+
+                            }
+                            catch (Exception ex)
+                            {
+                                return 0;
+                            }
+                        }
+                    }
+                }
+                return rpta;
+            }
+            else
+            {
+                return 0;
+            }
+
+        }
+
 
     }
 }

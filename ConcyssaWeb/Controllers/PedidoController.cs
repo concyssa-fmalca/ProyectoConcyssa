@@ -1380,7 +1380,7 @@ namespace ConcyssaWeb.Controllers
             {
                 if (respuesta == 1)
                 {
-                    EnviarCorreoAnulacionCierre(oPedidoDTO.IdPedido, "cerrado");
+                    EnviarCorreoAnulacionCierre(oPedidoDTO.IdPedido, "Activado");
                     return "1";
                 }
                 else

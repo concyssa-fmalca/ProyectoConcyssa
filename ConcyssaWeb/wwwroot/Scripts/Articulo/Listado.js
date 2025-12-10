@@ -148,7 +148,7 @@ window.onload = function () {
     $("#divObraArticulo").hide();
     ObtenerObra();
 
-    if ($("#ArtIdPerfil").val() == 1 || $("#ArtIdPerfil").val() == 1018) {
+    if ($("#ArtIdPerfil").val() == 1 || $("#ArtIdPerfil").val() == 1018 || $("#ArtIdPerfil").val() == 1022) {
         $("#btnGrabar").show()
         $("#btnNuevoArt").show()
     } else {

@@ -167,4 +167,12 @@ namespace DTO
         public decimal SumaSoles { get; set; }
         public decimal SumaDolares { get; set; }
     }
+
+    public class OPCHSAPDTO
+    {
+        public int DocEntry { get; set; }
+        public int DocNum { get; set; }
+        public string NumAtCard { get; set; }
+        public string CardCode { get; set; }
+    }
 }

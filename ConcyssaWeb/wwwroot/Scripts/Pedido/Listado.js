@@ -3819,8 +3819,16 @@ function CerrarOC(IdPedido) {
             type: 'POST',
             data: { 'IdPedido': IdPedido },
             success: function (data) {
-                swal("Exito!", "Proceso Realizado Correctamente", "success")
-                listarPedidoDt()
+
+                if (data == "1") {
+                    swal("Exito!", "Proceso Realizado Correctamente", "success")
+                    listarPedidoDt()
+
+                } else {
+                    swal("Error!", data, "error")
+                }
+
+
             },
             error: function () {
                 swal("Error!", "El Proceso Falló", "error")

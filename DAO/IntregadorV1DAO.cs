@@ -1490,6 +1490,39 @@ namespace DAO
 
         }
 
+        public List<OPCHSAPDTO> ObtenerFacturasSAPProveedor(string CardCodes, int Anio, string BaseDatosSAP, ref string mensaje_error)
+        {
+            List<OPCHSAPDTO> lstOPCHSAPDTO = new List<OPCHSAPDTO>();
+            using (SqlConnection cn = new ConexionSQLSAP().conectar(BaseDatosSAP))
+            {
+                try
+                {
+                    cn.Open();
+                    SqlDataAdapter da = new SqlDataAdapter("SMC_BUSCAR_FT_POR_PROVEEDOR", cn);
+                    da.SelectCommand.Parameters.AddWithValue("@ListCardCode", CardCodes);
+                    da.SelectCommand.Parameters.AddWithValue("@Year", Anio);
+                    da.SelectCommand.CommandType = CommandType.StoredProcedure;
+                    SqlDataReader drd = da.SelectCommand.ExecuteReader();
+                    while (drd.Read())
+                    {
+                        OPCHSAPDTO oOPCHSAPDTO = new OPCHSAPDTO();
+                        oOPCHSAPDTO.DocEntry = int.Parse(drd["DocEntry"].ToString());
+                        oOPCHSAPDTO.DocNum = int.Parse(drd["DocNum"].ToString());
+                        oOPCHSAPDTO.NumAtCard = (drd["NumAtCard"].ToString());
+                        oOPCHSAPDTO.CardCode = (drd["CardCode"].ToString());
+                        lstOPCHSAPDTO.Add(oOPCHSAPDTO);
+                    }
+                    drd.Close();
+                }
+                catch (Exception ex)
+                {
+                    mensaje_error = ex.Message.ToString();
+                }
+                return lstOPCHSAPDTO;
+            }
+
+        }
+
         public int ValidarExisteProveedorSAP(string Ruc, string BaseDatosSAP, ref string mensaje_error)
         {
             TransactionOptions transactionOptions = default(TransactionOptions);

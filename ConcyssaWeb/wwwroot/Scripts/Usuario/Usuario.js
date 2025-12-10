@@ -59,6 +59,61 @@ window.onload = function () {
         }
     });
 
+    $("#nuevapassword").on("keyup", function () {
+        var password = $(this).val();
+
+        // Mostrar el contenedor de fortaleza solo si hay texto
+        if (password.length > 0) {
+            $("#passwordStrengthContainer2").show();
+        } else {
+            $("#passwordStrengthContainer2").hide();
+            return;
+        }
+
+        // Verificar cada requisito
+        var lengthValid = password.length >= 8;
+        var lowercaseValid = /[a-z]/.test(password);
+        var uppercaseValid = /[A-Z]/.test(password);
+        var numberValid = /[0-9]/.test(password);
+        var specialValid = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+
+        // Actualizar indicadores visuales para cada requisito
+        updateRequirement("req-length", lengthValid);
+        updateRequirement("req-lowercase", lowercaseValid);
+        updateRequirement("req-uppercase", uppercaseValid);
+        updateRequirement("req-number", numberValid);
+        updateRequirement("req-special", specialValid);
+
+        // Calcular la fortaleza general (de 0 a 100)
+        var strength = 0;
+        if (lengthValid) strength += 20;
+        if (lowercaseValid) strength += 20;
+        if (uppercaseValid) strength += 20;
+        if (numberValid) strength += 20;
+        if (specialValid) strength += 20;
+
+        // Actualizar la barra de progreso
+        $("#passwordStrength2")
+            .css("width", strength + "%")
+            .attr("aria-valuenow", strength);
+
+        // Cambiar el color de la barra según la fortaleza
+        if (strength < 40) {
+            $("#passwordStrength2").removeClass("bg-warning bg-success").addClass("bg-danger");
+        } else if (strength < 80) {
+            $("#passwordStrength2").removeClass("bg-danger bg-success").addClass("bg-warning");
+        } else {
+            $("#passwordStrength2").removeClass("bg-danger bg-warning").addClass("bg-success");
+        }
+
+        // Agregar mensaje de error al campo si no cumple todos los requisitos
+        if (strength < 100) {
+            $("[data-valmsg-for='Password']").text("La contraseña no cumple con todos los requisitos").show();
+        } else {
+            $("[data-valmsg-for='Password']").text("").hide();
+        }
+    });
+
 
     var url = "ObtenerUsuarios";
     ConsultaServidor(url);
@@ -113,6 +168,7 @@ function ConsultaServidor(url) {
 function ModalNuevo() {
     $("#lblTituloModal").html("Nuevo Usuario");
     $("#txtContraseña").attr("type", "text");
+    $("#txtContraseña").prop("disabled", false);
     AbrirModal("modal-form");
     CargarPerfiles();
     CargarSociedades();
@@ -340,6 +396,7 @@ function ObtenerDatosxID(varIdUsuario) {
     $("#lblTituloModal").html("Editar Usuario");
     AbrirModal("modal-form");
     $("#txtContraseña").attr("type", "password");
+    $("#txtContraseña").prop("disabled",true);
     //console.log(varIdUsuario);
 
     $.post('ObtenerDatosxID', {
@@ -472,6 +529,7 @@ function limpiarDatos() {
     $("#txtCorreo").val("");
     $("#txtContrasenaSap").val("");
     $("#txtUsuarioSap").val("");
+    $("#nuevapassword").val("");
 }
 
 function listartablealmacenbase(IdUsuario) {
@@ -734,9 +792,19 @@ function CambiarPass(IdUsuario) {
     $("#UsuarioSeleccionado").val(IdUsuario)
 }
 function ActualizarClave() {
+
+    let varContraseña = $("#nuevapassword").val()
+
+    var isValid = validatePassword(varContraseña);
+
+    if (!isValid) {
+        Swal.fire("La contraseña no cumple con todos los requisitos de seguridad. Por favor revise los requisitos indicados.");
+        return
+    }
+
     $.post('UpdateClaveUser', {
         'IdUsuario': $("#UsuarioSeleccionado").val(),
-        'Clave': $("#nuevapassword").val()
+        'Clave': varContraseña
     }, function (data, status) {
         if (data > 0) {
             Swal.fire("Correcto", "Clave Actualizada Correctamente", "success")

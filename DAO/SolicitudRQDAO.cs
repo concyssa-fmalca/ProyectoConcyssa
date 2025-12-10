@@ -58,6 +58,7 @@ namespace DAO
                         oSolicitudRQDTO.FechaContabilizacion = Convert.ToDateTime(drd["FechaContabilizacion"].ToString());
                         oSolicitudRQDTO.FechaValidoHasta = Convert.ToDateTime(drd["FechaValidoHasta"].ToString());
                         oSolicitudRQDTO.FechaDocumento = Convert.ToDateTime(drd["FechaDocumento"].ToString());
+                        oSolicitudRQDTO.FechaCreacion = Convert.ToDateTime(drd["FechaCreacion"].ToString());
                         oSolicitudRQDTO.Comentarios = drd["Comentarios"].ToString();
                         oSolicitudRQDTO.Estado = int.Parse(drd["Estado"].ToString());
                         oSolicitudRQDTO.DetalleEstado = drd["DetalleEstado"].ToString();

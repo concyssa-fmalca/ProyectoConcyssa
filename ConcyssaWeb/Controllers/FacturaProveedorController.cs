@@ -48,14 +48,44 @@ namespace ConcyssaWeb.Controllers
             var configuracion = oConfiguracionSociedadDAO.ObtenerConfiguracionSociedad(1, BaseDatos, ref mensaje_error);
             string BaseDatosSAP = configuracion[0].NombreBDSAP;
             IntregadorV1DAO intregadorV1DAO = new IntregadorV1DAO();
+
             if (lstOpchDTO.Count >= 0 && mensaje_error.Length==0)
             {
+                try
+                {
+                    string listaCodigos = string.Join(",", lstOpchDTO.Select(x => "P"+x.RUCProveedor));
+                    List<OPCHSAPDTO> lstOpchSAPDTO = intregadorV1DAO.ObtenerFacturasSAPProveedor(listaCodigos, lstOpchDTO[0].FechaDocumento.Year,BaseDatosSAP,ref mensaje_error);
 
-                for (int i = 0; i < lstOpchDTO.Count; i++)
+                    foreach (var opch in lstOpchDTO)
+                    {
+                        var match = lstOpchSAPDTO.FirstOrDefault(sap =>
+                             NormalizarNumeroDocumento(sap.NumAtCard) == NormalizarNumeroDocumento(opch.NumSerieTipoDocumentoRef)
+                             && sap.CardCode == "P"+opch.RUCProveedor
+                        );
+
+                        if (match != null)
+                        {
+                            opch.DocNumCont = match.DocNum;
+                        }
+                        else
+                        {
+                            opch.DocNumCont = 0;
+                        }
+                    }
+
+                }catch(Exception x)
                 {
 
-                    lstOpchDTO[i].DocNumCont = intregadorV1DAO.ObtenerDocNumOPCH(lstOpchDTO[i].RUCProveedor, lstOpchDTO[i].NumSerieTipoDocumentoRef, BaseDatosSAP, ref mensaje_error);
                 }
+
+
+
+
+                //for (int i = 0; i < lstOpchDTO.Count; i++)
+                //{
+
+                //    lstOpchDTO[i].DocNumCont = intregadorV1DAO.ObtenerDocNumOPCH(lstOpchDTO[i].RUCProveedor, lstOpchDTO[i].NumSerieTipoDocumentoRef, BaseDatosSAP, ref mensaje_error);
+                //}
 
                 oDataTableDTO.sEcho = 1;
                 oDataTableDTO.iTotalDisplayRecords = lstOpchDTO.Count;
@@ -70,6 +100,26 @@ namespace ConcyssaWeb.Controllers
                 return mensaje_error;
 
             }
+        }
+
+        private string NormalizarNumeroDocumento(string valor)
+        {
+            if (string.IsNullOrWhiteSpace(valor))
+                return "";
+
+            // Divide por guión (ej: F001-0001234)
+            var partes = valor.Split('-');
+
+            if (partes.Length == 2)
+            {
+                // Limpia ceros a la izquierda del número
+                string serie = partes[0].Trim();
+                string numero = partes[1].TrimStart('0');
+                return $"{serie}-{numero}";
+            }
+
+            // Si no tiene guión, intenta limpiar ceros igualmente
+            return valor.TrimStart('0');
         }
 
         public string ObtenerTotalesTipoRegistro(int IdObra, int IdTipoRegistro, int IdSemana, string EstadoOPCH = "ABIERTO")
