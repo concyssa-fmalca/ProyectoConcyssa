@@ -1,4 +1,22 @@
-﻿
+﻿@{
+
+    @using System.Reflection
+    @using System.Diagnostics
+    @using System.Text.RegularExpressions
+
+    var asm = typeof(ConcyssaWeb.Controllers.HomeController).Assembly;
+
+    // Intentar leer InformationalVersion (donde suele estar 1.0.0+hash)
+    var infoVersion = asm.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
+                      ?? FileVersionInfo.GetVersionInfo(asm.Location).ProductVersion
+                      ?? asm.GetName().Version?.ToString();
+
+    // Extraer solo la parte semver: X.Y.Z o X.Y.Z-pre
+    var match = Regex.Match(infoVersion ?? "", @"(?<semver>\d+\.\d+\.\d+(-[0-9A-Za-z\.-]+)?)");
+    var version = match.Success ? match.Groups["semver"].Value : "0.0.0";
+}
+
+
 <!DOCTYPE html>
 <html>
 
@@ -64,7 +82,7 @@
                 <div class="allcp-form theme-primary mw320" id="login">
                     <div class="text-center login mb5">
                         @*<img src="~/assets/img/logo_contasmart_blanco.png" class="img-responsive col-md-3" alt="Logo">*@
-                        <p class="bg-primary" style="color:white;border-radius:6px;font-size:18px;margin-bottom:5px; font-weight: bold;">INICIO SESION</p>
+                        <p class="bg-primary" style="color:white;border-radius:6px;font-size:18px;margin-bottom:5px; font-weight: bold;">INICIO SESION - SGC-WEB Versión @version</p>
                     </div>
                     <div class="panel mw320">
 
