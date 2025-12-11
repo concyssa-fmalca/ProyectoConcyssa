@@ -88,7 +88,7 @@ function llenarComboCuadrilla(lista, idCombo, primerItem) {
     if (cbo != null) cbo.innerHTML = contenido;
 }
 
-
+// Obtener almacenes de la obra origen
 function ObtenerAlmacenxIdObra() {
     let IdObra = $("#IdObra").val();
     $.ajaxSetup({ async: false });
@@ -2735,7 +2735,11 @@ function BuscarListadoAlmacen() {
 function SeleccionarItemListado() {
     let IdArticulo = $('#cboAgregarArticulo').val();
     let TipoItem = $("#cboClaseArticulo").val();
-    let Almacen = $("#cboAlmacenItem").val();
+    //let Almacen = $("#cboAlmacenItem").val(); No jalaba el almacén correcto
+    let Almacen = $("#cboAlmacen").val();
+
+    console.log('Almacen', Almacen);
+
     if (TipoItem == 3) {
         $.post("/Articulo/ListarArticulosxSociedadxAlmacenStockxProductoActivoFijo", { 'IdArticulo': IdArticulo, 'IdAlmacen': Almacen, 'Estado': 1 }, function (data, status) {
 
